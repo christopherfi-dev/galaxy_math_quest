@@ -4,6 +4,18 @@
 
 **How it was done:** six agents read your Drive, the student site and Canva directly (read-only). They recomputed every number in code. 30 check scripts are in `checks/`, and all run clean.
 
+## Update after Marc's answers (2026-11-16)
+
+- **Time [Marc]:** station tasks took 5 to 15 minutes. Other tasks took 30 to 40 minutes, sometimes in pairs, sometimes across days.
+  - The 40-minute assumption for galaxy tasks holds. The "split" verdicts match how the class really worked: across days. In the world, each sitting becomes its own level.
+  - Five station estimates below are higher than 15 minutes: 1-2, 1-3, 2-1, 5-2 and 5-3. Your number comes from the classroom, so it outranks my estimate. The class version may have been lighter than the site text. **Check:** did 1-3, 5-2 and 5-3 really fit in 15 minutes?
+- **Too long [Marc]:** the food planning and packing in the data quest. This confirms Operation Stardust Task 1. Level 1 sorts 20 foods three ways. Level 2 fills four tables. The redesign direction is one sort and fewer tables.
+- **Canva planets [Marc]:** not part of GMQ. They are dropped from the analysis.
+- **New idea [Marc]:** mini quests that earn cards. See `proposals/GMQ_Mini_Quests_v1_2026-11-16.md`. It fits, and 16 number rules for it already pass.
+- **Decisions 1 and 2 in section 2 are answered.** Decision 9 is half answered (pairs).
+
+---
+
 **Verdicts are provisional.** `INFO_FROM_MARC.md` was blank, so these rest on three assumptions: one task fits about 40 minutes; a child types at most 3 numbers or one short sentence per answer; reading is at most 10 words per sentence. Minutes are estimates. No source records real class times.
 
 ---
@@ -54,8 +66,8 @@
 
 ## 2. Decisions only you can make
 
-1. **Time.** How long is one task? One 40-minute period, or an 80-minute block? With a double period, Voltara T1 and T2 change from "split" to "fix".
-2. **Which task was too long?** The evidence points to **Stardust Task 1 Level 2, the Eating Schedule**, not Level 1 and not Cargo Load. Confirm.
+1. ~~**Time.**~~ *Answered: 5–15 minutes on the station, 30–40 elsewhere.* How long is one task? One 40-minute period, or an 80-minute block? With a double period, Voltara T1 and T2 change from "split" to "fix".
+2. ~~**Which task was too long?**~~ *Answered: Stardust Task 1.* The evidence points to **Stardust Task 1 Level 2, the Eating Schedule**, not Level 1 and not Cargo Load. Confirm.
 3. **Card per task or per level?** Stardust is 2 tasks but 6 lessons. Voltara is 3 tasks but about 7 lessons.
 4. **Cargo Load:** 6 items (one answer, hard) or 7 items (33 answers, easier)?
 5. **Voltara needs list, supply and deck.** The class used 2,220 needed against 1,650 supplied. Three decks exist (10, 10 and 15 cards). Pick one of each.
@@ -97,4 +109,4 @@
 - Not opened, by rule: Users Info, Galaxy Math Quest - Users, API information, the Apps Script, and the Math Assessment Test folder.
 - **No Grade 3 scope and sequence was found.** Best candidate: "Marc Lang & Math_ Bank of reporting statements". Please confirm, or add the real one.
 
-**Next step:** fill in `INFO_FROM_MARC.md` (items 1–3 first), approve or change the verdicts, and the redesigns can start. My wider view of the MUD plan is in `ANALYSIS_2026-11-16.md`.
+**Next step:** approve or change the verdicts, and say whether mini quests or the big-task redesigns come first. My wider view of the MUD plan is in `ANALYSIS_2026-11-16.md`.
