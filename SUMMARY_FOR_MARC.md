@@ -12,6 +12,8 @@
 - **Too long [Marc]:** the food planning and packing in the data quest. This confirms Operation Stardust Task 1. Level 1 sorts 20 foods three ways. Level 2 fills four tables. The redesign direction is one sort and fewer tables.
 - **Canva planets [Marc]:** not part of GMQ. They are dropped from the analysis.
 - **New idea [Marc]:** mini quests that earn cards. See `proposals/GMQ_Mini_Quests_v1_2026-11-16.md`. It fits, and 16 number rules for it already pass.
+- **Projects stay physical [Marc]:** the major quests are real-life design projects. So the "too much typing" reasons below matter less. Wrong numbers, maths above Grade 3, length and missing finish lines still stand. See `proposals/GMQ_Three_Layers_and_Locks_v1_2026-11-16.md`.
+- **Locks [Marc]:** planets stay locked until other things are done. Three locks in your material point at quests that were never built. The same file shows a way to open them.
 - **Decisions 1 and 2 in section 2 are answered.** Decision 9 is half answered (pairs).
 
 ---

@@ -29,7 +29,7 @@ Claude Code judges every task against these answers. Write in plain words; short
 > **[Marc, 2026-11-16]** Partly answered under item 1: galaxy tasks were sometimes done in pairs. Whether the world should keep that: not answered.
 
 **9. Hands-on.** Which hands-on parts must stay hands-on (counters, base-ten blocks, rulers, tiles, throwing at targets)?
->
+> **[Marc, 2026-11-16, by voice; tidied by Claude]** GMQ was visual and physical. Most things were print-offs or things students did with their hands, as in the station tasks. The major quests should be things students design in real life, like project-based learning, to show true understanding. *(Claude's reading: the big quests stay hands-on. Mini quests are the typed part.)*
 
 **10. Approval.** Should Claude Code stop after the reviews so you can approve the verdicts before it redesigns anything? (yes / no) Default: **yes**.
 >
@@ -58,3 +58,5 @@ These are Marc's words, tidied. They are not on the form above.
 - **Canva planets.** The Canva designs "Planet Orynthia", "Planet Zorgon", "Planet Veltrana" and "Letters from Planets and Council" are for something different. They are **not** part of GMQ.
 - **Private files.** The API keys and student names in the folder are no longer valid. (Claude still did not open those files.)
 - **Mini-quest decisions (Marc, 2026-11-16).** Code marks and the AI tells the story. Mini quests both interrupt and are found. "Mini battle" and "mini quest" are both fine names. One card for each activity; big decks are fine. Each one is 3 to 5 problems. The order of work is Claude's choice. Recorded in `proposals/GMQ_Mini_Quests_v1_2026-11-16.md` §0.
+- **Locks (Marc, 2026-11-16).** Some galaxies or planets should stay locked until other things are unlocked. He thinks most of those rules are already in his material. See `proposals/GMQ_Three_Layers_and_Locks_v1_2026-11-16.md`.
+- **School Drive link (Marc, 2026-11-16).** The link he sent is the same folder already read (id `1DV4iuNnVx-u_9t4Ry1yduMzHRL0nQwj2`).
