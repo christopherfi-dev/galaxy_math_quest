@@ -1,0 +1,468 @@
+<title>KIS Station Sketch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Chakra+Petch:wght@500;700&display=swap">
+<style>
+/* Layout: a station blueprint that fills in as you explore, one scene card under it,
+   and one typed line under the scene. Single column, built for an iPad held upright. */
+:root {
+  --bg: #e6eef7; --panel: #f7fbff; --ink: #14233b; --muted: #4d5f7a; --line: #b4c5db;
+  --hull: #cfdcec; --visited: #a6c6ec; --now: #ffb23e; --now-ink: #2b1a00;
+  --accent: #0b5cad; --accent-ink: #ffffff; --good: #1c7c3a; --bad: #b3261e;
+  --gold: #a86f00; --rare: #6243c0; --common: #53647c; --rock: #7a8698;
+  --display: 'Chakra Petch', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --body: 'Andika', 'Trebuchet MS', 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1422; --panel: #132035; --ink: #e8eef8; --muted: #a3b4cc; --line: #2c3f5d;
+    --hull: #1c2c46; --visited: #29497a; --now: #ffb23e; --now-ink: #2b1a00;
+    --accent: #6db3ff; --accent-ink: #08121f; --good: #6fd08a; --bad: #ff9486;
+    --gold: #ffcf5a; --rare: #b9a3ff; --common: #a3b4cc; --rock: #8d9ab0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1422; --panel: #132035; --ink: #e8eef8; --muted: #a3b4cc; --line: #2c3f5d;
+  --hull: #1c2c46; --visited: #29497a; --now: #ffb23e; --now-ink: #2b1a00;
+  --accent: #6db3ff; --accent-ink: #08121f; --good: #6fd08a; --bad: #ff9486;
+  --gold: #ffcf5a; --rare: #b9a3ff; --common: #a3b4cc; --rock: #8d9ab0;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.1rem; line-height: 1.5; }
+.wrap { max-width: 720px; margin: 0 auto; padding-block: 16px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 14px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: 1.7rem; line-height: 1.1; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.05rem; }
+p { margin: 0; }
+.eyebrow { font-family: var(--display); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end; justify-content: space-between; }
+.status { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip { font-family: var(--display); font-size: .78rem; padding: 4px 9px; border: 1.5px solid var(--line); border-radius: 999px; color: var(--muted); background: transparent; }
+.chip.on { border-color: var(--good); color: var(--good); font-weight: 700; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, .room:focus-visible, summary:focus-visible { outline: 3px solid var(--now); outline-offset: 2px; }
+.btn { font-family: var(--display); font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 10px 16px; font-size: 1rem; }
+.btn.quiet { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+.btn:disabled { opacity: .5; cursor: default; }
+
+/* blueprint map */
+.map { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 8px; }
+.map svg { display: block; width: 100%; height: auto; }
+.map .pipe { stroke: var(--line); stroke-width: 5; }
+.map .room rect { fill: var(--hull); stroke: var(--muted); stroke-width: 1.5; transition: fill .25s; }
+.map .room.visited rect { fill: var(--visited); }
+.map .room.now rect { fill: var(--now); }
+.map .room.locked rect { stroke-dasharray: 5 4; }
+.map .room text { font-family: var(--display); font-size: 9.5px; font-weight: 700; fill: var(--ink); text-anchor: middle; pointer-events: none; }
+.map .room.now text { fill: var(--now-ink); }
+.map .room.go { cursor: pointer; }
+.map .room.go rect { stroke: var(--accent); stroke-width: 2.5; }
+.map .ship { font-family: var(--display); font-size: 8px; fill: var(--muted); text-anchor: middle; }
+
+/* scene */
+.scene { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.story { display: flex; flex-direction: column; gap: 4px; max-width: 34em; }
+.art svg { display: block; width: 100%; height: auto; max-height: 230px; }
+.art .hullf { fill: var(--hull); } .art .linef { fill: var(--line); } .art .ink { fill: var(--ink); }
+.art .mut { fill: var(--muted); } .art .nowf { fill: var(--now); } .art .accf { fill: var(--accent); }
+.art .goodf { fill: var(--good); } .art .rockf { fill: var(--rock); } .art .panelf { fill: var(--panel); }
+.art .stroke { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.art text { font-family: var(--display); font-weight: 700; fill: var(--ink); }
+.things { display: flex; flex-wrap: wrap; gap: 8px; }
+.thing { font-family: var(--body); background: transparent; border: 1.5px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 6px 14px; font-size: 1rem; }
+.widget { border-top: 1.5px dashed var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.q { font-weight: 700; font-size: 1.15rem; }
+.field { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.field input { width: 6.5em; font: inherit; font-size: 1.35rem; font-weight: 700; text-align: center; padding: 8px; border: 2px solid var(--ink); border-radius: 10px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; }
+.msg { min-height: 1.5em; font-weight: 700; }
+.msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
+.meter { display: flex; gap: 6px; align-items: center; font-family: var(--display); font-size: .85rem; color: var(--muted); }
+.pip { width: 26px; height: 12px; border-radius: 3px; border: 1.5px solid var(--muted); }
+.pip.on { background: var(--good); border-color: var(--good); }
+.crates { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.crate { text-align: left; border: 2px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; min-width: 0; }
+.crate b { font-family: var(--display); white-space: nowrap; }
+.crate[aria-pressed="true"] { border-color: var(--now); background: var(--now); color: var(--now-ink); }
+.scale { font-family: var(--display); font-weight: 700; font-size: 1.2rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.bar { height: 14px; border-radius: 7px; background: var(--hull); overflow: hidden; }
+.bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.bar.over > span { background: var(--bad); }
+.note { font-size: .9rem; color: var(--muted); }
+
+/* typed line */
+.say { display: flex; flex-direction: column; gap: 8px; }
+.say label { font-family: var(--display); font-weight: 700; }
+.sayrow { display: flex; gap: 8px; }
+.sayrow input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 10px; background: var(--panel); color: var(--ink); }
+.ideas { display: flex; flex-wrap: wrap; gap: 6px; }
+.idea { background: transparent; border: 1.5px dashed var(--muted); color: var(--muted); border-radius: 999px; padding: 3px 11px; font-size: .92rem; }
+.reply { border-left: 4px solid var(--now); padding: 4px 0 4px 12px; min-height: 1.6em; }
+.reply .you { color: var(--muted); font-size: .92rem; }
+
+/* cards */
+.cardrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.card { width: 132px; border: 2px solid var(--common); border-radius: 10px; padding: 8px 10px; background: var(--bg); display: flex; flex-direction: column; gap: 2px; }
+.card .r { font-family: var(--display); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--common); }
+.card.rare { border-color: var(--rare); } .card.rare .r { color: var(--rare); }
+.card.gold { border-color: var(--gold); } .card.gold .r { color: var(--gold); }
+.card .n { font-family: var(--display); font-weight: 700; line-height: 1.2; }
+.newcard { border: 2px solid var(--now); border-radius: 12px; padding: 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+@keyframes pop { from { transform: scale(.85); opacity: .3; } to { transform: scale(1); opacity: 1; } }
+.newcard .card { animation: pop .35s ease-out; }
+@keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.shake { animation: shake .25s 2; }
+@media (prefers-reduced-motion: reduce) { .newcard .card, .shake { animation: none; } .map .room rect, .bar > span { transition: none; } }
+
+table.report { width: 100%; border-collapse: collapse; font-size: .98rem; }
+.report th, .report td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.report th { font-family: var(--display); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tablewrap { overflow-x: auto; }
+details.about { border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; background: var(--panel); }
+details.about summary { font-family: var(--display); font-weight: 700; cursor: pointer; }
+details.about ul { margin: 8px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; max-width: 38em; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Galaxy Math Quest · a sketch, not the real build</p>
+      <h1>KIS Station</h1>
+    </div>
+    <div class="status" id="status"></div>
+  </header>
+
+  <section class="map" aria-label="Map of the station">
+    <svg viewBox="0 0 340 150" role="img" aria-label="Station map. Tap a room next to you to walk there.">
+      <line class="pipe" x1="106" y1="78" x2="122" y2="78"/><line class="pipe" x1="218" y1="78" x2="234" y2="78"/>
+      <line class="pipe" x1="282" y1="44" x2="282" y2="56"/><line class="pipe" id="pipe-vent" x1="170" y1="100" x2="170" y2="112" hidden/>
+      <g class="room" data-room="shield" tabindex="0" role="button"><rect x="10" y="56" width="96" height="44" rx="6"/><text x="58" y="82">?</text></g>
+      <g class="room" data-room="dock" tabindex="0" role="button"><rect x="122" y="56" width="96" height="44" rx="6"/><text x="170" y="82">?</text></g>
+      <g class="room" data-room="nav" tabindex="0" role="button"><rect x="234" y="56" width="96" height="44" rx="6"/><text x="282" y="82">?</text></g>
+      <g class="room" data-room="launch" tabindex="0" role="button"><rect x="234" y="8" width="96" height="36" rx="6"/><text x="282" y="30">?</text></g>
+      <g class="room" data-room="vent" tabindex="0" role="button" hidden><rect x="140" y="112" width="60" height="30" rx="6"/><text x="170" y="131">?</text></g>
+      <text class="ship" id="shipname" x="58" y="24"></text>
+    </svg>
+  </section>
+
+  <section class="scene" id="scene" aria-live="polite"></section>
+
+  <form class="say" id="say" autocomplete="off">
+    <label for="cmd">What do you do? Tap a thing, or type your own idea.</label>
+    <div class="sayrow">
+      <input id="cmd" type="text" maxlength="60" placeholder="look around" autocapitalize="off" spellcheck="false">
+      <button class="btn" type="submit">Do it</button>
+    </div>
+    <div class="ideas" id="ideas"></div>
+    <div class="reply" id="reply" role="status"></div>
+  </form>
+
+  <section class="scene" id="cards" aria-label="Your cards"></section>
+
+  <details class="about">
+    <summary>For Marc: what this sketch shows</summary>
+    <ul>
+      <li>The world is data, like Hollow House. Each room is a title, a few short lines, a picture and a list of things.</li>
+      <li>The map fills in as a child explores. One room is secret. Only typing finds it.</li>
+      <li>Tap does the expected thing. Typing does the unexpected thing. On your site, the typed line goes to your constrained AI. Here it only knows a few words.</li>
+      <li>The Shield Bay has a mini battle that interrupts. The Navigation Bay has a mini quest you find. Code makes the numbers and marks them.</li>
+      <li>Cargo Load is the 2-3 project, with your own item list. The code checks the two conditions. In class it stays a real task with item cards.</li>
+      <li>Cards use sample odds: 70 common, 25 rare, 5 gold. A project always gives gold. The card names are samples from your set.</li>
+      <li>Progress is saved on this device only. Your server would keep it for each student.</li>
+    </ul>
+    <p style="margin-top:10px"><button class="btn quiet" type="button" id="reset">Start again</button></p>
+  </details>
+</div>
+
+<script>
+/* ---------- the world, as data ---------- */
+const ROOMS = {
+  dock: { name: 'Arrival Dock', label: 'Dock', exits: ['shield', 'nav', 'vent'],
+    text: ['Your ship limps into the dock.', 'Crates of scrap sit in rows.', 'A vent hums low in the wall.'],
+    things: [{ id: 'crates', label: 'the crates' }, { id: 'ship', label: 'your ship' }] },
+  shield: { name: 'Shield Bay', label: 'Shield Bay', exits: ['dock'],
+    text: ['A wide window shows the stars.', 'The shield panel is dark.', 'Rocks drift far away.'],
+    things: [{ id: 'panel', label: 'the shield panel' }, { id: 'window', label: 'the window' }] },
+  nav: { name: 'Navigation Bay', label: 'Navigation', exits: ['dock', 'launch'],
+    text: ['Maps glow on the walls.', 'The fuel gauge blinks red.', 'A cargo scale waits by the door.'],
+    things: [{ id: 'gauge', label: 'the fuel gauge' }, { id: 'scale', label: 'the cargo scale' }] },
+  launch: { name: 'Launch Bay', label: 'Launch Bay', exits: ['nav'],
+    text: ['The big doors face the stars.'], things: [] },
+  vent: { name: 'The Vent', label: 'Vent', exits: ['dock'], secret: true,
+    text: ['It is dark and warm in here.', 'Something small shines in the dust.'],
+    things: [{ id: 'shine', label: 'the shiny thing' }] }
+};
+/* 2-3 Cargo Load: Marc's own item list (Drive "2-3 - not done" and the site page) */
+const CARGO = [['Space food', 3], ['Life support', 7], ['Science kit', 5], ['Water tank', 6], ['Radio gear', 4],
+  ['Spare parts', 4], ['Landing gear', 2], ['Energy cells', 4], ['Space suits', 2], ['Star maps', 3], ['Extra food', 3]];
+const PARTS = ['Engine Core', 'Navigation', 'Shield', 'Weapons', 'Power'];
+/* sample names from Marc's card files; the odds are a proposal */
+const DECK = { common: ['Laser Cannon', 'Stealth Mode', 'Asteroid Assault'], rare: ['Quantum Quell', 'Void Vortex'], gold: ['Nebula Nova'] };
+const ODDS = [['common', 70], ['rare', 25], ['gold', 5]];
+
+/* ---------- state ---------- */
+const KEY = 'gmq-station-sketch-v1';
+let S;
+function fresh() { return { room: 'dock', visited: ['dock'], parts: [], cards: [], seed: Math.floor(Math.random() * 1e9),
+  tries: 0, ventFound: false, shine: false, ship: '', done: {}, log: [], battleSeen: false, ended: false }; }
+function load() { try { const j = JSON.parse(localStorage.getItem(KEY)); if (j && j.room && ROOMS[j.room]) return j; } catch (e) {} return fresh(); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+/* each student gets their own numbers: a small seeded generator */
+function rnd(n) { S.seed = (S.seed * 1664525 + 1013904223) % 4294967296; return Math.floor(S.seed / 4294967296 * n); }
+const pick = a => a[rnd(a.length)];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+let widget = null;   // the open mini quest, battle or project
+
+/* ---------- drawing ---------- */
+function art(room) {
+  if (room === 'dock') {
+    let c = ''; for (let r = 0; r < 2; r++) for (let i = 0; i < 5; i++) c += `<rect class="hullf" x="${24 + i * 34}" y="${96 + r * 30}" width="28" height="24" rx="3"/><rect class="linef" x="${24 + i * 34}" y="${106 + r * 30}" width="28" height="3"/>`;
+    return `<svg viewBox="0 0 420 170" role="img" aria-label="The dock, with crates, a ship and a vent">${c}
+      <path class="accf" d="M250 110 L330 70 L392 96 L392 124 L330 150 Z"/><circle class="panelf" cx="340" cy="108" r="12"/><path class="nowf" d="M250 110 L226 100 L226 120 Z"/>
+      <rect class="mut" x="196" y="24" width="46" height="26" rx="3"/><rect class="panelf" x="201" y="30" width="36" height="3"/><rect class="panelf" x="201" y="36" width="36" height="3"/><rect class="panelf" x="201" y="42" width="36" height="3"/></svg>`;
+  }
+  if (room === 'shield') {
+    let s = ''; const st = [[40, 30], [90, 60], [140, 22], [200, 70], [260, 34], [310, 58], [370, 26], [120, 84], [330, 88]];
+    st.forEach(p => s += `<circle class="nowf" cx="${p[0]}" cy="${p[1]}" r="2"/>`);
+    return `<svg viewBox="0 0 420 170" role="img" aria-label="A window with stars, and a dark shield panel"><rect class="ink" x="14" y="10" width="392" height="96" rx="10"/>${s}
+      <circle class="rockf" cx="356" cy="74" r="7"/><circle class="rockf" cx="378" cy="60" r="4"/>
+      <rect class="hullf" x="130" y="120" width="160" height="40" rx="6"/><rect class="${S.done.battle ? 'goodf' : 'mut'}" x="142" y="132" width="136" height="16" rx="4"/></svg>`;
+  }
+  if (room === 'nav') {
+    return `<svg viewBox="0 0 420 170" role="img" aria-label="The navigation console, a fuel gauge and a cargo scale"><rect class="hullf" x="14" y="14" width="210" height="110" rx="8"/>
+      <path class="stroke" d="M30 100 L70 60 L110 84 L150 40 L206 56"/><circle class="nowf" cx="70" cy="60" r="4"/><circle class="nowf" cx="150" cy="40" r="4"/><circle class="accf" cx="206" cy="56" r="5"/>
+      <circle class="hullf" cx="290" cy="70" r="46"/><path class="${S.done.fuel ? 'goodf' : 'nowf'}" d="M290 70 L${S.done.fuel ? '326 44' : '254 44'} L290 62 Z"/><circle class="ink" cx="290" cy="70" r="5"/>
+      <rect class="mut" x="350" y="96" width="56" height="8" rx="2"/><rect class="hullf" x="360" y="104" width="36" height="40" rx="3"/><rect class="mut" x="344" y="144" width="68" height="8" rx="2"/></svg>`;
+  }
+  if (room === 'vent') {
+    return `<svg viewBox="0 0 420 130" role="img" aria-label="A dark vent with something shiny"><rect class="ink" x="14" y="10" width="392" height="110" rx="10"/>
+      <rect class="mut" x="30" y="24" width="360" height="3"/><rect class="mut" x="30" y="104" width="360" height="3"/>${S.shine ? '' : '<path class="nowf" d="M210 56 L216 70 L230 76 L216 82 L210 96 L204 82 L190 76 L204 70 Z"/>'}</svg>`;
+  }
+  return `<svg viewBox="0 0 420 150" role="img" aria-label="Your ship on the launch pad"><rect class="ink" x="14" y="10" width="392" height="130" rx="10"/>
+    <circle class="nowf" cx="60" cy="40" r="2"/><circle class="nowf" cx="350" cy="30" r="2"/><circle class="nowf" cx="300" cy="90" r="2"/><circle class="nowf" cx="110" cy="100" r="2"/>
+    <path class="accf" d="M210 26 L236 80 L236 112 L184 112 L184 80 Z"/><circle class="panelf" cx="210" cy="74" r="10"/><path class="nowf" d="M192 112 L210 136 L228 112 Z"/></svg>`;
+}
+function rocks(r, c) {
+  const w = 420, cell = Math.min(38, 380 / c), h = r * cell + 16; let s = '';
+  for (let i = 0; i < r; i++) for (let j = 0; j < c; j++) {
+    const x = (w - c * cell) / 2 + j * cell + cell / 2, y = 8 + i * cell + cell / 2, k = (i * 7 + j * 3) % 4;
+    s += `<ellipse class="rockf" cx="${x}" cy="${y}" rx="${cell * (.34 + k * .02)}" ry="${cell * (.3 + (3 - k) * .02)}"/>`;
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${r} rows of ${c} rocks">${s}</svg>`;
+}
+function tanks(a, b) {
+  const t = (x, v, n) => `<rect class="hullf" x="${x}" y="14" width="70" height="110" rx="6"/><rect class="accf" x="${x + 5}" y="${119 - v}" width="60" height="${v}" rx="3"/><text x="${x + 35}" y="146" font-size="15" text-anchor="middle">Tank ${n}: ${v}</text>`;
+  return `<svg viewBox="0 0 420 156" role="img" aria-label="Tank A holds ${a}. Tank B holds ${b}.">${t(90, a, 'A')}${t(260, b, 'B')}<text x="210" y="76" font-size="30" text-anchor="middle">+</text></svg>`;
+}
+
+/* ---------- map, status, cards ---------- */
+function canEnter(r) { if (r === 'launch') return S.parts.includes('Navigation'); if (r === 'vent') return S.ventFound; return true; }
+function drawMap() {
+  document.querySelectorAll('.map .room').forEach(g => {
+    const r = g.dataset.room, seen = S.visited.includes(r), next = !widget && !S.ended && ROOMS[S.room].exits.includes(r) && (r !== 'vent' || S.ventFound);
+    g.toggleAttribute('hidden', r === 'vent' && !S.ventFound);
+    g.classList.toggle('now', r === S.room); g.classList.toggle('visited', seen && r !== S.room);
+    g.classList.toggle('go', next); g.classList.toggle('locked', r === 'launch' && !canEnter(r));
+    g.querySelector('text').textContent = seen ? ROOMS[r].label : (r === 'launch' && !canEnter(r) ? 'Locked' : '?');
+    g.setAttribute('aria-label', (seen ? ROOMS[r].name : 'A room you have not seen') + (next ? '. Tap to go there.' : ''));
+  });
+  $('pipe-vent').toggleAttribute('hidden', !S.ventFound);
+  $('shipname').textContent = S.ship ? 'Your ship: ' + S.ship : '';
+  $('status').innerHTML = PARTS.map(p => `<span class="chip${S.parts.includes(p) ? ' on' : ''}">${S.parts.includes(p) ? '✓ ' : ''}${p}</span>`).join('');
+}
+function drawCards(fresh) {
+  const row = S.cards.map(c => `<div class="card ${c.r}"><span class="r">${c.r}</span><span class="n">${esc(c.n)}</span></div>`).join('');
+  $('cards').innerHTML = `<h3>Your cards: ${S.cards.length}</h3>` +
+    (fresh ? `<div class="newcard"><div class="card ${fresh.r}"><span class="r">${fresh.r}</span><span class="n">${esc(fresh.n)}</span></div><p><b>New card!</b> ${fresh.r === 'gold' ? 'Gold. The best kind.' : 'Luck picked this one.'}</p></div>` : '') +
+    (row ? `<div class="cardrow">${row}</div>` : `<p class="note">No cards yet. Finish a mini quest, a mini battle or a project.</p>`) +
+    `<p class="note">Sample cards and sample odds: 70 common, 25 rare, 5 gold. A project always gives gold.</p>`;
+}
+function drawCard(force) {
+  let r = force;
+  if (!r) { let x = rnd(100); for (const [k, w] of ODDS) { if (x < w) { r = k; break; } x -= w; } }
+  const c = { r, n: pick(DECK[r]) }; S.cards.push(c); save(); drawCards(c);
+}
+
+/* ---------- the scene ---------- */
+function say(text, you) { $('reply').innerHTML = (you ? `<span class="you">You: ${esc(you)}</span><br>` : '') + esc(text); }
+function drawScene() {
+  const R = ROOMS[S.room];
+  if (S.ended) return drawEnding();
+  $('scene').innerHTML = `<p class="eyebrow">You are in</p><h2>${R.name}</h2>
+    <div class="art">${art(S.room)}</div>
+    <div class="story">${R.text.map(t => `<p>${t}</p>`).join('')}</div>
+    <div class="things">${R.things.filter(t => !(t.id === 'shine' && S.shine)).map(t => `<button class="thing" type="button" data-thing="${t.id}">Look at ${t.label}</button>`).join('')}
+      ${S.room === 'launch' ? '<button class="btn" type="button" data-thing="launch">Launch the ship</button>' : ''}</div>
+    <div id="widget"></div>`;
+  $('scene').querySelectorAll('[data-thing]').forEach(b => b.onclick = () => touch(b.dataset.thing));
+  const ideas = { dock: ['look around', 'go to navigation', 'name my ship Comet'], shield: ['look at the panel', 'go to the dock'],
+    nav: ['use the fuel gauge', 'load the cargo'], vent: ['take the shiny thing', 'go back'], launch: ['launch'] }[S.room];
+  $('ideas').innerHTML = ideas.map(i => `<button class="idea" type="button">${i}</button>`).join('');
+  $('ideas').querySelectorAll('.idea').forEach(b => b.onclick = () => { $('cmd').value = b.textContent; act(b.textContent); });
+  drawMap();
+}
+function go(r) {
+  if (widget) return say('Finish this first. Or tap Leave.');
+  if (r === S.room) return say('You are here already.');
+  if (!ROOMS[S.room].exits.includes(r) || (r === 'vent' && !S.ventFound)) return say('You cannot get there from here. Look at the map.');
+  if (!canEnter(r)) return say('The Launch Bay door is locked. The ship needs its Navigation part.');
+  S.room = r; if (!S.visited.includes(r)) S.visited.push(r); save(); drawScene();
+  say(ROOMS[r].text[0]);
+  if (r === 'shield' && !S.battleSeen && !S.done.battle) { S.battleSeen = true; save(); say(startBattle(true)); }
+}
+function touch(id) {
+  if (widget) return say('Finish this first. Or tap Leave.');
+  const out = {
+    crates: 'Old scrap metal. Some crates are open. Cold air blows from the vent behind them.',
+    ship: S.ship ? `Your ship, the ${S.ship}. It needs new parts.` : 'Your ship. It has no name yet. It needs new parts.',
+    window: 'Stars, and rocks far away. They drift slowly.',
+    panel: () => S.done.battle ? 'The shield panel glows green.' : startBattle(false),
+    gauge: () => S.done.fuel ? 'The gauge is green. The tank is full.' : startFuel(),
+    scale: () => S.done.cargo ? 'The cargo is loaded. Exactly 30 tons.' : startCargo(),
+    shine: () => { S.shine = true; save(); drawScene(); drawCard(); return 'You pick it up. It is a lost star chip! You earn a card.'; },
+    launch: () => { S.ended = true; save(); drawScene(); return 'Three. Two. One. Lift off!'; }
+  }[id];
+  const t = typeof out === 'function' ? out() : out; if (t) say(t);
+}
+
+/* ---------- mini battle: Asteroid Field (multiplication) ---------- */
+function startBattle(surprise) {
+  widget = { kind: 'battle', hits: 0, need: 4, tries: 0 }; nextRocks();
+  return surprise ? 'A horn sounds. Rocks drift at the station! They come in rows.' : 'The panel wakes up. Rocks are coming!';
+}
+function nextRocks() {
+  const easy = widget.hits < 2; widget.r = 2 + rnd(4); widget.c = easy ? pick([2, 5, 10]) : 3 + rnd(7); widget.ans = widget.r * widget.c;
+  drawWidget(`<p class="eyebrow">Mini battle · your numbers are your own</p><h3>Asteroid Field</h3>
+    <div class="art" id="wart">${rocks(widget.r, widget.c)}</div>
+    <p class="q">${widget.r} rows. ${widget.c} rocks in each row. How many rocks?</p>`, 'rocks');
+}
+/* ---------- mini quest: Top Up the Tank (2-digit addition) ---------- */
+function startFuel() { widget = { kind: 'fuel', hits: 0, need: 3, tries: 0 }; nextFuel(); return 'The gauge is stuck. Add the two tanks by hand.'; }
+function nextFuel() {
+  let a, b; const regroup = widget.hits > 0;
+  do { a = 11 + rnd(60); b = 11 + rnd(60); } while (a + b > 99 || ((a % 10 + b % 10 >= 10) !== regroup));
+  widget.ans = a + b;
+  drawWidget(`<p class="eyebrow">Mini quest · your numbers are your own</p><h3>Top Up the Tank</h3>
+    <div class="art">${tanks(a, b)}</div><p class="q">Tank A has ${a}. Tank B has ${b}. How much fuel in all?</p>`, 'fuel');
+}
+function drawWidget(head, unit) {
+  const pips = Array.from({ length: widget.need }, (_, i) => `<span class="pip${i < widget.hits ? ' on' : ''}"></span>`).join('');
+  $('widget').innerHTML = `<div class="widget">${head}
+    <div class="field"><label for="ans" class="note">Your answer</label><input id="ans" inputmode="numeric" autocomplete="off"><span class="note">${unit}</span>
+      <button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div>
+    <div class="meter">${pips}<span>${widget.hits} of ${widget.need}</span></div><div class="msg" id="msg" role="status"></div></div>`;
+  const inp = $('ans'); inp.oninput = () => inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 4);
+  inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); check(); } };
+  $('try').onclick = check; $('leave').onclick = leave; drawMap(); inp.focus({ preventScroll: true });
+}
+function check() {
+  const v = $('ans').value.trim(), m = $('msg'); if (v === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; }
+  widget.tries++;
+  if (parseInt(v, 10) === widget.ans) {
+    widget.hits++;
+    if (widget.hits >= widget.need) return win();
+    widget.kind === 'battle' ? nextRocks() : nextFuel();
+    $('msg').className = 'msg good'; $('msg').textContent = widget.kind === 'battle' ? 'Zap! One wave is gone.' : 'Click. One light turns green.';
+  } else {
+    const hint = widget.kind === 'battle' ? 'Not yet. Count one row. Then count the rows.' : 'Not yet. Add the tens. Then add the ones.';
+    m.className = 'msg bad'; m.textContent = hint; $('ans').value = ''; $('ans').classList.remove('shake'); void $('ans').offsetWidth; $('ans').classList.add('shake');
+  }
+}
+function win() {
+  const w = widget; widget = null; S.done[w.kind] = true;
+  S.log.push({ what: w.kind === 'battle' ? 'Asteroid Field' : 'Top Up the Tank', skill: w.kind === 'battle' ? 'Multiply' : 'Add 2-digit numbers', tries: w.tries, need: w.need });
+  if (w.kind === 'battle' && !S.parts.includes('Shield')) S.parts.push('Shield');
+  save(); drawScene(); drawCard();
+  say(w.kind === 'battle' ? 'The rocks are gone. The shield glows green. You earn a card.' : 'The tank is full. The gauge turns green. You earn a card.');
+}
+function leave() { if (!widget) return; widget = null; $('widget').innerHTML = ''; drawMap(); say('You step back. You can try again later.'); }
+
+/* ---------- project: Cargo Load (conditions, checked by code) ---------- */
+function startCargo() {
+  widget = { kind: 'cargo', on: new Set(), tries: 0 };
+  $('widget').innerHTML = `<div class="widget"><p class="eyebrow">Project · in class you use real item cards</p><h3>Cargo Load</h3>
+    <p class="q">Load exactly 7 things. They must weigh exactly 30 tons.</p>
+    <div class="crates">${CARGO.map((c, i) => `<button class="crate" type="button" data-i="${i}" aria-pressed="false"><span>${c[0]}</span><b>${c[1]} t</b></button>`).join('')}</div>
+    <div class="scale"><span id="cnt">0 of 7 things</span><span id="tons">0 of 30 tons</span></div><div class="bar" id="bar"><span></span></div>
+    <div class="field"><button class="btn" type="button" id="try">Check the load</button><button class="btn quiet" type="button" id="leave">Leave</button></div>
+    <div class="msg" id="msg" role="status"></div></div>`;
+  $('widget').querySelectorAll('.crate').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i; widget.on.has(i) ? widget.on.delete(i) : widget.on.add(i); b.setAttribute('aria-pressed', widget.on.has(i));
+    const t = [...widget.on].reduce((s, k) => s + CARGO[k][1], 0);
+    $('cnt').textContent = `${widget.on.size} of 7 things`; $('tons').textContent = `${t} of 30 tons`;
+    $('bar').classList.toggle('over', t > 30); $('bar').firstElementChild.style.width = Math.min(100, t / 30 * 100) + '%'; $('msg').textContent = '';
+  });
+  $('try').onclick = checkCargo; $('leave').onclick = leave; drawMap();
+  return 'The scale lights up. Tap a crate to load it. Tap again to take it off.';
+}
+function checkCargo() {
+  const n = widget.on.size, t = [...widget.on].reduce((s, k) => s + CARGO[k][1], 0), m = $('msg'); widget.tries++;
+  const why = n < 7 ? 'You need more things. Load 7.' : n > 7 ? 'Too many things. Load only 7.' : t < 30 ? 'Too light. You need 30 tons.' : t > 30 ? 'Too heavy. You need 30 tons.' : '';
+  if (why) { m.className = 'msg bad'; m.textContent = why; return; }
+  const tries = widget.tries; widget = null; S.done.cargo = true; if (!S.parts.includes('Navigation')) S.parts.push('Navigation');
+  S.log.push({ what: 'Cargo Load', skill: 'Add to make 30', tries, need: 1 }); save(); drawScene(); drawCard('gold');
+  say('The scale beeps. 7 things, 30 tons. You earn the Navigation part and a gold card. The Launch Bay is open!');
+}
+
+/* ---------- ending and report ---------- */
+function drawEnding() {
+  const rows = S.log.map(l => `<tr><td>${l.what}</td><td>${l.skill}</td><td>${l.tries === l.need ? 'No mistakes ✓' : l.tries + ' tries'}</td></tr>`).join('');
+  $('scene').innerHTML = `<p class="eyebrow">End of the sketch</p><h2>${S.ship ? 'The ' + esc(S.ship) + ' lifts off' : 'Your ship lifts off'}</h2>
+    <div class="art">${art('launch')}</div>
+    <div class="story"><p>The doors open. The stars are close now.</p><p>Five galaxies wait for you.</p></div>
+    <h3>Your mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">Rooms found: ${S.visited.length} of 5. ${S.ventFound ? 'You found the secret room.' : 'One room is secret. Try typing new ideas in the dock.'}</p>
+    <div class="things"><button class="btn" type="button" id="again">Play again</button></div>`;
+  $('again').onclick = restart; $('ideas').innerHTML = ''; drawMap();
+}
+function restart() { widget = null; S = fresh(); save(); drawScene(); drawCards(); say('Your ship limps into the dock.'); }
+
+/* ---------- the typed line. On Marc's site this goes to the constrained AI. ---------- */
+function act(raw) {
+  const t = raw.toLowerCase().trim(); if (!t) return;
+  const has = (...w) => w.some(x => t.includes(x));
+  const reply = s => say(s, raw);
+  if (S.ended) return reply('Your ship is among the stars. Tap Play again to start over.');
+  if (t === 'leave' || t === 'go back' && widget) { leave(); return; }
+  if (has('help')) return reply('Try: look around. go to navigation. look at the crates. name my ship Comet. Or try your own idea.');
+  let m = t.match(/(?:name|call) (?:my |the )?ship (?:the )?(.+)/);
+  if (m) { S.ship = m[1].replace(/[^a-z0-9 ]/g, '').trim().slice(0, 14).replace(/\b\w/g, c => c.toUpperCase()); save(); drawMap(); return reply(S.ship ? `You paint the name on the hull: ${S.ship}. It will stay there.` : 'Type a name for your ship.'); }
+  if (S.room === 'dock' && has('vent')) {
+    if (S.ventFound) { go('vent'); return; }
+    S.ventFound = true; save(); drawMap(); return reply('You pull the vent cover. It swings open! A dark tunnel goes down. A new room is on your map.');
+  }
+  if (has('go ', 'walk', 'enter', 'run to', 'climb', 'crawl', 'back')) {
+    const r = has('nav') ? 'nav' : has('shield') ? 'shield' : has('launch') ? 'launch' : has('vent', 'tunnel') ? 'vent' : has('dock', 'back') ? 'dock' : null;
+    if (r) { $('reply').innerHTML = `<span class="you">You: ${esc(raw)}</span>`; const before = S.room; go(r); if (S.room !== before) return; return; }
+    return reply('Go where? Look at the map.');
+  }
+  if (S.room === 'launch' && has('launch', 'fly', 'take off', 'blast')) { touch('launch'); return; }
+  if (has('load', 'cargo', 'scale') && S.room === 'nav') { touch('scale'); return; }
+  if (has('gauge', 'fuel', 'tank') && S.room === 'nav') { touch('gauge'); return; }
+  if (has('panel', 'shield', 'fight', 'battle') && S.room === 'shield') { touch('panel'); return; }
+  if (has('shin', 'chip', 'take', 'pick') && S.room === 'vent' && !S.shine) { touch('shine'); return; }
+  if (has('crate', 'box') && S.room === 'dock') return reply(has('open', 'move', 'push', 'behind', 'under') ? 'You push a crate. Cold air blows on your hand. It comes from the vent.' : 'Old scrap metal. Some crates are open. Cold air blows from the vent behind them.');
+  if (has('window', 'star') && S.room === 'shield') return reply('Stars, and rocks far away. They drift slowly.');
+  if (has('ship') && S.room === 'dock') { touch('ship'); return; }
+  if (has('look', 'where')) return reply(ROOMS[S.room].text.join(' '));
+  if (has('card')) return reply(`You have ${S.cards.length} cards. They are at the bottom of the page.`);
+  if (has('dig')) return reply('You dig at the floor. Clang! It is metal. Planets have ground you can dig.');
+  if (has('jump', 'dance', 'spin', 'sing')) return reply('You float up a little. The station has low gravity. That was fun.');
+  if (has('hello', 'hi ', 'talk')) return reply('No one answers. The station is quiet. For now.');
+  reply('Nothing happens. In the real world, the station answers anything you type. This sketch knows only a few words.');
+}
+
+/* ---------- start ---------- */
+S = load();
+$('say').addEventListener('submit', e => { e.preventDefault(); const v = $('cmd').value; $('cmd').value = ''; act(v); });
+document.querySelectorAll('.map .room').forEach(g => { const f = () => { if (g.classList.contains('go')) go(g.dataset.room); else if (g.dataset.room === 'launch' && !canEnter('launch')) say('The Launch Bay door is locked. The ship needs its Navigation part.'); };
+  g.addEventListener('click', f); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f(); } }); });
+$('reset').onclick = restart;
+drawScene(); drawCards(); say(S.ended ? 'Your ship is among the stars.' : ROOMS[S.room].text[0]);
+</script>
