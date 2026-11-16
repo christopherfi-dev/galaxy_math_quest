@@ -1,0 +1,181 @@
+# GMQ — the KIS Station: 15 tasks, guide and answer key — v2 — 2026-11-16
+
+**Stage:** built in the sketch. Everything can be changed.
+**Sketch:** https://claude.ai/artifact/PrDvY1EZX9tYh1sDCHJ4Xe
+**Replaces:** `GMQ_Station_Guide_v1_2026-11-16.md`, which had one task for each ship part.
+**Tags:** [Source] = from your material or your words. [Proposal] = my design.
+
+---
+
+## 1. What you said [Source: Marc, 2026-11-16]
+
+- **Three tasks for each ship part.** Students get a card for each one.
+- By the end of the station they should have about **15 cards**. Then they can battle. That is the point of these first quests.
+- Make the station bigger if needed. Use your own challenges as the source.
+- **Some tasks happen in real life,** like the throwing one. Students come to you, do it, and type a code you give them.
+
+---
+
+## 2. The 15 tasks
+
+The names and numbers are your own. [Source]
+
+| Your task | Where | On screen or real life | What the student does |
+|---|---|---|---|
+| **Engine Core: counting** | Engine Bay | | |
+| 1-1 Alien Artifacts | cage | On screen | Count the artifacts spilled on the floor. Set four dials. |
+| 1-2 Alien Species | scanner | On screen | Count four kinds of alien. Tap to build a bar graph. |
+| 1-3 Star Map | easel | **Real life** | Paint a star map. You draw a path. They count the stars on it. |
+| **Navigation System: add and subtract** | Navigation Bay | | |
+| 2-1 Fuel Calculation | fuel gauge | On screen | Three legs of a trip. Subtract the fuel for each. The fuel left carries to the next leg. |
+| 2-2 Coordinate Plotting | star map table | On screen | Small sums say where to hop. Tap the point. Three hops find the lost key part. |
+| 2-3 Cargo Load | cargo scale | On screen | Tap 7 crates on to the scale to make 30 tons. |
+| **Shield Generator: multiply and divide** | Shield Bay | | |
+| 3-1 Asteroid Field | shield panel | On screen | Rocks drift in rows outside the windows. How many? |
+| 3-2 Energy Grid | grid on the wall | On screen | Equal groups of cells. A rock breaks a section. Share them again. |
+| 3-3 Shield Calibration | token mat | **Real life** | Share real tokens equally over 5 sections of a mat. |
+| **Weapon System: odd and even** | Weapons Bay | | |
+| 4-1 Weapons Coding | cannon | On screen | Tap every odd drone, then every even one. |
+| 4-2 Ammo Count | racks on the wall | On screen | Five racks of counters. Add a spare so every rack is even. |
+| 4-3 Target Practice | target wall | **Real life** | Throw at numbers 1 to 9. Reach an even total from 32 to 40. |
+| **Power Module: place value** | Power Bay | | |
+| 5-1 Circuit Connection | circuit board | On screen | A number and nine wires. Connect the three that match. |
+| 5-2 Power Allocation | block bench | **Real life** | Build four numbers with base-ten blocks, in pairs. |
+| 5-3 Emergency Power | power cells | On screen | Read base-ten blocks. One reading has no tens. |
+
+**11 on screen, 4 in real life.** Which four is my choice [Proposal]. You named the throwing one. I added the three that were already hands-on in your files: paint, tokens on a mat, and blocks.
+
+### How a student sees them
+
+- A marker floats over each task. **Amber !** means to do. **Purple !** means real life. **Green tick** means done.
+- A "Your ship" panel under the game lists all 15, three to a part.
+- A part is fitted when its three tasks are done.
+- The ship cannot launch until all five parts are fitted.
+
+---
+
+## 3. Real-life tasks and your codes
+
+**How it works:**
+1. The student uses the easel, the mat, the wall or the bench.
+2. The screen shows the steps and says: "When you pass, your teacher gives you a code."
+3. They do the task with you.
+4. You say the code. They type it. They get the card.
+
+**The codes in the sketch** [Proposal]. They are not shown anywhere in the game.
+
+| Task | Code |
+|---|---|
+| 1-3 Star Map | **314** |
+| 3-3 Shield Calibration | **805** |
+| 4-3 Target Practice | **936** |
+| 5-2 Power Allocation | **446** |
+
+**The steps the student reads** come from your own tasks. [Source]
+- **Star Map:** paint on dark paper, five kinds of stars, the brown dwarf mostly orange, the teacher draws a path, count the stars on it.
+- **Target Practice:** throw at 1 to 9, write each hit, keep a running total, stop at an even total from 32 to 40.
+- **Power Allocation:** your site version. Engine 1,237, Navigation 1,193, Shield 1,097, Weapons 933, with only 2 thousand-blocks.
+- **Shield Calibration:** share tokens equally over 5 sections.
+  - [Proposal] Each student gets their own number of tokens, from 30 to 50. Your files had three totals: 80, 85 and 60. 80 shared by 5 is 16, which is past the times tables.
+
+### Three ways to give a code [Proposal]
+
+| Way | Cost | Weakness |
+|---|---|---|
+| **A. One fixed code for each task.** This is what the sketch does. | Nothing to run. You just say it. | Students can tell each other the code. |
+| **B. You change the code when you like.** | Needs your server and a small teacher page. | One more thing for you to do. |
+| **C. No code. You tap "passed" on your own screen.** | Needs your server and student logins. | You need your device in your hand. |
+
+A works today. B or C would come with the real build.
+
+---
+
+## 4. Cards: 15, plus a few for explorers
+
+- **Each task gives exactly one card.** 15 tasks, 15 cards. [Source: your rule]
+- The card is drawn by chance: common, rare or gold, at the odds you have not yet settled. Cargo Load used to force a gold card. It no longer does.
+- **Six secrets also give a card:** the vent, the robot, the bolt, the old chest, the rusty drone and the loose plate. So a student who explores everything ends with **21**.
+- That is my design from earlier, not yours. **If you want exactly 15, I will take the six away** and secrets will count only as secrets.
+
+---
+
+## 5. What I kept from your tasks, and what I changed
+
+| Task | Kept [Source] | Changed [Proposal] |
+|---|---|---|
+| 1-1 | Four colours make a code. The lock has a temper. | Each student's counts differ, and all four counts are different. Yours had 9 red and 9 yellow. Each colour has its own shape. |
+| 1-2 | Count kinds of alien and make a bar graph. | Four kinds and up to 8 of each, not 100 aliens. The graph is built by tapping. |
+| 2-1 | Fuel, stops, subtract each leg. Stops A, B, D, F are from your map. | One route of three legs, not five routes to compare. |
+| 2-2 | Sums tell you where to hop on a 6 by 6 grid. "There is nothing here!" and "You have found the Navigation System key part!" are your lines. | Three hops. Each student gets their own. |
+| 3-2 | Equal groups, then sharing. | Numbers stay inside the 10 by 10 tables. Yours used 12 × 5 and 80 ÷ 5. The second question uses the first answer. |
+| 4-1 | Sorting odd from even. | Drones, not ten cards of sequences. The drones come from your 4-3 text. |
+| 4-2 | Five colours of counters. Make each count even. | No bar graph here. 1-2 already has one. |
+| 5-1 | A number and nine wires, three right. | Two boards, each with the student's own number. |
+| 5-3 | An asteroid strike and emergency power. | Reading blocks, not rebuilding them. Yours needed 3,810 ÷ 2. |
+
+---
+
+## 6. Things to find and do
+
+A thing found in one room often opens something in another.
+
+| Room | Things | Secrets |
+|---|---|---|
+| Arrival Dock | ship, crates, loose crate, sign, vent, locker | wrench in the hatch · gap behind the crate · star chip in the vent · magnet in the locker |
+| Crawl Tunnel and Old Store | old chest | the hidden room · the captain's badge |
+| Shield Bay | shield panel, energy grid, token mat, window, grate, robot, poster | key card under the grate · fix the robot · switch behind the poster |
+| Engine Bay | engine core, artifacts, scanner, easel, valve, toolbox | turn the valve to read a note · oil can in the toolbox |
+| Weapons Bay | cannon, drones, ammo racks, target wall, ammo box, rusty drone | fuse in the ammo box · oil the rusty drone and it flies |
+| Navigation Bay | star map table, fuel gauge, cargo scale, drawer, chair | star chart in the drawer · bolt under the chair |
+| Power Bay | circuit board, block bench, power cells, fuse box, battery, loose plate | the fuse brings the lights on · star chip under the plate |
+| Launch Bay | launch console | set the course |
+
+---
+
+## 7. Answer key: one way through
+
+1. `open hatch` · `read sign` · `look crates` · type the number of crates
+2. `push crate` · `use wrench on vent` · `go gap` · `east` · `open chest` · `go to dock`
+3. `go to shield` (the battle starts) · `use grid` · `use mat` and code **805**
+4. `use magnet on grate` · `fix robot` · `push poster`
+5. `go to engine` · `push valve` · `open toolbox` · count, then `open cage` · `use scanner` · `use easel` and code **314**
+6. `go to weapons` · `open ammo` · `use oil on rusty drone` · `use cannon` · `use racks` · `use wall` and code **936**
+7. `go to navigation` · `use card on drawer` · `push chair` · `take bolt` · `use gauge` · `use map` · `use scale`
+8. `go to power` · `use fuse on fusebox` · `open plate` · `use board` · `use bench` and code **446** · `use cells`
+9. `go to launch` · `use chart on console` · `launch`
+
+Stuck at any point: tap **Hint**. It names the next task.
+
+---
+
+## 8. How it was tested
+
+`checks/station_playthrough_test.js` plays the whole station at iPad size and phone size.
+- All 15 tasks, 5 parts, 18 secrets, then launch.
+- It works each answer out from what is on the screen. It counts the aliens, counters and blocks as they are drawn.
+- For each real-life task it tries a wrong code first, then the right one.
+- It checks the fuel carries from one leg to the next.
+
+**Not tested:** real children, a real iPad, and how long 15 tasks take. My guess is three to five lessons. That is a guess.
+
+---
+
+## 9. What could prove this wrong
+
+| Claim | Test |
+|---|---|
+| 15 tasks is the right length before battles | Time five students. Note where they slow down. |
+| Students will come and find you for a real-life task | Watch whether they skip the purple markers. |
+| A fixed code is good enough | See how fast a code spreads round the room. |
+| Small phones are usable | Students use iPads. Try one phone anyway. |
+
+---
+
+## 10. Decisions for you
+
+1. **Which tasks are real life?** I chose 1-3, 3-3, 4-3 and 5-2. Any task can be switched.
+2. **Codes:** fixed for now (A). For the real build, B or C?
+3. **Cards:** exactly 15, or 15 plus 6 for secrets?
+4. **Shield Calibration:** is 30 to 50 tokens right, or do you want your 80?
+5. **Target Practice:** do 32 and 40 count? Your files do not say.
+6. **The robot** still asks 12 ship-check questions if you talk to it. With 15 tasks, it may not be needed.

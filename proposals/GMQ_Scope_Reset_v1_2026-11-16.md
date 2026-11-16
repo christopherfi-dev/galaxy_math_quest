@@ -1,7 +1,7 @@
 # GMQ — scope reset: your plan, not every skill — v1 — 2026-11-16
 
 **Stage:** a correction of course, after your message. Part is built. Part is options.
-**Later the same day:** step 1 of section 5 is built. See `proposals/GMQ_Station_Guide_v1_2026-11-16.md`.
+**Later the same day:** step 1 of section 5 is built. See `proposals/GMQ_Station_Guide_v2_2026-11-16.md`.
 **Tags:** [Source] = from your material or your words. [Proposal] = my suggestion.
 
 ---

@@ -1,18 +1,21 @@
 // Plays the whole KIS Station in prototypes/kis_station_sketch.html, on an iPad and on a phone.   [Proposal]
 //
-// It types the short commands a student would type, and taps the drones on the canvas with real taps.
-// It earns all five ship parts, finds all 18 station secrets, and launches.
+// It types the short commands a student would type, and taps the pictures with real taps.
+// It does all 15 station tasks (three for each ship part), finds all 18 station secrets, and launches.
+// Four tasks are real-life ones: the test types the teacher's code, after first trying a wrong one.
 // Along the way it checks the things a stuck child needs:
 //   - a number typed on its own opens the locker
 //   - on a phone the camera follows, so the locker and every other thing can be seen
 //   - the Hint always names a next step
 //   - the ship will not launch with parts missing
 //   - a rude ship name is refused
+// Answers are worked out from what is on the screen (the question, the picture), not from the game's own answer.
 //
 // Run:  node checks/station_playthrough_test.js [folder for screenshots]
 // Needs Node with Playwright and Chromium.
 const { chromium } = require('playwright');
 const path = require('path');
+const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the teacher's codes. They are in the station guide, not in the page.
 (async () => {
   const out = process.argv[2], b = await chromium.launch(), errs = [], bad = [];
   for (const [name, w, h] of [['ipad', 820, 1180], ['phone', 390, 760]]) {
@@ -26,9 +29,12 @@ const path = require('path');
     const expect = (got, re, what) => { if (!re.test(got)) bad.push(`${name}: ${what}: got "${got}"`); };
     const shot = async n => { if (out) await p.screenshot({ path: path.join(out, `st_${name}_${n}.png`) }); };
     const onScreen = id => p.evaluate(id => { const t = objTiles(id)[0], X = sx(t[0]) + ts / 2, Y = sy(t[1]) + ts / 2; return X > 4 && X < vw - 4 && Y > 4 && Y < vh - 4; }, id);
-    const numberTask = async (re, f, n) => { for (let i = 0; i < n; i++) { const m = (await p.textContent('#toy .q')).match(re); await p.fill('#ans', String(f(m))); await p.click('#try'); await p.waitForTimeout(120); } };
+    const q = async () => (await p.textContent('#toy .q')).trim();
+    const type = async v => { await p.fill('#ans', String(v)); await p.click('#try'); await p.waitForTimeout(130); };
+    const pic = async sel => { const el = p.locator('#pic ' + sel); await el.scrollIntoViewIfNeeded(); await el.tap(); };
+    const slip = async (cmd, id) => { await say(cmd); expect(await p.textContent('#toy .eyebrow'), /real-life task/, id + ' is a real-life task'); await type(111); expect(await p.textContent('#msg'), /not the code/, id + ' wrong code'); await type(CODES[id]); expect(await last(), /passed/, id + ' with the code'); };
 
-    // the dock: the sign, the locker, a number typed on its own
+    // ---- Arrival Dock: the sign, the locker, a number typed on its own
     expect(await say('hint'), /ship|hatch/i, 'first hint');
     expect(await say('name ship shit'), /will not stick/, 'rude name');
     expect(await say('open hatch'), /wrench/i, 'hatch');
@@ -39,45 +45,67 @@ const path = require('path');
     await shot('1_locker');
     await say('push crate'); await say('use wrench on vent'); await say('go gap'); await say('east'); expect(await say('open chest'), /badge/i, 'chest'); await say('go to dock');
     expect(await say('launch'), /Launch Bay/, 'launch from the dock');
-    // Shield Bay: the battle starts as you walk in
-    await say('go to shield'); await p.waitForTimeout(300); await numberTask(/(\d+) rows\. (\d+) rocks/, m => m[1] * m[2], 4); expect(await last(), /Shield part/, 'battle');
+    // ---- Shield Bay: 3-1 Asteroid Field, 3-2 Energy Grid, 3-3 Shield Calibration (real life)
+    await say('go to shield'); await p.waitForTimeout(300);
+    for (let i = 0; i < 4; i++) { const r = (await q()).match(/(\d+) rows\. (\d+) rocks/); await type(r[1] * r[2]); } expect(await last(), /1 of 3 Shield tasks/, 'asteroid field');
     await say('use magnet on grate'); expect(await say('fix robot'), /wakes/i, 'robot'); await say('push poster');
-    // Engine Bay: count what you find
-    await say('go to engine'); await p.waitForTimeout(200); await shot('2_engine');
+    await say('use grid'); let t = await q(), g = t.match(/(\d+) sections\. Each section holds (\d+)/); await type(g[1] * g[2]); t = await q(); g = t.match(/Share the (\d+) cells equally over (\d+)/); await type(g[1] / g[2]);
+    t = await q(); g = t.match(/held (\d+) cells\. Now each holds (\d+)/); await shot('2_grid'); await type(g[2] - g[1]); expect(await last(), /2 of 3 Shield tasks/, 'energy grid');
+    await slip('use mat', 'calib'); expect(await last(), /Shield part is fitted/, 'shield part after three tasks');
+    // ---- Engine Bay: 1-1 Alien Artifacts, 1-2 Alien Species, 1-3 Star Map (real life)
+    await say('go to engine'); await p.waitForTimeout(200); await shot('3_engine');
     expect(await say('look artifacts'), /Count each kind/, 'artifacts'); expect(await say('push valve'), /FUSES/, 'valve'); expect(await say('open toolbox'), /oil/i, 'toolbox');
     await say('open cage'); const counts = await p.evaluate(() => GEMC.map((_, c) => S.gems.filter(g => g[2] === c).length));
     if (new Set(counts).size !== 4) bad.push(name + ': artifact counts are not all different: ' + counts);
     for (let i = 0; i < 4; i++) await p.fill('#g' + i, String(i === 2 ? (counts[i] % 9) + 1 : counts[i])); await p.click('#try'); expect(await p.textContent('#msg'), /3 of 4/, 'wrong artifact count');
     await p.click('#leave'); await say('open cage'); if ((await p.inputValue('#g0')) !== String(counts[0])) bad.push(name + ': the dials forgot the numbers');
-    await p.fill('#g2', String(counts[2])); await shot('3_core_lock'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Engine Core part/, 'engine core');
-    // Weapons Bay: odd and even, by tapping drones on the canvas
+    await p.fill('#g2', String(counts[2])); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Engine Core hums/, 'alien artifacts');
+    await say('use scanner'); const kinds = await p.evaluate(() => { const svg = document.querySelector('#toy .pic svg').innerHTML; return COLS.slice(0, 4).map(c => (svg.match(new RegExp(`fill="${c}" stroke="#0e1626"`, 'g')) || []).length); });   // count the aliens as drawn
+    await pic(`[data-t="b:0,${kinds[0]}"]`); await p.click('#try'); expect(await p.textContent('#msg'), /1 of 4 bars/, 'graph with one bar');
+    for (let i = 1; i < 4; i++) await pic(`[data-t="b:${i},${kinds[i]}"]`); await shot('4_species'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /saves your graph/, 'alien species');
+    await slip('use easel', 'starmap'); expect(await last(), /Engine Core part is fitted/, 'engine core part');
+    // ---- Weapons Bay: 4-1 Weapons Coding (drones), 4-2 Ammo Count, 4-3 Target Practice (real life)
     await say('go to weapons'); await p.waitForTimeout(200); expect(await say('open ammo'), /fuse/i, 'ammo box'); expect(await say('use oil on rusty drone'), /lifts off/, 'rusty drone');
     await say('use cannon'); await p.waitForTimeout(1500);
     for (let round = 0; round < 2; round++) {
       const ds = await p.evaluate(() => { const r = cv.getBoundingClientRect(); return widget.d.map((d, i) => ({ n: d.n, want: (d.n % 2 === 1) === (widget.want === 'odd'), x: r.left + sx(DSLOT[i][0]) + ts / 2, y: r.top + sy(DSLOT[i][1]) + ts * .42 })); });
       if (ds.some(d => d.x < 2 || d.x > w - 2)) bad.push(name + ': a drone is off the screen');
-      if (round === 0) { await shot('4_drones'); const no = ds.find(d => !d.want); await p.touchscreen.tap(no.x, no.y); await p.waitForTimeout(80); expect(await p.textContent('#msg'), /will not fire/, 'tapping a wrong drone'); }
+      if (round === 0) { await shot('5_drones'); const no = ds.find(d => !d.want); await p.touchscreen.tap(no.x, no.y); await p.waitForTimeout(80); expect(await p.textContent('#msg'), /will not fire/, 'tapping a wrong drone'); }
       for (const d of ds.filter(d => d.want)) { await p.touchscreen.tap(d.x, d.y); await p.waitForTimeout(90); }
     }
-    await p.waitForTimeout(150); expect(await last(), /Weapons part/, 'target practice');
-    // Navigation Bay: the cargo, and the door behind it
+    await p.waitForTimeout(150); expect(await last(), /cannon light turns green/, 'weapons coding');
+    await say('use racks'); const racks = await p.evaluate(() => { const svg = $('pic').innerHTML; return RACKC.map(c => (svg.match(new RegExp(`fill="${c[1]}"`, 'g')) || []).length); });   // count the counters as drawn
+    await p.click('#try'); expect(await p.textContent('#msg'), /That is odd/, 'racks left odd');
+    for (let i = 0; i < 5; i++) if (racks[i] % 2) await pic(`[data-r="${i}"]`); await shot('6_racks'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Every rack is even/, 'ammo count');
+    await slip('use wall', 'target'); expect(await last(), /Weapons part is fitted/, 'weapons part');
+    // ---- Navigation Bay: 2-1 Fuel Calculation, 2-2 Coordinate Plotting, 2-3 Cargo Load
     await say('go to navigation'); expect(await say('go to power'), /cargo pile/, 'power bay before the cargo');
     await say('use card on drawer'); await say('push chair'); await say('take bolt');
-    await say('use scale'); for (const i of [1, 3, 2, 4, 0, 9, 6]) await p.evaluate(i => cargoToggle(i), i); await p.click('#try'); await p.waitForTimeout(200); expect(await last(), /Navigation part/, 'cargo');
-    // Power Bay: place value, and the lights
-    expect(await say('go to power'), /Power Bay/, 'power bay after the cargo'); await p.waitForTimeout(200); await shot('5_power_dark');
+    await say('use gauge'); let fuel = null; for (let i = 0; i < 3; i++) { const f = (await q()).match(/have (\d+) units of fuel\. The leg to stop \w uses (\d+)/); if (fuel !== null && +f[1] !== fuel) bad.push(name + ': the fuel did not carry forward'); fuel = f[1] - f[2]; if (i === 1) await shot('7_fuel'); await type(fuel); }
+    expect(await last(), /fuel to spare/, 'fuel calculation');
+    await say('use map'); for (let i = 0; i < 3; i++) { const c = (await q()).match(/along (\d+) \+ (\d+)\. Then go up (\d+) − (\d+)/), x = +c[1] + +c[2], y = c[3] - c[4];
+      if (i === 0) { await pic(`[data-t="c:${y},${x}"]`); await p.click('#try'); expect(await p.textContent('#msg'), /nothing here/, 'a wrong hop'); }
+      await pic(`[data-t="c:${x},${y}"]`); if (i === 2) await shot('8_hop'); await p.click('#try'); await p.waitForTimeout(150); }
+    expect(await last(), /key part/, 'coordinate plotting');
+    await say('use scale'); for (const i of [1, 3, 2, 4, 0, 9, 6]) await p.evaluate(i => cargoToggle(i), i); await p.click('#try'); await p.waitForTimeout(200); expect(await last(), /Navigation part is fitted.*Launch Bay door/, 'cargo and the navigation part');
+    // ---- Power Bay: 5-1 Circuit Connection, 5-2 Power Allocation (real life), 5-3 Emergency Power
+    expect(await say('go to power'), /Power Bay/, 'power bay after the cargo'); await p.waitForTimeout(200);
     expect(await say('use fuse on fusebox'), /lights come on/, 'fuse box'); expect(await say('open plate'), /star chip/, 'loose plate');
-    expect(await say('hint'), /circuit board/, 'hint for the last part');
+    expect(await say('launch'), /Launch Bay/, 'launch from the wrong room'); expect(await say('hint'), /circuit board/, 'hint for the next task');
     await say('use board');
-    for (let round = 0; round < 2; round++) { const n = await p.evaluate(() => widget.n), want = [`${Math.floor(n / 100)} hundred`, `${Math.floor(n / 10) % 10} ten`, `${n % 10} one`];
+    for (let round = 0; round < 2; round++) { const n = +(await q()).match(/shows (\d+)/)[1], want = [`${Math.floor(n / 100)} hundred`, `${Math.floor(n / 10) % 10} ten`, `${n % 10} one`];
       if (round === 0) { await p.click('#toy .wire >> nth=0'); await p.click('#try'); expect(await p.textContent('#msg'), /Connect 3/, 'one wire only'); await p.click('#toy .wire >> nth=0'); }
-      for (const t of want) await p.locator('#toy .wire', { hasText: new RegExp('^' + t + 's?$') }).click(); if (round === 0) await shot('6_board'); await p.click('#try'); await p.waitForTimeout(150); }
-    expect(await last(), /Power part.*all five parts/, 'circuit board and the whole ship');
-    // launch: needs a course
-    await say('go to launch'); expect(await say('launch'), /No course/, 'launch without a course'); await say('use chart on console'); expect(await say('launch'), /Lift off/, 'launch'); await p.waitForTimeout(300); await shot('7_space');
-    const st = await p.evaluate(() => ({ parts: S.parts.length, secrets: S.secrets.length, mode: S.mode, rooms: S.seen.length, side: document.documentElement.scrollWidth > innerWidth + 1 }));
-    if (st.parts !== 5 || st.secrets !== 18 || st.mode !== 'space' || st.rooms !== 9 || st.side) bad.push(name + ': end state ' + JSON.stringify(st));
-    console.log(`${name}: ${st.parts} of 5 parts, ${st.secrets} of 18 station secrets, ${st.rooms} rooms seen, launched: ${st.mode === 'space'}`);
+      for (const t of want) await p.locator('#toy .wire', { hasText: new RegExp('^' + t + 's?$') }).click(); await p.click('#try'); await p.waitForTimeout(150); }
+    expect(await last(), /1 of 3 Power tasks/, 'circuit connection');
+    await slip('use bench', 'alloc');
+    await say('use cells'); for (let i = 0; i < 3; i++) { const n = await p.evaluate(() => { const svg = document.querySelector('#toy .art svg').innerHTML, c = re => (svg.match(re) || []).length; return c(/width="40" height="40"/g) * 100 + c(/width="5" height="40"/g) * 10 + c(/width="6" height="6"/g); });   // read the blocks as drawn
+      if (i === 1) { await shot('9_blocks'); if (Math.floor(n / 10) % 10 !== 0) bad.push(name + ': the second reading should have no tens'); } await type(n); }
+    expect(await last(), /Power part is fitted.*all five parts/, 'emergency power and the whole ship');
+    // ---- launch: needs a course
+    await say('go to launch'); expect(await say('launch'), /No course/, 'launch without a course'); await say('use chart on console'); expect(await say('launch'), /Lift off/, 'launch'); await p.waitForTimeout(300);
+    const st = await p.evaluate(() => ({ parts: S.parts.length, tasks: tasksDone(), cards: S.cards.length, secrets: S.secrets.length, mode: S.mode, rooms: S.seen.length, side: document.documentElement.scrollWidth > innerWidth + 1, box: $('partsbox').innerText.includes('5 of 5 parts') }));
+    if (st.parts !== 5 || st.tasks !== 15 || st.cards < 15 || st.secrets !== 18 || st.mode !== 'space' || st.rooms !== 9 || st.side || !st.box) bad.push(name + ': end state ' + JSON.stringify(st));
+    console.log(`${name}: ${st.tasks} of 15 tasks, ${st.parts} of 5 parts, ${st.cards} cards (15 from tasks, ${st.cards - 15} from secrets), ${st.secrets} of 18 station secrets, launched: ${st.mode === 'space'}`);
     await ctx.close();
   }
   for (const t of bad) console.log('  PROBLEM', t);
