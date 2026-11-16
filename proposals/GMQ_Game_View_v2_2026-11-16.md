@@ -2,6 +2,7 @@
 
 **Stage:** proposal, with a playable sketch. Nothing real is built.
 **Sketch:** https://claude.ai/artifact/PrDvY1EZX9tYh1sDCHJ4Xe (file: `prototypes/kis_station_sketch.html`)
+**Updated:** the sketch now continues after launch with a galaxy map and Planet Voltara (3 more secrets, 15 in all). See `GMQ_Floor_to_Ceiling_v1_2026-11-16.md`.
 **Replaces:** §5 and §9 of `GMQ_Rethink_Scene_World_v1_2026-11-16.md`. The rest of that file still stands.
 **Tags:** [Source] = from your material or your words. [Proposal] = my suggestion.
 
