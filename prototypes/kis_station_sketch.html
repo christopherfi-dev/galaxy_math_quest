@@ -118,6 +118,12 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .field input.sm { width: 2.9em; padding: 6px 2px; }
 .frac { display: inline-flex; flex-direction: column; align-items: stretch; gap: 4px; } .frac hr { border: 0; border-top: 3px solid var(--ink); margin: 0; }
 .sep { font-size: 1.4rem; font-family: var(--display); }
+.codes { gap: 14px; } .code { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; } .field .code input { width: 2.6em; } .field .code input.wrong { border-color: var(--bad); }
+.toy:has(.wires), .toy:has(.codes) { max-height: 64dvh; }
+.field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .wires .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
+.word.hintb { border-style: dashed; }
+/* target practice is played in the scene, so on a small screen its panel stays short and the story band steps aside */
+@media (max-width: 600px) and (orientation: portrait) { .console:has(.toy:not([hidden]) #dleft) .log { display: none; } .toy:has(#dleft) h3 { display: none; } .toy:has(#dleft) .mw { font-size: .82rem; } }
 .mw { font-size: .9rem; color: var(--muted); border-left: 3px solid #ffb23e; padding-left: 8px; } .mw b { color: #ffb23e; font-weight: 700; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; } .chips .chip { font-size: .95rem; }
 @media (max-width: 600px) and (orientation: portrait) { .picrow { flex-direction: column; align-items: stretch; gap: 6px; } .picrow .pic { width: 100%; } .picsvg { max-height: 23dvh; } }
@@ -197,7 +203,9 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
       <li>One station you walk around in. Rooms you have not entered stay dark. Signs by each door say where it leads.</li>
       <li>Every command is two to four words: a verb, a thing, and sometimes a second thing. Type it, or tap a verb and then tap the thing.</li>
       <li>The astronaut walks to the thing before acting, so every command shows movement.</li>
-      <li>There are 12 secrets across five station rooms, and 3 more on Voltara. Things change and stay changed.</li>
+      <li>There are 18 secrets across eight station rooms, and 3 more on Voltara. Things change and stay changed. A thing found in one room often opens something in another.</li>
+      <li>Each of your five ship parts is earned by doing something in its own bay: count the alien artifacts (Engine Core), load the cargo (Navigation), clear the asteroids (Shield), zap the odd and even drones (Weapons), connect the place-value wires (Power). The ship cannot launch until all five are fitted.</li>
+      <li>A Hint button gives the next thing to try, so no one stays stuck.</li>
       <li>Maths is staged in the world. Asteroids drift in rows outside the Shield Bay windows. Crates stack on the cargo scale. The locker code is the number of stacked crates, and each player gets a different stack.</li>
       <li>After launch you fly across a galaxy map and see other cadets’ ships. Fly to Galaxy Numerix and land on Voltara.</li>
       <li>Voltara is drawn from your own words: rainbow skies, cotton-candy clouds, glowing trees, a sparkling river, a Gumblefish, FlavorBursts. You can dig holes, and they stay.</li>
@@ -224,17 +232,24 @@ const ROOMS = {
   shield: { name: 'Shield Bay',     x: 2,  y: 6, w: 9,  h: 7,  floor: '#2f5560', secrets: 3 },
   nav:    { name: 'Navigation Bay', x: 26, y: 6, w: 9,  h: 7,  floor: '#4a4670', secrets: 2 },
   launch: { name: 'Launch Bay',     x: 26, y: 1, w: 9,  h: 4,  floor: '#5b4b3c', secrets: 1 },
+  engine: { name: 'Engine Bay',     x: 2,  y: 1, w: 9,  h: 4,  floor: '#5a4048', secrets: 2 },
+  weapons: { name: 'Weapons Bay',   x: 2,  y: 14, w: 9, h: 4,  floor: '#473f63', secrets: 2 },
+  power:  { name: 'Power Bay',      x: 26, y: 14, w: 9, h: 4,  floor: '#3d5548', secrets: 2 },
   store:  { name: 'The Old Store',  x: 19, y: 15, w: 5, h: 3,  floor: '#4b4034', secrets: 2, secret: true },
   tunnel: { name: 'The Crawl Tunnel', tiles: [[15,14],[15,15],[15,16],[16,16],[17,16],[18,16]], floor: '#262b36', secret: true, secrets: 0 }
 };
-const DOORS = [[11, 9], [25, 9], [30, 5]];
+const DOORS = [[11, 9], [25, 9], [30, 5], [4, 5], [6, 13], [27, 13]];
 const WINDOWS = [[1,7],[1,8],[1,9],[1,10],[1,11],[27,0],[28,0],[29,0],[30,0],[31,0],[32,0],[33,0],[13,3],[14,3],[15,3]];
 const CARGO = [['Space food', 3], ['Life support', 7], ['Science kit', 5], ['Water tank', 6], ['Radio gear', 4],
   ['Spare parts', 4], ['Landing gear', 2], ['Energy cells', 4], ['Space suits', 2], ['Star maps', 3], ['Extra food', 3]];
 const PARTS = ['Engine Core', 'Navigation', 'Shield', 'Weapons', 'Power'];
 const DECK = { common: ['Laser Cannon', 'Stealth Mode', 'Asteroid Assault'], rare: ['Quantum Quell', 'Void Vortex'], gold: ['Nebula Nova'] };
 const ODDS = [['common', 70], ['rare', 25], ['gold', 5]];
-const TOTAL_SECRETS = 15;   // 12 on the station, 3 on Voltara
+const TOTAL_SECRETS = 21;   // 18 on the station, 3 on Voltara
+/* the alien artifacts in the Engine Bay: four colours, and a shape for each so colour is never the only clue */
+const GEMC = [['red', '#ff7a6b', 'diamond'], ['blue', '#6db3ff', 'round'], ['green', '#6fd08a', 'triangle'], ['gold', '#ffd25e', 'square']];
+const DSLOT = [[3, 14], [5, 14], [7, 14], [9, 14], [3, 16], [5, 16], [8, 16], [10, 15]];   // where the practice drones hover
+const LEFT = [[29, 12], [30, 12], [31, 12], [30, 11]];   // the four crates left behind after the cargo is loaded
 
 /* things in the world: where they are, the words that name them, and what they look like */
 const rect = (x, y, w, h) => { const a = []; for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) a.push([x + i, y + j]); return a; };
@@ -258,16 +273,29 @@ const OBJ = {
   chair:   { room: 'nav',    tiles: [[29, 10]], words: ['chair', 'seat', 'stool'], label: 'chair', block: 1 },
   bolt:    { room: 'nav',    tiles: [[29, 10]], words: ['bolt', 'screw'], label: 'bolt', when: s => s.chair && !s.bolt },
   console: { room: 'launch', tiles: [[30, 1]], words: ['console', 'controls', 'button', 'launch'], label: 'launch console', block: 1 },
-  chest:   { room: 'store',  tiles: [[22, 16]], words: ['chest', 'trunk', 'box'], label: 'old chest', block: 1 }
+  chest:   { room: 'store',  tiles: [[22, 16]], words: ['chest', 'trunk', 'box'], label: 'old chest', block: 1 },
+  core:    { room: 'engine', tiles: [[6, 1], [7, 1]], words: ['core', 'engine', 'cage', 'lock', 'dials'], label: 'engine core', block: 1 },
+  gems:    { room: 'engine', tiles: [], words: ['artifacts', 'artifact', 'crystals', 'crystal', 'gems', 'gem', 'stones', 'shapes'], label: 'alien artifacts', quiet: 1 },
+  valve:   { room: 'engine', tiles: [[9, 0]], words: ['valve', 'wheel', 'pipe', 'steam', 'note'], label: 'valve', stand: [9, 1] },
+  toolbox: { room: 'engine', tiles: [[2, 4]], words: ['toolbox', 'tools', 'box'], label: 'toolbox', block: 1 },
+  cannon:  { room: 'weapons', tiles: [[6, 17]], words: ['cannon', 'gun', 'laser', 'weapon', 'weapons'], label: 'cannon', block: 1 },
+  junk:    { room: 'weapons', tiles: [[10, 17]], words: ['rusty', 'junk', 'wreck', 'scrap', 'broken', 'old'], label: 'rusty drone', block: 1, when: s => !s.junk },
+  drones:  { room: 'weapons', tiles: [], words: ['drones', 'drone', 'targets'], label: 'practice drones', quiet: 1 },
+  ammo:    { room: 'weapons', tiles: [[2, 17]], words: ['ammo', 'box', 'counters'], label: 'ammo box', block: 1 },
+  wall9:   { room: 'weapons', tiles: [[9, 13]], words: ['wall', 'target', 'numbers'], label: 'target wall', stand: [9, 14] },
+  board:   { room: 'power',  tiles: [[30, 13], [31, 13], [32, 13]], words: ['board', 'circuit', 'wires', 'wire', 'panel', 'module'], label: 'circuit board', stand: [31, 14] },
+  fusebox: { room: 'power',  tiles: [[34, 13]], words: ['fusebox', 'switchbox', 'box'], label: 'fuse box', stand: [34, 14] },
+  plate:   { room: 'power',  tiles: [[33, 17]], words: ['plate', 'floor', 'tile', 'hatch'], label: 'loose plate', when: s => s.fuse },
+  battery: { room: 'power',  tiles: [[26, 17]], words: ['battery', 'batteries', 'cells', 'cell'], label: 'battery', block: 1 }
 };
-const ITEMS = { wrench: 'wrench', magnet: 'magnet', keycard: 'key card', chart: 'star chart', badge: 'badge' };
-const ITEM_WORDS = { wrench: ['wrench', 'spanner', 'tool'], magnet: ['magnet'], keycard: ['keycard', 'key', 'card'], chart: ['chart'], badge: ['badge'] };
+const ITEMS = { wrench: 'wrench', magnet: 'magnet', keycard: 'key card', chart: 'star chart', badge: 'badge', oil: 'oil can', fuse: 'fuse' };
+const ITEM_WORDS = { wrench: ['wrench', 'spanner', 'tool'], magnet: ['magnet'], keycard: ['keycard', 'key', 'card'], chart: ['chart'], badge: ['badge'], oil: ['oil', 'can', 'oilcan'], fuse: ['fuse'] };
 const VERBS = {
   look: ['look', 'l', 'examine', 'x', 'read', 'see', 'check', 'inspect', 'search', 'watch'],
   take: ['take', 'get', 'grab', 'pick', 'lift', 'eat', 'bite', 'taste'], open: ['open', 'unlock'], push: ['push', 'pull', 'move', 'shove', 'slide'],
   use: ['use', 'put', 'fix', 'mend', 'press', 'turn', 'start', 'wake', 'play', 'launch'], go: ['go', 'walk', 'run', 'enter', 'crawl', 'climb'],
   talk: ['talk', 'say', 'hello', 'hi', 'ask', 'train', 'practise', 'practice', 'quiz'], bag: ['bag', 'inventory', 'i'], help: ['help'], name: ['name', 'call'],
-  dig: ['dig'], silly: ['jump', 'dance', 'spin', 'sing', 'wave', 'sleep', 'sit'], close: ['close', 'shut']
+  dig: ['dig'], hint: ['hint', 'stuck', 'clue', 'lost'], silly: ['jump', 'dance', 'spin', 'sing', 'wave', 'sleep', 'sit'], close: ['close', 'shut']
 };
 const DIRS = { north: [0, -1], n: [0, -1], up: [0, -1], south: [0, 1], s: [0, 1], down: [0, 1], east: [1, 0], e: [1, 0], right: [1, 0], west: [-1, 0], w: [-1, 0], left: [-1, 0] };
 
@@ -312,11 +340,18 @@ function build() {
   for (const [x, y] of DOORS) { G[y][x].t = 'door'; G[y][x].room = null; }
   for (const [x, y] of WINDOWS) G[y][x].t = 'win';
   OBJ.stack.tiles = rect(13, 5, S.cols, S.rows);
+  if (!S.gems) makeGems();
+}
+function makeGems() {       // each student gets their own counts: four different numbers from 2 to 7
+  const cnt = [], free = []; while (cnt.length < 4) { const n = 2 + rnd(6); if (!cnt.includes(n)) cnt.push(n); }
+  for (let y = 1; y <= 4; y++) for (let x = 2; x <= 10; x++) if (!((y === 1 && (x === 6 || x === 7 || x === 9)) || (x === 2 && y === 4) || (x === 4 && y === 4))) free.push([x, y]);
+  for (let i = free.length - 1; i > 0; i--) { const j = rnd(i + 1); [free[i], free[j]] = [free[j], free[i]]; }
+  S.gems = []; let k = 0; cnt.forEach((n, c) => { for (let i = 0; i < n; i++) { const t = free[k++]; S.gems.push([t[0], t[1], c]); } }); S.gemCount = cnt; save();
 }
 const objOn = o => !o.when || o.when(S);
-const objTiles = (id) => id === 'crate' && S.crate ? [[16, 13]] : id === 'chair' && S.chair ? [[28, 10]] : OBJ[id].tiles;
+const objTiles = (id) => id === 'crate' && S.crate ? [[16, 13]] : id === 'chair' && S.chair ? [[28, 10]] : id === 'gems' ? (S.gems || []) : id === 'drones' ? DSLOT : OBJ[id].tiles;
 const PILE = [[26, 12], [27, 12], [28, 12], [29, 12], [30, 12], [31, 12], [26, 11], [27, 11], [28, 11], [29, 11], [30, 11]];
-function blocked(x, y) { if (!S.done.cargo && PILE.some(t => t[0] === x && t[1] === y)) return true; for (const id in OBJ) { const o = OBJ[id]; if (o.block && objOn(o) && objTiles(id).some(t => t[0] === x && t[1] === y)) return true; } return false; }
+function blocked(x, y) { if ((S.done.cargo ? LEFT : PILE).some(t => t[0] === x && t[1] === y)) return true; for (const id in OBJ) { const o = OBJ[id]; if (o.block && objOn(o) && objTiles(id).some(t => t[0] === x && t[1] === y)) return true; } return false; }
 function walkable(x, y) {
   const c = G[y] && G[y][x]; if (!c) return false;
   if (c.t === 'door') return !(x === 30 && y === 5 && !S.parts.includes('Navigation'));
@@ -384,9 +419,10 @@ function drawStatus() {
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>`;
 }
 function drawBag() {
-  $('verbs').innerHTML = '<span class="lab">Do</span>' + ['look', 'take', 'open', 'push', 'use', 'go'].map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('') + `<button class="snd" id="snd" type="button">Sound: ${soundOn ? 'on' : 'off'}</button>`;
+  $('verbs').innerHTML = '<span class="lab">Do</span>' + ['look', 'take', 'open', 'push', 'use', 'go'].map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('') + `<button class="word hintb" id="hintb" type="button">Hint</button><button class="snd" id="snd" type="button">Sound: ${soundOn ? 'on' : 'off'}</button>`;
+  $('hintb').onclick = () => act('hint');
   $('snd').onclick = () => { soundOn = !soundOn; $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); if (soundOn) beep(660, .1); };
-  $('verbs').querySelectorAll('.word').forEach(b => b.onclick = () => { $('cmd').value = b.dataset.v + ' '; mark(); if (b.dataset.v === 'go') say('Go where? Type north, south, east or west. Or tap the floor.'); });
+  $('verbs').querySelectorAll('.word[data-v]').forEach(b => b.onclick = () => { $('cmd').value = b.dataset.v + ' '; mark(); if (b.dataset.v === 'go') say('Go where? Type north, south, east or west. Or tap the floor.'); });
   $('bag').innerHTML = '<span class="lab">Bag</span>' + (S.inv.length ? S.inv.map(i => `<button class="word item" type="button" data-i="${i}">${ITEMS[i]}</button>`).join('') : '<span class="note">Empty. Find things and take them.</span>');
   $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => { const v = $('cmd').value.trim().toLowerCase(), w = ITEM_WORDS[b.dataset.i][0];
     if (v === 'use') { $('cmd').value = `use ${w} on `; mark(); } else act('look ' + w); });
@@ -403,21 +439,45 @@ function give(item) { if (!S.inv.includes(item)) S.inv.push(item); save(); drawB
    WHAT EACH THING DOES. Every reply is short. Verb, thing, and sometimes a second thing.
    ===================================================================== */
 const has = i => S.inv.includes(i);
+const earn = part => { if (!S.parts.includes(part)) S.parts.push(part); };
+const missing = () => PARTS.filter(p => !S.parts.includes(p));
+/* the next thing worth trying. A stuck child can always ask. */
+function hint() {
+  const who = S.bot ? `${cap(S.botName || 'the robot')} beeps: ` : 'A wall screen blinks: ', sec = id => S.secrets.includes(id), part = p => S.parts.includes(p);
+  const t = !sec('wrench') ? 'Look at your ship. Open the hatch under its wing.'
+    : !S.locker ? 'Read the sign in the dock. Count the stacked crates. Then open the grey locker on the east wall.'
+    : !part('Shield') ? 'Go west to the Shield Bay. Use the shield panel.'
+    : !S.bot ? 'A broken robot sits in the Shield Bay. Use your wrench on it.'
+    : !part('Engine Core') ? 'Go north from the Shield Bay to the Engine Bay. Count the artifacts. Then open the cage.'
+    : !part('Weapons') ? 'Go south from the Shield Bay to the Weapons Bay. Use the cannon.'
+    : !part('Navigation') ? 'Go east to the Navigation Bay. Use the cargo scale.'
+    : !part('Power') ? 'A door hides behind the cargo in the Navigation Bay. Go south. Use the circuit board.'
+    : !S.grate ? 'Your magnet can reach under the grate in the Shield Bay.'
+    : !S.drawer ? 'The key card fits the drawer in the Navigation Bay.'
+    : !S.course ? 'Use the star chart on the launch console.'
+    : 'Your ship is ready. Go to the Launch Bay. Type: launch.';
+  return who + t;
+}
+/* names are painted where everyone can see them, so rude words do not stick. On Marc's site the server would hold the real list. */
+const RUDE = /(sh[i1!]+t|f+u+c*k|b[i1]tch|c[u*]nt|n[i1]gg|wh[o0]re|slut|bastard|p[e3]n[i1]s|vag[i1]na|b[o0]{2}b)/, RUDE_W = ['ass', 'arse', 'sex', 'cock', 'dick', 'damn', 'crap', 'piss', 'fag', 'hell'];
+const rude = t => { const l = String(t).toLowerCase(); return RUDE.test(l.replace(/[^a-z0-9!*]/g, '')) || l.split(/[^a-z]+/).some(w => RUDE_W.includes(w)); };
+function openLocker() { S.locker = true; give('magnet'); secret('locker', 'Click! The locker opens. A magnet is inside.'); }
+function tryLocker(n) { if (!walkToObj('locker', () => { if (+n === S.rows * S.cols) openLocker(); else { beep(140, .2, 'square'); say('The lock stays shut. Count the stacked crates again.'); } })) say('You cannot reach the locker.'); }
 const DO = {
   ship: { look: () => (S.secrets.includes('wrench') ? `Your ship${S.ship ? ', the ' + S.ship : ''}.` : 'Your ship. Scrap metal holds the hull together. A small hatch sits under the wing.') + ` It has ${S.parts.length} of 5 parts.`,
     open: () => { if (S.secrets.includes('wrench')) return 'The hatch is empty now.'; give('wrench'); secret('wrench', 'The hatch pops open. A wrench is inside!'); },
-    take: 'It is far too big to take.', push: 'You push. The ship does not move.', use: 'The ship cannot fly yet. It needs its parts.' },
+    take: 'It is far too big to take.', push: 'You push. The ship does not move.', use: () => missing().length ? `The ship cannot fly yet. It still needs: ${missing().join(', ')}.` : 'The ship is whole. Launch it from the Launch Bay.' },
   stack: { look: () => `Crates, stacked in rows. ${S.rows} rows. ${S.cols} crates in each row.`, push: 'They are too heavy. One crate by the wall looks loose.',
     take: 'Too heavy to carry.', open: 'They are nailed shut.' },
   crate: { look: () => S.crate ? 'The loose crate. You moved it.' : 'One crate sits alone by the wall. Cold air comes from behind it.',
     push: () => { if (S.crate) return 'It will not go any further.'; S.crate = true; S.gap = true; save(); beep(160, .25, 'sawtooth'); secret('gap', 'The crate slides. There is a gap in the wall!'); },
     take: 'Too heavy to carry. Maybe you can push it.', open: 'It is nailed shut.' },
   gap: { look: 'A dark gap in the wall. You could crawl in.', go: () => { walkTo((x, y) => x === 15 && y === 16); return 'You crawl into the dark.'; }, use: () => DO.gap.go() },
-  sign: { look: () => 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES.', take: 'It is fixed to the wall.' },
+  sign: { look: () => S.locker ? 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. You did that.' : 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. An arrow points to a grey locker in the east corner. Go there and type: open locker.', take: 'It is fixed to the wall.' },
   vent: { look: () => S.vent ? 'The vent is open. It is empty now.' : 'A vent in the wall. Four screws hold it shut. Something shines inside.',
     open: () => S.vent ? 'It is open.' : has('wrench') ? 'The screws are tight. Try: use wrench on vent.' : 'The screws are tight. You need a tool.',
     use: it => { if (S.vent) return 'It is open.'; if (!it) return DO.vent.open(); if (it !== 'wrench') return 'That does not work on the vent.'; S.vent = true; save(); secret('vent', 'You turn the screws. A lost star chip falls out!'); card(); } },
-  locker: { look: () => S.locker ? 'The locker is open and empty.' : 'A locker with a number lock. The sign may help.',
+  locker: { look: () => S.locker ? 'The locker is open and empty.' : 'A locker with a number lock. Type: open locker. The sign tells you the code.',
     open: () => { if (S.locker) return 'It is open.'; startLocker(); return 'The lock waits for a code.'; }, use: () => DO.locker.open() },
   panel: { look: () => S.done.battle ? 'The shield panel glows green.' : 'The shield panel. It is dark.', use: () => { if (S.done.battle) return 'The shield is strong now.'; startBattle(); return 'The panel wakes up. Rocks are coming!'; },
     open: () => DO.panel.use(), push: () => DO.panel.use() },
@@ -438,13 +498,37 @@ const DO = {
   chair: { look: 'A chair on wheels.', push: () => { if (S.chair) return 'It rolls a little and stops.'; S.chair = true; save(); beep(200, .15); return 'The chair rolls away. A bolt was under it.'; }, take: 'You do not need a chair.', use: 'You sit. You spin. Whee.' },
   bolt: { look: 'A shiny bolt on the floor.', take: () => { S.bolt = true; save(); secret('bolt', 'You take the lost bolt. The station gives you a card for it.'); card(); } },
   console: { look: () => S.course ? 'The launch console. A course is set for Galaxy Numerix.' : 'The launch console. One big button. A slot for a chart.',
-    use: it => { if (it === 'chart') { if (S.course) return 'The course is set.'; S.course = true; save(); secret('course', 'The chart slides in. A course is set for Galaxy Numerix!'); return; } if (it) return 'That does not fit.'; S.ended = true; S.mode = 'space'; S.at = 'station'; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return 'Three. Two. One. Lift off! You are in space. Tap a galaxy to fly there.'; },
+    use: it => { if (it === 'chart') { if (S.course) return 'The course is set.'; S.course = true; save(); secret('course', 'The chart slides in. A course is set for Galaxy Numerix!'); return; } if (it) return 'That does not fit.';
+      if (missing().length) return `The ship cannot fly yet. It still needs: ${missing().join(', ')}.`; if (!S.course) return 'No course is set. The console has a slot for a star chart.'; S.ended = true; S.mode = 'space'; S.at = 'station'; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return 'Three. Two. One. Lift off! You are in space. Tap a galaxy to fly there.'; },
     push: () => DO.console.use(), open: 'It has no door.' },
   chest: { look: () => S.chest ? 'The old chest is open and empty.' : 'An old chest. Dust covers it.', open: () => { if (S.chest) return 'It is open.'; S.chest = true; give('badge'); secret('chest', 'The lid creaks. A captain’s badge! You pin it on.'); card(); },
-    push: 'It is too heavy.', take: 'It is too heavy.' }
+    push: 'It is too heavy.', take: 'It is too heavy.' },
+  core: { look: () => S.done.core ? 'The Engine Core hums in its open cage. It is fixed.' : 'The Engine Core, locked in a cage. The lock has four dials: red, blue, green and gold.',
+    open: () => { if (S.done.core) return 'It is open.'; startCore(); return 'The lock wants four numbers.'; }, use: () => DO.core.open(), take: 'It is bolted down. And very hot.', push: 'It will not move.' },
+  gems: { look: () => S.done.core ? 'Alien artifacts. They glow softly now.' : 'Alien artifacts, spilled on the floor. Four colours, four shapes. Count each kind.', take: 'It hums and slips from your glove. Better to count them.', push: 'It rolls back to its place. Strange.' },
+  valve: { look: () => S.valve ? 'The steam is off. A note on the pipe says: SPARE FUSES ARE KEPT WITH THE AMMO.' : 'A red wheel on a pipe. Steam hisses out. It hides a note.',
+    push: () => { if (S.valve) return 'It is shut tight.'; S.valve = true; save(); beep(200, .3, 'sawtooth'); secret('valve', 'You turn the wheel. The steam stops. A note on the pipe says: SPARE FUSES ARE KEPT WITH THE AMMO.'); },
+    use: () => DO.valve.push(), open: () => DO.valve.push(), take: 'It is fixed to the pipe.' },
+  toolbox: { look: () => S.toolbox ? 'The toolbox is open and empty.' : 'A red toolbox. The lid is shut.', open: () => { if (S.toolbox) return 'It is open.'; S.toolbox = true; give('oil'); secret('toolbox', 'The lid flips up. An oil can! Good for rusty things.'); },
+    take: 'It is too heavy. Open it.', push: 'It scrapes a little.', use: () => DO.toolbox.open() },
+  cannon: { look: () => S.done.drones ? 'The practice cannon. Its light is green.' : 'A practice cannon. It points at the drones.',
+    use: () => { if (S.done.drones) return 'Target practice is done. Good shooting.'; startDrones(); return 'The cannon powers up. The drones show their numbers.'; }, push: () => DO.cannon.use(), open: 'It has no door.', take: 'It is bolted to the floor.' },
+  junk: { look: 'A rusty old drone on the floor. Its rotor is stuck fast.', push: 'It squeaks. The rotor is stuck.', take: 'It is too heavy.', open: 'It is rusted shut.',
+    use: it => { if (!it) return 'The rotor is stuck. It needs oil.'; if (it !== 'oil') return it === 'wrench' ? 'The wrench slips. The rust is too thick. Try oil.' : 'That does not help.'; S.junk = true; save(); secret('junk', 'A drop of oil. Whirr! The old drone lifts off and loops the room. It drops a card for you.'); card(); } },
+  drones: { look: 'Practice drones. Each one can show a number. Use the cannon to start.', take: 'It floats out of reach.', push: 'It bobs away and comes back.', use: it => it === 'oil' && !S.junk ? DO.junk.use('oil') : DO.cannon.use() },
+  ammo: { look: () => S.ammo ? 'The ammo box is open. Counters in five colours. Nothing else.' : 'An ammo box. Counters rattle inside.',
+    open: () => { if (S.ammo) return 'It is open.'; S.ammo = true; give('fuse'); secret('ammo', 'Counters in five colours. And under them, a spare fuse!'); }, take: 'Too heavy. Open it.', use: () => DO.ammo.open(), push: 'It rattles.' },
+  wall9: { look: 'A wall of targets, numbered 1 to 9. In class you throw at a wall like this.', push: 'It is part of the wall.', take: 'It is fixed.' },
+  board: { look: () => S.done.board ? 'The circuit board glows. Power flows to the ship.' : 'The Power Module circuit board. A number in the middle. Nine wires hang loose.',
+    use: () => { if (S.done.board) return 'The power is on.'; startBoard(); return 'The board lights up.'; }, open: () => DO.board.use(), push: () => DO.board.use(), take: 'It is part of the wall.' },
+  fusebox: { look: () => S.fuse ? 'The fuse box. A new fuse glows inside.' : 'A fuse box. One fuse is burnt black. The main lights are off.', open: () => S.fuse ? 'The fuse is in.' : 'One fuse is burnt. You need a new one.',
+    use: it => { if (S.fuse) return 'The lights are on.'; if (!it) return 'It needs a new fuse.'; if (it !== 'fuse') return 'That does not fit.'; S.fuse = true; S.inv = S.inv.filter(i => i !== 'fuse'); save(); drawBag(); secret('fusebox', 'Click. The lights come on! One floor plate in the corner looks loose.'); } },
+  plate: { look: () => S.plate ? 'A hole under the plate. It is empty now.' : 'One floor plate sits a little high.', push: () => DO.plate.open(), take: () => DO.plate.open(), use: () => DO.plate.open(),
+    open: () => { if (S.plate) return 'Nothing more is there.'; S.plate = true; save(); secret('plate', 'You lift the plate. A lost star chip sits in the dust!'); card(); } },
+  battery: { look: 'A Standard Battery. It hums. Bigger ones exist, they say.', take: 'It is wired in.', push: 'It will not move.', use: 'It is already on.' }
 };
 const NOPE = { look: 'You see nothing special.', take: 'You cannot take that.', open: 'It does not open.', push: 'It does not move.', use: 'Nothing happens.', talk: 'It does not answer.' };
-const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'A star chart. It shows the way to Galaxy Numerix.', badge: 'A captain’s badge. You are wearing it.' };
+const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'A star chart. It shows the way to Galaxy Numerix.', badge: 'A captain’s badge. You are wearing it.', oil: 'A small oil can. Good for rusty things.', fuse: 'A spare fuse. It fits a fuse box.' };
 
 /* =====================================================================
    THE PARSER. Two to four words: VERB THING, or USE THING ON THING.
@@ -462,7 +546,11 @@ function act(raw) {
   if (S.mode === 'intro' || S.mode === 'arrive') return out('Tap Next to go on.');
   if (S.mode === 'space') return actSpace(text, out);
   if (S.mode === 'planet') return actPlanet(text, out);
+  if (widget && widget.kind === 'drones' && /^\D*\d+\D*$/.test(text)) { const i = widget.d.findIndex(d => d.n === +text.match(/\d+/)[0] && !d.hit); out(null); return i < 0 ? say('No drone shows that number.') : droneTap(i); }
   if (widget) return out('Finish this first. Or tap Leave.');
+  const num = (text.match(/\b\d+\b/) || [])[0];
+  if (num && S.room === 'dock' && !S.locker && !/crate|ship|sign|vent|name/.test(text)) { out(null); return tryLocker(num); }
+  if (num && /^(\d+|(enter|type|code|try) .*)$/.test(text)) return out(S.locker || S.room !== 'dock' ? 'A number needs a lock. Walk to a lock and open it first.' : 'Walk to the locker first.');
   let tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'into', 'in', 'up', 'around', 'under', 'behind', 'inside', 'please'].includes(t) || DIRS[t] && text.split(/\s+/).length <= 2);
   if (DIRS[tk[0]]) tk = ['go', tk[0]];
   let verb = Object.keys(VERBS).find(v => VERBS[v].includes(tk[0]));
@@ -470,6 +558,7 @@ function act(raw) {
   const rest = tk.slice(1);
   if (S.bot && ['talk', 'use'].includes(verb) && tk[0] !== 'fix' && (rest.length === 0 && verb === 'talk' || rest.some(t => OBJ.robot.words.includes(t) || t === 'zip' || (S.botName && t === S.botName.toLowerCase())))) return out(zipTalk());
   if (S.bot && verb === 'look' && rest.some(t => OBJ.robot.words.includes(t) || (S.botName && t === S.botName.toLowerCase()))) return out('Your repair robot. Talk to it and it will train you.');
+  if (verb === 'hint') return out(hint());
   if (verb === 'help') return out('Type a doing word and a thing. Like: look ship. push crate. use wrench on vent. Or: go north.');
   if (verb === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
   if (verb === 'dig') return out('You dig at the floor. Clang! It is metal. Planets have ground you can dig.');
@@ -478,6 +567,7 @@ function act(raw) {
   if (verb === 'name') {
     const isBot = rest.some(t => OBJ.robot.words.includes(t)), nm = rest.filter(t => !['ship', 'rocket', ...OBJ.robot.words, 'it'].includes(t)).join(' ').slice(0, 12).replace(/\b\w/g, c => c.toUpperCase());
     if (!nm) return out('Name what? Like: name ship Comet.');
+    if (rude(nm)) return out('The paint will not stick. Pick a kind name.');
     if (isBot) { if (!S.bot) return out('The robot is broken. Fix it first.'); S.botName = nm; save(); return out(`The robot beeps twice. Its name is ${nm} now.`); }
     S.ship = nm; save(); return out(`You paint the name on the hull: ${nm}. It will stay there.`);
   }
@@ -489,7 +579,7 @@ function act(raw) {
     const rid = Object.keys(ROOMS).find(r => rest.some(t => t.length > 2 && !['bay', 'the', 'old'].includes(t) && ROOMS[r].name.toLowerCase().split(' ').some(w => w.startsWith(t))));
     if (rid) { if (ROOMS[rid].secret && !S.seen.includes(rid)) return out('You do not know that place.');
       const R = ROOMS[rid], ok = walkTo((x, y) => G[y][x].room === rid && (R.tiles || (Math.abs(x - (R.x + (R.w >> 1))) <= 2 && Math.abs(y - (R.y + (R.h >> 1))) <= 2)));
-      return out(ok ? `You walk to the ${R.name}.` : rid === 'launch' ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : 'You cannot get there yet.'); }
+      return out(ok ? `You walk to the ${R.name}.` : rid === 'launch' ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : rid === 'power' ? 'The cargo pile is in the way. Load the cargo first.' : 'You cannot get there yet.'); }
     const g = findThing(rest); if (g && DO[g].go) return out(DO[g].go()); if (g) { walkToObj(g); return out('You walk over.'); }
     return out('Go where? Type north, south, east or west. Or tap the floor.');
   }
@@ -498,6 +588,7 @@ function act(raw) {
   let item = findItem(a), thing = findThing(cut < 0 ? rest.filter(t => !(item && ITEM_WORDS[item].includes(t))) : b);
   if (cut >= 0 && !item) { item = findItem(b); thing = findThing(a); }
   if (tk[0] === 'fix' && !item && has('wrench')) item = 'wrench';
+  if (tk[0] === 'launch' && S.room !== 'launch') return out('You launch from the Launch Bay. It is north of the Navigation Bay.');
   if (tk[0] === 'launch' || (verb === 'use' && !thing && rest.includes('launch'))) thing = S.room === 'launch' ? 'console' : null;
   if (!thing && item && verb === 'look') return out(ITEM_LOOK[item]);
   if (!thing && item && verb === 'use') return out(`Use the ${ITEMS[item]} on what?`);
@@ -944,7 +1035,7 @@ function tanks(a, b) {
   return `<svg viewBox="0 0 420 156" role="img" aria-label="Tank A holds ${a}. Tank B holds ${b}.">${t(90, a, 'A')}${t(260, b, 'B')}<text x="210" y="76" font-size="30" text-anchor="middle">+</text></svg>`;
 }
 function startLocker() { widget = { kind: 'locker', hits: 0, need: 1, tries: 0, ans: S.rows * S.cols };
-  numberToy('<p class="eyebrow">A lock in the world</p><h3>Locker</h3><p class="q">Type the code.</p><p class="note">Look around the dock for a clue.</p>', ''); }
+  numberToy('<p class="eyebrow">A lock in the world</p><h3>Locker</h3><p class="q">Type the code.</p><p class="note">The sign in the dock says how to find it.</p>', ''); }
 function startBattle() { widget = { kind: 'battle', hits: 0, need: 4, tries: 0, next: nextRocks }; nextRocks(); }
 function nextRocks() { const easy = widget.hits < 2; widget.r = 2 + rnd(4); widget.c = easy ? pick([2, 5, 10]) : 3 + rnd(7); widget.ans = widget.r * widget.c;
   numberToy(`<p class="eyebrow">Mini battle · look out of the windows</p><h3>Asteroid Field</h3><p class="q">${widget.r} rows. ${widget.c} rocks in each row. How many rocks?</p>`, 'rocks'); }
@@ -968,12 +1059,66 @@ function check() {
 }
 function win() {
   const w = widget; closeToy();
-  if (w.kind === 'locker') { S.locker = true; give('magnet'); secret('locker', 'Click! The locker opens. A magnet is inside.'); return; }
+  if (w.kind === 'locker') return openLocker();
   const nm = { battle: ['Asteroid Field', 'Multiply'], fuel: ['Top Up the Tank', 'Add 2-digit numbers'], shells: ['Gumblefish Shells', 'Add 2-digit numbers'] }[w.kind];
   S.done[w.kind] = true; S.log.push({ what: nm[0], skill: nm[1], tries: w.tries, need: w.need });
-  if (w.kind === 'battle' && !S.parts.includes('Shield')) S.parts.push('Shield');
+  if (w.kind === 'battle') earn('Shield');
   save(); drawStatus(); chime(); card();
-  say({ battle: 'The rocks are gone. The shield glows green. You earn a card.', fuel: 'The tank is full. The gauge turns green. You earn a card.', shells: 'The Gumblefish has all its shells. It spins with joy. You earn a card.' }[w.kind]);
+  say({ battle: 'The rocks are gone. The shield glows green. You earn the Shield part and a card.' + whole(), fuel: 'The tank is full. The gauge turns green. You earn a card.', shells: 'The Gumblefish has all its shells. It spins with joy. You earn a card.' }[w.kind]);
+}
+const whole = () => missing().length ? '' : ' Your ship has all five parts! Set a course in the Launch Bay.';
+function partWon(kind, part, what, skill, tries, miss, text) { closeToy(); S.done[kind] = true; earn(part); S.log.push({ what, skill, result: miss ? `${miss} to fix` : 'No mistakes ✓', tries, need: tries }); save(); drawStatus(); chime(); card(); say(text + whole()); }
+/* ENGINE CORE: count what you find. From Marc's 1-1 Alien Artifacts: four colours make a four-number code, and the lock has a temper. */
+const gemIcon = (i, z) => { const c = GEMC[i][1], k = GEMC[i][2]; return `<svg viewBox="0 0 20 20" width="${z}" height="${z}" aria-hidden="true"><${k === 'round' ? 'circle cx="10" cy="10" r="7"' : k === 'square' ? 'rect x="3.5" y="3.5" width="13" height="13" rx="2"' : `polygon points="${k === 'diamond' ? '10,1 17,10 10,19 3,10' : '10,2 18,17 2,17'}"`} fill="${c}" stroke="#0e1626" stroke-width="1.5"/></svg>`; };
+function startCore() {
+  widget = { kind: 'core', tries: 0, miss: 0 }; const was = S.gemTry || [];
+  toy(`<p class="eyebrow">Ship part · Engine Core</p><p class="mw"><b>Maths word: count.</b> To count is to find how many there are.</p><h3>The Engine Core lock</h3><p class="q">Count the artifacts on the floor. How many of each kind?</p>
+    <div class="field codes">${GEMC.map((c, i) => `<label class="code">${gemIcon(i, 26)}<span class="note">${c[0]}</span><input id="g${i}" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="how many ${c[0]}" value="${esc(was[i] || '')}"></label>`).join('')}</div>
+    <div class="field"><button class="btn" type="button" id="try">Open the lock</button><button class="btn quiet" type="button" id="leave">Leave and count</button></div><div class="msg" id="msg" role="status"></div>`);
+  const box = i => $('g' + i), keep = () => { S.gemTry = GEMC.map((_, i) => box(i).value); save(); };
+  GEMC.forEach((_, i) => { box(i).oninput = () => { box(i).value = box(i).value.replace(/[^0-9]/g, '').slice(0, 1); keep(); if (box(i).value && i < 3) box(i + 1).focus(); }; box(i).onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; });
+  $('leave').onclick = () => { closeToy(); say('You step back to count. Your numbers stay on the dials.'); };
+  $('try').onclick = () => { const v = GEMC.map((_, i) => box(i).value), m = $('msg'); if (v.some(x => x === '')) { m.className = 'msg bad'; m.textContent = 'Fill all four dials first.'; return; }
+    widget.tries++; const bad = v.map((x, i) => +x !== S.gemCount[i]), nb = bad.filter(Boolean).length;
+    if (nb) { widget.miss++; beep(140, .25, 'square'); alarm = .6; m.className = 'msg bad'; m.textContent = `The Engine Core rumbles! Count again. ${4 - nb} of 4 dials are right.`; bad.forEach((b, i) => { box(i).classList.toggle('wrong', b); }); return; }
+    partWon('core', 'Engine Core', 'Engine Core lock', 'Count', widget.tries, widget.miss, 'Click! The cage opens. The Engine Core hums. You earn the Engine Core part and a card.'); };
+  box(Math.max(0, was.findIndex(x => !x))).focus({ preventScroll: true });
+}
+/* WEAPON SYSTEM: odd and even. From Marc's 4-3 Target Practice: "drones marked with different numbers". */
+let zapD = null;
+function startDrones() { widget = { kind: 'drones', round: 0, tries: 0, miss: 0 }; nextDrones(); }
+function nextDrones() {
+  const w = widget, odd = w.round === 0, lo = odd ? 1 : 21, hi = odd ? 20 : 99, want = 3 + rnd(3), ns = [], isT = n => (n % 2 === 1) === odd;
+  while (ns.length < 8) { const n = lo + rnd(hi - lo + 1), have = ns.filter(isT).length; if (ns.includes(n)) continue; if (isT(n) ? have < want : ns.length - have < 8 - want) ns.push(n); }
+  w.want = odd ? 'odd' : 'even'; w.d = ns.map(n => ({ n, hit: false }));
+  toy(`<p class="eyebrow">Ship part · Weapon System · round ${w.round + 1} of 2</p><p class="mw"><b>Maths word: odd and even.</b> Even numbers end in 0, 2, 4, 6 or 8. Odd numbers end in 1, 3, 5, 7 or 9.</p><h3>Target practice</h3>
+    <p class="q">Tap every drone with an ${w.want} number.</p><div class="meter" id="dleft"></div><div class="field"><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  $('leave').onclick = leave; droneMeter();
+}
+const dronesLeft = () => widget.d.filter(d => !d.hit && (d.n % 2 === 1) === (widget.want === 'odd')).length;
+function droneMeter() { const all = widget.d.filter(d => (d.n % 2 === 1) === (widget.want === 'odd')).length, left = dronesLeft(); $('dleft').innerHTML = Array.from({ length: all }, (_, i) => `<span class="pip${i < all - left ? ' on' : ''}"></span>`).join('') + `<span>${all - left} of ${all} ${widget.want} drones</span>`; }
+function droneTap(i) {
+  const w = widget, d = w.d[i], m = $('msg'); if (!d || d.hit) return; w.tries++; const isOdd = d.n % 2 === 1;
+  if (isOdd !== (w.want === 'odd')) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `${d.n} is ${isOdd ? 'odd' : 'even'}. Look at its last digit. The cannon will not fire.`; return; }
+  d.hit = true; zapD = { t: .4, i }; beep(880, .1); const left = dronesLeft();
+  if (left) { droneMeter(); m.className = 'msg good'; m.textContent = `Zap! ${d.n} is ${w.want}. ${left} to go.`; return; }
+  if (w.round === 0) { w.round = 1; nextDrones(); $('msg').className = 'msg good'; $('msg').textContent = 'All the odd drones are down. Now the even ones.'; return; }
+  partWon('drones', 'Weapons', 'Target practice', 'Odd and even', w.tries, w.miss, 'The last drone pops. The cannon light turns green. You earn the Weapons part and a card.');
+}
+/* POWER MODULE: place value. From Marc's 5-1 Circuit Connection: a number in the middle and nine wires, three of them right. */
+function startBoard() { widget = { kind: 'board', round: 0, tries: 0, miss: 0 }; nextBoard(); }
+function nextBoard() {
+  const w = widget, pl = ['hundreds', 'tens', 'ones']; let dgs; do { dgs = [1 + rnd(9), 1 + rnd(9), 1 + rnd(9)]; } while (new Set(dgs).size < 3); w.n = dgs[0] * 100 + dgs[1] * 10 + dgs[2];
+  w.wires = []; dgs.forEach((d, i) => pl.forEach((p, j) => w.wires.push({ label: `${d} ${d === 1 ? p.slice(0, -1) : p}`, ok: i === j, on: false }))); for (let i = 8; i > 0; i--) { const j = rnd(i + 1); [w.wires[i], w.wires[j]] = [w.wires[j], w.wires[i]]; }
+  toy(`<p class="eyebrow">Ship part · Power Module · board ${w.round + 1} of 2</p><p class="mw"><b>Maths word: place value.</b> A digit is worth more or less by its place: hundreds, tens or ones.</p><h3>Circuit board</h3>
+    <p class="q">The board shows ${w.n}. Connect the 3 wires that match it.</p><div class="field opts wires">${w.wires.map((x, i) => `<button class="btn quiet wire" type="button" data-w="${i}" aria-pressed="false">${x.label}</button>`).join('')}</div>
+    <div class="field"><button class="btn" type="button" id="try">Switch on</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  $('leave').onclick = leave;
+  document.querySelectorAll('#toy .wire').forEach(b => b.onclick = () => { const x = w.wires[+b.dataset.w]; x.on = !x.on; b.classList.toggle('on', x.on); b.setAttribute('aria-pressed', x.on); beep(x.on ? 520 : 300, .05); $('msg').textContent = ''; });
+  $('try').onclick = () => { const on = w.wires.filter(x => x.on), m = $('msg'); if (on.length !== 3) { m.className = 'msg bad'; m.textContent = on.length < 3 ? 'Connect 3 wires first.' : 'Too many wires. Connect only 3.'; return; }
+    w.tries++; const good = on.filter(x => x.ok).length; if (good < 3) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `Sparks! ${good} of your 3 wires match ${w.n}. Which digit is in which place?`; return; }
+    beep(880, .1); if (w.round === 0) { w.round = 1; nextBoard(); $('msg').className = 'msg good'; $('msg').textContent = 'The first board hums. One more.'; return; }
+    partWon('board', 'Power', 'Circuit board', 'Place value', w.tries, w.miss, 'The board glows. Power flows to your ship. You earn the Power part and a card.'); };
 }
 const loaded = () => widget && widget.kind === 'cargo' ? [...widget.on] : (S.cargoPick || []);
 const slot = k => [32.2 + (k % 3) * .78, 11.55 - Math.floor(k / 3) * .78];
@@ -994,9 +1139,9 @@ function startCargo() {
     const n = widget.on.size, t = [...widget.on].reduce((a, k) => a + CARGO[k][1], 0), m = $('msg'); widget.tries++;
     const why = n < 7 ? 'You need more things. Load 7.' : n > 7 ? 'Too many things. Load only 7.' : t < 30 ? 'Too light. You need 30 tons.' : t > 30 ? 'Too heavy. You need 30 tons.' : '';
     if (why) { m.className = 'msg bad'; m.textContent = why; beep(140, .2, 'square'); return; }
-    const tries = widget.tries; S.cargoPick = [...widget.on]; closeToy(); S.done.cargo = true; if (!S.parts.includes('Navigation')) S.parts.push('Navigation');
+    const tries = widget.tries; S.cargoPick = [...widget.on]; closeToy(); S.done.cargo = true; earn('Navigation');
     S.log.push({ what: 'Cargo Load', skill: 'Add to make 30', tries, need: 1 }); save(); drawStatus(); chime(); card('gold');
-    say('The scale beeps. 7 things, 30 tons. You earn the Navigation part and a gold card. A door unlocks to the north!');
+    say('The scale beeps. 7 things, 30 tons. You earn the Navigation part and a gold card. A door unlocks to the north. And look: a door was behind the pile!' + whole());
   };
 }
 function cargoCrate(X, Y, z, i) {
@@ -1014,17 +1159,17 @@ function drawCargo() {        // the cargo pile and the big scale, drawn in the 
   cx.strokeStyle = '#6fd08a'; cx.beginPath(); cx.arc(DX, DY, R * .74, Math.PI + Math.PI * 29 / 40, Math.PI + Math.PI * 31 / 40); cx.stroke(); cx.strokeStyle = '#ff5a4d'; cx.beginPath(); cx.arc(DX, DY, R * .74, Math.PI + Math.PI * 31 / 40, 0); cx.stroke();
   const an = Math.PI + Math.PI * Math.min(40, tons) / 40; cx.strokeStyle = '#fff'; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(DX, DY); cx.lineTo(DX + Math.cos(an) * R * .7, DY + Math.sin(an) * R * .7); cx.stroke();
   cx.fillStyle = tons === 30 ? '#6fd08a' : tons > 30 ? '#ff5a4d' : '#ffb23e'; cx.font = `700 ${s * .34}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(tons + ' t', DX, DY - R * .22);
-  PILE.forEach((p, i) => { if (!on.includes(i)) cargoCrate(sx(p[0]) + s * .04, sy(p[1]) + s * .04, s * .92, i); });
+  let lk = 0; PILE.forEach((p, i) => { if (on.includes(i)) return; const q = S.done.cargo ? LEFT[lk++ % 4] : p; cargoCrate(sx(q[0]) + s * .04, sy(q[1]) + s * .04, s * .92, i); });
   cx.globalAlpha = 1;
 }
 function showEnding() {
   const rows = S.log.map(l => `<tr><td>${l.what}</td><td>${l.skill}</td><td>${l.result || (l.tries === l.need ? 'No mistakes ✓' : l.tries + ' tries')}</td></tr>`).join('');
   const t = $('report'); t.hidden = false; t.innerHTML = `<h3>Mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p><b>Secrets found: ${S.secrets.length} of ${TOTAL_SECRETS}.</b> ${S.secrets.length < TOTAL_SECRETS ? 'Twelve are on the station. Three are on Voltara.' : 'You found them all!'}</p>
+    <p><b>Secrets found: ${S.secrets.length} of ${TOTAL_SECRETS}.</b> ${S.secrets.length < TOTAL_SECRETS ? 'Eighteen are on the station. Three are on Voltara.' : 'You found them all!'}</p>
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
   $('again').onclick = restart;
 }
-function restart() { closeToy(); $('report').hidden = true; S = fresh(); save(); build(); P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Earth needs your help!'); introPanel(); }
+function restart() { closeToy(); $('report').hidden = true; S = fresh(); save(); build(); zapD = null; P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Earth needs your help!'); introPanel(); }
 
 /* =====================================================================
    DRAWING THE STATION
@@ -1036,7 +1181,7 @@ const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const INK = '#0e1626', DUST = [];
 function size() { const dpr = Math.min(2, window.devicePixelRatio || 1); vw = cv.clientWidth; vh = cv.clientHeight; cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0); snap = true; }
 let snap = true;
-const VIEWRECT = { dock: [10.9, 2.9, 15.2, 12.2], shield: [.9, 4.9, 11.2, 9.2], nav: [24.9, 4.9, 11.2, 9.2], launch: [24.9, -.1, 11.2, 6.2], tunnel: [13.4, 12.4, 11.7, 6.7], store: [13.4, 12.4, 11.7, 6.7] };
+const VIEWRECT = { dock: [10.9, 2.9, 15.2, 12.2], shield: [.9, 4.9, 11.2, 9.2], nav: [24.9, 4.9, 11.2, 9.2], launch: [24.9, -.1, 11.2, 6.2], engine: [.9, -.1, 11.2, 6.2], weapons: [.9, 12.9, 11.2, 6.2], power: [24.9, 12.9, 11.2, 6.2], tunnel: [13.4, 12.4, 11.7, 6.7], store: [13.4, 12.4, 11.7, 6.7] };
 const sx = x => (x - cam.x) * ts, sy = y => (y - cam.y) * ts;
 function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
@@ -1082,10 +1227,13 @@ function drawDoor(x, y, X, Y, dim) {
   cx.fillStyle = lockd ? '#ff5a4d' : '#6fd08a'; circ(vert ? X + s * .5 : X - s * .02, vert ? Y - s * .02 : Y + s * .5, s * .06); cx.fill();
 }
 const MESS = [];
-const LAMPS = [[18, 5.2], [14, 12], [22, 12.2], [6.5, 9.5], [30.5, 10], [30.5, 3], [21.5, 16.5]];
+const LAMPS = [[18, 5.2], [14, 12], [22, 12.2], [6.5, 9.5], [30.5, 10], [30.5, 3], [21.5, 16.5], [6.5, 3], [6.5, 15.5], [30.5, 15.5]];
 const DOORSIGN = [{ a: 'shield', b: 'dock', pa: [10.9, 10.45, 'right', 'Arrival Dock →'], pb: [12.1, 10.45, 'left', '← Shield Bay'] },
   { a: 'dock', b: 'nav', pa: [24.9, 10.45, 'right', 'Navigation Bay →'], pb: [26.1, 10.45, 'left', '← Arrival Dock'] },
-  { a: 'nav', b: 'launch', pa: [31.3, 6.45, 'left', '↑ Launch Bay'], pb: [31.3, 4.55, 'left', '↓ Navigation Bay'] }];
+  { a: 'nav', b: 'launch', pa: [31.3, 6.45, 'left', '↑ Launch Bay'], pb: [31.3, 4.55, 'left', '↓ Navigation Bay'] },
+  { a: 'shield', b: 'engine', pa: [5.3, 6.45, 'left', '↑ Engine Bay'], pb: [5.3, 5.5, 'left', '↓ Shield Bay'] },
+  { a: 'shield', b: 'weapons', pa: [7.3, 12.55, 'left', '↓ Weapons Bay'], pb: [7.3, 13.5, 'left', '↑ Shield Bay'] },
+  { a: 'nav', b: 'power', pa: [28.3, 12.55, 'left', '↓ Power Bay'], pb: [28.3, 13.5, 'left', '↑ Navigation Bay'] }];
 function decals() {
   const a = r => S.seen.includes(r) ? (S.room === r ? 1 : .4) : 0, s = ts; let k; cx.textAlign = 'left';
   if ((k = a('dock'))) { cx.globalAlpha = k;
@@ -1106,6 +1254,7 @@ function decals() {
     for (let i = 0; i < 12; i++) { cx.fillStyle = (Math.floor(tNow * 6) + i) % 12 < 3 ? '#ffb23e' : '#59657a'; circ(X + Math.cos(i * .5236) * R * 1.12, Y + Math.sin(i * .5236) * R * 1.12, s * .07); cx.fill(); }
     cx.fillStyle = 'rgba(255,220,150,.75)'; cx.font = `700 ${s * .3}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('LAUNCH PAD', X, Y + R + s * .42); cx.textAlign = 'left';
     for (const sg of [-1, 1]) { cx.fillStyle = '#59657a'; rr(X + sg * R * 1.5 - s * .22, Y - s * .9, s * .44, s * 1.8, 4); cx.fill(); ol(2); cx.fillStyle = '#f0c23b'; for (let j = 0; j < 4; j++) cx.fillRect(X + sg * R * 1.5 - s * .16, Y - s * .74 + j * s * .42, s * .32, s * .1); } }
+  for (const [r, txt, x, y, col] of [['engine', 'ENGINE BAY', 6.5, 4.75, '255,190,170'], ['weapons', 'WEAPONS BAY', 6.5, 17.8, '200,190,255'], ['power', 'POWER BAY', 30.5, 17.8, '170,240,200']]) if ((k = a(r))) { cx.globalAlpha = k * .5; cx.fillStyle = `rgb(${col})`; cx.font = `700 ${s * .3}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(txt, sx(x), sy(y)); cx.textAlign = 'left'; }
   for (const [kind, x, y, an] of MESS) { const c = G[Math.floor(y)][Math.floor(x)], st = tState(c); if (st < 2 || (c.room === 'tunnel' && !S.gap)) continue; cx.globalAlpha = st === 3 ? 1 : .4; const X = sx(x), Y = sy(y);
     if (kind === 'scorch') { const g = cx.createRadialGradient(X, Y, 0, X, Y, s * .6); g.addColorStop(0, 'rgba(0,0,0,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)'); cx.fillStyle = g; circ(X, Y, s * .6); cx.fill(); }
     else if (kind === 'scrap') { cx.save(); cx.translate(X, Y); cx.rotate(an); cx.fillStyle = '#9aa7bb'; cx.beginPath(); cx.moveTo(-s * .2, -s * .08); cx.lineTo(s * .18, -s * .14); cx.lineTo(s * .1, s * .12); cx.closePath(); cx.fill(); ol(1.5); cx.fillStyle = '#6b7689'; cx.fillRect(s * .2, s * .1, s * .12, s * .07); cx.restore(); }
@@ -1113,10 +1262,10 @@ function decals() {
     else if (kind === 'puddle') { cx.fillStyle = 'rgba(90,170,230,.35)'; cx.beginPath(); cx.ellipse(X, Y, s * .42, s * .22, 0, 0, 7); cx.fill(); cx.fillStyle = 'rgba(255,255,255,.35)'; cx.beginPath(); cx.ellipse(X - s * .12, Y - s * .05, s * .12, s * .04, 0, 0, 7); cx.fill(); }
     else if (kind === 'bolt') { cx.fillStyle = '#c9d2df'; circ(X, Y, s * .06); cx.fill(); ol(1); }
     else if (kind === 'spark' && Math.sin(tNow * 9 + x) > .2) { cx.strokeStyle = '#fff3a6'; cx.lineWidth = 2; for (let i = 0; i < 5; i++) { const an2 = i * 1.3 + tNow * 20; cx.beginPath(); cx.moveTo(X, Y); cx.lineTo(X + Math.cos(an2) * s * .22, Y + Math.sin(an2) * s * .22); cx.stroke(); } } }
-  for (const [dx, dy, ddx, ddy] of [[12.5, 9.5, -1, 0], [10.5, 9.5, 1, 0], [24.5, 9.5, 1, 0], [26.5, 9.5, -1, 0], [30.5, 6.6, 0, -1], [30.5, 4.4, 0, 1]]) { const c = G[Math.floor(dy)][Math.floor(dx)], st = tState(c); if (st < 2) continue; cx.globalAlpha = st === 3 ? .9 : .35; cx.strokeStyle = '#f0c23b'; cx.lineWidth = 3;
+  for (const [dx, dy, ddx, ddy] of [[12.5, 9.5, -1, 0], [10.5, 9.5, 1, 0], [24.5, 9.5, 1, 0], [26.5, 9.5, -1, 0], [30.5, 6.6, 0, -1], [30.5, 4.4, 0, 1], [4.5, 6.6, 0, -1], [4.5, 4.4, 0, 1], [6.5, 12.4, 0, 1], [6.5, 14.6, 0, -1], [27.5, 12.4, 0, 1], [27.5, 14.6, 0, -1]]) { const c = G[Math.floor(dy)][Math.floor(dx)], st = tState(c); if (st < 2) continue; cx.globalAlpha = st === 3 ? .9 : .35; cx.strokeStyle = '#f0c23b'; cx.lineWidth = 3;
     for (let i = 0; i < 2; i++) { const X = sx(dx) + ddx * i * s * .22, Y = sy(dy) + ddy * i * s * .22; cx.beginPath(); cx.moveTo(X - ddx * s * .12 - ddy * s * .16, Y - ddy * s * .12 - ddx * s * .16); cx.lineTo(X + ddx * s * .06, Y + ddy * s * .06); cx.lineTo(X - ddx * s * .12 + ddy * s * .16, Y - ddy * s * .12 + ddx * s * .16); cx.stroke(); } }
   cx.globalAlpha = 1;
-  cx.globalCompositeOperation = 'lighter'; for (const [x, y] of LAMPS) { const c = G[Math.floor(y)][Math.floor(x)]; if (tState(c) < 3 || ((S.room === 'tunnel' || S.room === 'store') && !S.poster)) continue; const g = cx.createRadialGradient(sx(x), sy(y), 0, sx(x), sy(y), s * 3.4); g.addColorStop(0, 'rgba(255,236,190,.16)'); g.addColorStop(1, 'rgba(255,236,190,0)'); cx.fillStyle = g; circ(sx(x), sy(y), s * 3.4); cx.fill(); } cx.globalCompositeOperation = 'source-over';
+  cx.globalCompositeOperation = 'lighter'; for (const [x, y] of LAMPS) { const c = G[Math.floor(y)][Math.floor(x)]; if (tState(c) < 3 || ((S.room === 'tunnel' || S.room === 'store') && !S.poster) || (S.room === 'power' && !S.fuse)) continue; const g = cx.createRadialGradient(sx(x), sy(y), 0, sx(x), sy(y), s * 3.4); g.addColorStop(0, 'rgba(255,236,190,.16)'); g.addColorStop(1, 'rgba(255,236,190,0)'); cx.fillStyle = g; circ(sx(x), sy(y), s * 3.4); cx.fill(); } cx.globalCompositeOperation = 'source-over';
 }
 function crateBox(X, Y, s, col) {
   cx.fillStyle = 'rgba(0,0,0,.3)'; rr(X + s * .12, Y + s * .16, s * .84, s * .84, 4); cx.fill();
@@ -1168,12 +1317,48 @@ function drawObj(id) {
   else if (id === 'chair') { cx.strokeStyle = '#2a3346'; cx.lineWidth = 3; for (let i = 0; i < 5; i++) { const an = i * 1.257 + .3; cx.beginPath(); cx.moveTo(X + s * .5, Y + s * .56); cx.lineTo(X + s * .5 + Math.cos(an) * s * .36, Y + s * .56 + Math.sin(an) * s * .36); cx.stroke(); f('#101826'); circ(X + s * .5 + Math.cos(an) * s * .36, Y + s * .56 + Math.sin(an) * s * .36, s * .05); cx.fill(); }
     f('#c8513f'); rr(X + s * .22, Y + s * .3, s * .56, s * .5, s * .14); cx.fill(); ol(2); f('#9a3a2c'); rr(X + s * .18, Y + s * .1, s * .64, s * .24, s * .1); cx.fill(); ol(2); f('#59657a'); cx.fillRect(X + s * .12, Y + s * .42, s * .1, s * .26); cx.fillRect(X + s * .78, Y + s * .42, s * .1, s * .26); }
   else if (id === 'bolt') { f(`rgba(240,244,250,${.75 + .25 * Math.sin(tNow * 4)})`); cx.beginPath(); for (let i = 0; i < 6; i++) cx[i ? 'lineTo' : 'moveTo'](X + s * .5 + Math.cos(i * 1.047) * s * .12, Y + s * .55 + Math.sin(i * 1.047) * s * .12); cx.closePath(); cx.fill(); ol(1.5); f('#59657a'); circ(X + s * .5, Y + s * .55, s * .045); cx.fill(); }
+  else if (id === 'core') { const on = S.done.core, cxm = X + s, cym = Y + s * .5, pu = .6 + .4 * Math.sin(tNow * (on ? 2 : 6)); shadow(.9, .16); f('#232c3d'); rr(X + s * .06, Y - s * .16, s * 1.88, s * 1.06, 8); cx.fill(); ol(2);
+    cx.globalCompositeOperation = 'lighter'; const g = cx.createRadialGradient(cxm, cym - s * .1, 0, cxm, cym - s * .1, s * .8); g.addColorStop(0, on ? `rgba(120,230,255,${.9 * pu})` : `rgba(255,120,80,${.7 * pu})`); g.addColorStop(1, 'rgba(0,0,0,0)'); f(g); circ(cxm, cym - s * .1, s * .8); cx.fill(); cx.globalCompositeOperation = 'source-over';
+    f(on ? '#bff3ff' : '#ffb08c'); circ(cxm, cym - s * .1, s * .26); cx.fill(); ol(2);
+    if (!on) { cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; for (let i = 0; i < 7; i++) { const bx = X + s * (.2 + i * .267); cx.beginPath(); cx.moveTo(bx, Y - s * .12); cx.lineTo(bx, Y + s * .86); cx.stroke(); } f('#101826'); rr(cxm - s * .44, Y + s * .56, s * .88, s * .26, 4); cx.fill(); ol(1.5); GEMC.forEach((c, i) => { f(c[1]); circ(cxm - s * .3 + i * s * .2, Y + s * .69, s * .065); cx.fill(); }); }
+    else { cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; for (const bx of [X + s * .2, X + s * 1.8]) { cx.beginPath(); cx.moveTo(bx, Y - s * .12); cx.lineTo(bx, Y + s * .86); cx.stroke(); } } }
+  else if (id === 'valve') { f('#59657a'); cx.fillRect(X - s * .4, Y + s * .36, s * 1.8, s * .2); ol(1.5); cx.strokeRect(X - s * .4, Y + s * .36, s * 1.8, s * .2); f('#c8513f'); circ(X + s * .5, Y + s * .46, s * .3); cx.fill(); ol(2); f('#3a1a14'); circ(X + s * .5, Y + s * .46, s * .1); cx.fill(); cx.strokeStyle = '#3a1a14'; cx.lineWidth = 2.5; for (let i = 0; i < 4; i++) { const an = i * 1.571 + (S.valve ? .8 : tNow * .4); cx.beginPath(); cx.moveTo(X + s * .5, Y + s * .46); cx.lineTo(X + s * .5 + Math.cos(an) * s * .28, Y + s * .46 + Math.sin(an) * s * .28); cx.stroke(); }
+    if (!S.valve) for (let i = 0; i < 5; i++) { const k = (tNow * .7 + i * .2) % 1; f(`rgba(235,240,250,${.5 * (1 - k)})`); circ(X + s * (1.0 + Math.sin(i * 2.1) * .12), Y + s * (.7 + k * 1.1), s * (.12 + k * .22)); cx.fill(); } else { f('#fbf3dc'); rr(X + s * .95, Y + s * .3, s * .42, s * .3, 2); cx.fill(); ol(1.5); f(INK); cx.fillRect(X + s * 1.0, Y + s * .38, s * .3, s * .035); cx.fillRect(X + s * 1.0, Y + s * .47, s * .22, s * .035); } }
+  else if (id === 'toolbox') { shadow(.42, .13); f('#c8513f'); rr(X + s * .08, Y + s * .36, s * .84, s * .5, 5); cx.fill(); ol(2); f('#9a3a2c'); if (S.toolbox) { rr(X + s * .08, Y + s * .02, s * .84, s * .2, 4); cx.fill(); ol(2); f('#04060b'); cx.fillRect(X + s * .14, Y + s * .3, s * .72, s * .12); } else { rr(X + s * .08, Y + s * .22, s * .84, s * .2, 4); cx.fill(); ol(2); } cx.strokeStyle = '#d4dde9'; cx.lineWidth = 3; cx.beginPath(); cx.arc(X + s * .5, Y + s * (S.toolbox ? .04 : .24), s * .14, Math.PI, 0); cx.stroke(); f('#f2c94c'); rr(X + s * .44, Y + s * .54, s * .12, s * .12, 2); cx.fill(); ol(1); }
+  else if (id === 'cannon') { shadow(.44, .14); f('#394660'); rr(X + s * .1, Y + s * .46, s * .8, s * .44, 6); cx.fill(); ol(2); f('#7f90aa'); rr(X + s * .38, Y - s * .3, s * .24, s * .86, 5); cx.fill(); ol(2); f(S.done.drones ? '#6fd08a' : `rgba(255,178,62,${.6 + .4 * Math.sin(tNow * 4)})`); circ(X + s * .5, Y - s * .26, s * .09); cx.fill(); f('#101826'); rr(X + s * .2, Y + s * .58, s * .6, s * .16, 3); cx.fill(); f(S.done.drones ? '#6fd08a' : '#ff5a4d'); cx.fillRect(X + s * .26, Y + s * .62, s * .14, s * .08); }
+  else if (id === 'ammo') { shadow(.42, .13); f('#4f6a4a'); rr(X + s * .06, Y + s * .3, s * .88, s * .58, 5); cx.fill(); ol(2); f('#3d5539'); if (S.ammo) { rr(X + s * .06, Y - s * .02, s * .88, s * .2, 4); cx.fill(); ol(2); ['#ff7a6b', '#6db3ff', '#6fd08a', '#ffd25e', '#f4f7fc'].forEach((c, i) => { f(c); circ(X + s * (.2 + i * .15), Y + s * .36, s * .06); cx.fill(); ol(1); }); } else { rr(X + s * .06, Y + s * .16, s * .88, s * .2, 4); cx.fill(); ol(2); } f('#f2c94c'); cx.font = `700 ${s * .17}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('AMMO', X + s * .5, Y + s * .7); }
+  else if (id === 'junk') { shadow(.42, .13); cx.save(); cx.translate(X + s * .5, Y + s * .62); cx.rotate(.35); f('#8a5a3a'); cx.beginPath(); cx.ellipse(0, 0, s * .4, s * .26, 0, 0, 7); cx.fill(); ol(2); f('#5e3b25'); rr(-s * .26, -s * .14, s * .52, s * .26, 4); cx.fill(); cx.strokeStyle = '#6b4a34'; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(-s * .44, -s * .26); cx.lineTo(s * .3, -s * .34); cx.stroke(); f('#3a2416'); for (const [i, j] of [[-.2, .08], [.16, -.04], [.02, .12]]) { circ(s * i, s * j, s * .05); cx.fill(); } cx.restore(); }
+  else if (id === 'wall9') { f('#1b2230'); rr(X + s * .06, Y + s * .06, s * .88, s * .78, 4); cx.fill(); ol(2); cx.font = `700 ${s * .19}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; for (let i = 0; i < 9; i++) { f(['#ff7a6b', '#ffd25e', '#6db3ff'][i % 3]); cx.fillText(i + 1, X + s * (.24 + (i % 3) * .26), Y + s * (.3 + Math.floor(i / 3) * .23)); } }
+  else if (id === 'board') { const on = S.done.board, live = widget && widget.kind === 'board'; f('#232c3d'); rr(X + s * .06, Y + s * .04, s * 2.88, s * .86, 6); cx.fill(); ol(2); f(on ? '#123b2c' : '#0c1220'); rr(X + s * .9, Y + s * .14, s * 1.2, s * .58, 4); cx.fill(); ol(1.5);
+    f(on ? '#6fd08a' : live ? '#ffd25e' : '#59657a'); cx.font = `700 ${s * .4}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(on ? 'ON' : live ? widget.n : '- - -', X + s * 1.5, Y + s * .45); cx.textBaseline = 'alphabetic';
+    for (let i = 0; i < 9; i++) { const left = i < 5, k = left ? i : i - 5, wx = left ? X + s * (.2 + (k % 3) * .22) : X + s * (2.24 + (k % 2) * .26), wy = Y + s * (.24 + Math.floor(k / (left ? 3 : 2)) * .26), lit = on || (live && widget.wires[i].on); f(lit ? '#ffb23e' : '#3a4356'); circ(wx, wy, s * .07); cx.fill(); ol(1); if (lit) { cx.strokeStyle = 'rgba(255,178,62,.8)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(wx, wy); cx.lineTo(X + s * (left ? .9 : 2.1), Y + s * .43); cx.stroke(); } } }
+  else if (id === 'fusebox') { f('#59657a'); rr(X + s * .16, Y + s * .1, s * .68, s * .7, 4); cx.fill(); ol(2); f(S.fuse ? '#123b2c' : '#1b2230'); rr(X + s * .24, Y + s * .18, s * .52, s * .54, 3); cx.fill(); f(S.fuse ? '#6fd08a' : '#ffd25e'); cx.beginPath(); cx.moveTo(X + s * .54, Y + s * .22); cx.lineTo(X + s * .36, Y + s * .48); cx.lineTo(X + s * .5, Y + s * .48); cx.lineTo(X + s * .44, Y + s * .68); cx.lineTo(X + s * .66, Y + s * .4); cx.lineTo(X + s * .52, Y + s * .4); cx.closePath(); cx.fill(); ol(1); }
+  else if (id === 'plate') { if (S.plate) { f('#04060b'); rr(X + s * .1, Y + s * .1, s * .8, s * .8, 3); cx.fill(); ol(2); f('#7f90aa'); rr(X + s * .6, Y - s * .12, s * .8, s * .3, 3); cx.fill(); ol(2); } else { f('#8795ab'); rr(X + s * .08, Y + s * .04, s * .84, s * .84, 3); cx.fill(); ol(2); f(`rgba(255,255,255,${.25 + .2 * Math.sin(tNow * 3)})`); cx.fillRect(X + s * .16, Y + s * .1, s * .5, s * .07); f('#59657a'); for (const [i, j] of [[.16, .78], [.84, .78], [.84, .14]]) { circ(X + s * i, Y + s * j, s * .04); cx.fill(); } } }
+  else if (id === 'battery') { shadow(.4, .13); f('#394660'); rr(X + s * .14, Y - s * .1, s * .72, s * .98, 6); cx.fill(); ol(2); f('#d4dde9'); rr(X + s * .36, Y - s * .2, s * .28, s * .14, 2); cx.fill(); ol(1.5); for (let i = 0; i < 4; i++) { f(S.done.board || i > 1 ? '#6fd08a' : '#2a3346'); rr(X + s * .24, Y + s * (.02 + i * .2), s * .52, s * .14, 2); cx.fill(); } }
   else if (id === 'chest') { shadow(.44, .14); f('#7a4f22'); rr(X + s * .06, Y + s * .3, s * .88, s * .58, 5); cx.fill(); ol(2); f('#f2c94c'); cx.fillRect(X + s * .2, Y + s * .3, s * .08, s * .58); cx.fillRect(X + s * .72, Y + s * .3, s * .08, s * .58);
     f('#99662e'); rr(X + s * .06, Y + (S.chest ? -s * .1 : s * .12), s * .88, s * .3, [s * .2, s * .2, 3, 3]); cx.fill(); ol(2); if (S.chest) { f('#04060b'); cx.fillRect(X + s * .12, Y + s * .22, s * .76, s * .12); } f('#f2c94c'); rr(X + s * .43, Y + s * .44, s * .14, s * .18, 2); cx.fill(); ol(1.5); }
   cx.globalAlpha = 1;
 }
+function drawGems() {       // the alien artifacts on the Engine Bay floor
+  if (!S.seen.includes('engine') || !S.gems) return; const s = ts; cx.globalAlpha = S.room === 'engine' ? 1 : .5; cx.lineJoin = 'round';
+  for (const [x, y, c] of S.gems) { const X = sx(x) + s / 2, Y = sy(y) + s * .52, col = GEMC[c][1], k = GEMC[c][2], r = s * .25, pu = .5 + .5 * Math.sin(tNow * 3 + x * 2 + y);
+    cx.globalCompositeOperation = 'lighter'; const g = cx.createRadialGradient(X, Y, 0, X, Y, s * .5); g.addColorStop(0, col + '66'); g.addColorStop(1, col + '00'); cx.fillStyle = g; cx.globalAlpha *= .6 + .4 * pu; circ(X, Y, s * .5); cx.fill(); cx.globalCompositeOperation = 'source-over'; cx.globalAlpha = S.room === 'engine' ? 1 : .5;
+    cx.fillStyle = col; cx.beginPath(); if (k === 'round') cx.arc(X, Y, r * .9, 0, 7); else if (k === 'square') cx.roundRect(X - r * .82, Y - r * .82, r * 1.64, r * 1.64, 3); else if (k === 'diamond') { cx.moveTo(X, Y - r * 1.2); cx.lineTo(X + r * .9, Y); cx.lineTo(X, Y + r * 1.2); cx.lineTo(X - r * .9, Y); cx.closePath(); } else { cx.moveTo(X, Y - r * 1.05); cx.lineTo(X + r * 1.05, Y + r * .85); cx.lineTo(X - r * 1.05, Y + r * .85); cx.closePath(); } cx.fill(); ol(2);
+    cx.fillStyle = 'rgba(255,255,255,.55)'; circ(X - r * .25, Y - r * .3, r * .2); cx.fill(); }
+  cx.globalAlpha = 1;
+}
+function droneBody(X, Y, s, label, col, lit) { cx.fillStyle = col; cx.beginPath(); cx.ellipse(X, Y, s * .46, s * .33, 0, 0, 7); cx.fill(); ol(2); cx.strokeStyle = '#c9d2df'; cx.lineWidth = 2.5; const w = s * .5 * Math.abs(Math.cos(tNow * 14 + X)); cx.beginPath(); cx.moveTo(X - w, Y - s * .38); cx.lineTo(X + w, Y - s * .38); cx.stroke(); cx.fillStyle = '#59657a'; cx.fillRect(X - s * .03, Y - s * .38, s * .06, s * .1);
+  cx.fillStyle = '#0c1220'; rr(X - s * .36, Y - s * .19, s * .72, s * .38, 4); cx.fill(); if (label !== null) { cx.fillStyle = '#fff'; cx.font = `700 ${s * .4}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(label, X, Y + s * .01); cx.textBaseline = 'alphabetic'; } else { cx.fillStyle = lit; circ(X, Y, s * .06); cx.fill(); } }
+function drawDrones(dt) {     // the practice drones hover in the Weapons Bay. During target practice each one shows a number.
+  if (!S.seen.includes('weapons')) return; const w = widget && widget.kind === 'drones' ? widget : null, s = ts; cx.globalAlpha = S.room === 'weapons' ? 1 : .5;
+  DSLOT.forEach((p, i) => { const d = w && w.d[i]; if (d && d.hit) return; const X = sx(p[0]) + s / 2, Y = sy(p[1]) + s * .42 + Math.sin(tNow * 2.2 + i * 1.7) * s * .07;
+    cx.fillStyle = 'rgba(0,0,0,.26)'; cx.beginPath(); cx.ellipse(X, sy(p[1]) + s * .95, s * .3, s * .08, 0, 0, 7); cx.fill(); droneBody(X, Y, s, w ? d.n : null, w ? '#44557a' : '#39445a', S.done.drones ? '#6fd08a' : '#7f90aa'); });
+  if (S.junk) { const an = tNow * .9, X = sx(6.5 + Math.cos(an) * 3.2), Y = sy(15.3 + Math.sin(an * 2) * .5); droneBody(X, Y, s * .8, null, '#8a5a3a', '#ffd25e'); }
+  if (zapD) { zapD.t -= dt; if (w || zapD.t > 0) { const p = DSLOT[zapD.i], k = Math.max(0, zapD.t / .4); cx.strokeStyle = `rgba(120,255,170,${k})`; cx.lineWidth = 5 * k + 1; cx.beginPath(); cx.moveTo(sx(6.5), sy(16.7)); cx.lineTo(sx(p[0]) + s / 2, sy(p[1]) + s * .42); cx.stroke(); cx.fillStyle = `rgba(255,240,170,${k})`; circ(sx(p[0]) + s / 2, sy(p[1]) + s * .42, s * (.7 - k * .4)); cx.fill(); } if (zapD.t <= 0) zapD = null; }
+  cx.globalAlpha = 1; cx.textAlign = 'left';
+}
 function label(id) {
-  const o = OBJ[id]; if (!objOn(o) || (o.room !== S.room && !(id === 'gap' && S.room === 'tunnel'))) return;
+  const o = OBJ[id]; if (!objOn(o) || (o.quiet && hover !== id) || (o.room !== S.room && !(id === 'gap' && S.room === 'tunnel'))) return;
   const t = objTiles(id), mx = t.reduce((a, p) => a + p[0], 0) / t.length + .5, my = Math.min(...t.map(p => p[1])), d = Math.min(...t.map(p => Math.hypot(P.x - p[0], P.y - p[1])));
   if (d > 2.4 && hover !== id) return; let LX = sx(mx), LY = sy(my) - ts * .24; const hx = sx(P.x) + ts / 2, hy = sy(P.y) - ts * .2; if (Math.abs(LX - hx) < ts * 1.1 && Math.abs(LY - hy) < ts * .7) LY = sy(Math.max(...t.map(p => p[1])) + 1) + ts * .24; pill(o.label, LX, LY);
 }
@@ -1228,6 +1413,7 @@ function minimap() {
 }
 function frame(now) {
   const dt = Math.min(.05, (now - (frame.last || now)) / 1000); frame.last = now; tNow += dt; zap = Math.max(0, zap - dt); setPlace();
+  if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();
   if (S.mode === 'intro' || S.mode === 'arrive') { drawIntro(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'space') { drawSpace(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'planet') { drawPlanet(dt); return requestAnimationFrame(frame); }
@@ -1238,10 +1424,12 @@ function frame(now) {
     else { P.x += dx / d * stepLen; P.y += dy / d * stepLen; } }
   else { P.idle += dt; if (P.idle > 2.5) P.dir = 'down'; }
   if (S.bot) { const d = Math.hypot(P.x - BOT.x, P.y - BOT.y); if (d > 1.3) { BOT.x += (P.x - BOT.x) / d * Math.min(d - 1.2, 4.4 * dt); BOT.y += (P.y - BOT.y) / d * Math.min(d - 1.2, 4.4 * dt); } }
-  const battle = widget && widget.kind === 'battle', cargo = widget && widget.kind === 'cargo', toyH = 0, top = 44;
+  const battle = widget && widget.kind === 'battle', cargo = widget && widget.kind === 'cargo', task = battle || cargo || (widget && widget.kind === 'drones'), top = 44;
   const vr = battle ? [-6.6, 4.9, 14.2, 9.2] : cargo ? [25.6, 8.2, 9.7, 5.0] : VIEWRECT[S.room], availH = Math.max(120, vh - top);
-  const tts = Math.max(24, Math.min(88, Math.min(vw / vr[2], availH / vr[3]))), k5 = snap ? 1 : Math.min(1, dt * 5);
-  ts += (tts - ts) * k5; const tw = vw / ts, gx = vr[0] + vr[2] / 2 - tw / 2, gy = vr[1] + vr[3] / 2 - (top + availH / 2) / ts;
+  // On a small screen the tiles stay big enough to read, and the camera follows the cadet through the room. A task always shows its whole scene.
+  const tts = Math.max(task ? 14 : Math.min(40, Math.max(24, vw / 10)), Math.min(88, Math.min(vw / vr[2], availH / vr[3]))), k5 = snap ? 1 : Math.min(1, dt * 5);
+  ts += (tts - ts) * k5; const tw = vw / ts, th = availH / ts, pin = (lo, span, view, at) => view < span && !task ? Math.max(lo, Math.min(lo + span - view, at + .5 - view / 2)) : lo + span / 2 - view / 2;
+  const gx = pin(vr[0], vr[2], tw, P.x), gy = pin(vr[1], vr[3], th, P.y) - top / ts;
   cam.x += (gx - cam.x) * k5; cam.y += (gy - cam.y) * k5; snap = false;
   const shakeX = alarm > 0 && !calm ? Math.sin(tNow * 60) * 2 : 0; alarm = Math.max(0, alarm - dt);
   cx.save(); cx.translate(shakeX, 0);
@@ -1250,15 +1438,17 @@ function frame(now) {
   const x0 = Math.max(0, Math.floor(cam.x)), x1 = Math.min(W - 1, Math.ceil(cam.x + tw)), y0 = Math.max(0, Math.floor(cam.y)), y1 = Math.min(H - 1, Math.ceil(cam.y + vh / ts));
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) drawFloor(x, y);
   decals();
-  ['gap', 'grate', 'bolt'].forEach(drawObj);
+  ['gap', 'grate', 'bolt', 'plate'].forEach(drawObj); drawGems();
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) drawWall(x, y);
-  ['sign', 'vent', 'poster', 'gauge'].forEach(drawObj);
+  ['sign', 'vent', 'poster', 'gauge', 'valve', 'wall9', 'board', 'fusebox'].forEach(drawObj);
   for (const d of DUST) { d.t -= dt; cx.fillStyle = `rgba(200,210,225,${Math.max(0, d.t) * .6})`; circ(sx(d.x), sy(d.y) - (.5 - d.t) * ts * .2, ts * (.05 + (.5 - d.t) * .12)); cx.fill(); } while (DUST.length && DUST[0].t <= 0) DUST.shift();
   // things and people, sorted so nearer ones overlap further ones
-  const order = ['stack', 'crate', 'ship', 'locker', 'panel', 'robot', 'table', 'drawer', 'chair', 'console', 'chest'].map(id => [objTiles(id)[0][1] + (id === 'ship' ? 2.4 : 0), () => drawObj(id)]);
+  const order = ['stack', 'crate', 'ship', 'locker', 'panel', 'robot', 'table', 'drawer', 'chair', 'console', 'chest', 'core', 'toolbox', 'cannon', 'ammo', 'junk', 'battery'].map(id => [objTiles(id)[0][1] + (id === 'ship' ? 2.4 : 0), () => drawObj(id)]);
   order.push([10.4, drawCargo]); order.push([P.y, drawPlayer]); if (S.bot) order.push([BOT.y - .01, () => botDraw(sx(BOT.x) + ts / 2, sy(BOT.y) + ts / 2, true)]);
   order.sort((a, b) => a[0] - b[0]).forEach(o => o[1]());
+  drawDrones(dt);
   if (battle) drawField();
+  if (S.room === 'power' && !S.fuse) { cx.fillStyle = 'rgba(2,4,10,.5)'; cx.fillRect(-4, 0, vw + 8, vh); }
   if (alarm > 0 || battle) { cx.globalCompositeOperation = 'lighter'; for (const [bx, by, ph] of [[2.4, 6.3, 0], [10.6, 6.3, 2], [2.4, 12.6, 4], [10.6, 12.6, 1]]) { const pu = .5 + .5 * Math.sin(tNow * 9 + ph), g = cx.createRadialGradient(sx(bx), sy(by), 0, sx(bx), sy(by), ts * 1.5); g.addColorStop(0, `rgba(255,70,50,${.55 * pu})`); g.addColorStop(1, 'rgba(255,70,50,0)'); cx.fillStyle = g; circ(sx(bx), sy(by), ts * 1.5); cx.fill(); } cx.globalCompositeOperation = 'source-over';
     for (const [bx, by] of [[2.4, 6.3], [10.6, 6.3], [2.4, 12.6], [10.6, 12.6]]) { cx.fillStyle = '#ff5a4d'; circ(sx(bx), sy(by), ts * .13); cx.fill(); ol(1.5); } }
   if ((S.room === 'tunnel' || S.room === 'store') && !S.poster) { const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, g = cx.createRadialGradient(X, Y, ts * .9, X, Y, ts * 3.4); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,4,8,.96)'); cx.fillStyle = g; cx.fillRect(-4, 0, vw + 8, vh); }
@@ -1624,6 +1814,7 @@ cv.addEventListener('pointerdown', e => {
   if (widget && widget.kind === 'cargo') { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y, on = [...widget.on];
     const k = on.findIndex((_, j) => { const p = slot(j); return fx >= p[0] && fx <= p[0] + .78 && fy >= p[1] && fy <= p[1] + .78; }); if (k >= 0) return cargoToggle(on[k]);
     const i = PILE.findIndex(p => fx >= p[0] && fx <= p[0] + 1 && fy >= p[1] && fy <= p[1] + 1); if (i >= 0 && !widget.on.has(i)) cargoToggle(i); return; }
+  if (widget && widget.kind === 'drones') { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y; let best = -1, bd = .85; DSLOT.forEach((p, i) => { const d = Math.hypot(fx - p[0] - .5, fy - p[1] - .42); if (d < bd && !widget.d[i].hit) { bd = d; best = i; } }); if (best >= 0) droneTap(best); return; }
   if (S.ended) return; const [x, y] = tileOf(e), id = thingAt(x, y), draft = $('cmd').value.trim().toLowerCase();
   if (S.bot && !widget) { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y; if (Math.abs(fx - BOT.x - .5) < .6 && Math.abs(fy - BOT.y - .5) < .7) return act('talk robot'); }
   if (id && id !== 'grate' || id === 'grate' && draft) { const w = OBJ[id].words[0]; return act(draft && /^(look|take|open|push|use)( \w+ on)?$/.test(draft) ? `${draft} ${w}` : `look ${w}`); }
@@ -1644,7 +1835,7 @@ window.addEventListener('resize', size);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
 size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
-S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; drawStars();
+S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.ship && rude(S.ship)) S.ship = ''; if (S.botName && rude(S.botName)) S.botName = ''; drawStars();
 if (S.tut == null) S.tut = 3;
 say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
