@@ -958,5 +958,821 @@
   "text": "A star map costs {a} baht at the trade post. You pay with a 100-baht note.",
   "ask": "How much change do you get?",
   "unit": "baht"
+ },
+ {
+  "rule": "clock_hour",
+  "where": "station",
+  "who": "Zip",
+  "text": "The dock clock has two hands. Zip never learned to read it.",
+  "ask": "What time is it?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_hour",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A sun clock stands in the garden. The butterfly lands on it.",
+  "ask": "What time does it show?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_hour",
+  "where": "space",
+  "who": "the radio",
+  "text": "The radio crackles. Check the clock on your panel.",
+  "ask": "What time is it?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_half",
+  "where": "station",
+  "who": "Zip",
+  "text": "Lunch on the station is at this time. Zip does not want to miss it.",
+  "ask": "What time is lunch?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_half",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish naps at the same time each day. It points a fin at the clock.",
+  "ask": "What time is nap time?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_half",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your ship must leave at the time on this clock.",
+  "ask": "What time must you leave?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_five",
+  "where": "station",
+  "who": "Zip",
+  "text": "The next supply ship lands at this time.",
+  "ask": "What time does it land?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_five",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The Energy Council starts at the time on the clock.",
+  "ask": "What time does it start?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_five",
+  "where": "space",
+  "who": "the radio",
+  "text": "A comet will pass at the time on your clock.",
+  "ask": "What time will it pass?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_minute",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip logs each repair to the exact minute.",
+  "ask": "What time does the clock show?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_minute",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The lights of Voltara came back at this exact time.",
+  "ask": "What time was it?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_minute",
+  "where": "space",
+  "who": "the radio",
+  "text": "Mission Control needs the exact time of your launch.",
+  "ask": "What time is on the clock?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_elapsed",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip started the repair at the first time. It ended at the second.",
+  "ask": "How many {unit} did it take?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_elapsed",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish dived at the start time. It came up at the end time.",
+  "ask": "How many {unit} was it under?",
+  "unit": ""
+ },
+ {
+  "rule": "clock_elapsed",
+  "where": "space",
+  "who": "the radio",
+  "text": "The first clock shows lift-off. The second shows landing.",
+  "ask": "How many {unit} was the flight?",
+  "unit": ""
+ },
+ {
+  "rule": "bar_read",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip counted {topic}. It drew a bar graph.",
+  "ask": "How many {cat} are there?",
+  "unit": ""
+ },
+ {
+  "rule": "bar_read",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly counted {topic}. Here is its graph.",
+  "ask": "How many {cat} did it count?",
+  "unit": ""
+ },
+ {
+  "rule": "bar_read",
+  "where": "space",
+  "who": "the radio",
+  "text": "Mission Control sends a graph. It shows {topic}.",
+  "ask": "How many {cat} does it show?",
+  "unit": ""
+ },
+ {
+  "rule": "bar_addsub",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip made a graph of {topic}. Now it has a harder question.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "bar_addsub",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "This graph shows {topic}. The butterfly wants to check a sum.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "bar_addsub",
+  "where": "space",
+  "who": "the radio",
+  "text": "The radio sends a graph of {topic}. Read two bars.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "bar_multi",
+  "where": "station",
+  "who": "Zip",
+  "text": "Look at the numbers up the side. They go up in jumps. The graph shows {topic}.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "bar_multi",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly counted {topic}. Its graph goes up in jumps.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "bar_multi",
+  "where": "space",
+  "who": "the radio",
+  "text": "This graph shows {topic}. Check the side numbers before you read it.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "picto_read",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip drew one picture for each thing. The graph shows {topic}.",
+  "ask": "How many {cat} are there?",
+  "unit": ""
+ },
+ {
+  "rule": "picto_read",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish made a picture graph. It shows {topic}.",
+  "ask": "How many {cat} are there?",
+  "unit": ""
+ },
+ {
+  "rule": "picto_read",
+  "where": "space",
+  "who": "the radio",
+  "text": "A picture graph comes over the radio. It shows {topic}.",
+  "ask": "How many {cat} does it show?",
+  "unit": ""
+ },
+ {
+  "rule": "picto_addsub",
+  "where": "station",
+  "who": "Zip",
+  "text": "Each picture stands for one thing. The graph shows {topic}.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "picto_addsub",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish giggles at its picture graph of {topic}.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "picto_addsub",
+  "where": "space",
+  "who": "the radio",
+  "text": "Count the pictures in two rows. The graph shows {topic}.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "picto_multi",
+  "where": "station",
+  "who": "Zip",
+  "text": "Careful. Each picture stands for more than one. The graph shows {topic}.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "picto_multi",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish got tired of drawing. Now one picture means many. It shows {topic}.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "picto_multi",
+  "where": "space",
+  "who": "the radio",
+  "text": "Read the key first. Then read the graph of {topic}.",
+  "ask": "{q}",
+  "unit": ""
+ },
+ {
+  "rule": "bar_build",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip counted {topic}. It needs you to draw the graph.",
+  "ask": "Tap to make each bar the right height.",
+  "unit": ""
+ },
+ {
+  "rule": "bar_build",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly counted {topic}. It cannot hold a pen.",
+  "ask": "Build the bars to match its list.",
+  "unit": ""
+ },
+ {
+  "rule": "bar_build",
+  "where": "space",
+  "who": "the radio",
+  "text": "Mission Control read out a list of {topic}.",
+  "ask": "Build a bar for each number.",
+  "unit": ""
+ },
+ {
+  "rule": "bar_build_multi",
+  "where": "station",
+  "who": "Zip",
+  "text": "This graph goes up in jumps. Zip counted {topic}.",
+  "ask": "Tap to make each bar the right height.",
+  "unit": ""
+ },
+ {
+  "rule": "bar_build_multi",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "There are too many to count by ones. The butterfly counted {topic}.",
+  "ask": "Build the bars. Check the side numbers.",
+  "unit": ""
+ },
+ {
+  "rule": "bar_build_multi",
+  "where": "space",
+  "who": "the radio",
+  "text": "The list shows {topic}. The graph goes up in jumps.",
+  "ask": "Build a bar for each number.",
+  "unit": ""
+ },
+ {
+  "rule": "area_count",
+  "where": "station",
+  "who": "Zip",
+  "text": "A hull patch is made of square plates.",
+  "ask": "How many square plates is its area?",
+  "unit": "squares"
+ },
+ {
+  "rule": "area_count",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A garden bed is made of square plots.",
+  "ask": "What is its area in squares?",
+  "unit": "squares"
+ },
+ {
+  "rule": "area_count",
+  "where": "space",
+  "who": "the radio",
+  "text": "A solar sail is made of square panels.",
+  "ask": "How many squares is its area?",
+  "unit": "squares"
+ },
+ {
+  "rule": "area_tile",
+  "where": "station",
+  "who": "Zip",
+  "text": "This floor has no tiles yet. Tap to lay square tiles.",
+  "ask": "How many tiles cover it?",
+  "unit": "tiles"
+ },
+ {
+  "rule": "area_tile",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The hut floor is bare. Tap to lay square mats.",
+  "ask": "How many mats cover the floor?",
+  "unit": "mats"
+ },
+ {
+  "rule": "area_tile",
+  "where": "space",
+  "who": "the radio",
+  "text": "The landing pad needs square plates. Tap to lay them.",
+  "ask": "How many plates cover the pad?",
+  "unit": "plates"
+ },
+ {
+  "rule": "area_expr",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip stacked crates in rows. Counting one by one is slow.",
+  "ask": "Write a times sum for the area.",
+  "unit": ""
+ },
+ {
+  "rule": "area_expr",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The FlavorBurst trees grow in neat rows.",
+  "ask": "Write a times sum for the squares.",
+  "unit": ""
+ },
+ {
+  "rule": "area_expr",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your shield is a block of square cells.",
+  "ask": "Write a times sum for its area.",
+  "unit": ""
+ },
+ {
+  "rule": "perim_labeled",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip must put a light strip round this hatch.",
+  "ask": "How long is the strip, all the way round?",
+  "unit": "m"
+ },
+ {
+  "rule": "perim_labeled",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly flies once round the edge of this field.",
+  "ask": "How far does it fly?",
+  "unit": "m"
+ },
+ {
+  "rule": "perim_labeled",
+  "where": "space",
+  "who": "the radio",
+  "text": "A robot walks once round the edge of this landing pad.",
+  "ask": "How far does it walk?",
+  "unit": "m"
+ },
+ {
+  "rule": "frac_halves",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip must cut a plate into halves. Halves are 2 equal parts.",
+  "ask": "Which shape is cut into halves?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_halves",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "Two fish share a FlavorBurst pie. Each wants the same.",
+  "ask": "Which shape is cut into halves?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_halves",
+  "where": "space",
+  "who": "the radio",
+  "text": "Two cadets split a fuel cell fairly.",
+  "ask": "Which shape shows halves?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_thirds",
+  "where": "station",
+  "who": "Zip",
+  "text": "Three robots share one battery. Thirds are 3 equal parts.",
+  "ask": "Which shape is cut into thirds?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_thirds",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Three butterflies share a leaf. Each gets the same.",
+  "ask": "Which shape is cut into thirds?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_thirds",
+  "where": "space",
+  "who": "the radio",
+  "text": "Three ships share one landing pad fairly.",
+  "ask": "Which shape shows thirds?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_fourths",
+  "where": "station",
+  "who": "Zip",
+  "text": "Four cadets share a window seat. Fourths are 4 equal parts.",
+  "ask": "Which shape is cut into fourths?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_fourths",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "Four fish share one big shell. Each gets the same.",
+  "ask": "Which shape is cut into fourths?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_fourths",
+  "where": "space",
+  "who": "the radio",
+  "text": "Four engines share the fuel fairly.",
+  "ask": "Which shape shows fourths?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_parts",
+  "where": "station",
+  "who": "Zip",
+  "text": "Some shield cells are lit. All the cells are the same size.",
+  "ask": "What fraction is lit?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_parts",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish ate part of its pie. The lit parts are left.",
+  "ask": "What fraction is left?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_parts",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your fuel gauge glows. The lit parts are full.",
+  "ask": "What fraction is full?",
+  "unit": ""
+ },
+ {
+  "rule": "frac_model_unit",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip wants {num}/{den} of the power bar lit.",
+  "ask": "Cut the bar. Then light {num}/{den}.",
+  "unit": ""
+ },
+ {
+  "rule": "frac_model_unit",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly may eat {num}/{den} of the leaf.",
+  "ask": "Cut the bar and light {num}/{den}.",
+  "unit": ""
+ },
+ {
+  "rule": "frac_model_unit",
+  "where": "space",
+  "who": "the radio",
+  "text": "Mission Control says: charge {num}/{den} of the shield.",
+  "ask": "Cut the bar and light {num}/{den}.",
+  "unit": ""
+ },
+ {
+  "rule": "frac_model",
+  "where": "station",
+  "who": "Zip",
+  "text": "The engine needs {num}/{den} of a fuel bar.",
+  "ask": "Cut the bar. Then light {num}/{den}.",
+  "unit": ""
+ },
+ {
+  "rule": "frac_model",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish wants {num}/{den} of the pie bar.",
+  "ask": "Cut the bar and light {num}/{den}.",
+  "unit": ""
+ },
+ {
+  "rule": "frac_model",
+  "where": "space",
+  "who": "the radio",
+  "text": "Set the shield to {num}/{den} power.",
+  "ask": "Cut the bar and light {num}/{den}.",
+  "unit": ""
+ },
+ {
+  "rule": "nl_unit",
+  "where": "station",
+  "who": "Zip",
+  "text": "The fuel line runs from 0 to 1. Zip needs the mark for {num}/{den}.",
+  "ask": "Tap {num}/{den} on the line.",
+  "unit": ""
+ },
+ {
+  "rule": "nl_unit",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A vine runs from 0 to 1. The butterfly lands at {num}/{den}.",
+  "ask": "Tap where it lands.",
+  "unit": ""
+ },
+ {
+  "rule": "nl_unit",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your route runs from 0 to 1. A buoy floats at {num}/{den}.",
+  "ask": "Tap the buoy's mark on the line.",
+  "unit": ""
+ },
+ {
+  "rule": "nl_frac",
+  "where": "station",
+  "who": "Zip",
+  "text": "The power dial runs from 0 to 1. Set it to {num}/{den}.",
+  "ask": "Tap {num}/{den} on the line.",
+  "unit": ""
+ },
+ {
+  "rule": "nl_frac",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The lake path runs from 0 to 1. A shell lies at {num}/{den}.",
+  "ask": "Tap where the shell is.",
+  "unit": ""
+ },
+ {
+  "rule": "nl_frac",
+  "where": "space",
+  "who": "the radio",
+  "text": "You have flown {num}/{den} of the way.",
+  "ask": "Tap where your ship is.",
+  "unit": ""
+ },
+ {
+  "rule": "array_expr",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip set out bolts in neat rows.",
+  "ask": "Which sum matches the rows?",
+  "unit": ""
+ },
+ {
+  "rule": "array_expr",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Eggs sit in rows on a leaf.",
+  "ask": "Which sum matches the rows?",
+  "unit": ""
+ },
+ {
+  "rule": "array_expr",
+  "where": "space",
+  "who": "the radio",
+  "text": "Asteroids drift past in rows.",
+  "ask": "Which sum shows them all?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_sides",
+  "where": "station",
+  "who": "Zip",
+  "text": "A hull patch has this shape.",
+  "ask": "How many {what} does it have?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_sides",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly found a flat stone like this.",
+  "ask": "How many {what} does it have?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_sides",
+  "where": "space",
+  "who": "the radio",
+  "text": "A space sign has this shape.",
+  "ask": "How many {what} does it have?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_basic",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip finds a metal plate on the floor.",
+  "ask": "What shape is it?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_basic",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A Voltara window has this shape.",
+  "ask": "What shape is it?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_basic",
+  "where": "space",
+  "who": "the radio",
+  "text": "A shape blinks on your screen.",
+  "ask": "What shape is it?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_more",
+  "where": "station",
+  "who": "Zip",
+  "text": "The new hatch has a strange shape. Count its sides.",
+  "ask": "What is this shape called?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_more",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A crystal on Voltara has this face.",
+  "ask": "What is this shape called?",
+  "unit": ""
+ },
+ {
+  "rule": "shape_more",
+  "where": "space",
+  "who": "the radio",
+  "text": "A space buoy flashes this shape.",
+  "ask": "What is this shape called?",
+  "unit": ""
+ },
+ {
+  "rule": "sym_count",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip folds a metal plate so both halves match. Each such fold is a line of symmetry.",
+  "ask": "How many lines of symmetry does this shape have?",
+  "unit": ""
+ },
+ {
+  "rule": "sym_count",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "My two wings match, says the butterfly. The fold between them is a line of symmetry.",
+  "ask": "How many lines of symmetry does this shape have?",
+  "unit": ""
+ },
+ {
+  "rule": "sym_count",
+  "where": "space",
+  "who": "the radio",
+  "text": "A ship badge can fold so both halves match. Each fold is a line of symmetry.",
+  "ask": "How many lines of symmetry does this shape have?",
+  "unit": ""
+ },
+ {
+  "rule": "sym_line",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip drew a dashed line on this plate. Fold along it in your mind.",
+  "ask": "Is it a line of symmetry?",
+  "unit": ""
+ },
+ {
+  "rule": "sym_line",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly folds its wings along the dashed line. Do both halves match?",
+  "ask": "Is the dashed line a line of symmetry?",
+  "unit": ""
+ },
+ {
+  "rule": "sym_line",
+  "where": "space",
+  "who": "the radio",
+  "text": "A badge is folded along the dashed line. Do both halves match?",
+  "ask": "Is it a line of symmetry?",
+  "unit": ""
+ },
+ {
+  "rule": "coord_read",
+  "where": "station",
+  "who": "Zip",
+  "text": "A star shines on the map. Go along first, then up.",
+  "ask": "Where is the star?",
+  "unit": ""
+ },
+ {
+  "rule": "coord_read",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A star marks a secret spot on the map.",
+  "ask": "Where is the star?",
+  "unit": ""
+ },
+ {
+  "rule": "coord_read",
+  "where": "space",
+  "who": "the radio",
+  "text": "A new star shows on your map. Mission Control needs its place.",
+  "ask": "Where is the star?",
+  "unit": ""
+ },
+ {
+  "rule": "coord_plot",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip reads out a place: ({x}, {y}). Go along first, then up.",
+  "ask": "Tap that point on the map.",
+  "unit": ""
+ },
+ {
+  "rule": "coord_plot",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Treasure lies at ({x}, {y}), says the butterfly.",
+  "ask": "Tap that point on the map.",
+  "unit": ""
+ },
+ {
+  "rule": "coord_plot",
+  "where": "space",
+  "who": "the radio",
+  "text": "Fly to ({x}, {y}). Along first, then up.",
+  "ask": "Tap that point on the map.",
+  "unit": ""
+ },
+ {
+  "rule": "coord_what",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip scans the map. Something is at ({x}, {y}).",
+  "ask": "What is at ({x}, {y})?",
+  "unit": ""
+ },
+ {
+  "rule": "coord_what",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly wants to fly to ({x}, {y}).",
+  "ask": "What will it find there?",
+  "unit": ""
+ },
+ {
+  "rule": "coord_what",
+  "where": "space",
+  "who": "the radio",
+  "text": "The radio says: go to ({x}, {y}).",
+  "ask": "What is at that point?",
+  "unit": ""
  }
 ]
