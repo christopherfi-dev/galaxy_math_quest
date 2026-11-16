@@ -52,12 +52,15 @@ const path = require('path');
     const n = await run(rule, ['wrong', 'wrong', 'steps', 'wrong', 'steps', 'wrong']); if (n.status !== 'FAILED-FOUNDATIONAL') bad.push(`${rule}: not-ready path gave ${n.status}`);
   }
   console.log('Slip and not-ready paths played on 6 skills.');
-  // the order the robot asks in: lowest band first, and from the teacher's start band
-  const order = await p.evaluate(() => { S.skill = {}; S.start = 161; const seq = []; for (let i = 0; i < LADDER.length; i++) { const r = nextUnlit(); seq.push(LADDER.find(l => l[0] === r)[3]); S.skill[r] = { status: 'PASSED', tries: 3 }; }
-    const done = nextUnlit(); S.skill = {}; S.start = 181; const first = LADDER.find(l => l[0] === nextUnlit())[3]; S.skill = {}; S.start = 161; save(); return { seq, done, first }; });
-  if (order.seq.some((x, i) => i && x < order.seq[i - 1])) bad.push('trainer order is not lowest band first');
-  if (order.done !== null) bad.push('trainer did not finish'); if (order.first !== 181) bad.push('start band 181 began at ' + order.first);
-  console.log('Trainer order: lowest band first:', !order.seq.some((x, i) => i && x < order.seq[i - 1]), '· start band 181 begins at', order.first);
+  // who asks what: the robot asks only the station's ship-check skills, in Marc's ship-part order. Voltara's animals ask only Numbers Quest 1.
+  const scope = await p.evaluate(() => { const walk = list => { S.skill = {}; const seq = []; let r, n = 0; while ((r = nextUnlit(list)) && n++ < 99) { seq.push(r); S.skill[r] = { status: 'PASSED', tries: 3 }; } return seq; };
+    const st = walk(AT_STATION), vo = walk(AT_VOLTARA); S.skill = { count_on: { status: 'FAILED-FOUNDATIONAL', tries: 9 } }; const afterFail = nextUnlit(AT_STATION); S.skill = {}; S.bot = true; save(); drawStars();
+    return { st, vo, afterFail, parts: [...new Set(st.map(r => LADDER.find(l => l[0] === r)[5]))], chart: $('stars').innerText, total: LADDER.length }; });
+  if (scope.st.length !== 12 || scope.parts.length !== 5) bad.push('station should ask 12 skills over 5 ship parts, got ' + scope.st.length + ' over ' + scope.parts.length);
+  if (scope.vo.length !== 4) bad.push('Voltara should ask 4 skills, got ' + scope.vo.length);
+  if (scope.afterFail === 'count_on') bad.push('a skill that needs building blocks is asked again straight away');
+  if (!/Ship check: 0 of 12/.test(scope.chart) || /Clock|Pictograph|coins/i.test(scope.chart)) bad.push('the student star chart shows more than the ship check');
+  console.log(`Robot asks ${scope.st.length} station skills over ${scope.parts.length} ship parts. Voltara asks ${scope.vo.length}. ${scope.total - 16} more are built and hidden.`);
   if (out) for (const rule of ['clock_minute', 'bar_build', 'frac_model', 'nl_frac', 'coord_what', 'frac_parts', 'area_tile', 'sym_line', 'picto_multi', 'frac_thirds']) {
     await p.evaluate(r => { S.seed = 99; startSkill(r, 'Zip', 'station'); }, rule); await p.waitForTimeout(80); await p.screenshot({ path: path.join(out, `toy_${rule}.png`) }); await p.evaluate(() => leave()); }
   for (const t of bad) console.log('  PROBLEM', t);

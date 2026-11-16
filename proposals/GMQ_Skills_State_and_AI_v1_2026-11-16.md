@@ -1,6 +1,7 @@
 # GMQ — every skill, the state, and the AI — v1 — 2026-11-16
 
 **Stage:** proposal, with working parts in the sketch.
+**Changed on 2026-11-16:** Marc said the skills engine was too much. The goal in section 3, "every skill addressed", is dropped. The skills here still exist, but only 16 are shown to students. See `proposals/GMQ_Scope_Reset_v1_2026-11-16.md`. Sections 2 and 4 still stand.
 **Sketch:** https://claude.ai/artifact/PrDvY1EZX9tYh1sDCHJ4Xe
 **Tags:** [Source] = from your material or your words. [Proposal] = my suggestion.
 

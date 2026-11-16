@@ -1,6 +1,7 @@
 # GMQ — a step back: the three layers, and screen against table — v1 — 2026-11-16
 
 **Stage:** analysis and options. Nothing here is decided.
+**Changed on 2026-11-16:** Marc answered the main question. It is a MUD first, and not every skill is needed. See `proposals/GMQ_Scope_Reset_v1_2026-11-16.md`.
 **Why:** you asked how the little quests, the exploring and the bigger quests are going, and how much is off-line.
 **Tags:** [Source] = from your material or your words. [Proposal] = my suggestion.
 

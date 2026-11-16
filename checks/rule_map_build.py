@@ -86,6 +86,33 @@ RULES = [
     ("coord_read", "Read a star map", "Star maps", "two numbers", "Determines the coordinates of points in the first quadrant of a coordinate plane", "coordinates", "Coordinates are two numbers for a point: along first, then up."),
     ("coord_plot", "Mark a star map", "Star maps", "tap the map", "Plots the coordinates of points in the first quadrant of a coordinate plane", "coordinates", "Coordinates are two numbers for a point: along first, then up."),
 ]
+# Where each rule sits in MARC'S OWN PLAN.   (added 2026-11-16, after Marc said the skills engine was too much)
+# [Source] the ship parts and their one skill each: "Space Station Info". The quests and levels: "tasks / strand order".
+# [Proposal] which rule goes under which part or quest.
+# place: Station = asked on the KIS Station. A galaxy name = waits for that galaxy's planet. Extra = not in the strand plan.
+def _home(place, quest, rules): return {r: (place, quest) for r in rules.split()}
+HOME = {
+    **_home("Station", "Engine Core: counting", "count_on count_back"),
+    **_home("Station", "Navigation System: add and subtract", "add_1digit sub_1digit add_2digit_plain sub_2digit_plain"),
+    **_home("Station", "Shield Generator: multiply and divide", "mult_repeated mult_2_5_10 div_share"),
+    **_home("Station", "Weapon System: odd and even", "odd_one_out"),
+    **_home("Station", "Power Module: place value", "pv_order pv_partition"),
+    **_home("Numerix", "Numbers Quest 1: place value (Voltara)", "round10 round100 ten_more_less hundred_more_less"),
+    **_home("Numerix", "Numbers Quest 2: add and subtract", "add_2digit_regroup sub_2digit_regroup sub_tens add_three"),
+    **_home("Numerix", "Numbers Quest 3: multiplication", "array_expr mult_facts mult_tens"),
+    **_home("Numerix", "Numbers Quest 4: division", "div_2_5_10 div_facts"),
+    **_home("Numerix", "Numbers Quest 5: fractions", "frac_halves frac_thirds frac_fourths frac_model_unit frac_model frac_parts frac_set"),
+    **_home("Numerix", "Numbers Advanced quests", "add_3digit_plain sub_3digit_plain add_3digit_regroup nl_unit nl_frac"),
+    **_home("Patternox", "Patterns Quest 2: multiply and divide", "missing_factor"),
+    **_home("Patternox", "Patterns Quest 3: add and subtract", "missing_add"),
+    **_home("Metrica", "Timely Transitions (Chronosia)", "clock_hour clock_half clock_five clock_minute clock_elapsed time_forward"),
+    **_home("Metrica", "Amazing Areas (Xylophora)", "area_count area_tile area_expr area_rect perimeter_rect perim_labeled"),
+    **_home("Geometrica", "Shapes Quest 1: 2-D shapes", "shape_sides shape_basic shape_more"),
+    **_home("Geometrica", "Magnificent Maps (Zephyron)", "coord_what coord_read coord_plot"),
+    **_home("Geometrica", "Super Symmetry", "sym_line sym_count"),
+    **_home("Databa", "Graphs and Grids (Operation Stardust)", "picto_read picto_addsub picto_multi bar_build bar_build_multi bar_read bar_addsub bar_multi"),
+    **_home("Extra", "Money: not in the strand plan", "money_change coins_whole coins_spend coins_equal coins_decimal"),
+}
 NO_STATEMENT_BAND = {"frac_set": 181}   # [Proposal] from Marc's 2026 tracker, not the engine. Placed with the other fraction work.
 
 
@@ -94,27 +121,32 @@ def build():
     bands, galaxy = collections.defaultdict(set), {}
     for r in rows:
         bands[r["skill"]].add(int(r["band"].split("-")[0])); galaxy[r["skill"]] = r["galaxy"]
-    out, bad = [], []
+    out, bad = [], [f"{r[0]}: no place in the plan" for r in RULES if r[0] not in HOME]
+    if bad: return out, bad
     for rule, name, group, how, text, word, meaning in RULES:
         if text is None:
-            out.append([rule, name, group, "Numerix", how, NO_STATEMENT_BAND[rule], "", "(Marc's 2026 tracker: fraction of a set)", word, meaning]); continue
+            out.append([rule, name, group, "Numerix", how, NO_STATEMENT_BAND[rule], "", "(Marc's 2026 tracker: fraction of a set)", word, meaning, *HOME[rule]]); continue
         if text not in bands: bad.append(f"{rule}: statement not in the engine: {text}"); continue
-        b = sorted(bands[text]); out.append([rule, name, group, galaxy[text], how, b[0], " ".join(map(str, b)), text, word, meaning])
+        b = sorted(bands[text]); out.append([rule, name, group, galaxy[text], how, b[0], " ".join(map(str, b)), text, word, meaning, *HOME[rule]])
     return out, bad
 
 
 def main():
     out, bad = build()
+    order = ["Station", "Numerix", "Patternox", "Metrica", "Geometrica", "Databa", "Extra"]; quests = list(dict.fromkeys(HOME.values()))
+    out.sort(key=lambda r: (order.index(r[10]), quests.index((r[10], r[11]))))   # the star chart follows Marc's plan: the station first
     path = os.path.join(HERE, "..", "skills", "rule_map.csv")
     with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f); w.writerow(["rule", "star_name", "group", "galaxy", "answered_by", "lowest_band", "all_bands", "statement", "maths_word", "meaning"]); w.writerows(out)
+        w = csv.writer(f); w.writerow(["rule", "star_name", "group", "galaxy", "answered_by", "lowest_band", "all_bands", "statement", "maths_word", "meaning", "place", "marcs_quest"]); w.writerows(out)
     names = [r[1] for r in out]
     for n in set(names):
         if names.count(n) > 1: bad.append("two stars share the name: " + n)
     states = {r[7] for r in out if r[6]}
     print(f"{len(out)} rules cover {len(states)} different Math Skills statements, plus 1 from the tracker.")
     print("By lowest band:", dict(sorted(collections.Counter(r[5] for r in out).items())))
-    print("By galaxy:", dict(collections.Counter(r[3] for r in out)))
+    print("By place in Marc's plan:", dict(collections.Counter(r[10] for r in out)))
+    for q, n in collections.Counter((r[10], r[11]) for r in out).items(): print(f"   {q[0]:10} {q[1]:42} {n}")
+    if set(HOME) != {r[0] for r in RULES}: bad.append("HOME and RULES list different rules")
     print("With a picture or a toy:", sum(r[4] != "number" for r in out))
     for b in bad: print("  PROBLEM", b)
     for r in out:
