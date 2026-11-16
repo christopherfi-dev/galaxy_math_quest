@@ -1,0 +1,22 @@
+   * Identifies right angles
+   * Identifies parallel lines
+   * Identifies and names special triangles, such as acute, right, scalene, etc., given pictures
+   * Recognizes examples of quadrilaterals
+   * Identifies and names nonbasic shapes, such as trapezoids, hexagons, etc.
+   * Knows definitions of nonbasic shapes, such as trapezoids, hexagons, etc.
+   * Sorts shapes based on shared attributes
+   * Describes a set of shapes based on attributes, given pictures
+   * Describes shapes using multiple categories based on attributes, given pictures
+   * Classifies 2-D shapes by properties, given pictures
+   * Compares attributes of 2‑D shapes
+   * Composes or decomposes 2-D shapes to form new shapes
+   * Understands the relationships among categories of shapes
+   * Recognizes lines of symmetry in 2-D figures
+   * Identifies 2-D figures which have line symmetry
+   * Determines the number of lines of symmetry in 2-D figures
+   * Identifies the number of faces, edges, or vertices for a 3-D object, given pictures
+   * Identifies and creates nets for pyramids
+   * Identifies and creates nets for prisms
+   * Interprets points with whole number coordinates in the first quadrant within the given context
+   * Plots points in all four quadrants of a coordinate plane
+   * Determines the coordinates of points in all four quadrants of a coordinate graph

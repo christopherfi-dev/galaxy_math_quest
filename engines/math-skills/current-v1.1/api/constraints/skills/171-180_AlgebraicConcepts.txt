@@ -1,0 +1,22 @@
+   * Decomposes whole numbers within 10 in more than one way, using equations
+   * Determines start or change unknown in subtraction equations with whole numbers within 20
+   * Identifies true one-step addition and subtraction equations involving whole numbers
+   * Identifies true multi‑step addition and subtraction equations with whole numbers
+   * Determines unknown factors in multiplication equations with whole numbers and products within 100
+   * Represents one‑step add-to/put‑together word problems with expressions or equations, with answer unknown, whole numbers within 20
+   * Represents one‑step take-from/take‑apart word problems with expressions or equations, with answer unknown, whole numbers within 20
+   * Solves one‑step, take-from/take‑apart word problems with start, change, or part unknown, whole numbers within 20
+   * Solves put-together word problems involving three addends, whole numbers within 20
+   * Represents one-step additive-comparison word problems with expressions or equations, whole numbers within 20
+   * Represents one-step addition and subtraction word problems with expressions or equations, whole numbers within 100
+   * Solves one‑step take-from/take‑apart word problems with start, change, or part unknown, whole numbers within 100
+   * Solves one-step additive-comparison word problems, whole numbers within 100
+   * Represents multi-step addition and subtraction word problems with expressions or equations, whole numbers
+   * Solves one-step equal-groups multiplication word problems, whole numbers with products within 100
+   * Solves one-step equal-groups division word problems, whole numbers within 100
+   * Solves one-step word problems involving addition and subtraction of decimals with the same number of digits after the decimal point, including contexts involving money
+   * Solves one-step money word problems involving whole number addition or subtraction
+   * Solves word problems involving amount spent or change received, whole numbers, and coin names or pictures
+   * Solves one-step weight/mass word problems involving whole number addition and subtraction
+   * Solves elapsed‑time word problems involving counting forward by either hours or minutes
+   * Solves one-step linear equations with positive rational numbers

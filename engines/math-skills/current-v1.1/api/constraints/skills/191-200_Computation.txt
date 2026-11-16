@@ -1,0 +1,47 @@
+   * Finds 10 more or 10 less than a given number
+   * Subtracts multiples of 10 from multiples of 10 within 100
+   * Adds whole numbers with sums within 100, no regrouping
+   * Adds whole numbers with sums within 100, with regrouping
+   * Subtracts whole numbers within 100, with regrouping
+   * Adds three or more whole numbers with sums within 100, with regrouping
+   * Adds three or more whole numbers with sums greater than 100
+   * Finds 100 more or 100 less than a given number
+   * Adds whole numbers with sums within 1,000 using models
+   * Adds whole numbers with sums within 1,000, no regrouping
+   * Subtracts whole numbers within 1,000 using models
+   * Subtracts whole numbers within 1,000, with regrouping
+   * Subtracts whole numbers greater than 1,000
+   * Adds whole numbers with sums within 10,000
+   * Adds whole numbers with sums greater than 10,000
+   * Adds and subtracts decimals with the same number of digits after the decimal point, no regrouping
+   * Adds and subtracts decimals with the same number of digits after the decimal point, with regrouping
+   * Adds and subtracts fractions with like denominators using models other than number lines
+   * Adds and subtracts fractions with like denominators
+   * Adds and subtracts whole numbers, fractions, and/or mixed numbers with like denominators, no regrouping
+   * Applies the commutative property of addition to whole numbers
+   * Understands the inverse relationship between addition and subtraction, whole numbers within 20
+   * Identifies the missing value in an equation to show that a number and its opposite have a sum of 0
+   * Interprets the additive inverse property in a real-world context
+   * Represents arrays with repeated addition expressions and finds the total number of objects
+   * Represents arrays with repeated addition expressions or equations
+   * Understands multiplication as many groups of equal size
+   * Understands multiplication as a comparison of sizes
+   * Represents whole-number multiplication using models
+   * Multiplies basic facts
+   * Divides basic facts
+   * Understands division as equal sharing
+   * Understands the inverse relationship between multiplication and division
+   * Multiplies one-digit whole numbers by multiples of 10
+   * Multiplies one-digit whole numbers by two-digit whole numbers
+   * Multiplies two-digit whole numbers by two-digit whole numbers
+   * Multiplies one-digit whole numbers by whole numbers with more than two digits
+   * Multiplies fractions by fractions, results not in simplest form
+   * Identifies ratios between two quantities not from the same whole
+   * Represents a ratio in multiple forms
+   * Uses tables to represent real-world relationships described by a given unit rate
+   * Determines missing values in a table of equivalent ratios within a real‑world scenario
+   * Determines if the relationship between two quantities in a real‑world scenario is proportional given a table
+   * Calculates the unit rate from a table of a proportional relationship
+   * Uses ratios of whole numbers to calculate unit rates
+   * Uses a given unit rate to solve a one-step real-world problem
+   * Solves real‑world and mathematical problems given a table representing equivalent ratios of quantities

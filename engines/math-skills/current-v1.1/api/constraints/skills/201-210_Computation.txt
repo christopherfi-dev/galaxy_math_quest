@@ -1,0 +1,54 @@
+   * Adds whole numbers with sums within 100, no regrouping
+   * Adds whole numbers with sums within 100, with regrouping
+   * Adds three or more whole numbers with sums within 100, with regrouping
+   * Adds three or more whole numbers with sums greater than 100
+   * Adds whole numbers with sums within 1,000 using models
+   * Subtracts whole numbers within 100, with regrouping
+   * Subtracts whole numbers within 1,000 using models
+   * Subtracts whole numbers within 1,000, with regrouping
+   * Subtracts whole numbers greater than 1,000
+   * Applies the commutative property of addition to whole numbers
+   * Represents arrays with repeated addition expressions or equations
+   * Represents arrays with repeated addition expressions and finds the total number of objects
+   * Understands division as equal sharing
+   * Understands multiplication as a comparison of sizes
+   * Understands multiplication as many groups of equal size
+   * Understands the inverse relationship between multiplication and division
+   * Divides basic facts
+   * Multiplies one-digit whole numbers by multiples of 10
+   * Multiplies one-digit whole numbers by whole numbers with more than two digits
+   * Multiplies two-digit whole numbers by two-digit whole numbers
+   * Multiplies multi-digit whole numbers
+   * Divides multi-digit whole numbers by one-digit divisors with no remainder using models
+   * Divides whole numbers up to four digits by one-digit divisors, without a remainder
+   * Divides whole numbers up to four digits by two-digit divisors, without a remainder
+   * Adds and subtracts decimals with the same number of digits after the decimal point, no regrouping
+   * Adds and subtracts decimals with the same number of digits after the decimal point, with regrouping
+   * Adds and subtracts decimals with different number of digits after the decimal point, with regrouping
+   * Multiplies decimals by one-digit whole numbers
+   * Adds and subtracts fractions with like denominators using models other than number lines
+   * Adds and subtracts fractions with like denominators
+   * Adds and subtracts whole numbers, fractions, and/or mixed numbers with like denominators, no regrouping
+   * Adds and subtracts whole numbers, fractions, and/or mixed numbers with like denominators, with regrouping
+   * Multiplies fractions by fractions, results not in simplest form
+   * Multiplies and divides integers
+   * Interprets the additive inverse property in a real-world context
+   * Identifies the missing value in an equation to show that a number and its opposite have a sum of 0
+   * Identifies two rational numbers that combine to make 0
+   * Recognizes a ratio within a context
+   * Identifies ratios between two quantities not from the same whole
+   * Identifies the part-to-whole ratio between two quantities
+   * Identifies the part‑to‑part ratio between two quantities
+   * Uses tables to represent real-world relationships described by a given ratio
+   * Uses tables to represent real-world relationships described by a given unit rate
+   * Determines if the relationship between two quantities in a real‑world scenario is proportional given a table
+   * Determines if the relationship between two quantities in a real‑world scenario is proportional by creating a table
+   * Calculates the unit rate from a table of a proportional relationship
+   * Uses ratios of whole numbers to calculate unit rates
+   * Uses ratios of whole numbers and fractions to calculate unit rates
+   * Uses ratios of whole numbers and decimals to calculate unit rates
+   * Determines missing values in a table of equivalent ratios within a real‑world scenario
+   * Uses a given unit rate to solve a one-step real-world problem
+   * Solves real‑world and mathematical problems given a table representing equivalent ratios of quantities
+   * Solves real-world and mathematical problems using ratios or proportional reasoning
+   * Solves one-step percent problems within a real-world or mathematical context

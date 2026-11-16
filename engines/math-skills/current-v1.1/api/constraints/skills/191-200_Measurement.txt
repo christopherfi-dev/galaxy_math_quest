@@ -1,0 +1,39 @@
+   * Identifies/estimates angle measures
+   * Calculates unknown angle measures using the additive property of angles
+   * Knows relative sizes of customary units of length
+   * Knows relative sizes of metric units of length
+   * Measures and compares the length of 2 objects in inches
+   * Measures length, width, or height to the nearest inch
+   * Measures length, width, or height to the nearest half inch
+   * Measures and compares the length of 2 objects in centimeters
+   * Measures length, width, or height to the nearest centimeter
+   * Measures an object using different units and explains the relationship between the size of each unit and the corresponding measurements
+   * Represents one‑step length word problems involving addition or subtraction with expressions or equations
+   * Solves one-step length word problems involving addition or subtraction
+   * Solves multi-step length word problems involving whole numbers and conversion of customary units
+   * Determines the perimeter of basic polygons in which not all sides are labeled
+   * Determines the perimeter of basic polygons with all sides labeled
+   * Solves problems involving perimeters of rectangles within a real-world or mathematical context
+   * Determines the area of figures by tiling with whole unit squares
+   * Determines the area of figures composed of whole unit squares
+   * Explains the relationship between tiling a figure and multiplying side lengths to find the area
+   * Represents the area of rectangles composed of whole unit squares using multiplication expressions or equations
+   * Determines the area of rectangles with whole-number sides, formula not provided
+   * Solves problems involving areas of rectangles within a real-world or mathematical context
+   * Completes simple conversions of customary units of capacity
+   * Completes simple conversions of customary units of weight
+   * Understands that a unit cube has sides of 1 unit in length and a volume of 1 cubic unit
+   * Determines the volume of figures by counting unit cubes
+   * Determines the missing dimension of a rectangular prism composed of unit cubes given the volume and other dimensions
+   * Determines the volume of rectangular prisms, formula not provided
+   * Completes simple conversions of units of time
+   * Reads analog clocks to the nearest five minutes
+   * Reads analog clocks to the nearest minute
+   * Identifies the digital or analog clock that displays the same time shown on the other type of clock, to the nearest five minutes
+   * Determines elapsed time across either minutes or hours using clocks
+   * Determines elapsed time across both minutes and hours using clocks
+   * Determines the whole number value of a collection of coins given as coin names
+   * Determines the decimal value of a collection of coins and/or bills given as names
+   * Rounds dollars and cents
+   * Solves money word problems involving decimals and coins and/or bills given as pictures
+   * Solves money word problems involving decimals and coins and/or bills given as names

@@ -1,0 +1,54 @@
+   * Identifies true one-step addition and subtraction equations involving whole numbers
+   * Identifies true multi‑step addition and subtraction equations with whole numbers
+   * Determines whether a linear equation or inequality is true for a given value of the variable
+   * Translates between verbal and algebraic equations
+   * Writes a one-step linear equation in one variable to represent a real-world or mathematical context
+   * Writes linear expressions in one variable to represent real-world or mathematical contexts
+   * Solves one-step linear equations with positive rational numbers
+   * Represents subtraction equations with whole numbers as part‑unknown addition equations
+   * Represents division equations with whole numbers as part‑unknown multiplication equations
+   * Determines start or change unknown in subtraction equations with whole numbers within 20
+   * Determines unknown factors in multiplication equations with whole numbers and products within 100
+   * Determines unknown divisors in division equations with whole numbers and dividends within 100
+   * Evaluates numerical expressions involving addition and subtraction with whole numbers and parentheses
+   * Evaluates numerical expressions involving multiple operations with whole numbers and parentheses
+   * Represents descriptions of calculations with numerical expressions or equations that include parentheses
+   * Recognizes skip-counting patterns in 100s charts
+   * Analyzes and describes patterns in the multiplication table
+   * Graphs a linear function of the form y = mx given a simple scenario
+   * Interprets the meaning of the point (1, r) on a graph of a real‑world proportional relationship
+   * Interprets the meaning of the point (x, y) on a graph of a real‑world proportional relationship
+   * Represents one‑step add-to/put‑together word problems with expressions or equations, with start, change, or part unknown, whole numbers within 20
+   * Solves one‑step add-to/put‑together word problems with result unknown, whole numbers within 100
+   * Solves one‑step take-from/take‑apart word problems with start, change, or part unknown, whole numbers within 100
+   * Represents one-step additive-comparison word problems with expressions or equations, whole numbers within 20
+   * Solves one-step additive-comparison word problems, whole numbers within 100
+   * Represents multi-step addition and subtraction word problems with expressions or equations, whole numbers
+   * Solves multi-step addition and subtraction word problems, whole numbers within 100
+   * Represents one-step equal-groups multiplication and division word problems with models, whole numbers
+   * Represents one-step equal-groups multiplication word problems with expressions or equations, whole numbers
+   * Represents one-step multiplicative-comparison word problems with expressions or equations, whole numbers
+   * Solves one-step equal-groups multiplication word problems, whole numbers with products within 100
+   * Solves one-step equal-groups division word problems, whole numbers within 100
+   * Solves one-step multiplicative-comparison word problems, whole-number products within 100
+   * Solves one-step multiplicative-comparison word problems, whole-number products greater than 100
+   * Solves one-step division word problems that require interpretation of remainders, whole numbers
+   * Solves multi-step word problems involving the four operations with whole numbers
+   * Represents one‑step word problems involving addition and subtraction of fractions and/or mixed numbers with unlike denominators, with expressions or equations
+   * Solves one-step word problems involving addition and subtraction of fractions with like denominators using models
+   * Solves one-step word problems involving addition and subtraction of fractions with like denominators
+   * Solves multi-step word problems involving addition and subtraction of fractions with like denominators
+   * Solves one-step word problems involving addition and subtraction of decimals with the same number of digits after the decimal point, including contexts involving money
+   * Describes a situation that can be represented by a given numerical expression involving positive and negative numbers
+   * Represents real‑world problems involving the addition and subtraction of integers with numerical expressions
+   * Solves word problems involving amount spent or change received, whole numbers, and coin names or pictures
+   * Solves money word problems involving whole numbers and coins and/or bills given as names
+   * Solves money word problems involving whole numbers and coins and/or bills given as pictures
+   * Solves one-step money word problems involving whole number addition or subtraction
+   * Solves one‑step capacity word problems involving whole-number addition or subtraction
+   * Solves one-step capacity word problems involving whole number multiplication or division
+   * Solves one-step weight/mass word problems involving whole number addition and subtraction
+   * Solves one-step weight/mass word problems involving whole number multiplication and division
+   * Solves elapsed‑time word problems involving counting forward by either hours or minutes
+   * Solves elapsed‑time word problems involving counting forward by both hours and minutes
+   * Solves elapsed-time word problems involving counting backward by either hours or minutes

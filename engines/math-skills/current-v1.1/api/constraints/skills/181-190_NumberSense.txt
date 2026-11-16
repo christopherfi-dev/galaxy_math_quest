@@ -1,0 +1,49 @@
+   * Counts by 5s within 100
+   * Counts by 10s within 100
+   * Counts by 10s within 1,000
+   * Counts by 100s within 1,000
+   * Counts backward by 100s within 1,000
+   * Determines if sets of objects are even or odd
+   * Identifies multiples of single‑digit numbers
+   * Understands that 10 ones is the same as 1 ten
+   * Understands that 10 tens is the same as 1 hundred
+   * Decomposes whole numbers within 20 into tens and ones, using equations
+   * Represents whole numbers within 1,000 with models
+   * Understands the value of a digit in whole numbers within 1,000
+   * Understands the value of a digit in whole numbers within 1,000,000
+   * Knows place‑value names in numbers through the hundred thousands
+   * Reads and writes whole numbers within 10,000 in expanded form
+   * Reads and writes whole numbers within 100,000 in word form
+   * Compares sets of objects within 10 using terms
+   * Compares whole numbers within 10 using terms
+   * Compares whole numbers within 100 using terms
+   * Compares whole numbers within 100 using symbols
+   * Compares whole numbers within 1,000 using terms
+   * Compares whole numbers within 1,000 using symbols
+   * Compares whole numbers greater than 10,000 using terms
+   * Orders whole numbers within 10,000
+   * Rounds whole numbers within 100
+   * Rounds whole numbers within 1,000
+   * Rounds whole numbers within 1,000,000
+   * Identifies shapes that are divided into equal parts
+   * Identifies shapes that are divided into halves
+   * Identifies shapes that are divided into quarters
+   * Identifies the fractional parts of shapes
+   * Models unit fractions using area models
+   * Models non-unit fractions using area models
+   * Represents fractions as sums of fractions with the same denominator, using expressions or equations
+   * Locates non-unit proper fractions on a number line
+   * Identifies equivalent fraction models
+   * Understands that fractions that occupy the same position on a number line are equivalent
+   * Compares fraction models with like numerators or denominators using words
+   * Compares fraction models with unlike numerators and denominators using words
+   * Orders fraction models with like numerators
+   * Compares fractions with like numerators or denominators using words
+   * Converts between decimals and fractions with denominators of 10 or 100
+   * Compares decimals to the hundredths using symbols, given models
+   * Compares decimals to the hundredths, with the same number of digits after the decimal point, using symbols
+   * Compares decimals to the thousandths, with the same number of digits after the decimal point, using symbols
+   * Orders decimals to the hundredths, with the same number of digits after the decimal point
+   * Orders decimals to the hundredths, with a different number of digits after the decimal point
+   * Orders decimals to the thousandths, with a different number of digits after the decimal point
+   * Understands positive and negative numbers in terms of real-world situations

@@ -1,0 +1,7 @@
+   * Sorts objects into categories
+   * Represents data in tables or charts
+   * Represents data in bar graphs with single-unit scales
+   * Represents data in bar graphs with multi-unit scales
+   * Reads bar graphs with single-unit scales to determine how many in a category
+   * Adds and subtracts to answer questions about pictographs with single-unit scales
+   * Determines the question that can be answered from a given set of data

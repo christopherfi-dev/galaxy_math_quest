@@ -1,0 +1,10 @@
+   * Determines the question that can be answered from a given set of data
+   * Adds and subtracts to answer questions about pictographs with single-unit scales
+   * Adds and subtracts to answer questions about bar graphs with single-unit scales
+   * Represents data in pictographs with multi-unit scales
+   * Represents data in bar graphs with multi-unit scales
+   * Adds and subtracts to answer questions about bar graphs with multi-unit scales
+   * Represents data in line or dot plots with whole‑number scales
+   * Reads and interprets data from line or dot plots with whole‑number scales
+   * Identifies the median, quartiles, extreme values, and outliers from a box plot
+   * Identifies a sampling method that produces the most representative sample

@@ -1,0 +1,46 @@
+   * Identifies factors of numbers less than 100
+   * Identifies prime and composite numbers
+   * Determines least common multiples
+   * Understands that the same digit, moved one place to the left, now represents 10 times the value
+   * Understands that the same digit, moved one place to the right, now represents 1/10 the value
+   * Represents powers of 10 using exponents
+   * Represents the value of digits in whole numbers using powers of 10 in exponential form
+   * Multiplies whole numbers by powers of 10 shown with exponents
+   * Rounds whole numbers within 1,000,000
+   * Understands fractions as the division of the numerator by the denominator
+   * Identifies the fractional parts of shapes
+   * Locates non-unit proper fractions on a number line
+   * Locates improper fractions on a number line
+   * Locates mixed numbers on a number line
+   * Locates proper and improper fractions on a single number line
+   * Understands non‑unit fractions as products of whole numbers and unit fractions
+   * Understands multiples of non‑unit fractions as products of whole numbers and unit fractions
+   * Represents mixed numbers as sums of fractions with the same denominator, using expressions or equations
+   * Identifies fractions equivalent to whole numbers greater than 1 using area or set models
+   * Identifies fractions equivalent to whole numbers greater than 1
+   * Writes equivalent fractions
+   * Understands that fractions that occupy the same position on a number line are equivalent
+   * Compares fractions with unlike numerators and denominators using models and symbols
+   * Compares fractions with unlike numerators and denominators using symbols
+   * Orders fractions with unlike numerators and/or denominators
+   * Represents decimals to the thousandths in word form
+   * Represents decimals to the thousandths in expanded form
+   * Converts between decimals and fractions with a denominator of 3
+   * Converts between decimals and fractions with a denominator of 8
+   * Converts between decimals and fractions with denominators of 10 or 100
+   * Converts fractions to decimals using long division
+   * Orders decimals to the hundredths, with the same number of digits after the decimal point
+   * Orders decimals to the hundredths, with a different number of digits after the decimal point
+   * Orders decimals to the thousandths, with a different number of digits after the decimal point
+   * Rounds decimals to any decimal place value
+   * Understands the meaning of 0 in terms of real‑world situations
+   * Understands positive and negative numbers in terms of real-world situations
+   * Understands the absolute value represents the magnitude of positive and negative numbers in a given real‑world situation
+   * Locates negative rational numbers on a number line
+   * Locates the opposite of a negative rational number on a number line
+   * Compares integers given the meaning of zero within a real-world situation
+   * Compares integers that represent quantities in a real‑world context
+   * Compares two rational numbers using a number line
+   * Compares two rational numbers shown on a number line
+   * Writes or interprets verbal comparative statements for rational numbers within a real-world context
+   * Orders positive rational numbers represented in multiple forms

@@ -1,0 +1,14 @@
+   * Determines the question that can be answered from a given set of data
+   * Represents data in pictographs with multi-unit scales
+   * Represents data in line or dot plots with whole‑number scales
+   * Represents data in line or dot plots with fractional scales
+   * Adds and subtracts to answer questions about pictographs with multi-unit scales
+   * Reads and interprets line or dot plots with fractional scales
+   * Reads and interprets data from a histogram
+   * Describes the distribution of a data set based on its spread
+   * Determines the median of a data set that is ordered
+   * Interprets the median in the context of a data set
+   * Identifies the median, quartiles, extreme values, and outliers from a box plot
+   * Compares the means and medians of related data sets from random samples represented in histograms
+   * Identifies random samples
+   * Identifies a sampling method that produces the most representative sample

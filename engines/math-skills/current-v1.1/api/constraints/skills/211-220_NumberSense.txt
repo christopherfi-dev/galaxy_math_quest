@@ -1,0 +1,58 @@
+   * Understands that the same digit, moved one place to the left, now represents 10 times the value
+   * Understands that the same digit, moved one place to the right, now represents 1/10 the value
+   * Identifies factors of numbers less than 100
+   * Determines greatest common factors
+   * Determines least common multiples
+   * Identifies prime and composite numbers
+   * Rounds whole numbers within 1,000,000
+   * Represents powers of 10 using exponents
+   * Multiplies whole numbers by powers of 10 shown with exponents
+   * Models unit fractions using area models
+   * Models non-unit fractions using area models
+   * Identifies the fractional parts of shapes
+   * Locates unit fractions on a number line
+   * Locates non-unit proper fractions on a number line
+   * Locates proper and improper fractions on a single number line
+   * Locates improper fractions on a number line
+   * Represents fractions as sums of fractions with the same denominator, using expressions or equations
+   * Identifies equivalent fraction models
+   * Identifies fractions equivalent to whole numbers greater than 1 using area or set models
+   * Identifies fractions equivalent to whole numbers greater than 1
+   * Writes equivalent fractions for given area or set models
+   * Writes equivalent fractions
+   * Identifies equivalent fractions
+   * Generates equations to show two fractions are equivalent
+   * Understands that fractions that occupy the same position on a number line are equivalent
+   * Understands non‑unit fractions as products of whole numbers and unit fractions
+   * Compares fraction models with like numerators or denominators using words
+   * Compares fractions with like numerators or denominators using words
+   * Compares fraction models with like numerators or denominators using symbols
+   * Orders fraction models with like numerators
+   * Compares fraction models with unlike numerators and denominators using words
+   * Compares fractions with unlike numerators and denominators using models and symbols
+   * Compares fractions with unlike numerators and denominators using symbols
+   * Orders fractions with unlike numerators and/or denominators
+   * Represents decimals to the thousandths in word form
+   * Represents decimals to the thousandths in expanded form
+   * Locates decimals to the hundredths on a number line
+   * Converts between decimals and fractions with denominators of 10 or 100
+   * Converts fractions to decimals using long division
+   * Orders decimals to the hundredths, with the same number of digits after the decimal point
+   * Orders decimals to the hundredths, with a different number of digits after the decimal point
+   * Compares decimals to the hundredths, with a different number of digits after the decimal point, using symbols
+   * Orders decimals to the thousandths, with a different number of digits after the decimal point
+   * Compares decimals to the thousandths, with a different number of digits after the decimal point, using terms
+   * Compares decimals to the thousandths, with a different number of digits after the decimal point, using symbols
+   * Rounds decimals to nearest whole number
+   * Rounds decimals to any decimal place value
+   * Understands positive and negative numbers in terms of real-world situations
+   * Locates negative rational numbers on a number line
+   * Locates the opposite of a negative rational number on a number line
+   * Understands the absolute value represents the magnitude of positive and negative numbers in a given real‑world situation
+   * Understands that a number and its opposite are the same distance from 0 on a number line
+   * Compares integers given the meaning of zero within a real-world situation
+   * Compares integers that represent quantities in a real‑world context
+   * Compares two rational numbers using a number line
+   * Compares two rational numbers shown on a number line
+   * Justifies a comparison of two rational numbers using a number line
+   * Writes or interprets verbal comparative statements for rational numbers within a real-world context

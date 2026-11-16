@@ -1,0 +1,92 @@
+* Represents a whole number as a power of a whole number
+* Applies the order of operations, without grouping symbols or whole-number exponents, to simplify numerical expressions involving positive rational numbers
+* Applies the order of operations, with grouping symbols and excluding exponents, to simplify numerical expressions involving positive rational numbers
+* Applies the order of operations, with grouping symbols and with whole-number exponents, to simplify numerical expressions consisting of positive rational numbers
+* Evaluates numerical expressions involving addition and subtraction with whole numbers and parentheses
+* Evaluates numerical expressions involving multiple operations with whole numbers and parentheses
+* Represents descriptions of calculations with numerical expressions or equations that include parentheses
+* Rewrites the sum of two whole numbers as a product of a common factor and the sum of two whole numbers
+* Identifies the mathematical components of an algebraic expression, including sum, product, quotient, term, and coefficient
+* Translates between verbal and algebraic expressions
+* Writes algebraic expressions from a mathematical description of its component parts, including sum, product, quotient, term, and coefficient
+* Generates equivalent linear expressions by using the associative, commutative, or distributive property
+* Generates equivalent linear expressions by combining like terms
+* Generates equivalent linear expressions by using the associative, commutative, and distributive properties, and by combining like terms
+* Writes linear expressions in one variable to represent real-world or mathematical contexts
+* Interprets equivalent linear expressions within a real-world context
+* Evaluates linear expressions at given values with variables involving positive rational numbers
+* Evaluates nonlinear expressions at given values with variables involving positive rational numbers
+* Determines whether a linear equation or inequality is true for a given value of the variable
+* Evaluates formulas or linear equations at given values for the variables
+* Writes a one-step linear equation in one variable to represent a real-world or mathematical context
+* Solves one-step linear equations with positive rational numbers
+* Solves one-step linear equations with negative rational numbers
+* Writes a two-step linear equation in one variable to represent a real-world or mathematical context
+* Writes and solves a two-step linear equation in one variable involving a real-world or mathematical context
+* Solves two-step linear equations with positive rational numbers
+* Solves two-step linear equations with negative rational numbers
+* Writes a one-step linear inequality in one variable to represent a real-world or mathematical context
+* Writes and solves a one-step linear inequality in one variable involving a real-world or mathematical context
+* Solves one-step linear inequalities with negative rational numbers
+* Writes a two-step linear inequality in one variable to represent a real-world or mathematical context
+* Writes and solves a two‑step linear inequality in one variable involving a real‑world or mathematical context
+* Solves two-step linear inequalities
+* Writes an inequality in the form x > c or x < c to represent a real-world or mathematical context
+* Writes an inequality in the form x>c or x<c to represent a set of real numbers shown on a number line
+* Represents an inequality in the form x>c or x<c on a number line given a real-world or mathematical context
+* Identifies a relationship between corresponding terms given two numerical patterns
+* Graphs a linear function of the form y = mx given a simple scenario
+* Graphs the equation of a line in the form y = mx
+* Writes an equation in the form y = mx to represent the relationship between real-world quantities given a simple scenario
+* Writes an equation in the form y = mx to represent the relationship between real-world quantities given a table of values or two ordered pairs
+* Writes the equation of a line in the form y = mx given a table of values or two ordered pairs
+* Writes an equation in the form y = mx to represent the relationship between real-world quantities given a graph
+* Writes an equation in the form y = mx to represent a real‑world proportional relationship for a given ratio
+* Writes an equation in the form y = x + c to represent the relationship between real-world quantities given a table of values
+* Identifies the unit rate from the graph of a proportional relationship
+* Identifies the unit rate from the equation of a proportional relationship
+* Compares the rate of change between two proportional relationships represented in different ways
+* Represents a proportional relationship in more than one form, including tables, graphs, equations, and verbal descriptions
+* Solves one-step equal-groups division word problems, whole numbers within 100
+* Solves one-step division word problems that require interpretation of remainders, whole numbers
+* Solves multi-step addition and subtraction word problems, whole numbers within 100
+* Solves multi-step multiplication and division word problems with whole numbers
+* Solves multi-step word problems involving the four operations with whole numbers
+* Determines the whole number when given the fraction of the whole number
+* Identifies contexts representing dividing whole numbers by unit fractions
+* Represents and solves word problems involving division of whole numbers where the quotient is a fraction
+* Represents word problems involving multiplication of fractions or mixed numbers with expressions or equations
+* Represents one‑step word problems involving division of whole numbers by fractions or mixed numbers, with expressions or equations
+* Solves one-step word problems involving addition and subtraction of fractions with like denominators
+* Solves multi-step word problems involving addition and subtraction of fractions with like denominators
+* Solves one-step word problems involving addition and subtraction of fractions with unlike denominators
+* Solves multi-step word problems involving addition and subtraction of fractions with unlike denominators
+* Solves one-step word problems involving addition and subtraction of mixed numbers with like denominators
+* Solves one-step word problems involving addition and subtraction of mixed numbers with unlike denominators
+* Solves one-step word problems involving multiplication of whole numbers and either fractions or mixed numbers
+* Solves one-step word problems involving multiplication of fractions or mixed numbers
+* Solves one-step word problems involving division of unit fractions by whole numbers
+* Solves one-step word problems involving division of whole numbers by unit fractions
+* Solves one-step word problems involving division of fractions or mixed numbers
+* Solves multi-step word problems involving whole numbers, fractions and/or mixed numbers
+* Solves one-step word problems involving multiplication of multi-digit whole numbers and decimals to the hundredths, including contexts involving money
+* Solves one‑step word problems involving division of decimals by decimals to the hundredths, including contexts involving money
+* Solves multi-step word problems involving the four operations and decimals, including contexts involving money
+* Describes a situation that can be represented by a given numerical expression involving positive numbers
+* Describes a situation that can be represented by a given numerical expression involving positive and negative numbers
+* Represents real‑world problems involving the addition and subtraction of integers with numerical expressions
+* Solves real-world problems involving the addition and subtraction of integers
+* Solves real-world problems using appropriate problem-solving strategies and evaluates the reasonableness of the solutions
+* Solves elapsed‑time word problems involving counting forward by both hours and minutes
+Structural_assessment:
+1. Claim_accuracy_evaluation (Completeness):
+2. The extraction holds. All skills provided map to the Measurement, Geometry, and Data domains of the 231-240 RIT band in the source data without omission.
+3. Logical_consistency_verification (Progression & System Constraints):
+4. Structural flaws detected in progression rules across all three domains, alongside the prior system constraint violation regarding citations.
+* Progression Violations:
+   * Measurement: Foundational 2D and 3D concepts (identifying unit squares, understanding volume) are interspersed with advanced perimeter and surface area calculations.
+   * Geometry: 2D shape identification and hierarchy definitions follow advanced angle theorems (e.g., Triangle Inequality Theorem). Foundational shape attributes must precede property theorems.
+   * Data: Question identification is placed at the end, after advanced data variance and inference calculations. Statistical inquiry logically precedes data representation and analysis.
+* Citation Constraints: System parameters bind me to append `` to every piece of information derived from the source document.
+Contradiction_resolution:
+Rewriting the three domains to enforce the logical progression hierarchy (foundational to advanced, representation to interpretation, 2D to 3D) and append the mandatory citation architecture.

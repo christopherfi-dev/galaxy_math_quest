@@ -1,0 +1,14 @@
+* Compares the length of objects
+* Orders objects by length
+* Measures length, width, or height in nonstandard units
+* Measures length, width, or height to the nearest inch
+* Measures length, width, or height to the nearest centimeter
+* Solves one-step length word problems involving addition or subtraction
+* Determines the area of figures by tiling with whole unit squares
+* Determines the area of figures composed of whole unit squares
+* Reads analog clocks to the nearest hour
+* Reads analog clocks to the nearest half hour
+* Reads analog clocks to the nearest five minutes
+* Orders time to the minute, shown on digital clocks
+* Determines the whole number value of a collection of coins given as pictures
+* Solves one-step money word problems involving whole number addition or subtraction

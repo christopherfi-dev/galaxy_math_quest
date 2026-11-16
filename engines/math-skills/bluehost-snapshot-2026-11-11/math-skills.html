@@ -1,0 +1,458 @@
+<!-- Math Skills Engine v1.0 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Skills Engine</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: white;
+            color: #2563eb;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+
+        #output {
+            width: 100%;
+            min-height: 60vh;
+            max-height: 700px;
+            background: white;
+            border: 3px solid #2563eb;
+            border-radius: 12px;
+            padding: 25px 30px;
+            overflow-y: auto;
+            font-size: 18px;
+            line-height: 2;
+            margin-bottom: 20px;
+            color: #1e293b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #output::-webkit-scrollbar { width: 10px; }
+        #output::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 6px; }
+        #output::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 6px; }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        #user-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        #send-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        #send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        #send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .copy-btn {
+            display: none;
+            margin: 15px auto;
+            padding: 12px 24px;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn.visible { display: block; }
+        .copy-btn:hover { background: #047857; transform: translateY(-2px); }
+        .copy-btn.copied { background: #10b981; }
+
+        .helper-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .helper-btn {
+            padding: 8px 16px;
+            background: #f0f4ff;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .helper-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Math Skills Engine</h1>
+        <p>Find your gaps. Fill them in.</p>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="location.reload()">Start Over</button>
+        <a href="/educational-engines/" class="control-btn">Back to Menu</a>
+    </div>
+
+    <div id="output">Loading...</div>
+
+    <button id="copy-btn" class="copy-btn" onclick="copyLastOutput()">Copy My Results</button>
+
+    <div class="input-row">
+        <input type="text" id="user-input" placeholder="Type your answer here..." autocomplete="off" />
+        <button id="send-btn" onclick="sendCommand()">Go</button>
+    </div>
+
+    <div class="helper-btns">
+        <button class="helper-btn" onclick="quickSend('skip')">Skip</button>
+        <button class="helper-btn" onclick="quickSend('idk')">I don't know</button>
+        <button class="helper-btn" onclick="quickSend('why')">Why?</button>
+        <button class="helper-btn" onclick="quickSend('end')">End</button>
+    </div>
+
+    <script>
+        document.cookie = "humans_21909=1; path=/; max-age=86400";
+        const API_ENDPOINT = '/educational-engines/api/math-skills-api.php';
+        const CURRENT_ENGINE = 'math-skills';
+
+        let sessionId = null;
+        let awaitingResponse = false;
+        let lastResponseDiv = null;
+        let reportSaved = false;
+
+        // Get student name from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentName = urlParams.get('student') || '';
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function quickSend(text) {
+            const input = document.getElementById('user-input');
+            input.value = text;
+            sendCommand();
+        }
+
+        function copyLastOutput() {
+            const btn = document.getElementById('copy-btn');
+            if (!lastResponseDiv) return;
+
+            const text = lastResponseDiv.textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy My Results';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+            });
+        }
+
+        function checkForReport(text) {
+            const btn = document.getElementById('copy-btn');
+            if (text.includes('SESSION REPORT')) {
+                btn.classList.add('visible');
+                // Auto-save if student is logged in
+                if (studentName && !reportSaved) {
+                    reportSaved = true;
+                    saveReport(text);
+                }
+            }
+        }
+
+        async function saveReport(reportText) {
+            try {
+                await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        engine: CURRENT_ENGINE,
+                        action: 'math_save',
+                        student: studentName,
+                        report: reportText
+                    })
+                });
+                // Show save confirmation
+                const btn = document.getElementById('copy-btn');
+                btn.textContent = 'Progress Saved!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy My Results';
+                    btn.classList.remove('copied');
+                }, 3000);
+            } catch(e) {
+                console.error('Auto-save failed:', e);
+            }
+        }
+
+        async function handleStream(response, targetDiv, output) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let fullText = '';
+
+            while (true) {
+                const {done, value} = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.content) {
+                                fullText += parsed.content;
+                                // Strip system tags from display
+                                let displayText = fullText.replace(/\s*\[ANSWER:.*?\]/g, '');
+                                displayText = displayText.replace(/\s*\[INJECT_SKILLS:.*?\]/g, '');
+                                // Hide incomplete potential tag at end of stream
+                                const lastBracket = displayText.lastIndexOf('[');
+                                if (lastBracket !== -1 && displayText.indexOf(']', lastBracket) === -1) {
+                                    displayText = displayText.substring(0, lastBracket);
+                                }
+                                targetDiv.innerHTML = escapeHtml(displayText);
+                                output.scrollTop = output.scrollHeight;
+                            } else if (parsed.searching) {
+                                targetDiv.innerHTML = '<span style="color: #2563eb; font-style: italic;">Thinking...</span>';
+                            } else if (parsed.error) {
+                                targetDiv.style.color = '#dc2626';
+                                targetDiv.textContent = 'Error: ' + parsed.error;
+                            }
+                        } catch (e) {
+                            console.error('Parse error:', e);
+                        }
+                    }
+                }
+            }
+
+            checkForReport(fullText);
+        }
+
+        window.addEventListener('DOMContentLoaded', initialize);
+
+        async function initialize() {
+            sessionId = 'math_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            awaitingResponse = true;
+            reportSaved = false;
+
+            const output = document.getElementById('output');
+            const sendBtn = document.getElementById('send-btn');
+            sendBtn.disabled = true;
+
+            // Show student name in header if logged in
+            if (studentName) {
+                const nameDisplay = document.createElement('span');
+                nameDisplay.style.fontSize = '14px';
+                nameDisplay.style.opacity = '0.8';
+                nameDisplay.style.display = 'block';
+                nameDisplay.textContent = studentName;
+                document.querySelector('.header h1').after(nameDisplay);
+            }
+
+            const initDiv = document.createElement('div');
+            initDiv.style.color = '#1e293b';
+            initDiv.style.whiteSpace = 'pre-wrap';
+
+            const initBody = {
+                engine: CURRENT_ENGINE,
+                action: 'initialize',
+                session_id: sessionId
+            };
+            if (studentName) {
+                initBody.student = studentName;
+            }
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(initBody)
+                });
+
+                output.innerHTML = '';
+                output.appendChild(initDiv);
+                lastResponseDiv = initDiv;
+
+                await handleStream(response, initDiv, output);
+
+            } catch (error) {
+                output.innerHTML = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.style.color = '#dc2626';
+                errorDiv.textContent = 'Could not connect. Please refresh.';
+                output.appendChild(errorDiv);
+                console.error('Init error:', error);
+            }
+
+            awaitingResponse = false;
+            sendBtn.disabled = false;
+        }
+
+        async function sendCommand() {
+            if (awaitingResponse) return;
+            awaitingResponse = true;
+
+            const input = document.getElementById('user-input');
+            const output = document.getElementById('output');
+            const sendBtn = document.getElementById('send-btn');
+
+            const command = input.value.trim();
+            if (!command) {
+                awaitingResponse = false;
+                return;
+            }
+
+            sendBtn.disabled = true;
+
+            // Add spacing
+            if (output.lastChild) {
+                output.appendChild(document.createElement('br'));
+            }
+
+            // Show student input
+            const userDiv = document.createElement('div');
+            userDiv.style.color = '#6b7280';
+            userDiv.style.fontWeight = 'bold';
+            userDiv.style.fontSize = '16px';
+            userDiv.textContent = '> ' + command;
+            output.appendChild(userDiv);
+            output.appendChild(document.createElement('br'));
+
+            // Response container
+            const responseDiv = document.createElement('div');
+            responseDiv.style.color = '#1e293b';
+            responseDiv.style.whiteSpace = 'pre-wrap';
+            output.appendChild(responseDiv);
+            lastResponseDiv = responseDiv;
+
+            input.value = '';
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        engine: CURRENT_ENGINE,
+                        action: 'continue',
+                        session_id: sessionId,
+                        message: command
+                    })
+                });
+
+                await handleStream(response, responseDiv, output);
+
+            } catch (error) {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.color = '#dc2626';
+                errorDiv.textContent = 'Connection lost. Try again.';
+                output.appendChild(errorDiv);
+                console.error('Error:', error);
+            }
+
+            awaitingResponse = false;
+            sendBtn.disabled = false;
+        }
+
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendCommand();
+        });
+    </script>
+</body>
+</html>

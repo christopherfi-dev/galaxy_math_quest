@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Skills Engine — Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: #F1F5F9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { max-width: 440px; width: 100%; }
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 15px;
+            margin-bottom: 36px;
+            line-height: 1.5;
+            text-align: center;
+        }
+        .section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .section-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        .section h2 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+        .section p {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            color: #F1F5F9;
+            border: 2px solid rgba(255,255,255,0.2);
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+        input:focus { border-color: #fff; }
+        input::placeholder { color: rgba(255,255,255,0.4); }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            color: #FFF;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .btn-go { background: #22C55E; }
+        .btn-go:hover { background: #16A34A; transform: translateY(-2px); }
+        .btn-go:disabled { background: rgba(255,255,255,0.2); cursor: default; transform: none; }
+        .error {
+            color: #FCA5A5;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: none;
+        }
+        .step2 {
+            display: none;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .step2.visible { display: block; }
+        .step2 label {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .back {
+            display: inline-block;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .back:hover { color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/educational-engines/" class="back">&larr; Back to menu</a>
+        <h1>Math Skills Engine</h1>
+        <p class="subtitle">Find your gaps. Fill them in.</p>
+
+        <div class="section">
+            <div class="section-label">Your Math Folder</div>
+            <h2>Enter your name</h2>
+            <p>Type the name your teacher gave you. This is your personal math folder.</p>
+            <div class="error" id="name-error">Names can only have letters, numbers, and dashes.</div>
+            <div class="error" id="api-error"></div>
+            <input type="text" id="name-input" placeholder="Your name, e.g. sam-k" maxlength="30" autocomplete="off" />
+            <button class="btn btn-go" id="check-btn" disabled>Next</button>
+
+            <div class="step2" id="create-step">
+                <label>First time! Pick a password you'll remember:</label>
+                <input type="password" id="create-password" placeholder="Your password" />
+                <div class="error" id="create-error"></div>
+                <button class="btn btn-go" id="create-btn" disabled>Start</button>
+            </div>
+
+            <div class="step2" id="login-step">
+                <label>Welcome back! Type your password:</label>
+                <input type="password" id="login-password" placeholder="Your password" />
+                <div class="error" id="login-error"></div>
+                <button class="btn btn-go" id="login-btn" disabled>Go</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var API = '/educational-engines/api/math-skills-api.php';
+
+        var nameInput = document.getElementById('name-input');
+        var checkBtn = document.getElementById('check-btn');
+        var nameError = document.getElementById('name-error');
+        var apiError = document.getElementById('api-error');
+
+        var createStep = document.getElementById('create-step');
+        var createPw = document.getElementById('create-password');
+        var createBtn = document.getElementById('create-btn');
+        var createError = document.getElementById('create-error');
+
+        var loginStep = document.getElementById('login-step');
+        var loginPw = document.getElementById('login-password');
+        var loginBtn = document.getElementById('login-btn');
+        var loginError = document.getElementById('login-error');
+
+        var checking = false;
+
+        function clean(v) {
+            return v.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        }
+
+        function hideAll() {
+            nameError.style.display = 'none';
+            apiError.style.display = 'none';
+            createStep.classList.remove('visible');
+            loginStep.classList.remove('visible');
+            createError.style.display = 'none';
+            loginError.style.display = 'none';
+        }
+
+        nameInput.addEventListener('input', function() {
+            var raw = nameInput.value;
+            var c = clean(raw);
+            checkBtn.disabled = c.length === 0 || checking;
+            nameError.style.display = (raw.trim().length > 0 && c !== raw.trim().toLowerCase().replace(/\s+/g, '-')) ? 'block' : 'none';
+            hideAll();
+        });
+
+        nameInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !checkBtn.disabled) checkBtn.click();
+        });
+
+        createPw.addEventListener('input', function() { createBtn.disabled = createPw.value.length === 0; });
+        createPw.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !createBtn.disabled) createBtn.click(); });
+
+        loginPw.addEventListener('input', function() { loginBtn.disabled = loginPw.value.length === 0; });
+        loginPw.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !loginBtn.disabled) loginBtn.click(); });
+
+        // Check if student exists
+        checkBtn.addEventListener('click', async function() {
+            var name = clean(nameInput.value);
+            if (!name || checking) return;
+            checking = true;
+            checkBtn.disabled = true;
+            checkBtn.textContent = '...';
+            hideAll();
+
+            try {
+                var resp = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ engine: 'math-skills', action: 'math_exists', student: name })
+                });
+                var data = await resp.json();
+
+                if (data.exists) {
+                    loginStep.classList.add('visible');
+                    loginPw.value = '';
+                    loginBtn.disabled = true;
+                    loginPw.focus();
+                } else {
+                    createStep.classList.add('visible');
+                    createPw.value = '';
+                    createBtn.disabled = true;
+                    createPw.focus();
+                }
+            } catch(e) {
+                apiError.textContent = 'Could not connect. Try again.';
+                apiError.style.display = 'block';
+            }
+
+            checking = false;
+            checkBtn.disabled = false;
+            checkBtn.textContent = 'Next';
+        });
+
+        // Create new student
+        createBtn.addEventListener('click', async function() {
+            var name = clean(nameInput.value);
+            var pw = createPw.value;
+            if (!name || !pw) return;
+            createBtn.disabled = true;
+            createBtn.textContent = 'Creating...';
+            createError.style.display = 'none';
+
+            try {
+                var resp = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ engine: 'math-skills', action: 'math_create', student: name, password: pw })
+                });
+                var data = await resp.json();
+
+                if (data.success) {
+                    window.location.href = 'math-skills.html?student=' + encodeURIComponent(name);
+                } else {
+                    createError.textContent = data.error || 'Could not create folder.';
+                    createError.style.display = 'block';
+                    createBtn.disabled = false;
+                    createBtn.textContent = 'Start';
+                }
+            } catch(e) {
+                createError.textContent = 'Connection failed.';
+                createError.style.display = 'block';
+                createBtn.disabled = false;
+                createBtn.textContent = 'Start';
+            }
+        });
+
+        // Login existing student
+        loginBtn.addEventListener('click', async function() {
+            var name = clean(nameInput.value);
+            var pw = loginPw.value;
+            if (!name || !pw) return;
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Checking...';
+            loginError.style.display = 'none';
+
+            try {
+                var resp = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ engine: 'math-skills', action: 'math_verify', student: name, password: pw })
+                });
+                var data = await resp.json();
+
+                if (data.success) {
+                    window.location.href = 'math-skills.html?student=' + encodeURIComponent(name);
+                } else {
+                    loginError.textContent = data.error || 'Wrong password.';
+                    loginError.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Go';
+                }
+            } catch(e) {
+                loginError.textContent = 'Connection failed.';
+                loginError.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Go';
+            }
+        });
+    </script>
+</body>
+</html>

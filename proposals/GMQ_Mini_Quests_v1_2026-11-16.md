@@ -213,11 +213,11 @@ In the template's Voltara example, the Gumblefish "knows nothing about energy (d
 
 ---
 
-## 12. What I have not seen
+## 12. The Math Skills engine (updated 2026-11-16)
 
-- `SOURCES_Index.md` §4 lists your **Math Skills** engine (`math-skills_txt v4_1`, `math-skills-api_php v1_1`). It is described as having per-student seeds and answer checks.
-- That sounds like most of a mini quest, already built. It is not in this repo, so I could not read it.
-- If you add those files, mini quests can reuse what you already have.
+- You sent the engine. It is in `engines/math-skills/`, and I have read it.
+- It marks with code, but the AI picks the numbers. So it is a second way to do "code and AI".
+- The findings, and a first set of 14 mini quests and mini battles for the station, are in `proposals/GMQ_Mini_Quests_Station_Set_v1_2026-11-16.md`.
 
 ---
 

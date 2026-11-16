@@ -1,0 +1,39 @@
+   * Determines the number needed to make 10, using objects
+   * Decomposes whole numbers within 10 in more than one way, using models
+   * Subtracts whole numbers within 20 using models
+   * Adds whole numbers with sums within 20
+   * Subtracts whole numbers within 20
+   * Finds 10 more or 10 less than a given number
+   * Subtracts multiples of 10 from multiples of 10 within 100
+   * Adds whole numbers with sums within 100, no regrouping
+   * Subtracts whole numbers within 100, no regrouping
+   * Adds whole numbers with sums within 100, with regrouping
+   * Subtracts whole numbers within 100, with regrouping
+   * Adds three or more whole numbers with sums within 100, with regrouping
+   * Finds 100 more or 100 less than a given number
+   * Adds whole numbers with sums within 1,000 using models
+   * Subtracts whole numbers within 1,000 using models
+   * Adds whole numbers with sums within 1,000, no regrouping
+   * Subtracts whole numbers within 1,000, no regrouping
+   * Adds whole numbers with sums within 1,000, with regrouping
+   * Adds whole numbers with sums greater than 10,000
+   * Subtracts whole numbers greater than 1,000
+   * Applies the commutative property of addition to whole numbers
+   * Identifies the missing equation in whole-number addition and subtraction fact families
+   * Understands the inverse relationship between addition and subtraction, whole numbers within 20
+   * Represents arrays with repeated addition expressions and finds the total number of objects
+   * Represents arrays with repeated addition expressions or equations
+   * Represents whole-number multiplication using models
+   * Understands multiplication as a comparison of sizes
+   * Understands multiplication as many groups of equal size
+   * Understands division as equal sharing
+   * Multiplies basic facts
+   * Divides basic facts
+   * Multiplies one-digit whole numbers by multiples of 10
+   * Multiplies two-digit whole numbers by two-digit whole numbers
+   * Understands the inverse relationship between multiplication and division
+   * Identifies the missing value in an equation to show that a number and its opposite have a sum of 0
+   * Identifies ratios between two quantities not from the same whole
+   * Uses tables to represent real-world relationships described by a given unit rate
+   * Determines missing values in a table of equivalent ratios within a real‑world scenario
+   * Uses a given unit rate to solve a one-step real-world problem

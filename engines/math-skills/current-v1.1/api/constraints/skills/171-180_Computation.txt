@@ -1,0 +1,29 @@
+   * Determines the number needed to make 10, using objects
+   * Subtracts whole numbers within 20 using models
+   * Adds whole numbers with sums within 20
+   * Subtracts whole numbers within 20
+   * Finds 10 more or 10 less than a given number
+   * Subtracts multiples of 10 from multiples of 10 within 100
+   * Adds whole numbers with sums within 100 using models
+   * Adds whole numbers with sums within 100, no regrouping
+   * Subtracts whole numbers within 100, no regrouping
+   * Adds whole numbers with sums within 100, with regrouping
+   * Subtracts whole numbers within 100, with regrouping
+   * Adds three or more whole numbers with sums within 100, no regrouping
+   * Adds three or more whole numbers with sums within 100, with regrouping
+   * Finds 100 more or 100 less than a given number
+   * Adds whole numbers with sums within 1,000 using models
+   * Subtracts whole numbers within 1,000 using models
+   * Adds whole numbers with sums within 1,000, no regrouping
+   * Subtracts whole numbers within 1,000, no regrouping
+   * Applies the commutative property of addition to whole numbers
+   * Identifies the missing equation in whole-number addition and subtraction fact families
+   * Understands the inverse relationship between addition and subtraction, whole numbers within 20
+   * Represents arrays with repeated addition expressions or equations
+   * Represents whole-number multiplication using models
+   * Multiplies basic facts
+   * Multiplies one-digit whole numbers by multiples of 10
+   * Divides basic facts
+   * Identifies ratios between two quantities not from the same whole
+   * Determines missing values in a table of equivalent ratios within a real‑world scenario
+   * Understands the effect of multiplying whole numbers by fractions less than 1

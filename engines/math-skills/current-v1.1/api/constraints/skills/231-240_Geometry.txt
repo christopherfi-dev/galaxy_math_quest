@@ -1,0 +1,32 @@
+* Knows the definition of an angle
+* Identifies perpendicular lines
+* Knows definitions of special triangles, such as acute, right, scalene, etc.
+* Identifies and names special triangles, such as acute, right, scalene, etc., given pictures
+* Sorts shapes into categories based on attributes, given pictures
+* Describes a set of shapes based on attributes, given pictures
+* Describes shapes using multiple categories based on attributes, given pictures
+* Sorts shapes into a hierarchy, given pictures
+* Understands the relationships among categories of shapes
+* Determines the number of lines of symmetry in 2-D figures
+* Identifies the cross-sections of 3-D shapes
+* Identifies 3-D shapes using cross-sections
+* Recognizes that the sum of the interior angles of a triangle is 180 degrees
+* Applies the Triangle Angle-Sum Theorem to determine the measure of an unknown angle
+* Solves multi‑step problems by applying the Triangle Angle‑Sum Theorem
+* Applies the Triangle Inequality Theorem
+* Calculates unknown angle measures using the properties of complementary, supplementary, and vertical angles
+* Solves multi‑step problems by applying the properties of supplementary, complementary, and vertical angles
+* Solves problems involving parallel lines cut by a transversal
+* Solves problems by applying multiple properties of angles, including interior and exterior angles of triangles; complementary, supplementary, and vertical angles; and angles created by perpendicular lines or parallel lines cut by a transversal
+* Understands that horizontal and vertical line segments join two points with the same first or second coordinate
+* Determines the quadrant for a given ordered pair
+* Plots the coordinates of points in the first quadrant of a coordinate plane
+* Plots points in all four quadrants of a coordinate plane
+* Determines the coordinates of points in the first quadrant of a coordinate plane
+* Determines the coordinates of missing vertices of geometric figures in the first quadrant given the other vertices plotted on the coordinate plane
+* Determines the coordinates of missing vertices of geometric figures in the first quadrant given the coordinates of the other vertices
+* Determines the coordinates of a point given the distance from another point with the same first or second coordinate
+* Determines the distance between two points with the same first or second coordinate
+* Determines a side length of a polygon given the coordinates of the vertices with the same first or second coordinate
+* Identifies the type of quadrilateral given the coordinates of the vertices
+* Determines the perimeter or area of a rectangle given vertices with the same first or second coordinate

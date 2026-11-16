@@ -1,0 +1,64 @@
+   * Knows the definition of an angle
+   * Understands what the measure of an angle represents
+   * Identifies/estimates angle measures
+   * Measures non-right angles using a protractor
+   * Explains how to find unknown angle measures using the additive property of angles
+   * Calculates unknown angle measures using the additive property of angles
+   * Calculates and explains how to find unknown angle measures using the additive property of angles
+   * Knows relative sizes of metric units of length
+   * Understands measurement involving rulers
+   * Measures length, width, or height to the nearest quarter inch
+   * Measures an object using different units and explains the relationship between the size of each unit and the corresponding measurements
+   * Completes simple conversions of customary units of length
+   * Converts units of length between the customary and the metric systems
+   * Completes complex conversions of customary units of length involving fractions, decimals, or more than two units
+   * Solves one-step length word problems involving addition or subtraction
+   * Solves multi-step length word problems involving whole numbers
+   * Solves multi-step length word problems involving whole numbers and conversion of customary units
+   * Solves real‑world or mathematical problems involving conversions within a measurement system using ratio reasoning, given a conversion factor
+   * Solves real-world or mathematical problems involving conversions between the customary and metric systems, given a conversion factor
+   * Determins the perimeter of basic polygons in which not all sides are labeled
+   * Determines side lengths given the perimeter of rectangles
+   * Determines the circumference of circles, formula not provided
+   * Determines the circumference of circles, given the formula
+   * Determines the radius or diameter given the circumference of a circle
+   * Solves problems involving perimeters of rectangles within a real-world or mathematical context
+   * Recognizes situations which describe area
+   * Identifies a unit square
+   * Determines the area of figures composed of whole and partial unit squares
+   * Determines the area of rectangles with fractional sides, formula not provided
+   * Determines the area of parallelograms, formula not provided
+   * Determines the area of triangles, formula not provided
+   * Determines the area of figures composed of rectangles
+   * Determines the area of figures composed of polygons
+   * Determines side lengths given the area of rectangles
+   * Describes the effect on area when dimensions of a rectangle are changed
+   * Describes the effect on area when dimensions of a triangle are changed
+   * Applies the distributive property of multiplication to find the area of rectangles with whole-number sides
+   * Solves problems involving areas of rectangles within a real-world or mathematical context
+   * Solves problems involving areas of figures composed of polygons within a real-world or mathematical context
+   * Completes simple conversions of customary units of capacity
+   * Completes complex conversions of customary units of capacity involving fractions, decimals, or more than two units
+   * Solves one‑step capacity word problems involving whole numbers and conversion of customary units
+   * Solves multi-step capacity word problems involving whole numbers and conversion of customary units
+   * Completes simple conversions of customary units of weight
+   * Solves one-step weight/mass word problems involving whole number multiplication and division
+   * Solves multi-step weight word problems involving whole numbers and conversion of customary units
+   * Solves multi‑step weight word problems involving decimals or fractions and conversion of customary units
+   * Applies scale factors to solve problems involving scale drawings of geometric figures
+   * Applies scale factors to solve problems involving scale drawings, maps, and models
+   * Understands how volume is measured
+   * Recognizes situations which describe volume
+   * Understands that a unit cube has sides of 1 unit in length and a volume of 1 cubic unit
+   * Determines the volume of figures by counting unit cubes
+   * Represents the volume of rectangular prisms composed of unit cubes, using repeated addition expressions or equations
+   * Determines the volume of a rectangular prism given a net shown on a grid
+   * Determines the volume of rectangular prisms, formula not provided
+   * Determines the volume of rectangular prisms, given the formula
+   * Determines the volume of figures composed of rectangular prisms
+   * Determines possible dimensions for rectangular prisms given one dimension and the volume in unit cubes
+   * Solves problems involving rectangular prisms composed of unit cubes
+   * Solves problems involving volumes of rectangular prisms within a real-world or mathematical context
+   * Completes complex conversions of more than two units of time
+   * Determines elapsed time across both minutes and hours using clocks
+   * Solves multi-step time word problems involving conversion across seconds, minutes, hours, etc.

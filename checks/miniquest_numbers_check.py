@@ -2,7 +2,8 @@
 
 Each rule makes one quick problem for one student, with one typed number as
 the answer. The skills and levels come from Marc's "tasks / strand order" doc,
-Numbers Quests 1-4. Fractions (Quest 5) are left out for now.
+Numbers Quests 1-4, plus two rules for the station bays (counting, odd and
+even). Fractions (Quest 5) are left out for now.
 
 This script tests every rule on 10,000 seeds and checks that it stays inside
 the level it claims. For example, "no regrouping" must never regroup.
@@ -115,7 +116,38 @@ def div_facts(r):
     return f"{d * q} ÷ {d}", q, {"total": d * q, "d": d}
 
 
+def count_on(r):
+    step, top = r.choice([(5, 100), (10, 1000), (100, 1000)])
+    start = r.randrange(step, top - 3 * step + 1, step)
+    seq = [start + i * step for i in range(3)]
+    return f"{seq[0]}, {seq[1]}, {seq[2]}, __", start + 3 * step, {"seq": seq, "step": step, "top": top}
+
+
+def odd_one_out(r):
+    want_odd = r.random() < 0.5
+    nums = []
+    while len(nums) < 3:
+        n = r.randint(11, 99)
+        is_odd = n % 2 == 1
+        need_special = len(nums) == 0
+        if n not in nums and (is_odd == want_odd) == need_special:
+            nums.append(n)
+    special = nums[0]
+    r.shuffle(nums)
+    word = "odd" if want_odd else "even"
+    return f"Which one is {word}? {nums[0]}, {nums[1]}, {nums[2]}", special, {"nums": nums, "odd": want_odd}
+
+
 # ---------- what each rule must always obey
+
+def ok_count(a, f):
+    s = f["seq"]
+    return s[1] - s[0] == f["step"] == s[2] - s[1] == a - s[2] and 0 < s[0] and a <= f["top"]
+
+
+def ok_odd(a, f):
+    hits = [n for n in f["nums"] if (n % 2 == 1) == f["odd"]]
+    return hits == [a] and len(set(f["nums"])) == 3
 
 def ok_order(a, f):
     return len(set(f["nums"])) == 3 and all(100 <= n <= 999 for n in f["nums"]) and a == max(f["nums"])
@@ -161,6 +193,30 @@ def ok_div(allowed):
     return check
 
 
+# Each rule is matched to a skill statement in Marc's Math Skills engine
+# (engines/math-skills/current-v1.1/api/constraints/skills/). [Source for the
+# statements; the matching is a Proposal.]
+STATEMENTS = {
+    "pv_order": "Compares whole numbers within 1,000 using terms",
+    "pv_partition": "Reads and writes whole numbers within 1,000 in expanded form",
+    "round10": "Rounds whole numbers within 1,000",
+    "round100": "Rounds whole numbers within 1,000",
+    "add_1digit": "Adds whole numbers with sums within 20",
+    "sub_1digit": "Subtracts whole numbers within 20",
+    "add_2digit_plain": "Adds whole numbers with sums within 100, no regrouping",
+    "sub_2digit_plain": "Subtracts whole numbers within 100, no regrouping",
+    "add_2digit_regroup": "Adds whole numbers with sums within 100, with regrouping",
+    "sub_2digit_regroup": "Subtracts whole numbers within 100, with regrouping",
+    "mult_repeated": "Represents arrays with repeated addition expressions and finds the total number of objects",
+    "mult_2_5_10": "Multiplies basic facts",
+    "mult_facts": "Multiplies basic facts",
+    "div_share": "Understands division as equal sharing",
+    "div_2_5_10": "Divides basic facts",
+    "div_facts": "Divides basic facts",
+    "count_on": "Counts by 10s within 1,000",
+    "odd_one_out": "Determines if sets of objects are even or odd",
+}
+
 RULES = [
     # strand quest and level [Source: "tasks / strand order"], rule name, rule, test
     ("Numbers 1 L1  order numbers to 1,000",        pv_order,           ok_order),
@@ -179,7 +235,37 @@ RULES = [
     ("Numbers 4 L1  sharing",                       div_share,          ok_div(range(2, 6))),
     ("Numbers 4 L2  ÷2, ÷5, ÷10",                   div_2_5_10,         ok_div([2, 5, 10])),
     ("Numbers 4 L3  division facts to 10 x 10",     div_facts,          ok_div(range(2, 11))),
+    ("Station bay 1  count on by 5s, 10s, 100s",    count_on,           ok_count),
+    ("Station bay 4  odd or even",                  odd_one_out,        ok_odd),
 ]
+
+
+def check_statements():
+    """Is every matched statement really in the Math Skills skill files?"""
+    import glob, os
+    here = os.path.dirname(os.path.abspath(__file__))
+    folder = os.path.join(here, "..", "engines", "math-skills", "current-v1.1",
+                          "api", "constraints", "skills")
+    files = sorted(glob.glob(os.path.join(folder, "*.txt")))
+    if not files:
+        print("\nMath Skills skill files not found; statement check skipped.")
+        return True
+    total = 0
+    where = {}
+    for path in files:
+        for line in open(path, encoding="utf-8"):
+            text = line.strip().lstrip("*").strip().replace("\u2011", "-")
+            if text:
+                total += 1
+                where.setdefault(text, []).append(os.path.basename(path)[:7])
+    print(f"\nMath Skills engine: {len(files)} skill files, {total} skill statements.")
+    print(f"{'rule':20} {'lowest band':11}  statement")
+    ok = True
+    for rule, text in STATEMENTS.items():
+        bands = sorted(set(where.get(text, [])))
+        ok &= bool(bands)
+        print(f"{rule:20} {bands[0] if bands else 'NOT FOUND':11}  {text}")
+    return ok
 
 
 def main():
@@ -215,6 +301,8 @@ def main():
                                ("1 card for every 5 mini quests", 3 / 5)]:
         print(f"   {label:52} {round(per_sitting * 3 * 28):4d}")
     print("   For scale: the big tasks give about 33 cards in total, and the original set has about 130 cards.")
+
+    all_ok &= check_statements()
 
     print("\nRESULT:", "PASS" if all_ok else "FAIL")
 

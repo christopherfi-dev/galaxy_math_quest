@@ -1,0 +1,11 @@
+* Identifies true one-step addition and subtraction equations involving whole numbers
+* Decomposes whole numbers within 10 in more than one way, using equations
+* Determines unknown parts in addition equations with whole numbers, sums within 20
+* Determines start or change unknown in subtraction equations with whole numbers within 20
+* Represents one-step addition and subtraction word problems with objects, whole numbers within 20
+* Represents one‑step add-to/put‑together word problems with expressions or equations, with answer unknown, whole numbers within 20
+* Solves one‑step add-to/put‑together word problems with result unknown, whole numbers within 20
+* Solves one‑step add-to/put‑together word problems with start, change, or part unknown, whole numbers within 20
+* Solves one‑step take-from/take‑apart word problems with result unknown, whole numbers within 20
+* Solves put-together word problems involving three addends, whole numbers within 20
+* Solves one-step equal-groups multiplication word problems, whole numbers with products within 100

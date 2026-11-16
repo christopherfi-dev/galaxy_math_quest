@@ -1,0 +1,56 @@
+   * Identifies/estimates angle measures
+   * Calculates unknown angle measures using the additive property of angles
+   * Knows relative sizes of customary units of length
+   * Knows relative sizes of metric units of length
+   * Measures an object using different units and explains the relationship between the size of each unit and the corresponding measurements
+   * Measures and compares the length of 2 objects in inches
+   * Measures length, width, or height to the nearest inch
+   * Measures length, width, or height to the nearest half inch
+   * Measures and compares the length of 2 objects in centimeters
+   * Measures length, width, or height to the nearest centimeter
+   * Converts units of length between the customary and the metric systems
+   * Completes simple conversions of customary units of length
+   * Completes complex conversions of customary units of length involving fractions, decimals, or more than two units
+   * Solves multi-step length word problems involving whole numbers and conversion of customary units
+   * Solves multi-step length word problems involving decimals or fractions and conversion of customary units
+   * Solves real-world or mathematical problems involving conversions between the customary and metric systems, given a conversion factor
+   * Represents one‑step length word problems involving addition or subtraction with expressions or equations
+   * Solves one-step length word problems involving addition or subtraction
+   * Determines the perimeter of basic polygons in which not all sides are labeled
+   * Determines side lengths given the perimeter of rectangles
+   * Solves problems involving perimeters of rectangles within a real-world or mathematical context
+   * Identifies a unit square
+   * Recognizes situations which describe area
+   * Determines the area of figures composed of whole and partial unit squares
+   * Determines side lengths given the area of rectangles
+   * Determines the area of rectangles with whole-number sides, formula not provided
+   * Explains the relationship between tiling a figure and multiplying side lengths to find the area
+   * Solves problems involving areas of rectangles within a real-world or mathematical context
+   * Estimates the capacity of objects in metric units
+   * Completes simple conversions of customary units of capacity
+   * Solves one‑step capacity word problems involving whole-number addition or subtraction
+   * Solves multi-step capacity word problems involving decimals or fractions and conversion of metric units
+   * Completes simple conversions of customary units of weight
+   * Solves multi‑step weight word problems involving decimals or fractions and conversion of customary units
+   * Solves multi‑step mass word problems involving decimals or fractions and conversion of metric units
+   * Applies scale factors to solve problems involving scale drawings of geometric figures
+   * Applies scale factors to solve problems involving scale drawings, maps, and models
+   * Understands that a unit cube has sides of 1 unit in length and a volume of 1 cubic unit
+   * Determines the volume of figures by counting unit cubes
+   * Identifies rectangular prisms composed of unit cubes that have the same volume as a given rectangular prism
+   * Determines the missing dimension of a rectangular prism composed of unit cubes given the volume and other dimensions
+   * Represents the volume of rectangular prisms composed of unit cubes, using multiplication expressions or equations
+   * Determines the volume of rectangular prisms, formula not provided
+   * Determines the volume of rectangular prisms, given the formula
+   * Solves problems involving rectangular prisms composed of unit cubes
+   * Completes simple conversions of units of time
+   * Identifies the digital or analog clock that displays the same time shown on the other type of clock, to the nearest minute
+   * Orders time to the minute, shown on analog clocks
+   * Determines elapsed time across either minutes or hours using clocks
+   * Determines elapsed time across both minutes and hours using clocks
+   * Solves multi-step time word problems involving conversion across seconds, minutes, hours, etc.
+   * Determines the decimal value of a collection of coins and/or bills given as names
+   * Rounds dollars and cents
+   * Solves money word problems involving decimals and coins and/or bills given as pictures
+   * Solves one-step money word problems involving whole number addition or subtraction
+   * Solves multi-step money word problems involving whole numbers within 100

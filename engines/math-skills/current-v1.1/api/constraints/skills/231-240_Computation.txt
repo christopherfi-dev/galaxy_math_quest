@@ -1,0 +1,57 @@
+* Applies knowledge of place value to multiply whole numbers using the standard algorithm
+* Divides whole numbers up to four digits by one-digit divisors, without a remainder
+* Divides whole numbers up to four digits by two-digit divisors, without a remainder
+* Divides whole numbers up to four digits by two-digit divisors, with a remainder
+* Divides multi-digit whole numbers with three or more digits, without a remainder
+* Divides two whole numbers with a quotient in the form of a fraction or a mixed number
+* Understands fractions as the division of the numerator by the denominator
+* Understands multiples of non‑unit fractions as products of whole numbers and unit fractions
+* Adds and subtracts fractions with denominators of 10 or 100
+* Adds and subtracts whole numbers, fractions, and/or mixed numbers with like denominators, with regrouping
+* Adds and subtracts whole numbers, fractions, and/or mixed numbers with unlike denominators, with regrouping
+* Understands that multiplying whole numbers and fractions involves multiplying the whole number and the numerator, then dividing by the denominator
+* Understands the effect of multiplying whole numbers by fractions less than 1
+* Understands the effect of multiplying whole numbers by fractions greater than 1
+* Understands the effect of multiplying fractions by fractions less than 1, equal to 1, or greater than 1
+* Understands the effect of multiplying mixed numbers by fractions less than 1, equal to 1, or greater than 1
+* Multiplies fractions by fractions, results in simplest form
+* Multiplies mixed numbers by whole numbers, results in simplest form
+* Multiplies mixed numbers by fractions, results in simplest form
+* Understands that dividing by a fraction is the same as multiplying by its reciprocal
+* Divides whole numbers by fractions, results in simplest form
+* Divides fractions by whole numbers, results in simplest form
+* Divides fractions by fractions, results in simplest form
+* Divides mixed numbers by whole numbers, results in simplest form
+* Divides mixed numbers by fractions, results in simplest form
+* Multiplies decimals by decimals
+* Divides decimals by decimals
+* Determines the distance between two integers on a number line
+* Locates the additive inverse of a number on a number line
+* Understands the additive inverse property
+* Understands subtracting an integer is the same as adding its opposite
+* Understands that the product of a negative number and a positive number is negative
+* Represents addition and subtraction of integers on a number line
+* Adds and subtracts rational numbers, including combinations of positive or negative fractions, decimals, and integers
+* Multiplies rational numbers, including combinations of positive or negative fractions, decimals, and integers
+* Divides rational numbers, including combinations of positive or negative fractions, decimals, and integers
+* Identifies the part-to-whole ratio between two quantities
+* Creates tables representing proportional relationships involving positive rational numbers
+* Determines if the relationship between two quantities in a real‑world scenario is proportional by creating a table
+* Compares ratios within a real-world context
+* Compares unit rates in real‑world scenarios described by a given ratio
+* Compares unit rates in graphs of proportional relationships within a real‑world context
+* Calculates the unit rate from a table of a proportional relationship
+* Uses ratios of whole numbers to calculate unit rates
+* Uses ratios of fractions to calculate unit rates
+* Uses ratios of decimals to calculate unit rates
+* Determines missing values in a table of equivalent ratios within a real‑world scenario
+* Uses a given unit rate to solve a one-step real-world problem
+* Uses a given unit rate to solve a multi-step real-world problem
+* Uses two given unit rates to solve a multi-step real-world problem
+* Converts unit rates to solve real-world problems
+* Solves real‑world and mathematical problems given a table representing equivalent ratios of quantities
+* Solves real-world and mathematical problems using ratios or proportional reasoning
+* Solves real‑world problems involving rates associated with a ratio
+* Determines the whole in a real-world percent problem given the part and the percent
+* Solves one-step percent problems within a real-world or mathematical context
+* Solves multi-step percent problems within a real-world or mathematical context

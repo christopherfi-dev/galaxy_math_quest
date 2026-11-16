@@ -62,3 +62,8 @@ Not needed for the quest review. They will matter when the world is built:
 - `Project State 2026-11-14.md`, `DeepSeek API Reference Sheet 2026-11-11.md`, `POWERSHELL-DEPLOY-HANDOFF.md`
 
 **Never** add `api/config.php` (live keys) or any server folder holding student data.
+
+## 5. Added on 2026-11-16
+
+- `engines/math-skills/`: the Math Skills engine, sent by Marc as a zip. No keys and no student files. Its own README lists what was left out.
+- `reference/third-party/abyssal-garden/`: "Abyssal Garden" by Maksymilian Dendura, MIT licence. Not Marc's work. Kept as a reference for a later travel view.

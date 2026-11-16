@@ -1,0 +1,18 @@
+   * Understands location words
+   * Classifies shapes as open or closed, given pictures
+   * Identifies and names triangles, squares, rectangles, and circles
+   * Knows definitions of a triangle, a square, a rectangle, and a circle
+   * Identifies properties of triangles, squares, rectangles, and circles, given pictures
+   * Sorts shapes based on shared attributes
+   * Classifies 2-D shapes by properties, given pictures
+   * Compares attributes of 2‑D shapes
+   * Composes or decomposes 2-D shapes to form new shapes
+   * Recognizes lines of symmetry in 2-D figures
+   * Determines the number of lines of symmetry in 2-D figures
+   * Classifies shapes as either flat/2‑D or solid/3‑D, given pictures
+   * Identifies and names the 3-D shape of real-world objects
+   * Identifies and names cubes, cones, cylinders, and spheres
+   * Identifies attributes of cubes, cones, cylinders, and spheres, given pictures
+   * Identifies the number of faces, edges, or vertices for a 3-D object, given pictures
+   * Identifies and creates nets for pyramids
+   * Identifies and creates nets for prisms

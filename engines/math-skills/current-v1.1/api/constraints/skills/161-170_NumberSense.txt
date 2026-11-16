@@ -1,0 +1,36 @@
+* Creates sets with more than, less than, or the same number as a given set of objects
+* Counts by 1s within 100
+* Counts by 1s within 1,000
+* Counts by 5s within 100
+* Counts by 10s within 100
+* Counts backward by 10s within 100
+* Counts by 10s within 1,000
+* Counts backward by 100s within 1,000
+* Represents whole numbers within 20 with models
+* Decomposes whole numbers within 20 into tens and ones, using equations
+* Represents whole numbers within 100 with models
+* Reads and writes whole numbers within 100 in word form
+* Reads and writes whole numbers within 100 in expanded form
+* Represents whole numbers within 1,000 with models
+* Reads and writes whole numbers within 1,000 in word form
+* Reads and writes whole numbers within 1,000 as hundreds, tens, and ones
+* Reads and writes whole numbers within 1,000 in expanded form
+* Knows place‑value names in numbers through the hundred thousands
+* Compares sets of objects within 10 using terms
+* Compares whole numbers within 10 using terms
+* Compares whole numbers within 100 using terms
+* Compares whole numbers within 100 using symbols
+* Compares whole numbers within 1,000 using terms
+* Compares whole numbers within 1,000 using symbols
+* Orders whole numbers within 1,000
+* Compares whole numbers greater than 10,000 using terms
+* Identifies shapes that are divided into equal parts
+* Identifies shapes that are divided into halves
+* Identifies shapes that are divided into thirds
+* Identifies shapes that are divided into quarters
+* Identifies shapes that are divided into fourths
+* Models unit fractions using area models
+* Orders fraction models with like denominators
+* Orders fraction models with like numerators
+* Compares decimals to the hundredths, with the same number of digits after the decimal point, using terms
+* Orders decimals to the hundredths, with the same number of digits after the decimal point

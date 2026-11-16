@@ -1,0 +1,4 @@
+* Sorts objects into categories
+* Reads pictographs with single-unit scales to determine how many in a category
+* Represents data in bar graphs with single-unit scales
+* Represents data in bar graphs with multi-unit scales

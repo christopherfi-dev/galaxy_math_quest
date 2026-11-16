@@ -1,0 +1,20 @@
+   * Represents data in line or dot plots with whole‑number scales
+   * Represents data in line or dot plots with fractional scales
+   * Adds and subtracts to answer questions about pictographs with multi-unit scales
+   * Adds and subtracts to answer questions about bar graphs with multi-unit scales
+   * Reads and interprets line or dot plots with fractional scales
+   * Solves word problems using data from line or dot plots with fractional scales
+   * Solves multi-step problems using data from bar graphs with multi-unit scales
+   * Determines the question that can be answered from a given set of data
+   * Reads and interprets data from a histogram
+   * Describes the distribution of a data set based on its shape
+   * Describes the distribution of a data set based on its spread
+   * Determines the mean of a data set
+   * Identifies the median, quartiles, extreme values, and outliers from a box plot
+   * Reads and interprets data from a box plot
+   * Interprets the median in the context of a data set
+   * Compares the means and medians of related data sets from random samples represented in histograms
+   * Compares the distributions of multiple data sets presented in line or dot plots, or histograms
+   * Compares the variability of related data sets from random samples presented in box plots
+   * Identifies a sampling method that produces the most representative sample
+   * Writes and solves proportions to make inferences about populations

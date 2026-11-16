@@ -1,0 +1,60 @@
+   * Subtracts whole numbers within 100, with regrouping
+   * Adds whole numbers with sums within 1,000 using models
+   * Subtracts whole numbers within 1,000 using models
+   * Adds three or more whole numbers with sums within 100, with regrouping
+   * Represents arrays with repeated addition expressions or equations
+   * Represents arrays with repeated addition expressions and finds the total number of objects
+   * Understands multiplication as many groups of equal size
+   * Understands multiplication as a comparison of sizes
+   * Understands division as equal sharing
+   * Understands the inverse relationship between multiplication and division
+   * Multiplies two-digit whole numbers by two-digit whole numbers
+   * Multiplies one-digit whole numbers by whole numbers with more than two digits
+   * Multiplies multi-digit whole numbers
+   * Applies knowledge of place value to multiply whole numbers using the standard algorithm
+   * Divides whole numbers up to four digits by one-digit divisors, without a remainder
+   * Divides whole numbers up to four digits by two-digit divisors, without a remainder
+   * Divides multi-digit whole numbers with three or more digits, without a remainder
+   * Divides two whole numbers with a quotient in the form of a fraction or a mixed number
+   * Multiplies or divides decimals by 10, 100, or 1,000
+   * Adds and subtracts decimals with the same number of digits after the decimal point, with regrouping
+   * Adds and subtracts decimals with a different number of digits after the decimal point, no regrouping
+   * Adds and subtracts decimals with different number of digits after the decimal point, with regrouping
+   * Adds and subtracts fractions with like denominators using models other than number lines
+   * Adds and subtracts fractions with like denominators
+   * Adds and subtracts whole numbers, fractions, and/or mixed numbers with like denominators, no regrouping
+   * Adds and subtracts whole numbers, fractions, and/or mixed numbers with like denominators, with regrouping
+   * Understands the effect of multiplying whole numbers by fractions greater than 1
+   * Multiplies fractions by whole numbers, results not in simplest form
+   * Multiplies fractions by fractions, results not in simplest form
+   * Understands that dividing by a fraction is the same as multiplying by its reciprocal
+   * Divides fractions by whole numbers, results in simplest form
+   * Determines the distance between two integers on a number line
+   * Understands that the opposite of the opposite of a number is the number
+   * Identifies the missing value in an equation to show that a number and its opposite have a sum of 0
+   * Identifies two rational numbers that combine to make 0
+   * Adds and subtracts integers
+   * Multiplies and divides integers
+   * Identifies the part‑to‑part ratio between two quantities
+   * Identifies the part-to-whole ratio between two quantities
+   * Identifies ratios between two quantities not from the same whole
+   * Compares ratios within a real-world context
+   * Compares unit rates in real‑world scenarios described by a given ratio
+   * Uses tables to represent real-world relationships described by a given ratio
+   * Uses tables to represent real-world relationships described by a given unit rate
+   * Creates tables representing proportional relationships involving positive rational numbers
+   * Determines missing values in a table of equivalent ratios within a real‑world scenario
+   * Determines if the relationship between two quantities in a real‑world scenario is proportional given a table
+   * Determines if the relationship between two quantities in a real‑world scenario is proportional by creating a table
+   * Calculates the unit rate from a table of a proportional relationship
+   * Uses ratios of whole numbers to calculate unit rates
+   * Uses ratios of whole numbers and fractions to calculate unit rates
+   * Uses ratios of whole numbers and decimals to calculate unit rates
+   * Uses ratios of decimals to calculate unit rates
+   * Uses a given unit rate to solve a one-step real-world problem
+   * Uses a given unit rate to solve a multi-step real-world problem
+   * Converts unit rates to solve real-world problems
+   * Solves real‑world and mathematical problems given a table representing equivalent ratios of quantities
+   * Solves real-world and mathematical problems using ratios or proportional reasoning
+   * Solves real‑world problems involving rates associated with a ratio
+   * Solves one-step percent problems within a real-world or mathematical context
