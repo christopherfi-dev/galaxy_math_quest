@@ -52,7 +52,11 @@ const path = require('path');
       nl: g => { const st = { k: -1 }; if (!g.empty(st)) return false; for (let k = 0; k <= g.v.den; k++) { g.tap(st, 'k:' + k); if (g.done(st) !== (k === g.v.num)) return false; } return g.pic.den === g.v.den && g.v.num >= 1 && g.v.num < g.v.den; },
       array_expr: g => { const val = g.choices.map(c => sum(c.split(' + ').map(Number))), right = val.filter(v => v === g.r * g.c); const parts = g.choices[g.ans].split(' + ').map(Number); return right.length === 1 && val[g.ans] === g.r * g.c && parts.length === g.pic.r && parts.every(x => x === g.pic.c) && new Set(g.choices).size === 4; },
       mult_repeated: g => g.pic.r * g.pic.c === g.ans && g.pic.r === g.v.g && g.pic.c === g.v.e,
-      shape_sides: g => g.pic.pts.length === g.ans, shape_basic: g => g.choices[g.ans] === nameOf(g.pic), shape_more: g => g.choices[g.ans] === nameOf(g.pic) && new Set(g.choices).size === 4,
+      shape_sides: g => g.pic.pts.length === g.ans, shape_basic: g => g.choices[g.ans] === nameOf(g.pic), shape_more: g => g.choices[g.ans].replace('trapezium', 'trapezoid') === nameOf(g.pic) && new Set(g.choices).size === 4 && (!g.mw || g.choices.some(c => /^trapez/.test(c))),
+      coins_whole: g => { const c = g.pic.rows[0].coins; return sum(c) === g.ans && g.ans <= 99 && c.length >= 3 && c.length <= 6 && c.every(v => WHOLE.includes(v)); },
+      coins_spend: g => { const t = sum(g.pic.rows[0].coins); return t - g.v.c === g.ans && g.ans >= 1 && g.v.c >= 5 && t <= 99; },
+      coins_equal: g => { const r = g.pic.rows, T = sum(r[0].coins), same = r.slice(1).filter(x => sum(x.coins) === T); return r.length === 4 && same.length === 1 && r[1 + g.ans] === same[0] && same[0].coins.join() !== r[0].coins.join() && r.every(x => x.coins.length <= 6 && sum(x.coins) <= 99); },
+      coins_decimal: g => { const c = g.pic.rows[0].coins; return sum(c) === g.ans && g.show === (g.ans / 100).toFixed(2) && c.every(v => DEC.includes(v)) && g.ans <= 999 && g.ans % 5 === 0; },
       sym_count: g => foldCount(g.pic.pts) === g.ans && g.teachPic.lines.length === g.ans && g.teachPic.lines.every(a => folds(g.pic.pts, a)),
       sym_line: g => folds(g.pic.pts, g.line) === (g.ans === 0) && g.pic.lines.length === 1,
       coord_read: g => { const q = g.pic.pts[0]; return g.okPair(q.x, q.y) && !g.okPair(q.y, q.x) && q.x !== q.y && q.x >= 1 && q.x <= 6 && q.y >= 1 && q.y <= 6; },
@@ -60,11 +64,11 @@ const path = require('path');
       coord_what: g => { const hit = g.pic.pts.filter(q => q.x === g.v.x && q.y === g.v.y), keys = new Set(g.pic.pts.map(q => q.x + ',' + q.y)); return hit.length === 1 && hit[0].name === g.choices[g.ans] && keys.size === 4 && new Set(g.pic.pts.map(q => q.name)).size === 4 && g.pic.pts.some(q => q.x === g.v.y && q.y === g.v.x) && g.pic.pts.every(q => q.x >= 0 && q.x <= 6 && q.y >= 0 && q.y <= 6); }
     };
     const trio = n => g => { const good = g.pic.items.filter(it => it.bounds.length === n + 1 && it.bounds.every((x, i) => near(x, i / n))); return good.length === 1 && g.pic.items[g.ans] === good[0] && g.pic.items.length === 3; };
-    Object.assign(T, { frac_halves: trio(2), frac_thirds: trio(3), frac_fourths: trio(4), frac_model_unit: g => g.v.num === 1 && T.frac_model(g), nl_unit: g => g.v.num === 1 && T.nl(g), nl_frac: g => g.v.num > 1 && T.nl(g), bar_build_multi: g => g.pic.step > 1 && T.bars(g) });
+    Object.assign(T, { frac_halves: trio(2), frac_thirds: trio(3), frac_fourths: g => trio(4)(g) && ['fourths', 'quarters'].includes(g.v.word), frac_model_unit: g => g.v.num === 1 && T.frac_model(g), nl_unit: g => g.v.num === 1 && T.nl(g), nl_frac: g => g.v.num > 1 && T.nl(g), bar_build_multi: g => g.pic.step > 1 && T.bars(g) });
     T.bar_build = g => g.pic.step === 1 && T.bars(g);
     const seedWas = S.seed;
     for (const [rule] of LADDER) {
-      const test = T[rule]; count[rule] = { pic: !!test, seen: new Set() };
+      const test = T[rule]; count[rule] = { pic: !!test, seen: new Set() }; if (!WORDS[rule] || !WORDS[rule][0] || !WORDS[rule][1]) note(rule, 'no maths word');
       for (let i = 0; i < N; i++) { S.seed = (i * 7919 + 13) >>> 0; const where = ['station', 'voltara', 'space'][i % 3], g = GEN[rule](where);
         try {
           if (test && !test(g)) note(rule, 'picture and answer disagree: ' + JSON.stringify(g.v) + ' ans ' + JSON.stringify(g.ans));

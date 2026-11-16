@@ -102,12 +102,12 @@ I sorted the 419 by keywords. This is a first pass, not a teacher's judgement.
 | **A word answer** | 28 | Your engine's spelling-forgiving match |
 | **Hands-on** | 6 | A real task. You confirm it. |
 
-**Where it stands now:** 68 rules are written and tested. 34 are number rules. 34 are picture rules, built after your "Go".
+**Where it stands now:** 72 rules are written and tested. 34 are number rules. 38 are picture rules: 34 built after your "Go", and 4 coin rules built after your answer about coins.
 - Each rule is matched to one statement in your engine. The one exception is fraction of a set, which comes from your 2026 tracker.
-- The 68 rules cover **64 of the 419** Grade 3 statements: 37 of the 169 picture skills, 26 of the 216 number skills and 1 word skill.
+- The 72 rules cover **68 of the 419** Grade 3 statements. That is 16%.
 - The full list is in `skills/rule_map.csv`, with the statement and band for each rule.
 
-**The honest gap:** 355 statements have no rule yet. By galaxy, covered so far: Numerix 33 of 186, Metrica 12 of 76, Geometrica 8 of 45, Databa 8 of 25, Patternox 3 of 87. Patternox is the thinnest.
+**The honest gap:** 351 statements have no rule yet. By galaxy, the rules so far: Numerix 37, Metrica 14, Geometrica 8, Databa 8, Patternox 5. Patternox is the thinnest.
 
 **A defect in your skill files** [Source]: `231-240_AlgebraicConcepts.txt` holds seven lines of AI chat text ("Structural_assessment:" and so on). Two skills in the 181–190 files have lost their bullet star, so the engine may not read them.
 
@@ -115,7 +115,7 @@ I sorted the 419 by keywords. This is a first pass, not a teacher's judgement.
 
 - **Every skill is a star.** A galaxy's stars are its skills. A lit star is a skill shown. A dark star is a gap.
 - The student's goal becomes "light every star". You see the same chart with the statuses on it.
-- The sketch has a star chart for 68 skills in 15 groups, with a teacher view. The teacher view shows each skill's band and status.
+- The sketch has a star chart for 72 skills in 16 groups, with a teacher view. The teacher view shows each skill's band and status.
 
 ### 3.4a The first 34 skills: number answers
 
@@ -159,10 +159,22 @@ Each one draws a picture from the student's own numbers. Code marks it from the 
 - **The teaching steps use the picture.** For a clock: "The short hand has gone past a number. Which one?", then "The long hand points at 7. Count in 5s." For symmetry, the fold lines are drawn as dashed lines to count.
 - **The same problem never comes twice in a row.**
 
-**Three choices I made that are yours to change** [Proposal]:
-1. **Words.** I used your engine's words: "fourths" and "trapezoid". An international school may say "quarters" and "trapezium". One line of code each.
-2. **"Line of symmetry"** is used as the maths term. The stories explain it as a fold where both halves match.
-3. **Money pictures are not built.** Your engine has 9 coin skills, and they read like US coins. Your own task uses baht. Tell me which coins to draw.
+### 3.4c Vocabulary, two names, and coins [Source: Marc, 2026-11-16]
+
+You answered the three choices I left open. All three are built.
+
+- **Vocabulary is explicit.** Every question shows a line such as "Maths word: perimeter. The perimeter is the distance all the way round a shape."
+  - Each of the 72 rules has one maths word and its meaning. They are in `skills/rule_map.csv`, so you can read and change them in one place.
+  - The perimeter questions now ask "What is the perimeter of the hatch?"
+  - Star names use the real terms: perimeter, elapsed time, pictograph, expanded form, vertices, arrays.
+  - **Not done:** I changed the stories where the term is the point of the skill. I did not rewrite all 120 older number stories.
+- **Both names are right.** "Fourths" and "quarters" both appear in questions. "Trapezoid" and "trapezium" both appear on the answer buttons. The maths word line says both are correct.
+- **Coins are generic.** Plain coins with the value printed on them. No country.
+  - Whole coins: 1, 2, 5, 10, 20, 50.
+  - Coins with a point: 0.05, 0.10, 0.25, 0.50, 1.00, 2.00.
+  - Four skills: value of coins, spend and change, equal sets of coins, coins with a point.
+  - The student types an amount such as 2.50. The point appears by itself.
+- **Equal fractions stay correct,** as you confirmed.
 
 ### 3.5 The robot is the trainer [Proposal]
 
@@ -179,7 +191,7 @@ Code makes every number and marks every answer.
 **The order is now your skill list's order.** The robot asks the lowest band first: every 161 skill, then 171, and so on. In the teacher view you can set a start level for a student. A skill that "needs building blocks" goes to the back of the queue, so the robot does not ask it again straight away.
 
 **How it was tested:**
-- `checks/trainer_paths_test.js` plays all 68 skills through the real page, twice each: three right answers, and then wrong, wrong, the small steps, three right. It clicks the pictures as a student would. All pass.
+- `checks/trainer_paths_test.js` plays all 72 skills through the real page, twice each: three right answers, and then wrong, wrong, the small steps, three right. It clicks the pictures as a student would. All pass.
 - `checks/picture_audit.js` makes 10,000 problems for each rule. For each one it works the answer out again from the picture alone and compares. It reads the clock hands back from the drawing. It folds each shape to count its lines of symmetry. All pass.
 - Both need Node and a browser. The older checks need only Python.
 
@@ -189,10 +201,10 @@ Code makes every number and marks every answer.
 
 ## 4. Engaging, unique problems
 
-- `content/scenario_bank_numerix.json` holds **222 story problems**, three or four for each of the 68 rules. The file name says Numerix, but it now holds every galaxy's stories.
+- `content/scenario_bank_numerix.json` holds **234 story problems**, three or four for each of the 72 rules. The file name says Numerix, but it now holds every galaxy's stories.
 - They are set in your world: Zip and the bolts, the Gumblefish and its shells, FlavorBurst pies, energy blocks, comets, Galaxy Gems.
 - The code picks the numbers. The story only carries them. So every student gets a different problem, and it is always correct.
-- A script checks each one (`checks/scenario_bank_check.py`): the right numbers, no sentence over 15 words, no hard words. All 222 pass.
+- A script checks each one (`checks/scenario_bank_check.py`): the right numbers, no sentence over 15 words, no hard words. All 234 pass.
 - Picture stories are short, because the picture carries the numbers: "The Gumblefish naps at the same time each day. It points a fin at the clock. What time is nap time?"
 - On your site, the AI in WRAP mode would write new stories each time. The bank is the safe fallback, and it shows the AI the style.
 
@@ -206,8 +218,9 @@ Code makes every number and marks every answer.
 |---|---|
 | Station and Voltara you can walk and explore, 15 secrets | In the sketch |
 | 34 number rules, tested on 10,000 seeds | Done |
-| 34 picture rules, tested on 10,000 problems each | Done |
-| 222 story problems, checked | Done |
+| 38 picture rules, tested on 10,000 problems each | Done |
+| A maths word and meaning for every rule | Done |
+| 234 story problems, checked | Done |
 | Rule map: each rule, its statement and its band | Done (`skills/rule_map.csv`) |
 | Trainer asks in band order, with a start level | In the sketch, tested |
 | Trainer: ask, one more try, small steps, three in a row | In the sketch, tested |
@@ -215,9 +228,9 @@ Code makes every number and marks every answer.
 | Skill map of your 1,835 statements | Done, first pass |
 | Constraint file for the world AI | Draft, not run |
 | Server: saving, logins, the AI call | Not built |
-| Rules for the other 355 skills | Not built |
-| Picture toys | Built: clock, bar graph, picture graph, unit-square grid, labelled shape, fraction bar and circle, number line, dot array, flat shapes, star map |
-| Picture toys still to build | Coins, rulers and scales, 3-D shapes, tally charts and line plots, angles, patterns |
+| Rules for the other 351 skills | Not built |
+| Picture toys | Built: clock, bar graph, picture graph, unit-square grid, labelled shape, fraction bar and circle, number line, dot array, flat shapes, star map, coins |
+| Picture toys still to build | Rulers and scales, 3-D shapes, tally charts and line plots, angles, patterns |
 | Painted art | Not started. Your decision. |
 
 ---
@@ -248,5 +261,6 @@ Code makes every number and marks every answer.
 1. **The level bands:** are 161–210 right for your class?
 2. **The robot as trainer:** keep it? It is a new character.
 3. **Order:** should the trainer follow the skill list in order, as your engine does, or start from each student's test results?
-4. **Words and coins:** see the three choices at the end of section 3.4b.
+4. **Words and coins:** answered. See section 3.4c.
+6. **The balance of the whole build:** see `proposals/GMQ_Step_Back_Balance_v1_2026-11-16.md`.
 5. **The constraint file:** will you rewrite the draft, or shall I test it against a model first?

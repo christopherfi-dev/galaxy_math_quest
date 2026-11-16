@@ -72,3 +72,8 @@ These are Marc's words, tidied. They are not on the form above.
 - **What to build next (Marc, 2026-11-16).** Claude decides. "It all needs to be done."
 - **A better start (Marc, 2026-11-16).** The game needs a proper introduction: his own opening (the year, Earth in trouble), then an introduction to the space station and what students see there about their ship. Built into the sketch from his own site text.
 - **Picture toys (Marc, 2026-11-16).** He said "Go" to building picture toys next. Built: 34 picture skills (clocks, graphs, grids, fractions, shapes, star maps). Three small choices are waiting for him: "fourths" or "quarters", "trapezoid" or "trapezium", and which coins to draw. See `proposals/GMQ_Skills_State_and_AI_v1_2026-11-16.md` section 3.4b.
+- **Vocabulary (Marc, 2026-11-16).** Be very explicit about maths vocabulary. The perimeter question did not use the word "perimeter", and it should. Built: every skill shows its maths word and meaning.
+- **Two names (Marc, 2026-11-16).** For quarters and fourths, and for trapezoid and trapezium, students should recognise that both are correct. "I don't know what they might find in the future." Built.
+- **Coins (Marc, 2026-11-16).** No specific USA coins. Generic coins where students add whole dollars and decimal cents, like the 1.00 and 0.50 coins in Prodigy. Built.
+- **Equal fractions (Marc, 2026-11-16).** An equivalent fraction is correct.
+- **Step back (Marc, 2026-11-16).** He asked how the little quests, the exploring and the bigger quests are going, and how much is off-line. Answer: `proposals/GMQ_Step_Back_Balance_v1_2026-11-16.md`. Claude read "off-line" two ways: without internet, and away from the screen. Not yet confirmed which he meant.

@@ -22,6 +22,7 @@ const path = require('path');
     const w = widget, k = w.akind, g = w.cur, hit = sel => document.querySelector('#toy ' + sel).dispatchEvent(new MouseEvent('click', { bubbles: true })), type = (id, v) => { $(id).value = String(v); $(id).oninput(); };
     if (k === 'num') { type('ans', right ? w.ans : w.ans + 1); return $('try').click(); }
     if (k === 'time') { type('ans', right ? w.ans : (w.ans % 100 === 59 ? w.ans - 1 : w.ans + 1)); return $('try').click(); }
+    if (k === 'money') { type('ans', String(right ? w.ans : w.ans + 5).padStart(3, '0')); return $('try').click(); }
     if (k === 'pair') { type('ans', g.ans[0]); type('ans2', right ? g.ans[1] : g.ans[1] + 1); return $('try').click(); }
     if (k === 'choice') return hit(`.opt[data-c="${right ? w.ans : (w.ans + 1) % g.choices.length}"]`);
     const t = g.pic.t;
@@ -38,6 +39,7 @@ const path = require('path');
     return { status: await p.evaluate(r => (S.skill[r] || {}).status || 'open: ' + (widget ? widget.phase : 'closed'), rule), taught }; };
   const rules = await p.evaluate(() => LADDER.map(l => [l[0], !!TEACH[l[0]], (GEN[l[0]]().kind || 'num')]));
   const bad = []; let withSteps = 0; const kinds = {};
+  const noWord = await p.evaluate(() => { startSkill('perim_labeled', 'Zip', 'station'); const t = $('toy').innerText; leave(); return !/Maths word: perimeter/i.test(t) || !/perimeter of/i.test(t); }); if (noWord) bad.push('the perimeter question does not say perimeter');
   for (const [rule, hasSteps, kind] of rules) {
     kinds[kind] = (kinds[kind] || 0) + 1;
     const a = await run(rule, ['right', 'right', 'right']); if (a.status !== 'PASSED') bad.push(`${rule}: three right gave ${a.status}`);
@@ -45,11 +47,11 @@ const path = require('path');
     if (hasSteps) { withSteps++; if (!g.taught) bad.push(`${rule}: has steps but none were shown`); } else if (g.taught) bad.push(`${rule}: steps shown but none are written`);
   }
   console.log(`${rules.length} skills played twice each. Answer kinds:`, JSON.stringify(kinds), `· ${withSteps} have small steps.`);
-  for (const rule of ['add_2digit_regroup', 'clock_five', 'frac_model', 'shape_basic', 'coord_read']) {
+  for (const rule of ['add_2digit_regroup', 'clock_five', 'frac_model', 'shape_basic', 'coord_read', 'coins_decimal']) {
     const s = await run(rule, ['right', 'wrong', 'right', 'right', 'right']); if (s.status !== 'SELF-CORRECTED') bad.push(`${rule}: slip path gave ${s.status}`);
     const n = await run(rule, ['wrong', 'wrong', 'steps', 'wrong', 'steps', 'wrong']); if (n.status !== 'FAILED-FOUNDATIONAL') bad.push(`${rule}: not-ready path gave ${n.status}`);
   }
-  console.log('Slip and not-ready paths played on 5 skills.');
+  console.log('Slip and not-ready paths played on 6 skills.');
   // the order the robot asks in: lowest band first, and from the teacher's start band
   const order = await p.evaluate(() => { S.skill = {}; S.start = 161; const seq = []; for (let i = 0; i < LADDER.length; i++) { const r = nextUnlit(); seq.push(LADDER.find(l => l[0] === r)[3]); S.skill[r] = { status: 'PASSED', tries: 3 }; }
     const done = nextUnlit(); S.skill = {}; S.start = 181; const first = LADDER.find(l => l[0] === nextUnlit())[3]; S.skill = {}; S.start = 161; save(); return { seq, done, first }; });

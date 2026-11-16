@@ -4,7 +4,7 @@
   "where": "station",
   "who": "Zip",
   "text": "Three fuel tanks glow in the dock. They hold {a}, {b} and {c} units.",
-  "ask": "Which number is the biggest?",
+  "ask": "Which number is the greatest?",
   "unit": ""
  },
  {
@@ -12,7 +12,7 @@
   "where": "station",
   "who": "Zip",
   "text": "Zip scans three asteroids. They weigh {a}, {b} and {c} tons.",
-  "ask": "Which is the heaviest? Type the number.",
+  "ask": "Which is the greatest? Type the number.",
   "unit": "tons"
  },
  {
@@ -20,7 +20,7 @@
   "where": "voltara",
   "who": "the butterfly",
   "text": "Three glowing trees stand by the river. They have {a}, {b} and {c} leaves.",
-  "ask": "Which tree has the most leaves? Type the number.",
+  "ask": "Which tree has the greatest number of leaves? Type the number.",
   "unit": "leaves"
  },
  {
@@ -28,7 +28,7 @@
   "where": "space",
   "who": "the radio",
   "text": "Three comets race past your ship. Their speeds are {a}, {b} and {c}.",
-  "ask": "Which speed is the fastest?",
+  "ask": "Which speed is the greatest?",
   "unit": ""
  },
  {
@@ -36,14 +36,14 @@
   "where": "station",
   "who": "Zip",
   "text": "The power panel shows {n}. One part of the number fell off.",
-  "ask": "Find the missing part: {eq}",
+  "ask": "Finish the expanded form: {eq}",
   "unit": ""
  },
  {
   "rule": "pv_partition",
   "where": "station",
   "who": "Zip",
-  "text": "Zip counts {n} bolts in a jar. Zip writes the number in parts.",
+  "text": "Zip counts {n} bolts in a jar. Zip writes the number in expanded form.",
   "ask": "Fill the gap: {eq}",
   "unit": ""
  },
@@ -52,7 +52,7 @@
   "where": "voltara",
   "who": "the butterfly",
   "text": "The Energy Council has {n} energy blocks. A clerk splits the number up.",
-  "ask": "Fill the gap: {eq}",
+  "ask": "Finish the expanded form: {eq}",
   "unit": ""
  },
  {
@@ -139,7 +139,7 @@
   "rule": "count_on",
   "where": "station",
   "who": "Zip",
-  "text": "Zip counts crates as they roll past: {s1}, {s2}, {s3}.",
+  "text": "Zip skip counts crates as they roll past: {s1}, {s2}, {s3}.",
   "ask": "What number comes next?",
   "unit": ""
  },
@@ -868,7 +868,7 @@
   "where": "station",
   "who": "Zip",
   "text": "The repair starts at {t1}. It ends at {t2}.",
-  "ask": "How many {unit} does it take?",
+  "ask": "How many {unit} is the elapsed time?",
   "unit": ""
  },
  {
@@ -892,7 +892,7 @@
   "where": "station",
   "who": "Zip",
   "text": "The landing pad is {l} m long and {w} m wide. Zip paints a line round its edge.",
-  "ask": "How long is the line?",
+  "ask": "What is the perimeter of the pad?",
   "unit": "m"
  },
  {
@@ -900,7 +900,7 @@
   "where": "voltara",
   "who": "the butterfly",
   "text": "A garden is {l} m long and {w} m wide. A fence goes all the way round.",
-  "ask": "How long is the fence?",
+  "ask": "What is the perimeter of the garden?",
   "unit": "m"
  },
  {
@@ -908,7 +908,7 @@
   "where": "space",
   "who": "the radio",
   "text": "A solar sail is {l} m long and {w} m wide. A wire runs round its edge.",
-  "ask": "How long is the wire?",
+  "ask": "What is the perimeter of the sail?",
   "unit": "m"
  },
  {
@@ -1060,7 +1060,7 @@
   "where": "station",
   "who": "Zip",
   "text": "Zip started the repair at the first time. It ended at the second.",
-  "ask": "How many {unit} did it take?",
+  "ask": "How many {unit} is the elapsed time?",
   "unit": ""
  },
  {
@@ -1147,7 +1147,7 @@
   "rule": "bar_multi",
   "where": "space",
   "who": "the radio",
-  "text": "This graph shows {topic}. Check the side numbers before you read it.",
+  "text": "This graph shows {topic}. Check the scale before you read it.",
   "ask": "{q}",
   "unit": ""
  },
@@ -1155,7 +1155,7 @@
   "rule": "picto_read",
   "where": "station",
   "who": "Zip",
-  "text": "Zip drew one picture for each thing. The graph shows {topic}.",
+  "text": "Zip drew one picture for each thing. The pictograph shows {topic}.",
   "ask": "How many {cat} are there?",
   "unit": ""
  },
@@ -1163,7 +1163,7 @@
   "rule": "picto_read",
   "where": "voltara",
   "who": "the Gumblefish",
-  "text": "The Gumblefish made a picture graph. It shows {topic}.",
+  "text": "The Gumblefish made a pictograph. It shows {topic}.",
   "ask": "How many {cat} are there?",
   "unit": ""
  },
@@ -1195,7 +1195,7 @@
   "rule": "picto_addsub",
   "where": "space",
   "who": "the radio",
-  "text": "Count the pictures in two rows. The graph shows {topic}.",
+  "text": "Count the pictures in two rows. The pictograph shows {topic}.",
   "ask": "{q}",
   "unit": ""
  },
@@ -1219,7 +1219,7 @@
   "rule": "picto_multi",
   "where": "space",
   "who": "the radio",
-  "text": "Read the key first. Then read the graph of {topic}.",
+  "text": "Read the key first. Then read the pictograph of {topic}.",
   "ask": "{q}",
   "unit": ""
  },
@@ -1332,7 +1332,7 @@
   "where": "voltara",
   "who": "the butterfly",
   "text": "The FlavorBurst trees grow in neat rows.",
-  "ask": "Write a times sum for the squares.",
+  "ask": "Write a times sum for the area.",
   "unit": ""
  },
  {
@@ -1347,8 +1347,8 @@
   "rule": "perim_labeled",
   "where": "station",
   "who": "Zip",
-  "text": "Zip must put a light strip round this hatch.",
-  "ask": "How long is the strip, all the way round?",
+  "text": "Zip must put a light strip all the way round this hatch.",
+  "ask": "What is the perimeter of the hatch?",
   "unit": "m"
  },
  {
@@ -1356,7 +1356,7 @@
   "where": "voltara",
   "who": "the butterfly",
   "text": "The butterfly flies once round the edge of this field.",
-  "ask": "How far does it fly?",
+  "ask": "What is the perimeter of the field?",
   "unit": "m"
  },
  {
@@ -1364,7 +1364,7 @@
   "where": "space",
   "who": "the radio",
   "text": "A robot walks once round the edge of this landing pad.",
-  "ask": "How far does it walk?",
+  "ask": "What is the perimeter of the pad?",
   "unit": "m"
  },
  {
@@ -1419,8 +1419,8 @@
   "rule": "frac_fourths",
   "where": "station",
   "who": "Zip",
-  "text": "Four cadets share a window seat. Fourths are 4 equal parts.",
-  "ask": "Which shape is cut into fourths?",
+  "text": "Four cadets share a window seat fairly.",
+  "ask": "Which shape is cut into {word}?",
   "unit": ""
  },
  {
@@ -1428,7 +1428,7 @@
   "where": "voltara",
   "who": "the Gumblefish",
   "text": "Four fish share one big shell. Each gets the same.",
-  "ask": "Which shape is cut into fourths?",
+  "ask": "Which shape is cut into {word}?",
   "unit": ""
  },
  {
@@ -1436,7 +1436,7 @@
   "where": "space",
   "who": "the radio",
   "text": "Four engines share the fuel fairly.",
-  "ask": "Which shape shows fourths?",
+  "ask": "Which shape shows {word}?",
   "unit": ""
  },
  {
@@ -1774,5 +1774,101 @@
   "text": "The radio says: go to ({x}, {y}).",
   "ask": "What is at that point?",
   "unit": ""
+ },
+ {
+  "rule": "coins_whole",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip shakes its coin tin. These coins fall out.",
+  "ask": "What is the value of all the coins?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_whole",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly keeps these coins under a leaf.",
+  "ask": "What is their total value?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_whole",
+  "where": "space",
+  "who": "the radio",
+  "text": "A trader holds out these coins.",
+  "ask": "What is the value of the coins?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_spend",
+  "where": "station",
+  "who": "Zip",
+  "text": "You have these coins. A new bolt costs {c}.",
+  "ask": "What amount do you have left?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_spend",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish has these coins. It spends {c} on a shell.",
+  "ask": "What amount is left?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_spend",
+  "where": "space",
+  "who": "the radio",
+  "text": "These are your coins. Fuel costs {c}.",
+  "ask": "What amount is left after you pay?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_equal",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip wants a fair swap for the top set of coins.",
+  "ask": "Which set has an equal value?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_equal",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The butterfly will trade the top set of coins.",
+  "ask": "Which set has an equal value?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_equal",
+  "where": "space",
+  "who": "the radio",
+  "text": "A trader offers three sets for the top set.",
+  "ask": "Which set has an equal value to the top set?",
+  "unit": ""
+ },
+ {
+  "rule": "coins_decimal",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip pays for a new wheel with all these coins.",
+  "ask": "How much does Zip pay?",
+  "unit": "dollars"
+ },
+ {
+  "rule": "coins_decimal",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish counts its pocket money.",
+  "ask": "How much money is it?",
+  "unit": "dollars"
+ },
+ {
+  "rule": "coins_decimal",
+  "where": "space",
+  "who": "the radio",
+  "text": "The docking fee is all of these coins.",
+  "ask": "How much is the fee?",
+  "unit": "dollars"
  }
 ]

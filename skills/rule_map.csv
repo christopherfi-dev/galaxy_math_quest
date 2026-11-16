@@ -1,69 +1,73 @@
-rule,star_name,group,galaxy,answered_by,lowest_band,all_bands,statement
-pv_order,"Order numbers to 1,000",Place value,Numerix,number,161,161 171 181,"Compares whole numbers within 1,000 using terms"
-pv_partition,Split a number into parts,Place value,Numerix,number,161,161 171,"Reads and writes whole numbers within 1,000 in expanded form"
-round10,Round to the nearest 10,Place value,Numerix,number,181,181 191 201,"Rounds whole numbers within 1,000"
-round100,Round to the nearest 100,Place value,Numerix,number,181,181 191 201,"Rounds whole numbers within 1,000"
-count_on,Count on in steps,Counting,Numerix,number,161,161 171 181,"Counts by 10s within 1,000"
-odd_one_out,Odd and even,Counting,Numerix,number,171,171 181,Determines if sets of objects are even or odd
-add_1digit,Add small numbers,Add and subtract,Numerix,number,161,161 171 181,Adds whole numbers with sums within 20
-sub_1digit,Subtract small numbers,Add and subtract,Numerix,number,161,161 171 181,Subtracts whole numbers within 20
-add_2digit_plain,Add 2-digit numbers,Add and subtract,Numerix,number,161,161 171 181 191 201,"Adds whole numbers with sums within 100, no regrouping"
-sub_2digit_plain,Subtract 2-digit numbers,Add and subtract,Numerix,number,171,171 181,"Subtracts whole numbers within 100, no regrouping"
-add_2digit_regroup,Add with regrouping,Add and subtract,Numerix,number,161,161 171 181 191 201,"Adds whole numbers with sums within 100, with regrouping"
-sub_2digit_regroup,Subtract with regrouping,Add and subtract,Numerix,number,171,171 181 191 201 211,"Subtracts whole numbers within 100, with regrouping"
-mult_repeated,Equal groups,Multiply,Numerix,"number, with a picture",181,181 191 201 211,Represents arrays with repeated addition expressions and finds the total number of objects
-array_expr,Rows as a sum,Multiply,Numerix,tap a choice,161,161 171 181 191 201 211,Represents arrays with repeated addition expressions or equations
-mult_2_5_10,"Times 2, 5 and 10",Multiply,Numerix,number,161,161 171 181 191,Multiplies basic facts
-mult_facts,Times tables to 10,Multiply,Numerix,number,161,161 171 181 191,Multiplies basic facts
-div_share,Share equally,Divide,Numerix,number,181,181 191 201 211,Understands division as equal sharing
-div_2_5_10,"Divide by 2, 5 and 10",Divide,Numerix,number,171,171 181 191 201,Divides basic facts
-div_facts,Division facts,Divide,Numerix,number,171,171 181 191 201,Divides basic facts
-ten_more_less,"10 more, 10 less",More and less,Numerix,number,161,161 171 181 191,Finds 10 more or 10 less than a given number
-hundred_more_less,"100 more, 100 less",More and less,Numerix,number,161,161 171 181 191,Finds 100 more or 100 less than a given number
-count_back,Count back in steps,More and less,Numerix,number,161,161 171 181,"Counts backward by 100s within 1,000"
-sub_tens,Take away tens,More and less,Numerix,number,161,161 171 181 191,Subtracts multiples of 10 from multiples of 10 within 100
-add_three,Add three numbers,Bigger sums,Numerix,number,171,171 181 191 201 211 221,"Adds three or more whole numbers with sums within 100, with regrouping"
-add_3digit_plain,Add 3-digit numbers,Bigger sums,Numerix,number,161,161 171 181 191,"Adds whole numbers with sums within 1,000, no regrouping"
-sub_3digit_plain,Subtract 3-digit numbers,Bigger sums,Numerix,number,171,171 181,"Subtracts whole numbers within 1,000, no regrouping"
-add_3digit_regroup,Add 3-digit with regrouping,Bigger sums,Numerix,number,181,181,"Adds whole numbers with sums within 1,000, with regrouping"
-mult_tens,Times tens,Find the missing number,Numerix,number,161,161 171 181 191 201,Multiplies one-digit whole numbers by multiples of 10
-missing_add,Missing part of a sum,Find the missing number,Patternox,number,161,161,"Determines unknown parts in addition equations with whole numbers, sums within 20"
-missing_factor,Missing times number,Find the missing number,Patternox,number,171,171 181 191,Determines unknown factors in multiplication equations with whole numbers and products within 100
-frac_halves,Find the halves,Fractions,Numerix,tap a choice,161,161 171 181,Identifies shapes that are divided into halves
-frac_thirds,Find the thirds,Fractions,Numerix,tap a choice,161,161,Identifies shapes that are divided into thirds
-frac_fourths,Find the fourths,Fractions,Numerix,tap a choice,161,161 171,Identifies shapes that are divided into fourths
-frac_model_unit,Make one part,Fractions,Numerix,cut and light a bar,161,161 171 181 191 201 211,Models unit fractions using area models
-frac_model,Make a fraction,Fractions,Numerix,cut and light a bar,171,171 181 191 201 211,Models non-unit fractions using area models
-frac_parts,Name the fraction,Fractions,Numerix,two numbers,181,181 191 201 211 221 231,Identifies the fractional parts of shapes
-frac_set,Fraction of a set,Fractions,Numerix,number,181,,(Marc's 2026 tracker: fraction of a set)
-nl_frac,Fractions on a line,Fractions,Numerix,tap the line,181,181 191 201 211 221 231,Locates non-unit proper fractions on a number line
-nl_unit,One part on a line,Fractions,Numerix,tap the line,191,191 201 211,Locates unit fractions on a number line
-clock_hour,Clock: the hour,Clocks,Metrica,a time,161,161,Reads analog clocks to the nearest hour
-clock_half,Clock: half hours,Clocks,Metrica,a time,161,161 171 181,Reads analog clocks to the nearest half hour
-clock_five,Clock: to 5 minutes,Clocks,Metrica,a time,161,161 171 181 191,Reads analog clocks to the nearest five minutes
-clock_minute,Clock: to the minute,Clocks,Metrica,a time,181,181 191,Reads analog clocks to the nearest minute
-clock_elapsed,Two clocks: how long?,Clocks,Metrica,"number, with a picture",191,191 201,Determines elapsed time across either minutes or hours using clocks
-time_forward,How long did it take?,Measure,Patternox,number,171,171 181 191 201,Solves elapsed-time word problems involving counting forward by either hours or minutes
-perimeter_rect,All the way round,Measure,Metrica,number,171,171 181 191 201 211 221 231,Solves problems involving perimeters of rectangles within a real-world or mathematical context
-area_rect,Area of a rectangle,Measure,Metrica,number,191,191 201 211,"Determines the area of rectangles with whole-number sides, formula not provided"
-money_change,Change from 100 baht,Measure,Patternox,number,161,161 171 181 191 201 211 221,Solves one-step money word problems involving whole number addition or subtraction
-area_count,Count the squares,Area and edges,Metrica,"number, with a picture",161,161 171 181 191,Determines the area of figures composed of whole unit squares
-area_tile,Tile a floor,Area and edges,Metrica,"tap tiles, then a number",161,161 171 181 191,Determines the area of figures by tiling with whole unit squares
-area_expr,Area as a times sum,Area and edges,Metrica,two numbers,171,171 181 191,Represents the area of rectangles composed of whole unit squares using multiplication expressions or equations
-perim_labeled,Add all the sides,Area and edges,Metrica,"number, with a picture",171,171 181 191,Determines the perimeter of basic polygons with all sides labeled
-picto_read,Read a picture graph,Graphs,Databa,"number, with a picture",161,161,Reads pictographs with single-unit scales to determine how many in a category
-bar_build,Build a bar graph,Graphs,Databa,build the bars,161,161 171,Represents data in bar graphs with single-unit scales
-bar_build_multi,Build a graph in jumps,Graphs,Databa,build the bars,161,161 171 181 191,Represents data in bar graphs with multi-unit scales
-bar_read,Read a bar graph,Graphs,Databa,"number, with a picture",171,171,Reads bar graphs with single-unit scales to determine how many in a category
-picto_addsub,Picture graph sums,Graphs,Databa,"number, with a picture",171,171 181 191,Adds and subtracts to answer questions about pictographs with single-unit scales
-bar_addsub,Bar graph sums,Graphs,Databa,"number, with a picture",181,181 191,Adds and subtracts to answer questions about bar graphs with single-unit scales
-bar_multi,Bar graphs in jumps,Graphs,Databa,"number, with a picture",181,181 191 211,Adds and subtracts to answer questions about bar graphs with multi-unit scales
-picto_multi,Picture graphs with a key,Graphs,Databa,"number, with a picture",201,201 211 221 231,Adds and subtracts to answer questions about pictographs with multi-unit scales
-shape_sides,Sides and corners,Shapes,Geometrica,"number, with a picture",161,161,"Identifies the number of sides or corners of 2-D shapes, given pictures"
-shape_basic,Name the shape,Shapes,Geometrica,tap a choice,161,161 171 181,"Identifies and names triangles, squares, rectangles, and circles"
-sym_line,Is it a line of symmetry?,Shapes,Geometrica,tap a choice,161,161 171 181 191,Recognizes lines of symmetry in 2-D figures
-sym_count,Count lines of symmetry,Shapes,Geometrica,"number, with a picture",161,161 171 181 191 201 211 221 231,Determines the number of lines of symmetry in 2-D figures
-shape_more,Name harder shapes,Shapes,Geometrica,tap a choice,181,181 191 201,"Identifies and names nonbasic shapes, such as trapezoids, hexagons, etc."
-coord_what,What is at the point?,Star maps,Geometrica,tap a choice,181,181 191 201 211 221,Interprets points with whole number coordinates in the first quadrant within the given context
-coord_read,Read a star map,Star maps,Geometrica,two numbers,201,201 211 221 231,Determines the coordinates of points in the first quadrant of a coordinate plane
-coord_plot,Mark a star map,Star maps,Geometrica,tap the map,201,201 211 221 231,Plots the coordinates of points in the first quadrant of a coordinate plane
+rule,star_name,group,galaxy,answered_by,lowest_band,all_bands,statement,maths_word,meaning
+pv_order,"Order numbers to 1,000",Place value,Numerix,number,161,161 171 181,"Compares whole numbers within 1,000 using terms",greatest,The greatest number is the biggest one. The least is the smallest.
+pv_partition,Expanded form,Place value,Numerix,number,161,161 171,"Reads and writes whole numbers within 1,000 in expanded form",expanded form,Expanded form shows a number as hundreds + tens + ones.
+round10,Round to the nearest 10,Place value,Numerix,number,181,181 191 201,"Rounds whole numbers within 1,000",round,"To round to the nearest 10, find the closest ten."
+round100,Round to the nearest 100,Place value,Numerix,number,181,181 191 201,"Rounds whole numbers within 1,000",round,"To round to the nearest 100, find the closest hundred."
+count_on,Skip count on,Counting,Numerix,number,161,161 171 181,"Counts by 10s within 1,000",skip count,To skip count is to count in equal jumps.
+odd_one_out,Odd and even,Counting,Numerix,number,171,171 181,Determines if sets of objects are even or odd,odd and even,Even numbers make pairs with none left over. Odd numbers leave one over.
+add_1digit,Add small numbers,Add and subtract,Numerix,number,161,161 171 181,Adds whole numbers with sums within 20,sum,The sum is the answer when you add.
+sub_1digit,Subtract small numbers,Add and subtract,Numerix,number,161,161 171 181,Subtracts whole numbers within 20,difference,The difference is the answer when you subtract.
+add_2digit_plain,Add 2-digit numbers,Add and subtract,Numerix,number,161,161 171 181 191 201,"Adds whole numbers with sums within 100, no regrouping",sum,The sum is the answer when you add.
+sub_2digit_plain,Subtract 2-digit numbers,Add and subtract,Numerix,number,171,171 181,"Subtracts whole numbers within 100, no regrouping",difference,The difference is the answer when you subtract.
+add_2digit_regroup,Add with regrouping,Add and subtract,Numerix,number,161,161 171 181 191 201,"Adds whole numbers with sums within 100, with regrouping",regroup,To regroup is to swap 10 ones for 1 ten.
+sub_2digit_regroup,Subtract with regrouping,Add and subtract,Numerix,number,171,171 181 191 201 211,"Subtracts whole numbers within 100, with regrouping",regroup,To regroup is to swap 1 ten for 10 ones.
+mult_repeated,Equal groups,Multiply,Numerix,"number, with a picture",181,181 191 201 211,Represents arrays with repeated addition expressions and finds the total number of objects,equal groups,Equal groups all have the same number in them. To multiply is to add equal groups.
+array_expr,Arrays as a sum,Multiply,Numerix,tap a choice,161,161 171 181 191 201 211,Represents arrays with repeated addition expressions or equations,array,An array is rows with the same number in each row.
+mult_2_5_10,"Times 2, 5 and 10",Multiply,Numerix,number,161,161 171 181 191,Multiplies basic facts,product,The product is the answer when you multiply.
+mult_facts,Times tables to 10,Multiply,Numerix,number,161,161 171 181 191,Multiplies basic facts,product,The product is the answer when you multiply.
+div_share,Share equally,Divide,Numerix,number,181,181 191 201 211,Understands division as equal sharing,divide,To divide is to share into equal groups.
+div_2_5_10,"Divide by 2, 5 and 10",Divide,Numerix,number,171,171 181 191 201,Divides basic facts,quotient,The quotient is the answer when you divide.
+div_facts,Division facts,Divide,Numerix,number,171,171 181 191 201,Divides basic facts,quotient,The quotient is the answer when you divide.
+ten_more_less,"10 more, 10 less",More and less,Numerix,number,161,161 171 181 191,Finds 10 more or 10 less than a given number,tens digit,The tens digit is the second digit from the right.
+hundred_more_less,"100 more, 100 less",More and less,Numerix,number,161,161 171 181 191,Finds 100 more or 100 less than a given number,hundreds digit,The hundreds digit is the third digit from the right.
+count_back,Skip count back,More and less,Numerix,number,161,161 171 181,"Counts backward by 100s within 1,000",skip count,You can skip count backwards too. The jumps stay equal.
+sub_tens,Take away tens,More and less,Numerix,number,161,161 171 181 191,Subtracts multiples of 10 from multiples of 10 within 100,multiple of 10,"A multiple of 10 ends in 0, like 30 or 70."
+add_three,Add three numbers,Bigger sums,Numerix,number,171,171 181 191 201 211 221,"Adds three or more whole numbers with sums within 100, with regrouping",sum,The sum is the answer when you add.
+add_3digit_plain,Add 3-digit numbers,Bigger sums,Numerix,number,161,161 171 181 191,"Adds whole numbers with sums within 1,000, no regrouping",sum,The sum is the answer when you add.
+sub_3digit_plain,Subtract 3-digit numbers,Bigger sums,Numerix,number,171,171 181,"Subtracts whole numbers within 1,000, no regrouping",difference,The difference is the answer when you subtract.
+add_3digit_regroup,Add 3-digit with regrouping,Bigger sums,Numerix,number,181,181,"Adds whole numbers with sums within 1,000, with regrouping",regroup,"To regroup is to swap 10 ones for 1 ten, or 10 tens for 1 hundred."
+mult_tens,Times tens,Find the missing number,Numerix,number,161,161 171 181 191 201,Multiplies one-digit whole numbers by multiples of 10,multiple of 10,"A multiple of 10 ends in 0, like 30 or 70."
+missing_add,Missing part of a sum,Find the missing number,Patternox,number,161,161,"Determines unknown parts in addition equations with whole numbers, sums within 20",unknown,The unknown is the missing number.
+missing_factor,Missing times number,Find the missing number,Patternox,number,171,171 181 191,Determines unknown factors in multiplication equations with whole numbers and products within 100,factor,Factors are the numbers you multiply.
+frac_halves,Find the halves,Fractions,Numerix,tap a choice,161,161 171 181,Identifies shapes that are divided into halves,halves,Halves are 2 equal parts of one whole.
+frac_thirds,Find the thirds,Fractions,Numerix,tap a choice,161,161,Identifies shapes that are divided into thirds,thirds,Thirds are 3 equal parts of one whole.
+frac_fourths,Find the fourths (quarters),Fractions,Numerix,tap a choice,161,161 171,Identifies shapes that are divided into fourths,fourths and quarters,Fourths are 4 equal parts of one whole. They are also called quarters. Both names are right.
+frac_model_unit,Make one part,Fractions,Numerix,cut and light a bar,161,161 171 181 191 201 211,Models unit fractions using area models,unit fraction,"A unit fraction is one equal part, like 1/4."
+frac_model,Make a fraction,Fractions,Numerix,cut and light a bar,171,171 181 191 201 211,Models non-unit fractions using area models,denominator,The denominator is the bottom number. It counts the equal parts.
+frac_parts,Name the fraction,Fractions,Numerix,two numbers,181,181 191 201 211 221 231,Identifies the fractional parts of shapes,numerator,The numerator is the top number. It counts the parts you use.
+frac_set,Fraction of a set,Fractions,Numerix,number,181,,(Marc's 2026 tracker: fraction of a set),fraction,A fraction is some equal parts of a whole or of a set.
+nl_frac,Fractions on a line,Fractions,Numerix,tap the line,181,181 191 201 211 221 231,Locates non-unit proper fractions on a number line,number line,"On a number line, equal jumps show equal parts."
+nl_unit,One part on a line,Fractions,Numerix,tap the line,191,191 201 211,Locates unit fractions on a number line,number line,"On a number line, equal jumps show equal parts."
+clock_hour,Clock: the hour,Clocks,Metrica,a time,161,161,Reads analog clocks to the nearest hour,hour hand,The short hand is the hour hand.
+clock_half,Clock: half hours,Clocks,Metrica,a time,161,161 171 181,Reads analog clocks to the nearest half hour,half past,Half past means 30 minutes after the hour.
+clock_five,Clock: to 5 minutes,Clocks,Metrica,a time,161,161 171 181 191,Reads analog clocks to the nearest five minutes,minute hand,The long hand is the minute hand. Each number is 5 more minutes.
+clock_minute,Clock: to the minute,Clocks,Metrica,a time,181,181 191,Reads analog clocks to the nearest minute,analog clock,An analog clock has hands. Each small mark is 1 minute.
+clock_elapsed,Elapsed time on clocks,Clocks,Metrica,"number, with a picture",191,191 201,Determines elapsed time across either minutes or hours using clocks,elapsed time,Elapsed time is how much time has passed.
+time_forward,Elapsed time,Measure,Patternox,number,171,171 181 191 201,Solves elapsed-time word problems involving counting forward by either hours or minutes,elapsed time,Elapsed time is how much time has passed.
+perimeter_rect,Perimeter of a rectangle,Measure,Metrica,number,171,171 181 191 201 211 221 231,Solves problems involving perimeters of rectangles within a real-world or mathematical context,perimeter,The perimeter is the distance all the way round a shape.
+area_rect,Area of a rectangle,Measure,Metrica,number,191,191 201 211,"Determines the area of rectangles with whole-number sides, formula not provided",area,Area is the space inside a flat shape. We count it in squares.
+money_change,Change from 100 baht,Money,Patternox,number,161,161 171 181 191 201 211 221,Solves one-step money word problems involving whole number addition or subtraction,change,Change is the money you get back when you pay too much.
+coins_whole,Value of coins,Money,Metrica,"number, with a picture",161,161 171 181,Determines the whole number value of a collection of coins given as pictures,value,The value of a coin is how much it is worth. The number is on the coin.
+coins_spend,Spend and change,Money,Patternox,"number, with a picture",171,171 181 191 201 211,"Solves word problems involving amount spent or change received, whole numbers, and coin names or pictures",amount,An amount is how much money there is.
+coins_equal,Equal sets of coins,Money,Metrica,tap a choice,181,181,Identifies equivalent sets of coins,equal value,"Sets with an equal value are worth the same, even with other coins."
+coins_decimal,Coins with a point,Money,Metrica,an amount of money,191,191 201,Solves money word problems involving decimals and coins and/or bills given as pictures,decimal point,The decimal point splits whole dollars from cents. 1.50 is 1 dollar and 50 cents.
+area_count,Area: count the squares,Area and edges,Metrica,"number, with a picture",161,161 171 181 191,Determines the area of figures composed of whole unit squares,area,Area is the space inside a flat shape. We count it in squares.
+area_tile,Area: tile a floor,Area and edges,Metrica,"tap tiles, then a number",161,161 171 181 191,Determines the area of figures by tiling with whole unit squares,square unit,A square unit is one square tile. Area is counted in square units.
+area_expr,Area as a times sum,Area and edges,Metrica,two numbers,171,171 181 191,Represents the area of rectangles composed of whole unit squares using multiplication expressions or equations,area,The area of a rectangle is rows times the squares in one row.
+perim_labeled,Perimeter: add the sides,Area and edges,Metrica,"number, with a picture",171,171 181 191,Determines the perimeter of basic polygons with all sides labeled,perimeter,The perimeter is the distance all the way round a shape. Add every side.
+picto_read,Read a pictograph,Graphs,Databa,"number, with a picture",161,161,Reads pictographs with single-unit scales to determine how many in a category,pictograph,A pictograph is a graph made of pictures. It is also called a picture graph.
+bar_build,Build a bar graph,Graphs,Databa,build the bars,161,161 171,Represents data in bar graphs with single-unit scales,bar graph,A bar graph uses bars to show how many.
+bar_build_multi,Build a graph in jumps,Graphs,Databa,build the bars,161,161 171 181 191,Represents data in bar graphs with multi-unit scales,scale,The scale is the numbers up the side of a graph.
+bar_read,Read a bar graph,Graphs,Databa,"number, with a picture",171,171,Reads bar graphs with single-unit scales to determine how many in a category,bar graph,A bar graph uses bars to show how many.
+picto_addsub,Pictograph sums,Graphs,Databa,"number, with a picture",171,171 181 191,Adds and subtracts to answer questions about pictographs with single-unit scales,pictograph,A pictograph is a graph made of pictures. It is also called a picture graph.
+bar_addsub,Bar graph sums,Graphs,Databa,"number, with a picture",181,181 191,Adds and subtracts to answer questions about bar graphs with single-unit scales,data,Data is facts you count and collect.
+bar_multi,Bar graphs in jumps,Graphs,Databa,"number, with a picture",181,181 191 211,Adds and subtracts to answer questions about bar graphs with multi-unit scales,scale,The scale is the numbers up the side of a graph.
+picto_multi,Pictographs with a key,Graphs,Databa,"number, with a picture",201,201 211 221 231,Adds and subtracts to answer questions about pictographs with multi-unit scales,key,The key tells you how many each picture stands for.
+shape_sides,Sides and vertices,Shapes,Geometrica,"number, with a picture",161,161,"Identifies the number of sides or corners of 2-D shapes, given pictures",vertex,A vertex is a corner. Two or more are called vertices.
+shape_basic,Name the shape,Shapes,Geometrica,tap a choice,161,161 171 181,"Identifies and names triangles, squares, rectangles, and circles",2-D shape,A 2-D shape is flat. You can name it by its sides.
+sym_line,Is it a line of symmetry?,Shapes,Geometrica,tap a choice,161,161 171 181 191,Recognizes lines of symmetry in 2-D figures,line of symmetry,A line of symmetry is a fold line. Both halves match.
+sym_count,Count lines of symmetry,Shapes,Geometrica,"number, with a picture",161,161 171 181 191 201 211 221 231,Determines the number of lines of symmetry in 2-D figures,line of symmetry,A line of symmetry is a fold line. Both halves match.
+shape_more,Name harder shapes,Shapes,Geometrica,tap a choice,181,181 191 201,"Identifies and names nonbasic shapes, such as trapezoids, hexagons, etc.",polygon,A polygon is a flat shape with straight sides.
+coord_what,What is at the point?,Star maps,Geometrica,tap a choice,181,181 191 201 211 221,Interprets points with whole number coordinates in the first quadrant within the given context,coordinates,"Coordinates are two numbers for a point: along first, then up."
+coord_read,Read a star map,Star maps,Geometrica,two numbers,201,201 211 221 231,Determines the coordinates of points in the first quadrant of a coordinate plane,coordinates,"Coordinates are two numbers for a point: along first, then up."
+coord_plot,Mark a star map,Star maps,Geometrica,tap the map,201,201 211 221 231,Plots the coordinates of points in the first quadrant of a coordinate plane,coordinates,"Coordinates are two numbers for a point: along first, then up."

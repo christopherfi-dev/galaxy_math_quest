@@ -25,12 +25,12 @@ NEEDS = {"pv_order": {"a", "b", "c"}, "pv_partition": {"n", "eq"}, "round10": {"
          "missing_factor": {"g", "p"}, "frac_set": {"num", "den", "t"}, "time_forward": {"t1", "t2", "unit"}, "perimeter_rect": {"l", "w"}, "area_rect": {"l", "w"}, "money_change": {"a"},
          # picture rules: most of the numbers are in the picture, so the story carries few or none
          **{r: set() for r in ("clock_hour", "clock_half", "clock_five", "clock_minute", "area_count", "area_tile", "area_expr", "perim_labeled", "frac_halves", "frac_thirds",
-                               "frac_fourths", "frac_parts", "array_expr", "shape_basic", "shape_more", "sym_count", "sym_line", "coord_read")},
-         "clock_elapsed": {"unit"}, "bar_read": {"topic", "cat"}, "picto_read": {"topic", "cat"}, "bar_addsub": {"topic", "q"}, "bar_multi": {"topic", "q"},
+                               "coins_whole", "coins_equal", "coins_decimal", "frac_parts", "array_expr", "shape_basic", "shape_more", "sym_count", "sym_line", "coord_read")},
+         "clock_elapsed": {"unit"}, "frac_fourths": {"word"}, "coins_spend": {"c"}, "bar_read": {"topic", "cat"}, "picto_read": {"topic", "cat"}, "bar_addsub": {"topic", "q"}, "bar_multi": {"topic", "q"},
          "picto_addsub": {"topic", "q"}, "picto_multi": {"topic", "q"}, "bar_build": {"topic"}, "bar_build_multi": {"topic"}, "frac_model_unit": {"num", "den"},
          "frac_model": {"num", "den"}, "nl_unit": {"num", "den"}, "nl_frac": {"num", "den"}, "shape_sides": {"what"}, "coord_plot": {"x", "y"}, "coord_what": {"x", "y"}}
 # long words that are fine here: they are names from Marc's world, or taught maths words
-OK_LONG = {"flavorburst", "flavorbursts", "gumblefish", "butterflies", "butterfly", "asteroids", "asteroid", "light-years", "altogether", "equally", "100-baht"}
+OK_LONG = {"flavorburst", "flavorbursts", "gumblefish", "butterflies", "butterfly", "asteroids", "asteroid", "light-years", "altogether", "equally", "100-baht", "pictograph"}
 # the first 34 rules are number rules. The rest are picture rules: clocks, graphs, grids, fractions, shapes and star maps.
 
 
@@ -39,7 +39,7 @@ def sample(rule, r):
              "add_three": {"a": 18, "b": 29, "c": 39}, "add_3digit_plain": {"a": 431, "b": 254}, "add_3digit_regroup": {"a": 149, "b": 174}, "sub_3digit_plain": {"a": 764, "b": 534},
              "mult_tens": {"g": 7, "e": 30}, "missing_add": {"a": 3, "s": 15}, "missing_factor": {"g": 7, "p": 28}, "frac_set": {"num": 3, "den": 4, "t": 32},
              "time_forward": {"t1": "3:10", "t2": "3:45", "unit": "minutes"}, "perimeter_rect": {"l": 12, "w": 3}, "area_rect": {"l": 7, "w": 4}, "money_change": {"a": 55}}
-    pics = {"topic": "the butterflies in the garden", "cat": "white butterflies", "q": "How many more white butterflies than pink butterflies are there?", "unit": "minutes", "num": 3, "den": 8, "what": "corners", "x": 4, "y": 2}
+    pics = {"topic": "the butterflies in the garden", "cat": "white butterflies", "q": "How many more white butterflies than pink butterflies are there?", "unit": "minutes", "num": 3, "den": 8, "what": "corners (vertices)", "x": 4, "y": 2, "word": "quarters", "c": 35}
     if rule in extra: return extra[rule]
     if not NEEDS[rule] or NEEDS[rule] <= set(pics): return pics
     if rule in ("add_1digit",): return {"a": r.randint(1, 9), "b": r.randint(1, 9)}
