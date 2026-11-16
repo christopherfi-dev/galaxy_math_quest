@@ -185,6 +185,15 @@ Code makes every number and marks every answer. I tested all five paths, and 300
 
 ---
 
+## 6a. Answers so far (Marc, 2026-11-16)
+
+- **Bands:** 161 to 210 to start. Up to 240 later.
+- **Order:** probably the skill list in order. He asked for my view.
+  - **My view [Proposal]:** follow the list in order. Add one thing: you set each student's starting band. Your skill files are already sorted into the same bands an NWEA maths score falls into, so a score of 193 points straight at the 191–200 files. A student who starts too high drops back, because the trainer already steps down when a skill "needs building blocks".
+  - Without a score, start everyone at 161–170. Strong students pass each skill in three answers and move up fast.
+- **What next:** my choice. I will build picture toys next, starting with the kinds that unlock the most skills: a number line, a clock, a bar graph, a grid for area, and a fraction bar.
+- **The opening:** built into the sketch from your own site text.
+
 ## 7. Decisions for you
 
 1. **The level bands:** are 161–210 right for your class?

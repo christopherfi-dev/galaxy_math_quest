@@ -102,6 +102,14 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .bar > span { display: block; height: 100%; width: 0; background: var(--accent); }
 .bar.over > span { background: var(--bad); }
 .note { font-size: .92rem; color: var(--muted); }
+.story { font-size: 1.12rem; max-width: 36em; }
+.tip { color: #ffcf5a; font-size: .92rem; }
+.parts { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.parts li { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
+.parts b { font-family: var(--display); font-size: .95rem; min-width: 9.2em; }
+.toy:has(.parts) { max-height: 64dvh; }
+.parts .bad { color: var(--bad); font-family: var(--display); font-size: .8rem; }
+.name input { width: 9em; font: inherit; font-family: var(--display); font-weight: 700; text-transform: uppercase; padding: 7px 10px; border: 2px solid var(--ink); border-radius: 10px; background: var(--bg); color: var(--ink); }
 .plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
 .pl { display: flex; flex-direction: column; gap: 3px; font-weight: 700; min-width: 0; }
 .pl input { width: 100%; font: inherit; font-size: 1.25rem; font-weight: 700; text-align: center; padding: 6px; border: 2px solid var(--ink); border-radius: 10px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -177,7 +185,8 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
       <li>This sketch knows about 40 words. On your site, your constrained AI would answer any other sentence.</li>
       <li>The robot is a new character. It is a proposal. Card names are samples from your files. Odds are 70, 25, 5.</li>
     </ul>
-    <p><button class="btn quiet" type="button" id="reset">Start again</button></p>
+    <p><button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
+    <p class="note">The opening uses your own words from the student site: the home page, then the Space Station Tasks page, shortened.</p>
   </details>
 </div>
 
@@ -241,7 +250,7 @@ const DIRS = { north: [0, -1], n: [0, -1], up: [0, -1], south: [0, 1], s: [0, 1]
 /* =====================================================================
    STATE
    ===================================================================== */
-const KEY = 'gmq-station-sketch-v4';
+const KEY = 'gmq-station-sketch-v5';
 let S, widget = null;
 function fresh() {
   const seed = Math.floor(Math.random() * 1e9);
@@ -249,7 +258,7 @@ function fresh() {
     inv: [], parts: [], cards: [], secrets: [], done: {}, log: [], ship: '', botName: '',
     gap: false, crate: false, vent: false, locker: false, grate: false, bot: false, poster: false, drawer: false,
     chair: false, bolt: false, chest: false, course: false, battleSeen: false, ended: false,
-    mode: 'station', at: 'station', holes: [], plan: null, rock: false, bites: 0, skill: {}, hint: false };
+    mode: 'intro', beat: 0, tut: 0, at: 'station', holes: [], plan: null, rock: false, bites: 0, skill: {}, hint: false };
 }
 function load() { try { const j = JSON.parse(localStorage.getItem(KEY)); if (j && j.seen && ROOMS[j.room]) return j; } catch (e) {} return fresh(); }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -317,7 +326,7 @@ function walkToObj(id, then) {
   return walkTo(goal, then);
 }
 function arrive() {
-  S.x = Math.round(P.x); S.y = Math.round(P.y);
+  S.x = Math.round(P.x); S.y = Math.round(P.y); if (S.tut === 0) { S.tut = 1; drawLog(); }
   const c = G[S.y][S.x];
   if (c.room && c.room !== S.room) {
     S.room = c.room; banner = { t: 2.4, text: ROOMS[c.room].name };
@@ -344,7 +353,8 @@ const chime = () => { beep(660, .12); setTimeout(() => beep(880, .14), 110); set
    ===================================================================== */
 let lines = [];
 function say(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-4); drawLog(); }
-function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2]; $('log').innerHTML = (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? `<span class="new">${esc(last.text)}</span>` : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
+const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your ship. Or type: look ship.', 'Tip: now try your own idea. Push, open, take or use something.'];
+function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? `<span class="new">${esc(last.text)}</span>` : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
 function drawStatus() {
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>`;
@@ -360,7 +370,7 @@ function drawBag() {
 }
 function mark() { const v = $('cmd').value.trim().split(' ')[0].toLowerCase(); $('verbs').querySelectorAll('.word').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
 function secret(id, text) {
-  if (S.secrets.includes(id)) return; S.secrets.push(id); save(); drawStatus(); chime(); sparkle = { t: 1.2, x: P.x, y: P.y };
+  if (S.secrets.includes(id)) return; S.secrets.push(id); if (S.tut < 3) S.tut = 3; save(); drawStatus(); chime(); sparkle = { t: 1.2, x: P.x, y: P.y };
   say(`${text} Secret ${S.secrets.length} of ${TOTAL_SECRETS}.`);
 }
 function give(item) { if (!S.inv.includes(item)) S.inv.push(item); save(); drawBag(); beep(740, .1); floatText = { t: 1.4, text: '+ ' + ITEMS[item] }; }
@@ -370,7 +380,7 @@ function give(item) { if (!S.inv.includes(item)) S.inv.push(item); save(); drawB
    ===================================================================== */
 const has = i => S.inv.includes(i);
 const DO = {
-  ship: { look: () => S.secrets.includes('wrench') ? `Your ship${S.ship ? ', the ' + S.ship : ''}. It needs new parts.` : 'Your ship. The hull is scratched. A small hatch sits under the wing.',
+  ship: { look: () => (S.secrets.includes('wrench') ? `Your ship${S.ship ? ', the ' + S.ship : ''}.` : 'Your ship. Scrap metal holds the hull together. A small hatch sits under the wing.') + ` It has ${S.parts.length} of 5 parts.`,
     open: () => { if (S.secrets.includes('wrench')) return 'The hatch is empty now.'; give('wrench'); secret('wrench', 'The hatch pops open. A wrench is inside!'); },
     take: 'It is far too big to take.', push: 'You push. The ship does not move.', use: 'The ship cannot fly yet. It needs its parts.' },
   stack: { look: () => `Crates, stacked in rows. ${S.rows} rows. ${S.cols} crates in each row.`, push: 'They are too heavy. One crate by the wall looks loose.',
@@ -425,6 +435,7 @@ function act(raw) {
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
   $('cmd').value = ''; mark();
   const out = s => { if (s) say(s, raw.trim()); else { lines.push({ you: raw.trim() }); drawLog(); } };
+  if (S.mode === 'intro' || S.mode === 'arrive') return out('Tap Next to go on.');
   if (S.mode === 'space') return actSpace(text, out);
   if (S.mode === 'planet') return actPlanet(text, out);
   if (widget) return out('Finish this first. Or tap Leave.');
@@ -471,6 +482,7 @@ function act(raw) {
   if (!thing) return out('You do not see that here.');
   if (verb !== 'use') item = null;
   out(null);
+  if (S.tut === 1 && verb === 'look') S.tut = 2;
   const run = () => { const h = DO[thing][verb], r = typeof h === 'function' ? h(item) : h; if (r !== undefined || h === undefined) say(r || NOPE[verb] || 'Nothing happens.'); };
   if (!walkToObj(thing, run)) say('You cannot reach it.');
 }
@@ -728,7 +740,7 @@ function showEnding() {
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
   $('again').onclick = restart;
 }
-function restart() { closeToy(); $('report').hidden = true; S = fresh(); save(); build(); P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Your ship limps into the dock. The station is a mess. Look around.'); }
+function restart() { closeToy(); $('report').hidden = true; S = fresh(); save(); build(); P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Earth needs your help!'); introPanel(); }
 
 /* =====================================================================
    DRAWING THE STATION
@@ -746,7 +758,7 @@ function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
-function setPlace() { const t = S.mode === 'space' ? 'Deep Space' : S.mode === 'planet' ? 'Planet Voltara' : ROOMS[S.room].name; if (t !== placeText) { placeText = t; $('place').textContent = t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
+function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2024', 'Earth, 2024', 'Earth, 2024', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'planet' ? 'Planet Voltara' : ROOMS[S.room].name; if (t !== placeText) { placeText = t; $('place').textContent = t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
 function tState(c) { if (c.t === 'void') return 0; if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
@@ -932,6 +944,7 @@ function minimap() {
 }
 function frame(now) {
   const dt = Math.min(.05, (now - (frame.last || now)) / 1000); frame.last = now; tNow += dt; zap = Math.max(0, zap - dt); setPlace();
+  if (S.mode === 'intro' || S.mode === 'arrive') { drawIntro(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'space') { drawSpace(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'planet') { drawPlanet(dt); return requestAnimationFrame(frame); }
   if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 4.6 * dt; P.step += dt; P.idle = 0;
@@ -1019,7 +1032,7 @@ function voltaraBall(X, Y, R) {         // Voltara from orbit: a lit sphere with
   cols.forEach((c, i) => { const yy = Y - R + (i + .25) * 2 * R / cols.length + Math.sin(tNow * .3 + i) * R * .012; cx.fillStyle = c; cx.beginPath(); cx.ellipse(X, yy + R * .62, R * 1.25, R * .62, 0, Math.PI, 2 * Math.PI); cx.lineTo(X + R * 1.25, Y + R * 2); cx.lineTo(X - R * 1.25, Y + R * 2); cx.fill(); });
   for (let i = 0; i < 4; i++) { cx.strokeStyle = 'rgba(255,255,255,.3)'; cx.lineWidth = R * .02; cx.beginPath(); cx.ellipse(X + Math.sin(i * 2.1) * R * .4, Y - R * .5 + i * R * .33, R * .16, R * .05, 0, 0, 5); cx.stroke(); }
   for (let i = 0; i < 11; i++) { const u = ((i * .137 + (calm ? 0 : tNow * .012)) % 1.3) - .15, px = X - R + u * 2 * R, py = Y - R * .78 + (i * 53 % 100) / 100 * R * 1.56, sq = Math.max(.25, 1 - Math.abs(u - .5) * 1.5); cx.fillStyle = i % 2 ? 'rgba(255,255,255,.75)' : 'rgba(255,205,232,.75)'; cx.beginPath(); cx.ellipse(px, py, R * .2 * sq, R * .05, 0, 0, 7); cx.fill(); cx.beginPath(); cx.ellipse(px + R * .08 * sq, py - R * .035, R * .11 * sq, R * .04, 0, 0, 7); cx.fill(); }
-  for (const [off, al] of [[.2, .22], [.3, .28], [.42, .34], [.56, .4]]) { cx.fillStyle = `rgba(10,5,48,${al})`; cx.beginPath(); cx.arc(X, Y, R * 1.01, 0, 7); cx.arc(X - R * off, Y - R * off * .55, R * 1.02, 0, 7, true); cx.fill('evenodd'); }
+  { const sh = cx.createRadialGradient(X - R * .5, Y - R * .38, R * .8, X - R * .5, Y - R * .38, R * 1.85); sh.addColorStop(0, 'rgba(10,5,48,0)'); sh.addColorStop(.5, 'rgba(10,5,48,.5)'); sh.addColorStop(1, 'rgba(10,5,48,.95)'); cx.fillStyle = sh; cx.fillRect(X - R, Y - R, 2 * R, 2 * R); }
   for (let i = 0; i < 26; i++) { const an = .2 + (i * .37 % 1) * 1.1, r = R * (.62 + (i * .61 % 1) * .3); cx.fillStyle = `rgba(255,225,140,${.5 + .4 * Math.sin(tNow * 2 + i)})`; cx.fillRect(X + Math.cos(an) * r, Y + Math.sin(an) * r, 2.2, 2.2); }
   cx.restore();
   cx.strokeStyle = 'rgba(255,225,245,.65)'; cx.lineWidth = Math.max(2, R * .018); cx.beginPath(); cx.arc(X, Y, R, 2.5, 4.9); cx.stroke();
@@ -1233,12 +1246,95 @@ function drawPlanet(dt) {
   for (const k in PT) { const t = PT[k]; if (t.x == null || k === 'city' || (k === 'door' && !S.rock) || (k === 'rock' && S.rock)) continue; if (Math.abs(PL.x - t.x) < .11) pill(t.label, Math.max(46, Math.min(w - 46, t.x * w)), ly[k]); }
 }
 /* =====================================================================
+   THE OPENING. The words are Marc's own, from the student site's home page
+   ("Earth Needs Your Help!") and its Space Station Tasks page (shortened).
+   ===================================================================== */
+const BEATS = [
+  ['Earth Needs Your Help!', 'It is the year 2024. Earth has a big problem.'],
+  ['A big problem', 'Our cities are too crowded. The oceans are getting dirty. It is hard to grow food. We need a new place to live!'],
+  ['Project Second Home', 'People all over the world started wishing for a new home among the stars. They began Project Second Home, to build spaceships and explore far-away galaxies.'],
+  ['KIS Station', 'The most important place is the Kepler International Space Station. We call it KIS Station. Lots of smart astronauts and scientists work there. But guess what? Kids like you are the real heroes!'],
+  ['A mess!', 'When you arrive at KIS Station, you see a mess! The spaceships are broken. Hidden around the station are special parts to build them back up.'],
+  ['Five galaxies', 'If you can fix the ships, you will explore five amazing galaxies. Your mission: complete challenges, find parts, fix spaceships, defeat aliens, study comets, and find the perfect new home for Earth.'],
+  ['Are you ready?', 'This is a huge space adventure, and brave heroes like you are needed. Earth is counting on you. Let’s blast off!']];
+const PART_SKILL = [['Engine Core', 'counting'], ['Navigation System', 'adding and subtracting'], ['Shield Generator', 'multiplying and dividing'], ['Weapon System', 'odd and even numbers'], ['Power Module', 'place value']];
+let arr = 0;
+function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .9; speechSynthesis.speak(u); } catch (e) {} }
+function introPanel() {
+  const [title, text] = BEATS[S.beat], lastBeat = S.beat === BEATS.length - 1; widget = { kind: 'intro' };
+  toy(`<p class="eyebrow">Galaxy Math Quest · ${S.beat + 1} of ${BEATS.length}</p><h3>${title}</h3><p class="story">${text}</p>
+    <div class="field"><button class="btn" type="button" id="next">${lastBeat ? 'Blast off!' : 'Next'}</button><button class="btn quiet" type="button" id="readme">Read to me</button><button class="btn quiet" type="button" id="skipintro">Skip</button></div>`);
+  $('next').onclick = nextBeat; $('skipintro').onclick = skipIntro; $('readme').onclick = () => speak(title + '. ' + text);
+}
+function nextBeat() { if (S.mode !== 'intro') return; beep(520, .06); if (S.beat < BEATS.length - 1) { S.beat++; save(); return introPanel(); } closeToy(); S.mode = 'arrive'; arr = 0; TRAIL.length = 0; beep(140, 1.2, 'sawtooth'); say('You fly to KIS Station. Your spaceship is barely holding together.'); }
+function skipIntro() { try { speechSynthesis.cancel(); } catch (e) {} closeToy(); S.mode = 'station'; S.beat = 0; snap = true; save(); say('Your ship limps into the dock. The station is a mess. Look around.'); }
+function shipReport() {
+  S.mode = 'station'; snap = true; save(); widget = { kind: 'report' };
+  toy(`<p class="eyebrow">Ship report</p><h3>Your spaceship is barely holding together</h3>
+    <p>Scrap metal holds the hull in place. The engine core ran on fumes. It was a miracle you made it here.</p>
+    <p class="note">Five parts are missing. Earn each one on the station.</p>
+    <ul class="parts">${PART_SKILL.map(([n, k]) => `<li><b>${n}</b><span class="bad">MISSING</span><span class="note">${k}</span></li>`).join('')}</ul>
+    <form class="field name" id="nameform"><label for="shipname">What is your ship called?</label><input id="shipname" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn" type="submit">Name my ship</button><button class="btn quiet" type="button" id="later">Later</button></form>`);
+  const done = nm => { if (nm) S.ship = nm; closeToy(); save(); say(`${nm ? 'You paint ' + nm + ' on the hull. ' : ''}Welcome to your journey, cadet. The universe awaits.`); };
+  $('nameform').addEventListener('submit', e => { e.preventDefault(); done($('shipname').value.replace(/[^a-zA-Z0-9 ]/g, '').trim().slice(0, 12).replace(/\b\w/g, c => c.toUpperCase())); });
+  $('later').onclick = () => done('');
+}
+function earth(X, Y, R, sick) {
+  cx.globalCompositeOperation = 'lighter'; const gl = cx.createRadialGradient(X, Y, R * .92, X, Y, R * 1.35); gl.addColorStop(0, sick ? 'rgba(200,170,120,.5)' : 'rgba(120,180,255,.6)'); gl.addColorStop(1, 'rgba(120,180,255,0)'); cx.fillStyle = gl; circ(X, Y, R * 1.35); cx.fill(); cx.globalCompositeOperation = 'source-over';
+  cx.save(); circ(X, Y, R); cx.clip(); const oc = cx.createRadialGradient(X - R * .3, Y - R * .3, R * .1, X, Y, R * 1.1); oc.addColorStop(0, '#4f9ff0'); oc.addColorStop(1, '#173f86'); cx.fillStyle = oc; cx.fillRect(X - R, Y - R, 2 * R, 2 * R);
+  const dr = calm ? 0 : tNow * .03;
+  for (const [lx, ly, lr, i] of [[-.55, -.3, .36, 0], [-.05, .28, .3, 1], [.5, -.12, .3, 2], [.2, -.55, .2, 3], [-.8, .35, .22, 4], [.9, .4, .24, 5], [1.5, -.2, .34, 6], [1.9, .3, .26, 7]]) { const u = ((lx + dr * 1.0 + 1.3) % 2.6 + 2.6) % 2.6 - 1.3, cxx = X + u * R, cyy = Y + ly * R, sq = Math.max(.35, 1 - Math.abs(u) * .5);
+    cx.fillStyle = sick ? '#8f9a5c' : '#4caf6a'; cx.beginPath(); cx.ellipse(cxx, cyy, lr * R * sq, lr * R * .8, 0, 0, 7); cx.fill(); cx.beginPath(); cx.ellipse(cxx + lr * R * .5 * sq, cyy + lr * R * .3, lr * R * .6 * sq, lr * R * .5, 0, 0, 7); cx.fill(); cx.fillStyle = sick ? '#b39a6a' : '#c9b37a'; cx.beginPath(); cx.ellipse(cxx - lr * R * .2 * sq, cyy - lr * R * .1, lr * R * .35 * sq, lr * R * .25, 0, 0, 7); cx.fill();
+    if (sick) { cx.fillStyle = 'rgba(90,70,40,.55)'; cx.beginPath(); cx.ellipse(cxx + lr * R * 1.1 * sq, cyy + lr * R * .6, lr * R * .5 * sq, lr * R * .22, 0, 0, 7); cx.fill(); } }
+  for (let i = 0; i < 9; i++) { const u = ((i * .31 + dr * 1.6) % 2.4) - 1.2; cx.fillStyle = sick ? 'rgba(170,160,150,.6)' : 'rgba(255,255,255,.75)'; cx.beginPath(); cx.ellipse(X + u * R, Y - R * .75 + (i * 53 % 100) / 100 * R * 1.5, R * .2, R * .05, 0, 0, 7); cx.fill(); }
+  if (sick) { cx.fillStyle = 'rgba(120,95,60,.3)'; cx.fillRect(X - R, Y - R, 2 * R, 2 * R); }
+  { const sh = cx.createRadialGradient(X - R * .5, Y - R * .38, R * .8, X - R * .5, Y - R * .38, R * 1.85); sh.addColorStop(0, 'rgba(5,8,30,0)'); sh.addColorStop(.5, 'rgba(5,8,30,.55)'); sh.addColorStop(1, 'rgba(5,8,30,.95)'); cx.fillStyle = sh; cx.fillRect(X - R, Y - R, 2 * R, 2 * R); }
+  for (let i = 0; i < (sick ? 60 : 22); i++) { const an = .15 + (i * .37 % 1) * 1.2, r = R * (.55 + (i * .61 % 1) * .4); cx.fillStyle = `rgba(255,225,140,${.5 + .4 * Math.sin(tNow * 2 + i)})`; cx.fillRect(X + Math.cos(an) * r, Y + Math.sin(an) * r, 2, 2); }
+  cx.restore(); cx.strokeStyle = 'rgba(200,225,255,.6)'; cx.lineWidth = Math.max(2, R * .015); cx.beginPath(); cx.arc(X, Y, R, 2.5, 4.9); cx.stroke();
+}
+function bigStation(X, Y, R, mess) {
+  const rot = calm ? 0 : tNow * .12, f = c => cx.fillStyle = c;
+  for (const sg of [-1, 1]) { f('#59657a'); cx.fillRect(X + sg * R * 1.05 - (sg < 0 ? R * .5 : 0), Y - R * .04, R * .5, R * .08); f('#2d6fb4'); rr(X + sg * R * 1.5 - (sg < 0 ? R * .6 : 0), Y - R * .34, R * .6, R * .68, 3); cx.fill(); ol(2); cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 1; for (let i = 1; i < 4; i++) { const xx = X + sg * R * 1.5 - (sg < 0 ? R * .6 : 0) + i * R * .15; cx.beginPath(); cx.moveTo(xx, Y - R * .34); cx.lineTo(xx, Y + R * .34); cx.stroke(); } }
+  cx.strokeStyle = INK; cx.lineWidth = R * .2 + 4; circ(X, Y, R); cx.stroke(); cx.strokeStyle = '#dfe6f0'; cx.lineWidth = R * .2; circ(X, Y, R); cx.stroke(); cx.strokeStyle = '#9fb0c8'; cx.lineWidth = R * .03; circ(X, Y, R * 1.02); cx.stroke();
+  cx.strokeStyle = INK; cx.lineWidth = R * .09 + 3; for (let i = 0; i < 4; i++) { cx.beginPath(); cx.moveTo(X, Y); cx.lineTo(X + Math.cos(rot + i * 1.5708) * R * .9, Y + Math.sin(rot + i * 1.5708) * R * .9); cx.stroke(); } cx.strokeStyle = '#b9c6d8'; cx.lineWidth = R * .09; for (let i = 0; i < 4; i++) { cx.beginPath(); cx.moveTo(X, Y); cx.lineTo(X + Math.cos(rot + i * 1.5708) * R * .9, Y + Math.sin(rot + i * 1.5708) * R * .9); cx.stroke(); }
+  for (let i = 0; i < 16; i++) { const an = rot + i * .3927, on = !mess || Math.sin(tNow * 7 + i * 2.3) > .3; f(on ? '#ffcf5a' : '#3a4558'); circ(X + Math.cos(an) * R, Y + Math.sin(an) * R, R * .045); cx.fill(); }
+  f('#8795ab'); circ(X, Y, R * .34); cx.fill(); ol(2); f(mess && Math.sin(tNow * 9) > 0 ? '#3a4558' : '#ffb23e'); circ(X, Y, R * .16); cx.fill(); ol(1.5);
+  cx.fillStyle = '#fff'; cx.font = `700 ${Math.max(11, R * .13)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('KIS', X, Y + R * .52);
+  if (mess) { for (const [dx, dy, an] of [[-1.25, .95, -.5], [1.15, 1.0, .35]]) rocket(X + dx * R, Y + dy * R, R * .8, an, { damage: true });
+    for (let i = 0; i < 7; i++) { const an = i * .9 + tNow * .1, rr2 = R * (1.35 + (i % 3) * .2); cx.save(); cx.translate(X + Math.cos(an) * rr2, Y + Math.sin(an) * rr2 * .8); cx.rotate(tNow * .6 + i); f('#9aa7bb'); cx.beginPath(); cx.moveTo(-6, -3); cx.lineTo(6, -5); cx.lineTo(3, 5); cx.closePath(); cx.fill(); ol(1); cx.restore(); }
+    for (const [dx, dy] of [[.62, -.78], [-.9, -.3]]) if (Math.sin(tNow * 11 + dx * 9) > .2) { cx.strokeStyle = '#fff3a6'; cx.lineWidth = 2; for (let i = 0; i < 5; i++) { const an = i * 1.3 + tNow * 20; cx.beginPath(); cx.moveTo(X + dx * R, Y + dy * R); cx.lineTo(X + dx * R + Math.cos(an) * R * .14, Y + dy * R + Math.sin(an) * R * .14); cx.stroke(); } }
+    cx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 5; i++) { const an = i * 1.2566 + .6, px = X + Math.cos(an) * R * .62, py = Y + Math.sin(an) * R * .62, pu = .5 + .5 * Math.sin(tNow * 3 + i), g = cx.createRadialGradient(px, py, 0, px, py, R * .2); g.addColorStop(0, `rgba(120,255,220,${.8 * pu})`); g.addColorStop(1, 'rgba(120,255,220,0)'); cx.fillStyle = g; circ(px, py, R * .2); cx.fill(); } cx.globalCompositeOperation = 'source-over'; }
+}
+function drawIntro(dt) {
+  const w = vw, h = vh, m = Math.min(w, h), b = S.mode === 'arrive' ? 7 : S.beat; SP.x = .5; SP.y = .5; spaceBack(1);
+  const cap2 = (t, y) => { cx.font = `700 ${Math.max(15, m * .05)}px "Chakra Petch", sans-serif`; const tw2 = cx.measureText(t).width + 24; cx.fillStyle = 'rgba(6,9,18,.8)'; rr(w / 2 - tw2 / 2, y - m * .045, tw2, m * .085, 10); cx.fill(); cx.fillStyle = '#ffb23e'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(t, w / 2, y); cx.textBaseline = 'alphabetic'; };
+  if (b === 0) earth(w * .5, h * .56, m * .34, false);
+  else if (b === 1) { earth(w * .5, h * .6, m * .27, true); const bx = [.17, .5, .83], icon = (i, X, Y, z) => { cx.fillStyle = 'rgba(6,9,18,.86)'; rr(X - z, Y - z, z * 2, z * 2, 12); cx.fill(); cx.strokeStyle = '#ffb23e'; cx.lineWidth = 2; cx.stroke(); cx.save(); rr(X - z, Y - z, z * 2, z * 2, 12); cx.clip();
+      if (i === 0) { cx.fillStyle = '#3a4a66'; cx.fillRect(X - z, Y + z * .55, z * 2, z * .5); for (let k = 0; k < 9; k++) { const bh = z * (.5 + ((k * 37) % 10) / 9); cx.fillStyle = k % 2 ? '#59657a' : '#7f8da6'; cx.fillRect(X - z + k * z * .23, Y + z * .6 - bh, z * .21, bh); cx.fillStyle = '#ffe58a'; for (let q = 0; q < 3; q++) cx.fillRect(X - z + k * z * .23 + 3, Y + z * .5 - bh + 6 + q * 9, 3, 3); } }
+      else if (i === 1) { cx.fillStyle = '#2a5f8f'; cx.fillRect(X - z, Y - z * .1, z * 2, z * 1.2); cx.fillStyle = '#6b5a3c'; for (let k = 0; k < 7; k++) { cx.beginPath(); cx.ellipse(X - z * .8 + k * z * .27, Y + z * (.1 + ((k * 3) % 4) * .2) + Math.sin(tNow * 2 + k) * 2, z * .12, z * .07, k, 0, 7); cx.fill(); } cx.strokeStyle = 'rgba(255,255,255,.4)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X - z, Y - z * .1); for (let k = 0; k <= 8; k++) cx.lineTo(X - z + k * z * .25, Y - z * .1 + Math.sin(k + tNow * 2) * 3); cx.stroke(); }
+      else { cx.fillStyle = '#b08a4f'; cx.fillRect(X - z, Y + z * .2, z * 2, z); cx.strokeStyle = '#6b4f28'; cx.lineWidth = 2; for (let k = 0; k < 5; k++) { cx.beginPath(); cx.moveTo(X - z * .8 + k * z * .4, Y + z * .2); cx.lineTo(X - z * .9 + k * z * .4, Y + z * .6); cx.lineTo(X - z * .7 + k * z * .4, Y + z); cx.stroke(); } cx.strokeStyle = '#8a7a3a'; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(X, Y + z * .2); cx.quadraticCurveTo(X + z * .1, Y - z * .3, X + z * .35, Y - z * .25); cx.stroke(); cx.fillStyle = '#a0934a'; cx.beginPath(); cx.ellipse(X + z * .38, Y - z * .2, z * .14, z * .07, .6, 0, 7); cx.fill(); }
+      cx.restore(); };
+    ['Crowded cities', 'Dirty oceans', 'Food is hard to grow'].forEach((t, i) => { const z = Math.max(34, m * .11), X = bx[i] * w, Y = h * .22; icon(i, X, Y, z); cx.font = `700 ${Math.max(12, m * .03)}px "Andika", sans-serif`; cx.fillStyle = '#fff'; cx.textAlign = 'center'; cx.fillText(t, X, Y + z + Math.max(16, m * .04)); }); }
+  else if (b === 2) { earth(w * .26, h * .7, m * .24, true); for (let i = 0; i < 4; i++) { const t2 = ((tNow * .16 + i * .25) % 1), an = -.95 + i * .28, x0 = w * .3, y0 = h * .62, X = x0 + Math.cos(an) * t2 * w * .75, Y = y0 + Math.sin(an) * t2 * h * .75; cx.strokeStyle = `rgba(255,190,90,${.6 * (1 - t2)})`; cx.lineWidth = 3; cx.setLineDash([5, 7]); cx.beginPath(); cx.moveTo(x0, y0); cx.lineTo(X, Y); cx.stroke(); cx.setLineDash([]); rocket(X, Y, m * (.1 + t2 * .06), an, { flame: true }); } cap2('PROJECT SECOND HOME', h * .14); }
+  else if (b === 3) { earth(w * .14, h * .86, m * .16, true); bigStation(w * .52, h * .52, m * .25, false); }
+  else if (b === 4) bigStation(w * .5, h * .5, m * .22, true);
+  else if (b === 5) { const R = m * .1; for (const [id, g] of Object.entries(GAL)) { if (id === 'station') continue; const X = g.x * w, Y = (g.y * .92 + .02) * h; cx.globalAlpha = id === 'patternox' ? .6 : 1; galaxyArt(id, X, Y, R); cx.globalAlpha = 1; pill(g.name, X, Y + R * 1.05, true); if (w >= 520) { cx.font = `${Math.max(12, w * .017)}px "Andika", sans-serif`; cx.fillStyle = '#dfe6f0'; cx.textAlign = 'center'; cx.fillText(BEATLINES[id], X, Y + R * 1.05 + 30); } } bigStation(w * .5, h * .56, m * .06, false); }
+  else if (b === 6) { earth(w * .5, h * 1.05, m * .5, true); rocket(w * .5, h * .42 + Math.sin(tNow * 30) * 1.5, m * .42, -Math.PI / 2, { flame: true, damage: true }); }
+  else { arr = Math.min(1, arr + dt / 3.2); const e = arr * arr * (3 - 2 * arr), sX = w * .62, sY = h * .46, R = m * .22; bigStation(sX, sY, R, true); const X = w * (-.1 + e * .5), Y = h * (.95 - e * .38); TRAIL.push([X / w, Y / h, 1]);
+    cx.globalCompositeOperation = 'lighter'; for (const t of TRAIL) { t[2] -= dt * .9; cx.fillStyle = `rgba(255,190,90,${Math.max(0, t[2]) * .7})`; circ(t[0] * w, t[1] * h, m * .012 * (1.4 - t[2])); cx.fill(); } cx.globalCompositeOperation = 'source-over'; while (TRAIL.length && TRAIL[0][2] <= 0) TRAIL.shift();
+    rocket(X + Math.sin(tNow * 25) * 1.5, Y, m * (.26 - e * .12), -.55, { flame: arr < .95, damage: true }); if (arr >= 1) shipReport(); }
+}
+const BEATLINES = { numerix: 'Dive into number riddles!', patternox: 'Navigate the ever-changing patterns!', metrica: 'Where numbers dance and play!', geometrica: 'A universe of wild shapes!', databa: 'A maze bursting with cosmic facts!' };
+
+/* =====================================================================
    TAPPING THE WORLD
    ===================================================================== */
 function thingAt(tx, ty) { for (const id in OBJ) { const o = OBJ[id]; if (objOn(o) && o.room === S.room && objTiles(id).some(t => t[0] === tx && t[1] === ty)) return id; } return null; }
 function tileOf(e) { const r = cv.getBoundingClientRect(); return [Math.floor((e.clientX - r.left) / ts + cam.x), Math.floor((e.clientY - r.top) / ts + cam.y)]; }
 cv.addEventListener('pointermove', e => { if (S.mode !== 'station') return; const [x, y] = tileOf(e); hover = thingAt(x, y); });
 cv.addEventListener('pointerdown', e => {
+  if (S.mode === 'intro') return nextBeat();
+  if (S.mode === 'arrive') return;
   if (S.mode === 'space') return tapSpace(e);
   if (S.mode === 'planet') return tapPlanet(e);
   if (widget && widget.kind === 'cargo') { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y, on = [...widget.on];
@@ -1259,12 +1355,15 @@ S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y
 $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
+$('replay').onclick = () => { if (widget && widget.kind !== 'intro') return say('Finish this first.'); S.mode = 'intro'; S.beat = 0; introPanel(); $('place').scrollIntoView({ block: 'nearest' }); };
 window.addEventListener('resize', size);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
 size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
 S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; drawStars();
-say(S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
+if (S.tut == null) S.tut = 3;
+say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
+if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
 if (S.ended) showEnding();
 requestAnimationFrame(frame);
 </script>
