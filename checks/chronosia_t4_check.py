@@ -23,9 +23,11 @@ Sara's meeting, and an answer key. Those are marked OPEN below.
 
 Standard library only. Run:  python3 chronosia_t4_check.py
 """
+import sys
 from collections import Counter
 from itertools import combinations
 
+sys.dont_write_bytecode = True   # keep checks/ free of __pycache__
 from chronosia_t3_check import EVENTS, NAMES, make_timetable, mins
 
 # Interests -> events. Read from 'Character Profiles'; the matching is mine,

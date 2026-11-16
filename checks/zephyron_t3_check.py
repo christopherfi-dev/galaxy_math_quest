@@ -53,6 +53,21 @@ H_LINES = [236, 532, 833, 1129, 1418, 1713, 2002, 2298, 2586, 2882, 3170, 3465]
 MARKS_PX = {"start flag": (1017, 1882), "X west": (446, 3032), "X north-east": (3899, 1270), "X south-east": (3651, 3281)}
 
 
+# City markers: the same pixel centroids as in zephyron_t1_check.py. The Task 3 map is the
+# same picture in the same place on the page (checked: the two renders line up with zero shift).
+CITIES_PX = {
+    "Talvela": (3028.2, 1851.7), "Käraste": (2118.1, 2139.1), "Pävala": (2881.9, 2710.1),
+    "Rabaraja": (2109.2, 1037.3), "Tapavee": (2751.1, 3432.8), "Künkapää": (1044.5, 1990.0),
+    "Reisi": (4145.3, 2718.6), "Hólborg": (4326.9, 1422.2), "Loikka": (1095.0, 731.2),
+    "Mägela": (3190.8, 99.4), "Vestrbu": (4204.9, 171.1), "Vaheri": (199.2, 1271.1),
+    "Laheste": (337.7, 679.2), "Sjálborg": (4668.9, 118.2),
+}
+
+
+def near_line(px, py, tol=20):
+    return any(abs(px - v) <= tol for v in V_LINES) or any(abs(py - h) <= tol for h in H_LINES)
+
+
 def cell_of(px, py):
     col = 1 + sum(1 for v in V_LINES if px > v)
     row = 12 - sum(1 for h in H_LINES if py > h)
@@ -108,6 +123,11 @@ def part1():
         print("  %-13s at pixel (%d, %d) -> square %s" % (name, x, y, cell_of(x, y)))
     assert cell_of(*MARKS_PX["start flag"]) == START
     assert sorted(cell_of(*MARKS_PX[k]) for k in MARKS_PX if k != "start flag") == sorted(OUTPOSTS)
+    print("  city squares [Reviewer: not asked by the task, useful for new coordinate questions]:")
+    for name, (x, y) in sorted(CITIES_PX.items(), key=lambda kv: cell_of(*kv[1])):
+        flag = "  <- marker sits on a grid line; avoid asking about this one" if near_line(x, y) else ""
+        print("    %-9s %s%s" % (name, cell_of(x, y), flag))
+    assert cell_of(*CITIES_PX["Künkapää"]) == START
     counts = {}
     for r in TERRAIN_ROWS_TOP_DOWN:
         for ch in r:

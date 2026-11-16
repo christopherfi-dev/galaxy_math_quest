@@ -14,6 +14,7 @@ It was rendered with `pdftoppm -r 300` to 4960 x 3510 px.
 - Scale = centres of the six mile ticks (0 to 5 Mi) on the pasted Km/Mi bar.
 Good to about +/- 3 px (0.01 mile). The map is a photo of a model city taken at
 an angle, so one scale cannot be true everywhere. That is ignored here, as the task ignores it.
+[Source] "Things to Prepare - 1st Five", sheet "October Prints": printed "15 - A3 - color".
 """
 import math
 import random

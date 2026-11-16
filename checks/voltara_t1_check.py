@@ -14,7 +14,7 @@ Parts
   G  a proposed number rule, tested on 10,000 seeds with every card state
   H  counts of typed numbers and answers
 All source numbers are copied from Marc's Drive docs and the student site (2026-11-16).
-Takes about two minutes (part G checks 20 million card states).
+Takes about two minutes (part G checks about 18 million card states).
 """
 import itertools
 import random

@@ -30,17 +30,24 @@ TILE_AREA = {"S": Fraction(25), "BT": Fraction(25), "MT": Fraction(25, 2), "ST":
 
 
 def whole_leaves_to_cover_square(side, leaf=LEAF_SIDE):
-    """Fewest uncut leaves, edges straight, that cover a side x side square.
-    Lower bound: put a marker in the middle of every 2 x 2 step. No single leaf
-    (2 m wide, edge excluded) can hide two markers, so you need one leaf each.
-    Upper bound: a grid of ceil(side/leaf) x ceil(side/leaf) leaves does it."""
+    """Fewest uncut leaves that cover a side x side square, when the leaves are
+    laid straight (their edges in line with the roof's edges).
+    Lower bound: spread k x k markers over the roof so that any two are MORE
+    than one leaf-width apart, across or down. A straight leaf is only `leaf`
+    wide, so it can hide one marker at most: you need a leaf for each marker.
+    Upper bound: a grid of k x k leaves covers the roof. So the answer is k x k.
+    (Leaves laid at a slant are not covered by this argument.)"""
     k = math.ceil(side / leaf)
-    markers = [(0.5 + leaf * i, 0.5 + leaf * j) for i in range(k) for j in range(k)]
-    assert all(m[0] < side and m[1] < side for m in markers)
+    edge = 0.25
+    step = (side - 2 * edge) / (k - 1)
+    assert step > leaf, "markers are not far enough apart for the argument"
+    markers = [(edge + step * i, edge + step * j) for i in range(k) for j in range(k)]
+    assert all(0 <= m[0] <= side and 0 <= m[1] <= side for m in markers)
     for a in markers:
         for b in markers:
             if a != b:
-                assert max(abs(a[0] - b[0]), abs(a[1] - b[1])) >= leaf
+                assert max(abs(a[0] - b[0]), abs(a[1] - b[1])) > leaf
+    assert k * leaf >= side                      # the k x k grid really covers it
     return k * k
 
 

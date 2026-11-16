@@ -15,6 +15,8 @@ The PDF (Drive id 1dR3pnDeKXRRwoyNQqmWE2kr5kcjRIo_F) is one A3 landscape page,
 - City = centroid of the white marker dot next to each name (136-284 pixels each).
 - Scale bar = centres of the end ticks of the pasted "0 75 150 300 Kilometers" bar.
 These are measurements from the image, good to about +/- 2 px (under 1 km).
+[Source] "Things to Prepare - 1st Five", sheet "October Prints": the map was printed
+"15 - A3 - color". So the A3 figures are the ones the class used. A4 is shown for comparison.
 """
 import math
 import random
