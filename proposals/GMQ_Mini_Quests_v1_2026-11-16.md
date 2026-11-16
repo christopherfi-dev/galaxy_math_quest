@@ -6,6 +6,21 @@
 
 ---
 
+## 0. Decided by Marc (2026-11-16)
+
+These replace the options in §4 to §7 and §13.
+
+1. **Who marks:** code makes the numbers and marks. The AI tells the story and gives hints. (§4, option c)
+2. **How they appear:** both. The world can interrupt the child, and the child can find them by exploring. (§5)
+3. **The name:** "mini battle" and "mini quest" are both fine. A mini quest is doing something with maths. A mini battle is fighting something with maths. This sits beside handoff §2 decision 1: card battles between students are still a reward.
+4. **Cards:** one card for each activity. Students will have big decks and can tune them. (§7, option a)
+5. **Size:** one mini quest or mini battle is a set of 3 to 5 problems.
+6. **Order of work:** Claude's choice. Chosen: mini quests first, built on the Math Skills engine once Marc adds it.
+
+Still open: whether mini quests can stand in for Numbers Quest 2 and open Patternox (§8).
+
+---
+
 ## 1. What you said (2026-11-16, by voice, tidied)
 
 - The Numbers universe needs the plain skills: place value, addition, double-digit addition and subtraction, multiplication and so on.
