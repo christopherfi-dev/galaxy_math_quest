@@ -14,6 +14,7 @@ Parts
   G  a proposed number rule, tested on 10,000 seeds with every card state
   H  counts of typed numbers and answers
 All source numbers are copied from Marc's Drive docs and the student site (2026-11-16).
+Takes about two minutes (part G checks 20 million card states).
 """
 import itertools
 import random
@@ -453,6 +454,7 @@ def part_f():
     tens_over_99 = tens_under_10 = 0
     draws_forced = draws_can = draws_total = 0
     all_draws = list(draws(deck))
+    draw_cache = {}
     for s in range(SEEDS):
         rng = random.Random(s)
         tot, supply, h, t, o, short = ref_gen(rng)
@@ -494,13 +496,17 @@ def part_f():
             if not buildable_exact(nasty_plan(n, sup), hh, t, o):
                 bad_after_cards += 1
         seeds_easy += seed_easy
-        base = short
-        for a, (b, c), d in all_draws:
-            e1 = base + g[a] + g[b] + g[d]
-            e2 = base + g[a] + g[c] + g[d]
-            draws_total += 1
-            draws_forced += (e1 <= 0 and e2 <= 0)
-            draws_can += (e1 <= 0 or e2 <= 0)
+        if short not in draw_cache:          # the draw result depends only on the shortfall
+            f = c_ = 0
+            for a, (b, c), d in all_draws:
+                e1 = short + g[a] + g[b] + g[d]
+                e2 = short + g[a] + g[c] + g[d]
+                f += (e1 <= 0 and e2 <= 0)
+                c_ += (e1 <= 0 or e2 <= 0)
+            draw_cache[short] = (f, c_)
+        draws_total += len(all_draws)
+        draws_forced += draw_cache[short][0]
+        draws_can += draw_cache[short][1]
     line(f"seeds: {SEEDS} (one random.Random(seed) per student)")
     line(f"supply range {stats['sup_min']}..{stats['sup_max']}; tens rods {stats['tens_min']}..{stats['tens_max']};"
          f" ones {stats['ones_min']}..{stats['ones_max']}")

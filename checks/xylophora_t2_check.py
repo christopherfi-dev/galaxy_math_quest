@@ -62,10 +62,10 @@ def part_a():
         print(f"    {label:30} -> whole sheet {total * per:>6,} square metres")
     print("  The skin does not fill the sheet: two corners show farmland. The skin has")
     print("  no drawn edge, so 'the total area available' has no single right answer.")
-    print("  How many buildings fit (sample building of 110 square metres from Task 1):")
+    print("  How many buildings fit (sample building of 135 square metres from Task 1):")
     for per in (1, 4, 25):
         t = total * per
-        print(f"    {t:>6,} / 110 = {t // 110} remainder {t % 110}")
+        print(f"    {t:>6,} / 135 = {t // 135} remainder {t % 135}")
     print("  That is division of a 3- to 5-digit number by a 3-digit number, then a")
     print("  choice across four building types. Above Grade 3, and many answers are right.\n")
 
@@ -91,8 +91,28 @@ def make_task(seed):
 
 
 def plan_ok(plan, costs, total):
+    """The check the server would run on a typed plan."""
     used = sum(p * c for p, c in zip(plan, costs))
     return all(p >= 1 for p in plan) and used <= total and total - used < min(costs)
+
+
+def count_good_plans(costs, total):
+    """How many plans pass plan_ok. Counted by walking the plans with early
+    stopping (a plain 4-deep loop over every count is too slow)."""
+    low = min(costs)
+    good = 0
+    a, b, c, d = costs
+    for na in range(1, total // a + 1):
+        left_a = total - na * a
+        for nb in range(1, left_a // b + 1):
+            left_b = left_a - nb * b
+            for nc in range(1, left_b // c + 1):
+                left_c = left_b - nc * c
+                # nd must leave less than the smallest building: one or two values
+                for nd in range(max(1, (left_c - low) // d), left_c // d + 1):
+                    if 0 <= left_c - nd * d < low:
+                        good += 1
+    return good
 
 
 def part_b(n=10_000):
@@ -106,12 +126,13 @@ def part_b(n=10_000):
         ok = all(5 <= s <= 10 for s in r1 + r2)            # inside the 10 x 10 facts
         ok &= 50 <= total <= 200
         ok &= len(set(costs)) == 4 and sum(costs) <= total  # one of each always fits
-        limit = [total // c for c in costs]
-        good = 0
-        for plan in product(*(range(1, m + 1) for m in limit)):
-            if plan_ok(plan, costs, total):
-                good += 1
+        good = count_good_plans(costs, total)
         ok &= good >= 1                                    # solvable
+        if seed < 25:                                      # cross-check the fast count
+            limit = [total // c for c in costs]
+            slow = sum(plan_ok(p, costs, total)
+                       for p in product(*(range(1, m + 1) for m in limit)))
+            assert slow == good, (seed, slow, good)
         plan_counts.append(good)
         totals.append(total)
         bad += not ok
