@@ -1,0 +1,962 @@
+[
+ {
+  "rule": "pv_order",
+  "where": "station",
+  "who": "Zip",
+  "text": "Three fuel tanks glow in the dock. They hold {a}, {b} and {c} units.",
+  "ask": "Which number is the biggest?",
+  "unit": ""
+ },
+ {
+  "rule": "pv_order",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip scans three asteroids. They weigh {a}, {b} and {c} tons.",
+  "ask": "Which is the heaviest? Type the number.",
+  "unit": "tons"
+ },
+ {
+  "rule": "pv_order",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Three glowing trees stand by the river. They have {a}, {b} and {c} leaves.",
+  "ask": "Which tree has the most leaves? Type the number.",
+  "unit": "leaves"
+ },
+ {
+  "rule": "pv_order",
+  "where": "space",
+  "who": "the radio",
+  "text": "Three comets race past your ship. Their speeds are {a}, {b} and {c}.",
+  "ask": "Which speed is the fastest?",
+  "unit": ""
+ },
+ {
+  "rule": "pv_partition",
+  "where": "station",
+  "who": "Zip",
+  "text": "The power panel shows {n}. One part of the number fell off.",
+  "ask": "Find the missing part: {eq}",
+  "unit": ""
+ },
+ {
+  "rule": "pv_partition",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip counts {n} bolts in a jar. Zip writes the number in parts.",
+  "ask": "Fill the gap: {eq}",
+  "unit": ""
+ },
+ {
+  "rule": "pv_partition",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The Energy Council has {n} energy blocks. A clerk splits the number up.",
+  "ask": "Fill the gap: {eq}",
+  "unit": ""
+ },
+ {
+  "rule": "pv_partition",
+  "where": "space",
+  "who": "the radio",
+  "text": "A star is {n} light-years away. The star chart is torn.",
+  "ask": "Fill the gap: {eq}",
+  "unit": ""
+ },
+ {
+  "rule": "round10",
+  "where": "station",
+  "who": "Zip",
+  "text": "The fuel gauge says {n}. The pilot wants a round number.",
+  "ask": "Round {n} to the nearest 10.",
+  "unit": ""
+ },
+ {
+  "rule": "round10",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip measured the dock. It is {n} steps long.",
+  "ask": "Round {n} to the nearest 10.",
+  "unit": "steps"
+ },
+ {
+  "rule": "round10",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A tree has {n} FlavorBursts. The butterfly likes round numbers.",
+  "ask": "Round {n} to the nearest 10.",
+  "unit": ""
+ },
+ {
+  "rule": "round10",
+  "where": "space",
+  "who": "the radio",
+  "text": "The next planet is {n} light-years away.",
+  "ask": "Round {n} to the nearest 10.",
+  "unit": ""
+ },
+ {
+  "rule": "round100",
+  "where": "station",
+  "who": "Zip",
+  "text": "The cargo bay holds {n} crates of scrap.",
+  "ask": "Round {n} to the nearest 100.",
+  "unit": "crates"
+ },
+ {
+  "rule": "round100",
+  "where": "station",
+  "who": "Zip",
+  "text": "The station log shows {n} repairs this year.",
+  "ask": "Round {n} to the nearest 100.",
+  "unit": ""
+ },
+ {
+  "rule": "round100",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "{n} Gumblefish live in the sparkling river.",
+  "ask": "Round {n} to the nearest 100.",
+  "unit": "fish"
+ },
+ {
+  "rule": "round100",
+  "where": "space",
+  "who": "the radio",
+  "text": "A trade ship carries {n} Galaxy Gems.",
+  "ask": "Round {n} to the nearest 100.",
+  "unit": "gems"
+ },
+ {
+  "rule": "count_on",
+  "where": "station",
+  "who": "Zip",
+  "text": "The landing lights blink in a pattern: {s1}, {s2}, {s3}.",
+  "ask": "What number comes next?",
+  "unit": ""
+ },
+ {
+  "rule": "count_on",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip counts crates as they roll past: {s1}, {s2}, {s3}.",
+  "ask": "What number comes next?",
+  "unit": ""
+ },
+ {
+  "rule": "count_on",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish jumps and counts out loud: {s1}, {s2}, {s3}.",
+  "ask": "What number comes next?",
+  "unit": ""
+ },
+ {
+  "rule": "count_on",
+  "where": "space",
+  "who": "the radio",
+  "text": "A comet's tail flashes a code: {s1}, {s2}, {s3}.",
+  "ask": "What number comes next?",
+  "unit": ""
+ },
+ {
+  "rule": "odd_one_out",
+  "where": "station",
+  "who": "Zip",
+  "text": "Three ammo boxes are marked {x}, {y} and {z}.",
+  "ask": "Which number is {kind}?",
+  "unit": ""
+ },
+ {
+  "rule": "odd_one_out",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip reads three door codes: {x}, {y} and {z}. Only the {kind} one opens the door.",
+  "ask": "Which number is {kind}?",
+  "unit": ""
+ },
+ {
+  "rule": "odd_one_out",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Three butterflies wear numbers on their wings: {x}, {y} and {z}.",
+  "ask": "Which number is {kind}?",
+  "unit": ""
+ },
+ {
+  "rule": "odd_one_out",
+  "where": "space",
+  "who": "the radio",
+  "text": "Three cadet ships are numbered {x}, {y} and {z}.",
+  "ask": "Which number is {kind}?",
+  "unit": ""
+ },
+ {
+  "rule": "add_1digit",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip finds {a} bolts under the ship. Then {b} more under a crate.",
+  "ask": "How many bolts in all?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "add_1digit",
+  "where": "station",
+  "who": "Zip",
+  "text": "You fix {a} lights in the dock. You fix {b} more in the tunnel.",
+  "ask": "How many lights did you fix?",
+  "unit": "lights"
+ },
+ {
+  "rule": "add_1digit",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{a} butterflies land on your helmet. Then {b} more land on your arm.",
+  "ask": "How many butterflies are on you?",
+  "unit": "butterflies"
+ },
+ {
+  "rule": "add_1digit",
+  "where": "space",
+  "who": "the radio",
+  "text": "{a} comets pass on the left. {b} comets pass on the right.",
+  "ask": "How many comets pass?",
+  "unit": "comets"
+ },
+ {
+  "rule": "sub_1digit",
+  "where": "station",
+  "who": "Zip",
+  "text": "The dock has {a} crates. A robot arm takes {b} away.",
+  "ask": "How many crates are left?",
+  "unit": "crates"
+ },
+ {
+  "rule": "sub_1digit",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip has {a} spare screws. The vent needs {b} of them.",
+  "ask": "How many screws are left?",
+  "unit": "screws"
+ },
+ {
+  "rule": "sub_1digit",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{a} FlavorBursts hang on a branch. You eat {b} of them.",
+  "ask": "How many are left?",
+  "unit": "fruits"
+ },
+ {
+  "rule": "sub_1digit",
+  "where": "space",
+  "who": "the radio",
+  "text": "{a} cadets fly out. {b} of them turn back home.",
+  "ask": "How many keep flying?",
+  "unit": "cadets"
+ },
+ {
+  "rule": "add_2digit_plain",
+  "where": "station",
+  "who": "Zip",
+  "text": "Tank A holds {a} units of fuel. Tank B holds {b} units.",
+  "ask": "How much fuel is there in all?",
+  "unit": "units"
+ },
+ {
+  "rule": "add_2digit_plain",
+  "where": "station",
+  "who": "Zip",
+  "text": "The dock has {a} blue crates and {b} brown crates.",
+  "ask": "How many crates altogether?",
+  "unit": "crates"
+ },
+ {
+  "rule": "add_2digit_plain",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish had {a} shells. It found {b} more.",
+  "ask": "How many shells now?",
+  "unit": "shells"
+ },
+ {
+  "rule": "add_2digit_plain",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Homes got {a} energy blocks this morning. They got {b} more at noon.",
+  "ask": "How many blocks did homes get?",
+  "unit": "blocks"
+ },
+ {
+  "rule": "add_2digit_regroup",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip swept up {a} bolts in the dock. Then {b} more in the Shield Bay.",
+  "ask": "How many bolts did Zip sweep up?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "add_2digit_regroup",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "{a} glow leaves fell in the night. {b} more fell at dawn.",
+  "ask": "How many leaves fell?",
+  "unit": "leaves"
+ },
+ {
+  "rule": "add_2digit_regroup",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A shop sold {a} FlavorBurst pies. Then it sold {b} more.",
+  "ask": "How many pies did it sell?",
+  "unit": "pies"
+ },
+ {
+  "rule": "add_2digit_regroup",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your ship flew {a} light-years. Then it flew {b} more.",
+  "ask": "How far did it fly?",
+  "unit": "light-years"
+ },
+ {
+  "rule": "sub_2digit_plain",
+  "where": "station",
+  "who": "Zip",
+  "text": "The ship needs {a} units of fuel. The tank has {b}.",
+  "ask": "How many more units does it need?",
+  "unit": "units"
+ },
+ {
+  "rule": "sub_2digit_plain",
+  "where": "station",
+  "who": "Zip",
+  "text": "A crate held {a} bolts. Zip used {b} on the ship.",
+  "ask": "How many are left in the crate?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "sub_2digit_plain",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The river had {a} lily pads. The Gumblefish ate {b}.",
+  "ask": "How many are left?",
+  "unit": "lily pads"
+ },
+ {
+  "rule": "sub_2digit_plain",
+  "where": "space",
+  "who": "the radio",
+  "text": "A comet is {a} light-years away. You fly {b} toward it.",
+  "ask": "How far away is it now?",
+  "unit": "light-years"
+ },
+ {
+  "rule": "sub_2digit_regroup",
+  "where": "station",
+  "who": "Zip",
+  "text": "The shield had {a} power. An asteroid knocked off {b}.",
+  "ask": "How much power is left?",
+  "unit": "power"
+ },
+ {
+  "rule": "sub_2digit_regroup",
+  "where": "station",
+  "who": "Zip",
+  "text": "{a} lights line the tunnel. {b} of them are broken.",
+  "ask": "How many lights still work?",
+  "unit": "lights"
+ },
+ {
+  "rule": "sub_2digit_regroup",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The factory needs {a} energy blocks. It has {b}.",
+  "ask": "How many more does it need?",
+  "unit": "blocks"
+ },
+ {
+  "rule": "sub_2digit_regroup",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "A tree had {a} glowing leaves. The wind took {b}.",
+  "ask": "How many still glow?",
+  "unit": "leaves"
+ },
+ {
+  "rule": "mult_repeated",
+  "where": "station",
+  "who": "Zip",
+  "text": "The shield has {g} panels. Each panel needs {e} power cells.",
+  "ask": "How many cells in all?",
+  "unit": "cells"
+ },
+ {
+  "rule": "mult_repeated",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip stacks crates in {g} rows. Each row has {e} crates.",
+  "ask": "How many crates?",
+  "unit": "crates"
+ },
+ {
+  "rule": "mult_repeated",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "{g} Gumblefish jump. Each one blows {e} bubbles.",
+  "ask": "How many bubbles?",
+  "unit": "bubbles"
+ },
+ {
+  "rule": "mult_repeated",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{g} trees stand in a ring. Each tree has {e} FlavorBursts.",
+  "ask": "How many FlavorBursts?",
+  "unit": "fruits"
+ },
+ {
+  "rule": "mult_2_5_10",
+  "where": "station",
+  "who": "Zip",
+  "text": "{g} cadets board the ship. Each cadet carries {e} tools.",
+  "ask": "How many tools?",
+  "unit": "tools"
+ },
+ {
+  "rule": "mult_2_5_10",
+  "where": "station",
+  "who": "Zip",
+  "text": "The dock has {g} lamps. Each lamp has {e} bulbs.",
+  "ask": "How many bulbs?",
+  "unit": "bulbs"
+ },
+ {
+  "rule": "mult_2_5_10",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{g} butterflies fly past. Each one has {e} spots.",
+  "ask": "How many spots?",
+  "unit": "spots"
+ },
+ {
+  "rule": "mult_2_5_10",
+  "where": "space",
+  "who": "the radio",
+  "text": "Asteroids drift in {g} rows. Each row has {e} rocks.",
+  "ask": "How many rocks?",
+  "unit": "rocks"
+ },
+ {
+  "rule": "mult_facts",
+  "where": "station",
+  "who": "Zip",
+  "text": "{g} lockers line the wall. Each locker holds {e} space suits.",
+  "ask": "How many space suits?",
+  "unit": "suits"
+ },
+ {
+  "rule": "mult_facts",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The city has {g} streets. Each street has {e} lamps.",
+  "ask": "How many lamps?",
+  "unit": "lamps"
+ },
+ {
+  "rule": "mult_facts",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "{g} shops each need {e} energy blocks.",
+  "ask": "How many blocks do the shops need?",
+  "unit": "blocks"
+ },
+ {
+  "rule": "mult_facts",
+  "where": "space",
+  "who": "the radio",
+  "text": "An asteroid field has {g} rows. Each row has {e} rocks.",
+  "ask": "How many rocks?",
+  "unit": "rocks"
+ },
+ {
+  "rule": "div_share",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip has {t} bolts. Zip shares them equally among {d} repair kits.",
+  "ask": "How many bolts in each kit?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "div_share",
+  "where": "station",
+  "who": "Zip",
+  "text": "{t} power cells go equally into {d} shield panels.",
+  "ask": "How many cells in each panel?",
+  "unit": "cells"
+ },
+ {
+  "rule": "div_share",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{t} FlavorBursts are shared equally by {d} butterflies.",
+  "ask": "How many does each butterfly get?",
+  "unit": "fruits"
+ },
+ {
+  "rule": "div_share",
+  "where": "space",
+  "who": "the radio",
+  "text": "{t} cadets split equally into {d} ships.",
+  "ask": "How many cadets in each ship?",
+  "unit": "cadets"
+ },
+ {
+  "rule": "div_2_5_10",
+  "where": "station",
+  "who": "Zip",
+  "text": "{t} crates are packed in stacks of {d}.",
+  "ask": "How many stacks?",
+  "unit": "stacks"
+ },
+ {
+  "rule": "div_2_5_10",
+  "where": "station",
+  "who": "Zip",
+  "text": "{t} bolts go into bags of {d}.",
+  "ask": "How many bags?",
+  "unit": "bags"
+ },
+ {
+  "rule": "div_2_5_10",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The Energy Council shares {t} blocks equally among {d} homes.",
+  "ask": "How many blocks does each home get?",
+  "unit": "blocks"
+ },
+ {
+  "rule": "div_2_5_10",
+  "where": "space",
+  "who": "the radio",
+  "text": "{t} Galaxy Gems are shared equally by {d} traders.",
+  "ask": "How many gems does each trader get?",
+  "unit": "gems"
+ },
+ {
+  "rule": "div_facts",
+  "where": "station",
+  "who": "Zip",
+  "text": "{t} space suits hang equally in {d} lockers.",
+  "ask": "How many suits in each locker?",
+  "unit": "suits"
+ },
+ {
+  "rule": "div_facts",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "{t} Gumblefish swim in {d} equal schools.",
+  "ask": "How many fish in each school?",
+  "unit": "fish"
+ },
+ {
+  "rule": "div_facts",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{t} glow leaves are tied in bunches of {d}.",
+  "ask": "How many bunches?",
+  "unit": "bunches"
+ },
+ {
+  "rule": "div_facts",
+  "where": "space",
+  "who": "the radio",
+  "text": "{t} asteroids drift in {d} equal rows.",
+  "ask": "How many rocks in each row?",
+  "unit": "rocks"
+ },
+ {
+  "rule": "ten_more_less",
+  "where": "station",
+  "who": "Zip",
+  "text": "The shield gauge reads {n}. Zip sets it 10 {d}.",
+  "ask": "What does the gauge read now?",
+  "unit": ""
+ },
+ {
+  "rule": "ten_more_less",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A tree has {n} glow leaves. The next tree has 10 {d}.",
+  "ask": "How many leaves does the next tree have?",
+  "unit": "leaves"
+ },
+ {
+  "rule": "ten_more_less",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your ship is at marker {n}. The next marker is 10 {d}.",
+  "ask": "What is the next marker?",
+  "unit": ""
+ },
+ {
+  "rule": "hundred_more_less",
+  "where": "station",
+  "who": "Zip",
+  "text": "The cargo list shows {n} bolts. The real count is 100 {d}.",
+  "ask": "What is the real count?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "hundred_more_less",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The river holds {n} Gumblefish. Next year it will hold 100 {d}.",
+  "ask": "How many next year?",
+  "unit": "fish"
+ },
+ {
+  "rule": "hundred_more_less",
+  "where": "space",
+  "who": "the radio",
+  "text": "A comet is {n} light-years away. Another comet is 100 {d}.",
+  "ask": "How far away is the other comet?",
+  "unit": "light-years"
+ },
+ {
+  "rule": "count_back",
+  "where": "station",
+  "who": "Zip",
+  "text": "The launch clock counts down: {s1}, {s2}, {s3}.",
+  "ask": "What number comes next?",
+  "unit": ""
+ },
+ {
+  "rule": "count_back",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish counts as it dives down: {s1}, {s2}, {s3}.",
+  "ask": "What number comes next?",
+  "unit": ""
+ },
+ {
+  "rule": "count_back",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your fuel drops as you fly: {s1}, {s2}, {s3}.",
+  "ask": "What number comes next?",
+  "unit": ""
+ },
+ {
+  "rule": "sub_tens",
+  "where": "station",
+  "who": "Zip",
+  "text": "The tank holds {a} units. The engine burns {b}.",
+  "ask": "How many units are left?",
+  "unit": "units"
+ },
+ {
+  "rule": "sub_tens",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{a} butterflies rest on a tree. {b} fly away.",
+  "ask": "How many are left?",
+  "unit": "butterflies"
+ },
+ {
+  "rule": "sub_tens",
+  "where": "space",
+  "who": "the radio",
+  "text": "{a} cadets set out. {b} stop to rest.",
+  "ask": "How many keep going?",
+  "unit": "cadets"
+ },
+ {
+  "rule": "add_three",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip counts bolts in three jars: {a}, {b} and {c}.",
+  "ask": "How many bolts in all?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "add_three",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Three trees have {a}, {b} and {c} FlavorBursts.",
+  "ask": "How many FlavorBursts altogether?",
+  "unit": "fruits"
+ },
+ {
+  "rule": "add_three",
+  "where": "space",
+  "who": "the radio",
+  "text": "Three ships carry {a}, {b} and {c} crates.",
+  "ask": "How many crates altogether?",
+  "unit": "crates"
+ },
+ {
+  "rule": "add_3digit_plain",
+  "where": "station",
+  "who": "Zip",
+  "text": "The dock stores {a} bolts. A ship brings {b} more.",
+  "ask": "How many bolts now?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "add_3digit_plain",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "Homes use {a} energy blocks. Shops use {b}.",
+  "ask": "How many blocks do they use together?",
+  "unit": "blocks"
+ },
+ {
+  "rule": "add_3digit_plain",
+  "where": "space",
+  "who": "the radio",
+  "text": "You fly {a} light-years to a comet. Then {b} more to a moon.",
+  "ask": "How far did you fly?",
+  "unit": "light-years"
+ },
+ {
+  "rule": "add_3digit_regroup",
+  "where": "station",
+  "who": "Zip",
+  "text": "The station log shows {a} repairs last year and {b} this year.",
+  "ask": "How many repairs in all?",
+  "unit": "repairs"
+ },
+ {
+  "rule": "add_3digit_regroup",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The factory made {a} lamps. Then it made {b} more.",
+  "ask": "How many lamps?",
+  "unit": "lamps"
+ },
+ {
+  "rule": "add_3digit_regroup",
+  "where": "space",
+  "who": "the radio",
+  "text": "A trader has {a} Galaxy Gems. She earns {b} more.",
+  "ask": "How many gems now?",
+  "unit": "gems"
+ },
+ {
+  "rule": "sub_3digit_plain",
+  "where": "station",
+  "who": "Zip",
+  "text": "The store held {a} power cells. The shield used {b}.",
+  "ask": "How many are left?",
+  "unit": "cells"
+ },
+ {
+  "rule": "sub_3digit_plain",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The city needs {a} energy blocks. It has {b}.",
+  "ask": "How many more does it need?",
+  "unit": "blocks"
+ },
+ {
+  "rule": "sub_3digit_plain",
+  "where": "space",
+  "who": "the radio",
+  "text": "The moon is {a} light-years away. You have flown {b}.",
+  "ask": "How far is left?",
+  "unit": "light-years"
+ },
+ {
+  "rule": "mult_tens",
+  "where": "station",
+  "who": "Zip",
+  "text": "{g} crates each hold {e} bolts.",
+  "ask": "How many bolts?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "mult_tens",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{g} streets each have {e} lamps.",
+  "ask": "How many lamps?",
+  "unit": "lamps"
+ },
+ {
+  "rule": "mult_tens",
+  "where": "space",
+  "who": "the radio",
+  "text": "{g} ships each carry {e} cadets.",
+  "ask": "How many cadets?",
+  "unit": "cadets"
+ },
+ {
+  "rule": "missing_add",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip needs {s} screws for the vent. Zip has {a}.",
+  "ask": "How many more does Zip need?",
+  "unit": "screws"
+ },
+ {
+  "rule": "missing_add",
+  "where": "voltara",
+  "who": "the Gumblefish",
+  "text": "The Gumblefish wants {s} shells. It has {a}.",
+  "ask": "How many more does it need?",
+  "unit": "shells"
+ },
+ {
+  "rule": "missing_add",
+  "where": "space",
+  "who": "the radio",
+  "text": "The ship needs {s} fuel cells. {a} are loaded.",
+  "ask": "How many more are needed?",
+  "unit": "cells"
+ },
+ {
+  "rule": "missing_factor",
+  "where": "station",
+  "who": "Zip",
+  "text": "{p} crates stand in {g} equal rows.",
+  "ask": "How many crates in each row?",
+  "unit": "crates"
+ },
+ {
+  "rule": "missing_factor",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{p} lamps light {g} streets equally.",
+  "ask": "How many lamps on each street?",
+  "unit": "lamps"
+ },
+ {
+  "rule": "missing_factor",
+  "where": "space",
+  "who": "the radio",
+  "text": "{p} asteroids drift in {g} equal rows.",
+  "ask": "How many in each row?",
+  "unit": "rocks"
+ },
+ {
+  "rule": "frac_set",
+  "where": "station",
+  "who": "Zip",
+  "text": "Zip has {t} bolts. {num}/{den} of them are rusty.",
+  "ask": "How many bolts are rusty?",
+  "unit": "bolts"
+ },
+ {
+  "rule": "frac_set",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "{t} butterflies sit on a tree. {num}/{den} of them are blue.",
+  "ask": "How many are blue?",
+  "unit": "butterflies"
+ },
+ {
+  "rule": "frac_set",
+  "where": "space",
+  "who": "the radio",
+  "text": "{t} cadets fly today. {num}/{den} of them are in red ships.",
+  "ask": "How many are in red ships?",
+  "unit": "cadets"
+ },
+ {
+  "rule": "time_forward",
+  "where": "station",
+  "who": "Zip",
+  "text": "The repair starts at {t1}. It ends at {t2}.",
+  "ask": "How many {unit} does it take?",
+  "unit": ""
+ },
+ {
+  "rule": "time_forward",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "The Energy Council meets at {t1}. It ends at {t2}.",
+  "ask": "How many {unit} is the meeting?",
+  "unit": ""
+ },
+ {
+  "rule": "time_forward",
+  "where": "space",
+  "who": "the radio",
+  "text": "Your ship leaves at {t1}. It lands at {t2}.",
+  "ask": "How many {unit} is the trip?",
+  "unit": ""
+ },
+ {
+  "rule": "perimeter_rect",
+  "where": "station",
+  "who": "Zip",
+  "text": "The landing pad is {l} m long and {w} m wide. Zip paints a line round its edge.",
+  "ask": "How long is the line?",
+  "unit": "m"
+ },
+ {
+  "rule": "perimeter_rect",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A garden is {l} m long and {w} m wide. A fence goes all the way round.",
+  "ask": "How long is the fence?",
+  "unit": "m"
+ },
+ {
+  "rule": "perimeter_rect",
+  "where": "space",
+  "who": "the radio",
+  "text": "A solar sail is {l} m long and {w} m wide. A wire runs round its edge.",
+  "ask": "How long is the wire?",
+  "unit": "m"
+ },
+ {
+  "rule": "area_rect",
+  "where": "station",
+  "who": "Zip",
+  "text": "The dock floor is {l} m long and {w} m wide.",
+  "ask": "What is its area?",
+  "unit": "square metres"
+ },
+ {
+  "rule": "area_rect",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A FlavorBurst field is {l} m long and {w} m wide.",
+  "ask": "What is its area?",
+  "unit": "square metres"
+ },
+ {
+  "rule": "area_rect",
+  "where": "space",
+  "who": "the radio",
+  "text": "A solar panel is {l} m long and {w} m wide.",
+  "ask": "What is its area?",
+  "unit": "square metres"
+ },
+ {
+  "rule": "money_change",
+  "where": "station",
+  "who": "Zip",
+  "text": "A space snack costs {a} baht. You pay with a 100-baht note.",
+  "ask": "How much change do you get?",
+  "unit": "baht"
+ },
+ {
+  "rule": "money_change",
+  "where": "voltara",
+  "who": "the butterfly",
+  "text": "A FlavorBurst pie costs {a} baht. You pay with a 100-baht note.",
+  "ask": "How much change do you get?",
+  "unit": "baht"
+ },
+ {
+  "rule": "money_change",
+  "where": "space",
+  "who": "the radio",
+  "text": "A star map costs {a} baht at the trade post. You pay with a 100-baht note.",
+  "ask": "How much change do you get?",
+  "unit": "baht"
+ }
+]
