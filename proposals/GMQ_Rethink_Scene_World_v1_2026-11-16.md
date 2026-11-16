@@ -2,6 +2,7 @@
 
 **Stage:** proposal, with a playable sketch. Nothing real is built.
 **Sketch:** https://claude.ai/artifact/PrDvY1EZX9tYh1sDCHJ4Xe (file: `prototypes/kis_station_sketch.html`)
+**Updated:** §5 and §9 are replaced by `GMQ_Game_View_v2_2026-11-16.md`, after Marc's feedback. The sketch at the link is now the walk-around version.
 **Tags:** [Source] = from your material or your words. [Proposal] = my suggestion.
 
 ---
@@ -17,7 +18,6 @@ You said "MUD" because you did not know what was possible. You asked me to step 
 - **Midnight at Hollow House** (the HTML file). I played it through in a browser.
 - **The Survival Laws missions.** I read Missions 3 and 5 in full.
 - **Your Math Skills engine** and all the GMQ material from before.
-- I left the skills tracker out of the repo. It holds your current students' names and results.
 
 ---
 

@@ -67,4 +67,4 @@ Not needed for the quest review. They will matter when the world is built:
 
 - `engines/math-skills/`: the Math Skills engine, sent by Marc as a zip. No keys and no student files. Its own README lists what was left out.
 - `reference/third-party/abyssal-garden/`: "Abyssal Garden" by Maksymilian Dendura, MIT licence. Not Marc's work. Kept as a reference for a later travel view.
-- `reference/marc-2026/`: Marc's 2026 work, sent as a zip: six Survival Laws missions, Midnight at Hollow House (paper and HTML), Math Check-Up 1 and three Grade 5 puzzles. **Left out on purpose:** `G3_Math_Skills_Tracker.md`, because it holds current students' names and results.
+- `reference/marc-2026/`: Marc's 2026 work, sent as a zip: six Survival Laws missions, Midnight at Hollow House (paper and HTML), Math Check-Up 1 and three Grade 5 puzzles. The tracker is included: Marc confirmed its names are sample aliases.

@@ -2,467 +2,702 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Chakra+Petch:wght@500;700&display=swap">
 <style>
-/* Layout: a station blueprint that fills in as you explore, one scene card under it,
-   and one typed line under the scene. Single column, built for an iPad held upright. */
+/* Layout: the game view on top (a station you walk around in), then the words:
+   what happened, the command line, verb and bag chips. One column, iPad upright. */
 :root {
   --bg: #e6eef7; --panel: #f7fbff; --ink: #14233b; --muted: #4d5f7a; --line: #b4c5db;
-  --hull: #cfdcec; --visited: #a6c6ec; --now: #ffb23e; --now-ink: #2b1a00;
+  --hull: #cfdcec; --now: #ffb23e; --now-ink: #2b1a00;
   --accent: #0b5cad; --accent-ink: #ffffff; --good: #1c7c3a; --bad: #b3261e;
-  --gold: #a86f00; --rare: #6243c0; --common: #53647c; --rock: #7a8698;
+  --gold: #a86f00; --rare: #6243c0; --common: #53647c;
   --display: 'Chakra Petch', 'Trebuchet MS', 'Segoe UI', sans-serif;
   --body: 'Andika', 'Trebuchet MS', 'Segoe UI', sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0b1422; --panel: #132035; --ink: #e8eef8; --muted: #a3b4cc; --line: #2c3f5d;
-    --hull: #1c2c46; --visited: #29497a; --now: #ffb23e; --now-ink: #2b1a00;
+    --hull: #1c2c46; --now: #ffb23e; --now-ink: #2b1a00;
     --accent: #6db3ff; --accent-ink: #08121f; --good: #6fd08a; --bad: #ff9486;
-    --gold: #ffcf5a; --rare: #b9a3ff; --common: #a3b4cc; --rock: #8d9ab0;
-    color-scheme: dark;
+    --gold: #ffcf5a; --rare: #b9a3ff; --common: #a3b4cc; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b1422; --panel: #132035; --ink: #e8eef8; --muted: #a3b4cc; --line: #2c3f5d;
-  --hull: #1c2c46; --visited: #29497a; --now: #ffb23e; --now-ink: #2b1a00;
+  --hull: #1c2c46; --now: #ffb23e; --now-ink: #2b1a00;
   --accent: #6db3ff; --accent-ink: #08121f; --good: #6fd08a; --bad: #ff9486;
-  --gold: #ffcf5a; --rare: #b9a3ff; --common: #a3b4cc; --rock: #8d9ab0;
-  color-scheme: dark;
+  --gold: #ffcf5a; --rare: #b9a3ff; --common: #a3b4cc; color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.1rem; line-height: 1.5; }
-.wrap { max-width: 720px; margin: 0 auto; padding-block: 16px 40px;
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.08rem; line-height: 1.45; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 14px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: flex; flex-direction: column; gap: 14px; }
+  display: flex; flex-direction: column; gap: 12px; }
 h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
-h1 { font-size: 1.7rem; line-height: 1.1; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.05rem; }
+h1 { font-size: 1.5rem; line-height: 1.1; } h3 { font-size: 1.05rem; }
 p { margin: 0; }
 .eyebrow { font-family: var(--display); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end; justify-content: space-between; }
+.top { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: flex-end; justify-content: space-between; }
 .status { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.chip { font-family: var(--display); font-size: .78rem; padding: 4px 9px; border: 1.5px solid var(--line); border-radius: 999px; color: var(--muted); background: transparent; }
+.chip { font-family: var(--display); font-size: .76rem; padding: 3px 9px; border: 1.5px solid var(--line); border-radius: 999px; color: var(--muted); }
 .chip.on { border-color: var(--good); color: var(--good); font-weight: 700; }
 button { font: inherit; color: inherit; cursor: pointer; }
-button:focus-visible, input:focus-visible, .room:focus-visible, summary:focus-visible { outline: 3px solid var(--now); outline-offset: 2px; }
-.btn { font-family: var(--display); font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 10px 16px; font-size: 1rem; }
+button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-visible { outline: 3px solid var(--now); outline-offset: 2px; }
+.btn { font-family: var(--display); font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 9px 15px; font-size: 1rem; }
 .btn.quiet { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
-.btn:disabled { opacity: .5; cursor: default; }
 
-/* blueprint map */
-.map { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 8px; }
-.map svg { display: block; width: 100%; height: auto; }
-.map .pipe { stroke: var(--line); stroke-width: 5; }
-.map .room rect { fill: var(--hull); stroke: var(--muted); stroke-width: 1.5; transition: fill .25s; }
-.map .room.visited rect { fill: var(--visited); }
-.map .room.now rect { fill: var(--now); }
-.map .room.locked rect { stroke-dasharray: 5 4; }
-.map .room text { font-family: var(--display); font-size: 9.5px; font-weight: 700; fill: var(--ink); text-anchor: middle; pointer-events: none; }
-.map .room.now text { fill: var(--now-ink); }
-.map .room.go { cursor: pointer; }
-.map .room.go rect { stroke: var(--accent); stroke-width: 2.5; }
-.map .ship { font-family: var(--display); font-size: 8px; fill: var(--muted); text-anchor: middle; }
+.view { position: relative; border-radius: 14px; overflow: hidden; border: 2px solid var(--line); background: #070b14; }
+.view canvas { display: block; width: 100%; touch-action: manipulation; cursor: pointer; }
+.snd { position: absolute; left: 8px; bottom: 8px; font-family: var(--display); font-size: .74rem; background: rgba(7,11,20,.7); color: #e8eef8; border: 1px solid #5d6c85; border-radius: 999px; padding: 3px 10px; }
 
-/* scene */
-.scene { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-.story { display: flex; flex-direction: column; gap: 4px; max-width: 34em; }
-.art svg { display: block; width: 100%; height: auto; max-height: 230px; }
-.art .hullf { fill: var(--hull); } .art .linef { fill: var(--line); } .art .ink { fill: var(--ink); }
-.art .mut { fill: var(--muted); } .art .nowf { fill: var(--now); } .art .accf { fill: var(--accent); }
-.art .goodf { fill: var(--good); } .art .rockf { fill: var(--rock); } .art .panelf { fill: var(--panel); }
-.art .stroke { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.log { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; min-height: 5.6em; justify-content: flex-end; }
+.log .you { font-family: var(--display); font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; font-size: .9rem; }
+.log .old { color: var(--muted); font-size: .95rem; }
+.log .new { font-size: 1.12rem; }
+.sayrow { display: flex; gap: 8px; }
+.sayrow input { flex: 1; min-width: 0; font: inherit; font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 10px; background: var(--panel); color: var(--ink); }
+.sayrow input::placeholder { text-transform: none; font-family: var(--body); font-weight: 400; letter-spacing: 0; color: var(--muted); }
+.words { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.words .lab { font-family: var(--display); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); min-width: 3.2em; }
+.word { font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: .9rem; background: transparent; border: 1.5px solid var(--accent); color: var(--accent); border-radius: 8px; padding: 5px 11px; }
+.word.item { border-color: var(--now); color: var(--ink); background: color-mix(in srgb, var(--now) 22%, transparent); }
+.word.on { background: var(--accent); color: var(--accent-ink); }
+
+.box { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.box.toy { border-color: var(--now); border-width: 2px; }
+.art svg { display: block; width: 100%; height: auto; max-height: 210px; }
+.art .hullf { fill: var(--hull); } .art .accf { fill: var(--accent); } .art .rockf { fill: #7a8698; }
 .art text { font-family: var(--display); font-weight: 700; fill: var(--ink); }
-.things { display: flex; flex-wrap: wrap; gap: 8px; }
-.thing { font-family: var(--body); background: transparent; border: 1.5px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 6px 14px; font-size: 1rem; }
-.widget { border-top: 1.5px dashed var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 .q { font-weight: 700; font-size: 1.15rem; }
 .field { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .field input { width: 6.5em; font: inherit; font-size: 1.35rem; font-weight: 700; text-align: center; padding: 8px; border: 2px solid var(--ink); border-radius: 10px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; }
-.msg { min-height: 1.5em; font-weight: 700; }
-.msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
+.msg { min-height: 1.5em; font-weight: 700; } .msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
 .meter { display: flex; gap: 6px; align-items: center; font-family: var(--display); font-size: .85rem; color: var(--muted); }
-.pip { width: 26px; height: 12px; border-radius: 3px; border: 1.5px solid var(--muted); }
-.pip.on { background: var(--good); border-color: var(--good); }
+.pip { width: 26px; height: 12px; border-radius: 3px; border: 1.5px solid var(--muted); } .pip.on { background: var(--good); border-color: var(--good); }
 .crates { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
 .crate { text-align: left; border: 2px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; min-width: 0; }
 .crate b { font-family: var(--display); white-space: nowrap; }
 .crate[aria-pressed="true"] { border-color: var(--now); background: var(--now); color: var(--now-ink); }
 .scale { font-family: var(--display); font-weight: 700; font-size: 1.2rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 4px 18px; }
 .bar { height: 14px; border-radius: 7px; background: var(--hull); overflow: hidden; }
-.bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.bar > span { display: block; height: 100%; width: 0; background: var(--accent); }
 .bar.over > span { background: var(--bad); }
 .note { font-size: .9rem; color: var(--muted); }
-
-/* typed line */
-.say { display: flex; flex-direction: column; gap: 8px; }
-.say label { font-family: var(--display); font-weight: 700; }
-.sayrow { display: flex; gap: 8px; }
-.sayrow input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 10px; background: var(--panel); color: var(--ink); }
-.ideas { display: flex; flex-wrap: wrap; gap: 6px; }
-.idea { background: transparent; border: 1.5px dashed var(--muted); color: var(--muted); border-radius: 999px; padding: 3px 11px; font-size: .92rem; }
-.reply { border-left: 4px solid var(--now); padding: 4px 0 4px 12px; min-height: 1.6em; }
-.reply .you { color: var(--muted); font-size: .92rem; }
-
-/* cards */
 .cardrow { display: flex; flex-wrap: wrap; gap: 8px; }
-.card { width: 132px; border: 2px solid var(--common); border-radius: 10px; padding: 8px 10px; background: var(--bg); display: flex; flex-direction: column; gap: 2px; }
+.card { width: 124px; border: 2px solid var(--common); border-radius: 10px; padding: 7px 10px; background: var(--bg); display: flex; flex-direction: column; gap: 2px; }
 .card .r { font-family: var(--display); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--common); }
 .card.rare { border-color: var(--rare); } .card.rare .r { color: var(--rare); }
 .card.gold { border-color: var(--gold); } .card.gold .r { color: var(--gold); }
 .card .n { font-family: var(--display); font-weight: 700; line-height: 1.2; }
-.newcard { border: 2px solid var(--now); border-radius: 12px; padding: 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-@keyframes pop { from { transform: scale(.85); opacity: .3; } to { transform: scale(1); opacity: 1; } }
-.newcard .card { animation: pop .35s ease-out; }
+@keyframes pop { from { transform: scale(.8); opacity: .3; } to { transform: scale(1); opacity: 1; } }
+.card.fresh { animation: pop .35s ease-out; box-shadow: 0 0 0 3px var(--now); }
 @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 .shake { animation: shake .25s 2; }
-@media (prefers-reduced-motion: reduce) { .newcard .card, .shake { animation: none; } .map .room rect, .bar > span { transition: none; } }
-
+@media (prefers-reduced-motion: reduce) { .card.fresh, .shake { animation: none; } }
 table.report { width: 100%; border-collapse: collapse; font-size: .98rem; }
 .report th, .report td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
 .report th { font-family: var(--display); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .tablewrap { overflow-x: auto; }
-details.about { border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; background: var(--panel); }
-details.about summary { font-family: var(--display); font-weight: 700; cursor: pointer; }
-details.about ul { margin: 8px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; max-width: 38em; }
+details.box summary { font-family: var(--display); font-weight: 700; cursor: pointer; }
+details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; max-width: 40em; }
 </style>
 
 <div class="wrap">
   <header class="top">
-    <div>
-      <p class="eyebrow">Galaxy Math Quest · a sketch, not the real build</p>
-      <h1>KIS Station</h1>
-    </div>
+    <div><p class="eyebrow">Galaxy Math Quest · a sketch, not the real build</p><h1>KIS Station</h1></div>
     <div class="status" id="status"></div>
   </header>
 
-  <section class="map" aria-label="Map of the station">
-    <svg viewBox="0 0 340 150" role="img" aria-label="Station map. Tap a room next to you to walk there.">
-      <line class="pipe" x1="106" y1="78" x2="122" y2="78"/><line class="pipe" x1="218" y1="78" x2="234" y2="78"/>
-      <line class="pipe" x1="282" y1="44" x2="282" y2="56"/><line class="pipe" id="pipe-vent" x1="170" y1="100" x2="170" y2="112" hidden/>
-      <g class="room" data-room="shield" tabindex="0" role="button"><rect x="10" y="56" width="96" height="44" rx="6"/><text x="58" y="82">?</text></g>
-      <g class="room" data-room="dock" tabindex="0" role="button"><rect x="122" y="56" width="96" height="44" rx="6"/><text x="170" y="82">?</text></g>
-      <g class="room" data-room="nav" tabindex="0" role="button"><rect x="234" y="56" width="96" height="44" rx="6"/><text x="282" y="82">?</text></g>
-      <g class="room" data-room="launch" tabindex="0" role="button"><rect x="234" y="8" width="96" height="36" rx="6"/><text x="282" y="30">?</text></g>
-      <g class="room" data-room="vent" tabindex="0" role="button" hidden><rect x="140" y="112" width="60" height="30" rx="6"/><text x="170" y="131">?</text></g>
-      <text class="ship" id="shipname" x="58" y="24"></text>
-    </svg>
-  </section>
+  <div class="view">
+    <canvas id="cv" tabindex="0" aria-label="The station, seen from above. Tap the floor to walk. Tap a thing to look at it."></canvas>
+    <button class="snd" id="snd" type="button">Sound: off</button>
+  </div>
 
-  <section class="scene" id="scene" aria-live="polite"></section>
+  <div class="log" id="log" role="log" aria-live="polite"></div>
 
-  <form class="say" id="say" autocomplete="off">
-    <label for="cmd">What do you do? Tap a thing, or type your own idea.</label>
+  <form id="say" autocomplete="off">
     <div class="sayrow">
-      <input id="cmd" type="text" maxlength="60" placeholder="look around" autocapitalize="off" spellcheck="false">
+      <input id="cmd" type="text" maxlength="50" placeholder="like: push crate" autocapitalize="off" spellcheck="false" aria-label="What do you do?">
       <button class="btn" type="submit">Do it</button>
     </div>
-    <div class="ideas" id="ideas"></div>
-    <div class="reply" id="reply" role="status"></div>
   </form>
+  <div class="words" id="verbs"></div>
+  <div class="words" id="bag"></div>
 
-  <section class="scene" id="cards" aria-label="Your cards"></section>
+  <section id="toy" hidden></section>
+  <section class="box" id="cards" aria-label="Your cards"></section>
 
-  <details class="about">
+  <details class="box">
     <summary>For Marc: what this sketch shows</summary>
     <ul>
-      <li>The world is data, like Hollow House. Each room is a title, a few short lines, a picture and a list of things.</li>
-      <li>The map fills in as a child explores. One room is secret. Only typing finds it.</li>
-      <li>Tap does the expected thing. Typing does the unexpected thing. On your site, the typed line goes to your constrained AI. Here it only knows a few words.</li>
-      <li>The Shield Bay has a mini battle that interrupts. The Navigation Bay has a mini quest you find. Code makes the numbers and marks them.</li>
-      <li>Cargo Load is the 2-3 project, with your own item list. The code checks the two conditions. In class it stays a real task with item cards.</li>
-      <li>Cards use sample odds: 70 common, 25 rare, 5 gold. A project always gives gold. The card names are samples from your set.</li>
-      <li>Progress is saved on this device only. Your server would keep it for each student.</li>
+      <li>One station you walk around in. Rooms you have not entered stay dark. The small map in the corner fills in.</li>
+      <li>Every command is two to four words: a verb, a thing, and sometimes a second thing. Type it, or tap a verb and then tap the thing.</li>
+      <li>The astronaut walks to the thing before acting, so every command shows movement.</li>
+      <li>There are 12 secrets across five rooms. Things change and stay changed: a crate moves, a vent opens, a robot wakes and follows you.</li>
+      <li>Maths lives in the world. The locker code is the number of stacked crates, and each player gets a different stack.</li>
+      <li>The Shield Bay battle, the fuel quest and the Cargo Load project are the same as before. Code makes the numbers and marks them.</li>
+      <li>This sketch knows about 40 words. On your site, your constrained AI would answer any other sentence.</li>
+      <li>The robot is a new character. It is a proposal. Card names are samples from your files. Odds are 70, 25, 5.</li>
     </ul>
-    <p style="margin-top:10px"><button class="btn quiet" type="button" id="reset">Start again</button></p>
+    <p><button class="btn quiet" type="button" id="reset">Start again</button></p>
   </details>
 </div>
 
 <script>
-/* ---------- the world, as data ---------- */
+/* =====================================================================
+   THE WORLD AS DATA
+   ===================================================================== */
+const W = 37, H = 20;
 const ROOMS = {
-  dock: { name: 'Arrival Dock', label: 'Dock', exits: ['shield', 'nav', 'vent'],
-    text: ['Your ship limps into the dock.', 'Crates of scrap sit in rows.', 'A vent hums low in the wall.'],
-    things: [{ id: 'crates', label: 'the crates' }, { id: 'ship', label: 'your ship' }] },
-  shield: { name: 'Shield Bay', label: 'Shield Bay', exits: ['dock'],
-    text: ['A wide window shows the stars.', 'The shield panel is dark.', 'Rocks drift far away.'],
-    things: [{ id: 'panel', label: 'the shield panel' }, { id: 'window', label: 'the window' }] },
-  nav: { name: 'Navigation Bay', label: 'Navigation', exits: ['dock', 'launch'],
-    text: ['Maps glow on the walls.', 'The fuel gauge blinks red.', 'A cargo scale waits by the door.'],
-    things: [{ id: 'gauge', label: 'the fuel gauge' }, { id: 'scale', label: 'the cargo scale' }] },
-  launch: { name: 'Launch Bay', label: 'Launch Bay', exits: ['nav'],
-    text: ['The big doors face the stars.'], things: [] },
-  vent: { name: 'The Vent', label: 'Vent', exits: ['dock'], secret: true,
-    text: ['It is dark and warm in here.', 'Something small shines in the dust.'],
-    things: [{ id: 'shine', label: 'the shiny thing' }] }
+  dock:   { name: 'Arrival Dock',   x: 12, y: 4, w: 13, h: 10, floor: '#3c4c68', secrets: 4 },
+  shield: { name: 'Shield Bay',     x: 2,  y: 6, w: 9,  h: 7,  floor: '#2f5560', secrets: 3 },
+  nav:    { name: 'Navigation Bay', x: 26, y: 6, w: 9,  h: 7,  floor: '#4a4670', secrets: 2 },
+  launch: { name: 'Launch Bay',     x: 26, y: 1, w: 9,  h: 4,  floor: '#5b4b3c', secrets: 1 },
+  store:  { name: 'The Old Store',  x: 19, y: 15, w: 5, h: 3,  floor: '#4b4034', secrets: 2, secret: true },
+  tunnel: { name: 'The Crawl Tunnel', tiles: [[15,14],[15,15],[15,16],[16,16],[17,16],[18,16]], floor: '#262b36', secret: true, secrets: 0 }
 };
-/* 2-3 Cargo Load: Marc's own item list (Drive "2-3 - not done" and the site page) */
+const DOORS = [[11, 9], [25, 9], [30, 5]];
+const WINDOWS = [[1,7],[1,8],[1,9],[1,10],[1,11],[27,0],[28,0],[29,0],[30,0],[31,0],[32,0],[33,0],[13,3],[14,3],[15,3]];
 const CARGO = [['Space food', 3], ['Life support', 7], ['Science kit', 5], ['Water tank', 6], ['Radio gear', 4],
   ['Spare parts', 4], ['Landing gear', 2], ['Energy cells', 4], ['Space suits', 2], ['Star maps', 3], ['Extra food', 3]];
 const PARTS = ['Engine Core', 'Navigation', 'Shield', 'Weapons', 'Power'];
-/* sample names from Marc's card files; the odds are a proposal */
 const DECK = { common: ['Laser Cannon', 'Stealth Mode', 'Asteroid Assault'], rare: ['Quantum Quell', 'Void Vortex'], gold: ['Nebula Nova'] };
 const ODDS = [['common', 70], ['rare', 25], ['gold', 5]];
+const TOTAL_SECRETS = 12;
 
-/* ---------- state ---------- */
-const KEY = 'gmq-station-sketch-v1';
-let S;
-function fresh() { return { room: 'dock', visited: ['dock'], parts: [], cards: [], seed: Math.floor(Math.random() * 1e9),
-  tries: 0, ventFound: false, shine: false, ship: '', done: {}, log: [], battleSeen: false, ended: false }; }
-function load() { try { const j = JSON.parse(localStorage.getItem(KEY)); if (j && j.room && ROOMS[j.room]) return j; } catch (e) {} return fresh(); }
+/* things in the world: where they are, the words that name them, and what they look like */
+const rect = (x, y, w, h) => { const a = []; for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) a.push([x + i, y + j]); return a; };
+const OBJ = {
+  ship:    { room: 'dock',   tiles: rect(17, 6, 6, 5), words: ['ship', 'rocket', 'hull', 'wing', 'hatch'], label: 'ship', block: 1 },
+  stack:   { room: 'dock',   tiles: [], words: ['crates', 'stack', 'pile', 'boxes'], label: 'crates', block: 1 },
+  crate:   { room: 'dock',   tiles: [[15, 13]], words: ['crate', 'box'], label: 'loose crate', block: 1 },
+  gap:     { room: 'dock',   tiles: [[15, 14]], words: ['gap', 'hole', 'tunnel'], label: 'gap', stand: [15, 13], when: s => s.gap },
+  sign:    { room: 'dock',   tiles: [[20, 3]], words: ['sign', 'notice'], label: 'sign', stand: [20, 4] },
+  vent:    { room: 'dock',   tiles: [[23, 3]], words: ['vent', 'grille'], label: 'vent', stand: [23, 4] },
+  locker:  { room: 'dock',   tiles: [[24, 12]], words: ['locker', 'lock', 'cupboard'], label: 'locker', block: 1 },
+  panel:   { room: 'shield', tiles: [[6, 6]], words: ['panel', 'shield', 'console', 'screen'], label: 'shield panel', block: 1 },
+  window:  { room: 'shield', tiles: [[1, 9]], words: ['window', 'stars', 'space'], label: 'window', stand: [2, 9] },
+  grate:   { room: 'shield', tiles: [[3, 11]], words: ['grate', 'drain', 'grid', 'card'], label: 'grate' },
+  robot:   { room: 'shield', tiles: [[9, 11]], words: ['robot', 'bot', 'droid'], label: 'robot', block: 1, when: s => !s.bot },
+  poster:  { room: 'shield', tiles: [[9, 5]], words: ['poster', 'picture', 'switch'], label: 'poster', stand: [9, 6] },
+  table:   { room: 'nav',    tiles: [[30, 9]], words: ['map', 'table', 'galaxies'], label: 'star map', block: 1 },
+  gauge:   { room: 'nav',    tiles: [[35, 8]], words: ['gauge', 'fuel', 'tank', 'dial'], label: 'fuel gauge', stand: [34, 8] },
+  scale:   { room: 'nav',    tiles: [[33, 11]], words: ['scale', 'cargo', 'load'], label: 'cargo scale', block: 1 },
+  drawer:  { room: 'nav',    tiles: [[27, 6]], words: ['drawer', 'cabinet', 'desk'], label: 'drawer', block: 1 },
+  chair:   { room: 'nav',    tiles: [[29, 10]], words: ['chair', 'seat', 'stool'], label: 'chair', block: 1 },
+  bolt:    { room: 'nav',    tiles: [[29, 10]], words: ['bolt', 'screw'], label: 'bolt', when: s => s.chair && !s.bolt },
+  console: { room: 'launch', tiles: [[30, 1]], words: ['console', 'controls', 'button', 'launch'], label: 'launch console', block: 1 },
+  chest:   { room: 'store',  tiles: [[22, 16]], words: ['chest', 'trunk', 'box'], label: 'old chest', block: 1 }
+};
+const ITEMS = { wrench: 'wrench', magnet: 'magnet', keycard: 'key card', chart: 'star chart', badge: 'badge' };
+const ITEM_WORDS = { wrench: ['wrench', 'spanner', 'tool'], magnet: ['magnet'], keycard: ['keycard', 'key', 'card'], chart: ['chart'], badge: ['badge'] };
+const VERBS = {
+  look: ['look', 'l', 'examine', 'x', 'read', 'see', 'check', 'inspect', 'search', 'watch'],
+  take: ['take', 'get', 'grab', 'pick', 'lift'], open: ['open', 'unlock'], push: ['push', 'pull', 'move', 'shove', 'slide'],
+  use: ['use', 'put', 'fix', 'mend', 'press', 'turn', 'start', 'wake', 'play', 'launch'], go: ['go', 'walk', 'run', 'enter', 'crawl', 'climb'],
+  talk: ['talk', 'say', 'hello', 'hi', 'ask'], bag: ['bag', 'inventory', 'i'], help: ['help'], name: ['name', 'call'],
+  dig: ['dig'], silly: ['jump', 'dance', 'spin', 'sing', 'wave', 'sleep', 'sit'], close: ['close', 'shut']
+};
+const DIRS = { north: [0, -1], n: [0, -1], up: [0, -1], south: [0, 1], s: [0, 1], down: [0, 1], east: [1, 0], e: [1, 0], right: [1, 0], west: [-1, 0], w: [-1, 0], left: [-1, 0] };
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const KEY = 'gmq-station-sketch-v2';
+let S, widget = null;
+function fresh() {
+  const seed = Math.floor(Math.random() * 1e9);
+  return { x: 14, y: 10, room: 'dock', seen: ['dock'], seed, rows: 2 + seed % 3, cols: 3 + (seed >> 3) % 2,
+    inv: [], parts: [], cards: [], secrets: [], done: {}, log: [], ship: '', botName: '',
+    gap: false, crate: false, vent: false, locker: false, grate: false, bot: false, poster: false, drawer: false,
+    chair: false, bolt: false, chest: false, course: false, battleSeen: false, ended: false };
+}
+function load() { try { const j = JSON.parse(localStorage.getItem(KEY)); if (j && j.seen && ROOMS[j.room]) return j; } catch (e) {} return fresh(); }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
-/* each student gets their own numbers: a small seeded generator */
 function rnd(n) { S.seed = (S.seed * 1664525 + 1013904223) % 4294967296; return Math.floor(S.seed / 4294967296 * n); }
 const pick = a => a[rnd(a.length)];
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-let widget = null;   // the open mini quest, battle or project
+/* =====================================================================
+   THE GRID
+   ===================================================================== */
+const G = [];
+function build() {
+  for (let y = 0; y < H; y++) { G[y] = []; for (let x = 0; x < W; x++) G[y][x] = { t: 'void', rooms: [], room: null }; }
+  for (const [id, r] of Object.entries(ROOMS)) {
+    if (r.tiles) continue;
+    for (let y = r.y - 1; y <= r.y + r.h; y++) for (let x = r.x - 1; x <= r.x + r.w; x++) {
+      const c = G[y][x], inside = x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h;
+      if (inside) { c.t = 'floor'; c.room = id; } else if (c.t === 'void') c.t = 'wall';
+      if (!c.rooms.includes(id)) c.rooms.push(id);
+    }
+  }
+  for (const [x, y] of ROOMS.tunnel.tiles) {
+    const c = G[y][x]; c.t = 'floor'; c.room = 'tunnel'; if (!c.rooms.includes('tunnel')) c.rooms.push('tunnel');
+    for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) { const n = G[y + j] && G[y + j][x + i]; if (n && n.t === 'void') { n.t = 'wall'; n.rooms.push('tunnel'); } else if (n && n.t === 'wall' && !n.rooms.includes('tunnel')) n.rooms.push('tunnel'); }
+  }
+  for (const [x, y] of DOORS) { G[y][x].t = 'door'; G[y][x].room = null; }
+  for (const [x, y] of WINDOWS) G[y][x].t = 'win';
+  OBJ.stack.tiles = rect(13, 5, S.cols, S.rows);
+}
+const objOn = o => !o.when || o.when(S);
+const objTiles = (id) => id === 'crate' && S.crate ? [[16, 13]] : id === 'chair' && S.chair ? [[28, 10]] : OBJ[id].tiles;
+function blocked(x, y) { for (const id in OBJ) { const o = OBJ[id]; if (o.block && objOn(o) && objTiles(id).some(t => t[0] === x && t[1] === y)) return true; } return false; }
+function walkable(x, y) {
+  const c = G[y] && G[y][x]; if (!c) return false;
+  if (c.t === 'door') return !(x === 30 && y === 5 && !S.parts.includes('Navigation'));
+  if (c.t !== 'floor') return false;
+  if (x === 15 && y === 14 && !S.gap) return false;
+  return !blocked(x, y);
+}
+function path(sx, sy, goal) {      // breadth-first search; goal(x, y) -> true
+  const prev = new Map(), q = [[sx, sy]], k = (x, y) => y * W + x; prev.set(k(sx, sy), null);
+  while (q.length) {
+    const [x, y] = q.shift();
+    if (goal(x, y)) { const out = []; let cur = [x, y]; while (cur) { out.unshift(cur); cur = prev.get(k(cur[0], cur[1])); } return out.slice(1); }
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + dx, ny = y + dy; if (walkable(nx, ny) && !prev.has(k(nx, ny))) { prev.set(k(nx, ny), [x, y]); q.push([nx, ny]); } }
+  }
+  return null;
+}
 
-/* ---------- drawing ---------- */
-function art(room) {
-  if (room === 'dock') {
-    let c = ''; for (let r = 0; r < 2; r++) for (let i = 0; i < 5; i++) c += `<rect class="hullf" x="${24 + i * 34}" y="${96 + r * 30}" width="28" height="24" rx="3"/><rect class="linef" x="${24 + i * 34}" y="${106 + r * 30}" width="28" height="3"/>`;
-    return `<svg viewBox="0 0 420 170" role="img" aria-label="The dock, with crates, a ship and a vent">${c}
-      <path class="accf" d="M250 110 L330 70 L392 96 L392 124 L330 150 Z"/><circle class="panelf" cx="340" cy="108" r="12"/><path class="nowf" d="M250 110 L226 100 L226 120 Z"/>
-      <rect class="mut" x="196" y="24" width="46" height="26" rx="3"/><rect class="panelf" x="201" y="30" width="36" height="3"/><rect class="panelf" x="201" y="36" width="36" height="3"/><rect class="panelf" x="201" y="42" width="36" height="3"/></svg>`;
+/* =====================================================================
+   MOVING
+   ===================================================================== */
+const P = { x: 0, y: 0, route: [], then: null, face: 1, step: 0 };
+const BOT = { x: 9, y: 11 };
+function walkTo(goal, then) {
+  const r = path(Math.round(P.x), Math.round(P.y), goal);
+  if (!r) return false; P.route = r; P.then = then || null; if (!r.length && then) { P.then = null; then(); } return true;
+}
+function walkToObj(id, then) {
+  const o = OBJ[id], ts = objTiles(id);
+  const goal = o.stand ? (x, y) => x === o.stand[0] && y === o.stand[1]
+    : (x, y) => ts.some(t => Math.abs(t[0] - x) + Math.abs(t[1] - y) <= (o.block ? 1 : 0));
+  return walkTo(goal, then);
+}
+function arrive() {
+  S.x = Math.round(P.x); S.y = Math.round(P.y);
+  const c = G[S.y][S.x];
+  if (c.room && c.room !== S.room) {
+    S.room = c.room; banner = { t: 2.4, text: ROOMS[c.room].name };
+    if (!S.seen.includes(c.room)) { S.seen.push(c.room); beep(520, .12); if (c.room === 'store') secret('store', 'You found a hidden room!'); }
+    if (c.room === 'shield' && !S.battleSeen && !S.done.battle) { S.battleSeen = true; P.route = []; P.then = null; alarm = 3; say('A horn sounds! Rocks drift at the station.'); startBattle(); }
+    drawBag();
   }
-  if (room === 'shield') {
-    let s = ''; const st = [[40, 30], [90, 60], [140, 22], [200, 70], [260, 34], [310, 58], [370, 26], [120, 84], [330, 88]];
-    st.forEach(p => s += `<circle class="nowf" cx="${p[0]}" cy="${p[1]}" r="2"/>`);
-    return `<svg viewBox="0 0 420 170" role="img" aria-label="A window with stars, and a dark shield panel"><rect class="ink" x="14" y="10" width="392" height="96" rx="10"/>${s}
-      <circle class="rockf" cx="356" cy="74" r="7"/><circle class="rockf" cx="378" cy="60" r="4"/>
-      <rect class="hullf" x="130" y="120" width="160" height="40" rx="6"/><rect class="${S.done.battle ? 'goodf' : 'mut'}" x="142" y="132" width="136" height="16" rx="4"/></svg>`;
+  save();
+}
+
+/* =====================================================================
+   SOUND (tiny beeps, off until asked)
+   ===================================================================== */
+let AC = null, soundOn = false;
+function beep(f, d, type) {
+  if (!soundOn) return; try { AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), g = AC.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.value = .06;
+    g.gain.exponentialRampToValueAtTime(.0001, AC.currentTime + d); o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime + d); } catch (e) {}
+}
+const chime = () => { beep(660, .12); setTimeout(() => beep(880, .14), 110); setTimeout(() => beep(1320, .2), 230); };
+
+/* =====================================================================
+   WORDS: the log, the command line, verbs and the bag
+   ===================================================================== */
+let lines = [];
+function say(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-5); drawLog(); }
+function drawLog() { $('log').innerHTML = lines.map((l, i) => l.you ? `<span class="you">&gt; ${esc(l.you)}</span>` : `<span class="${i === lines.length - 1 ? 'new' : 'old'}">${esc(l.text)}</span>`).join(''); }
+function drawStatus() {
+  $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
+    PARTS.map(p => `<span class="chip${S.parts.includes(p) ? ' on' : ''}">${S.parts.includes(p) ? '✓ ' : ''}${p}</span>`).join('');
+}
+function drawBag() {
+  $('verbs').innerHTML = '<span class="lab">Do</span>' + ['look', 'take', 'open', 'push', 'use', 'go'].map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('');
+  $('verbs').querySelectorAll('.word').forEach(b => b.onclick = () => { $('cmd').value = b.dataset.v + ' '; mark(); if (b.dataset.v === 'go') say('Go where? Type north, south, east or west. Or tap the floor.'); });
+  $('bag').innerHTML = '<span class="lab">Bag</span>' + (S.inv.length ? S.inv.map(i => `<button class="word item" type="button" data-i="${i}">${ITEMS[i]}</button>`).join('') : '<span class="note">Empty. Find things and take them.</span>');
+  $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => { const v = $('cmd').value.trim().toLowerCase(), w = ITEM_WORDS[b.dataset.i][0];
+    if (v === 'use') { $('cmd').value = `use ${w} on `; mark(); } else act('look ' + w); });
+  mark();
+}
+function mark() { const v = $('cmd').value.trim().split(' ')[0].toLowerCase(); $('verbs').querySelectorAll('.word').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
+function secret(id, text) {
+  if (S.secrets.includes(id)) return; S.secrets.push(id); save(); drawStatus(); chime(); sparkle = { t: 1.2, x: P.x, y: P.y };
+  say(`${text} Secret ${S.secrets.length} of ${TOTAL_SECRETS}.`);
+}
+function give(item) { if (!S.inv.includes(item)) S.inv.push(item); save(); drawBag(); beep(740, .1); floatText = { t: 1.4, text: '+ ' + ITEMS[item] }; }
+
+/* =====================================================================
+   WHAT EACH THING DOES. Every reply is short. Verb, thing, and sometimes a second thing.
+   ===================================================================== */
+const has = i => S.inv.includes(i);
+const DO = {
+  ship: { look: () => S.secrets.includes('wrench') ? `Your ship${S.ship ? ', the ' + S.ship : ''}. It needs new parts.` : 'Your ship. The hull is scratched. A small hatch sits under the wing.',
+    open: () => { if (S.secrets.includes('wrench')) return 'The hatch is empty now.'; give('wrench'); secret('wrench', 'The hatch pops open. A wrench is inside!'); },
+    take: 'It is far too big to take.', push: 'You push. The ship does not move.', use: 'The ship cannot fly yet. It needs its parts.' },
+  stack: { look: () => `Crates, stacked in rows. ${S.rows} rows. ${S.cols} crates in each row.`, push: 'They are too heavy. One crate by the wall looks loose.',
+    take: 'Too heavy to carry.', open: 'They are nailed shut.' },
+  crate: { look: () => S.crate ? 'The loose crate. You moved it.' : 'One crate sits alone by the wall. Cold air comes from behind it.',
+    push: () => { if (S.crate) return 'It will not go any further.'; S.crate = true; S.gap = true; save(); beep(160, .25, 'sawtooth'); secret('gap', 'The crate slides. There is a gap in the wall!'); },
+    take: 'Too heavy to carry. Maybe you can push it.', open: 'It is nailed shut.' },
+  gap: { look: 'A dark gap in the wall. You could crawl in.', go: () => { walkTo((x, y) => x === 15 && y === 16); return 'You crawl into the dark.'; }, use: () => DO.gap.go() },
+  sign: { look: () => 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES.', take: 'It is fixed to the wall.' },
+  vent: { look: () => S.vent ? 'The vent is open. It is empty now.' : 'A vent in the wall. Four screws hold it shut. Something shines inside.',
+    open: () => S.vent ? 'It is open.' : has('wrench') ? 'The screws are tight. Try: use wrench on vent.' : 'The screws are tight. You need a tool.',
+    use: it => { if (S.vent) return 'It is open.'; if (!it) return DO.vent.open(); if (it !== 'wrench') return 'That does not work on the vent.'; S.vent = true; save(); secret('vent', 'You turn the screws. A lost star chip falls out!'); card(); } },
+  locker: { look: () => S.locker ? 'The locker is open and empty.' : 'A locker with a number lock. The sign may help.',
+    open: () => { if (S.locker) return 'It is open.'; startLocker(); return 'The lock waits for a code.'; }, use: () => DO.locker.open() },
+  panel: { look: () => S.done.battle ? 'The shield panel glows green.' : 'The shield panel. It is dark.', use: () => { if (S.done.battle) return 'The shield is strong now.'; startBattle(); return 'The panel wakes up. Rocks are coming!'; },
+    open: () => DO.panel.use(), push: () => DO.panel.use() },
+  window: { look: 'Stars, and rocks far away. One star is very bright. That way is Galaxy Numerix.', open: 'It does not open. That is a good thing.' },
+  grate: { look: () => S.grate ? 'A grate in the floor. Nothing is under it now.' : 'A grate in the floor. A card shines under it. Your fingers do not fit.',
+    open: 'It is stuck fast.', take: () => S.grate ? 'Nothing is there.' : 'Your fingers do not fit through.',
+    use: it => { if (S.grate) return 'Nothing is there now.'; if (!it) return 'Your fingers do not fit through.'; if (it !== 'magnet') return 'That does not reach the card.'; S.grate = true; give('keycard'); secret('keycard', 'The magnet pulls up a key card!'); } },
+  robot: { look: 'A small repair robot. It is not moving. One arm hangs loose.', talk: 'It does not answer. It is broken.', push: 'It rocks, then stops. It is broken.',
+    take: 'It is too heavy.', use: it => { if (!it) return 'It is broken. It needs a tool.'; if (it !== 'wrench') return 'That does not fix the robot.'; S.bot = true; save(); drawBag(); secret('bot', 'You fix the arm. Beep! The robot wakes up. It will follow you.'); card(); } },
+  poster: { look: () => S.poster ? 'The poster hangs to one side. A switch is behind it. It is on.' : 'A poster of five galaxies. One corner sticks out from the wall.',
+    push: () => { if (S.poster) return 'The switch is on.'; S.poster = true; save(); beep(300, .1); secret('poster', 'The poster swings away. A switch! Click. Lights hum far away.'); },
+    take: () => DO.poster.push(), use: () => DO.poster.push(), open: () => DO.poster.push() },
+  table: { look: 'A star map of five galaxies: Numerix, Patternox, Metrica, Geometrica and Databa.', use: 'The map glows. You cannot go yet.' },
+  gauge: { look: () => S.done.fuel ? 'The gauge is green. The tank is full.' : 'The fuel gauge blinks red.', use: () => { if (S.done.fuel) return 'The tank is full.'; startFuel(); return 'The gauge is stuck. Add the two tanks by hand.'; }, open: () => DO.gauge.use() },
+  scale: { look: () => S.done.cargo ? 'The cargo is loaded. Exactly 30 tons.' : 'A cargo scale. Crates wait to be loaded.', use: () => { if (S.done.cargo) return 'The cargo is loaded.'; startCargo(); return 'The scale lights up.'; }, push: 'It is bolted to the floor.' },
+  drawer: { look: () => S.drawer ? 'The drawer is open and empty.' : 'A drawer with a card slot. It is locked.', open: () => S.drawer ? 'It is open.' : 'It is locked. It needs a card.',
+    use: it => { if (S.drawer) return 'It is open.'; if (!it) return 'It needs a card.'; if (it !== 'keycard') return 'That does not fit the slot.'; S.drawer = true; give('chart'); secret('drawer', 'Click. The drawer opens. A star chart is inside!'); } },
+  chair: { look: 'A chair on wheels.', push: () => { if (S.chair) return 'It rolls a little and stops.'; S.chair = true; save(); beep(200, .15); return 'The chair rolls away. A bolt was under it.'; }, take: 'You do not need a chair.', use: 'You sit. You spin. Whee.' },
+  bolt: { look: 'A shiny bolt on the floor.', take: () => { S.bolt = true; save(); secret('bolt', 'You take the lost bolt. The station gives you a card for it.'); card(); } },
+  console: { look: () => S.course ? 'The launch console. A course is set for Galaxy Numerix.' : 'The launch console. One big button. A slot for a chart.',
+    use: it => { if (it === 'chart') { if (S.course) return 'The course is set.'; S.course = true; save(); secret('course', 'The chart slides in. A course is set for Galaxy Numerix!'); return; } if (it) return 'That does not fit.'; S.ended = true; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return 'Three. Two. One. Lift off!'; },
+    push: () => DO.console.use(), open: 'It has no door.' },
+  chest: { look: () => S.chest ? 'The old chest is open and empty.' : 'An old chest. Dust covers it.', open: () => { if (S.chest) return 'It is open.'; S.chest = true; give('badge'); secret('chest', 'The lid creaks. A captain’s badge! You pin it on.'); card(); },
+    push: 'It is too heavy.', take: 'It is too heavy.' }
+};
+const NOPE = { look: 'You see nothing special.', take: 'You cannot take that.', open: 'It does not open.', push: 'It does not move.', use: 'Nothing happens.', talk: 'It does not answer.' };
+const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'A star chart. It shows the way to Galaxy Numerix.', badge: 'A captain’s badge. You are wearing it.' };
+
+/* =====================================================================
+   THE PARSER. Two to four words: VERB THING, or USE THING ON THING.
+   On Marc's site, anything this cannot read goes to the constrained AI.
+   ===================================================================== */
+function findThing(tokens) {
+  for (const id in OBJ) { const o = OBJ[id]; if ((o.room === S.room || (id === 'gap' && S.room === 'tunnel')) && objOn(o) && tokens.some(t => o.words.includes(t))) return id; }
+  return null;
+}
+const findItem = tokens => S.inv.find(i => tokens.some(t => ITEM_WORDS[i].includes(t))) || null;
+function act(raw) {
+  const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
+  $('cmd').value = ''; mark();
+  const out = s => { if (s) say(s, raw.trim()); else { lines.push({ you: raw.trim() }); drawLog(); } };
+  if (S.ended) return out('Your ship is among the stars. Tap Play again.');
+  if (widget) return out('Finish this first. Or tap Leave.');
+  let tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'into', 'in', 'up', 'around', 'under', 'behind', 'inside', 'please'].includes(t) || DIRS[t] && text.split(/\s+/).length <= 2);
+  if (DIRS[tk[0]]) tk = ['go', tk[0]];
+  let verb = Object.keys(VERBS).find(v => VERBS[v].includes(tk[0]));
+  if (!verb) return out(findThing(tk) ? 'Start with a doing word: look, take, open, push or use.' : 'The station does not know that yet. In the real world it would answer. Try: look, take, open, push, use, go.');
+  const rest = tk.slice(1);
+  if (verb === 'help') return out('Type a doing word and a thing. Like: look ship. push crate. use wrench on vent. Or: go north.');
+  if (verb === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
+  if (verb === 'dig') return out('You dig at the floor. Clang! It is metal. Planets have ground you can dig.');
+  if (verb === 'silly') return out(tk[0] === 'sit' ? 'You sit on the floor for a moment.' : 'You float up a little. The station has low gravity. That was fun.');
+  if (verb === 'close') return out('It is fine as it is.');
+  if (verb === 'name') {
+    const isBot = rest.some(t => OBJ.robot.words.includes(t)), nm = rest.filter(t => !['ship', 'rocket', ...OBJ.robot.words, 'it'].includes(t)).join(' ').slice(0, 12).replace(/\b\w/g, c => c.toUpperCase());
+    if (!nm) return out('Name what? Like: name ship Comet.');
+    if (isBot) { if (!S.bot) return out('The robot is broken. Fix it first.'); S.botName = nm; save(); return out(`The robot beeps twice. Its name is ${nm} now.`); }
+    S.ship = nm; save(); return out(`You paint the name on the hull: ${nm}. It will stay there.`);
   }
-  if (room === 'nav') {
-    return `<svg viewBox="0 0 420 170" role="img" aria-label="The navigation console, a fuel gauge and a cargo scale"><rect class="hullf" x="14" y="14" width="210" height="110" rx="8"/>
-      <path class="stroke" d="M30 100 L70 60 L110 84 L150 40 L206 56"/><circle class="nowf" cx="70" cy="60" r="4"/><circle class="nowf" cx="150" cy="40" r="4"/><circle class="accf" cx="206" cy="56" r="5"/>
-      <circle class="hullf" cx="290" cy="70" r="46"/><path class="${S.done.fuel ? 'goodf' : 'nowf'}" d="M290 70 L${S.done.fuel ? '326 44' : '254 44'} L290 62 Z"/><circle class="ink" cx="290" cy="70" r="5"/>
-      <rect class="mut" x="350" y="96" width="56" height="8" rx="2"/><rect class="hullf" x="360" y="104" width="36" height="40" rx="3"/><rect class="mut" x="344" y="144" width="68" height="8" rx="2"/></svg>`;
+  if (verb === 'go') {
+    const d = DIRS[rest[0]];
+    if (d) { let x = Math.round(P.x), y = Math.round(P.y), n = 0; while (walkable(x + d[0], y + d[1]) && n < 14) { x += d[0]; y += d[1]; n++; if (G[y][x].t === 'door' ) { if (walkable(x + d[0], y + d[1])) { x += d[0]; y += d[1]; } break; } }
+      if (!n) return out(x === 30 && y === 6 && d[1] === -1 ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : 'You cannot go that way.');
+      walkTo((a, b) => a === x && b === y); return out(`You walk ${Object.keys(DIRS).find(k => DIRS[k][0] === d[0] && DIRS[k][1] === d[1] && k.length > 3)}.`); }
+    const rid = Object.keys(ROOMS).find(r => rest.some(t => t.length > 2 && !['bay', 'the', 'old'].includes(t) && ROOMS[r].name.toLowerCase().split(' ').some(w => w.startsWith(t))));
+    if (rid) { if (ROOMS[rid].secret && !S.seen.includes(rid)) return out('You do not know that place.');
+      const R = ROOMS[rid], ok = walkTo((x, y) => G[y][x].room === rid && (R.tiles || (Math.abs(x - (R.x + (R.w >> 1))) <= 2 && Math.abs(y - (R.y + (R.h >> 1))) <= 2)));
+      return out(ok ? `You walk to the ${R.name}.` : rid === 'launch' ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : 'You cannot get there yet.'); }
+    const g = findThing(rest); if (g && DO[g].go) return out(DO[g].go()); if (g) { walkToObj(g); return out('You walk over.'); }
+    return out('Go where? Type north, south, east or west. Or tap the floor.');
   }
-  if (room === 'vent') {
-    return `<svg viewBox="0 0 420 130" role="img" aria-label="A dark vent with something shiny"><rect class="ink" x="14" y="10" width="392" height="110" rx="10"/>
-      <rect class="mut" x="30" y="24" width="360" height="3"/><rect class="mut" x="30" y="104" width="360" height="3"/>${S.shine ? '' : '<path class="nowf" d="M210 56 L216 70 L230 76 L216 82 L210 96 L204 82 L190 76 L204 70 Z"/>'}</svg>`;
-  }
-  return `<svg viewBox="0 0 420 150" role="img" aria-label="Your ship on the launch pad"><rect class="ink" x="14" y="10" width="392" height="130" rx="10"/>
-    <circle class="nowf" cx="60" cy="40" r="2"/><circle class="nowf" cx="350" cy="30" r="2"/><circle class="nowf" cx="300" cy="90" r="2"/><circle class="nowf" cx="110" cy="100" r="2"/>
-    <path class="accf" d="M210 26 L236 80 L236 112 L184 112 L184 80 Z"/><circle class="panelf" cx="210" cy="74" r="10"/><path class="nowf" d="M192 112 L210 136 L228 112 Z"/></svg>`;
+  // split "use X on Y"
+  const cut = rest.findIndex(t => t === 'on' || t === 'with'), a = cut < 0 ? rest : rest.slice(0, cut), b = cut < 0 ? [] : rest.slice(cut + 1);
+  let item = findItem(a), thing = findThing(cut < 0 ? rest.filter(t => !(item && ITEM_WORDS[item].includes(t))) : b);
+  if (cut >= 0 && !item) { item = findItem(b); thing = findThing(a); }
+  if (tk[0] === 'fix' && !item && has('wrench')) item = 'wrench';
+  if (tk[0] === 'launch' || (verb === 'use' && !thing && rest.includes('launch'))) thing = S.room === 'launch' ? 'console' : null;
+  if (!thing && item && verb === 'look') return out(ITEM_LOOK[item]);
+  if (!thing && item && verb === 'use') return out(`Use the ${ITEMS[item]} on what?`);
+  if (!thing && item) return out('It is in your bag already.');
+  if (!thing && !rest.length) return out(verb === 'look' ? `${ROOMS[S.room].name}. ${Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => OBJ[i].label).join(', ')}.` : `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
+  if (!thing) return out('You do not see that here.');
+  if (verb !== 'use') item = null;
+  out(null);
+  const run = () => { const h = DO[thing][verb], r = typeof h === 'function' ? h(item) : h; if (r !== undefined || h === undefined) say(r || NOPE[verb] || 'Nothing happens.'); };
+  if (!walkToObj(thing, run)) say('You cannot reach it.');
+}
+
+/* =====================================================================
+   CARDS
+   ===================================================================== */
+function drawCards(freshIdx) {
+  $('cards').innerHTML = `<h3>Your cards: ${S.cards.length}</h3>` + (S.cards.length ? `<div class="cardrow">${S.cards.map((c, i) => `<div class="card ${c.r}${i === freshIdx ? ' fresh' : ''}"><span class="r">${c.r}</span><span class="n">${esc(c.n)}</span></div>`).join('')}</div>`
+    : '<p class="note">No cards yet. Secrets, mini quests and mini battles give random cards. A project gives gold.</p>');
+}
+function card(force) {
+  let r = force; if (!r) { let x = rnd(100); for (const [k, w] of ODDS) { if (x < w) { r = k; break; } x -= w; } }
+  S.cards.push({ r, n: pick(DECK[r]) }); save(); drawCards(S.cards.length - 1);
+}
+
+/* =====================================================================
+   TOYS: locker lock, mini battle, mini quest, project
+   ===================================================================== */
+function toy(html) { const t = $('toy'); t.hidden = false; t.className = 'box toy'; t.innerHTML = html; t.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; }
+function leave() { closeToy(); say('You step back. You can try again later.'); }
+function numberToy(head, unit) {
+  const pips = widget.need > 1 ? `<div class="meter">${Array.from({ length: widget.need }, (_, i) => `<span class="pip${i < widget.hits ? ' on' : ''}"></span>`).join('')}<span>${widget.hits} of ${widget.need}</span></div>` : '';
+  toy(`${head}<div class="field"><label for="ans" class="note">Your answer</label><input id="ans" inputmode="numeric" autocomplete="off"><span class="note">${unit}</span>
+    <button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div>${pips}<div class="msg" id="msg" role="status"></div>`);
+  const inp = $('ans'); inp.oninput = () => inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 4);
+  inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); check(); } };
+  $('try').onclick = check; $('leave').onclick = leave; inp.focus({ preventScroll: true });
 }
 function rocks(r, c) {
-  const w = 420, cell = Math.min(38, 380 / c), h = r * cell + 16; let s = '';
-  for (let i = 0; i < r; i++) for (let j = 0; j < c; j++) {
-    const x = (w - c * cell) / 2 + j * cell + cell / 2, y = 8 + i * cell + cell / 2, k = (i * 7 + j * 3) % 4;
-    s += `<ellipse class="rockf" cx="${x}" cy="${y}" rx="${cell * (.34 + k * .02)}" ry="${cell * (.3 + (3 - k) * .02)}"/>`;
-  }
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${r} rows of ${c} rocks">${s}</svg>`;
+  const cell = Math.min(36, 380 / c), h = r * cell + 16; let s = '';
+  for (let i = 0; i < r; i++) for (let j = 0; j < c; j++) { const k = (i * 7 + j * 3) % 4; s += `<ellipse class="rockf" cx="${(420 - c * cell) / 2 + j * cell + cell / 2}" cy="${8 + i * cell + cell / 2}" rx="${cell * (.34 + k * .02)}" ry="${cell * (.3 + (3 - k) * .02)}"/>`; }
+  return `<svg viewBox="0 0 420 ${h}" role="img" aria-label="${r} rows of ${c} rocks">${s}</svg>`;
 }
 function tanks(a, b) {
   const t = (x, v, n) => `<rect class="hullf" x="${x}" y="14" width="70" height="110" rx="6"/><rect class="accf" x="${x + 5}" y="${119 - v}" width="60" height="${v}" rx="3"/><text x="${x + 35}" y="146" font-size="15" text-anchor="middle">Tank ${n}: ${v}</text>`;
   return `<svg viewBox="0 0 420 156" role="img" aria-label="Tank A holds ${a}. Tank B holds ${b}.">${t(90, a, 'A')}${t(260, b, 'B')}<text x="210" y="76" font-size="30" text-anchor="middle">+</text></svg>`;
 }
-
-/* ---------- map, status, cards ---------- */
-function canEnter(r) { if (r === 'launch') return S.parts.includes('Navigation'); if (r === 'vent') return S.ventFound; return true; }
-function drawMap() {
-  document.querySelectorAll('.map .room').forEach(g => {
-    const r = g.dataset.room, seen = S.visited.includes(r), next = !widget && !S.ended && ROOMS[S.room].exits.includes(r) && (r !== 'vent' || S.ventFound);
-    g.toggleAttribute('hidden', r === 'vent' && !S.ventFound);
-    g.classList.toggle('now', r === S.room); g.classList.toggle('visited', seen && r !== S.room);
-    g.classList.toggle('go', next); g.classList.toggle('locked', r === 'launch' && !canEnter(r));
-    g.querySelector('text').textContent = seen ? ROOMS[r].label : (r === 'launch' && !canEnter(r) ? 'Locked' : '?');
-    g.setAttribute('aria-label', (seen ? ROOMS[r].name : 'A room you have not seen') + (next ? '. Tap to go there.' : ''));
-  });
-  $('pipe-vent').toggleAttribute('hidden', !S.ventFound);
-  $('shipname').textContent = S.ship ? 'Your ship: ' + S.ship : '';
-  $('status').innerHTML = PARTS.map(p => `<span class="chip${S.parts.includes(p) ? ' on' : ''}">${S.parts.includes(p) ? '✓ ' : ''}${p}</span>`).join('');
-}
-function drawCards(fresh) {
-  const row = S.cards.map(c => `<div class="card ${c.r}"><span class="r">${c.r}</span><span class="n">${esc(c.n)}</span></div>`).join('');
-  $('cards').innerHTML = `<h3>Your cards: ${S.cards.length}</h3>` +
-    (fresh ? `<div class="newcard"><div class="card ${fresh.r}"><span class="r">${fresh.r}</span><span class="n">${esc(fresh.n)}</span></div><p><b>New card!</b> ${fresh.r === 'gold' ? 'Gold. The best kind.' : 'Luck picked this one.'}</p></div>` : '') +
-    (row ? `<div class="cardrow">${row}</div>` : `<p class="note">No cards yet. Finish a mini quest, a mini battle or a project.</p>`) +
-    `<p class="note">Sample cards and sample odds: 70 common, 25 rare, 5 gold. A project always gives gold.</p>`;
-}
-function drawCard(force) {
-  let r = force;
-  if (!r) { let x = rnd(100); for (const [k, w] of ODDS) { if (x < w) { r = k; break; } x -= w; } }
-  const c = { r, n: pick(DECK[r]) }; S.cards.push(c); save(); drawCards(c);
-}
-
-/* ---------- the scene ---------- */
-function say(text, you) { $('reply').innerHTML = (you ? `<span class="you">You: ${esc(you)}</span><br>` : '') + esc(text); }
-function drawScene() {
-  const R = ROOMS[S.room];
-  if (S.ended) return drawEnding();
-  $('scene').innerHTML = `<p class="eyebrow">You are in</p><h2>${R.name}</h2>
-    <div class="art">${art(S.room)}</div>
-    <div class="story">${R.text.map(t => `<p>${t}</p>`).join('')}</div>
-    <div class="things">${R.things.filter(t => !(t.id === 'shine' && S.shine)).map(t => `<button class="thing" type="button" data-thing="${t.id}">Look at ${t.label}</button>`).join('')}
-      ${S.room === 'launch' ? '<button class="btn" type="button" data-thing="launch">Launch the ship</button>' : ''}</div>
-    <div id="widget"></div>`;
-  $('scene').querySelectorAll('[data-thing]').forEach(b => b.onclick = () => touch(b.dataset.thing));
-  const ideas = { dock: ['look around', 'go to navigation', 'name my ship Comet'], shield: ['look at the panel', 'go to the dock'],
-    nav: ['use the fuel gauge', 'load the cargo'], vent: ['take the shiny thing', 'go back'], launch: ['launch'] }[S.room];
-  $('ideas').innerHTML = ideas.map(i => `<button class="idea" type="button">${i}</button>`).join('');
-  $('ideas').querySelectorAll('.idea').forEach(b => b.onclick = () => { $('cmd').value = b.textContent; act(b.textContent); });
-  drawMap();
-}
-function go(r) {
-  if (widget) return say('Finish this first. Or tap Leave.');
-  if (r === S.room) return say('You are here already.');
-  if (!ROOMS[S.room].exits.includes(r) || (r === 'vent' && !S.ventFound)) return say('You cannot get there from here. Look at the map.');
-  if (!canEnter(r)) return say('The Launch Bay door is locked. The ship needs its Navigation part.');
-  S.room = r; if (!S.visited.includes(r)) S.visited.push(r); save(); drawScene();
-  say(ROOMS[r].text[0]);
-  if (r === 'shield' && !S.battleSeen && !S.done.battle) { S.battleSeen = true; save(); say(startBattle(true)); }
-}
-function touch(id) {
-  if (widget) return say('Finish this first. Or tap Leave.');
-  const out = {
-    crates: 'Old scrap metal. Some crates are open. Cold air blows from the vent behind them.',
-    ship: S.ship ? `Your ship, the ${S.ship}. It needs new parts.` : 'Your ship. It has no name yet. It needs new parts.',
-    window: 'Stars, and rocks far away. They drift slowly.',
-    panel: () => S.done.battle ? 'The shield panel glows green.' : startBattle(false),
-    gauge: () => S.done.fuel ? 'The gauge is green. The tank is full.' : startFuel(),
-    scale: () => S.done.cargo ? 'The cargo is loaded. Exactly 30 tons.' : startCargo(),
-    shine: () => { S.shine = true; save(); drawScene(); drawCard(); return 'You pick it up. It is a lost star chip! You earn a card.'; },
-    launch: () => { S.ended = true; save(); drawScene(); return 'Three. Two. One. Lift off!'; }
-  }[id];
-  const t = typeof out === 'function' ? out() : out; if (t) say(t);
-}
-
-/* ---------- mini battle: Asteroid Field (multiplication) ---------- */
-function startBattle(surprise) {
-  widget = { kind: 'battle', hits: 0, need: 4, tries: 0 }; nextRocks();
-  return surprise ? 'A horn sounds. Rocks drift at the station! They come in rows.' : 'The panel wakes up. Rocks are coming!';
-}
-function nextRocks() {
-  const easy = widget.hits < 2; widget.r = 2 + rnd(4); widget.c = easy ? pick([2, 5, 10]) : 3 + rnd(7); widget.ans = widget.r * widget.c;
-  drawWidget(`<p class="eyebrow">Mini battle · your numbers are your own</p><h3>Asteroid Field</h3>
-    <div class="art" id="wart">${rocks(widget.r, widget.c)}</div>
-    <p class="q">${widget.r} rows. ${widget.c} rocks in each row. How many rocks?</p>`, 'rocks');
-}
-/* ---------- mini quest: Top Up the Tank (2-digit addition) ---------- */
-function startFuel() { widget = { kind: 'fuel', hits: 0, need: 3, tries: 0 }; nextFuel(); return 'The gauge is stuck. Add the two tanks by hand.'; }
-function nextFuel() {
-  let a, b; const regroup = widget.hits > 0;
-  do { a = 11 + rnd(60); b = 11 + rnd(60); } while (a + b > 99 || ((a % 10 + b % 10 >= 10) !== regroup));
-  widget.ans = a + b;
-  drawWidget(`<p class="eyebrow">Mini quest · your numbers are your own</p><h3>Top Up the Tank</h3>
-    <div class="art">${tanks(a, b)}</div><p class="q">Tank A has ${a}. Tank B has ${b}. How much fuel in all?</p>`, 'fuel');
-}
-function drawWidget(head, unit) {
-  const pips = Array.from({ length: widget.need }, (_, i) => `<span class="pip${i < widget.hits ? ' on' : ''}"></span>`).join('');
-  $('widget').innerHTML = `<div class="widget">${head}
-    <div class="field"><label for="ans" class="note">Your answer</label><input id="ans" inputmode="numeric" autocomplete="off"><span class="note">${unit}</span>
-      <button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div>
-    <div class="meter">${pips}<span>${widget.hits} of ${widget.need}</span></div><div class="msg" id="msg" role="status"></div></div>`;
-  const inp = $('ans'); inp.oninput = () => inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 4);
-  inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); check(); } };
-  $('try').onclick = check; $('leave').onclick = leave; drawMap(); inp.focus({ preventScroll: true });
-}
+function startLocker() { widget = { kind: 'locker', hits: 0, need: 1, tries: 0, ans: S.rows * S.cols };
+  numberToy('<p class="eyebrow">A lock in the world</p><h3>Locker</h3><p class="q">Type the code.</p><p class="note">Look around the dock for a clue.</p>', ''); }
+function startBattle() { widget = { kind: 'battle', hits: 0, need: 4, tries: 0 }; nextRocks(); }
+function nextRocks() { const easy = widget.hits < 2; widget.r = 2 + rnd(4); widget.c = easy ? pick([2, 5, 10]) : 3 + rnd(7); widget.ans = widget.r * widget.c;
+  numberToy(`<p class="eyebrow">Mini battle · your numbers are your own</p><h3>Asteroid Field</h3><div class="art">${rocks(widget.r, widget.c)}</div><p class="q">${widget.r} rows. ${widget.c} rocks in each row. How many rocks?</p>`, 'rocks'); }
+function startFuel() { widget = { kind: 'fuel', hits: 0, need: 3, tries: 0 }; nextFuel(); }
+function nextFuel() { let a, b; const regroup = widget.hits > 0; do { a = 11 + rnd(60); b = 11 + rnd(60); } while (a + b > 99 || ((a % 10 + b % 10 >= 10) !== regroup)); widget.ans = a + b;
+  numberToy(`<p class="eyebrow">Mini quest · your numbers are your own</p><h3>Top Up the Tank</h3><div class="art">${tanks(a, b)}</div><p class="q">Tank A has ${a}. Tank B has ${b}. How much fuel in all?</p>`, 'fuel'); }
 function check() {
   const v = $('ans').value.trim(), m = $('msg'); if (v === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; }
   widget.tries++;
   if (parseInt(v, 10) === widget.ans) {
-    widget.hits++;
+    widget.hits++; beep(880, .1);
     if (widget.hits >= widget.need) return win();
     widget.kind === 'battle' ? nextRocks() : nextFuel();
     $('msg').className = 'msg good'; $('msg').textContent = widget.kind === 'battle' ? 'Zap! One wave is gone.' : 'Click. One light turns green.';
   } else {
-    const hint = widget.kind === 'battle' ? 'Not yet. Count one row. Then count the rows.' : 'Not yet. Add the tens. Then add the ones.';
-    m.className = 'msg bad'; m.textContent = hint; $('ans').value = ''; $('ans').classList.remove('shake'); void $('ans').offsetWidth; $('ans').classList.add('shake');
+    beep(140, .2, 'square'); m.className = 'msg bad';
+    m.textContent = { battle: 'Not yet. Count one row. Then count the rows.', fuel: 'Not yet. Add the tens. Then add the ones.', locker: 'The lock stays shut. Read the sign. Then count.' }[widget.kind];
+    $('ans').value = ''; $('ans').classList.remove('shake'); void $('ans').offsetWidth; $('ans').classList.add('shake');
   }
 }
 function win() {
-  const w = widget; widget = null; S.done[w.kind] = true;
-  S.log.push({ what: w.kind === 'battle' ? 'Asteroid Field' : 'Top Up the Tank', skill: w.kind === 'battle' ? 'Multiply' : 'Add 2-digit numbers', tries: w.tries, need: w.need });
+  const w = widget; closeToy();
+  if (w.kind === 'locker') { S.locker = true; give('magnet'); secret('locker', 'Click! The locker opens. A magnet is inside.'); return; }
+  S.done[w.kind] = true; S.log.push({ what: w.kind === 'battle' ? 'Asteroid Field' : 'Top Up the Tank', skill: w.kind === 'battle' ? 'Multiply' : 'Add 2-digit numbers', tries: w.tries, need: w.need });
   if (w.kind === 'battle' && !S.parts.includes('Shield')) S.parts.push('Shield');
-  save(); drawScene(); drawCard();
+  save(); drawStatus(); chime(); card();
   say(w.kind === 'battle' ? 'The rocks are gone. The shield glows green. You earn a card.' : 'The tank is full. The gauge turns green. You earn a card.');
 }
-function leave() { if (!widget) return; widget = null; $('widget').innerHTML = ''; drawMap(); say('You step back. You can try again later.'); }
-
-/* ---------- project: Cargo Load (conditions, checked by code) ---------- */
 function startCargo() {
   widget = { kind: 'cargo', on: new Set(), tries: 0 };
-  $('widget').innerHTML = `<div class="widget"><p class="eyebrow">Project · in class you use real item cards</p><h3>Cargo Load</h3>
-    <p class="q">Load exactly 7 things. They must weigh exactly 30 tons.</p>
+  toy(`<p class="eyebrow">Project · in class you use real item cards</p><h3>Cargo Load</h3><p class="q">Load exactly 7 things. They must weigh exactly 30 tons.</p>
     <div class="crates">${CARGO.map((c, i) => `<button class="crate" type="button" data-i="${i}" aria-pressed="false"><span>${c[0]}</span><b>${c[1]} t</b></button>`).join('')}</div>
     <div class="scale"><span id="cnt">0 of 7 things</span><span id="tons">0 of 30 tons</span></div><div class="bar" id="bar"><span></span></div>
-    <div class="field"><button class="btn" type="button" id="try">Check the load</button><button class="btn quiet" type="button" id="leave">Leave</button></div>
-    <div class="msg" id="msg" role="status"></div></div>`;
-  $('widget').querySelectorAll('.crate').forEach(b => b.onclick = () => {
-    const i = +b.dataset.i; widget.on.has(i) ? widget.on.delete(i) : widget.on.add(i); b.setAttribute('aria-pressed', widget.on.has(i));
+    <div class="field"><button class="btn" type="button" id="try">Check the load</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  $('toy').querySelectorAll('.crate').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i; widget.on.has(i) ? widget.on.delete(i) : widget.on.add(i); b.setAttribute('aria-pressed', widget.on.has(i)); beep(400, .05);
     const t = [...widget.on].reduce((s, k) => s + CARGO[k][1], 0);
     $('cnt').textContent = `${widget.on.size} of 7 things`; $('tons').textContent = `${t} of 30 tons`;
     $('bar').classList.toggle('over', t > 30); $('bar').firstElementChild.style.width = Math.min(100, t / 30 * 100) + '%'; $('msg').textContent = '';
   });
-  $('try').onclick = checkCargo; $('leave').onclick = leave; drawMap();
-  return 'The scale lights up. Tap a crate to load it. Tap again to take it off.';
+  $('leave').onclick = leave;
+  $('try').onclick = () => {
+    const n = widget.on.size, t = [...widget.on].reduce((s, k) => s + CARGO[k][1], 0), m = $('msg'); widget.tries++;
+    const why = n < 7 ? 'You need more things. Load 7.' : n > 7 ? 'Too many things. Load only 7.' : t < 30 ? 'Too light. You need 30 tons.' : t > 30 ? 'Too heavy. You need 30 tons.' : '';
+    if (why) { m.className = 'msg bad'; m.textContent = why; beep(140, .2, 'square'); return; }
+    const tries = widget.tries; closeToy(); S.done.cargo = true; if (!S.parts.includes('Navigation')) S.parts.push('Navigation');
+    S.log.push({ what: 'Cargo Load', skill: 'Add to make 30', tries, need: 1 }); save(); drawStatus(); chime(); card('gold');
+    say('The scale beeps. 7 things, 30 tons. You earn the Navigation part and a gold card. A door unlocks to the north!');
+  };
 }
-function checkCargo() {
-  const n = widget.on.size, t = [...widget.on].reduce((s, k) => s + CARGO[k][1], 0), m = $('msg'); widget.tries++;
-  const why = n < 7 ? 'You need more things. Load 7.' : n > 7 ? 'Too many things. Load only 7.' : t < 30 ? 'Too light. You need 30 tons.' : t > 30 ? 'Too heavy. You need 30 tons.' : '';
-  if (why) { m.className = 'msg bad'; m.textContent = why; return; }
-  const tries = widget.tries; widget = null; S.done.cargo = true; if (!S.parts.includes('Navigation')) S.parts.push('Navigation');
-  S.log.push({ what: 'Cargo Load', skill: 'Add to make 30', tries, need: 1 }); save(); drawScene(); drawCard('gold');
-  say('The scale beeps. 7 things, 30 tons. You earn the Navigation part and a gold card. The Launch Bay is open!');
-}
-
-/* ---------- ending and report ---------- */
-function drawEnding() {
+function showEnding() {
   const rows = S.log.map(l => `<tr><td>${l.what}</td><td>${l.skill}</td><td>${l.tries === l.need ? 'No mistakes ✓' : l.tries + ' tries'}</td></tr>`).join('');
-  $('scene').innerHTML = `<p class="eyebrow">End of the sketch</p><h2>${S.ship ? 'The ' + esc(S.ship) + ' lifts off' : 'Your ship lifts off'}</h2>
-    <div class="art">${art('launch')}</div>
-    <div class="story"><p>The doors open. The stars are close now.</p><p>Five galaxies wait for you.</p></div>
-    <h3>Your mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="note">Rooms found: ${S.visited.length} of 5. ${S.ventFound ? 'You found the secret room.' : 'One room is secret. Try typing new ideas in the dock.'}</p>
-    <div class="things"><button class="btn" type="button" id="again">Play again</button></div>`;
-  $('again').onclick = restart; $('ideas').innerHTML = ''; drawMap();
+  toy(`<p class="eyebrow">End of the sketch</p><h3>${S.ship ? 'The ' + esc(S.ship) + ' lifts off' : 'Your ship lifts off'}</h3>
+    <p>The big doors open. ${S.course ? 'Your course is set for Galaxy Numerix.' : 'Five galaxies wait for you.'}</p>
+    <div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p><b>Secrets found: ${S.secrets.length} of ${TOTAL_SECRETS}.</b> ${S.secrets.length < TOTAL_SECRETS ? 'Play again and look harder.' : 'You found them all!'}</p>
+    <div class="field"><button class="btn" type="button" id="again">Play again</button></div>`);
+  $('again').onclick = restart;
 }
-function restart() { widget = null; S = fresh(); save(); drawScene(); drawCards(); say('Your ship limps into the dock.'); }
+function restart() { closeToy(); S = fresh(); save(); build(); P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; lines = []; drawStatus(); drawBag(); drawCards(); say('Your ship limps into the dock. The station is a mess. Look around.'); }
 
-/* ---------- the typed line. On Marc's site this goes to the constrained AI. ---------- */
-function act(raw) {
-  const t = raw.toLowerCase().trim(); if (!t) return;
-  const has = (...w) => w.some(x => t.includes(x));
-  const reply = s => say(s, raw);
-  if (S.ended) return reply('Your ship is among the stars. Tap Play again to start over.');
-  if (t === 'leave' || t === 'go back' && widget) { leave(); return; }
-  if (has('help')) return reply('Try: look around. go to navigation. look at the crates. name my ship Comet. Or try your own idea.');
-  let m = t.match(/(?:name|call) (?:my |the )?ship (?:the )?(.+)/);
-  if (m) { S.ship = m[1].replace(/[^a-z0-9 ]/g, '').trim().slice(0, 14).replace(/\b\w/g, c => c.toUpperCase()); save(); drawMap(); return reply(S.ship ? `You paint the name on the hull: ${S.ship}. It will stay there.` : 'Type a name for your ship.'); }
-  if (S.room === 'dock' && has('vent')) {
-    if (S.ventFound) { go('vent'); return; }
-    S.ventFound = true; save(); drawMap(); return reply('You pull the vent cover. It swings open! A dark tunnel goes down. A new room is on your map.');
+/* =====================================================================
+   DRAWING THE STATION
+   ===================================================================== */
+const cv = $('cv'), cx = cv.getContext('2d');
+let ts = 44, vw = 0, vh = 0, cam = { x: 0, y: 0 }, tNow = 0, banner = { t: 2.4, text: 'Arrival Dock' }, sparkle = null, floatText = null, alarm = 0, hover = null;
+const STARS = Array.from({ length: 90 }, (_, i) => ({ x: (i * 97.3) % 1, y: (i * 61.7 + i * i * .013) % 1, s: 1 + (i % 3) * .5, p: i * 1.7 }));
+const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function size() {
+  const w = cv.clientWidth, dpr = Math.min(2, window.devicePixelRatio || 1); vw = w; vh = Math.round(Math.min(Math.max(w * .72, 300), 560));
+  cv.style.height = vh + 'px'; cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ts = Math.max(30, Math.min(54, vw / 13.5));
+}
+const sx = x => (x - cam.x) * ts, sy = y => (y - cam.y) * ts;
+function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
+function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
+
+function drawTile(x, y) {
+  const c = G[y][x]; if (c.t === 'void') return;
+  const known = c.rooms.some(r => S.seen.includes(r)), exists = c.rooms.some(r => !ROOMS[r].secret);
+  if (!known && !exists) return;
+  const X = sx(x), Y = sy(y);
+  if (!known) { cx.fillStyle = '#141d2e'; cx.fillRect(X, Y, ts + 1, ts + 1); return; }
+  const here = c.rooms.includes(S.room), dim = here ? 1 : .5;
+  if (c.t === 'floor') {
+    if (x === 15 && y === 14 && !S.gap) return wall(X, Y, dim);
+    const col = ROOMS[c.room].floor; cx.fillStyle = shade(col, dim * ((x + y) % 2 ? 1 : .93)); cx.fillRect(X, Y, ts + 1, ts + 1);
+    cx.strokeStyle = shade(col, dim * .8); cx.lineWidth = 1; cx.strokeRect(X + .5, Y + .5, ts, ts);
+  } else if (c.t === 'wall') wall(X, Y, dim);
+  else if (c.t === 'win') { wall(X, Y, dim); cx.fillStyle = '#0a1326'; rr(X + ts * .12, Y + ts * .16, ts * .76, ts * .6, 4); cx.fill();
+    cx.fillStyle = `rgba(255,220,150,${.5 + .4 * Math.sin(tNow * 2 + x * 3 + y)})`; cx.fillRect(X + ts * (.3 + ((x * 7 + y * 3) % 4) * .1), Y + ts * (.3 + ((x + y * 5) % 3) * .12), 2, 2); }
+  else if (c.t === 'door') {
+    const lockd = x === 30 && y === 5 && !S.parts.includes('Navigation'), near = Math.hypot(P.x - x, P.y - y) < 1.8 && !lockd, vert = G[y][x - 1].t !== 'wall' && G[y][x - 1].t !== 'win';
+    cx.fillStyle = shade('#2a3346', dim); cx.fillRect(X, Y, ts + 1, ts + 1);
+    const open = near ? .12 : .5; cx.fillStyle = shade(lockd ? '#c9483b' : '#f0a93b', dim);
+    if (vert) { cx.fillRect(X + ts * .3, Y, ts * .4, ts * open); cx.fillRect(X + ts * .3, Y + ts * (1 - open), ts * .4, ts * open); }
+    else { cx.fillRect(X, Y + ts * .3, ts * open, ts * .4); cx.fillRect(X + ts * (1 - open), Y + ts * .3, ts * open, ts * .4); }
+    if (lockd) { cx.fillStyle = '#fff'; cx.font = `700 ${ts * .3}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('LOCKED', X + ts / 2, Y + ts * .95); }
   }
-  if (has('go ', 'walk', 'enter', 'run to', 'climb', 'crawl', 'back')) {
-    const r = has('nav') ? 'nav' : has('shield') ? 'shield' : has('launch') ? 'launch' : has('vent', 'tunnel') ? 'vent' : has('dock', 'back') ? 'dock' : null;
-    if (r) { $('reply').innerHTML = `<span class="you">You: ${esc(raw)}</span>`; const before = S.room; go(r); if (S.room !== before) return; return; }
-    return reply('Go where? Look at the map.');
-  }
-  if (S.room === 'launch' && has('launch', 'fly', 'take off', 'blast')) { touch('launch'); return; }
-  if (has('load', 'cargo', 'scale') && S.room === 'nav') { touch('scale'); return; }
-  if (has('gauge', 'fuel', 'tank') && S.room === 'nav') { touch('gauge'); return; }
-  if (has('panel', 'shield', 'fight', 'battle') && S.room === 'shield') { touch('panel'); return; }
-  if (has('shin', 'chip', 'take', 'pick') && S.room === 'vent' && !S.shine) { touch('shine'); return; }
-  if (has('crate', 'box') && S.room === 'dock') return reply(has('open', 'move', 'push', 'behind', 'under') ? 'You push a crate. Cold air blows on your hand. It comes from the vent.' : 'Old scrap metal. Some crates are open. Cold air blows from the vent behind them.');
-  if (has('window', 'star') && S.room === 'shield') return reply('Stars, and rocks far away. They drift slowly.');
-  if (has('ship') && S.room === 'dock') { touch('ship'); return; }
-  if (has('look', 'where')) return reply(ROOMS[S.room].text.join(' '));
-  if (has('card')) return reply(`You have ${S.cards.length} cards. They are at the bottom of the page.`);
-  if (has('dig')) return reply('You dig at the floor. Clang! It is metal. Planets have ground you can dig.');
-  if (has('jump', 'dance', 'spin', 'sing')) return reply('You float up a little. The station has low gravity. That was fun.');
-  if (has('hello', 'hi ', 'talk')) return reply('No one answers. The station is quiet. For now.');
-  reply('Nothing happens. In the real world, the station answers anything you type. This sketch knows only a few words.');
+}
+function wall(X, Y, dim) { cx.fillStyle = shade('#5d6c85', dim); cx.fillRect(X, Y, ts + 1, ts + 1); cx.fillStyle = shade('#8fa0b8', dim); cx.fillRect(X, Y, ts + 1, ts * .7); cx.fillStyle = shade('#a9b8cc', dim); cx.fillRect(X, Y, ts + 1, ts * .12); }
+
+function drawObj(id) {
+  const o = OBJ[id]; if (!objOn(o) || !S.seen.includes(o.room)) return;
+  const t = objTiles(id), X = sx(t[0][0]), Y = sy(t[0][1]), s = ts, f = (c) => cx.fillStyle = c;
+  const dim = o.room === S.room ? 1 : .5; cx.globalAlpha = dim < 1 ? .55 : 1;
+  const box = (x, y, col) => { f('rgba(0,0,0,.25)'); rr(x + s * .1, y + s * .16, s * .86, s * .86, 4); cx.fill(); f(col); rr(x + s * .07, y + s * .05, s * .86, s * .86, 4); cx.fill(); cx.strokeStyle = shade(col, .6); cx.lineWidth = 2; cx.stroke(); cx.beginPath(); cx.moveTo(x + s * .07, y + s * .05); cx.lineTo(x + s * .93, y + s * .91); cx.moveTo(x + s * .93, y + s * .05); cx.lineTo(x + s * .07, y + s * .91); cx.stroke(); };
+  if (id === 'stack') t.forEach(p => box(sx(p[0]), sy(p[1]), '#a8743a'));
+  else if (id === 'crate') box(X, Y, '#c08a48');
+  else if (id === 'gap') { f('#04060b'); rr(X + s * .15, Y + s * .1, s * .7, s * .9, 6); cx.fill(); }
+  else if (id === 'ship') { const w = s * 6, h = s * 5, bx = X, by = Y;
+    f('rgba(0,0,0,.3)'); cx.beginPath(); cx.ellipse(bx + w * .52, by + h * .56, w * .46, h * .3, 0, 0, 7); cx.fill();
+    f('#7f8da6'); cx.beginPath(); cx.moveTo(bx + w * .3, by + h * .5); cx.lineTo(bx + w * .62, by + h * .04); cx.lineTo(bx + w * .78, by + h * .08); cx.lineTo(bx + w * .6, by + h * .5); cx.lineTo(bx + w * .78, by + h * .92); cx.lineTo(bx + w * .62, by + h * .96); cx.closePath(); cx.fill();
+    f('#dfe6f0'); cx.beginPath(); cx.moveTo(bx + w * .04, by + h * .5); cx.quadraticCurveTo(bx + w * .3, by + h * .22, bx + w * .86, by + h * .34); cx.lineTo(bx + w * .96, by + h * .5); cx.lineTo(bx + w * .86, by + h * .66); cx.quadraticCurveTo(bx + w * .3, by + h * .78, bx + w * .04, by + h * .5); cx.fill();
+    f('#2d6fb4'); cx.beginPath(); cx.ellipse(bx + w * .27, by + h * .5, w * .1, h * .09, 0, 0, 7); cx.fill(); f('#f08a2c'); cx.fillRect(bx + w * .9, by + h * .42, w * .07, h * .16);
+    cx.strokeStyle = '#8a94a6'; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(bx + w * .45, by + h * .4); cx.lineTo(bx + w * .56, by + h * .46); cx.moveTo(bx + w * .5, by + h * .6); cx.lineTo(bx + w * .63, by + h * .57); cx.stroke();
+    if (S.ship) { f('#14233b'); cx.font = `700 ${s * .3}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(S.ship.toUpperCase(), bx + w * .62, by + h * .54); } }
+  else if (id === 'sign') { f('#f2c94c'); rr(X + s * .12, Y + s * .15, s * .76, s * .5, 3); cx.fill(); f('#3a2c00'); cx.fillRect(X + s * .22, Y + s * .27, s * .56, s * .06); cx.fillRect(X + s * .22, Y + s * .42, s * .4, s * .06); }
+  else if (id === 'vent') { f(S.vent ? '#04060b' : '#3b4558'); rr(X + s * .14, Y + s * .14, s * .72, s * .52, 3); cx.fill(); if (!S.vent) { f('#9aa7bb'); for (let i = 0; i < 3; i++) cx.fillRect(X + s * .2, Y + s * (.22 + i * .13), s * .6, s * .05); f(`rgba(255,210,90,${.4 + .4 * Math.sin(tNow * 4)})`); cx.fillRect(X + s * .46, Y + s * .36, 3, 3); } }
+  else if (id === 'locker') { f('#6f7f99'); rr(X + s * .16, Y + s * .02, s * .68, s * .94, 4); cx.fill(); f(S.locker ? '#10161f' : '#8c9bb3'); rr(X + s * .22, Y + s * .08, s * .56, s * .82, 3); cx.fill(); f(S.locker ? '#6fd08a' : '#f0a93b'); cx.fillRect(X + s * .62, Y + s * .44, s * .1, s * .1); }
+  else if (id === 'panel' || id === 'console') { const wide = id === 'console' ? 1.6 : 1; f('#2a3346'); rr(X - s * (wide - 1) / 2 + s * .04, Y + s * .2, s * wide * .92, s * .7, 5); cx.fill();
+    const on = id === 'panel' ? S.done.battle : true; f(on ? '#6fd08a' : (alarm > 0 && Math.sin(tNow * 12) > 0 ? '#ff5a4d' : '#59657a')); rr(X + s * .16, Y + s * .28, s * .68, s * .3, 3); cx.fill();
+    for (let i = 0; i < 3; i++) { f(Math.sin(tNow * 3 + i * 2) > 0 ? '#ffb23e' : '#6db3ff'); cx.fillRect(X + s * (.2 + i * .22), Y + s * .68, s * .1, s * .1); } }
+  else if (id === 'grate') { f('#1b2533'); rr(X + s * .12, Y + s * .12, s * .76, s * .76, 4); cx.fill(); cx.strokeStyle = '#8795ab'; cx.lineWidth = 2; for (let i = 1; i < 4; i++) { cx.beginPath(); cx.moveTo(X + s * (.12 + i * .19), Y + s * .12); cx.lineTo(X + s * (.12 + i * .19), Y + s * .88); cx.stroke(); } if (!S.grate) { f(`rgba(255,210,90,${.5 + .5 * Math.sin(tNow * 3)})`); cx.fillRect(X + s * .44, Y + s * .46, s * .14, s * .09); } }
+  else if (id === 'robot') botDraw(X + s / 2, Y + s / 2, false);
+  else if (id === 'poster') { cx.save(); cx.translate(X + s * .5, Y + s * .2); if (S.poster) cx.rotate(.5); f('#274b8f'); cx.fillRect(-s * .3, 0, s * .6, s * .5); f('#ffb23e'); for (let i = 0; i < 5; i++) cx.fillRect(-s * .22 + i * s * .1, s * (.12 + (i % 2) * .18), 3, 3); cx.restore(); if (S.poster) { f('#6fd08a'); cx.fillRect(X + s * .44, Y + s * .34, s * .12, s * .2); } }
+  else if (id === 'table') { f('rgba(0,0,0,.25)'); cx.beginPath(); cx.arc(X + s * .52, Y + s * .56, s * .46, 0, 7); cx.fill(); f('#1c2640'); cx.beginPath(); cx.arc(X + s * .5, Y + s * .5, s * .46, 0, 7); cx.fill(); ['#ffb23e', '#6db3ff', '#b9a3ff', '#6fd08a', '#ff9486'].forEach((c, i) => { f(c); cx.beginPath(); cx.arc(X + s * (.5 + .28 * Math.cos(i * 1.26 + tNow * .3)), Y + s * (.5 + .28 * Math.sin(i * 1.26 + tNow * .3)), s * .06, 0, 7); cx.fill(); }); }
+  else if (id === 'gauge') { f('#2a3346'); cx.beginPath(); cx.arc(X + s * .5, Y + s * .5, s * .38, 0, 7); cx.fill(); cx.strokeStyle = S.done.fuel ? '#6fd08a' : (Math.sin(tNow * 6) > 0 ? '#ff5a4d' : '#7a2f29'); cx.lineWidth = 3; cx.beginPath(); cx.moveTo(X + s * .5, Y + s * .5); cx.lineTo(X + s * (S.done.fuel ? .74 : .28), Y + s * .3); cx.stroke(); }
+  else if (id === 'scale') { f('#8795ab'); rr(X + s * .06, Y + s * .5, s * .88, s * .4, 4); cx.fill(); f('#dfe6f0'); rr(X + s * .12, Y + s * .3, s * .76, s * .22, 3); cx.fill(); if (S.done.cargo) box(X + s * .2, Y - s * .16, '#c08a48'); }
+  else if (id === 'drawer') { f('#6b5a48'); rr(X + s * .08, Y + s * .1, s * .84, s * .8, 4); cx.fill(); f('#8a765f'); cx.fillRect(X + s * .14, Y + s * .18, s * .72, s * .28); cx.fillRect(X + s * .14 + (S.drawer ? s * .1 : 0), Y + s * .54, s * .72, s * .28); f(S.drawer ? '#6fd08a' : '#f0a93b'); cx.fillRect(X + s * .44, Y + s * .28, s * .12, s * .06); }
+  else if (id === 'chair') { f('rgba(0,0,0,.25)'); cx.beginPath(); cx.arc(X + s * .53, Y + s * .58, s * .3, 0, 7); cx.fill(); f('#b54a3f'); cx.beginPath(); cx.arc(X + s * .5, Y + s * .52, s * .3, 0, 7); cx.fill(); f('#8f372f'); rr(X + s * .24, Y + s * .14, s * .52, s * .2, 5); cx.fill(); }
+  else if (id === 'bolt') { f(`rgba(230,235,245,${.7 + .3 * Math.sin(tNow * 4)})`); cx.beginPath(); cx.arc(X + s * .5, Y + s * .55, s * .09, 0, 7); cx.fill(); }
+  else if (id === 'chest') { f('#6e4b25'); rr(X + s * .1, Y + s * .34, s * .8, s * .52, 4); cx.fill(); f('#8f6431'); rr(X + s * .1, Y + (S.chest ? s * .06 : s * .2), s * .8, s * .24, 6); cx.fill(); f('#f2c94c'); cx.fillRect(X + s * .44, Y + s * .46, s * .12, s * .14); }
+  cx.globalAlpha = 1;
+}
+function label(id) {
+  const o = OBJ[id]; if (!objOn(o) || o.room !== S.room || id === 'bolt' && !S.chair) return;
+  const t = objTiles(id), mx = t.reduce((a, p) => a + p[0], 0) / t.length + .5, my = Math.min(...t.map(p => p[1])), d = Math.min(...t.map(p => Math.hypot(P.x - p[0], P.y - p[1])));
+  if (d > 2.6 && hover !== id) return;
+  cx.font = `700 ${Math.max(11, ts * .27)}px "Andika", "Trebuchet MS", sans-serif`; const w = cx.measureText(o.label).width + 12, X = sx(mx) - w / 2, Y = sy(my) - ts * .34;
+  cx.fillStyle = 'rgba(7,11,20,.85)'; rr(X, Y, w, ts * .36, 6); cx.fill(); cx.fillStyle = '#fff'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(o.label, sx(mx), Y + ts * .19); cx.textBaseline = 'alphabetic';
+}
+function botDraw(X, Y, awake) {
+  const s = ts, bob = awake ? Math.sin(tNow * 5) * s * .03 : 0; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(X, Y + s * .3, s * .26, s * .1, 0, 0, 7); cx.fill();
+  cx.fillStyle = '#c8d2e0'; rr(X - s * .24, Y - s * .22 + bob, s * .48, s * .44, 7); cx.fill(); cx.fillStyle = '#2a3346'; rr(X - s * .16, Y - s * .14 + bob, s * .32, s * .16, 4); cx.fill();
+  cx.fillStyle = awake ? '#6fd08a' : '#59657a'; cx.fillRect(X - s * .1, Y - s * .09 + bob, s * .07, s * .06); cx.fillRect(X + s * .03, Y - s * .09 + bob, s * .07, s * .06);
+  cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(X + s * .24, Y + bob); cx.lineTo(X + s * .34, Y + (awake ? -s * .08 : s * .16) + bob); cx.stroke();
+  if (!awake) { cx.fillStyle = '#a3b4cc'; cx.font = `700 ${s * .26}px "Chakra Petch", sans-serif`; cx.fillText('z', X + s * .2, Y - s * .28 + Math.sin(tNow * 2) * 2); }
+  else if (S.botName) { cx.fillStyle = '#fff'; cx.font = `700 ${Math.max(10, s * .22)}px "Andika", sans-serif`; cx.textAlign = 'center'; cx.fillText(S.botName, X, Y - s * .32); }
+}
+function drawPlayer() {
+  const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, s = ts, moving = P.route.length > 0, bob = moving ? Math.abs(Math.sin(P.step * 9)) * s * .06 : Math.sin(tNow * 2) * s * .012;
+  cx.fillStyle = 'rgba(0,0,0,.3)'; cx.beginPath(); cx.ellipse(X, Y + s * .32, s * .24, s * .09, 0, 0, 7); cx.fill();
+  if (moving) { cx.fillStyle = '#dfe6f0'; const k = Math.sin(P.step * 9) * s * .1; cx.fillRect(X - s * .14 + k, Y + s * .2, s * .1, s * .12); cx.fillRect(X + s * .04 - k, Y + s * .2, s * .1, s * .12); }
+  cx.fillStyle = '#8795ab'; rr(X - s * .22 * P.face - s * .08, Y - s * .12 - bob, s * .16, s * .3, 4); cx.fill();
+  cx.fillStyle = '#f4f7fb'; rr(X - s * .19, Y - s * .14 - bob, s * .38, s * .4, 9); cx.fill();
+  cx.fillStyle = '#f08a2c'; cx.fillRect(X - s * .19, Y + s * .06 - bob, s * .38, s * .06);
+  cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.arc(X, Y - s * .24 - bob, s * .21, 0, 7); cx.fill();
+  cx.fillStyle = '#1b2c4a'; rr(X - s * .13 + P.face * s * .04, Y - s * .32 - bob, s * .26, s * .17, 6); cx.fill();
+  cx.fillStyle = 'rgba(255,255,255,.55)'; cx.fillRect(X - s * .06 + P.face * s * .06, Y - s * .29 - bob, s * .07, s * .04);
+  if (has('badge')) { cx.fillStyle = '#f2c94c'; cx.beginPath(); cx.arc(X + s * .08, Y - s * .02 - bob, s * .05, 0, 7); cx.fill(); }
+}
+function minimap() {
+  const k = Math.max(2.4, ts * .07), mw = W * k, mh = H * k, X = vw - mw - 8, Y = 8;
+  cx.fillStyle = 'rgba(7,11,20,.72)'; rr(X - 4, Y - 4, mw + 8, mh + 8, 6); cx.fill();
+  for (const [id, r] of Object.entries(ROOMS)) { const seen = S.seen.includes(id); if (r.secret && !seen) continue;
+    cx.fillStyle = id === S.room ? '#ffb23e' : seen ? '#6d8fc0' : '#27344d';
+    if (r.tiles) r.tiles.forEach(t => cx.fillRect(X + t[0] * k, Y + t[1] * k, k, k)); else cx.fillRect(X + r.x * k, Y + r.y * k, r.w * k, r.h * k); }
+  cx.fillStyle = '#fff'; cx.beginPath(); cx.arc(X + (P.x + .5) * k, Y + (P.y + .5) * k, Math.max(2, k * .7), 0, 7); cx.fill();
+  cx.fillStyle = '#a3b4cc'; cx.font = '700 10px "Chakra Petch", sans-serif'; cx.textAlign = 'left'; cx.fillText('N ↑', X, Y + mh + 2 - 2);
+}
+function frame(now) {
+  const dt = Math.min(.05, (now - (frame.last || now)) / 1000); frame.last = now; tNow += dt;
+  // move along the route
+  if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 5.2 * dt; P.step += dt;
+    if (dx) P.face = dx > 0 ? 1 : -1;
+    if (d <= stepLen) { P.x = tx; P.y = ty; P.route.shift(); arrive(); if (!P.route.length && P.then) { const f = P.then; P.then = null; f(); } }
+    else { P.x += dx / d * stepLen; P.y += dy / d * stepLen; } }
+  if (S.bot) { const d = Math.hypot(P.x - BOT.x, P.y - BOT.y); if (d > 1.3) { BOT.x += (P.x - BOT.x) / d * Math.min(d - 1.2, 4.6 * dt); BOT.y += (P.y - BOT.y) / d * Math.min(d - 1.2, 4.6 * dt); } }
+  // camera
+  const tw = vw / ts, th = vh / ts, gx = Math.max(-1, Math.min(W - tw + 1, P.x + .5 - tw / 2)), gy = Math.max(-1, Math.min(H - th + 1, P.y + .5 - th / 2));
+  cam.x += (gx - cam.x) * Math.min(1, dt * 6); cam.y += (gy - cam.y) * Math.min(1, dt * 6);
+  const shakeX = alarm > 0 && !calm ? Math.sin(tNow * 60) * 2 : 0; alarm = Math.max(0, alarm - dt);
+  cx.save(); cx.translate(shakeX, 0);
+  cx.fillStyle = '#070b14'; cx.fillRect(-4, 0, vw + 8, vh);
+  const drift = calm ? 0 : tNow * (S.ended ? .25 : .006);
+  for (const st of STARS) { const X = ((st.x - cam.x * .012 - drift * st.s) % 1 + 1) % 1 * vw, Y = ((st.y - cam.y * .012) % 1 + 1) % 1 * vh; cx.fillStyle = `rgba(255,${230 - (st.p % 3) * 20},${190 + (st.p % 2) * 60},${.45 + .4 * Math.sin(tNow * 1.5 + st.p)})`; cx.fillRect(X, Y, S.ended && !calm ? st.s * 9 : st.s, st.s); }
+  const x0 = Math.max(0, Math.floor(cam.x)), x1 = Math.min(W - 1, Math.ceil(cam.x + tw)), y0 = Math.max(0, Math.floor(cam.y)), y1 = Math.min(H - 1, Math.ceil(cam.y + th));
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) drawTile(x, y);
+  ['gap', 'grate', 'bolt', 'sign', 'vent', 'poster', 'gauge'].forEach(drawObj);
+  ['stack', 'crate', 'ship', 'locker', 'panel', 'robot', 'table', 'scale', 'drawer', 'chair', 'console', 'chest'].forEach(drawObj);
+  if (S.bot) botDraw(sx(BOT.x) + ts / 2, sy(BOT.y) + ts / 2, true);
+  drawPlayer();
+  for (const id in OBJ) label(id);
+  // the dark tunnel: only a pool of light around you, until the lights are switched on
+  if ((S.room === 'tunnel' || S.room === 'store') && !S.poster) { const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, g = cx.createRadialGradient(X, Y, ts * .8, X, Y, ts * 3.2); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,4,8,.96)'); cx.fillStyle = g; cx.fillRect(-4, 0, vw + 8, vh); }
+  if (alarm > 0) { cx.fillStyle = `rgba(255,60,40,${.16 * Math.abs(Math.sin(tNow * 8))})`; cx.fillRect(-4, 0, vw + 8, vh); }
+  if (sparkle) { sparkle.t -= dt; const X = sx(sparkle.x) + ts / 2, Y = sy(sparkle.y) + ts / 2, k = 1.2 - sparkle.t; for (let i = 0; i < 10; i++) { cx.fillStyle = `rgba(255,${200 + i * 5},90,${Math.max(0, sparkle.t)})`; cx.fillRect(X + Math.cos(i * .63) * k * ts * 1.3, Y + Math.sin(i * .63) * k * ts * 1.3 - k * ts * .3, 4, 4); } if (sparkle.t <= 0) sparkle = null; }
+  if (floatText) { floatText.t -= dt; cx.fillStyle = `rgba(255,220,120,${Math.min(1, floatText.t)})`; cx.font = `700 ${ts * .34}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(floatText.text, sx(P.x) + ts / 2, sy(P.y) - ts * .2 - (1.4 - floatText.t) * ts * .5); if (floatText.t <= 0) floatText = null; }
+  cx.restore();
+  minimap();
+  if (banner && banner.t > 0) { banner.t -= dt; cx.globalAlpha = Math.min(1, banner.t); cx.font = `700 ${Math.max(18, ts * .5)}px "Chakra Petch", sans-serif`; const w = cx.measureText(banner.text).width + 28; cx.fillStyle = 'rgba(7,11,20,.8)'; rr(10, 10, w, ts * .8, 8); cx.fill(); cx.fillStyle = '#ffb23e'; cx.textAlign = 'left'; cx.textBaseline = 'middle'; cx.fillText(banner.text, 24, 10 + ts * .42); cx.textBaseline = 'alphabetic'; cx.globalAlpha = 1; }
+  requestAnimationFrame(frame);
 }
 
-/* ---------- start ---------- */
-S = load();
-$('say').addEventListener('submit', e => { e.preventDefault(); const v = $('cmd').value; $('cmd').value = ''; act(v); });
-document.querySelectorAll('.map .room').forEach(g => { const f = () => { if (g.classList.contains('go')) go(g.dataset.room); else if (g.dataset.room === 'launch' && !canEnter('launch')) say('The Launch Bay door is locked. The ship needs its Navigation part.'); };
-  g.addEventListener('click', f); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f(); } }); });
+/* =====================================================================
+   TAPPING THE WORLD
+   ===================================================================== */
+function thingAt(tx, ty) { for (const id in OBJ) { const o = OBJ[id]; if (objOn(o) && o.room === S.room && objTiles(id).some(t => t[0] === tx && t[1] === ty)) return id; } return null; }
+function tileOf(e) { const r = cv.getBoundingClientRect(); return [Math.floor((e.clientX - r.left) / ts + cam.x), Math.floor((e.clientY - r.top) / ts + cam.y)]; }
+cv.addEventListener('pointermove', e => { const [x, y] = tileOf(e); hover = thingAt(x, y); });
+cv.addEventListener('pointerdown', e => {
+  if (S.ended) return; const [x, y] = tileOf(e), id = thingAt(x, y), draft = $('cmd').value.trim().toLowerCase();
+  if (id && id !== 'grate' || id === 'grate' && draft) { const w = OBJ[id].words[0]; return act(draft && /^(look|take|open|push|use)( \w+ on)?$/.test(draft) ? `${draft} ${w}` : `look ${w}`); }
+  if (widget) return say('Finish this first. Or tap Leave.');
+  if (!walkable(x, y) && !(G[y] && G[y][x] && G[y][x].t === 'floor')) return;
+  if (!walkTo((a, b) => a === x && b === y)) { if (x === 30 && y <= 5 && !S.parts.includes('Navigation')) say('The Launch Bay door is locked. The ship needs its Navigation part.'); }
+});
+
+/* =====================================================================
+   START
+   ===================================================================== */
+S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y; }
+$('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
+$('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
-drawScene(); drawCards(); say(S.ended ? 'Your ship is among the stars.' : ROOMS[S.room].text[0]);
+$('snd').onclick = () => { soundOn = !soundOn; $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); if (soundOn) beep(660, .1); };
+window.addEventListener('resize', size);
+size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
+drawStatus(); drawBag(); drawCards();
+say(S.ended ? 'Your ship is among the stars.' : 'Your ship limps into the dock. The station is a mess. Look around.');
+if (S.ended) showEnding();
+requestAnimationFrame(frame);
 </script>
