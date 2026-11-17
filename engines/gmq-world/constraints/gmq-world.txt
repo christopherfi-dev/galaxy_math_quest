@@ -1,6 +1,9 @@
 # GALAXY MATH QUEST WORLD - CONSTRAINT ARCHITECTURE v0.3 (DRAFT)
 
 Status: a first draft by Claude for Marc to rewrite. It has not been run against a model.
+Update 2026-11-17: the world server v0.1 (engines/gmq-world/server) can now send this file to a model, in EXPLORE mode only,
+with a WORLD SLICE of PLACE, FACTS, THINGS HERE and CADET CARRIES. So far it has only been sent to a stand-in, to test the server's checks.
+The server does not yet act on [TRY], [MOVE] or [TRACE] tags. It removes them before a child sees the reply.
 It follows the shape of Marc's own files: Novus v3.4 and Math Skills v4.1.
 
 ---

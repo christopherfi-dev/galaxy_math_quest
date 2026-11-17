@@ -70,6 +70,7 @@ Then open `http://localhost:8080/teacher.html`, make a class, and open the game 
   - has unkind words, or steps out of the world ("as an AI...")
 - If it is stopped, the game answers as it does today. Every stop is written to the log, so you can see what the AI tried.
 - A cadet can ask at most 12 times a minute.
+- **Two limits of this first version.** The page, not the server, builds the "world slice" the AI is told about. And the server does not yet act on the AI's tags (`[TRY]`, `[MOVE]`, `[TRACE]`): it removes them. So for now the AI can describe, and cannot change anything. That is the safe half of your design. The other half comes when the world's facts move to the server.
 
 ## How it was tested
 

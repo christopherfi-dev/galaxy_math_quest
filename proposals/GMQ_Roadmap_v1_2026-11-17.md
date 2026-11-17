@@ -23,14 +23,14 @@
 | # | Part | Where it stands | Next step |
 |---|---|---|---|
 | 1 | **The station** (the ship check) | Built: 9 rooms, 15 tasks, 5 ship parts, 18 secrets, 4 real-life tasks with your codes | Play it with children |
-| 2 | **Space** (the map between places) | Built: 5 galaxies, flying, Voltara from orbit. Nothing happens on the way. | Things to do in space. See section 4. |
+| 2 | **Space** (the map between places) | Built: 5 galaxies, flying, Voltara from orbit, and **Galactic Trade** (new tonight). Nothing happens on the way between galaxies yet. | Small events on the way |
 | 3 | **Planets** (the big quests) | 1 built: Voltara. 4 more have your material. See section 3. | The next planet |
 | 4 | **Small maths moments** (mini quests and mini battles) | 5 are staged inside the station and Voltara. A set of 14 is written, not built. | Decide if you still want them. See 5.4. |
 | 5 | **Cards** | Built in the sketch: a card for each task, a gold card for a big quest. The real card set is not chosen. | Your decision. See 5.2. |
 | 6 | **Battles** | Not built. The rules are yours. Students can battle with printed cards now. | Yours to say when |
-| 7 | **The AI that runs the world** | A constraint file exists as a draft (version 0.3). It has never been run. Nothing in the sketch uses it. | Connect it. See section 4. |
-| 8 | **The server** (logins, saving, your codes) | Not built. The sketch saves on one device only. | A first version. See section 4. |
-| 9 | **Your tools as the teacher** | Built: shortcuts, the codes, a log of what a student did, the reading-card switch. Not built: a view of the whole class. | Needs the server |
+| 7 | **The AI that runs the world** | A constraint file exists as a draft (version 0.3). It has never been run against a real model. **New tonight:** the server can call it, and checks every reply. It is switched off until you add a key. | You read the constraint file. Then try it yourself. |
+| 8 | **The server** (logins, saving, your codes) | **New tonight:** a first version, tested on my machine only. Not on your site. | You decide where it runs. See 5.1. |
+| 9 | **Your tools as the teacher** | Built: shortcuts, the codes, a log of what a student did, the reading-card switch. **New tonight:** a class view page, with the server. | Try it on your own computer |
 | 10 | **Real-life tasks** | Built: 5 code-locked tasks. Not built: the printed sheets that go with them. | Printable slips |
 | 11 | **Helps for young readers** | Built: reading cards, the number pad, kind words, maths words with meanings. Paused by you: reading levels. | Watch children use them |
 | 12 | **Pictures and sound** | Built: drawn by code. No painted art. Simple beeps. | Your decision. See 5.6. |
@@ -132,7 +132,24 @@ In order of how much each one holds up.
 
 ## 6. What I built the same night
 
-*(filled in at the end of the night)*
+| What | Where to look | Checked by |
+|---|---|---|
+| **Galactic Trade.** Your Voltara Task 2, in space: a star map with distance rings, scanning planets by rounding, three trips, paying for fuel. | In the sketch: Teacher bar, **Go to space**, then the trade beacon. Guide: `GMQ_Galactic_Trade_Guide_v1_2026-11-17.md` | `galactic_trade_check.py`, `galactic_trade_test.js` |
+| **A first world server.** Logins, a game that follows the cadet to any device, your codes kept on the server, ship names that wait for you, a class view, and the AI behind a reply check. | `engines/gmq-world/server/`. Start with its `README.md`. | `world_server_test.js`, `world_online_test.js` |
+| **The game page can talk to that server.** With no server, as on the sketch's own link, it plays exactly as before. | the sketch | `world_online_test.js` |
+| **A fault found and fixed:** a page reloaded within a second of an action could lose the saved game. The game is now saved in two places on the device. | the sketch | found by `galactic_trade_test.js` |
+| **Chronosia, designed.** Not built. Your Tasks 1 and 2 kept, and a "quake day" with decisions that matter. | `GMQ_Chronosia_Quest_Design_v1_2026-11-17.md` | `chronosia_quest_design_check.py` |
+| **The other galaxies name their planets** when you fly to them. | the sketch | — |
+
+**What I did not get to:**
+- Small events on the way between galaxies. Galactic Trade is the one thing to do in space so far.
+- Printed sheets for the real-life tasks.
+- Any work on battles or cards. Those wait for your decisions.
+
+**What is still true after tonight:**
+- The server has only run on my machine. You decide if and when it goes on your site.
+- The AI has still never answered a real child. The server's stand-in AI proves the checks work, not that the constraint file works.
+- The page still marks the maths, even when the server is there.
 
 ---
 

@@ -203,6 +203,10 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 @keyframes nudge { 25% { transform: translateX(-7px); } 75% { transform: translateX(7px); } }
 .log .new.flash { animation: logflash 1.4s ease-out; border-radius: 6px; } @keyframes logflash { from { background: rgba(255,178,62,.55); } to { background: rgba(255,178,62,0); } }
 @media (max-width: 560px), (max-height: 560px) { #cardtext p { font-size: 1.08rem; } #cardbox { padding: 10px 12px; } #cardok { padding: 9px 20px; } }
+/* playing with the world server: who is logged in */
+#netbar { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 0 0 8px; font-size: .95rem; } #netbar[hidden] { display: none; } #netbar b { font-weight: 700; }
+body.online .tbar, body.online details.box { display: none; } body.online.teacher .tbar, body.online.teacher details.box { display: revert; }
+#lc, #ln { width: 9.5em; } #lp { width: 5.5em; -webkit-text-security: disc; }
 /* the floating number pad */
 #pad { position: fixed; z-index: 60; width: 190px; background: #101a30; border: 2px solid #ffb23e; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.5); padding: 6px; -webkit-user-select: none; user-select: none; touch-action: none; }
 #pad[hidden] { display: none; }
@@ -221,7 +225,8 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 <div id="pad" hidden role="group" aria-label="Number pad"><div id="padbar"><span id="padgrip">⠿ move me</span><button type="button" id="padkb" aria-label="Use the full keyboard">ABC</button></div>
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 25</span></p>
+  <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 26</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -407,7 +412,7 @@ function fresh() {
 /* The game is saved in two places on the device. A browser can take a moment to write the main copy, and a page reloaded in that moment
    would find nothing and start again. The second copy lives with the tab and is there at once. The newer good copy wins. */
 function load() { let best = null; for (const store of ['localStorage', 'sessionStorage']) { try { const j = JSON.parse(window[store].getItem(KEY)); if (j && j.seen && ROOMS[j.room] && (!best || (j.t || 0) > (best.t || 0))) best = j; } catch (e) {} } return best || fresh(); }
-function save() { let j = ''; try { S.t = Date.now(); j = JSON.stringify(S); } catch (e) { return; } try { localStorage.setItem(KEY, j); } catch (e) {} try { sessionStorage.setItem(KEY, j); } catch (e) {} }
+function save() { let j = ''; try { S.t = Date.now(); j = JSON.stringify(S); } catch (e) { return; } try { localStorage.setItem(KEY, j); } catch (e) {} try { sessionStorage.setItem(KEY, j); } catch (e) {} if (typeof NET !== 'undefined' && NET.on) netPush(); }
 function rnd(n) { S.seed = (S.seed * 1664525 + 1013904223) % 4294967296; return Math.floor(S.seed / 4294967296 * n); }
 const pick = a => a[rnd(a.length)];
 const $ = id => document.getElementById(id);
@@ -692,6 +697,7 @@ function findThing(tokens) {
 const findItem = tokens => S.inv.find(i => tokens.some(t => ITEM_WORDS[i].includes(t))) || null;
 function act(raw) {
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
+  if (widget && widget.kind === 'login') return;
   if (READ.open && !/^teacher (voltara|station|space)$/.test(text)) return readNudge();
   if (/^teacher (voltara|station|space)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : text.endsWith('space') ? goSpace() : goStation(); }
   $('cmd').value = ''; mark();
@@ -708,7 +714,7 @@ function act(raw) {
   let tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'into', 'in', 'up', 'around', 'under', 'behind', 'inside', 'please'].includes(t) || DIRS[t] && text.split(/\s+/).length <= 2);
   if (DIRS[tk[0]]) tk = ['go', tk[0]];
   let verb = Object.keys(VERBS).find(v => VERBS[v].includes(tk[0]));
-  if (!verb) return out(findThing(tk) ? 'Start with a doing word: look, take, open, push or use.' : 'The station does not know that yet. In the real world it would answer. Try: look, take, open, push, use, go.');
+  if (!verb) return findThing(tk) ? out('Start with a doing word: look, take, open, push or use.') : netAsk(text, 'The station does not know that yet. Try: look, take, open, push, use, go.', out);
   const rest = tk.slice(1);
   if (S.bot && ['talk', 'use'].includes(verb) && tk[0] !== 'fix' && (rest.length === 0 && verb === 'talk' || rest.some(t => OBJ.robot.words.includes(t) || t === 'zip' || (S.botName && t === S.botName.toLowerCase())))) return out(zipTalk());
   if (S.bot && verb === 'look' && rest.some(t => OBJ.robot.words.includes(t) || (S.botName && t === S.botName.toLowerCase()))) return out('Your repair robot. It follows you. Talk to it and it tells you what to try next.');
@@ -723,6 +729,7 @@ function act(raw) {
     if (!nm) return out('Name what? Like: name ship Comet.');
     if (rude(nm, true) || rude(rest.join(' '), true)) return out('The paint will not stick. Pick a kind name.');
     if (isBot) { if (!S.bot) return out('The robot is broken. Fix it first.'); S.botName = nm; save(); return out(`The robot beeps twice. Its name is ${nm} now.`); }
+    if (NET.on) return netName(nm, out);
     S.ship = nm; save(); return out(`You paint the name on the hull: ${nm}. It will stay there.`);
   }
   if (verb === 'go') {
@@ -748,7 +755,7 @@ function act(raw) {
   if (!thing && item && verb === 'use') return out(`Use the ${ITEMS[item]} on what?`);
   if (!thing && item) return out('It is in your bag already.');
   if (!thing && !rest.length) return out(verb === 'look' ? `${ROOMS[S.room].name}. ${Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => OBJ[i].label).join(', ')}.` : `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
-  if (!thing) return out('You do not see that here.');
+  if (!thing) return netAsk(text, 'You do not see that here.', out);
   if (verb !== 'use') item = null;
   out(null);
   if (S.tut === 1 && verb === 'look') S.tut = 2;
@@ -1175,6 +1182,46 @@ function card(force) {
    ===================================================================== */
 function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); }
 function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); }
+/* THE WORLD SERVER (only when the page sits beside one). [Proposal: engines/gmq-world/server]
+   With no server, as on the sketch's own link, nothing here runs and the game is kept on the device as before.
+   With a server: a cadet logs in, and their game follows them to any device. The teacher's codes are checked by the server.
+   A new ship name waits for the teacher. A line the game does not understand can be answered by the AI, inside the constraint file.
+   The page still marks the maths. Moving that to the server is the next big step. */
+const NET = { api: '', found: false, on: false, name: '', ai: false, tm: 0, names: 'approve' }, NETKEY = 'gmq-net-cadet';
+async function netCall(body) { try { const r = await fetch(NET.api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) }); const j = await r.json(); j.status = r.status; return j; } catch (e) { return null; } }
+async function netStart() { if (!/^https?:$/.test(location.protocol)) return; const meta = document.querySelector('meta[name="gmq-api"]'); if (!meta && !/play\.html$/.test(location.pathname)) return;        /* the sketch's own link never looks for a server */
+  NET.api = (meta && meta.content) || 'api/gmq-world-api.php';
+  const r = await netCall({ action: 'load' }); if (!r || (r.status !== 401 && !r.ok)) return;                 /* no server here: play on this device only */
+  NET.found = true; document.body.classList.add('online'); if (/[?&]teacher\b/.test(location.search)) document.body.classList.add('teacher'); if (r.status === 401) return netLogin(); netAdopt(r); }
+function netAdopt(r) { let mine = false; try { mine = sessionStorage.getItem(NETKEY) === r.name; } catch (e) {}
+  if (!mine) {                                                   /* this device may hold another cadet's game, or none. Take the server's, then start the page again with it. */
+    try { sessionStorage.setItem(NETKEY, r.name); [localStorage, sessionStorage].forEach(st => { if (r.state) { r.state.ship = (r.ship && r.ship.name) || ''; r.state.t = Date.now(); st.setItem(KEY, JSON.stringify(r.state)); } else st.removeItem(KEY); }); } catch (e) {} return location.reload(); }
+  NET.on = true; NET.name = r.name; NET.ai = !!r.ai; if (r.names) NET.names = r.names; if (widget && widget.kind === 'login') closeToy(); netShip(r.ship); $('netbar').hidden = false; $('netname').textContent = r.name; $('netstate').textContent = ''; if (!r.state) netPush(); }
+function netShip(ship) { if (!ship) return; const nm = ship.name || ''; if (nm !== S.ship) { const was = S.ship; S.ship = nm; save(); if (nm && !was) say(`Your Commander said yes. The name ${nm} is painted on your hull.`); }
+  if (ship.status === 'refused' && S.wantShip) { S.wantShip = ''; save(); say('Your Commander said no to that ship name. Pick another one: name ship, then the name.'); } else if (ship.status === 'ok') S.wantShip = ''; }
+function netLogin(msg) { widget = { kind: 'login' };
+  toy(`<p class="eyebrow">Galaxy Math Quest</p><h3>Who is flying today?</h3><p class="q">Log in, and your own game comes with you.</p>
+    <div class="field codes"><label class="code"><span class="note">class code</span><input id="lc" maxlength="8" autocapitalize="off" autocomplete="off" spellcheck="false"></label><label class="code"><span class="note">your first name</span><input id="ln" maxlength="16" autocomplete="off" spellcheck="false"></label>
+    <label class="code"><span class="note">secret number, 4 digits</span><input id="lp" inputmode="numeric" maxlength="4" autocomplete="off"></label><button class="btn" type="button" id="try">Start</button></div>
+    <p class="note">New here? Choose any 4-digit number. Remember it. It is your key.</p><div class="msg bad" id="msg" role="status">${msg || ''}</div>`);
+  const go = async () => { const m = $('msg'), name = $('ln').value, pin = $('lp').value; if (rude(name, true)) { m.textContent = 'Please use your own name.'; return; } m.textContent = '';
+    const r = await netCall({ action: 'join', class: $('lc').value, name, pin }); if (!r) { m.textContent = 'The server did not answer. Try again.'; return; } if (!r.ok) { m.textContent = r.error || 'That did not work.'; $('lp').value = ''; return; } netAdopt(r); };
+  $('try').onclick = go; ['lc', 'ln', 'lp'].forEach(id => $(id).onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); go(); } }); $('lp').oninput = () => $('lp').value = $('lp').value.replace(/[^0-9]/g, '').slice(0, 4); }
+function netPush(now) { if (!NET.on) return; clearTimeout(NET.tm); const send = async () => { $('netstate').textContent = 'saving…'; const r = await netCall({ action: 'save', state: S });
+    if (r && r.ok) { $('netstate').textContent = 'saved'; netShip(r.ship); } else if (r && r.status === 401) { NET.on = false; $('netbar').hidden = true; netLogin('Please log in again.'); } else $('netstate').textContent = 'not saved yet: no connection'; };
+  if (now) send(); else NET.tm = setTimeout(send, 3000); }
+function netCode(task, code, pass, wrong) { netCall({ action: 'code', task, code: String(code) }).then(r => { if (!r) return wrong('The server did not answer. Try again.'); if (r.status === 429) return wrong(r.error); if (r.ok && r.right) return pass(); wrong(); }); }
+function netName(nm, tell) { netCall({ action: 'name', ship: nm }).then(r => { if (!r || !r.ok) return tell('The paint will not dry. Try again in a moment.'); if (r.status === 'refused') return tell('The paint will not stick. Pick a kind name.');
+    if (r.status === 'ok') { S.ship = r.ship.name; save(); return tell(`You paint the name on the hull: ${r.ship.name}. It will stay there.`); } S.wantShip = r.ship.wants; save(); tell(`You ask for the name ${r.ship.wants}. Your Commander will look at it. It goes on the hull when they say yes.`); }); }
+/* what the AI is told about this moment: only what the game itself knows to be here */
+function worldSlice() { const bag = S.inv.map(i => ITEMS[i] || i).join(', ') || 'nothing';
+  if (S.mode === 'planet') { const sc = V().sc; return `PLACE: ${VSC[sc].name}, on Planet Voltara. FACTS: ${VSEE[sc] || ''} THINGS HERE: ${vThings().filter(t => t.x != null).map(t => t.label).join(', ')}. CADET CARRIES: ${bag}.`; }
+  if (S.mode === 'space') return `PLACE: deep space, in the cadet's own ship. FACTS: Five galaxies glow around the KIS Station. The cadet is ${S.at ? 'near ' + GAL[S.at].name : 'flying between galaxies'}. THINGS HERE: stars, galaxies, other cadets' ships far away. CADET CARRIES: ${bag}.`;
+  return `PLACE: ${ROOMS[S.room].name}, on the KIS Station. FACTS: A space station. Low gravity. The cadet's ship is docked here for repairs. THINGS HERE: ${Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => OBJ[i].label).join(', ')}. CADET CARRIES: ${bag}. SHIP PARTS FITTED: ${S.parts.length} of 5.`; }
+function netAsk(text, fallback, out) { if (!NET.on || !NET.ai) return out(fallback); netCall({ action: 'ask', text, slice: worldSlice() }).then(r => out(r && r.ok && r.say ? r.say : fallback)); }
+$('netout').onclick = async () => { clearTimeout(NET.tm); if (NET.on) await netCall({ action: 'save', state: S }); await netCall({ action: 'logout' }); try { sessionStorage.removeItem(NETKEY); sessionStorage.removeItem(KEY); localStorage.removeItem(KEY); } catch (e) {} location.reload(); };
+document.addEventListener('visibilitychange', () => { if (document.hidden && NET.on) netPush(true); });
+
 /* THE NUMBER PAD.  [Source: Marc, 2026-11-17: "a little number keypad... floating, they can move around... it's annoying that they get the full keyboard"]
    Every number box uses it. The iPad keyboard stays away. Drag the top bar to move it; the place is remembered on this device. "ABC" brings the full keyboard back. */
 const PAD = { target: null, mini: false, pos: null, drag: null };
@@ -1320,8 +1367,8 @@ function startSlip(id) {
   const inp = $('ans'); inp.oninput = () => inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 4); inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } };
   $('leave').onclick = () => { closeToy(); say('You go to do it for real. Come back with the code.'); };
   $('try').onclick = () => { const v = inp.value.trim(), m = $('msg'); if (v === '') { m.className = 'msg bad'; m.textContent = 'Type the code your teacher gave you.'; return; } widget.tries++;
-    if (scramble(+v) !== sl.code) { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'That is not the code. Do the task, then ask your teacher.'; inp.value = ''; return; }
-    taskWon(id, 'Real-life task', 1, 0, `Your teacher's code is right. You passed ${t[2]}!`); };
+    const wrong = why => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = why || 'That is not the code. Do the task, then ask your teacher.'; inp.value = ''; }, pass = () => taskWon(id, 'Real-life task', 1, 0, `Your teacher's code is right. You passed ${t[2]}!`);
+    if (NET.on) return netCode(id, v, pass, wrong); if (scramble(+v) !== sl.code) return wrong(); pass(); };
 }
 /* 1-2 ALIEN SPECIES: count each kind, then build the bar graph. */
 const ALIENS = [['Bloops', 'round'], ['Zigs', 'tri'], ['Boxos', 'square'], ['Twinks', 'star']];
@@ -1809,7 +1856,7 @@ function drawSpace(dt) {
   for (const gh of GHOSTS) { const [gx, gy, dir] = ghostPos(gh); rocket(gx * vw, gy * vh, R * .42, dir > 0 ? .3 : Math.PI - .3, { flame: true, col: '#c4cfdf', col2: '#5f7aa8' }); cx.font = `700 ${Math.max(11, vw * .015)}px "Chakra Petch", sans-serif`; cx.fillStyle = '#c4cfdf'; cx.textAlign = 'center'; cx.fillText(gh.n, gx * vw, gy * vh - R * .3); }
   if (SP.to) { const T = GAL[SP.to], dx = T.x - SP.x, dy = T.y - SP.y, d = Math.hypot(dx, dy), step = .2 * dt; SP.ang = Math.atan2(dy * vh, dx * vw); TRAIL.push([SP.x, SP.y, 1]);
     if (d <= step + .075) { const id = SP.to; SP.to = null; S.at = id; save(); beep(520, .15);
-      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home.' : `${GAL[id].name}. ${GAL[id].line} Its planets are not in this sketch yet.`); }
+      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Two planets wait here: Chronosia and Xylophora.', geometrica: 'One planet waits here: Zephyron.', databa: 'Operation Stardust waits here.' }[id] || ''} They are not built yet.`); }
     else { SP.x += dx / d * step; SP.y += dy / d * step; } }
   cx.globalCompositeOperation = 'lighter'; for (const t of TRAIL) { t[2] -= dt * .9; cx.fillStyle = `rgba(255,190,90,${Math.max(0, t[2]) * .7})`; circ(t[0] * vw, t[1] * vh, R * .05 * (1.4 - t[2])); cx.fill(); } cx.globalCompositeOperation = 'source-over'; while (TRAIL.length && TRAIL[0][2] <= 0) TRAIL.shift();
   SP.zoom = Math.max(0, Math.min(1, SP.zoom + (S.at === 'numerix' && !SP.to ? .9 : -3) * dt));
@@ -2095,7 +2142,7 @@ function actPlanet(text, out) {
   const item = [...S.inv].reverse().find(i => rest.some(t => ITEM_WORDS[i].includes(t))) || null, cut = rest.findIndex(t => t === 'on' || t === 'with'), names = cut < 0 ? rest.filter(t => !(item && v === 'use' && ITEM_WORDS[item].includes(t))) : rest.slice(cut + 1);
   const score = t => names.filter(n => t.words.includes(n)).length, best = things.filter(t => score(t) > 0).sort((a, b) => score(b) - score(a) || Math.abs((a.x || 0) - PL.x) - Math.abs((b.x || 0) - PL.x))[0] || null;
   if (dir && dir[0] && (v === 'go' || !v)) return out(vWalkOut(dir[0] > 0 ? 'e' : 'w'));
-  if (!v) return out(best ? 'Start with a doing word: look, take, push, use, talk or dig.' : 'Voltara does not know that yet. In the real world it would answer. Try: look, take, use, talk, go, dig.');
+  if (!v) return best ? out('Start with a doing word: look, take, push, use, talk or dig.') : netAsk(text, 'Voltara does not know that yet. Try: look, take, use, talk, go, dig.', out);
   if (v === 'hint') return out('The butterfly whispers: ' + planetHint());
   if (v === 'leave') return out(sc === 'hall' ? VDO.exit.go() : sc === 'meadow' ? 'To leave Voltara, type: fly.' : 'Walk west to go back.');
   if (v === 'fly' || (best && best.id === 'ship' && ['use', 'go', 'open'].includes(v))) { if (sc !== 'meadow') return out('Your ship is back in the Landing Meadow.'); if (lastDay()) { startEnding(); return out('Before you go, look back at what you did here.'); } liftOff(); return out(`You lift off. Voltara shrinks below you. ${planetState()}`); }
@@ -2106,6 +2153,7 @@ function actPlanet(text, out) {
   if (v === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
   if (v === 'go' && !best) { const rid = Object.keys(VSC).find(r => rest.some(t => t.length > 3 && VSC[r].name.toLowerCase().includes(t))); if (rid === sc) return out('You are here.'); return out(rid ? `${VSC[rid].name} is not next to here. Walk east or west. The map shows the way.` : 'Go where? Type east or west. Or tap the edge of the picture.'); }
   if (!best && item && v === 'look') return out(ITEM_LOOK[item]); if (!best && item && v === 'use') return out(`Use the ${ITEMS[item]} on what?`);
+  if (!best && rest.length && !(v === 'look' && !rest.length)) return netAsk(text, 'You do not see that here.', out);
   if (!best) return out(v === 'look' && !rest.length ? `${VSC[sc].name}. You see: ${things.filter(t => t.x != null && !t.spot).map(t => t.label).concat(VSC[sc].k ? [`${CITY[VSC[sc].k].places.length} places`] : []).join(', ')}.` : rest.length ? 'You do not see that here.' : `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
   out(null);
   const run = () => { let r; if (best.spot) r = spotDo(best.spot, v, item); else { const d = VDO[best.id] || {}, h = d[v === 'go' ? (d.go ? 'go' : 'look') : v]; r = typeof h === 'function' ? h(item) : h; if (r === undefined && h !== undefined) return; r = r || (v === 'eat' ? 'You cannot eat that.' : NOPE[v]) || 'Nothing happens.'; } if (r !== undefined && r !== true) say(r); };
@@ -2242,8 +2290,8 @@ function startChoice() { widget = { kind: 'choice', tries: 0 };
     <li>Decide. Will you share with them? If yes, what will you switch off?</li><li>After this, Nomad Hollow is on your plan table. Light it and they are your neighbours. Leave it dark and their town goes dark.</li><li>Tell your teacher your choice, and why, in 2 or 3 sentences.</li></ol><p class="q">Your teacher is the Commander. When you pass, type the Commander's code.</p>
     <div class="field"><label for="ans" class="note">Commander's code</label><input id="ans" inputmode="numeric" autocomplete="off"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
   const a = $('ans'); a.oninput = () => a.value = a.value.replace(/[^0-9]/g, '').slice(0, 4); a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; $('leave').onclick = () => { closeToy(); say('You go to build it and think it over. Come back with the code.'); };
-  $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type the code your teacher gave you.'; return; } if (scramble(+a.value) !== 869746) { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'That is not the code. Do the task, then ask your teacher.'; a.value = ''; return; }
-    S.log.push({ what: "The Council's choice", skill: 'Real-life task', result: 'Passed ✓' }); vWin('final', 'The Council bows. "We will follow your plan, Commander." You earn a GOLD card. Nomad Hollow is on the plan table now. What you do next decides how you leave Voltara.', true); }; }
+  $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type the code your teacher gave you.'; return; } const wrong = why => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = why || 'That is not the code. Do the task, then ask your teacher.'; a.value = ''; }, pass = () => { S.log.push({ what: "The Council's choice", skill: 'Real-life task', result: 'Passed ✓' }); vWin('final', 'The Council bows. "We will follow your plan, Commander." You earn a GOLD card. Nomad Hollow is on the plan table now. What you do next decides how you leave Voltara.', true); };
+    if (NET.on) return netCode('choice', a.value, pass, wrong); if (scramble(+a.value) !== 869746) return wrong(); pass(); }; }
 function drawMission() { const el = $('mission'); if (!S.v) { el.hidden = true; return; } el.hidden = false; const v = V(), n = STEPS.filter(s => vDone(s[0])).length, notes = [v.count && 'The tower holds 1,650', ...'RCI'.split('').map(k => v.need[k] && `${CITY[k].street} needs ${CITY[k].total}`), v.short && 'The city is 570 short', v.lost && '240 goes missing each night: 30 an hour', v.houses && '30 tiny houses use 30 an hour'].filter(Boolean);
   el.innerHTML = `<h3>Mission Voltara: ${n} of ${STEPS.length} steps</h3><div class="const">${STEPS.map(s => `<span class="star ${vDone(s[0]) ? 'lit' : 'off'}${s[0] === 'final' ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${s[1]}</span>`).join('')}</div>${notes.length ? `<p class="note"><b>Your notebook:</b> ${notes.join(' · ')}.</p>` : ''}${v.plan ? `<p class="note"><b>Voltara, day ${v.day}:</b> ${planetState()}</p>` : ''}${S.trade && S.trade.log.length ? `<p class="note"><b>Galactic Trade:</b> season ${S.trade.season}, ${S.trade.done ? 'all 3 trips done' : `trip ${S.trade.trip} of 3`}. You have ${num(S.trade.gems)} gems.</p>` : ''}`; }
 
@@ -2429,7 +2477,7 @@ function shipReport() {
     <p class="note">Five parts are missing. Earn each one on the station.</p>
     <ul class="parts">${PART_SKILL.map(([n, k]) => `<li><b>${n}</b><span class="bad">MISSING</span><span class="note">${k}</span></li>`).join('')}</ul>
     <form class="field name" id="nameform"><label for="shipname">What is your ship called?</label><input id="shipname" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn" type="submit">Name my ship</button><button class="btn quiet" type="button" id="later">Later</button></form><div class="msg" id="msg" role="status"></div>`);
-  const done = nm => { if (nm) S.ship = nm; closeToy(); save(); say(`${nm ? 'You paint ' + nm + ' on the hull. ' : ''}Welcome to your journey, cadet. The universe awaits.`); };
+  const done = nm => { if (nm && NET.on) { closeToy(); save(); return netName(nm, t => say(t + ' Welcome to your journey, cadet. The universe awaits.')); } if (nm) S.ship = nm; closeToy(); save(); say(`${nm ? 'You paint ' + nm + ' on the hull. ' : ''}Welcome to your journey, cadet. The universe awaits.`); };
   $('nameform').addEventListener('submit', e => { e.preventDefault(); const raw = $('shipname').value, nm = raw.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, ' ').trim().slice(0, 12).replace(/\b\w/g, c => c.toUpperCase());
     if (rude(raw, true) || rude(nm, true)) { $('shipname').value = ''; $('msg').className = 'msg bad'; $('msg').textContent = 'The paint will not stick. Pick a kind name.'; beep(140, .2, 'square'); return; } done(nm); });
   $('later').onclick = () => done('');
@@ -2488,6 +2536,7 @@ function thingAt(tx, ty) { for (const id in OBJ) { const o = OBJ[id]; if (objOn(
 function tileOf(e) { const r = cv.getBoundingClientRect(); return [Math.floor((e.clientX - r.left) / ts + cam.x), Math.floor((e.clientY - r.top) / ts + cam.y)]; }
 cv.addEventListener('pointermove', e => { if (S.mode !== 'station') return; const [x, y] = tileOf(e); hover = thingAt(x, y); });
 cv.addEventListener('pointerdown', e => {
+  if (widget && widget.kind === 'login') return;
   if (S.mode === 'intro') return nextBeat();
   if (S.mode === 'arrive') return;
   if (S.mode === 'space') return tapSpace(e);
@@ -2511,6 +2560,7 @@ S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y
 $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
+netStart();
 $('cardsOn').checked = READ.on; $('cardsOn').onchange = () => { READ.on = $('cardsOn').checked; try { localStorage.setItem('gmq-cards', READ.on ? 'on' : 'off'); } catch (e) {} if (!READ.on) readOk(true); };
 /* teacher shortcuts: jump between the station and Voltara. The place changes first. Tidying up comes after, and cannot stop it. */
 function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(true); widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
