@@ -19,6 +19,10 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
     await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
+    // the teacher shortcut: from the opening screen, straight to the Landing Meadow, with nothing lost
+    const cut = await p.evaluate(() => { const cards = S.cards.length; $('tovolt').click(); const r = { mode: S.mode, sc: S.v.sc, toy: !$('toy').hidden, cards: S.cards.length === cards, text: lines[lines.length - 1].text }; restart(); return r; });
+    if (cut.mode !== 'planet' || cut.sc !== 'meadow' || cut.toy || !cut.cards || !/Teacher shortcut/.test(cut.text)) bad.push(name + ': teacher shortcut ' + JSON.stringify(cut));
+    await p.waitForTimeout(200);
     // start from a finished station, in space beside Galaxy Numerix
     await p.evaluate(() => { skipIntro(); TASKS.forEach(t => S.done[t[0]] = true); syncParts(); S.course = true; S.ended = true; S.mode = 'space'; S.at = 'numerix'; SP.x = GAL.numerix.x; SP.y = GAL.numerix.y; SP.zoom = 1; save(); drawStatus(); }); await p.waitForTimeout(300);
     const idle = async () => { for (let i = 0; i < 200; i++) { if (await p.evaluate(() => PL.to == null && !PL.then)) return; await p.waitForTimeout(100); } bad.push(name + ': still walking'); };

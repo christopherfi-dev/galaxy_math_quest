@@ -2,7 +2,7 @@
 
 **Stage:** built in the sketch. One vertical slice. Everything can be changed.
 **Sketch:** https://claude.ai/artifact/PrDvY1EZX9tYh1sDCHJ4Xe
-**To play it:** finish the station and launch, then fly to Galaxy Numerix and land.
+**To play it:** open "For the teacher" at the bottom of the page and tap **Go straight to Voltara**. Students get there by finishing the station and launching.
 **Tags:** [Source] = from your material or your words. [Proposal] = my design.
 
 ---

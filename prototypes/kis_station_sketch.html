@@ -227,7 +227,8 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
       <li>This sketch knows about 40 words. On your site, your constrained AI would answer any other sentence.</li>
       <li>The robot is a new character. It is a proposal. Card names are samples from your files. Odds are 70, 25, 5.</li>
     </ul>
-    <p><button class="btn quiet" type="button" id="bank">Show the skills bank</button> <button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
+    <p><button class="btn quiet" type="button" id="bank">Show the skills bank</button> <button class="btn quiet" type="button" id="tovolt">Go straight to Voltara</button> <button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
+    <p class="note">"Go straight to Voltara" skips the opening and the station. It keeps the cards, the bag and anything already done. It is for you, to look at the quest. Students reach Voltara by fitting their five ship parts and launching.</p>
     <p class="note">The opening uses your own words from the student site: the home page, then the Space Station Tasks page, shortened.</p>
   </details>
 </div>
@@ -2219,6 +2220,9 @@ S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y
 $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
+/* a teacher shortcut: land on Voltara now, without doing the station */
+$('tovolt').onclick = () => { try { speechSynthesis.cancel(); } catch (e) {} closeToy(); $('report').hidden = true; S.beat = 0; S.ended = true; S.at = 'numerix'; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; snap = true;
+  land(); drawBag(); drawCards(); say(S.v.crossed ? `Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.` : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); };
 $('bank').onclick = () => { teacher = !teacher; $('bank').textContent = (teacher ? 'Hide' : 'Show') + ' the skills bank'; drawStars(); if (teacher) $('stars').scrollIntoView({ block: 'nearest' }); };
 $('replay').onclick = () => { if (widget && widget.kind !== 'intro') return say('Finish this first.'); S.mode = 'intro'; S.beat = 0; introPanel(); $('place').scrollIntoView({ block: 'nearest' }); };
 window.addEventListener('resize', size);
