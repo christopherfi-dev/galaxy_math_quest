@@ -402,6 +402,9 @@ const DIRS = { north: [0, -1], n: [0, -1], up: [0, -1], south: [0, 1], s: [0, 1]
    STATE
    ===================================================================== */
 const KEY = 'gmq-station-sketch-v5';
+/* small settings (reading cards, the pad's place) are kept in two places as well, so a quick reload cannot lose them */
+const setKeep = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} try { sessionStorage.setItem(k, v); } catch (e) {} };
+const getKeep = k => { let v = null; try { v = sessionStorage.getItem(k); } catch (e) {} if (v === null) { try { v = localStorage.getItem(k); } catch (e) {} } return v; };
 let S, widget = null;
 function fresh() {
   const seed = Math.floor(Math.random() * 1e9);
@@ -519,7 +522,7 @@ let lines = [];
    New words come up over the picture. The game waits. OK wakes up after a moment that grows with the number of words [Proposal], so OK is not one more thing to tap fast.
    Words already read once go straight to the line below, with a flash [Proposal], so walking back through known places is not a string of OKs. */
 const READ = { on: true, open: false, q: [], tm: 0, wait: 0 };
-try { READ.on = localStorage.getItem('gmq-cards') !== 'off'; } catch (e) {}
+READ.on = getKeep('gmq-cards') !== 'off';
 const hashT = t => { let h = 7; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return h; };
 function say(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-4); text = String(text);
   if (READ.on && S && !widget && S.mode !== 'intro' && S.mode !== 'arrive') { const seen = S.read || (S.read = []), h = hashT(text); if (seen.indexOf(h) < 0) { seen.push(h); if (seen.length > 700) seen.splice(0, 200); readShow(text); } }
@@ -1253,7 +1256,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && NET
 /* THE NUMBER PAD.  [Source: Marc, 2026-11-17: "a little number keypad... floating, they can move around... it's annoying that they get the full keyboard"]
    Every number box uses it. The iPad keyboard stays away. Drag the top bar to move it; the place is remembered on this device. "ABC" brings the full keyboard back. */
 const PAD = { target: null, mini: false, pos: null, drag: null };
-try { PAD.mini = localStorage.getItem('gmq-pad-mini') === '1'; PAD.pos = JSON.parse(localStorage.getItem('gmq-pad-pos') || 'null'); } catch (e) {}
+try { PAD.mini = getKeep('gmq-pad-mini') === '1'; PAD.pos = JSON.parse(getKeep('gmq-pad-pos') || 'null'); } catch (e) {}
 const padBoxes = () => Array.prototype.slice.call(document.querySelectorAll('#toy input')).filter(i => i.getAttribute('inputmode') === 'numeric' || i.getAttribute('inputmode') === 'none');
 function padPrep() { const ins = padBoxes(); ins.forEach(i => i.setAttribute('inputmode', PAD.mini ? 'numeric' : 'none')); if (!ins.length) padHide(); }
 function padHide() { PAD.target = null; $('pad').hidden = true; }
@@ -1272,10 +1275,10 @@ document.addEventListener('focusin', e => { const t = e.target; if (!t || t.tagN
 $('padkeys').addEventListener('pointerdown', e => { e.preventDefault(); });                 /* a tap on the pad must not take the cursor out of the box */
 $('padkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b && !b.disabled) padKey(b.dataset.k); });
 $('padkb').addEventListener('pointerdown', e => { e.stopPropagation(); });
-$('padkb').addEventListener('click', () => { PAD.mini = !PAD.mini; try { localStorage.setItem('gmq-pad-mini', PAD.mini ? '1' : '0'); } catch (e) {} const t = PAD.target; padPrep(); if (t && document.body.contains(t)) { t.blur(); padShow(t); t.focus({ preventScroll: true }); } });
+$('padkb').addEventListener('click', () => { PAD.mini = !PAD.mini; setKeep('gmq-pad-mini', PAD.mini ? '1' : '0'); const t = PAD.target; padPrep(); if (t && document.body.contains(t)) { t.blur(); padShow(t); t.focus({ preventScroll: true }); } });
 $('padbar').addEventListener('pointerdown', e => { const r = $('pad').getBoundingClientRect(); PAD.drag = [e.clientX - r.left, e.clientY - r.top]; try { $('padbar').setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
 $('padbar').addEventListener('pointermove', e => { if (!PAD.drag) return; const el = $('pad'), W = window.innerWidth, H = window.innerHeight, x = Math.max(4, Math.min(W - el.offsetWidth - 4, e.clientX - PAD.drag[0])), y = Math.max(4, Math.min(H - el.offsetHeight - 4, e.clientY - PAD.drag[1])); el.style.left = x + 'px'; el.style.top = y + 'px'; PAD.pos = [x / W, y / H]; });
-const padDrop = () => { if (!PAD.drag) return; PAD.drag = null; try { localStorage.setItem('gmq-pad-pos', JSON.stringify(PAD.pos)); } catch (e) {} if (PAD.target && document.body.contains(PAD.target)) PAD.target.focus({ preventScroll: true }); };
+const padDrop = () => { if (!PAD.drag) return; PAD.drag = null; setKeep('gmq-pad-pos', JSON.stringify(PAD.pos)); if (PAD.target && document.body.contains(PAD.target)) PAD.target.focus({ preventScroll: true }); };
 $('padbar').addEventListener('pointerup', padDrop); $('padbar').addEventListener('pointercancel', padDrop);
 window.addEventListener('resize', () => { if (!$('pad').hidden) padPlace(); });
 function leave() { closeToy(); say('You step back. You can try again later.'); }
@@ -2717,7 +2720,7 @@ $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').valu
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
 netStart();
-$('cardsOn').checked = READ.on; $('cardsOn').onchange = () => { READ.on = $('cardsOn').checked; try { localStorage.setItem('gmq-cards', READ.on ? 'on' : 'off'); } catch (e) {} if (!READ.on) readOk(true); };
+$('cardsOn').checked = READ.on; $('cardsOn').onchange = () => { READ.on = $('cardsOn').checked; setKeep('gmq-cards', READ.on ? 'on' : 'off'); if (!READ.on) readOk(true); };
 /* teacher shortcuts: jump between the station and Voltara. The place changes first. Tidying up comes after, and cannot stop it. */
 function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(true); widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
 function goVoltara() { const again = !!(S.v && S.v.crossed); S.mode = 'planet'; S.ended = true; S.at = 'numerix'; S.beat = 0; V().sc = 'meadow'; PL.x = .13; PL.fade = 1; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; tidy();
