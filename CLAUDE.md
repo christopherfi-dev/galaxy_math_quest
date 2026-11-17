@@ -1,6 +1,6 @@
 # CLAUDE.md — Galaxy Math Quest world (standing rules)
 
-These rules apply to every Claude Code session in this folder. The current job is in `TASK_Quest_Review.md`.
+These rules apply to every Claude Code session in this folder. **Start with `HANDOFF_2026-11-17.md`.** It says what is built and what is next. (`TASK_Quest_Review.md` was the first job, the review of the old tasks. It is done.)
 
 ## Who and what
 
@@ -9,7 +9,7 @@ These rules apply to every Claude Code session in this folder. The current job i
   - Students repair their ship on the KIS Station (15 tasks, three for each of five ship parts).
   - Then they take quests on planets in five galaxies.
   - Finished tasks earn collectible cards.
-- **The project:** rebuild GMQ as a persistent, typed text world (a MUD). An AI runs the world inside a constraint file, and a small PHP server keeps the facts. The design is in `design/`. Nothing has been built yet.
+- **The project:** rebuild GMQ as a persistent, typed text world (a MUD). An AI runs the world inside a constraint file, and a small PHP server keeps the facts. The first design is in `design/`. **A playable sketch is now built** (`prototypes/kis_station_sketch.html`): the station, Planet Voltara, Galactic Trade and 20 small worlds. A first server exists in `engines/gmq-world/server/`. It has never run on Marc's site, and the AI has never answered a child. Only one child has played the sketch.
 
 ## How Marc works
 
@@ -49,6 +49,10 @@ These rules apply to every Claude Code session in this folder. The current job i
 
 | File | What it is |
 |---|---|
+| `HANDOFF_2026-11-17.md` | **Read first.** What is built, where things are, how the work is done, what is waiting on Marc |
+| `proposals/GMQ_Roadmap_v1_2026-11-17.md` | The whole game outlined: twelve parts, what is built, what is next |
+| `prototypes/kis_station_sketch.html` | The game itself, one file |
+| `checks/RUN_ALL.md` | Every test and number check, and how to run them |
 | `design/GMQ_World_Handoff_2026-11-16_v8.md` | Master design record: decisions, open questions, known errors |
 | `design/GMQ_World_Map_v1_2026-11-16.md` | Every place, how places connect, what unlocks what |
 | `design/GMQ_Place_Template_v1_2026-11-16.md` | The fixed format every place is written in, with a worked Voltara example |
