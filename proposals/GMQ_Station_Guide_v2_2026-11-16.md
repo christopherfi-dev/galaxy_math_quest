@@ -290,5 +290,21 @@ Stuck at any point: tap **Hint**. It names the next task.
 - **It does not solve puzzles for the child.** It only uses a thing the child chose to look at, or is standing beside. It never picks "the thing that would work".
 - It forgets when the child walks into another room.
 
-**What could prove this wrong:** watch for a child who looks at one thing, walks to another, and types "open". The game will open the first. If that happens often, the thing they stand beside should win over the thing they last looked at.
+**Changed in version 29, at your request:** if the child walks off by their own choice, the old thing is let go.
+
+| The child does | The game now |
+|---|---|
+| looks at the ship, walks to the crate, types `open` | opens the crate, because that is what they stand beside |
+| looks at the ship, walks to an empty spot, types `open` | asks "Open what? Tap a thing." It does not reach back for the ship. |
+| types `look vent`, and the game walks them to the vent, then `use wrench` | uses the wrench on the vent. A walk the game makes for them does not count as walking off. |
+
+**How I weighed the two ways [Proposal]:**
+
+| Rule | Good | Bad |
+|---|---|---|
+| The thing last looked at always wins (version 28) | simple | opens a thing the child has walked away from. Nobody expects that. |
+| The thing they stand beside always wins | matches what the eye sees | breaks your own first example on a big room: a child looks at the vent from across the room, types `use wrench`, and the game uses it on whatever is nearest |
+| **Built:** the thing last looked at wins, until the child walks off by their own choice. Then the thing beside them wins. | covers both cases | one more rule inside the game. The child never sees it. |
+
+**The one case left:** a child stands between two things, having walked there, and types `open`. On the station the game asks which. On Voltara and the small worlds it takes the nearer one, which is the one with its name showing above it.
 

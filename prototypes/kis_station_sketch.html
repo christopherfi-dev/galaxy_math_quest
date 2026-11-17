@@ -227,7 +227,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 28</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 29</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -718,7 +718,11 @@ const findItem = tokens => S.inv.find(i => tokens.some(t => ITEM_WORDS[i].includ
    If nothing is in mind, the one thing you are standing next to is used. Only when neither is clear does the game ask, and then a tap on a word finishes the command.
    It never guesses the answer to a puzzle: it only uses what the child chose to look at, or is standing beside. */
 let FOCUS = null;
-const focusOf = key => FOCUS && FOCUS.k === key ? FOCUS.id : null, VAGUE = ['it', 'that', 'this', 'them', 'him', 'her', 'on', 'with', 'here'];
+/* If the cadet then walks off by their own choice (a tap on the floor, or "go east"), the thing in mind is let go: what they stand beside now counts.
+   A walk that a command makes for them ("look vent" walks to the vent) does not let it go.  [Source: Marc, 2026-11-17: "no one would expect it to open the thing
+   that they were previously near if they suddenly walked to something new"] */
+const strayed = () => { if (FOCUS) FOCUS.moved = true; };
+const focusOf = key => FOCUS && FOCUS.k === key && !FOCUS.moved ? FOCUS.id : null, VAGUE = ['it', 'that', 'this', 'them', 'him', 'her', 'on', 'with', 'here'];
 function nearObj() { const c = Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i]) && (OBJ[i].tiles || []).some(t => Math.hypot(t[0] - P.x, t[1] - P.y) < 1.7)); return c.length === 1 ? c[0] : null; }
 function askWhat(out, draft, text) { $('cmd').value = draft; mark(); out(text + ' Tap a thing.'); }
 function act(raw) {
@@ -763,7 +767,7 @@ function act(raw) {
     const d = DIRS[rest[0]];
     if (d) { let x = Math.round(P.x), y = Math.round(P.y), n = 0; while (walkable(x + d[0], y + d[1]) && n < 14) { x += d[0]; y += d[1]; n++; if (G[y][x].t === 'door' ) { if (walkable(x + d[0], y + d[1])) { x += d[0]; y += d[1]; } break; } }
       if (!n) return out(x === 30 && y === 6 && d[1] === -1 ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : 'You cannot go that way.');
-      walkTo((a, b) => a === x && b === y); return out(`You walk ${Object.keys(DIRS).find(k => DIRS[k][0] === d[0] && DIRS[k][1] === d[1] && k.length > 3)}.`); }
+      strayed(); walkTo((a, b) => a === x && b === y); return out(`You walk ${Object.keys(DIRS).find(k => DIRS[k][0] === d[0] && DIRS[k][1] === d[1] && k.length > 3)}.`); }
     const rid = Object.keys(ROOMS).find(r => rest.some(t => t.length > 2 && !['bay', 'the', 'old'].includes(t) && ROOMS[r].name.toLowerCase().split(' ').some(w => w.startsWith(t))));
     if (rid) { if (ROOMS[rid].secret && !S.seen.includes(rid)) return out('You do not know that place.');
       const R = ROOMS[rid], ok = walkTo((x, y) => G[y][x].room === rid && (R.tiles || (Math.abs(x - (R.x + (R.w >> 1))) <= 2 && Math.abs(y - (R.y + (R.h >> 1))) <= 2)));
@@ -2095,7 +2099,7 @@ function actWorld(text, out) { if (widget) return out('Finish this first. Or tap
   if (verb === 'fly' || (th && th.id === 'ship' && verb && verb !== 'look')) return leaveWorld(out);
   if (!verb) return th ? out('Start with a doing word: look, touch, take or talk.') : netAsk(text, `${k.name} does not know that yet. Try: look, touch, take, talk.`, out);
   if (verb === 'look' && !rest.length) return out(`${k.name}. ${k.sky[2]} ${k.far[1]} You see: ${things.map(t => t.label).join(', ')}.`);
-  if (verb === 'go' && !th) { if (rest.includes('east') || rest.includes('right')) { PL.to = Math.min(.96, PL.x + .3); return out('You walk east.'); } if (rest.includes('west') || rest.includes('left')) { PL.to = Math.max(.04, PL.x - .3); return out('You walk west.'); } return out('Go where? East or west. Or tap a thing.'); }
+  if (verb === 'go' && !th) { if (rest.includes('east') || rest.includes('right')) { strayed(); PL.to = Math.min(.96, PL.x + .3); return out('You walk east.'); } if (rest.includes('west') || rest.includes('left')) { strayed(); PL.to = Math.max(.04, PL.x - .3); return out('You walk west.'); } return out('Go where? East or west. Or tap a thing.'); }
   if (!th && !rest.filter(t => !VAGUE.includes(t)).length) return askWhat(out, tk[0] + ' ', `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
   if (!th) return netAsk(text, 'You do not see that here.', out);
   FOCUS = { k: 'world:' + w.at, id: th.id };
@@ -2103,7 +2107,7 @@ function actWorld(text, out) { if (widget) return out('Finish this first. Or tap
   const doIt = () => out(verb === 'go' ? `You walk to the ${th.label}.` : wDo(k, th, verb)); if (Math.abs(PL.x - (th.x - .05)) < .03) return doIt(); PL.to = Math.max(.03, th.x - .05); PL.then = doIt; }
 function tapWorld(e) { const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase(); if (widget) return say('Finish this first. Or tap Leave.');
   const k = wKit(WORLD().at), near = wThings(k).filter(t => Math.abs(t.x - x) < .065 && y > .3).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0];
-  if (near) return act(`${/^(look|take|open|push|use|talk|touch)$/.test(draft) ? draft : near.id === 'creature' ? 'talk' : 'look'} ${near.words[0]}`); PL.to = Math.max(.03, Math.min(.97, x)); PL.then = null; }
+  if (near) return act(`${/^(look|take|open|push|use|talk|touch)$/.test(draft) ? draft : near.id === 'creature' ? 'talk' : 'look'} ${near.words[0]}`); strayed(); PL.to = Math.max(.03, Math.min(.97, x)); PL.then = null; }
 function drawWorld(dt) { const w = vw, h = Math.max(220, vh), hz = h * .58, gy = h * .86, k = wKit(WORLD().at), m = Math.min(w, h), r = wrng(TR[k.n].i * 31 + 5);
   if (PL.to != null) { const d = PL.to - PL.x, st = .3 * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
   const g = cx.createLinearGradient(0, 0, 0, hz * 1.1); g.addColorStop(0, k.sky[0]); g.addColorStop(1, k.sky[1]); cx.fillStyle = g; cx.fillRect(0, 0, w, vh);
@@ -2319,7 +2323,7 @@ function actPlanet(text, out) {
   let tx = best.x + (Math.abs(PL.x - best.x) < .03 ? 0 : -.035 * (PL.x < best.x ? 1 : -1)); if (sc === 'river' && !v0.crossed) tx = Math.min(tx, .19); if (sc === 'river' && v0.crossed && tx > .22 && tx < .78) tx = PL.x < .5 ? .19 : .81;
   if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); PL.to = tx; PL.then = run;
 }
-function vWalkOut(d) { const sc = V().sc, to = VSC[sc][d]; if (!to) return sc === 'meadow' && d === 'w' ? 'Thick glowing woods. You cannot go that way.' : 'You cannot go that way.';
+function vWalkOut(d) { strayed(); const sc = V().sc, to = VSC[sc][d]; if (!to) return sc === 'meadow' && d === 'w' ? 'Thick glowing woods. You cannot go that way.' : 'You cannot go that way.';
   if (sc === 'river' && d === 'e' && !V().crossed) { PL.to = .19; return V().fed ? 'The stones wait. Talk to the Gumblefish to cross.' : 'The river is too wide and deep. You need a way across.'; }
   if (sc === 'tunnel' && d === 'e' && !has('stone')) return 'It is pitch dark. You cannot see the way. You need a light.';
   PL.to = d === 'e' ? 1.02 : -.02; PL.then = () => { vGo(to, d === 'e' ? (to === 'hall' ? .1 : .05) : (sc === 'hall' ? .8 : .95)); const nw = !V().been.includes(to) && !(to !== 'hall' && VSC[to].k && V().plan); if (!V().been.includes(to)) { V().been.push(to); save(); } say(`You reach ${VSC[to].at}.${nw && VSEE[to] ? ' ' + VSEE[to] : ''}`); }; return `You walk ${d === 'e' ? 'east' : 'west'}.`; }
@@ -2329,7 +2333,7 @@ function tapPlanet(e) {
   if (x > .93 && VSC[sc].e) return say(vWalkOut('e')); if (x < .07 && VSC[sc].w) return say(vWalkOut('w'));
   const near = vThings().filter(t => t.x != null && Math.abs(t.x - x) < (t.spot ? .045 : .06) && y > .2).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0], id = near || (y < .14 && !VSC[sc].inside ? { words: ['sky'] } : null);
   if (id) return act(`${/^(look|take|open|push|use|talk|eat)$/.test(draft) ? draft : id.tap || 'look'} ${id.spot ? id.spot.name.toLowerCase() : id.words[0]}`);
-  let tx = Math.max(.03, Math.min(.97, x)); if (sc === 'river' && !V().crossed) tx = Math.min(tx, .19); if (sc === 'river' && V().crossed && tx > .22 && tx < .78) return say(vCross()); if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); PL.to = tx; PL.then = null;
+  let tx = Math.max(.03, Math.min(.97, x)); if (sc === 'river' && !V().crossed) tx = Math.min(tx, .19); if (sc === 'river' && V().crossed && tx > .22 && tx < .78) return say(vCross()); if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); strayed(); PL.to = tx; PL.then = null;
 }
 
 /* ---------- the maths that opens the way. Each one starts by showing the idea. ---------- */
@@ -2709,6 +2713,7 @@ cv.addEventListener('pointerdown', e => {
   if (id && id !== 'grate' || id === 'grate' && draft) { const w = OBJ[id].words[0]; return act(draft && /^(look|take|open|push|use)( \w+ on)?$/.test(draft) ? `${draft} ${w}` : `look ${w}`); }
   if (widget) return say('Finish this first. Or tap Leave.');
   if (!walkable(x, y) && !(G[y] && G[y][x] && G[y][x].t === 'floor')) return;
+  strayed();
   if (!walkTo((a, b) => a === x && b === y)) { if (x === 30 && y <= 5 && !S.parts.includes('Navigation')) say('The Launch Bay door is locked. The ship needs its Navigation part.'); }
 });
 
