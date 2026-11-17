@@ -21,7 +21,7 @@ const GOOD_CMD = ['push it', 'push crate', 'look at glass', 'use wrench on hatch
 (async () => {
   const b = await chromium.launch(), bad = [], errs = [];
   const p = await b.newPage({ viewport: { width: 820, height: 1180 } }); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-  await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
+  await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); } catch (e) {} }); /* reading cards have their own test: reading_card_test.js */ await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
   // 1. the word check itself
   const r = await p.evaluate(([B, N, G, C]) => ({ missed: B.filter(t => !rude(t)), missedNames: N.filter(t => !rude(t, true)), wrong: G.filter(t => rude(t) || rude(t, true)).concat(C.filter(t => rude(t))), gameWords: (() => { KNOWN = null; const before = new Set(); const add = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => x && before.add(x));
       [VERBS, PV].forEach(o => Object.keys(o).forEach(k => { add(k); o[k].forEach(add); })); [OBJ, VT].forEach(o => Object.keys(o).forEach(id => { (o[id].words || []).forEach(add); add(o[id].label); })); SPOTS.forEach(s => add(s.name)); Object.keys(ROOMS).forEach(id => add(ROOMS[id].name)); Object.keys(VSC).forEach(id => add(VSC[id].name));

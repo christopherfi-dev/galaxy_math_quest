@@ -231,3 +231,41 @@ Stuck at any point: tap **Hint**. It names the next task.
 - **Checked by `checks/number_pad_test.js`** at iPad upright, iPad sideways and phone size, with touch.
 - **Not tested on a real iPad.** If the full keyboard still appears on your iPads, tell me which iPadOS they run.
 
+---
+
+## Added 2026-11-17: read, then OK [Source: Marc, after watching his daughter play]
+
+**What you saw:** she did not notice the words at the bottom. She tapped and tapped. "She thinks it's just a click click click game."
+
+**Your idea, built (sketch version 24):**
+- New words come up on a card over the picture, in large type.
+- The game waits. Nothing else can be tapped or typed.
+- She taps **OK**. The card drops down, and the words sit on the line below, where they were before.
+
+**Two things I added [Proposal]:**
+
+| What | Why | Cost |
+|---|---|---|
+| **OK is asleep at first.** It fills up and wakes after a short wait: half a second, plus a little for each word, and never more than three and a half seconds. | Without it, OK is one more thing to tap fast. | A fast reader waits a moment. |
+| **Words already read once do not stop the game again.** They go straight to the line below, with a flash. | Walking back through six known places would be six OKs for nothing. | A child who tapped OK without reading will not see that card again. |
+
+**Also:**
+- Two messages that come together share one card.
+- A task panel never has a card over it. The panel is the thing to read.
+- There is a switch in the Teacher section: "Reading cards". It is on unless you turn it off.
+
+**What a card cannot do.** It can make a child stop. It cannot make a child read. What does that is needing the words to know what to do next.
+
+**What could prove this wrong:**
+
+| Claim | Test |
+|---|---|
+| The card makes her read | Watch her eyes on three cards. Then ask what the last one said. |
+| The wait is long enough, and not annoying | See whether she taps the sleeping OK again and again, or reads while it fills. |
+| Skipping words she has seen is right | See whether she is lost in a place she has been to before. |
+
+**Decisions for you:**
+1. Keep the wait on OK, shorten it, or remove it?
+2. Should words seen before stop the game again after a few days?
+3. Should the card have a "read it to me" button for children who are still learning English? The opening already speaks. It would help some children, and let others skip the reading.
+

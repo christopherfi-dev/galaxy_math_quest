@@ -13,14 +13,14 @@ const { chromium } = require('playwright'); const path = require('path');
   for (const [name, w, h] of [['ipad', 820, 1180], ['ipad-wide', 1180, 820], ['phone', 390, 760]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 1 }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
+    await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); } catch (e) {} }); /* reading cards have their own test: reading_card_test.js */ await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
     const pad = () => p.evaluate(() => { const e = $('pad'), r = e.getBoundingClientRect(); return { shown: !e.hidden, x: Math.round(r.left), y: Math.round(r.top), r: Math.round(r.right), b: Math.round(r.bottom), mini: e.classList.contains('mini') }; });
     const key = k => p.locator(`#padkeys button[data-k="${k}"]`).tap();
     const box = id => p.evaluate(i => { const e = $(i); return e ? { v: e.value, mode: e.getAttribute('inputmode'), focus: document.activeElement === e } : null; }, id);
     // Voltara, at the tower store: one box, then two boxes
     await p.evaluate(() => { skipIntro(); goVoltara(); const v = V(); v.met = true; v.sc = 'plaza'; give('ckey'); save(); }); await p.waitForTimeout(500);
     if ((await pad()).shown) bad.push(name + ': the pad shows with no number box');
-    await p.fill('#cmd', 'open tower'); await p.press('#cmd', 'Enter'); await p.waitForTimeout(2500); await p.locator('#try').tap(); await p.locator('#try').tap(); await p.waitForTimeout(200);
+    await p.fill('#cmd', 'open tower'); await p.press('#cmd', 'Enter'); await p.waitForSelector('#toy #try', { state: 'visible', timeout: 20000 }); await p.waitForTimeout(200); await p.locator('#try').tap(); await p.locator('#try').tap(); await p.waitForTimeout(200);
     const first = () => p.evaluate(() => { const i = document.querySelector('#toy input'); return i ? i.id : null; }); let A = await first();
     let st = await pad(), bx = await box(A); if (!st.shown || !bx || bx.mode !== 'none') bad.push(name + ': a number box should show the pad and keep the device keyboard away: ' + JSON.stringify([st, bx]));
     if (st.x < 0 || st.y < 0 || st.r > w || st.b > h) bad.push(name + ': the pad is off the screen ' + JSON.stringify(st));
@@ -43,7 +43,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.locator('#padkb').tap(); await p.waitForTimeout(150); st = await pad(); bx = await box(A); if (st.mini || bx.mode !== 'none') bad.push(name + ': 123 should bring the pad back');
     // it goes away with the task, and the place is remembered
     await p.locator('#leave').tap(); await p.waitForTimeout(150); if ((await pad()).shown) bad.push(name + ': the pad should go when the task closes');
-    await p.reload(); await p.waitForTimeout(500); await p.fill('#cmd', 'open tower'); await p.press('#cmd', 'Enter'); await p.waitForTimeout(2500); for (let i = 0; i < 2 && !(await p.locator('#toy input').count()); i++) await p.locator('#try').tap(); await p.waitForTimeout(200);
+    await p.reload(); await p.waitForTimeout(500); await p.fill('#cmd', 'open tower'); await p.press('#cmd', 'Enter'); await p.waitForSelector('#toy #try', { state: 'visible', timeout: 20000 }); await p.waitForTimeout(200); for (let i = 0; i < 2 && !(await p.locator('#toy input').count()); i++) await p.locator('#try').tap(); await p.waitForTimeout(200);
     const again = await pad(); if (!again.shown || Math.abs(again.x - kept.x) > 6 || Math.abs(again.y - kept.y) > 6) bad.push(name + ': the pad should be where it was left: ' + JSON.stringify([kept, again]));
     await p.locator('#leave').tap();
     // a word box never shows it
@@ -53,4 +53,4 @@ const { chromium } = require('playwright'); const path = require('path');
   }
   for (const t of bad) console.log('  PROBLEM', t);
   console.log('console errors:', errs.length ? errs : 'none'); console.log('RESULT:', !bad.length && !errs.length ? 'PASS' : 'FAIL'); await b.close();
-})().catch(e => { console.error('FAILED', e.message.split('\n')[0]); process.exit(1); });
+})().catch(e => { console.error('FAILED', e.message.split('\n')[0], '| at', (String(e.stack).match(/number_pad_test.js:\d+:\d+/) || [''])[0]); process.exit(1); });

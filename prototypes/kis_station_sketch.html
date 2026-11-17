@@ -183,6 +183,23 @@ table.report { width: 100%; border-collapse: collapse; font-size: .98rem; color:
 #stars h3.sub { margin-top: 14px; }
 details.box summary { font-family: var(--display); font-weight: 700; cursor: pointer; }
 details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; max-width: 40em; }
+/* the reading card: new words come up over the picture and wait for OK */
+#card { position: absolute; inset: 0; z-index: 6; display: flex; align-items: flex-end; justify-content: center; padding: 10px; background: linear-gradient(rgba(4,8,20,0) 25%, rgba(4,8,20,.6)); }
+#card[hidden] { display: none; }
+#cardbox { width: min(100%, 620px); max-height: 94%; overflow: auto; background: #fff8e7; color: #1b2340; border: 3px solid #ffb23e; border-radius: 16px; padding: 14px 16px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.55); transition: transform .38s ease-in, opacity .38s ease-in; animation: cardin .25s ease-out; }
+#cardtext p { margin: 0 0 9px; font-size: 1.24rem; line-height: 1.42; font-weight: 600; color: #1b2340; }
+#cardrow { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+#cardok { position: relative; overflow: hidden; min-width: 120px; font-size: 1.12rem; padding: 11px 24px; }
+#cardok[disabled] { background: #d5dae8; color: #4a5370; opacity: 1; }
+#cardfill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(109,179,255,.6); }
+#cardlab { position: relative; }
+#card.drop { background: none; pointer-events: none; } #card.drop #cardbox { transform: translateY(140%) scale(.9); opacity: 0; }
+#cardbox.nudge { animation: nudge .3s; }
+@keyframes cardin { from { transform: translateY(34px); opacity: 0; } }
+@keyframes cardfill { from { width: 0; } to { width: 100%; } }
+@keyframes nudge { 25% { transform: translateX(-7px); } 75% { transform: translateX(7px); } }
+.log .new.flash { animation: logflash 1.4s ease-out; border-radius: 6px; } @keyframes logflash { from { background: rgba(255,178,62,.55); } to { background: rgba(255,178,62,0); } }
+@media (max-width: 560px), (max-height: 560px) { #cardtext p { font-size: 1.08rem; } #cardbox { padding: 10px 12px; } #cardok { padding: 9px 20px; } }
 /* the floating number pad */
 #pad { position: fixed; z-index: 60; width: 190px; background: #101a30; border: 2px solid #ffb23e; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.5); padding: 6px; -webkit-user-select: none; user-select: none; touch-action: none; }
 #pad[hidden] { display: none; }
@@ -201,7 +218,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 <div id="pad" hidden role="group" aria-label="Number pad"><div id="padbar"><span id="padgrip">⠿ move me</span><button type="button" id="padkb" aria-label="Use the full keyboard">ABC</button></div>
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 23</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 24</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -209,6 +226,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
       <div class="hud">
         <h1 class="place" id="place">Arrival Dock</h1>
       </div>
+      <div id="card" hidden role="dialog" aria-live="polite" aria-label="Read this, then tap OK"><div id="cardbox"><div id="cardtext"></div><div id="cardrow"><button class="btn" type="button" id="cardok" disabled><span id="cardfill"></span><b id="cardlab">Read…</b></button></div></div></div>
     </div>
     <section id="toy" class="toy" hidden></section>
     <div class="log" role="log" aria-live="polite"><div class="chips" id="status"></div><div id="log"></div></div>
@@ -253,6 +271,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
       <li>This sketch knows about 40 words. On your site, your constrained AI would answer any other sentence.</li>
       <li>The robot is a new character. It is a proposal. Card names are samples from your files. Odds are 70, 25, 5.</li>
     </ul>
+    <p><label class="note"><input type="checkbox" id="cardsOn" checked> Reading cards: new words come up over the picture and wait for OK</label></p>
     <p><button class="btn quiet" type="button" id="bank">Show the skills bank</button> <button class="btn quiet" type="button" id="tovolt">Go straight to Voltara</button> <button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
     <p class="note">"Go straight to Voltara" skips the opening and the station. It keeps the cards, the bag and anything already done. It is for you, to look at the quest. Students reach Voltara by fitting their five ship parts and launching.</p>
     <p class="note">The opening uses your own words from the student site: the home page, then the Space Station Tasks page, shortened.</p>
@@ -483,9 +502,28 @@ const chime = () => { beep(660, .12); setTimeout(() => beep(880, .14), 110); set
    WORDS: the log, the command line, verbs and the bag
    ===================================================================== */
 let lines = [];
-function say(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-4); drawLog(); }
+/* READ, THEN OK.  [Source: Marc, 2026-11-17: his daughter did not notice the words at the bottom. "She thinks it's just a click click click game."
+   "The words appear as an overlay and then you touch OK after you read them and then they drop back down to where they normally are."]
+   New words come up over the picture. The game waits. OK wakes up after a moment that grows with the number of words [Proposal], so OK is not one more thing to tap fast.
+   Words already read once go straight to the line below, with a flash [Proposal], so walking back through known places is not a string of OKs. */
+const READ = { on: true, open: false, q: [], tm: 0, wait: 0 };
+try { READ.on = localStorage.getItem('gmq-cards') !== 'off'; } catch (e) {}
+const hashT = t => { let h = 7; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return h; };
+function say(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-4); text = String(text);
+  if (READ.on && S && !widget && S.mode !== 'intro' && S.mode !== 'arrive') { const seen = S.read || (S.read = []), h = hashT(text); if (seen.indexOf(h) < 0) { seen.push(h); if (seen.length > 700) seen.splice(0, 200); readShow(text); } }
+  drawLog(); if (!READ.open) flashLog(); }
+function flashLog() { const n = document.querySelector('#log .new'); if (n) { n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); } }
+function readShow(text) { READ.q.push(text); READ.open = true; $('cardtext').innerHTML = READ.q.map(t => `<p>${esc(t)}</p>`).join(''); const words = READ.q.join(' ').split(/\s+/).length; READ.wait = Math.min(3500, 500 + words * 160);
+  const c = $('card'), b = $('cardok'), fl = $('cardfill'); c.hidden = false; c.classList.remove('drop'); b.disabled = true; $('cardlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `cardfill ${READ.wait}ms linear forwards`;
+  clearTimeout(READ.tm); READ.tm = setTimeout(() => { b.disabled = false; $('cardlab').textContent = 'OK'; fl.style.animation = 'none'; }, READ.wait); try { $('cmd').blur(); } catch (e) {} }
+function readOk(quiet) { if (!READ.open) return; clearTimeout(READ.tm); READ.open = false; READ.q = []; const c = $('card'); drawLog(); if (quiet) { c.hidden = true; return; }
+  c.classList.add('drop'); beep(520, .05); flashLog(); setTimeout(() => { if (!READ.open) c.hidden = true; }, 400); }
+function readNudge() { const c = $('cardbox'); c.classList.remove('nudge'); void c.offsetWidth; c.classList.add('nudge'); beep(200, .08); }
+$('cardok').addEventListener('click', () => { if (!$('cardok').disabled) readOk(); });
+$('card').addEventListener('pointerdown', e => { if (!(e.target.closest && e.target.closest('#cardok'))) readNudge(); });
+document.addEventListener('keydown', e => { if (!READ.open || (e.key !== 'Enter' && e.key !== ' ')) return; e.preventDefault(); e.stopPropagation(); if ($('cardok').disabled) readNudge(); else readOk(); }, true);
 const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your ship. Or type: look ship.', 'Tip: now try your own idea. Push, open, take or use something.'];
-function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? `<span class="new">${esc(last.text)}</span>` : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
+function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
 function drawStatus() {
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>`;
@@ -649,6 +687,7 @@ function findThing(tokens) {
 const findItem = tokens => S.inv.find(i => tokens.some(t => ITEM_WORDS[i].includes(t))) || null;
 function act(raw) {
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
+  if (READ.open && !/^teacher (voltara|station)$/.test(text)) return readNudge();
   if (/^teacher (voltara|station)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : goStation(); }
   $('cmd').value = ''; mark();
   if (rude(raw)) return say('Kind words only, cadet. Try a command like: look, take, open, push, use, go.', '…');
@@ -1129,7 +1168,7 @@ function card(force) {
 /* =====================================================================
    TOYS: locker lock, mini battle, mini quest, project
    ===================================================================== */
-function toy(html) { const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); }
+function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); }
 function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); }
 /* THE NUMBER PAD.  [Source: Marc, 2026-11-17: "a little number keypad... floating, they can move around... it's annoying that they get the full keyboard"]
    Every number box uses it. The iPad keyboard stays away. Drag the top bar to move it; the place is remembered on this device. "ABC" brings the full keyboard back. */
@@ -1390,7 +1429,7 @@ function showEnding() {
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
   $('again').onclick = restart;
 }
-function restart() { closeToy(); $('report').hidden = true; S = fresh(); save(); build(); zapD = null; P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Earth needs your help!'); introPanel(); }
+function restart() { readOk(true); closeToy(); $('report').hidden = true; S = fresh(); save(); build(); zapD = null; P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Earth needs your help!'); introPanel(); }
 
 /* =====================================================================
    DRAWING THE STATION
@@ -2366,8 +2405,9 @@ S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y
 $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
+$('cardsOn').checked = READ.on; $('cardsOn').onchange = () => { READ.on = $('cardsOn').checked; try { localStorage.setItem('gmq-cards', READ.on ? 'on' : 'off'); } catch (e) {} if (!READ.on) readOk(true); };
 /* teacher shortcuts: jump between the station and Voltara. The place changes first. Tidying up comes after, and cannot stop it. */
-function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
+function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(true); widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
 function goVoltara() { const again = !!(S.v && S.v.crossed); S.mode = 'planet'; S.ended = true; S.at = 'numerix'; S.beat = 0; V().sc = 'meadow'; PL.x = .13; PL.fade = 1; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; tidy();
   say(again ? 'Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.' : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); }
 function goStation() { S.mode = 'station'; S.ended = false; S.beat = 0; if (S.tut == null) S.tut = 3; tidy(); P.x = S.x; P.y = S.y; say(`Teacher shortcut. You are on the KIS Station, in the ${ROOMS[S.room].name}.`); $('place').scrollIntoView({ block: 'nearest' }); }
