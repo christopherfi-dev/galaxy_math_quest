@@ -42,11 +42,11 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .btn.quiet { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
 
 /* the game view: always a night-side picture, whatever the page theme */
-.console { border: 2px solid var(--line); border-radius: 16px; overflow: hidden; background: #0b1322; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; height: min(82dvh, 150vw); min-height: 430px;
+.console { border: 2px solid var(--line); border-radius: 16px; overflow: hidden; background: #0b1322; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; height: min(82vh, 150vw); height: min(82dvh, 150vw); min-height: 430px;
   --bg: #0b1422; --panel: #132035; --ink: #e8eef8; --muted: #a9b9d0; --line: #33476a; --hull: #1c2c46;
   --accent: #6db3ff; --accent-ink: #08121f; --good: #6fd08a; --bad: #ff9486; color: var(--ink); color-scheme: dark; }
 @media (orientation: landscape) and (max-height: 560px) {
-  .console { grid-template-columns: minmax(0, 1fr) minmax(230px, 42%); grid-template-rows: minmax(0, 1fr) auto; height: max(84dvh, 300px); min-height: 0; }
+  .console { grid-template-columns: minmax(0, 1fr) minmax(230px, 42%); grid-template-rows: minmax(0, 1fr) auto; height: max(84vh, 300px); height: max(84dvh, 300px); min-height: 0; }
   .console .stage { grid-row: 1 / span 2; }
   .console .toy { grid-column: 2; grid-row: 1; max-height: none; border-top: 0; border-left: 2px solid #ffb23e; align-self: stretch; min-height: 0; }
   .console .toy .bar { display: none; }
@@ -68,7 +68,7 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .log .you { font-family: var(--display); font-weight: 700; color: #6db3ff; text-transform: uppercase; letter-spacing: .04em; font-size: .86rem; }
 .log .old { color: #a9b9d0; font-size: .92rem; }
 .log .new { font-size: 1.12rem; color: #fff; }
-.toy { background: #0b1322; border-top: 2px solid #ffb23e; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; max-height: 44dvh; overflow: auto; }
+.toy { background: #0b1322; border-top: 2px solid #ffb23e; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; max-height: 44vh; max-height: 44dvh; overflow: auto; }
 .toy h3 { font-size: .95rem; color: #ffb23e; }
 .toy .eyebrow { font-size: .68rem; }
 @media (max-width: 560px), (max-height: 560px) { .toy #onlist, .toy label.note { display: none; } .toy .field { gap: 8px; } .log { min-height: 0; }
@@ -107,11 +107,11 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .parts { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .parts li { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
 .parts b { font-family: var(--display); font-size: .95rem; min-width: 9.2em; }
-.toy:has(.parts) { max-height: 64dvh; }
-.toy:has(.pic) { max-height: 66dvh; }
+.toy:has(.parts) { max-height: 64vh; max-height: 64dvh; }
+.toy:has(.pic) { max-height: 66vh; max-height: 66dvh; }
 .picrow { display: flex; gap: 14px; align-items: center; }
 .picrow .pic { flex: 0 0 auto; width: min(44%, 300px); }
-.picsvg { display: block; width: 100%; height: auto; max-height: min(36dvh, 250px); margin: 0 auto; touch-action: manipulation; }
+.picsvg { display: block; width: 100%; height: auto; max-height: min(36vh, 250px); max-height: min(36dvh, 250px); margin: 0 auto; touch-action: manipulation; }
 .picsvg [data-t] { cursor: pointer; }
 .picrow .pictext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .field.opts .opt { min-width: 3.2em; font-size: 1.05rem; }
@@ -119,13 +119,14 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .frac { display: inline-flex; flex-direction: column; align-items: stretch; gap: 4px; } .frac hr { border: 0; border-top: 3px solid var(--ink); margin: 0; }
 .sep { font-size: 1.4rem; font-family: var(--display); }
 .codes { gap: 14px; } .code { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; } .field .code input { width: 2.6em; } .field .code input.wrong { border-color: var(--bad); }
-.toy:has(.wires), .toy:has(.codes) { max-height: 64dvh; }
+.toy:has(.wires), .toy:has(.codes) { max-height: 64vh; max-height: 64dvh; }
 .field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .wires .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
 .word.hintb { border-style: dashed; }
+#t_ver { margin-left: auto; } #toold { border-color: var(--bad); }
 .tbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; } .tbar .word { border-style: dashed; }
 .art3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .art3 svg, .art svg.picsvg { width: 100%; height: auto; }
 @media (max-width: 600px) { .art3 { grid-template-columns: 1fr; } .art3 svg { max-height: 60px; } }
-.toy:has(.wire[data-p]) { max-height: 74dvh; } .toy .cn { margin-right: 4px; }
+.toy:has(.wire[data-p]) { max-height: 74vh; max-height: 74dvh; } .toy .cn { margin-right: 4px; }
 .star.real { border-style: dashed; border-color: #8a63e6; } .star.real.lit svg { fill: #8a63e6; stroke: #8a63e6; } .star svg circle { stroke-width: 2; }
 .eyebrow.real { color: #b9a3ff; } ol.slip { margin: 0; padding-left: 1.3em; display: grid; gap: 3px; }
 @media (max-width: 600px) and (orientation: portrait) { .console:has(.toy:not([hidden])) .log { display: none; } }
@@ -133,14 +134,14 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 @media (max-width: 600px) and (orientation: portrait) { .console:has(.toy:not([hidden]) #dleft) .log { display: none; } .toy:has(#dleft) h3 { display: none; } .toy:has(#dleft) .mw { font-size: .82rem; } }
 .mw { font-size: .9rem; color: var(--muted); border-left: 3px solid #ffb23e; padding-left: 8px; } .mw b { color: #ffb23e; font-weight: 700; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; } .chips .chip { font-size: .95rem; }
-@media (max-width: 600px) and (orientation: portrait) { .picrow { flex-direction: column; align-items: stretch; gap: 6px; } .picrow .pic { width: 100%; } .picsvg { max-height: 23dvh; } }
+@media (max-width: 600px) and (orientation: portrait) { .picrow { flex-direction: column; align-items: stretch; gap: 6px; } .picrow .pic { width: 100%; } .picsvg { max-height: 23vh; max-height: 23dvh; } }
 /* a phone on its side: a picture question takes the whole right side, picture beside the words */
 @media (orientation: landscape) and (max-height: 560px) {
   .console:has(.toy:not([hidden]) .pic) { grid-template-columns: minmax(0, 1fr) minmax(300px, 58%); }
   .console:has(.toy:not([hidden]) .pic) .toy { grid-row: 1 / span 2; }
   .console:has(.toy:not([hidden]) .pic) .log { display: none; }
   .console .toy:has(.pic) { max-height: none; }
-  .picrow { gap: 10px; } .picrow .pic { width: 48%; } .picsvg { max-height: 64dvh; } .toy:has(.pic) p { font-size: .95rem; } .toy:has(.pic) .q { font-size: 1rem; }
+  .picrow { gap: 10px; } .picrow .pic { width: 48%; } .picsvg { max-height: 64vh; max-height: 64dvh; } .toy:has(.pic) p { font-size: .95rem; } .toy:has(.pic) .q { font-size: 1rem; }
 }
 .parts .bad { color: var(--bad); font-family: var(--display); font-size: .8rem; }
 .name input { width: 9em; font: inherit; font-family: var(--display); font-weight: 700; text-transform: uppercase; padding: 7px 10px; border: 2px solid var(--ink); border-radius: 10px; background: var(--bg); color: var(--ink); }
@@ -179,7 +180,8 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 </style>
 
 <div class="wrap">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 18</span></p>
+  <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
       <canvas id="cv" tabindex="0" aria-label="The game. Tap the ground to walk. Tap a thing to look at it."></canvas>
@@ -236,6 +238,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 </div>
 
 <script>
+document.getElementById('toold').hidden = true;      // this line runs only if the browser can read the whole script
 /* =====================================================================
    THE WORLD AS DATA
    ===================================================================== */
@@ -1318,6 +1321,10 @@ function restart() { closeToy(); $('report').hidden = true; S = fresh(); save();
 /* =====================================================================
    DRAWING THE STATION
    ===================================================================== */
+/* Some classroom boards and older iPads have a browser with no roundRect. This stands in for it, so the game still draws. */
+if (!CanvasRenderingContext2D.prototype.roundRect) CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) { if (w < 0) { x += w; w = -w; } if (h < 0) { y += h; h = -h; }
+  let q = Array.isArray(r) ? r.slice() : [r || 0]; q = q.length === 1 ? [q[0], q[0], q[0], q[0]] : q.length === 2 ? [q[0], q[1], q[0], q[1]] : q.length === 3 ? [q[0], q[1], q[2], q[1]] : q; const m = Math.min(w, h) / 2; q = q.map(v => Math.max(0, Math.min(+v || 0, m)));
+  this.moveTo(x + q[0], y); this.lineTo(x + w - q[1], y); this.quadraticCurveTo(x + w, y, x + w, y + q[1]); this.lineTo(x + w, y + h - q[2]); this.quadraticCurveTo(x + w, y + h, x + w - q[2], y + h); this.lineTo(x + q[3], y + h); this.quadraticCurveTo(x, y + h, x, y + h - q[3]); this.lineTo(x, y + q[0]); this.quadraticCurveTo(x, y, x + q[0], y); this.closePath(); };
 const cv = $('cv'), cx = cv.getContext('2d');
 let ts = 44, vw = 0, vh = 0, cam = { x: 0, y: 0 }, tNow = 0, banner = null, sparkle = null, floatText = null, alarm = 0, hover = null, zap = 0, placeText = '';
 const STARS = Array.from({ length: 170 }, (_, i) => ({ x: (i * 97.31) % 1, y: (i * 61.73 + i * i * .0131) % 1, s: 1 + (i % 3) * .6, p: i * 1.7, z: 1 + i % 3 }));
