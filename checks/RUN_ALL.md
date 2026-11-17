@@ -17,6 +17,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
+| `remember_test.js` | The game remembers what you were looking at: "use wrench", "open", "push it" |
 | `reading_card_test.js` | The "read, then OK" cards |
 | `number_pad_test.js` | The floating number pad |
 | `kind_words_test.js` | Rude words are refused and never shown |

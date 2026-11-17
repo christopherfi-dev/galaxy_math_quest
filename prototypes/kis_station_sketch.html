@@ -227,7 +227,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 27</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 28</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -615,6 +615,7 @@ function rude(t, strict) { const words = String(t).toLowerCase().split(/\s+/).fi
 /* the game repeats only words it knows. Numbers are fine. Anything else is shown as … */
 let KNOWN = null;
 function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place trade beacon routes route trader traders gems space fly galaxy planet hint help touch poke shake dig creature animal alien rock post stall flag seed star east west'.split(' '));
+  Object.keys(ITEM_WORDS).forEach(i => ITEM_WORDS[i].forEach(x => k.add(x))); Object.keys(ITEMS).forEach(i => ITEMS[i].toLowerCase().split(' ').forEach(x => k.add(x)));
   Object.keys(WKIT.flora).forEach(t => WKIT.flora[t][0].split(' ').forEach(x => k.add(x))); WKIT.rock.forEach(r => r[0].split(' ').forEach(x => k.add(x))); Object.keys(TR).forEach(n => { const kk = wKit(n); k.add(kk.name.toLowerCase()); k.add(kk.cr.name.toLowerCase()); });
   const add = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); });
   [VERBS, PV].forEach(o => Object.keys(o).forEach(key => { add(key); o[key].forEach(add); }));
@@ -709,6 +710,14 @@ function findThing(tokens) {
   return null;
 }
 const findItem = tokens => S.inv.find(i => tokens.some(t => ITEM_WORDS[i].includes(t))) || null;
+/* THE GAME REMEMBERS WHAT YOU WERE DOING.  [Source: Marc, 2026-11-17: a child at the vent types "use wrench" and is asked "on what?". "It kind of breaks it for children."]
+   The thing you last looked at, touched or walked to in this place is kept in mind. A command with no thing in it is taken to mean that thing.
+   If nothing is in mind, the one thing you are standing next to is used. Only when neither is clear does the game ask, and then a tap on a word finishes the command.
+   It never guesses the answer to a puzzle: it only uses what the child chose to look at, or is standing beside. */
+let FOCUS = null;
+const focusOf = key => FOCUS && FOCUS.k === key ? FOCUS.id : null, VAGUE = ['it', 'that', 'this', 'them', 'him', 'her', 'on', 'with', 'here'];
+function nearObj() { const c = Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i]) && (OBJ[i].tiles || []).some(t => Math.hypot(t[0] - P.x, t[1] - P.y) < 1.7)); return c.length === 1 ? c[0] : null; }
+function askWhat(out, draft, text) { $('cmd').value = draft; mark(); out(text + ' Tap a thing.'); }
 function act(raw) {
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
   if (widget && widget.kind === 'login') return;
@@ -716,7 +725,7 @@ function act(raw) {
   if (/^teacher (voltara|station|space)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : text.endsWith('space') ? goSpace() : goStation(); }
   $('cmd').value = ''; mark();
   if (rude(raw)) return say('Kind words only, cadet. Try a command like: look, take, open, push, use, go.', '…');
-  const shown = echoSafe(raw), out = s => { if (s) say(s, shown); else { lines.push({ you: shown }); drawLog(); } };
+  let shown = echoSafe(raw); const out = s => { if (s) say(s, shown); else { lines.push({ you: shown }); drawLog(); } };
   if (S.mode === 'intro' || S.mode === 'arrive') return out('Tap Next to go on.');
   if (S.mode === 'space') return actSpace(text, out);
   if (S.mode === 'planet') return actPlanet(text, out);
@@ -756,7 +765,7 @@ function act(raw) {
     if (rid) { if (ROOMS[rid].secret && !S.seen.includes(rid)) return out('You do not know that place.');
       const R = ROOMS[rid], ok = walkTo((x, y) => G[y][x].room === rid && (R.tiles || (Math.abs(x - (R.x + (R.w >> 1))) <= 2 && Math.abs(y - (R.y + (R.h >> 1))) <= 2)));
       return out(ok ? `You walk to the ${R.name}.` : rid === 'launch' ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : rid === 'power' ? 'The cargo pile is in the way. Load the cargo first.' : 'You cannot get there yet.'); }
-    const g = findThing(rest); if (g && DO[g].go) return out(DO[g].go()); if (g) { walkToObj(g); return out('You walk over.'); }
+    const g = findThing(rest); if (g) FOCUS = { k: 'station:' + S.room, id: g }; if (g && DO[g].go) return out(DO[g].go()); if (g) { walkToObj(g); return out('You walk over.'); }
     return out('Go where? Type north, south, east or west. Or tap the floor.');
   }
   // split "use X on Y"
@@ -766,11 +775,14 @@ function act(raw) {
   if (tk[0] === 'fix' && !item && has('wrench')) item = 'wrench';
   if (tk[0] === 'launch' && S.room !== 'launch') return out('You launch from the Launch Bay. It is north of the Navigation Bay.');
   if (tk[0] === 'launch' || (verb === 'use' && !thing && rest.includes('launch'))) thing = S.room === 'launch' ? 'console' : null;
+  if (!thing && (item ? verb === 'use' : ['use', 'take', 'open', 'push'].includes(verb) || (verb === 'look' && rest.length > 0)) && !rest.filter(t => !VAGUE.includes(t) && !(item && ITEM_WORDS[item].includes(t))).length) {
+    const f = focusOf('station:' + S.room), g = f && OBJ[f] && objOn(OBJ[f]) ? f : nearObj(); if (g) { thing = g; shown += (item ? ' on ' : ' ') + OBJ[g].words[0]; } }
   if (!thing && item && verb === 'look') return out(ITEM_LOOK[item]);
-  if (!thing && item && verb === 'use') return out(`Use the ${ITEMS[item]} on what?`);
+  if (!thing && item && verb === 'use') return rest.some(t => !VAGUE.includes(t) && !ITEM_WORDS[item].includes(t)) ? netAsk(text, 'You do not see that here.', out) : askWhat(out, `use ${ITEM_WORDS[item][0]} on `, `Use the ${ITEMS[item]} on what?`);
   if (!thing && item) return out('It is in your bag already.');
-  if (!thing && !rest.length) return out(verb === 'look' ? `${ROOMS[S.room].name}. ${Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => OBJ[i].label).join(', ')}.` : `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
+  if (!thing && !rest.length) return out(verb === 'look' ? `${ROOMS[S.room].name}. ${Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => OBJ[i].label).join(', ')}.` : (($('cmd').value = tk[0] + ' '), mark(), `${tk[0][0].toUpperCase() + tk[0].slice(1)} what? Tap a thing.`));
   if (!thing) return netAsk(text, 'You do not see that here.', out);
+  FOCUS = { k: 'station:' + S.room, id: thing };
   if (verb !== 'use') item = null;
   out(null);
   if (S.tut === 1 && verb === 'look') S.tut = 2;
@@ -2073,14 +2085,17 @@ function wLockShow(k) { const w = widget, q = wLockQ(k, w.tries);
     const W = WORLD(); W.finds.push(k.n); S.log.push({ what: `Star seed on ${k.name} (Planet ${k.n})`, skill: ['Round to the nearest 10', 'Round to the nearest 100', 'Add within 1,000', 'Subtract within 1,000'][k.lock], result: w.tries ? 'found' : 'found' }); closeToy(); save(); drawStatus(); chime(); card();
     say(`The lock clicks. Inside is a star seed! It glows in your hand. You have ${W.finds.length} of 20 star seeds. You earn a card.`); }; }
 function actWorld(text, out) { if (widget) return out('Finish this first. Or tap Leave.'); const w = WORLD(), k = wKit(w.at), things = wThings(k), tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'by', 'in', 'on', 'under', 'of', 'up', 'please', 'with'].includes(t));
-  const verb = Object.keys(WV).find(v => WV[v].includes(tk[0])), rest = verb ? tk.slice(1) : tk, th = things.find(t => rest.some(r => t.words.includes(r))) || things.find(t => t.words.includes(rest.join(' ')));
+  const verb = Object.keys(WV).find(v => WV[v].includes(tk[0])), rest = verb ? tk.slice(1) : tk; let th = things.find(t => rest.some(r => t.words.includes(r))) || things.find(t => t.words.includes(rest.join(' '))) || null;
+  if (!th && (['touch', 'take', 'talk'].includes(verb) || (verb === 'look' && rest.length > 0)) && !rest.filter(t => !VAGUE.includes(t)).length) { const f = focusOf('world:' + w.at); th = things.find(t => t.id === f) || things.filter(t => Math.abs(t.x - PL.x) < .09).sort((a, b) => Math.abs(a.x - PL.x) - Math.abs(b.x - PL.x))[0] || null; }
   if (verb === 'hint') return out(w.finds.indexOf(k.n) >= 0 ? 'You have this world\'s star seed. Fly on from your ship.' : w.talks < 2 ? `Watch the ${k.cr.name}. Talk to it twice.` : `The ${k.cr.name} looked at the ${things.find(t => t.id === k.at).label}. Touch it.`);
   if (verb === 'bag') return out(`You carry ${w.finds.length} of 20 star seeds.`);
   if (verb === 'fly' || (th && th.id === 'ship' && verb && verb !== 'look')) return leaveWorld(out);
   if (!verb) return th ? out('Start with a doing word: look, touch, take or talk.') : netAsk(text, `${k.name} does not know that yet. Try: look, touch, take, talk.`, out);
   if (verb === 'look' && !rest.length) return out(`${k.name}. ${k.sky[2]} ${k.far[1]} You see: ${things.map(t => t.label).join(', ')}.`);
   if (verb === 'go' && !th) { if (rest.includes('east') || rest.includes('right')) { PL.to = Math.min(.96, PL.x + .3); return out('You walk east.'); } if (rest.includes('west') || rest.includes('left')) { PL.to = Math.max(.04, PL.x - .3); return out('You walk west.'); } return out('Go where? East or west. Or tap a thing.'); }
+  if (!th && !rest.filter(t => !VAGUE.includes(t)).length) return askWhat(out, tk[0] + ' ', `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
   if (!th) return netAsk(text, 'You do not see that here.', out);
+  FOCUS = { k: 'world:' + w.at, id: th.id };
   if (th.id === 'ship' ) return out(`Your ship${S.ship ? ', the ' + S.ship : ''}. It waits for you. To leave, type: fly.`);
   const doIt = () => out(verb === 'go' ? `You walk to the ${th.label}.` : wDo(k, th, verb)); if (Math.abs(PL.x - (th.x - .05)) < .03) return doIt(); PL.to = Math.max(.03, th.x - .05); PL.then = doIt; }
 function tapWorld(e) { const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase(); if (widget) return say('Finish this first. Or tap Leave.');
@@ -2277,7 +2292,7 @@ function actPlanet(text, out) {
   let v = Object.keys(PV).find(k => PV[k].includes(tk[0])); if (tk[0] === 'read' || tk[0] === 'count') v = /board|log|house|list/.test(text) ? 'use' : 'look';
   const rest = tk.slice(1), dir = DIRS[rest[0]] || DIRS[tk[0]], things = vThings();
   const item = [...S.inv].reverse().find(i => rest.some(t => ITEM_WORDS[i].includes(t))) || null, cut = rest.findIndex(t => t === 'on' || t === 'with'), names = cut < 0 ? rest.filter(t => !(item && v === 'use' && ITEM_WORDS[item].includes(t))) : rest.slice(cut + 1);
-  const score = t => names.filter(n => t.words.includes(n)).length, best = things.filter(t => score(t) > 0).sort((a, b) => score(b) - score(a) || Math.abs((a.x || 0) - PL.x) - Math.abs((b.x || 0) - PL.x))[0] || null;
+  const score = t => names.filter(n => t.words.includes(n)).length; let best = things.filter(t => score(t) > 0).sort((a, b) => score(b) - score(a) || Math.abs((a.x || 0) - PL.x) - Math.abs((b.x || 0) - PL.x))[0] || null;
   if (dir && dir[0] && (v === 'go' || !v)) return out(vWalkOut(dir[0] > 0 ? 'e' : 'w'));
   if (!v) return best ? out('Start with a doing word: look, take, push, use, talk or dig.') : netAsk(text, 'Voltara does not know that yet. Try: look, take, use, talk, go, dig.', out);
   if (v === 'hint') return out('The butterfly whispers: ' + planetHint());
@@ -2289,9 +2304,12 @@ function actPlanet(text, out) {
   if (v === 'silly') return out('You jump high! Voltara has soft, bouncy ground.');
   if (v === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
   if (v === 'go' && !best) { const rid = Object.keys(VSC).find(r => rest.some(t => t.length > 3 && VSC[r].name.toLowerCase().includes(t))); if (rid === sc) return out('You are here.'); return out(rid ? `${VSC[rid].name} is not next to here. Walk east or west. The map shows the way.` : 'Go where? Type east or west. Or tap the edge of the picture.'); }
-  if (!best && item && v === 'look') return out(ITEM_LOOK[item]); if (!best && item && v === 'use') return out(`Use the ${ITEMS[item]} on what?`);
+  if (!best && (item ? v === 'use' : ['use', 'take', 'open', 'push', 'talk', 'eat'].includes(v) || (v === 'look' && names.length > 0)) && !names.filter(t => !VAGUE.includes(t) && !(item && ITEM_WORDS[item].includes(t))).length) { const f = focusOf('planet:' + sc), c = things.filter(t => t.x != null);
+    best = c.find(t => (t.spot ? t.spot.name : t.id) === f) || c.filter(t => Math.abs(t.x - PL.x) < (t.spot ? .07 : .11)).sort((a, b) => Math.abs(a.x - PL.x) - Math.abs(b.x - PL.x))[0] || null; }
+  if (!best && item && v === 'look') return out(ITEM_LOOK[item]); if (!best && item && v === 'use') return askWhat(out, `use ${ITEM_WORDS[item][0]} on `, `Use the ${ITEMS[item]} on what?`);
   if (!best && rest.length && !(v === 'look' && !rest.length)) return netAsk(text, 'You do not see that here.', out);
-  if (!best) return out(v === 'look' && !rest.length ? `${VSC[sc].name}. You see: ${things.filter(t => t.x != null && !t.spot).map(t => t.label).concat(VSC[sc].k ? [`${CITY[VSC[sc].k].places.length} places`] : []).join(', ')}.` : rest.length ? 'You do not see that here.' : `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
+  if (!best) return out(v === 'look' && !rest.length ? `${VSC[sc].name}. You see: ${things.filter(t => t.x != null && !t.spot).map(t => t.label).concat(VSC[sc].k ? [`${CITY[VSC[sc].k].places.length} places`] : []).join(', ')}.` : rest.length ? 'You do not see that here.' : (($('cmd').value = tk[0] + ' '), mark(), `${tk[0][0].toUpperCase() + tk[0].slice(1)} what? Tap a thing.`));
+  FOCUS = { k: 'planet:' + sc, id: best.spot ? best.spot.name : best.id };
   out(null);
   const run = () => { let r; if (best.spot) r = spotDo(best.spot, v, item); else { const d = VDO[best.id] || {}, h = d[v === 'go' ? (d.go ? 'go' : 'look') : v]; r = typeof h === 'function' ? h(item) : h; if (r === undefined && h !== undefined) return; r = r || (v === 'eat' ? 'You cannot eat that.' : NOPE[v]) || 'Nothing happens.'; } if (r !== undefined && r !== true) say(r); };
   if (best.x == null) return run();

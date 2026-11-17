@@ -269,3 +269,26 @@ Stuck at any point: tap **Hint**. It names the next task.
 2. Should words seen before stop the game again after a few days?
 3. Should the card have a "read it to me" button for children who are still learning English? The opening already speaks. It would help some children, and let others skip the reading.
 
+---
+
+## Added 2026-11-17: the game remembers what you were doing [Source: Marc, "use wrench... on what?"]
+
+**What was wrong:** a child stood at a thing, typed "use wrench", and was asked "Use the wrench on what?" The game had forgotten what they were looking at.
+
+**What is built (sketch version 28):**
+
+| The child does | The game now |
+|---|---|
+| looks at the vent, then types `use wrench` | uses the wrench on the vent |
+| looks at the locker, then types `open` | opens the locker |
+| looks at the crate, then types `push it` | pushes the crate |
+| types `open` while standing beside one thing | opens that thing |
+| types `use wrench` with nothing in mind and nothing beside them | is asked "Use the wrench on what? Tap a thing." The command is started for them. One tap on a word in the **Here** row finishes it. |
+
+- The line the game shows back says what it took the child to mean: `use wrench on vent`.
+- It works on the station, on Voltara ("give fruit" beside the fish) and on the small worlds.
+- **It does not solve puzzles for the child.** It only uses a thing the child chose to look at, or is standing beside. It never picks "the thing that would work".
+- It forgets when the child walks into another room.
+
+**What could prove this wrong:** watch for a child who looks at one thing, walks to another, and types "open". The game will open the first. If that happens often, the thing they stand beside should win over the thing they last looked at.
+
