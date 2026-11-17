@@ -16,6 +16,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `station_playthrough_test.js` | The whole station: 15 tasks, 5 parts, 18 secrets, launch |
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
+| `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
 | `reading_card_test.js` | The "read, then OK" cards |
 | `number_pad_test.js` | The floating number pad |
 | `kind_words_test.js` | Rude words are refused and never shown |

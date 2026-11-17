@@ -1,6 +1,7 @@
 # GMQ — Galactic Trade: Voltara's second task, built in space — guide and answer key — v1 — 2026-11-17
 
 **Stage:** built in the sketch (version 26).
+**Added in version 27:** every planet you have scanned can be landed on and explored. See `GMQ_Bigger_Universe_v1_2026-11-17.md`.
 **To play it:** tap **Go to space** in the Teacher bar. Then tap the trade beacon beside the planet. Students reach it by making an energy plan on Voltara first.
 **Tags:** [Source] = from your material. [Proposal] = my design.
 

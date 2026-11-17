@@ -207,6 +207,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 #netbar { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 0 0 8px; font-size: .95rem; } #netbar[hidden] { display: none; } #netbar b { font-weight: 700; }
 body.online .tbar, body.online details.box { display: none; } body.online.teacher .tbar, body.online.teacher details.box { display: revert; }
 #lc, #ln { width: 9.5em; } #lp { width: 5.5em; -webkit-text-security: disc; }
+.word.noun { border-style: solid; background: rgba(109,179,255,.1); text-transform: none; font-weight: 600; } #nouns[hidden] { display: none; }
 /* the floating number pad */
 #pad { position: fixed; z-index: 60; width: 190px; background: #101a30; border: 2px solid #ffb23e; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.5); padding: 6px; -webkit-user-select: none; user-select: none; touch-action: none; }
 #pad[hidden] { display: none; }
@@ -226,7 +227,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 26</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 27</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -247,6 +248,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     </div>
   </form>
   <div class="words" id="verbs"></div>
+  <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
 
   <section class="box" id="mission" aria-label="Your mission on Voltara" hidden></section>
@@ -521,7 +523,18 @@ try { READ.on = localStorage.getItem('gmq-cards') !== 'off'; } catch (e) {}
 const hashT = t => { let h = 7; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return h; };
 function say(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-4); text = String(text);
   if (READ.on && S && !widget && S.mode !== 'intro' && S.mode !== 'arrive') { const seen = S.read || (S.read = []), h = hashT(text); if (seen.indexOf(h) < 0) { seen.push(h); if (seen.length > 700) seen.splice(0, 200); readShow(text); } }
-  drawLog(); if (!READ.open) flashLog(); }
+  drawLog(); if (!READ.open) flashLog(); drawWords(); }
+/* TAP THE WORDS.  [Source: Marc, 2026-11-17: typing is hard for children on iPads. "When they touch the action word... it'd be nice to have
+   the other words that are common in that area, like vent and grate and screws and lever, pop up as possible words."]
+   The things in this place are shown as words. Tap a doing word, then a thing. No keyboard is needed for any command the game knows. */
+function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arrive') return [];
+  if (S.mode === 'station') return Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => [OBJ[i].words[0], OBJ[i].label]);
+  if (S.mode === 'planet') return vThings().filter(t => t.x != null).map(t => [t.spot ? t.spot.name.toLowerCase() : t.words[0], t.label]);
+  if (S.mode === 'world') return wThings(wKit(WORLD().at)).map(t => [t.words[t.words.length - 1].indexOf(' ') > 0 ? t.words[0] : t.words[0], t.label]);
+  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name]); }
+function drawWords() { let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
+  el.innerHTML = '<span class="lab">Here</span>' + list.map(x => `<button class="word noun" type="button" data-w="${esc(x[0])}">${esc(x[1])}</button>`).join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => { const w = b.dataset.w, draft = $('cmd').value.trim().toLowerCase(); if (/^(fly to|land|trade)/.test(w)) return act(w); act(/^(look|take|open|push|use|go|talk|eat|touch|dig|give)( [a-z ]+ on)?$/.test(draft) ? `${draft} ${w}` : `look ${w}`); }); }
 function flashLog() { const n = document.querySelector('#log .new'); if (n) { n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); } }
 function readShow(text) { READ.q.push(text); READ.open = true; $('cardtext').innerHTML = READ.q.map(t => `<p>${esc(t)}</p>`).join(''); const words = READ.q.join(' ').split(/\s+/).length; READ.wait = Math.min(3500, 500 + words * 160);
   const c = $('card'), b = $('cardok'), fl = $('cardfill'); c.hidden = false; c.classList.remove('drop'); b.disabled = true; $('cardlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `cardfill ${READ.wait}ms linear forwards`;
@@ -536,7 +549,7 @@ const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your
 function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
 function drawStatus() {
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
-    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}`;
+    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. Purple tasks are done in real life, with your teacher.</p>` +
     PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${t[3] ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
@@ -601,7 +614,8 @@ function rude(t, strict) { const words = String(t).toLowerCase().split(/\s+/).fi
   return !!strict && words.length > 1 && rudeWord(words.join('')); }
 /* the game repeats only words it knows. Numbers are fine. Anything else is shown as … */
 let KNOWN = null;
-function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place trade beacon routes route trader traders gems space fly galaxy planet hint help'.split(' '));
+function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place trade beacon routes route trader traders gems space fly galaxy planet hint help touch poke shake dig creature animal alien rock post stall flag seed star east west'.split(' '));
+  Object.keys(WKIT.flora).forEach(t => WKIT.flora[t][0].split(' ').forEach(x => k.add(x))); WKIT.rock.forEach(r => r[0].split(' ').forEach(x => k.add(x))); Object.keys(TR).forEach(n => { const kk = wKit(n); k.add(kk.name.toLowerCase()); k.add(kk.cr.name.toLowerCase()); });
   const add = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); });
   [VERBS, PV].forEach(o => Object.keys(o).forEach(key => { add(key); o[key].forEach(add); }));
   [OBJ, VT].forEach(o => Object.keys(o).forEach(id => { add(id); (o[id].words || []).forEach(add); add(o[id].label); }));
@@ -706,6 +720,7 @@ function act(raw) {
   if (S.mode === 'intro' || S.mode === 'arrive') return out('Tap Next to go on.');
   if (S.mode === 'space') return actSpace(text, out);
   if (S.mode === 'planet') return actPlanet(text, out);
+  if (S.mode === 'world') return actWorld(text, out);
   if (widget && widget.kind === 'drones' && /^\D*\d+\D*$/.test(text)) { const i = widget.d.findIndex(d => d.n === +text.match(/\d+/)[0] && !d.hit); out(null); return i < 0 ? say('No drone shows that number.') : droneTap(i); }
   if (widget) return out('Finish this first. Or tap Leave.');
   const num = (text.match(/\b\d+\b/) || [])[0];
@@ -1180,8 +1195,8 @@ function card(force) {
 /* =====================================================================
    TOYS: locker lock, mini battle, mini quest, project
    ===================================================================== */
-function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); }
-function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); }
+function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); drawWords(); }
+function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); drawWords(); }
 /* THE WORLD SERVER (only when the page sits beside one). [Proposal: engines/gmq-world/server]
    With no server, as on the sketch's own link, nothing here runs and the game is kept on the device as before.
    With a server: a cadet logs in, and their game follows them to any device. The teacher's codes are checked by the server.
@@ -1216,6 +1231,7 @@ function netName(nm, tell) { netCall({ action: 'name', ship: nm }).then(r => { i
 /* what the AI is told about this moment: only what the game itself knows to be here */
 function worldSlice() { const bag = S.inv.map(i => ITEMS[i] || i).join(', ') || 'nothing';
   if (S.mode === 'planet') { const sc = V().sc; return `PLACE: ${VSC[sc].name}, on Planet Voltara. FACTS: ${VSEE[sc] || ''} THINGS HERE: ${vThings().filter(t => t.x != null).map(t => t.label).join(', ')}. CADET CARRIES: ${bag}.`; }
+  if (S.mode === 'world') { const k = wKit(WORLD().at); return `PLACE: ${k.name}, a small trade planet. FACTS: ${k.sky[2]} ${k.far[1]} The ${k.cr.name} is a creature with ${k.cr.eyes} eyes and ${k.cr.legs} legs. It does not use words. THINGS HERE: ${wThings(k).map(t => t.label).join(', ')}. CADET CARRIES: ${bag}.`; }
   if (S.mode === 'space') return `PLACE: deep space, in the cadet's own ship. FACTS: Five galaxies glow around the KIS Station. The cadet is ${S.at ? 'near ' + GAL[S.at].name : 'flying between galaxies'}. THINGS HERE: stars, galaxies, other cadets' ships far away. CADET CARRIES: ${bag}.`;
   return `PLACE: ${ROOMS[S.room].name}, on the KIS Station. FACTS: A space station. Low gravity. The cadet's ship is docked here for repairs. THINGS HERE: ${Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => OBJ[i].label).join(', ')}. CADET CARRIES: ${bag}. SHIP PARTS FITTED: ${S.parts.length} of 5.`; }
 function netAsk(text, fallback, out) { if (!NET.on || !NET.ai) return out(fallback); netCall({ action: 'ask', text, slice: worldSlice() }).then(r => out(r && r.ok && r.say ? r.say : fallback)); }
@@ -1503,7 +1519,7 @@ function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
-function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2024', 'Earth, 2024', 'Earth, 2024', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
+function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2024', 'Earth, 2024', 'Earth, 2024', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
 function tState(c) { if (c.t === 'void') return 0; if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
@@ -1745,6 +1761,7 @@ function frame1(now) {
   if (S.mode === 'intro' || S.mode === 'arrive') { drawIntro(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'space') { drawSpace(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'planet') { try { drawPlanet(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
+  if (S.mode === 'world') { try { drawWorld(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 4.6 * dt; P.step += dt; P.idle = 0;
     if (Math.abs(dx) > Math.abs(dy)) P.dir = dx > 0 ? 'right' : 'left'; else if (dy) P.dir = dy > 0 ? 'down' : 'up';
     if (Math.random() < dt * 9) DUST.push({ x: P.x + .5 + (Math.random() - .5) * .2, y: P.y + .92, t: .5 });
@@ -1926,10 +1943,11 @@ function tradePlan(info) { const t = TRADE(), w = widget, first = t.trip === 1, 
     <p class="q">${first ? 'You have 50 fuel tokens. 1 token flies 1 light-year.' : `You have ${num(t.gems)} gems. Fuel costs 200 gems for every 10 tokens. So you can buy ${can} tokens at most.`} <span class="note">Each planet pays you gems. You can visit each planet once.</span></p>
     <p class="note key"><b>?</b> means not scanned yet. Tap a planet to scan it. Tap it again to put it on your route.</p>
     ${row('Near planets', '#ffb23e', false)}${first ? '' : row('Far planets', '#b9a3ff', true)}
+    ${t.scan.length ? `<p class="chips plan21"><b class="cn" style="color:#6fd08a">Explore</b>${t.scan.filter(n => first ? !TR[n].far : true).map(n => `<button class="btn quiet land" type="button" data-land="${n}">Land on ${n}${S.w && S.w.finds.indexOf(n) >= 0 ? ' ★' : ''}</button>`).join('')}<span class="note">Landing is free. Every planet hides one star seed.</span></p>` : ''}
     <p class="note" id="info">${info || 'Tap a planet, here or on the map.'}</p><div class="bar" id="bar"><span></span></div>
     <div class="field planrow"><b id="used"></b><button class="btn" type="button" id="try">Fly this route</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
   const fuel = trFuel(w.sel); $('used').textContent = `${fuel} of ${can} tokens`; $('bar').classList.toggle('over', fuel > can); $('bar').firstElementChild.style.width = Math.min(100, fuel / Math.max(can, 1) * 100) + '%';
-  document.querySelectorAll('#toy .wire').forEach(b => b.onclick = () => tradeToggle(b.dataset.n)); $('leave').onclick = leave;
+  document.querySelectorAll('#toy .wire').forEach(b => b.onclick = () => tradeToggle(b.dataset.n)); document.querySelectorAll('#toy .land').forEach(b => b.onclick = () => landWorld(b.dataset.land)); $('leave').onclick = leave;
   $('try').onclick = () => { const m = $('msg'), why = !w.sel.length ? 'Put a planet on your route first.' : fuel > can ? `Too far. That route needs ${fuel} tokens. You ${first ? 'have' : 'can buy'} only ${can}. Take a planet off.` : '';
     if (why) { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = why; return; } if (first) tradeFly(0); else tradeCost(); }; }
 function tradeToggle(n) { const t = TRADE(), w = widget; if (!w || w.kind !== 'trade' || w.step !== 'plan' || trShown().indexOf(n) < 0) return; if (t.seen.indexOf(n) >= 0) return tradePlan(`You have been to Planet ${n} this season.`);
@@ -1985,6 +2003,125 @@ function drawTrade(dt) { const w = widget, t = TRADE(), m = Math.min(vw, vh), ox
   rocket(sx, sy, m * .1, ang, { flame }); pill(`Trip ${Math.min(t.trip, 3)} of 3 · ${num(t.gems)} gems`, vw * .5, Math.max(16, vh * .05), true); }
 function tradeTap(x, y) { const w = widget; if (w.step !== 'plan') return; const R = Math.max(13, Math.min(vw, vh) * .034) * 1.7, n = trShown().find(k => { const p = trPos(k); return Math.hypot(x * vw - p[0], y * vh - p[1]) < R; }); if (n) tradeToggle(n); }
 function goSpace() { S.mode = 'space'; S.ended = true; S.at = 'numerix'; S.beat = 0; S.tTrade = true; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; tidy(); say('Teacher shortcut. You are in space, at Galaxy Numerix. The trade beacon is open. Tap it. Or tap the planet to land.'); $('place').scrollIntoView({ block: 'nearest' }); }
+
+/* =====================================================================
+   SMALL WORLDS FROM A KIT.  [Source: Marc, 2026-11-17: "It's a huge universe. They should be able to explore things... could there be five or
+   six or ten worlds in each one?" and his Novus engine: describe, do not label; most things lead nowhere; discovery comes from doing.]
+   [Proposal] A world is not drawn by hand. It is DATA: a sky, far shapes, ground, three plants, a rock, a creature, and where its one secret lies.
+   The code draws any world from the kit of parts below. Here the data is made from the planet's letter, so the 20 trade planets are 20 worlds.
+   The same data could be written by the AI, inside the constraint file, and checked by code before a child sees it. That is how a galaxy
+   gets ten worlds without ten weeks of drawing. Each world has one secret, three or four dead ends, and one lock from its galaxy's maths.
+   ===================================================================== */
+const wrng = seed => { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+const WKIT = {
+  sky: [['#2a1b5e', '#ff9e7a', 'The sky is deep purple and orange.'], ['#0f2a4a', '#6fd0c4', 'The sky is dark blue and sea green.'], ['#3a0f3a', '#ffb23e', 'The sky glows plum and gold.'], ['#10243a', '#9fd3ff', 'The sky is a cold pale blue.'],
+    ['#2b2a10', '#e8d06a', 'The sky is the colour of honey.'], ['#1b0f2e', '#ff8fb8', 'The sky is black and bright pink.'], ['#0f3a2a', '#b8f2c2', 'The sky is soft green.'], ['#3a1a10', '#ffcf8a', 'The sky is rust red and cream.']],
+  far: [['peaks', 'Sharp peaks stand far off.'], ['dunes', 'Soft dunes roll away.'], ['mesas', 'Flat table rocks stand in rows.'], ['spires', 'Thin towers of stone lean over.'], ['arches', 'Stone arches loop over the land.'], ['islands', 'Islands of rock float in the sky.']],
+  ground: [['#6b4a8a', '#2b1b4a', 'tufts'], ['#3f7a6a', '#17382f', 'pebbles'], ['#a8734a', '#4a2b17', 'cracks'], ['#5a7ab0', '#1f2f52', 'ripples'], ['#8a8a4a', '#3a3a17', 'tufts'], ['#a05a7a', '#4a1f33', 'pebbles']],
+  flora: { puff: ['puff ball', 'A round puff ball on a thin stalk.', 'It lets out a cloud of dust. You sneeze.', 'It pops. Nothing is left in your hand.'],
+    coil: ['coil vine', 'A vine wound up like a spring.', 'It springs open. Then it winds back.', 'It will not let go of the ground.'],
+    fan: ['fan leaf', 'One huge leaf, shaped like a fan.', 'It folds shut. It opens again slowly.', 'It is far too big to carry.'],
+    bulb: ['lamp tree', 'A small tree. Its fruits look like lamps.', 'The lamps flicker. Then they are still.', 'A lamp fruit goes dark in your hand.'],
+    reed: ['hollow reeds', 'Tall thin reeds. They are hollow.', 'The reeds bend away from your hand.', 'A reed snaps. It is empty inside.'],
+    cap: ['cap stool', 'A wide flat cap on a short stem.', 'It is spongy. Your finger leaves a dent.', 'It crumbles like dry cake.'] },
+  rock: [['flat stone', 'A flat grey stone, as wide as a table.', 'It tips a little. It settles back.'], ['round boulder', 'A boulder as round as a ball.', 'It rocks. It rolls back to its place.'], ['pile of stones', 'Small stones in a neat pile.', 'The pile slides. The stones click.']],
+  quirk: ['It blinks one eye at a time.', 'It hops in a small circle.', 'It makes a low buzz. Then it stops.', 'It copies the way you stand.', 'It taps the ground three times.', 'It turns its back. Then it peeks at you.', 'It puffs up. Then it goes flat again.', 'It rolls over once and sits up.'],
+  goods: ['glow moss', 'star salt', 'cloud silk', 'sky honey', 'moon clay', 'comet glass', 'echo shells', 'dream tea', 'sun thread', 'night pepper'],
+  syl: ['ve', 'lu', 'na', 'ri', 'ta', 'mo', 'zi', 'sha', 'ru', 'ya', 'le', 'fi', 'lo', 'mi', 'ra', 'so', 'ti', 'va', 'zu', 'el', 'or', 'an', 'ix', 'um'],
+  /* made-up names are checked: kind words only, none of these sounds in any language Claude knows to be rude, and no name used twice */
+  badBits: ['nig', 'dop', 'kak', 'kok', 'suk', 'pip', 'pep', 'pop', 'bob', 'put', 'pen', 'tit', 'sex', 'fuk', 'fuc', 'cum', 'ass', 'anu', 'ana', 'ora', 'rap', 'slu', 'vag', 'nazi', 'lol', 'mor', 'tar', 'sat', 'hee', 'hia', 'ham', 'yed', 'dok']
+};
+const WKC = {}, WNAME = {};
+(function () { const r = wrng(20231117), used = {}, make = () => { for (;;) { let t = ''; for (let i = 0, k = 2 + Math.floor(r() * 2); i < k; i++) t += WKIT.syl[Math.floor(r() * WKIT.syl.length)]; if (t.length < 4 || t.length > 8 || used[t] || rude(t, true) || WKIT.badBits.some(b => t.indexOf(b) >= 0)) continue; used[t] = 1; return t[0].toUpperCase() + t.slice(1); } };
+  Object.keys(TR).forEach(n => WNAME[n] = [make(), make()]); })();
+function wKit(n) { if (WKC[n]) return WKC[n]; const r = wrng(TR[n].i * 7919 + 13), pick = a => a[Math.floor(r() * a.length)];
+  const types = Object.keys(WKIT.flora), fl = []; while (fl.length < 3) { const t = pick(types); if (fl.indexOf(t) < 0) fl.push(t); }
+  const k = { n, name: WNAME[n][0], sky: pick(WKIT.sky), far: pick(WKIT.far), ground: pick(WKIT.ground), moons: Math.floor(r() * 3), ring: r() < .3, flora: fl, fcol: fl.map(() => pick(TR_COL)), rock: pick(WKIT.rock),
+    cr: { name: WNAME[n][1], body: pick(['blob', 'ball', 'long', 'tri']), legs: pick([0, 2, 4, 6]), eyes: 1 + Math.floor(r() * 3), horns: Math.floor(r() * 3), col: pick(TR_COL), move: pick(['hop', 'float', 'wobble']), quirks: [pick(WKIT.quirk), pick(WKIT.quirk)] },
+    goods: pick(WKIT.goods), at: pick(['p0', 'p1', 'p2', 'rock']), lock: TR[n].i % 4 };
+  if (k.cr.quirks[1] === k.cr.quirks[0]) k.cr.quirks[1] = WKIT.quirk[(WKIT.quirk.indexOf(k.cr.quirks[0]) + 1) % WKIT.quirk.length]; return WKC[n] = k; }
+const WORLD = () => S.w || (S.w = { at: 'A', finds: [], seen: [], talks: 0 });
+function wThings(k) { const f = i => WKIT.flora[k.flora[i]]; return [{ id: 'ship', x: .09, label: 'your ship', words: ['ship', 'rocket'] }, { id: 'post', x: .25, label: 'trade post', words: ['post', 'stall', 'trader', 'flag'] },
+  { id: 'p0', x: .4, label: f(0)[0], words: f(0)[0].split(' ').concat([f(0)[0]]) }, { id: 'creature', x: .54, label: k.cr.name, words: [k.cr.name.toLowerCase(), 'creature', 'animal', 'alien'] },
+  { id: 'p1', x: .66, label: f(1)[0], words: f(1)[0].split(' ').concat([f(1)[0]]) }, { id: 'rock', x: .78, label: k.rock[0], words: k.rock[0].split(' ').filter(w => w !== 'of').concat(['rock']) }, { id: 'p2', x: .91, label: f(2)[0], words: f(2)[0].split(' ').concat([f(2)[0]]) }]; }
+const wArrive = k => `You land on ${k.name}, Planet ${k.n}. ${k.sky[2]} ${k.far[1]} A creature watches you.`;
+function landWorld(n) { const w = WORLD(), k = wKit(n), first = w.seen.indexOf(n) < 0; closeToy(); S.mode = 'world'; w.at = n; w.talks = 0; if (first) w.seen.push(n); PL.x = .12; PL.to = null; PL.then = null; PL.fade = 1; PL.face = 1; save(); drawStatus(); beep(300, .3);
+  say(first ? wArrive(k) : `You are back on ${k.name}. ${w.finds.indexOf(n) >= 0 ? 'You found its star seed before.' : 'Its secret is still hidden.'}`); }
+function leaveWorld(out) { const k = wKit(WORLD().at); S.mode = 'space'; S.at = 'numerix'; SP.to = null; save(); drawStatus(); beep(200, .4, 'sawtooth'); out(`You lift off from ${k.name}. Voltara and the trade beacon are below you. Tap the beacon to plan a route, or to land on another planet.`); }
+const WV = { look: ['look', 'l', 'examine', 'x', 'see', 'read', 'watch', 'check'], take: ['take', 'get', 'grab', 'pick', 'eat'], touch: ['touch', 'use', 'open', 'push', 'pull', 'poke', 'tap', 'shake', 'lift', 'move', 'press', 'turn', 'dig', 'kick'], talk: ['talk', 'say', 'hello', 'hi', 'ask', 'wave', 'feed', 'give'], go: ['go', 'walk', 'run'], fly: ['fly', 'launch', 'leave', 'blast'], hint: ['hint', 'help'], bag: ['bag', 'inventory', 'i'] };
+function wDo(k, th, verb) { const w = WORLD(), found = w.finds.indexOf(k.n) >= 0, lab = t => wThings(k).find(x => x.id === t).label;
+  if (th.id === 'ship') return `Your ship${S.ship ? ', the ' + S.ship : ''}. It waits for you. To leave, type: fly.`;
+  if (th.id === 'post') return `The trade post of ${k.name}. It sells ${k.goods}. It pays ${num(TR[k.n].g)} gems for your goods. Voltara is about ${TR[k.n].f} light-years away.`;
+  if (th.id === 'creature') { if (verb === 'take') return `The ${k.cr.name} slips out of your hands.`; if (verb === 'look') return `A ${k.cr.name}. It has ${k.cr.eyes} ${k.cr.eyes === 1 ? 'eye' : 'eyes'} and ${k.cr.legs ? k.cr.legs + ' legs' : 'no legs'}. ${k.cr.quirks[0]}`;
+    w.talks++; save(); return found ? `The ${k.cr.name} does a happy wiggle. ${k.cr.quirks[1]}` : w.talks % 2 ? `The ${k.cr.name} does not use words. ${k.cr.quirks[w.talks % 4 === 1 ? 0 : 1]}` : `The ${k.cr.name} turns. It looks at the ${lab(k.at)}. Then it looks at you.`; }
+  if (verb === 'look') return (th.id === 'rock' ? k.rock[1] : WKIT.flora[k.flora[+th.id[1]]][1]) + (found && th.id === k.at ? ' The shell box under it is open and empty.' : '');
+  if (verb === 'talk') return 'It does not answer.';
+  if (th.id === k.at && !found) { startWLock(k); return `You move the ${th.label}. Under it sits a shell box. It has a number lock.`; }
+  return th.id === 'rock' ? k.rock[2] : WKIT.flora[k.flora[+th.id[1]]][verb === 'take' ? 3 : 2]; }
+/* the lock on a world's secret: one question from Galaxy Numerix's own maths (round, add, find what is left) */
+function wLockQ(k, tries) { const r = wrng(TR[k.n].i * 104729 + S.seed % 1000 + tries * 31), ri = (a, b) => a + Math.floor(r() * (b - a + 1));
+  if (k.lock === 0) { let n = ri(11, 98); if (n % 10 === 0) n += 3; const lo = Math.floor(n / 10) * 10; return { q: `The lock shows ${n}. Its dial has only tens. Turn it to the nearest ten.`, a: r10(n), hint: n % 10 === 5 ? `${n} is exactly halfway. Halfway goes up.` : `${n} is between ${lo} and ${lo + 10}. Which is nearer?`, line: [lo, n, lo + 10], word: ['round', 'To round to the nearest ten, find the ten that is closest. Halfway goes up.'] }; }
+  if (k.lock === 1) { let n = ri(110, 980); if (n % 100 === 0) n += 30; const lo = Math.floor(n / 100) * 100; return { q: `The lock shows ${n}. Its dial has only hundreds. Turn it to the nearest hundred.`, a: r100(n), hint: n % 100 === 50 ? `${n} is exactly halfway. Halfway goes up.` : `${n} is between ${lo} and ${lo + 100}. Which is nearer?`, line: [lo, n, lo + 100], word: ['round', 'To round to the nearest hundred, find the hundred that is closest. Halfway goes up.'] }; }
+  if (k.lock === 2) { const a = ri(12, 45) * 10, b = ri(12, 45) * 10; return { q: `The lock has two rings. One shows ${a}. One shows ${b}. Turn the dial to their sum.`, a: a + b, hint: `Add the hundreds. Then add the tens. ${a} + ${b}.`, word: ['sum', 'The sum is what you get when you add.'] }; }
+  const a = ri(40, 90) * 10, b = ri(11, 35) * 10; return { q: `The lock shows ${a}. A small ring shows ${b}. Turn the dial to the difference.`, a: a - b, hint: `Count up from ${b} to ${a}. Or take ${b} away from ${a}.`, word: ['difference', 'The difference is how far apart two numbers are.'] }; }
+function startWLock(k) { widget = { kind: 'wlock', n: k.n, tries: 0 }; wLockShow(k); }
+function wLockShow(k) { const w = widget, q = wLockQ(k, w.tries);
+  toy(`<p class="eyebrow">${k.name} · a shell box</p><p class="mw"><b>Maths word: ${q.word[0]}.</b> ${q.word[1]}</p><h3>The number lock</h3>${q.line ? `<div class="art">${lineSvg(q.line[0], q.line[1], q.line[2])}</div>` : ''}<p class="q">${q.q}</p>
+    <div class="field"><label for="ans" class="note">Your answer</label><input id="ans" inputmode="numeric" autocomplete="off"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const a = $('ans'); a.oninput = () => a.value = a.value.replace(/[^0-9]/g, '').slice(0, 4); a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; a.focus({ preventScroll: true }); $('leave').onclick = leave;
+  $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; } if (+a.value !== q.a) { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'The lock stays shut. ' + q.hint; return; }
+    const W = WORLD(); W.finds.push(k.n); S.log.push({ what: `Star seed on ${k.name} (Planet ${k.n})`, skill: ['Round to the nearest 10', 'Round to the nearest 100', 'Add within 1,000', 'Subtract within 1,000'][k.lock], result: w.tries ? 'found' : 'found' }); closeToy(); save(); drawStatus(); chime(); card();
+    say(`The lock clicks. Inside is a star seed! It glows in your hand. You have ${W.finds.length} of 20 star seeds. You earn a card.`); }; }
+function actWorld(text, out) { if (widget) return out('Finish this first. Or tap Leave.'); const w = WORLD(), k = wKit(w.at), things = wThings(k), tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'by', 'in', 'on', 'under', 'of', 'up', 'please', 'with'].includes(t));
+  const verb = Object.keys(WV).find(v => WV[v].includes(tk[0])), rest = verb ? tk.slice(1) : tk, th = things.find(t => rest.some(r => t.words.includes(r))) || things.find(t => t.words.includes(rest.join(' ')));
+  if (verb === 'hint') return out(w.finds.indexOf(k.n) >= 0 ? 'You have this world\'s star seed. Fly on from your ship.' : w.talks < 2 ? `Watch the ${k.cr.name}. Talk to it twice.` : `The ${k.cr.name} looked at the ${things.find(t => t.id === k.at).label}. Touch it.`);
+  if (verb === 'bag') return out(`You carry ${w.finds.length} of 20 star seeds.`);
+  if (verb === 'fly' || (th && th.id === 'ship' && verb && verb !== 'look')) return leaveWorld(out);
+  if (!verb) return th ? out('Start with a doing word: look, touch, take or talk.') : netAsk(text, `${k.name} does not know that yet. Try: look, touch, take, talk.`, out);
+  if (verb === 'look' && !rest.length) return out(`${k.name}. ${k.sky[2]} ${k.far[1]} You see: ${things.map(t => t.label).join(', ')}.`);
+  if (verb === 'go' && !th) { if (rest.includes('east') || rest.includes('right')) { PL.to = Math.min(.96, PL.x + .3); return out('You walk east.'); } if (rest.includes('west') || rest.includes('left')) { PL.to = Math.max(.04, PL.x - .3); return out('You walk west.'); } return out('Go where? East or west. Or tap a thing.'); }
+  if (!th) return netAsk(text, 'You do not see that here.', out);
+  if (th.id === 'ship' ) return out(`Your ship${S.ship ? ', the ' + S.ship : ''}. It waits for you. To leave, type: fly.`);
+  const doIt = () => out(verb === 'go' ? `You walk to the ${th.label}.` : wDo(k, th, verb)); if (Math.abs(PL.x - (th.x - .05)) < .03) return doIt(); PL.to = Math.max(.03, th.x - .05); PL.then = doIt; }
+function tapWorld(e) { const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase(); if (widget) return say('Finish this first. Or tap Leave.');
+  const k = wKit(WORLD().at), near = wThings(k).filter(t => Math.abs(t.x - x) < .065 && y > .3).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0];
+  if (near) return act(`${/^(look|take|open|push|use|talk|touch)$/.test(draft) ? draft : near.id === 'creature' ? 'talk' : 'look'} ${near.words[0]}`); PL.to = Math.max(.03, Math.min(.97, x)); PL.then = null; }
+function drawWorld(dt) { const w = vw, h = Math.max(220, vh), hz = h * .58, gy = h * .86, k = wKit(WORLD().at), m = Math.min(w, h), r = wrng(TR[k.n].i * 31 + 5);
+  if (PL.to != null) { const d = PL.to - PL.x, st = .3 * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
+  const g = cx.createLinearGradient(0, 0, 0, hz * 1.1); g.addColorStop(0, k.sky[0]); g.addColorStop(1, k.sky[1]); cx.fillStyle = g; cx.fillRect(0, 0, w, vh);
+  for (let i = 0; i < 40; i++) { const sx = r() * w, sy = r() * hz * .7; cx.fillStyle = `rgba(255,255,255,${.25 + .5 * Math.abs(Math.sin(tNow * 1.3 + i))})`; cx.fillRect(sx, sy, 2, 2); }
+  for (let i = 0; i < k.moons; i++) { const mx = w * (.2 + i * .45 + r() * .1), my = h * (.12 + r() * .12), mr = m * (.04 + r() * .05); cx.fillStyle = TR_COL[(TR[k.n].i + i * 3) % 10]; circ(mx, my, mr); cx.fill(); ol(2); cx.fillStyle = 'rgba(0,0,30,.3)'; cx.beginPath(); cx.arc(mx, my, mr, -.9, 2.2); cx.fill();
+    if (k.ring && !i) { cx.strokeStyle = 'rgba(255,255,255,.6)'; cx.lineWidth = 3; cx.beginPath(); cx.ellipse(mx, my, mr * 1.8, mr * .45, -.3, 0, 7); cx.stroke(); } }
+  cx.fillStyle = 'rgba(10,8,30,.55)'; cx.beginPath(); cx.moveTo(0, hz);
+  for (let i = 0; i <= 12; i++) { const X = i / 12 * w, t = k.far[0], u = r(); if (t === 'peaks') { cx.lineTo(X + w / 24, hz - h * (.1 + u * .2)); cx.lineTo(X + w / 12, hz - h * .03); } else if (t === 'dunes') cx.quadraticCurveTo(X + w / 24, hz - h * (.06 + u * .1), X + w / 12, hz - h * .02);
+    else if (t === 'mesas') { const hh = h * (.05 + u * .14); cx.lineTo(X + w * .01, hz - hh); cx.lineTo(X + w * .06, hz - hh); cx.lineTo(X + w * .07, hz); } else if (t === 'spires') { cx.lineTo(X + w * .03, hz - h * (.12 + u * .22)); cx.lineTo(X + w * .045, hz); }
+    else if (t === 'arches') { cx.lineTo(X, hz - h * .02); cx.quadraticCurveTo(X + w / 24, hz - h * (.12 + u * .16), X + w / 12, hz - h * .02); } else cx.lineTo(X + w / 12, hz - h * .015); }
+  cx.lineTo(w, hz); cx.lineTo(w, vh); cx.lineTo(0, vh); cx.fill();
+  if (k.far[0] === 'islands') for (let i = 0; i < 4; i++) { const X = w * (.12 + i * .25 + r() * .06), Y = h * (.3 + r() * .14), z = m * (.05 + r() * .04); cx.fillStyle = 'rgba(10,8,30,.6)'; cx.beginPath(); cx.moveTo(X - z, Y); cx.lineTo(X + z, Y); cx.lineTo(X + z * .2, Y + z * 1.1 + Math.sin(tNow + i) * 2); cx.closePath(); cx.fill(); cx.fillStyle = k.ground[0]; cx.fillRect(X - z, Y - z * .16, z * 2, z * .16); }
+  if (k.far[0] === 'arches') { cx.fillStyle = k.sky[1]; cx.globalAlpha = .5; for (let i = 0; i < 6; i++) { cx.beginPath(); cx.ellipse(w * (i * .19 + .08), hz, w * .03, h * .045, 0, Math.PI, 0); cx.fill(); } cx.globalAlpha = 1; }
+  vGround(w, h, hz, k.ground[0], k.ground[1]);
+  for (let i = 0; i < 26; i++) { const X = r() * w, Y = hz + (vh - hz) * (.08 + r() * .9), z = m * .012; cx.strokeStyle = cx.fillStyle = 'rgba(255,255,255,.16)'; cx.lineWidth = 2; if (k.ground[2] === 'tufts') { cx.beginPath(); cx.moveTo(X - z, Y); cx.lineTo(X - z * .5, Y - z * 1.6); cx.moveTo(X, Y); cx.lineTo(X, Y - z * 2); cx.moveTo(X + z, Y); cx.lineTo(X + z * .5, Y - z * 1.6); cx.stroke(); }
+    else if (k.ground[2] === 'pebbles') { cx.beginPath(); cx.ellipse(X, Y, z * 1.2, z * .6, 0, 0, 7); cx.fill(); } else if (k.ground[2] === 'cracks') { cx.beginPath(); cx.moveTo(X - z * 2, Y); cx.lineTo(X, Y + z); cx.lineTo(X + z * 2.2, Y - z * .4); cx.stroke(); } else { cx.beginPath(); cx.ellipse(X, Y, z * 3, z * .5, 0, Math.PI, 0); cx.stroke(); } }
+  const W = WORLD(), found = W.finds.indexOf(k.n) >= 0, s = Math.max(48, h * .15), plant = (type, col, X, i) => { const z = m * .05, sway = Math.sin(tNow * 1.4 + i) * z * .08; cx.strokeStyle = '#1c2a22'; cx.lineWidth = Math.max(3, z * .12); cx.lineCap = 'round'; cx.fillStyle = col;
+      if (type === 'puff') { cx.beginPath(); cx.moveTo(X, gy); cx.lineTo(X + sway, gy - z * 2); cx.stroke(); circ(X + sway, gy - z * 2.5, z * .8); cx.fill(); ol(2); for (let j = 0; j < 6; j++) { cx.fillStyle = 'rgba(255,255,255,.5)'; circ(X + sway + Math.cos(j) * z * .5, gy - z * 2.5 + Math.sin(j * 2) * z * .5, z * .09); cx.fill(); } }
+      else if (type === 'coil') { cx.strokeStyle = col; cx.lineWidth = z * .2; cx.beginPath(); for (let a = 0; a < 14; a += .3) cx.lineTo(X + Math.cos(a) * z * .5 + sway * a * .2, gy - a * z * .2); cx.stroke(); }
+      else if (type === 'fan') { cx.beginPath(); cx.moveTo(X, gy); cx.lineTo(X, gy - z); cx.stroke(); cx.beginPath(); cx.moveTo(X, gy - z); cx.arc(X, gy - z, z * 2, Math.PI * 1.15 + sway * .01, Math.PI * 1.85 + sway * .01); cx.closePath(); cx.fill(); ol(2); for (let j = 1; j < 5; j++) { cx.strokeStyle = 'rgba(0,0,0,.25)'; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(X, gy - z); cx.lineTo(X + Math.cos(Math.PI * (1.15 + j * .14)) * z * 2, gy - z + Math.sin(Math.PI * (1.15 + j * .14)) * z * 2); cx.stroke(); } }
+      else if (type === 'bulb') { cx.beginPath(); cx.moveTo(X, gy); cx.lineTo(X, gy - z * 2.4); cx.moveTo(X, gy - z * 1.4); cx.lineTo(X - z, gy - z * 2.2); cx.moveTo(X, gy - z * 1.7); cx.lineTo(X + z, gy - z * 2.5); cx.stroke(); [[0, -2.6], [-1, -2.3], [1, -2.7]].forEach((p, j) => { cx.fillStyle = col; circ(X + p[0] * z, gy + p[1] * z, z * .34); cx.fill(); ol(1.5); cx.globalCompositeOperation = 'lighter'; cx.fillStyle = rgba(col, .25 + .2 * Math.sin(tNow * 2 + j)); circ(X + p[0] * z, gy + p[1] * z, z * .7); cx.fill(); cx.globalCompositeOperation = 'source-over'; }); }
+      else if (type === 'reed') { for (let j = -2; j <= 2; j++) { cx.strokeStyle = col; cx.lineWidth = z * .14; cx.beginPath(); cx.moveTo(X + j * z * .28, gy); cx.lineTo(X + j * z * .34 + sway * (1 + Math.abs(j) * .3), gy - z * (2.2 + (j % 2) * .5)); cx.stroke(); } }
+      else { cx.fillStyle = '#e8dcc8'; rr(X - z * .22, gy - z * .9, z * .44, z * .9, z * .1); cx.fill(); ol(2); cx.fillStyle = col; cx.beginPath(); cx.ellipse(X, gy - z * .9, z * 1.2, z * .5, 0, Math.PI, 0); cx.closePath(); cx.fill(); ol(2); } };
+  /* the ship and the trade post */
+  rocket(w * .09, gy - m * .12, m * .2, -Math.PI / 2, {}); { const X = w * .25, z = m * .05; cx.fillStyle = '#5b4636'; cx.fillRect(X - z * .08, gy - z * 2.6, z * .16, z * 2.6); cx.fillStyle = TR_COL[TR[k.n].i % 10]; cx.beginPath(); cx.moveTo(X + z * .08, gy - z * 2.6); cx.lineTo(X + z * 1.3, gy - z * 2.25 + Math.sin(tNow * 3) * z * .08); cx.lineTo(X + z * .08, gy - z * 1.9); cx.fill(); ol(1.5); cx.fillStyle = '#c9a36a'; rr(X - z * 1.1, gy - z * .9, z * 2.2, z * .9, z * .12); cx.fill(); ol(2); cx.fillStyle = '#10142c'; cx.font = `700 ${z * .55}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(k.n, X, gy - z * .28); }
+  [[0, .4], [1, .66], [2, .91]].forEach(p => plant(k.flora[p[0]], k.fcol[p[0]], w * p[1], p[0]));
+  { const X = w * .78, z = m * .05; cx.fillStyle = '#8b90a8'; if (k.rock[0] === 'flat stone') { rr(X - z * 1.3, gy - z * .45, z * 2.6, z * .5, z * .2); cx.fill(); ol(2); } else if (k.rock[0] === 'round boulder') { circ(X, gy - z * .8, z * .85); cx.fill(); ol(2); } else [[-.6, .25, .45], [.5, .28, .5], [0, .75, .42], [-.1, .3, .4]].forEach(p => { circ(X + p[0] * z, gy - p[1] * z, z * p[2]); cx.fill(); ol(2); });
+    if (found && k.at === 'rock') { cx.fillStyle = '#ffe58a'; circ(X + z * 1.2, gy - z * .15, z * .16); cx.fill(); } }
+  { const c = k.cr, z = m * .045, t = tNow, X = w * .54 + Math.sin(t * .5) * w * .012, bob = c.move === 'hop' ? -Math.abs(Math.sin(t * 3)) * z * .5 : c.move === 'float' ? -z * .9 + Math.sin(t * 2) * z * .15 : Math.sin(t * 6) * z * .04, Y = gy - z * (c.legs ? 1 : .55) + bob;
+    cx.strokeStyle = '#141a2e'; cx.lineWidth = Math.max(2.5, z * .12); for (let j = 0; j < c.legs; j++) { const lx = X + (j - (c.legs - 1) / 2) * z * (1.4 / Math.max(1, c.legs - 1) || 0); cx.beginPath(); cx.moveTo(lx, Y + z * .3); cx.lineTo(lx + Math.sin(t * 6 + j) * z * .12, gy + (c.move === 'float' ? -z * .5 : 0)); cx.stroke(); }
+    cx.fillStyle = c.col; cx.beginPath(); if (c.body === 'ball') cx.arc(X, Y, z * .8, 0, 7); else if (c.body === 'long') cx.ellipse(X, Y, z * 1.3, z * .55, 0, 0, 7); else if (c.body === 'tri') { cx.moveTo(X - z, Y + z * .6); cx.lineTo(X, Y - z); cx.lineTo(X + z, Y + z * .6); cx.closePath(); } else cx.ellipse(X, Y + z * .1, z * .95, z * .7 + Math.sin(t * 2) * z * .05, 0, 0, 7); cx.fill(); ol(2);
+    for (let j = 0; j < c.horns; j++) { const hx = X + (j - (c.horns - 1) / 2) * z * .6; cx.beginPath(); cx.moveTo(hx, Y - z * .6); cx.lineTo(hx + Math.sin(t * 2 + j) * z * .1, Y - z * 1.3); cx.stroke(); cx.fillStyle = '#ffe58a'; circ(hx + Math.sin(t * 2 + j) * z * .1, Y - z * 1.35, z * .12); cx.fill(); }
+    for (let j = 0; j < c.eyes; j++) { const ex = X + (j - (c.eyes - 1) / 2) * z * .45, ey = Y - z * .12, blink = Math.sin(t * 1.7 + j * 2.1) > .96; cx.fillStyle = '#fff'; cx.beginPath(); cx.ellipse(ex, ey, z * .17, blink ? z * .03 : z * .2, 0, 0, 7); cx.fill(); if (!blink) { cx.fillStyle = '#141a2e'; circ(ex + (PL.x * w > X ? 1 : -1) * z * .05, ey, z * .08); cx.fill(); } } }
+  drawAstro(PL.x * w, gy - s * .3, s, PL.to != null, PL.to != null || PL.idle < 2 ? (PL.face > 0 ? 'right' : 'left') : 'down', PL.step);
+  if (!widget) for (const t of wThings(k)) { if (Math.abs(PL.x - t.x) > .12) continue; pill(t.label, Math.max(50, Math.min(w - 50, t.x * w)), gy - h * .3); }
+  pill(`Star seeds ${W.finds.length} of 20`, w - Math.max(70, w * .1), Math.max(16, h * .05)); }
 
 /* =====================================================================
    PLANET VOLTARA: one whole quest, as a world you walk through.
@@ -2541,6 +2678,7 @@ cv.addEventListener('pointerdown', e => {
   if (S.mode === 'arrive') return;
   if (S.mode === 'space') return tapSpace(e);
   if (S.mode === 'planet') return tapPlanet(e);
+  if (S.mode === 'world') return tapWorld(e);
   if (widget && widget.kind === 'cargo') { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y, on = [...widget.on];
     const k = on.findIndex((_, j) => { const p = slot(j); return fx >= p[0] && fx <= p[0] + .78 && fy >= p[1] && fy <= p[1] + .78; }); if (k >= 0) return cargoToggle(on[k]);
     const i = PILE.findIndex(p => fx >= p[0] && fx <= p[0] + 1 && fy >= p[1] && fy <= p[1] + 1); if (i >= 0 && !widget.on.has(i)) cargoToggle(i); return; }
@@ -2574,7 +2712,7 @@ size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
 S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.secrets.includes('stone') && !S.inv.includes('stone')) S.inv.push('stone'); if (S.ship && rude(S.ship, true)) S.ship = ''; if (S.botName && rude(S.botName, true)) S.botName = ''; drawStars();
 if (S.tut == null) S.tut = 3;
-say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
+say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
 if (S.ended) showEnding();
 requestAnimationFrame(frame);

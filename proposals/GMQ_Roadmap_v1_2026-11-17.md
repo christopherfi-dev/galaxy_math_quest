@@ -141,6 +141,7 @@ In order of how much each one holds up.
 | **Chronosia, designed.** Not built. Your Tasks 1 and 2 kept, and a "quake day" with decisions that matter. | `GMQ_Chronosia_Quest_Design_v1_2026-11-17.md` | `chronosia_quest_design_check.py` |
 | **The other galaxies name their planets** when you fly to them. | the sketch | — |
 | **Sheets to print** for the five real-life tasks, with a page for you. | `GMQ_Real_Life_Task_Sheets_v1_2026-11-17.md` | — |
+| **Added after your next message:** small worlds made from a kit of parts (all 20 trade planets can be landed on), and a "Here" row of words to tap. | the sketch. `GMQ_Bigger_Universe_v1_2026-11-17.md` | `small_worlds_test.js` |
 
 **What I did not get to:**
 - Small events on the way between galaxies. Galactic Trade is the one thing to do in space so far. I held back on purpose: you said the skills engine was "too much", and a pop-up sum in mid-flight is close to that. Tell me if you want them.
