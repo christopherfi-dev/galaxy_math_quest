@@ -120,9 +120,11 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .sep { font-size: 1.4rem; font-family: var(--display); }
 .codes { gap: 14px; } .code { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; } .field .code input { width: 2.6em; } .field .code input.wrong { border-color: var(--bad); }
 .toy:has(.wires), .toy:has(.codes) { max-height: 64vh; max-height: 64dvh; }
-.field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .wires .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
+.field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .toy .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
 .word.hintb { border-style: dashed; }
 #t_ver { margin-left: auto; } #toold { border-color: var(--bad); }
+.toy .wire.on::before { content: '✓ '; font-weight: 700; } .toy .wire { transition: background .12s, transform .12s; } .toy .wire:active { transform: scale(.96); }
+.plan21 { gap: 5px 6px; margin: 0; } .plan21 .wire { padding: 5px 10px; font-size: .93rem; } .plan21 .cn { min-width: 6.4em; } .planrow { gap: 8px 14px; } .planrow #spare { color: #6fd08a; } .toy:has(.plan21) { gap: 5px; max-height: 80vh; max-height: 80dvh; }
 .tbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; } .tbar .word { border-style: dashed; }
 .art3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .art3 svg, .art svg.picsvg { width: 100%; height: auto; }
 @media (max-width: 600px) { .art3 { grid-template-columns: 1fr; } .art3 svg { max-height: 60px; } }
@@ -180,7 +182,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 </style>
 
 <div class="wrap">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 18</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 19</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -1757,7 +1759,7 @@ const STEPS = [['crossed', 'Cross the Sparkling River'], ['met', 'Meet the Energ
 const STONEX = [.31, .43, .55, .67];
 const V = () => S.v || (S.v = { sc: 'meadow', need: {} });
 const vDone = k => k === 'survey' ? 'RCI'.split('').every(c => V().need[c]) : !!V()[k];
-const powered = i => !!(V().plan && V().plan.includes(i));
+const powered = i => widget && widget.kind === 'plan' ? widget.on.has(i) : !!(V().plan && V().plan.includes(i));
 const litFrac = k => SPOTS.filter(p => p.k === k && powered(p.i)).reduce((a, p) => a + p.need, 0) / CITY[k].total;
 const used = () => SPOTS.filter(p => powered(p.i)).reduce((a, p) => a + p.need, 0);
 const num = n => n.toLocaleString('en');
@@ -1934,10 +1936,10 @@ function shortStep() { const w = widget, box = (id, lab) => `<label class="code"
     if (ins.some((i, k) => i.value !== Q[3][k])) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'Not yet. ' + Q[4]; ins.forEach((i, k) => i.classList.toggle('wrong', i.value !== Q[3][k])); return; } beep(880, .1); w.step++; if (w.step < 5) return shortStep();
     S.log.push({ what: 'Is there enough?', skill: 'Round, estimate, then subtract', result: w.miss ? `${w.miss} to fix` : 'No mistakes ✓' }); vWin('short', 'The city is 570 short. Your quick answer of 600 was close! Not everyone can have power. Use the table again to choose. You earn a card.'); }; }
 function startPlan() { const w = widget = { kind: 'plan', tries: 0, on: new Set(V().plan || []) };
-  toy(`<p class="eyebrow">The energy plan</p><h3>Who gets power?</h3><p class="q">You have 1,650. Tap the places you will light. Use all you can.</p>
-    ${'RCI'.split('').map(k => `<p class="chips"><b class="cn" style="color:${CITY[k].col}">${CITY[k].street}</b>${SPOTS.filter(p => p.k === k).map(p => `<button class="btn quiet wire" type="button" data-p="${p.i}">${p.name} ${p.need}</button>`).join('')}</p>`).join('')}
-    <div class="scale"><span id="used"></span><span id="spare"></span></div><div class="bar" id="bar"><span></span></div>
-    <div class="field"><button class="btn" type="button" id="try">Switch on</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  toy(`<p class="eyebrow">The energy plan</p><h3>Who gets power?</h3><p class="q">You have 1,650. Tap the places you will light. Use all you can. <span class="note">Gold with a tick means lit. Tap again to switch off.</span></p>
+    ${'RCI'.split('').map(k => `<p class="chips plan21"><b class="cn" style="color:${CITY[k].col}">${CITY[k].street}</b>${SPOTS.filter(p => p.k === k).map(p => `<button class="btn quiet wire" type="button" data-p="${p.i}">${p.name} ${p.need}</button>`).join('')}</p>`).join('')}
+    <div class="bar" id="bar"><span></span></div>
+    <div class="field planrow"><b id="used"></b><b id="spare"></b><button class="btn" type="button" id="try">Switch on</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
   const tot = () => [...w.on].reduce((a, i) => a + SPOTS[i].need, 0), upd = () => { const t = tot(); $('used').textContent = `${num(t)} of 1,650 used`; $('spare').textContent = t > SUPPLY ? `${num(t - SUPPLY)} too much` : `${num(SUPPLY - t)} spare`; $('bar').classList.toggle('over', t > SUPPLY); $('bar').firstElementChild.style.width = Math.min(100, t / SUPPLY * 100) + '%';
     document.querySelectorAll('#toy .wire').forEach(b => { const on = w.on.has(+b.dataset.p); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); };
   document.querySelectorAll('#toy .wire').forEach(b => b.onclick = () => { const i = +b.dataset.p; w.on.has(i) ? w.on.delete(i) : w.on.add(i); beep(w.on.has(i) ? 520 : 300, .05); $('msg').textContent = ''; upd(); }); upd(); $('leave').onclick = leave;
