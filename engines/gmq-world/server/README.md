@@ -34,6 +34,8 @@ A small PHP server, built like your Math Skills engine: one API file, flat JSON 
 - The same three things open the same game on any device.
 - Five wrong secret numbers lock that name for ten minutes. You can give a cadet a new number.
 - The server stores the number only as a hash, as your Math Skills engine stores passwords.
+- **Two cadets with the same first name** in one class cannot both be "Mia". The second should add a letter: "Mia B".
+- **A cadet who types five wrong teacher passwords** on the Commander's Desk locks it for ten minutes. That is a nuisance, not a leak.
 
 ## To try it on your own computer
 

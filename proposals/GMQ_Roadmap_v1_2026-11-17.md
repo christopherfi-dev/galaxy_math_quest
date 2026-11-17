@@ -11,8 +11,8 @@
 
 - **The game has twelve parts.** Section 2 lists them.
 - **Three parts are well on:** the station, Voltara, and the things that help children play (the number pad, the reading cards, kind words).
-- **Two big parts have not started:** the AI that runs the world, and the server that remembers it.
-- **That matters most.** Your foundation is: the AI keeps its full mind inside a defined world, and code holds the facts. So far I have built only the code half. The sketch has no AI in it at all.
+- **Two big parts had not started when I wrote this plan:** the AI that runs the world, and the server that remembers it. Each now has a first version, made the same night. Neither has run on your site, and the AI has never answered a real child.
+- **That matters most.** Your foundation is: the AI keeps its full mind inside a defined world, and code holds the facts. Until tonight I had built only the code half.
 - **The sketch is still worth it.** It settles what the world is, what the maths is and what the rules are. The AI and the server need exactly that to stand on.
 - **Only one child has played it.** Your daughter. Every "it works" in my reports means "a test passes", not "children enjoy it".
 
@@ -31,7 +31,7 @@
 | 7 | **The AI that runs the world** | A constraint file exists as a draft (version 0.3). It has never been run against a real model. **New tonight:** the server can call it, and checks every reply. It is switched off until you add a key. | You read the constraint file. Then try it yourself. |
 | 8 | **The server** (logins, saving, your codes) | **New tonight:** a first version, tested on my machine only. Not on your site. | You decide where it runs. See 5.1. |
 | 9 | **Your tools as the teacher** | Built: shortcuts, the codes, a log of what a student did, the reading-card switch. **New tonight:** a class view page, with the server. | Try it on your own computer |
-| 10 | **Real-life tasks** | Built: 5 code-locked tasks. Not built: the printed sheets that go with them. | Printable slips |
+| 10 | **Real-life tasks** | Built: 5 code-locked tasks. **New tonight:** sheets to print, in `GMQ_Real_Life_Task_Sheets_v1_2026-11-17.md`. | You check the sheets |
 | 11 | **Helps for young readers** | Built: reading cards, the number pad, kind words, maths words with meanings. Paused by you: reading levels. | Watch children use them |
 | 12 | **Pictures and sound** | Built: drawn by code. No painted art. Simple beeps. | Your decision. See 5.6. |
 
@@ -46,7 +46,7 @@ Your site and Drive hold five galaxies. [Source] This is what is in them.
 | **Numerix** (numbers) | **Voltara**, Task 1: the Energy Council | full, ran in class | too long as written | **Built**, rebuilt with your "values" idea |
 | | **Voltara**, Task 2: Galactic Trade. It is set **in space**: "We've just left Planet Voltara". | full, ran in class | good rounding work. Several chance cards are broken. | **Built tonight.** See section 6. |
 | | Voltara, the Final Boss | two versions [Conflict] | totals reach 10,800, money can go below zero | not started |
-| **Metrica** (measuring) | **Chronosia**: four time tasks | full, printed, with videos | the best material you have. No wrong sums. | not started. **My pick for the next planet.** |
+| **Metrica** (measuring) | **Chronosia**: four time tasks | full, printed, with videos | the best material you have. No wrong sums. | **designed tonight, not built.** My pick for the next planet. |
 | | Xylophora: area | only Task 1 has materials | 3 of 4 tasks need redoing | not started |
 | **Geometrica** (shapes) | Zephyron: maps and scale | 3 full tasks on A3 maps | the scale needs decimals. The maps may be someone else's art. | not started |
 | **Databa** (data) | Operation Stardust, on the ship | 6 lessons, ran | you said it was too long | not started. Your Atlantis project is a better model for it. |
@@ -117,7 +117,7 @@ In order of how much each one holds up.
 9. **Do you still want the set of 14 mini quests and mini battles?** You said later that the skills engine was "too much". I have built only the ones that sit naturally in a place. I would keep it that way.
 
 ### 5.5 Real life
-10. **Printed sheets for the five real-life tasks:** shall I make them?
+10. **The printed sheets for the five real-life tasks** are made. Are the checks on them the ones you would use?
 
 ### 5.6 Pictures
 11. **Painted art, or the drawn look as it is?**
@@ -140,10 +140,10 @@ In order of how much each one holds up.
 | **A fault found and fixed:** a page reloaded within a second of an action could lose the saved game. The game is now saved in two places on the device. | the sketch | found by `galactic_trade_test.js` |
 | **Chronosia, designed.** Not built. Your Tasks 1 and 2 kept, and a "quake day" with decisions that matter. | `GMQ_Chronosia_Quest_Design_v1_2026-11-17.md` | `chronosia_quest_design_check.py` |
 | **The other galaxies name their planets** when you fly to them. | the sketch | — |
+| **Sheets to print** for the five real-life tasks, with a page for you. | `GMQ_Real_Life_Task_Sheets_v1_2026-11-17.md` | — |
 
 **What I did not get to:**
-- Small events on the way between galaxies. Galactic Trade is the one thing to do in space so far.
-- Printed sheets for the real-life tasks.
+- Small events on the way between galaxies. Galactic Trade is the one thing to do in space so far. I held back on purpose: you said the skills engine was "too much", and a pop-up sum in mid-flight is close to that. Tell me if you want them.
 - Any work on battles or cards. Those wait for your decisions.
 
 **What is still true after tonight:**
