@@ -122,8 +122,12 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .toy:has(.wires), .toy:has(.codes) { max-height: 64dvh; }
 .field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .wires .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
 .word.hintb { border-style: dashed; }
+.art3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .art3 svg, .art svg.picsvg { width: 100%; height: auto; }
+@media (max-width: 600px) { .art3 { grid-template-columns: 1fr; } .art3 svg { max-height: 60px; } }
+.toy:has(.wire[data-p]) { max-height: 74dvh; } .toy .cn { margin-right: 4px; }
 .star.real { border-style: dashed; border-color: #8a63e6; } .star.real.lit svg { fill: #8a63e6; stroke: #8a63e6; } .star svg circle { stroke-width: 2; }
 .eyebrow.real { color: #b9a3ff; } ol.slip { margin: 0; padding-left: 1.3em; display: grid; gap: 3px; }
+@media (max-width: 600px) and (orientation: portrait) { .console:has(.toy:not([hidden])) .log { display: none; } }
 /* target practice is played in the scene, so on a small screen its panel stays short and the story band steps aside */
 @media (max-width: 600px) and (orientation: portrait) { .console:has(.toy:not([hidden]) #dleft) .log { display: none; } .toy:has(#dleft) h3 { display: none; } .toy:has(#dleft) .mw { font-size: .82rem; } }
 .mw { font-size: .9rem; color: var(--muted); border-left: 3px solid #ffb23e; padding-left: 8px; } .mw b { color: #ffb23e; font-weight: 700; }
@@ -194,6 +198,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
   <div class="words" id="verbs"></div>
   <div class="words" id="bag"></div>
 
+  <section class="box" id="mission" aria-label="Your mission on Voltara" hidden></section>
   <section class="box" id="partsbox" aria-label="Your ship parts and tasks"></section>
   <section class="box" id="stars" aria-label="Your star chart"></section>
   <section class="box" id="cards" aria-label="Your cards"></section>
@@ -213,10 +218,10 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
       <li>A Hint button gives the next thing to try, so no one stays stuck.</li>
       <li>Maths is staged in the world. Asteroids drift in rows outside the Shield Bay windows. Crates stack on the cargo scale. The locker code is the number of stacked crates, and each player gets a different stack.</li>
       <li>After launch you fly across a galaxy map and see other cadets’ ships. Fly to Galaxy Numerix and land on Voltara.</li>
-      <li>Voltara is drawn from your own words: rainbow skies, cotton-candy clouds, glowing trees, a sparkling river, a Gumblefish, FlavorBursts. You can dig holes, and they stay.</li>
-      <li>The city shows the Energy Council problem. As a child types a plan, each district lights up. The numbers are 570, 920 and 450 against 1,650, from your drafts.</li>
+      <li>Voltara is one whole quest across nine places: a meadow, a river, a plaza, three streets, the Council Hall, a tunnel and a hidden town. It is drawn from your own words: rainbow skies, cotton-candy clouds, glowing trees, a sparkling river, a Gumblefish, FlavorBursts. The 21 city places and their needs are from your City List.</li>
+      <li>On Voltara the maths is how you get on. You round to cross the river. You regroup crystals to count the tower. You add to learn what each street needs. You estimate, then subtract, to find the shortage. Each one first shows the idea, then asks.</li>
+      <li>The streets light up by the student's own plan. Then the tower log shows a mystery, and the last step is done in real life with blocks and a spoken reason. The code for that step is in the Voltara guide.</li>
       <li>The robot is a guide. Talk to it and it names the next thing to try, the same as the Hint button. It used to ask 12 ship-check questions. With 15 tasks, those are not needed.</li>
-      <li>On Voltara the animals ask four place-value skills, for Numbers Quest 1.</li>
       <li>56 more skills are built and tested: clocks, graphs, area, fractions, shapes, star maps and coins. They are filed under your own quests and stay hidden until a planet for that quest exists. The teacher view of the star chart lists them.</li>
       <li>Each skill shows its maths word and what it means. Code picks every number, draws every picture and marks every answer. Stories come from a bank of 234.</li>
       <li>This sketch knows about 40 words. On your site, your constrained AI would answer any other sentence.</li>
@@ -250,7 +255,7 @@ const CARGO = [['Space food', 3], ['Life support', 7], ['Science kit', 5], ['Wat
 const PARTS = ['Engine Core', 'Navigation', 'Shield', 'Weapons', 'Power'];
 const DECK = { common: ['Laser Cannon', 'Stealth Mode', 'Asteroid Assault'], rare: ['Quantum Quell', 'Void Vortex'], gold: ['Nebula Nova'] };
 const ODDS = [['common', 70], ['rare', 25], ['gold', 5]];
-const TOTAL_SECRETS = 21;   // 18 on the station, 3 on Voltara
+const TOTAL_SECRETS = 25;   // 18 on the station, 7 on Voltara
 /* the alien artifacts in the Engine Bay: four colours, and a shape for each so colour is never the only clue */
 const GEMC = [['red', '#ff7a6b', 'diamond'], ['blue', '#6db3ff', 'round'], ['green', '#6fd08a', 'triangle'], ['gold', '#ffd25e', 'square']];
 const DSLOT = [[3, 14], [5, 14], [7, 14], [9, 14], [3, 16], [5, 16], [8, 16], [10, 15]];   // where the practice drones hover
@@ -325,8 +330,8 @@ const OBJ = {
   bench:   { room: 'power',  tiles: [[28, 17]], words: ['bench', 'table', 'blocks', 'block'], label: 'block bench', block: 1 },
   cells:   { room: 'power',  tiles: [[29, 13]], words: ['cells', 'cell', 'emergency', 'meter'], label: 'power cells', stand: [29, 14] }
 };
-const ITEMS = { wrench: 'wrench', magnet: 'magnet', keycard: 'key card', chart: 'star chart', badge: 'badge', oil: 'oil can', fuse: 'fuse' };
-const ITEM_WORDS = { wrench: ['wrench', 'spanner', 'tool'], magnet: ['magnet'], keycard: ['keycard', 'key', 'card'], chart: ['chart'], badge: ['badge'], oil: ['oil', 'can', 'oilcan'], fuse: ['fuse'] };
+const ITEMS = { wrench: 'wrench', magnet: 'magnet', keycard: 'key card', chart: 'star chart', badge: 'badge', oil: 'oil can', fuse: 'fuse', burst: 'FlavorBurst', stone: 'glow stone', ckey: 'crystal key' };
+const ITEM_WORDS = { wrench: ['wrench', 'spanner', 'tool'], magnet: ['magnet'], keycard: ['keycard', 'key', 'card'], chart: ['chart'], badge: ['badge'], oil: ['oil', 'can', 'oilcan'], fuse: ['fuse'], burst: ['flavorburst', 'fruit', 'burst'], stone: ['stone', 'glow', 'light'], ckey: ['key', 'crystal'] };
 const VERBS = {
   look: ['look', 'l', 'examine', 'x', 'read', 'see', 'check', 'inspect', 'search', 'watch'],
   take: ['take', 'get', 'grab', 'pick', 'lift', 'eat', 'bite', 'taste'], open: ['open', 'unlock'], push: ['push', 'pull', 'move', 'shove', 'slide'],
@@ -455,7 +460,8 @@ const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your
 function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? `<span class="new">${esc(last.text)}</span>` : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
 function drawStatus() {
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
-    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span><span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>`;
+    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>`;
+  drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. Purple tasks are done in real life, with your teacher.</p>` +
     PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${t[3] ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
 }
@@ -489,6 +495,7 @@ function taskWon(id, skill, tries, miss, text) { closeToy(); const tail = taskDo
 const missing = () => PARTS.filter(p => !S.parts.includes(p));
 /* the next thing worth trying. A stuck child can always ask. */
 function hint() {
+  if (S.mode === 'planet') return 'The butterfly whispers: ' + planetHint();
   const who = S.bot ? `${cap(S.botName || 'the robot')} beeps: ` : 'A wall screen blinks: ', sec = id => S.secrets.includes(id);
   const t = !sec('wrench') ? 'Look at your ship. Open the hatch under its wing.'
     : !S.locker ? 'Read the sign in the dock. Count the stacked crates. Then open the grey locker on the east wall.'
@@ -578,7 +585,7 @@ const DO = {
   cells: { look: () => S.done.blocks ? 'The power cells glow a steady green.' : 'Emergency power cells. Their blocks flicker. Type: use cells.', use: () => { if (S.done.blocks) return 'The power is steady.'; startBlocks(); return 'The cells show their blocks.'; }, open: () => DO.cells.use(), push: () => DO.cells.use(), take: 'They are part of the wall.' }
 };
 const NOPE = { look: 'You see nothing special.', take: 'You cannot take that.', open: 'It does not open.', push: 'It does not move.', use: 'Nothing happens.', talk: 'It does not answer.' };
-const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'A star chart. It shows the way to Galaxy Numerix.', badge: 'A captain’s badge. You are wearing it.', oil: 'A small oil can. Good for rusty things.', fuse: 'A spare fuse. It fits a fuse box.' };
+const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'A star chart. It shows the way to Galaxy Numerix.', badge: 'A captain’s badge. You are wearing it.', oil: 'A small oil can. Good for rusty things.', fuse: 'A spare fuse. It fits a fuse box.', burst: 'A FlavorBurst. It changes flavour with every bite. Someone may want it.', stone: 'A glow stone. It lights up dark places.', ckey: 'A crystal key from the Energy Council. It opens the tower.' };
 
 /* =====================================================================
    THE PARSER. Two to four words: VERB THING, or USE THING ON THING.
@@ -1039,9 +1046,9 @@ function drawStars() {
   const rowsFor = list => { const g = {}; list.forEach(l => (g[l[5]] = g[l[5]] || []).push(l)); return Object.entries(g).map(([q, ls]) => `<div class="const"><span class="cn">${q}</span>${ls.map(star).join('')}</div>`).join(''); };
   const isLit = l => S.skill[l[0]] && S.skill[l[0]].status !== 'FAILED-FOUNDATIONAL', here = LADDER.filter(l => l[4] === 'Station'), volt = LADDER.filter(l => AT_VOLTARA.includes(l[0])), rest = LADDER.filter(l => l[4] !== 'Station' && !AT_VOLTARA.includes(l[0]));
   const beenToVoltara = S.secrets.some(x => ['fruit', 'stone', 'door'].includes(x)) || volt.some(l => S.skill[l[0]]) || S.at === 'voltara' || S.mode === 'planet';
-  $('stars').hidden = !(teacher || beenToVoltara);      // on the station the 15 tasks are the maths. The star chart starts on Voltara.
-  $('stars').innerHTML = (beenToVoltara || teacher ? `<h3>Voltara: ${volt.filter(isLit).length} of ${volt.length} stars lit</h3><p class="note">The animals of Voltara ask these.</p>` + rowsFor(volt) : '') +
-    (teacher ? `<h3 class="sub">The skills bank: ${here.length + rest.length} more skills</h3><p class="note">These are built and tested, and filed under your own ship parts and quests. No one is asked them now. They are ready for the planets.</p>` + rowsFor(here) + rowsFor(rest) : '') +
+  $('stars').hidden = !teacher;      // on the station the 15 tasks are the maths. The star chart starts on Voltara.
+  $('stars').innerHTML = 
+    (teacher ? `<h3 class="sub">The skills bank: ${LADDER.length} skills</h3><p class="note">These are built and tested, and filed under your own ship parts and quests. No one is asked them now. They are ready for the planets.</p>` + rowsFor(here) + rowsFor(volt) + rowsFor(rest) : '') +
     `<p><button class="btn quiet" type="button" id="tview">${teacher ? 'Hide' : 'Show'} the skills bank</button></p>`;
   $('tview').onclick = () => { teacher = !teacher; drawStars(); };
 }
@@ -1298,7 +1305,7 @@ function drawCargo() {        // the cargo pile and the big scale, drawn in the 
 function showEnding() {
   const rows = S.log.map(l => `<tr><td>${l.what}</td><td>${l.skill}</td><td>${l.result || (l.tries === l.need ? 'No mistakes ✓' : l.tries + ' tries')}</td></tr>`).join('');
   const t = $('report'); t.hidden = false; t.innerHTML = `<h3>Mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p><b>Secrets found: ${S.secrets.length} of ${TOTAL_SECRETS}.</b> ${S.secrets.length < TOTAL_SECRETS ? 'Eighteen are on the station. Three are on Voltara.' : 'You found them all!'}</p>
+    <p><b>Secrets found: ${S.secrets.length} of ${TOTAL_SECRETS}.</b> ${S.secrets.length < TOTAL_SECRETS ? 'Eighteen are on the station. Seven are on Voltara.' : 'You found them all!'}</p>
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
   $('again').onclick = restart;
 }
@@ -1320,7 +1327,7 @@ function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
-function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2024', 'Earth, 2024', 'Earth, 2024', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'planet' ? 'Planet Voltara' : ROOMS[S.room].name; if (t !== placeText) { placeText = t; $('place').textContent = t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
+function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2024', 'Earth, 2024', 'Earth, 2024', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { placeText = t; $('place').textContent = t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
 function tState(c) { if (c.t === 'void') return 0; if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
@@ -1556,7 +1563,7 @@ function frame(now) {
   if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();
   if (S.mode === 'intro' || S.mode === 'arrive') { drawIntro(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'space') { drawSpace(dt); return requestAnimationFrame(frame); }
-  if (S.mode === 'planet') { drawPlanet(dt); return requestAnimationFrame(frame); }
+  if (S.mode === 'planet') { try { drawPlanet(dt); } catch (e) { console.error(e); cx.setTransform(Math.min(2, devicePixelRatio || 1), 0, 0, Math.min(2, devicePixelRatio || 1), 0, 0); cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over'; } return requestAnimationFrame(frame); }
   if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 4.6 * dt; P.step += dt; P.idle = 0;
     if (Math.abs(dx) > Math.abs(dy)) P.dir = dx > 0 ? 'right' : 'left'; else if (dy) P.dir = dy > 0 ? 'down' : 'up';
     if (Math.random() < dt * 9) DUST.push({ x: P.x + .5 + (Math.random() - .5) * .2, y: P.y + .92, t: .5 });
@@ -1681,10 +1688,10 @@ function flyTo(id, out) {
   if (id === S.at && !SP.to) return out('You are here already.');
   if (!widget) closeToy(); SP.to = id; S.at = null; beep(200, .4, 'sawtooth'); out(`You fly to ${GAL[id].name}.`);
 }
-function land() { if (!widget) closeToy(); S.mode = 'planet'; PL.x = .13; PL.to = null; save(); beep(300, .3); }
+function land() { if (!widget) closeToy(); S.mode = 'planet'; V().sc = 'meadow'; PL.x = .13; PL.to = null; PL.fade = 1; save(); drawStatus(); beep(300, .3); }
 function actSpace(text, out) {
   const tk = text.split(/\s+/), id = Object.keys(GAL).find(g => tk.some(t => t.length > 2 && GAL[g].name.toLowerCase().split(' ').some(w => w !== 'galaxy' && w.startsWith(t))));
-  if (tk.includes('land') || tk.includes('voltara')) { if (S.at !== 'numerix' || SP.to) return out('There is no planet to land on here. Fly to Galaxy Numerix.'); land(); return out('You land on Planet Voltara. Rainbow skies! Look around.'); }
+  if (tk.includes('land') || tk.includes('voltara')) { if (S.at !== 'numerix' || SP.to) return out('There is no planet to land on here. Fly to Galaxy Numerix.'); land(); return out('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); }
   if (id) return flyTo(id, out);
   if (tk[0] === 'look') return out('Space. Five galaxies glow around the station. Other cadets fly past.');
   if (tk.some(t => ['battle', 'fight', 'attack', 'cadet', 'shoot'].includes(t))) return out('Battles between ships come later. They will use your cards.');
@@ -1692,91 +1699,265 @@ function actSpace(text, out) {
 }
 function tapSpace(e) {
   const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, s = t => say(t);
-  if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .56) * vw, (y - .5) * vh) < Math.min(vw, vh) * .34) { land(); return say('You land on Planet Voltara. Rainbow skies! Look around.'); }
+  if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .56) * vw, (y - .5) * vh) < Math.min(vw, vh) * .34) { land(); return say('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); }
   if (GHOSTS.some(g => { const [gx, gy] = ghostPos(g); return Math.hypot(x - gx, y - gy) < .05; })) return say('Another cadet. Battles between ships come later. They will use your cards.');
   const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id) flyTo(id, s);
 }
 
 /* =====================================================================
-   PLANET VOLTARA, seen from the side. Every detail is from Marc's quest page:
-   rainbow skies, cotton-candy clouds, glowing leaves, a sparkling river,
-   talking animals, the giggling Gumblefish, FlavorBursts.
+   PLANET VOLTARA: one whole quest, as a world you walk through.
+   [Source] the planet (rainbow skies, cotton-candy clouds, glowing trees, a sparkling river,
+   talking animals, the Gumblefish, FlavorBursts), the Energy Council, the 21 places and their
+   needs (the City List), the 1,650 supply as 8 hundreds, 70 tens and 150 ones, and the Number Nomads.
+   [Proposal] the places you walk between, the order of events, the mystery, and every puzzle.
+   The maths is never the reason you are here. It is how you get across, get in, and find out.
    ===================================================================== */
-const PL = { x: .1, to: null, then: null, face: 1, step: 0, idle: 0 };
-const NEED = { homes: 570, shops: 920, factories: 450 }, SUPPLY = 1650;
-const PT = {
-  ship:      { x: .07, words: ['ship', 'rocket'], label: 'your ship' },
-  fruit:     { x: .2, words: ['fruit', 'fruits', 'flavorburst', 'flavorbursts'], label: 'FlavorBursts' },
-  city:      { x: .32, words: ['city', 'council', 'lights', 'homes', 'shops', 'factories', 'energy'], label: 'city' },
-  butterfly: { x: .47, words: ['butterfly', 'butterflies'], label: 'butterfly' },
-  fish:      { x: .62, words: ['gumblefish', 'fish', 'river', 'water'], label: 'Gumblefish' },
-  tree:      { x: .77, words: ['tree', 'trees', 'leaves', 'leaf'], label: 'tall tree' },
-  rock:      { x: .91, words: ['rock', 'boulder'], label: 'rock' },
-  door:      { x: .91, words: ['door'], label: 'tiny door' },
-  sky:       { x: null, words: ['sky', 'clouds', 'cloud', 'rainbow'], label: 'sky' }
+const PL = { x: .1, to: null, then: null, face: 1, step: 0, idle: 0, fade: 0 };
+const SUPPLY = 1650;
+const CITY = {
+  R: { street: 'Home Street', sc: 'homes', col: '#ff8f6b', total: 750, places: [['Neighborhood 1', 200], ['Neighborhood 2', 200], ['Schools', 100], ['Hospital', 50], ['Parks', 50], ['Zoo', 30], ['Swimming Pool', 20], ['Supermarket', 100]] },
+  C: { street: 'Market Street', sc: 'shops', col: '#35d0c4', total: 880, places: [['Shopping Mall', 250], ['Office Buildings', 200], ['Hotels', 150], ['Restaurants', 100], ['Sports Arena', 50], ['Arts Theater', 30], ['Bus Stop', 20], ['Amusement Park', 80]] },
+  I: { street: 'Factory Row', sc: 'works', col: '#f0c23b', total: 590, places: [['Factory', 200], ['Solar Power Plant', 250], ['Warehouse', 50], ['Recycling Plant', 50], ['Gas Station', 40]] }
 };
+const SPOTS = []; for (const k of 'RCI') CITY[k].places.forEach(([name, need], j) => SPOTS.push({ k, j, i: SPOTS.length, name, need }));
+/* what you see at each place: [dark, lit] */
+const SPOT_SAY = { 'Neighborhood 1': ['Rows of round houses. Every window is dark.', 'The round houses glow. Someone is cooking dinner.'], 'Neighborhood 2': ['Tall thin houses on stilts. No lights.', 'The stilt houses shine like lanterns.'],
+  'Schools': ['The school bell is silent. The screens are black.', 'The school hums. A lesson plays on a bright screen.'], 'Hospital': ['The hospital runs on one small lamp. A doctor looks worried.', 'The hospital is bright. The doctor waves to you.'],
+  'Parks': ['The park lamps are off. The glow-swings hang still.', 'The park lamps are on. The glow-swings sway.'], 'Zoo': ['The zoo is dark. A six-legged zebra blinks at you. It looks hungry.', 'The zoo lights are on. The six-legged zebra trots about.'],
+  'Swimming Pool': ['The pool is cold and still.', 'The pool is warm. Bubbles rise.'], 'Supermarket': ['The doors are stuck shut. The fridges are warm.', 'The doors slide open. The fridges hum.'],
+  'Shopping Mall': ['The mall is a dark cave of shops.', 'The mall sparkles. Music plays.'], 'Office Buildings': ['The office towers are black against the sky.', 'Office lights blink on, floor by floor.'],
+  'Hotels': ['The hotel sign is off. Guests hold candles.', 'The hotel sign glows pink.'], 'Restaurants': ['The ovens are cold. It smells of nothing.', 'It smells of hot FlavorBurst pie.'],
+  'Sports Arena': ['The arena is silent. The scoreboard is blank.', 'The scoreboard lights up. A crowd cheers.'], 'Arts Theater': ['The stage is dark. An actor practises by moonlight.', 'The stage lights are on. The show begins.'],
+  'Bus Stop': ['No hover-bus comes. The timetable is dark.', 'A hover-bus glides in, right on time.'], 'Amusement Park': ['The big wheel does not turn.', 'The big wheel turns. Its lights spin. You could ride it.'],
+  'Factory': ['The machines stand still.', 'The machines clank and whirr.'], 'Solar Power Plant': ['The solar plant needs power to wake up. Strange but true.', 'The solar panels tilt to the sky.'],
+  'Warehouse': ['Boxes sit in the dark.', 'Robot arms stack boxes under bright lights.'], 'Recycling Plant': ['The sorting belt has stopped.', 'The belt rolls. Old tins become new.'], 'Gas Station': ['The pumps are off.', 'The pumps glow. A hover-car fills up.'] };
+const VSC = {
+  meadow: { name: 'Landing Meadow', at: 'the Landing Meadow', e: 'river' }, river: { name: 'The Sparkling River', at: 'the Sparkling River', w: 'meadow', e: 'plaza' }, plaza: { name: 'Power Plaza', at: 'the Power Plaza', w: 'river', e: 'homes' },
+  homes: { name: 'Home Street', at: 'Home Street', w: 'plaza', e: 'shops', k: 'R' }, shops: { name: 'Market Street', at: 'Market Street', w: 'homes', e: 'works', k: 'C' }, works: { name: 'Factory Row', at: 'Factory Row', w: 'shops', k: 'I' },
+  hall: { name: 'Energy Council Hall', at: 'the Council Hall', w: 'plaza', inside: 1 }, tunnel: { name: 'The Cable Tunnel', at: 'the Cable Tunnel', w: 'works', e: 'hollow', inside: 1 }, hollow: { name: 'Nomad Hollow', at: 'Nomad Hollow', w: 'tunnel', inside: 1 }
+};
+const STEPS = [['crossed', 'Cross the Sparkling River'], ['met', 'Meet the Energy Council'], ['count', 'Count the energy in the tower'], ['survey', 'Find what each street needs'], ['short', 'Work out how much is missing'],
+  ['plan', 'Make the energy plan'], ['lost', 'Read the night log'], ['houses', 'Find where the energy goes'], ['final', 'Tell the Council your choice']];
+const STONEX = [.31, .43, .55, .67];
+const V = () => S.v || (S.v = { sc: 'meadow', need: {} });
+const vDone = k => k === 'survey' ? 'RCI'.split('').every(c => V().need[c]) : !!V()[k];
+const powered = i => !!(V().plan && V().plan.includes(i));
+const litFrac = k => SPOTS.filter(p => p.k === k && powered(p.i)).reduce((a, p) => a + p.need, 0) / CITY[k].total;
+const used = () => SPOTS.filter(p => powered(p.i)).reduce((a, p) => a + p.need, 0);
+const num = n => n.toLocaleString('en');
+function vWin(flag, text, gold) { closeToy(); if (flag) V()[flag] = true; save(); drawStatus(); chime(); card(gold ? 'gold' : undefined); say(text); }
+const VSEE = { river: 'The river sparkles like diamonds. A Gumblefish giggles in the water.', plaza: 'A wide plaza. A tall tower stands dark. A notice flaps on a post.', homes: 'Round houses and tall thin ones. Not one window is lit.', shops: 'Shops, a theatre and a big wheel. All of it is still.',
+  works: 'Factories and a silent solar plant.', hall: 'Three councillors look up. They seem tired, and glad to see you.', tunnel: 'Cold air. A thick cable hums on the wall.', hollow: 'Shelves of rock, and on them... tiny houses, each with one tiny light.' };
+function vGo(sc, x) { V().sc = sc; PL.x = x; PL.to = null; PL.then = null; PL.fade = 1; V().been = V().been || []; save(); beep(420, .08); if (sc === 'hollow' && !S.secrets.includes('hollow')) secret('hollow', 'A hidden town, deep under the hill! Tiny lights fill the dark.'); }
+
+/* ---------- things in each place ---------- */
+const VT = {
+  ship: { sc: 'meadow', x: .07, words: ['ship', 'rocket'], label: 'your ship' }, fruit: { sc: 'meadow', x: .2, words: ['fruit', 'fruits', 'flavorburst', 'flavorbursts'], label: 'FlavorBursts' },
+  butterfly: { sc: 'meadow', x: .47, words: ['butterfly', 'butterflies'], label: 'butterfly', tap: 'talk' }, tree: { sc: 'meadow', x: .77, words: ['tree', 'trees', 'leaves', 'leaf', 'tall'], label: 'tall tree' },
+  rock: { sc: 'meadow', x: .91, words: ['rock', 'boulder'], label: 'rock', when: () => !S.rock }, door: { sc: 'meadow', x: .91, words: ['door', 'tiny'], label: 'tiny door', when: () => S.rock },
+  farcity: { sc: 'meadow', x: null, words: ['city', 'lights', 'town', 'river'], label: 'city' },
+  gumble: { sc: 'river', x: .5, words: ['gumblefish', 'fish', 'gumble'], label: 'Gumblefish', tap: 'talk' }, stones: { sc: 'river', x: .5, words: ['stones', 'stone', 'steps', 'river', 'water'], label: 'stepping stones' },
+  notice: { sc: 'plaza', x: .13, words: ['notice', 'sign', 'poster', 'sos', 'board'], label: 'notice' }, tower: { sc: 'plaza', x: .4, words: ['tower', 'store', 'crystals', 'crystal', 'energy', 'lock'], label: 'energy tower', tap: 'open' },
+  fountain: { sc: 'plaza', x: .6, words: ['fountain', 'coin', 'water'], label: 'fountain' }, hall: { sc: 'plaza', x: .83, words: ['hall', 'council', 'door', 'building'], label: 'Council Hall', tap: 'go' },
+  hatch: { sc: 'works', x: .95, words: ['hatch', 'hum', 'cable', 'tunnel', 'hole'], label: 'humming hatch', tap: 'open', when: () => V().lost },
+  exit: { sc: 'hall', x: .04, words: ['door', 'exit', 'out', 'outside', 'plaza'], label: 'door', tap: 'go' }, map: { sc: 'hall', x: .2, words: ['map', 'wall', 'city'], label: 'city map' },
+  table: { sc: 'hall', x: .38, words: ['table', 'plan', 'desk'], label: 'plan table', tap: 'use' }, council: { sc: 'hall', x: .66, words: ['council', 'councillors', 'councillor', 'aliens', 'leader'], label: 'the Council', tap: 'talk' },
+  log: { sc: 'hall', x: .92, words: ['log', 'screen', 'night', 'numbers'], label: 'tower log', tap: 'use', when: () => V().plan },
+  cable: { sc: 'tunnel', x: .5, words: ['cable', 'wire', 'hum'], label: 'cable' },
+  tinydoor: { sc: 'hollow', x: .05, words: ['door', 'tiny'], label: 'the tiny door' }, elder: { sc: 'hollow', x: .2, words: ['elder', 'nomad', 'nomads', 'people', 'tiny'], label: 'Nomad elder', tap: 'talk' },
+  houses: { sc: 'hollow', x: .62, words: ['houses', 'house', 'town', 'lights', 'homes'], label: 'tiny houses' }
+};
+const spotX = p => .17 + (p.j + .5) * (.76 / CITY[p.k].places.length);
+function vThings() { const sc = V().sc, out = []; for (const id in VT) { const t = VT[id]; if (t.sc === sc && (!t.when || t.when())) out.push({ id, ...t }); }
+  const k = VSC[sc].k; if (k) { out.push({ id: 'board', x: .07, words: ['board', 'sign', 'list', 'needs'], label: 'street board', tap: 'use' }); SPOTS.filter(p => p.k === k).forEach(p => out.push({ id: 'spot' + p.i, x: spotX(p), words: p.name.toLowerCase().split(' ').concat(p.name === 'Amusement Park' ? ['wheel', 'ride'] : p.name === 'Zoo' ? ['zebra'] : []), label: p.name, spot: p })); }
+  if (!VSC[sc].inside) out.push({ id: 'sky', x: null, words: ['sky', 'clouds', 'cloud', 'rainbow'], label: 'sky' }); return out; }
 const FLAVOURS = ['mango', 'mint', 'popcorn', 'lemon', 'chocolate'];
-const VOLT = {
-  ship: { look: 'Your ship rests on the grass.' },
-  fruit: { look: 'FlavorBursts hang from the tree. They change flavour with each bite.',
-    take: () => { S.bites++; save(); const t = `You bite a FlavorBurst. It tastes like ${FLAVOURS[S.bites % 5]}. Bite again!`; if (!S.secrets.includes('fruit')) { secret('fruit', t); return; } return t; } },
-  city: { look: 'The city has homes, shops and factories. Most lights are off. The Energy Council needs a plan.',
-    use: () => { startEnergy(); return 'The Energy Council shows you the numbers.'; } },
-  butterfly: { look: 'A blue butterfly. Animals talk on Voltara.', talk: () => { if (!S.hint) { S.hint = true; save(); return 'The butterfly says: dig by the tall tree. Talk to me again for a riddle.'; } const r = nextUnlit(AT_VOLTARA); if (!r) return 'The butterfly says: you know all my riddles!'; startSkill(r, 'the butterfly', 'voltara'); return 'The butterfly has a riddle for you.'; }, take: 'It flutters away. Then it comes back.' },
-  fish: { look: 'A Gumblefish giggles in the sparkling river.',
-    talk: () => { const r = nextUnlit(AT_VOLTARA); if (!r) return 'The Gumblefish giggles and blows a bubble.'; startSkill(r, 'the Gumblefish', 'voltara'); return 'The Gumblefish pops up. It has a question!'; } },
-  tree: { look: 'The tallest tree. Its leaves glow in the dark.', push: 'It does not move. A leaf drifts down.', take: 'You take a glowing leaf. It fades in your hand.', use: 'You climb a little. You can see the whole city.' },
-  rock: { look: () => S.rock ? 'The rock is rolled aside. A tiny door is behind it.' : 'A round rock. It looks loose.',
-    push: () => { if (S.rock) return 'It will not roll any further.'; S.rock = true; save(); beep(160, .25, 'sawtooth'); secret('door', 'The rock rolls away. A tiny door is behind it!'); } },
-  door: { look: 'A tiny door. Too small for you.', open: 'A tiny room. A tiny sign says: more of Voltara is coming.' },
-  sky: { look: 'Rainbow skies. Clouds like cotton candy.', take: 'You cannot reach the clouds.' }
+const councilSays = () => { const v = V(); return !v.met ? null : !v.count ? 'First we must know how much energy we have. Take this crystal key. Open the tower in the plaza.' : !vDone('survey') ? 'Now, what does the city need? Each street has a board at its west end. Read all three.'
+  : !v.short ? 'You have the numbers. Come to the plan table. Is there enough for everyone?' : !v.plan ? 'There is not enough. Use the plan table. Choose who gets power.' : !v.lost ? 'The lights are on. Thank you! But our tower log looks strange. Please look at it.'
+  : !v.houses ? 'Something takes our energy in the night. Listen for a hum at the east end of Factory Row.' : !v.final ? null : 'Voltara thanks you, Commander. The Nomads are our neighbours now.'; };
+const VDO = {
+  ship: { look: 'Your ship rests on the soft grass.' },
+  fruit: { look: 'FlavorBursts hang from the tree. They change flavour with each bite. You could take one with you.', take: () => { if (has('burst')) return 'You have one already.'; give('burst'); return 'You pick a FlavorBurst. It is warm, and it hums a little.'; },
+    eat: () => { S.bites++; save(); const t = `You bite a FlavorBurst. It tastes like ${FLAVOURS[S.bites % 5]}. Bite again!`; if (!S.secrets.includes('fruit')) { secret('fruit', t); return; } return t; } },
+  butterfly: { look: 'A blue butterfly. Animals talk on Voltara.', talk: () => { if (!S.hint) { S.hint = true; save(); return 'The butterfly says: welcome! Our city has gone dark. A secret, too: dig by the tall tree.'; } return 'The butterfly says: ' + planetHint(); }, take: 'It flutters away. Then it comes back.' },
+  tree: { look: 'The tallest tree. Its leaves glow in the dark.', push: 'It does not move. A leaf drifts down.', take: 'You take a glowing leaf. It fades in your hand.', use: 'You climb a little. You can see the dark city across the river.' },
+  rock: { look: 'A round rock. It looks loose.', push: () => { S.rock = true; save(); beep(160, .25, 'sawtooth'); secret('door', 'The rock rolls away. A tiny door is behind it!'); } },
+  door: { look: 'A tiny door. Far too small for you. A thin cable runs under it.', open: () => V().houses ? 'A tiny hand waves from inside. The Nomads know you now.' : 'It is locked from the inside. You hear tiny voices. Who lives here?', push: 'It does not open from this side.' },
+  farcity: { look: () => V().plan ? 'The city across the river. Lights shine in the streets you chose.' : 'A city, far across the river. Every window is dark.' },
+  sky: { look: 'Rainbow skies. Clouds like cotton candy.', take: 'You cannot reach the clouds.' },
+  gumble: { look: () => V().fed ? 'The Gumblefish giggles and blows a bubble.' : 'A Gumblefish giggles in the sparkling river. It keeps looking at the fruit tree.',
+    talk: () => V().crossed ? 'The Gumblefish says: hop over any time!' : V().fed ? startStones() || 'The Gumblefish says: I call a number. You hop to the nearest hundred!' : 'The Gumblefish says: I am SO hungry. Bring me a FlavorBurst and I will call up the stepping stones.',
+    use: it => { if (V().fed) return VDO.gumble.talk(); if (it !== 'burst') return 'The Gumblefish says: I only want a FlavorBurst.'; S.inv = S.inv.filter(i => i !== 'burst'); V().fed = true; save(); drawBag(); beep(700, .15); return 'Gulp! The Gumblefish spins. Four stones rise out of the river. Talk to it to cross.'; }, take: 'It slips away, giggling.' },
+  stones: { look: () => V().fed ? 'Four stepping stones. Each has a number carved on it.' : 'The river is wide and deep. There is no way across yet.', use: () => V().crossed ? vCross() : V().fed ? startStones() || 'You step up to the first stone.' : 'There is nothing to stand on. The Gumblefish may know a way.', take: 'It is far too heavy.' },
+  notice: { look: 'A notice from the Galactic Council: SOS. VOLTARA HAS AN ENERGY CRISIS. THE ENERGY COUNCIL NEEDS HELP. COME TO THE HALL.' },
+  tower: { look: () => V().count ? 'The energy tower. It holds 1,650 energy. You counted it.' : 'The energy tower. Crystals glow behind a locked door.',
+    open: () => { if (V().count) return 'You counted it: 1,650.'; if (!has('ckey')) return 'It is locked. The Energy Council holds the key. Their hall is just east of here.'; startCount(); return 'The crystal key turns. The store opens.'; }, use: () => VDO.tower.open() },
+  fountain: { look: () => V().plan ? (S.secrets.includes('coin') ? 'The fountain sparkles.' : 'The fountain runs again. Something shines in the water.') : 'A dry fountain. The pump has no power.',
+    take: () => { if (!V().plan) return 'It is dry. Nothing is here.'; if (S.secrets.includes('coin')) return 'Only water now.'; secret('coin', 'You reach in. A lucky Voltara coin! You keep it.'); card(); }, use: () => VDO.fountain.take() },
+  hall: { look: 'The Energy Council Hall. Its door is open.', go: () => { const nw = !(V().been || []).includes('hall'); vGo('hall', .1); if (nw) { V().been.push('hall'); save(); } return 'You step into the Council Hall.' + (nw ? ' ' + VSEE.hall : ''); }, open: () => VDO.hall.go(), use: () => VDO.hall.go() },
+  hatch: { look: 'A hatch in the ground. A low hum comes from under it. A cable runs down.', open: () => { vGo('tunnel', .08); return (has('stone') ? 'You climb down. Your glow stone lights the way. ' : 'You climb down. It is pitch dark. You cannot see the way on. ') + VSEE.tunnel; }, go: () => VDO.hatch.open(), use: () => VDO.hatch.open() },
+  exit: { look: 'The door back to the plaza.', go: () => { vGo('plaza', .8); return 'You step out into the plaza.'; }, open: () => VDO.exit.go(), use: () => VDO.exit.go() },
+  map: { look: () => V().plan ? `A map of the city. ${V().plan.length} places are lit. ${21 - V().plan.length} are dark.` : 'A map of the city: three streets and 21 places. Not one light is on.' },
+  table: { look: () => V().plan ? `The plan table. Your plan uses ${num(used())} of 1,650.` : 'The plan table. A small tower of light floats over it.',
+    use: () => { const v = V(); if (!v.met) return 'Talk to the Council first.'; if (!v.count || !vDone('survey')) return 'The table is empty. The Council needs two things first: the energy in the tower, and what each street needs.';
+      if (!v.short) { startShort(); return 'Numbers float up over the table.'; } if (v.final) return 'The plan is settled.'; startPlan(); return 'All 21 places float over the table.'; }, open: () => VDO.table.use() },
+  council: { look: 'Three councillors. They look tired and kind.', talk: () => { const v = V(); if (!v.met) { v.met = true; give('ckey'); save(); drawStatus(); return 'The Council says: you came! Our city is dark. ' + councilSays(); } if (v.houses && !v.final) { startChoice(); return 'The Council listens.'; } return 'The Council says: ' + councilSays(); }, use: () => VDO.council.talk() },
+  log: { look: () => V().lost ? 'The tower log. It loses 30 energy every hour, all night.' : 'The tower log. Two columns of numbers. They do not match.', use: () => { if (V().lost) return 'You know it now: 30 every hour. 240 in a night.'; startLog(); return 'You read the log.'; }, open: () => VDO.log.use() },
+  cable: { look: () => has('stone') ? 'A thick cable. It hums. A thin wire is clipped to it and runs east.' : 'You feel a cable. It hums. It is too dark to see more.', take: 'It is bolted to the wall.', push: 'It hums a little louder.' },
+  tinydoor: { look: 'The tiny door, from the inside. It leads up to the meadow.' },
+  elder: { look: 'A Number Nomad, no taller than your thumb. It has a long silver beard.', talk: () => { if (V().houses) return 'The elder says: a cosmic storm stranded us here, long ago. We only wanted a little light. Please tell the Council.'; startHouses(); return 'The elder says: you found us! Please, count our homes before you judge us.'; }, use: () => VDO.elder.talk() },
+  houses: { look: 'Tiny houses on shelves of rock. Each has one tiny light. They sit in neat rows.', take: 'You would never take someone\'s home.', use: () => VDO.elder.talk() },
+  board: { look: () => { const k = VSC[V().sc].k; return V().need[k] ? `The board for ${CITY[k].street}. It needs ${CITY[k].total} in all.` : `A board for ${CITY[k].street}. It lists each place and what it needs.`; }, use: () => { const k = VSC[V().sc].k; if (V().need[k]) return `You added it: ${CITY[k].total}.`; if (!V().met) return 'A list of places and numbers. You do not know what it is for yet. The Council might.'; startSurvey(k); return 'You read the board.'; } }
 };
-VOLT.city.open = VOLT.city.talk = VOLT.city.go = VOLT.city.use; VOLT.fish.use = VOLT.fish.take = VOLT.fish.talk; VOLT.butterfly.use = VOLT.butterfly.talk; VOLT.door.use = VOLT.door.open;
-function nextShells() { let a, b; do { a = 21 + rnd(50); b = 12 + rnd(40); } while (a + b > 99 || ((a % 10 + b % 10 >= 10) !== (widget.hits > 0))); widget.ans = a + b;
-  numberToy(`<p class="eyebrow">Mini quest · your numbers are your own</p><h3>Gumblefish Shells</h3><p class="q">“I had ${a} shells. I found ${b} more. How many now?”</p>`, 'shells'); }
-function startEnergy() {
-  widget = { kind: 'energy', tries: 0, v: S.plan ? [...S.plan] : [0, 0, 0] };
-  toy(`<h3>Energy Council</h3><p class="q">You have 1,650 energy. That is not enough for everyone. How much does each part get?</p>
-    <div class="plan">${Object.entries(NEED).map(([k, n], i) => `<label class="pl" for="e${i}">${k[0].toUpperCase() + k.slice(1)} need ${n}<input id="e${i}" inputmode="numeric" autocomplete="off" value="${widget.v[i] || ''}"></label>`).join('')}</div>
-    <div class="scale"><span id="used">0 of 1,650 used</span></div><div class="bar" id="bar"><span></span></div>
-    <div class="field"><button class="btn" type="button" id="try">Check the plan</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
-  const upd = () => { const t = widget.v.reduce((a, b) => a + b, 0); $('used').textContent = `${t.toLocaleString('en')} of 1,650 used`; $('bar').classList.toggle('over', t > SUPPLY); $('bar').firstElementChild.style.width = Math.min(100, t / SUPPLY * 100) + '%'; };
-  [0, 1, 2].forEach(i => { const inp = $('e' + i); inp.oninput = () => { inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 4); widget.v[i] = +inp.value || 0; $('msg').textContent = ''; upd(); }; });
-  upd(); $('leave').onclick = leave;
-  $('try').onclick = () => { const m = $('msg'), t = widget.v.reduce((a, b) => a + b, 0), keys = Object.keys(NEED), over = keys.findIndex((k, i) => widget.v[i] > NEED[k]); widget.tries++;
-    const why = !t ? 'Give some energy first.' : over >= 0 ? `The ${keys[over]} need only ${NEED[keys[over]]}.` : t > SUPPLY ? 'Too much. You have only 1,650.' : '';
-    if (why) { m.className = 'msg bad'; m.textContent = why; beep(140, .2, 'square'); return; }
-    S.plan = [...widget.v]; const tries = widget.tries; closeToy(); S.log.push({ what: 'Energy Council plan', skill: 'Add and compare to 1,650', tries, need: 1 }); save(); chime();
-    say(`Your plan uses ${t.toLocaleString('en')} of 1,650. The lights come on! In class you build this with blocks. Your teacher checks it. Then you earn gold.`); };
-}
+VDO.board.open = VDO.board.use; VDO.gumble.give = VDO.gumble.use; VDO.fountain.open = VDO.fountain.take;
+function spotDo(p, verb, it) { const on = powered(p.i), base = `${p.name}. It needs ${p.need} energy. ${SPOT_SAY[p.name][on ? 1 : 0]}`;
+  if (p.name === 'Zoo' && verb === 'use' && it === 'burst') { if (S.secrets.includes('zebra')) return 'The zebra is full.'; S.inv = S.inv.filter(i => i !== 'burst'); drawBag(); secret('zebra', 'The six-legged zebra eats the FlavorBurst. It does a happy dance and drops a card!'); card(); return; }
+  if (p.name === 'Amusement Park' && verb === 'use') { if (!on) return 'The big wheel has no power.'; if (!S.secrets.includes('wheel')) { secret('wheel', 'You ride the big wheel! From the top you see the whole of Voltara.'); return; } return 'Round you go again. Whee!'; }
+  return base; }
+function planetHint() { const v = V(); return !v.crossed ? (!v.fed ? (has('burst') ? 'Give the FlavorBurst to the Gumblefish at the river.' : 'The Gumblefish at the river is hungry. Take a FlavorBurst from the tree by your ship.') : 'Talk to the Gumblefish. Hop across the stones.')
+  : !v.met ? 'Walk east to the Power Plaza. Go into the Council Hall and talk to the Council.' : !v.count ? 'Open the energy tower in the plaza. Count what is in it.'
+  : !vDone('survey') ? `Use the board at the west end of ${CITY['RCI'.split('').find(c => !v.need[c])].street}.` : !v.plan ? 'Go to the Council Hall. Use the plan table.' : !v.lost ? 'Look at the tower log in the Council Hall.'
+  : !v.houses ? (!has('stone') ? 'The tunnel under Factory Row is dark. Dig by the tall tree in the meadow for a glow stone.' : V().sc === 'hollow' ? 'Talk to the elder.' : 'Open the hatch at the east end of Factory Row. Follow the cable east.')
+  : !v.final ? 'Go to the Council Hall. Tell the Council what you found.' : 'Voltara is safe. Explore, or fly on from your ship.'; }
+function vCross() { PL.to = PL.x < .5 ? .84 : .16; return 'You hop across the stones.'; }
+
+/* ---------- the parser on a planet: the same short commands as the station ---------- */
+const PV = { look: VERBS.look, take: ['take', 'get', 'grab', 'pick', 'lift'], eat: ['eat', 'bite', 'taste'], open: VERBS.open, push: VERBS.push, use: ['use', 'put', 'give', 'feed', 'press', 'turn', 'ride', 'play', 'start', 'fix', 'read', 'count'],
+  go: ['go', 'walk', 'run', 'enter', 'cross', 'climb', 'crawl', 'hop'], talk: VERBS.talk, dig: ['dig'], fly: ['fly', 'launch', 'blast'], bag: VERBS.bag, help: ['help'], hint: VERBS.hint, silly: ['jump', 'dance', 'spin', 'sing', 'wave', 'sleep', 'sit'], leave: ['leave', 'exit', 'out'] };
 function actPlanet(text, out) {
   if (widget) return out('Finish this first. Or tap Leave.');
-  const tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'with', 'by', 'on', 'in', 'under', 'of', 'around'].includes(t));
-  const fly = ['fly', 'leave', 'launch', 'blast'].includes(tk[0]), v = fly ? 'fly' : Object.keys(VERBS).find(k => VERBS[k].includes(tk[0]));
-  const id = Object.keys(PT).find(k => (k !== 'door' || S.rock) && tk.slice(1).some(t => PT[k].words.includes(t)));
-  if (!v) return out(id ? 'Start with a doing word: look, take, push, use, talk or dig.' : 'Voltara does not know that yet. In the real world it would answer. Try: look, take, push, use, talk, dig.');
-  if (v === 'fly' || (id === 'ship' && ['use', 'go', 'open'].includes(v))) { S.mode = 'space'; S.at = 'numerix'; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; save(); return out('You lift off. Voltara shrinks below you.'); }
-  if (v === 'help') return out('Try: look city. talk butterfly. eat fruit. push rock. dig. Or: fly.');
-  if (v === 'dig') { S.holes.push(+PL.x.toFixed(3)); if (S.holes.length > 14) S.holes.shift(); save(); beep(180, .12, 'square');
-    if (Math.abs(PL.x - PT.tree.x) < .07 && !S.secrets.includes('stone')) { out(null); secret('stone', 'You dig by the tall tree. A glow stone! It shines in your hand.'); card(); return; }
-    return out('You dig a small hole. It will stay here.'); }
-  if (v === 'silly') return out('You jump high! Voltara has soft, bouncy grass.');
+  const v0 = V(), sc = v0.sc, tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'by', 'in', 'into', 'under', 'of', 'around', 'up', 'please'].includes(t));
+  let v = Object.keys(PV).find(k => PV[k].includes(tk[0])); if (tk[0] === 'read' || tk[0] === 'count') v = /board|log|house|list/.test(text) ? 'use' : 'look';
+  const rest = tk.slice(1), dir = DIRS[rest[0]] || DIRS[tk[0]], things = vThings();
+  const item = [...S.inv].reverse().find(i => rest.some(t => ITEM_WORDS[i].includes(t))) || null, cut = rest.findIndex(t => t === 'on' || t === 'with'), names = cut < 0 ? rest.filter(t => !(item && v === 'use' && ITEM_WORDS[item].includes(t))) : rest.slice(cut + 1);
+  const score = t => names.filter(n => t.words.includes(n)).length, best = things.filter(t => score(t) > 0).sort((a, b) => score(b) - score(a) || Math.abs((a.x || 0) - PL.x) - Math.abs((b.x || 0) - PL.x))[0] || null;
+  if (dir && dir[0] && (v === 'go' || !v)) return out(vWalkOut(dir[0] > 0 ? 'e' : 'w'));
+  if (!v) return out(best ? 'Start with a doing word: look, take, push, use, talk or dig.' : 'Voltara does not know that yet. In the real world it would answer. Try: look, take, use, talk, go, dig.');
+  if (v === 'hint') return out('The butterfly whispers: ' + planetHint());
+  if (v === 'leave') return out(sc === 'hall' ? VDO.exit.go() : sc === 'meadow' ? 'To leave Voltara, type: fly.' : 'Walk west to go back.');
+  if (v === 'fly' || (best && best.id === 'ship' && ['use', 'go', 'open'].includes(v))) { if (sc !== 'meadow') return out('Your ship is back in the Landing Meadow.'); S.mode = 'space'; S.at = 'numerix'; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; save(); return out('You lift off. Voltara shrinks below you.'); }
+  if (v === 'help') return out('Type a doing word and a thing. Like: talk butterfly. take fruit. give fruit to fish. go east. Or tap Hint.');
+  if (v === 'dig') { if (sc !== 'meadow') return out(VSC[sc].inside ? 'The floor is solid rock.' : 'The street is paved. You can dig in the meadow.'); S.holes.push(+PL.x.toFixed(3)); if (S.holes.length > 14) S.holes.shift(); save(); beep(180, .12, 'square');
+    if (Math.abs(PL.x - VT.tree.x) < .08 && !S.secrets.includes('stone')) { out(null); give('stone'); secret('stone', 'You dig by the tall tree. A glow stone! It lights up the dark.'); card(); return; } return out('You dig a small hole. It will stay here.'); }
+  if (v === 'silly') return out('You jump high! Voltara has soft, bouncy ground.');
   if (v === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
-  if (v === 'go' && !id) { const d = DIRS[tk[1]]; if (d && d[0]) { PL.to = Math.max(.03, Math.min(.97, PL.x + d[0] * .25)); return out(`You walk ${d[0] > 0 ? 'east' : 'west'}.`); } return out('Go where? Type east or west. Or tap the ground.'); }
-  if (!id) return out(v === 'look' ? 'Planet Voltara. Rainbow skies. A city, a river and glowing trees. A butterfly flutters near you.' : `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
+  if (v === 'go' && !best) { const rid = Object.keys(VSC).find(r => rest.some(t => t.length > 3 && VSC[r].name.toLowerCase().includes(t))); if (rid === sc) return out('You are here.'); return out(rid ? `${VSC[rid].name} is not next to here. Walk east or west. The map shows the way.` : 'Go where? Type east or west. Or tap the edge of the picture.'); }
+  if (!best && item && v === 'look') return out(ITEM_LOOK[item]); if (!best && item && v === 'use') return out(`Use the ${ITEMS[item]} on what?`);
+  if (!best) return out(v === 'look' && !rest.length ? `${VSC[sc].name}. You see: ${things.filter(t => t.x != null && !t.spot).map(t => t.label).concat(VSC[sc].k ? [`${CITY[VSC[sc].k].places.length} places`] : []).join(', ')}.` : rest.length ? 'You do not see that here.' : `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
   out(null);
-  const h = VOLT[id][v === 'go' ? (VOLT[id].go ? 'go' : 'look') : v], run = () => { const r = typeof h === 'function' ? h() : h; if (r !== undefined || h === undefined) say(r || NOPE[v] || 'Nothing happens.'); };
-  if (PT[id].x == null) return run(); PL.to = PT[id].x + (id === 'city' ? 0 : -.035 * (PL.x < PT[id].x ? 1 : -1)); PL.then = run;
+  const run = () => { let r; if (best.spot) r = spotDo(best.spot, v, item); else { const d = VDO[best.id] || {}, h = d[v === 'go' ? (d.go ? 'go' : 'look') : v]; r = typeof h === 'function' ? h(item) : h; if (r === undefined && h !== undefined) return; r = r || (v === 'eat' ? 'You cannot eat that.' : NOPE[v]) || 'Nothing happens.'; } if (r !== undefined && r !== true) say(r); };
+  if (best.x == null) return run();
+  let tx = best.x + (Math.abs(PL.x - best.x) < .03 ? 0 : -.035 * (PL.x < best.x ? 1 : -1)); if (sc === 'river' && !v0.crossed) tx = Math.min(tx, .19); if (sc === 'river' && v0.crossed && tx > .22 && tx < .78) tx = PL.x < .5 ? .19 : .81;
+  if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); PL.to = tx; PL.then = run;
 }
+function vWalkOut(d) { const sc = V().sc, to = VSC[sc][d]; if (!to) return sc === 'meadow' && d === 'w' ? 'Thick glowing woods. You cannot go that way.' : 'You cannot go that way.';
+  if (sc === 'river' && d === 'e' && !V().crossed) { PL.to = .19; return V().fed ? 'The stones wait. Talk to the Gumblefish to cross.' : 'The river is too wide and deep. You need a way across.'; }
+  if (sc === 'tunnel' && d === 'e' && !has('stone')) return 'It is pitch dark. You cannot see the way. You need a light.';
+  PL.to = d === 'e' ? 1.02 : -.02; PL.then = () => { vGo(to, d === 'e' ? (to === 'hall' ? .1 : .05) : (sc === 'hall' ? .8 : .95)); const nw = !V().been.includes(to) && !(to !== 'hall' && VSC[to].k && V().plan); if (!V().been.includes(to)) { V().been.push(to); save(); } say(`You reach ${VSC[to].at}.${nw && VSEE[to] ? ' ' + VSEE[to] : ''}`); }; return `You walk ${d === 'e' ? 'east' : 'west'}.`; }
 function tapPlanet(e) {
-  const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase();
+  const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase(), sc = V().sc;
   if (widget) return say('Finish this first. Or tap Leave.');
-  let id = y < .57 && x > .08 && x < .6 && y > .2 ? 'city' : y < .14 ? 'sky' : null;
-  if (!id && y < .8) id = Object.keys(PT).filter(k => PT[k].x != null && k !== 'city' && (k !== 'door' || S.rock) && (k !== 'rock' || !S.rock)).sort((a, b) => Math.abs(PT[a].x - x) - Math.abs(PT[b].x - x)).find(k => Math.abs(PT[k].x - x) < .07) || null;
-  if (id) return act(`${/^(look|take|open|push|use|talk)$/.test(draft) ? draft : 'look'} ${PT[id].words[0]}`);
-  PL.to = Math.max(.03, Math.min(.97, x)); PL.then = null;
+  if (x > .93 && VSC[sc].e) return say(vWalkOut('e')); if (x < .07 && VSC[sc].w) return say(vWalkOut('w'));
+  const near = vThings().filter(t => t.x != null && Math.abs(t.x - x) < (t.spot ? .045 : .06) && y > .2).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0], id = near || (y < .14 && !VSC[sc].inside ? { words: ['sky'] } : null);
+  if (id) return act(`${/^(look|take|open|push|use|talk|eat)$/.test(draft) ? draft : id.tap || 'look'} ${id.spot ? id.spot.name.toLowerCase() : id.words[0]}`);
+  let tx = Math.max(.03, Math.min(.97, x)); if (sc === 'river' && !V().crossed) tx = Math.min(tx, .19); if (sc === 'river' && V().crossed && tx > .22 && tx < .78) return say(vCross()); if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); PL.to = tx; PL.then = null;
 }
-let PH = 0;
+
+/* ---------- the maths that opens the way. Each one starts by showing the idea. ---------- */
+const lineSvg = (lo, n, hi) => { const x = 20 + 240 * (n - lo) / (hi - lo); let s = LN(20, 30, 260, 30, PK.ink, 3); for (let k = 0; k <= 10; k++) s += LN(20 + k * 24, k % 10 ? 24 : 16, 20 + k * 24, k % 10 ? 36 : 44, PK.ink, k % 10 ? 1.5 : 3);
+  return SV(280, 64, s + TX(20, 60, num(lo), { s: 14 }) + TX(260, 60, num(hi), { s: 14 }) + `<circle cx="${f1(x)}" cy="30" r="8" fill="${PK.amber}" stroke="${PK.deep}" stroke-width="2"/>` + TX(x, 13, num(n), { s: 13, f: PK.amber }), `a line from ${lo} to ${hi} with a pearl at ${n}`); };
+function startStones() { widget = { kind: 'stones', hop: 0, tries: 0, miss: 0, lo: 200, n: 230, seen: [] }; PL.to = .19;
+  toy(`<p class="eyebrow">See it first</p><p class="mw"><b>Maths word: round.</b> To round to the nearest hundred, find the hundred that is closest.</p><h3>The Gumblefish shows you</h3>
+    <div class="art">${lineSvg(200, 230, 300)}</div><p>Look at the line. The pearl sits at 230.</p><p class="q">230 is close to 200. It is far from 300. So the nearest hundred is 200.</p>
+    <div class="field"><button class="btn" type="button" id="try">My turn</button><button class="btn quiet" type="button" id="leave">Leave</button></div>`);
+  $('try').onclick = nextStone; $('leave').onclick = stonesLeave; }
+function stonesLeave() { closeToy(); PL.to = .15; say('You step back to the bank. The stones wait for you.'); }
+function nextStone() { const w = widget; let lo; do { lo = 100 * (1 + rnd(8)); } while (w.seen.includes(lo)); w.seen.push(lo); const off = w.hop === 3 ? 50 : pick([1, 2, 3, 4, 6, 7, 8, 9]) * 10 + rnd(10); w.lo = lo; w.n = lo + off; w.ans = off >= 50 ? lo + 100 : lo;
+  toy(`<p class="eyebrow">Cross the river · stone ${w.hop + 1} of 4</p><p class="mw"><b>Maths word: round.</b> To round to the nearest hundred, find the hundred that is closest.</p>
+    <div class="art">${lineSvg(lo, w.n, lo + 100)}</div><p class="q">The Gumblefish calls: ${w.n}! Which hundred is nearest? Tap it.</p><div class="field opts"><button class="btn opt" type="button" data-n="${lo}">${lo}</button><button class="btn opt" type="button" data-n="${lo + 100}">${lo + 100}</button><button class="btn quiet" type="button" id="leave">Leave</button></div>
+    <div class="meter">${[0, 1, 2, 3].map(i => `<span class="pip${i < w.hop ? ' on' : ''}"></span>`).join('')}<span>${w.hop} of 4 stones</span></div><div class="msg" id="msg" role="status"></div>`);
+  $('leave').onclick = stonesLeave; document.querySelectorAll('#toy .opt').forEach(b => b.onclick = () => { w.tries++;
+    if (+b.dataset.n !== w.ans) { w.miss++; beep(140, .25, 'square'); $('msg').className = 'msg bad'; $('msg').textContent = `Splash! ${w.n} is ${w.n - w.lo} past ${w.lo}. It is ${w.lo + 100 - w.n} short of ${w.lo + 100}.${w.n - w.lo === 50 ? ' Halfway always goes up.' : ''}`; return; }
+    beep(880, .1); PL.to = STONEX[w.hop]; w.hop++; if (w.hop < 4) { nextStone(); $('msg').className = 'msg good'; $('msg').textContent = 'Hop! Next stone.'; return; }
+    PL.to = .84; S.log.push({ what: 'Cross the river', skill: 'Round to the nearest 100', result: w.miss ? `${w.miss} splashes` : 'No mistakes ✓' }); vWin('crossed', 'You land on the far bank! The Gumblefish cheers. The dark city is just east of here. You earn a card.'); }); }
+const crate = (x, icon, n, lab) => `<rect x="${x}" y="8" width="78" height="62" rx="8" fill="${PK.deep}" stroke="${PK.line}" stroke-width="1.5"/>${icon(x + 39, 30)}` + TX(x + 39, 62, n, { s: 16 }) + TX(x + 39, 84, lab, { s: 10.5, f: PK.dim });
+const icBig = (x, y) => `<polygon points="${x},${y - 16} ${x + 11},${y - 6} ${x + 11},${y + 8} ${x},${y + 16} ${x - 11},${y + 8} ${x - 11},${y - 6}" fill="${PK.violet}" stroke="${PK.white}" stroke-width="1.5"/>`, icRod = (x, y) => `<rect x="${x - 3}" y="${y - 15}" width="6" height="30" rx="2" fill="${PK.green}" stroke="${PK.white}" stroke-width="1.2"/>`, icSpk = (x, y) => iconAt('star', x, y, 9, PK.amber);
+const store = (b, r, s) => SV(280, 90, crate(8, icBig, b, 'big crystals · 100 each') + crate(101, icRod, r, 'rods · 10 each') + crate(194, icSpk, s, 'sparks · 1 each'), `${b} big crystals, ${r} rods and ${s} sparks`);
+function startCount() { widget = { kind: 'count', step: -1, tries: 0, miss: 0, bundled: false }; countStep(); }
+function countStep() { const w = widget, head = `<p class="mw"><b>Maths word: place value.</b> 10 ones make 1 ten. 10 tens make 1 hundred.</p><h3>The energy store</h3>`, btns = (t) => `<div class="field">${t}<button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`, box = (id, lab) => `<label class="code"><span class="note">${lab}</span><input id="${id}" inputmode="numeric" autocomplete="off"></label>`;
+  if (w.step === -1) { let s = ''; if (!w.bundled) for (let i = 0; i < 12; i++) s += iconAt('star', 30 + (i % 6) * 40, 26 + Math.floor(i / 6) * 34, 11, PK.amber); else s = `<rect x="64" y="20" width="11" height="46" rx="3" fill="${PK.green}" stroke="${PK.white}" stroke-width="1.5"/>` + iconAt('star', 150, 42, 11, PK.amber) + iconAt('star', 190, 42, 11, PK.amber);
+    toy(`<p class="eyebrow">See it first</p>${head}<div class="art">${SV(280, 84, s, w.bundled ? '1 rod and 2 sparks' : '12 sparks')}</div><p class="q">${w.bundled ? '10 sparks became 1 rod. 2 sparks are left. It is still 12 energy.' : 'Energy comes in sparks, rods and big crystals. Here are 12 sparks. 10 sparks can join into 1 rod.'}</p>${btns(`<button class="btn" type="button" id="try">${w.bundled ? 'Open the store' : 'Bundle 10 sparks'}</button>`)}`);
+    $('leave').onclick = leave; $('try').onclick = () => { beep(620, .08); if (w.bundled) w.step = 0; else w.bundled = true; countStep(); }; return; }
+  const Q = [[store(8, 70, 150), 'The store holds 150 sparks. 10 sparks make 1 rod. How many rods do 150 sparks make?', box('c0', 'rods'), ['15'], 'Count in tens up to 150: 10, 20, 30... How many tens?'],
+    [store(8, 85, 0), 'Now there are 70 + 15 = 85 rods. 10 rods make 1 big crystal. How many big crystals do 85 rods make? How many rods are left over?', box('c0', 'big crystals') + box('c1', 'rods left'), ['8', '5'], '85 is 8 tens and 5 ones. So 85 rods is 8 lots of ten rods, with 5 rods left.'],
+    [store(16, 5, 0), 'Now there are 8 + 8 = 16 big crystals, and 5 rods. A big crystal is 100. A rod is 10. How much energy is in the tower?', box('c0', 'energy'), ['1650'], '16 hundreds is 1,600. 5 tens is 50. Add them.']][w.step];
+  toy(`<p class="eyebrow">Count the tower's energy · step ${w.step + 1} of 3</p>${head}<div class="art">${Q[0]}</div><p class="q">${Q[1]}</p><div class="field codes">${Q[2]}</div>${btns('<button class="btn" type="button" id="try">Check</button>')}`);
+  const ins = [...document.querySelectorAll('#toy .code input')]; ins.forEach(i => { i.oninput = () => i.value = i.value.replace(/[^0-9]/g, '').slice(0, 4); i.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; }); ins[0].focus({ preventScroll: true });
+  $('leave').onclick = leave; $('try').onclick = () => { const m = $('msg'); if (ins.some(i => i.value === '')) { m.className = 'msg bad'; m.textContent = 'Type your answer first.'; return; } w.tries++;
+    if (ins.some((i, k) => i.value !== Q[3][k])) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'Not yet. ' + Q[4]; return; } beep(880, .1); w.step++; if (w.step < 3) return countStep();
+    S.log.push({ what: 'Count the energy', skill: 'Place value: regroup', result: w.miss ? `${w.miss} to fix` : 'No mistakes ✓' }); vWin('count', 'The tower holds 1,650 energy. You write it down. Now: what does the city need? You earn a card.'); }; }
+function startSurvey(k) { const c = CITY[k], w = widget = { kind: 'survey', k, tries: 0, miss: 0 };
+  toy(`<p class="eyebrow">What does the city need? · ${c.street}</p><p class="mw"><b>Maths word: total.</b> The total is what you get when you add everything up.</p><h3>${c.street}</h3><p class="chips">${c.places.map(p => `<span class="chip">${p[0]} ${p[1]}</span>`).join('')}</p>
+    <p class="q">How much energy does ${c.street} need in all?</p><div class="field"><label for="ans" class="note">Total</label><input id="ans" inputmode="numeric" autocomplete="off"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const a = $('ans'); a.oninput = () => a.value = a.value.replace(/[^0-9]/g, '').slice(0, 4); a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; a.focus({ preventScroll: true }); $('leave').onclick = leave;
+  $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Add the numbers. Type the total.'; return; } w.tries++;
+    if (+a.value !== c.total) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = w.miss < 2 ? 'Not yet. Add the hundreds first. Then add the tens.' : `Not yet. The hundreds make ${c.places.reduce((s, p) => s + Math.floor(p[1] / 100) * 100, 0)}. Now add the rest: ${c.places.map(p => p[1] % 100).filter(Boolean).join(' + ')}.`; return; }
+    closeToy(); V().need[k] = true; S.log.push({ what: `${c.street} needs`, skill: 'Add many numbers', result: w.miss ? `${w.miss} to fix` : 'No mistakes ✓' }); save(); drawStatus(); chime();
+    if (vDone('survey')) { card(); say(`${c.street} needs ${c.total}. That is all three streets. Take the numbers to the Council Hall. You earn a card.`); } else say(`${c.street} needs ${c.total}. You write it down. ${'RCI'.split('').filter(x => !V().need[x]).length} more to read.`); }; }
+function startShort() { widget = { kind: 'short', step: 0, tries: 0, miss: 0 }; shortStep(); }
+function shortStep() { const w = widget, box = (id, lab) => `<label class="code"><span class="note">${lab}</span><input id="${id}" inputmode="numeric" autocomplete="off"></label>`;
+  const Q = [['<div class="art3">' + lineSvg(700, 750, 800) + lineSvg(800, 880, 900) + lineSvg(500, 590, 600) + '</div>', 'A quick answer first. Round each street to the nearest hundred.', box('c0', 'Home 750') + box('c1', 'Market 880') + box('c2', 'Factory 590'), ['800', '900', '600'], '750 is halfway. Halfway goes up. 880 is close to 900. 590 is close to 600.'],
+    ['', 'Add your round numbers. 800 + 900 + 600 =', box('c0', 'about'), ['2300'], '8 hundreds + 9 hundreds + 6 hundreds. How many hundreds?'],
+    ['<div class="art">' + lineSvg(1600, 1650, 1700) + '</div>', 'The tower holds 1,650. That is about 1,700. About how much is the city short? 2,300 − 1,700 =', box('c0', 'about'), ['600'], '23 hundreds take away 17 hundreds.'],
+    ['', 'Now find it exactly. 750 + 880 + 590 =', box('c0', 'the city needs'), ['2220'], 'Add the hundreds: 700 + 800 + 500. Then the tens: 50 + 80 + 90.'],
+    ['', 'The city needs 2,220. The tower holds 1,650. How much is missing? 2,220 − 1,650 =', box('c0', 'missing'), ['570'], 'Count up from 1,650: 50 to 1,700, then 500 to 2,200, then 20 more.']][w.step];
+  toy(`<p class="eyebrow">Is there enough? · step ${w.step + 1} of 5</p><p class="mw"><b>Maths word: estimate.</b> An estimate is a quick answer that is close. Rounding helps you estimate.</p><h3>The plan table</h3>${Q[0]}<p class="q">${Q[1]}</p><div class="field codes">${Q[2]}</div>
+    <div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const ins = [...document.querySelectorAll('#toy .code input')]; ins.forEach((i, k) => { i.oninput = () => i.value = i.value.replace(/[^0-9]/g, '').slice(0, 4); i.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); ins[k + 1] ? ins[k + 1].focus() : $('try').click(); } }; }); ins[0].focus({ preventScroll: true });
+  $('leave').onclick = leave; $('try').onclick = () => { const m = $('msg'); if (ins.some(i => i.value === '')) { m.className = 'msg bad'; m.textContent = 'Fill every box first.'; return; } w.tries++;
+    if (ins.some((i, k) => i.value !== Q[3][k])) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'Not yet. ' + Q[4]; ins.forEach((i, k) => i.classList.toggle('wrong', i.value !== Q[3][k])); return; } beep(880, .1); w.step++; if (w.step < 5) return shortStep();
+    S.log.push({ what: 'Is there enough?', skill: 'Round, estimate, then subtract', result: w.miss ? `${w.miss} to fix` : 'No mistakes ✓' }); vWin('short', 'The city is 570 short. Your quick answer of 600 was close! Not everyone can have power. Use the table again to choose. You earn a card.'); }; }
+function startPlan() { const w = widget = { kind: 'plan', tries: 0, on: new Set(V().plan || []) };
+  toy(`<p class="eyebrow">The energy plan</p><h3>Who gets power?</h3><p class="q">You have 1,650. Tap the places you will light. Use all you can.</p>
+    ${'RCI'.split('').map(k => `<p class="chips"><b class="cn" style="color:${CITY[k].col}">${CITY[k].street}</b>${SPOTS.filter(p => p.k === k).map(p => `<button class="btn quiet wire" type="button" data-p="${p.i}">${p.name} ${p.need}</button>`).join('')}</p>`).join('')}
+    <div class="scale"><span id="used"></span><span id="spare"></span></div><div class="bar" id="bar"><span></span></div>
+    <div class="field"><button class="btn" type="button" id="try">Switch on</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const tot = () => [...w.on].reduce((a, i) => a + SPOTS[i].need, 0), upd = () => { const t = tot(); $('used').textContent = `${num(t)} of 1,650 used`; $('spare').textContent = t > SUPPLY ? `${num(t - SUPPLY)} too much` : `${num(SUPPLY - t)} spare`; $('bar').classList.toggle('over', t > SUPPLY); $('bar').firstElementChild.style.width = Math.min(100, t / SUPPLY * 100) + '%';
+    document.querySelectorAll('#toy .wire').forEach(b => { const on = w.on.has(+b.dataset.p); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); };
+  document.querySelectorAll('#toy .wire').forEach(b => b.onclick = () => { const i = +b.dataset.p; w.on.has(i) ? w.on.delete(i) : w.on.add(i); beep(w.on.has(i) ? 520 : 300, .05); $('msg').textContent = ''; upd(); }); upd(); $('leave').onclick = leave;
+  $('try').onclick = () => { const m = $('msg'), t = tot(), dark = SPOTS.filter(p => !w.on.has(p.i)).sort((a, b) => a.need - b.need); w.tries++; let why = !w.on.size ? 'Tap some places first.' : t > SUPPLY ? `Too much. That needs ${num(t)}. You have only 1,650.` : dark.length && SUPPLY - t >= dark[0].need ? `You still have ${SUPPLY - t} spare. ${dark[0].name} needs only ${dark[0].need}. Use all you can.` : '';
+    if (why) { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = why; return; }
+    V().plan = [...w.on].sort((a, b) => a - b); S.log.push({ what: 'The energy plan', skill: 'Add within 1,650', result: `${w.on.size} places lit, ${num(t)} used` }); const first = !V().lost;
+    vWin(null, `The tower hums. Lights come on in ${w.on.size} places! ${21 - w.on.size} stay dark. Walk the streets and see.${first ? ' The Council thanks you. But their tower log looks strange.' : ''} You earn a card.`); }; }
+function startLog() { widget = { kind: 'log', step: 0, tries: 0, miss: 0 }; logStep(); }
+function logStep() { const w = widget, u = used(), Q = [['Each hour the tower sends more than the city uses. How much more?', 30, `Take one row. ${num(u + 30)} − ${num(u)} =`], ['The night is 8 hours long. 30 energy is lost every hour. How much is lost in one night?', 240, '8 × 3 tens. How many tens?']][w.step];
+  toy(`<p class="eyebrow">The night log · question ${w.step + 1} of 2</p><p class="mw"><b>Maths word: difference.</b> The difference is how much more one number is than another.</p><h3>The tower log</h3>
+    <div class="tablewrap"><table class="report"><thead><tr><th>Hour</th><th>The city uses</th><th>The tower sends</th></tr></thead><tbody>${['7 pm', '8 pm', '9 pm', '10 pm'].map(h => `<tr><td>${h}</td><td>${num(u)}</td><td>${num(u + 30)}</td></tr>`).join('')}</tbody></table></div>
+    <p class="q">${Q[0]}</p><div class="field"><label for="ans" class="note">Your answer</label><input id="ans" inputmode="numeric" autocomplete="off"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const a = $('ans'); a.oninput = () => a.value = a.value.replace(/[^0-9]/g, '').slice(0, 4); a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; a.focus({ preventScroll: true }); $('leave').onclick = leave;
+  $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; } w.tries++; if (+a.value !== Q[1]) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'Not yet. ' + Q[2]; return; }
+    beep(880, .1); w.step++; if (w.step < 2) return logStep(); S.log.push({ what: 'The night log', skill: 'Find the difference, then multiply', result: w.miss ? `${w.miss} to fix` : 'No mistakes ✓' });
+    vWin('lost', '30 energy vanish every hour. 240 in one night. Nobody in the city uses it. So where does it go? The Council says: listen for a hum in Factory Row. You earn a card.'); }; }
+function startHouses() { widget = { kind: 'houses', step: 0, tries: 0, miss: 0 }; housesStep(); }
+function housesStep() { const w = widget, Q = [['Look at the tiny houses on the rock shelves. How many houses are there?', 'Count one row. Then count the rows.'], ['Each tiny house uses 1 energy every hour. How much do all the houses use in one hour?', '30 houses. 1 each.']][w.step];
+  toy(`<p class="eyebrow">The hidden town · question ${w.step + 1} of 2</p><p class="mw"><b>Maths word: array.</b> An array is rows with the same number in each row.</p><h3>The Nomads' homes</h3><p class="q">${Q[0]}</p>
+    <div class="field"><label for="ans" class="note">Your answer</label><input id="ans" inputmode="numeric" autocomplete="off"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const a = $('ans'); a.oninput = () => a.value = a.value.replace(/[^0-9]/g, '').slice(0, 3); a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; a.focus({ preventScroll: true }); $('leave').onclick = leave;
+  $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; } w.tries++; if (+a.value !== 30) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'Not yet. ' + Q[1]; return; }
+    beep(880, .1); w.step++; if (w.step < 2) return housesStep(); S.log.push({ what: 'The hidden town', skill: 'Rows of equal groups', result: w.miss ? `${w.miss} to fix` : 'No mistakes ✓' });
+    vWin('houses', '30 houses. 30 energy an hour. That is the missing energy! The elder says: a cosmic storm stranded us here. We only wanted a little light. Go and tell the Council. You earn a card.'); }; }
+/* the last step is done in real life, with blocks and words. The teacher gives the code. */
+function startChoice() { widget = { kind: 'choice', tries: 0 };
+  toy(`<p class="eyebrow real">Mission Voltara · the last step · a real-life task</p><h3>The Council's choice</h3><ol class="slip"><li>Build your energy plan with base-ten blocks. You have 8 hundreds, 70 tens and 150 ones.</li><li>The Number Nomads need 240 energy each night.</li>
+    <li>Decide. Will you share with them? If yes, what will you switch off?</li><li>Tell your teacher your choice, and why, in 2 or 3 sentences.</li></ol><p class="q">Your teacher is the Commander. When you pass, type the Commander's code.</p>
+    <div class="field"><label for="ans" class="note">Commander's code</label><input id="ans" inputmode="numeric" autocomplete="off"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const a = $('ans'); a.oninput = () => a.value = a.value.replace(/[^0-9]/g, '').slice(0, 4); a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; $('leave').onclick = () => { closeToy(); say('You go to build it and think it over. Come back with the code.'); };
+  $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type the code your teacher gave you.'; return; } if (scramble(+a.value) !== 869746) { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'That is not the code. Do the task, then ask your teacher.'; a.value = ''; return; }
+    S.log.push({ what: "The Council's choice", skill: 'Real-life task', result: 'Passed ✓' }); vWin('final', 'The Council bows. "A wise choice, Commander." Mission Voltara is complete! You earn a GOLD card.', true); }; }
+function drawMission() { const el = $('mission'); if (!S.v) { el.hidden = true; return; } el.hidden = false; const v = V(), n = STEPS.filter(s => vDone(s[0])).length, notes = [v.count && 'The tower holds 1,650', ...'RCI'.split('').map(k => v.need[k] && `${CITY[k].street} needs ${CITY[k].total}`), v.short && 'The city is 570 short', v.plan && `Your plan uses ${num(used())}`, v.lost && 'The tower loses 30 an hour, 240 a night', v.houses && '30 tiny houses use 30 an hour'].filter(Boolean);
+  el.innerHTML = `<h3>Mission Voltara: ${n} of ${STEPS.length} steps</h3><div class="const">${STEPS.map(s => `<span class="star ${vDone(s[0]) ? 'lit' : 'off'}${s[0] === 'final' ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${s[1]}</span>`).join('')}</div>${notes.length ? `<p class="note"><b>Your notebook:</b> ${notes.join(' · ')}.</p>` : ''}`; }
+
+/* ---------- drawing Voltara ---------- */
 const TUFTS = Array.from({ length: 70 }, (_, i) => [(i * .6180339) % 1, (i * .37 % 1), i % 5]);
 function fluff(X, Y, r, c1, c2) { cx.fillStyle = c2; circ(X, Y + r * .25, r); cx.fill(); circ(X + r * 1.15, Y + r * .4, r * .78); cx.fill(); circ(X - r * 1.15, Y + r * .42, r * .74); cx.fill(); cx.fillStyle = c1; circ(X, Y, r); cx.fill(); circ(X + r * 1.1, Y + r * .2, r * .76); cx.fill(); circ(X - r * 1.1, Y + r * .24, r * .72); cx.fill(); circ(X + r * .35, Y - r * .55, r * .7); cx.fill(); cx.fillStyle = 'rgba(255,255,255,.55)'; circ(X - r * .2, Y - r * .35, r * .4); cx.fill(); }
 function alienTree(X, gy, th, lean, fruit, seed) {
@@ -1792,27 +1973,7 @@ function alienTree(X, gy, th, lean, fruit, seed) {
   for (let i = 0; i < 7; i++) { const lx = tx + (i - 3) * th * .11 + Math.sin(tNow * 1.5 + i + seed) * 2, ly = top + th * (.46 + (i % 3) * .05); cx.strokeStyle = 'rgba(200,255,235,.5)'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(lx, top + th * .36); cx.lineTo(lx, ly); cx.stroke(); cx.fillStyle = `rgba(190,255,230,${.65 + .35 * Math.sin(tNow * 3 + i * 1.3 + seed)})`; cx.beginPath(); cx.ellipse(lx, ly + th * .02, th * .016, th * .028, 0, 0, 7); cx.fill(); }
   if (fruit) for (let i = 0; i < 5; i++) { const fx = tx + (i - 2) * th * .13, fy = top + th * (.34 + (i % 2) * .08), hue = (tNow * 50 + i * 72) % 360; cx.fillStyle = `hsl(${hue} 95% 62%)`; circ(fx, fy, th * .05); cx.fill(); ol(1.5); cx.fillStyle = 'rgba(255,255,255,.7)'; circ(fx - th * .016, fy - th * .018, th * .016); cx.fill(); }
 }
-function district(k, i, f, w, hz, h, val) {
-  const trim = ['#ff8f6b', '#35d0c4', '#f0c23b'][i], x0 = [.095, .265, .435][i] * w, dw = w * .15, body = f > 0 ? '#3d3684' : '#2a2560';
-  const bs = i === 0 ? [[0, .24, .085], [.26, .22, .115], [.5, .24, .075], [.76, .24, .1]] : i === 1 ? [[0, .3, .13], [.34, .3, .175], [.68, .32, .12]] : [[0, .46, .15], [.52, .48, .21]];
-  let n = 0; const wins = []; bs.forEach(([dx, bw, bh]) => { const X = x0 + dx * dw, W2 = bw * dw, Hh = bh * h, Y = hz - Hh; cx.fillStyle = body; cx.fillRect(X, Y, W2, Hh + 2); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(X, Y, W2, Hh + 2);
-    cx.fillStyle = trim; if (i === 0) { cx.beginPath(); cx.moveTo(X - 3, Y); cx.lineTo(X + W2 / 2, Y - Hh * .32); cx.lineTo(X + W2 + 3, Y); cx.closePath(); cx.fill(); ol(1.5); }
-    else if (i === 1) { cx.fillRect(X - 2, Y, W2 + 4, Hh * .1); for (let a2 = 0; a2 < 4; a2++) if (a2 % 2) { cx.fillStyle = '#f4f7fb'; cx.fillRect(X + a2 * W2 / 4, Y + Hh * .72, W2 / 4, Hh * .1); } else { cx.fillStyle = trim; cx.fillRect(X + a2 * W2 / 4, Y + Hh * .72, W2 / 4, Hh * .1); } }
-    else { cx.beginPath(); for (let a2 = 0; a2 < 3; a2++) { cx.moveTo(X + a2 * W2 / 3, Y); cx.lineTo(X + a2 * W2 / 3, Y - Hh * .14); cx.lineTo(X + (a2 + 1) * W2 / 3, Y); } cx.fill(); cx.fillStyle = '#59657a'; cx.fillRect(X + W2 * .68, Y - Hh * .42, W2 * .16, Hh * .42); cx.strokeRect(X + W2 * .68, Y - Hh * .42, W2 * .16, Hh * .42); cx.fillStyle = trim; cx.fillRect(X + W2 * .68, Y - Hh * .42, W2 * .16, Hh * .06);
-      if (f > 0) for (let p2 = 0; p2 < 3; p2++) { const t2 = ((tNow * .3 + p2 * .33) % 1); cx.fillStyle = `rgba(235,235,255,${(1 - t2) * .5 * f})`; circ(X + W2 * .76 + Math.sin(t2 * 5 + p2) * 5, Y - Hh * .42 - t2 * h * .08, 4 + t2 * 9); cx.fill(); } }
-    const cols = Math.max(2, Math.round(W2 / 13)), rows = Math.max(2, Math.round(Hh * (i === 1 ? .6 : .8) / 13)); for (let r2 = 0; r2 < rows; r2++) for (let c2 = 0; c2 < cols; c2++) wins.push([X + (c2 + .5) * W2 / cols, Y + Hh * (i === 1 ? .14 : .1) + (r2 + .5) * Hh * (i === 1 ? .55 : .8) / rows, Math.min(7, W2 / cols * .5)]); });
-  wins.forEach((wn, j) => { const lit = (j * 7 % wins.length) < f * wins.length; if (lit) { cx.fillStyle = 'rgba(255,225,130,.3)'; cx.fillRect(wn[0] - wn[2], wn[1] - wn[2], wn[2] * 2, wn[2] * 2); } cx.fillStyle = lit ? '#fff0a8' : '#141136'; cx.fillRect(wn[0] - wn[2] * .55, wn[1] - wn[2] * .6, wn[2] * 1.1, wn[2] * 1.2); });
-  const small = w < 520, bw = small ? 118 : Math.max(96, w * .15), bx = small ? w - bw - 8 : x0 + dw / 2 - bw / 2, by = small ? 50 + i * 50 : hz - h * .36, fs = Math.max(12, w * .016);
-  if (!small) { cx.strokeStyle = 'rgba(6,9,18,.7)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(x0 + dw / 2, by + 44); cx.lineTo(x0 + dw / 2, hz - h * .21); cx.stroke(); }
-  cx.fillStyle = 'rgba(6,9,18,.9)'; rr(bx, by, bw, 46, 7); cx.fill(); cx.fillStyle = trim; rr(bx, by, bw, 5, [7, 7, 0, 0]); cx.fill();
-  cx.fillStyle = '#fff'; cx.font = `700 ${fs}px "Chakra Petch", sans-serif`; cx.textAlign = 'left'; cx.fillText(k.toUpperCase(), bx + 7, by + 21);
-  cx.fillStyle = f >= 1 ? '#6fd08a' : '#fff'; cx.font = `700 ${Math.max(11, fs * .9)}px "Chakra Petch", sans-serif`; cx.textAlign = 'right'; cx.fillText(`${val || 0} of ${NEED[k]}`, bx + bw - 6, by + 40);
-  cx.fillStyle = '#2a3552'; rr(bx + 7, by + 27, bw - 14 - 64, 9, 4); cx.fill(); if (f > 0) { cx.fillStyle = trim; rr(bx + 7, by + 27, Math.max(8, (bw - 78) * f), 9, 4); cx.fill(); }
-}
-function drawPlanet(dt) {
-  PH = vh;
-  const w = vw, h = Math.max(220, PH), hz = h * .56, gy = h * .86, par = PL.x - .5;
-  if (PL.to != null) { const d = PL.to - PL.x, st = .26 * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
+function vSky(w, h, hz, par) {
   cx.fillStyle = '#143a33'; cx.fillRect(0, 0, vw, vh);
   const sky = cx.createLinearGradient(0, 0, 0, hz); ['#2c2a8f', '#6a4fd0', '#c26fe8', '#ff8fb1', '#ffb86b', '#ffe58a', '#c8f5c9'].forEach((c, i, a) => sky.addColorStop(i / (a.length - 1), c)); cx.fillStyle = sky; cx.fillRect(0, 0, w, hz + 2);
   for (let i = 0; i < 40; i++) { const st = STARS[i]; cx.fillStyle = `rgba(255,255,255,${(.5 + .5 * Math.sin(tNow * 2 + st.p)) * .8})`; cx.fillRect(st.x * w, st.y * h * .2, 2, 2); }
@@ -1823,22 +1984,19 @@ function drawPlanet(dt) {
   cx.fillStyle = 'rgba(255,255,255,.92)'; circ(w * .56, h * .09, gr * .22); cx.fill();
   ['#ff6b6b', '#ffb347', '#fff275', '#7bd88f', '#6db3ff', '#b28dff'].forEach((c, i) => { cx.strokeStyle = rgba(c, .6); cx.lineWidth = h * .013; cx.beginPath(); cx.arc(w * .36, hz + h * .14, h * (.6 - i * .015), Math.PI, 2 * Math.PI); cx.stroke(); });
   for (let i = 0; i < 6; i++) { const X = ((i * .21 + (calm ? 0 : tNow * .005 * (1 + i % 2))) % 1.24 - .12) * w, Y = h * (.07 + (i * 37 % 22) / 100), r = h * .034 * (1 + (i % 3) * .35); fluff(X, Y, r, i % 2 ? '#ffc4de' : '#dcebff', i % 2 ? '#e58fc0' : '#a9c4f0'); }
+}
+function vFar(w, h, hz, par) {
   // far mountains and floating islands
   const mx = -par * w * .03; for (const [col, amp, base, fq] of [['#8a6fd6', .13, .02, 5.2], ['#6a54b8', .09, 0, 8.3]]) { cx.fillStyle = col; cx.beginPath(); cx.moveTo(-20, hz + 2); for (let x = -20; x <= w + 20; x += w / 40) { const u = (x - mx) / w; cx.lineTo(x, hz - h * (base + amp * (.55 + .45 * Math.abs(Math.sin(u * fq + 1)) * (.7 + .3 * Math.sin(u * fq * 2.7))))); } cx.lineTo(w + 20, hz + 2); cx.fill(); }
   for (const [ix, iy, ir] of [[.7, .36, .05], [.93, .43, .035]]) { const X = ix * w + mx * 1.4, Y = iy * h + Math.sin(tNow * .6 + ix * 9) * 4, r = ir * w; cx.fillStyle = '#4a3a86'; cx.beginPath(); cx.moveTo(X - r, Y); cx.lineTo(X + r, Y); cx.lineTo(X + r * .3, Y + r * 1.1); cx.lineTo(X - r * .4, Y + r * .8); cx.closePath(); cx.fill(); ol(1.5); cx.fillStyle = '#3fb88f'; rr(X - r * 1.05, Y - r * .22, r * 2.1, r * .3, r * .15); cx.fill(); ol(1.5); cx.fillStyle = `rgba(150,255,230,${.7 + .3 * Math.sin(tNow * 3 + ix)})`; cx.beginPath(); cx.moveTo(X + r * .2, Y - r * .2); cx.lineTo(X + r * .34, Y - r * .7); cx.lineTo(X + r * .5, Y - r * .2); cx.fill(); cx.strokeStyle = 'rgba(200,240,255,.7)'; cx.lineWidth = 2; cx.setLineDash([4, 5]); cx.lineDashOffset = -tNow * 30; cx.beginPath(); cx.moveTo(X - r * .5, Y + r * .1); cx.lineTo(X - r * .5, Y + r * 1.6); cx.stroke(); cx.setLineDash([]); }
-  // the city: three districts, each with its own sign and lights
-  const plan = widget && widget.kind === 'energy' ? widget.v : (S.plan || [0, 0, 0]);
-  cx.save(); cx.translate(-par * w * .04, 0); Object.keys(NEED).forEach((k, i) => district(k, i, Math.min(1, plan[i] / NEED[k]), w, hz, h, plan[i]));
-  const twx = w * .655, twt = hz - h * .36; cx.strokeStyle = INK; cx.lineWidth = 5; cx.beginPath(); cx.moveTo(twx - w * .028, hz); cx.lineTo(twx, twt); cx.lineTo(twx + w * .028, hz); cx.stroke(); cx.strokeStyle = '#c9d2df'; cx.lineWidth = 3; cx.stroke(); for (let j = 1; j < 4; j++) { const yy = hz - (hz - twt) * j / 4, ww = w * .028 * (1 - j / 4); cx.beginPath(); cx.moveTo(twx - ww, yy); cx.lineTo(twx + ww, yy); cx.stroke(); }
-  cx.fillStyle = '#fff3a6'; circ(twx, twt, Math.max(7, w * .013)); cx.fill(); ol(2); cx.globalCompositeOperation = 'lighter'; const tg = cx.createRadialGradient(twx, twt, 0, twx, twt, w * .06); tg.addColorStop(0, 'rgba(255,240,150,.7)'); tg.addColorStop(1, 'rgba(255,240,150,0)'); cx.fillStyle = tg; circ(twx, twt, w * .06); cx.fill();
-  Object.keys(NEED).forEach((k, i) => { const f = Math.min(1, plan[i] / NEED[k]); if (f <= 0) return; const tx2 = ([.095, .265, .435][i] + .075) * w, ty2 = hz - h * .2; cx.globalCompositeOperation = 'source-over'; cx.strokeStyle = INK; cx.lineWidth = 4 + f * 5; cx.setLineDash([]); cx.beginPath(); cx.moveTo(twx, twt); cx.quadraticCurveTo((twx + tx2) / 2, twt - h * .1, tx2, ty2); cx.stroke(); cx.strokeStyle = ['#ff8f6b', '#35d0c4', '#f0c23b'][i]; cx.lineWidth = 1.5 + f * 4.5; cx.setLineDash([10, 7]); cx.lineDashOffset = -tNow * 40; cx.beginPath(); cx.moveTo(twx, twt); cx.quadraticCurveTo((twx + tx2) / 2, twt - h * .1, tx2, ty2); cx.stroke(); }); cx.setLineDash([]); cx.globalCompositeOperation = 'source-over';
-  cx.font = `700 ${Math.max(12, w * .017)}px "Chakra Petch", sans-serif`; const el = 'ENERGY 1,650', ew = cx.measureText(el).width + 12; cx.fillStyle = 'rgba(6,9,18,.88)'; rr(twx - ew / 2, twt - 34, ew, 22, 6); cx.fill(); cx.fillStyle = '#fff3a6'; cx.textAlign = 'center'; cx.fillText(el, twx, twt - 18); cx.restore();
+}
+function drawMeadow(w, h, hz, gy, par) {
+  vSky(w, h, hz, par); vFar(w, h, hz, par); farCity(w, h, hz, par);
   // near bank, river and ground
   const bank = cx.createLinearGradient(0, hz, 0, h * .66); bank.addColorStop(0, '#49a888'); bank.addColorStop(1, '#3a8f76'); cx.fillStyle = bank; cx.fillRect(0, hz, w, h * .1 + 2);
   for (let i = 0; i < 9; i++) { cx.fillStyle = i % 2 ? '#2f8a6c' : '#57b894'; circ((i * .123 + .03) * w, hz + h * .012, h * .022 + (i % 3) * 3); cx.fill(); }
   const rv = cx.createLinearGradient(0, h * .63, 0, h * .74); rv.addColorStop(0, '#59c4f0'); rv.addColorStop(1, '#2f7fd0'); cx.fillStyle = rv; cx.beginPath(); cx.moveTo(0, h * .64); for (let x = 0; x <= w; x += w / 30) cx.lineTo(x, h * .633 + Math.sin(x / w * 9 + tNow) * h * .007); for (let x = w; x >= 0; x -= w / 30) cx.lineTo(x, h * .735 + Math.sin(x / w * 7 - tNow) * h * .007); cx.fill();
   cx.strokeStyle = 'rgba(255,255,255,.45)'; cx.lineWidth = 2; for (let i = 0; i < 9; i++) { const X = ((i * .137 + (calm ? 0 : tNow * .02)) % 1.1 - .05) * w, Y = h * (.652 + (i * 31 % 70) / 1000); cx.beginPath(); cx.moveTo(X, Y); cx.quadraticCurveTo(X + w * .02, Y - 3, X + w * .04, Y); cx.stroke(); }
-  if (plan.some(v => v > 0)) { cx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 3; i++) { const f = Math.min(1, plan[i] / [570, 920, 450][i]); cx.fillStyle = `rgba(255,225,130,${.16 * f})`; cx.fillRect(([.1, .27, .44][i]) * w, h * .64, w * .15, h * .09); } cx.globalCompositeOperation = 'source-over'; }
   for (let i = 0; i < 22; i++) { const a = Math.max(0, Math.sin(tNow * 3 + i * 1.7)), X = (i * .0457 + .012) * w, Y = h * (.65 + (i * 29 % 70) / 1000), z = 2 + a * 4; cx.fillStyle = `rgba(255,255,255,${a})`; cx.beginPath(); cx.moveTo(X, Y - z); cx.lineTo(X + z * .3, Y - z * .3); cx.lineTo(X + z, Y); cx.lineTo(X + z * .3, Y + z * .3); cx.lineTo(X, Y + z); cx.lineTo(X - z * .3, Y + z * .3); cx.lineTo(X - z, Y); cx.lineTo(X - z * .3, Y - z * .3); cx.fill(); }
   for (const [lx, lc] of [[.4, '#ff9ec4'], [.55, '#8ff5d6'], [.72, '#ff9ec4']]) { cx.fillStyle = lc; cx.beginPath(); cx.ellipse(lx * w, h * .705 + Math.sin(tNow + lx * 9) * 2, h * .022, h * .008, 0, 0, 7); cx.fill(); ol(1); }
   const jt = (tNow * .42) % 3.2; if (jt < 1) { const fx = w * (.59 + jt * .06), fy = h * .675 - Math.sin(jt * Math.PI) * h * .1, r = Math.max(9, h * .03), tilt = (jt - .5) * 1.4; cx.save(); cx.translate(fx, fy); cx.rotate(tilt); cx.fillStyle = '#ffd166'; cx.beginPath(); cx.moveTo(-r * 1.1, 0); cx.lineTo(-r * 2, -r * .8); cx.lineTo(-r * 2, r * .8); cx.closePath(); cx.fill(); ol(1.5); cx.beginPath(); cx.ellipse(0, 0, r * 1.35, r * .85, 0, 0, 7); cx.fill(); ol(1.5); cx.fillStyle = '#ff9f5a'; cx.beginPath(); cx.moveTo(-r * .2, -r * .8); cx.lineTo(r * .2, -r * 1.35); cx.lineTo(r * .5, -r * .7); cx.fill(); cx.fillStyle = '#fff'; circ(r * .6, -r * .2, r * .26); cx.fill(); cx.fillStyle = INK; circ(r * .66, -r * .2, r * .13); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.beginPath(); cx.arc(r * .7, r * .2, r * .3, .2, 2.2); cx.stroke(); cx.restore(); }
@@ -1846,7 +2004,7 @@ function drawPlanet(dt) {
   const grd = cx.createLinearGradient(0, h * .74, 0, vh); grd.addColorStop(0, '#2f8468'); grd.addColorStop(1, '#17443c'); cx.fillStyle = grd; cx.beginPath(); cx.moveTo(0, h * .752); for (let x = 0; x <= w; x += w / 24) cx.lineTo(x, h * .748 + Math.sin(x / w * 11) * h * .006); cx.lineTo(w, vh); cx.lineTo(0, vh); cx.fill();
   cx.fillStyle = 'rgba(190,235,200,.16)'; cx.beginPath(); cx.ellipse(w * .5, gy + h * .03, w * .52, h * .03, 0, 0, 7); cx.fill();
   for (const [u, v, kind] of TUFTS) { const X = u * w, Y = h * (.77 + v * .2); if (Math.abs(Y - gy - h * .03) < h * .025 && kind) continue; if (kind < 3) { cx.strokeStyle = kind ? '#4fb58c' : '#22654f'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X - 4, Y); cx.lineTo(X - 6, Y - 8); cx.moveTo(X, Y); cx.lineTo(X, Y - 11); cx.moveTo(X + 4, Y); cx.lineTo(X + 7, Y - 8); cx.stroke(); } else if (kind === 3) { cx.fillStyle = ['#ff9ec4', '#fff275', '#b9a3ff'][Math.floor(u * 30) % 3]; circ(X, Y - 4, 3.2); cx.fill(); cx.fillStyle = '#fff'; circ(X, Y - 4, 1.2); cx.fill(); } else { cx.fillStyle = '#e8e0ff'; cx.fillRect(X - 1.5, Y - 7, 3, 7); cx.fillStyle = `rgba(150,255,235,${.75 + .25 * Math.sin(tNow * 2 + u * 20)})`; cx.beginPath(); cx.ellipse(X, Y - 8, 6, 4, 0, Math.PI, 2 * Math.PI); cx.fill(); } }
-  alienTree(.52 * w, gy - h * .02, h * .22, 8, false, 1); alienTree(.985 * w, gy - h * .01, h * .26, -10, false, 2); alienTree(PT.fruit.x * w, gy, h * .32, -12, true, 3); alienTree(PT.tree.x * w, gy, h * .46, 14, false, 4);
+  alienTree(.52 * w, gy - h * .02, h * .22, 8, false, 1); alienTree(.985 * w, gy - h * .01, h * .26, -10, false, 2); alienTree(VT.fruit.x * w, gy, h * .32, -12, true, 3); alienTree(VT.tree.x * w, gy, h * .46, 14, false, 4);
   // your ship, landed
   const sxp = w * .07, sL = Math.max(54, h * .15); cx.strokeStyle = INK; cx.lineWidth = 4; cx.beginPath(); cx.moveTo(sxp - sL * .14, gy - sL * .2); cx.lineTo(sxp - sL * .3, gy + 2); cx.moveTo(sxp + sL * .14, gy - sL * .2); cx.lineTo(sxp + sL * .3, gy + 2); cx.stroke(); rocket(sxp, gy - sL * .56, sL, -Math.PI / 2);
   // the rock, and the tiny door behind it
@@ -1854,13 +2012,102 @@ function drawPlanet(dt) {
   const rox = S.rock ? rx + rs * 1.5 : rx; cx.fillStyle = '#8b93a5'; cx.beginPath(); cx.ellipse(rox, gy - rs * .55, rs, rs * .8, 0, 0, 7); cx.fill(); ol(2); cx.fillStyle = 'rgba(40,45,60,.4)'; cx.beginPath(); cx.arc(rox, gy - rs * .55, rs * .75, .3, 2.6); cx.fill(); cx.fillStyle = 'rgba(255,255,255,.35)'; circ(rox - rs * .35, gy - rs * .9, rs * .18); cx.fill();
   for (const hx of S.holes) { cx.fillStyle = '#5a8a6a'; cx.beginPath(); cx.ellipse(hx * w + h * .04, gy + h * .03, h * .026, h * .012, 0, Math.PI, 0); cx.fill(); ol(1.5); cx.fillStyle = '#0c1f18'; cx.beginPath(); cx.ellipse(hx * w, gy + h * .034, h * .03, h * .011, 0, 0, 7); cx.fill(); ol(1.5); }
   for (const [bx0, ph, col] of [[.47, 0, '#4f8dff'], [.3, 2.2, '#ff8fd0']]) { const bx = w * (bx0 + .03 * Math.sin(tNow * 1.3 + ph)), by = h * (.67 + .04 * Math.sin(tNow * 2.1 + ph)) + (ph ? -h * .08 : 0), fl = .25 + .75 * Math.abs(Math.sin(tNow * 11 + ph)), z = Math.max(9, h * .026); cx.fillStyle = col; for (const sg of [-1, 1]) { cx.beginPath(); cx.ellipse(bx + sg * z * .55 * fl, by - z * .25, z * .6 * fl, z * .5, sg * .5, 0, 7); cx.fill(); ol(1.2); cx.beginPath(); cx.ellipse(bx + sg * z * .4 * fl, by + z * .3, z * .4 * fl, z * .34, -sg * .5, 0, 7); cx.fill(); ol(1.2); } cx.fillStyle = INK; rr(bx - 1.5, by - z * .5, 3, z, 2); cx.fill(); }
-  const s = Math.max(48, h * .15); drawAstro(PL.x * w, gy - s * .3, s, PL.to != null, PL.to != null || PL.idle < 2 ? (PL.face > 0 ? 'right' : 'left') : 'down', PL.step);
+}
+function frontMeadow(w, h, hz, gy, par) {
   // big dark plants close to the eye, for depth
   const fxo = -par * w * .22; cx.fillStyle = '#0d2b27'; for (const [u, sc] of [[-.02, 1], [.23, .6], [.78, .7], [1.03, 1.1]]) { const X = u * w + fxo, B = vh + 4, L = h * .2 * sc; for (let j = -2; j <= 2; j++) { cx.beginPath(); cx.moveTo(X - 5, B); cx.quadraticCurveTo(X + j * L * .22, B - L * .7, X + j * L * .42 + Math.sin(tNow + j + u * 9) * 3, B - L * (1 - Math.abs(j) * .16)); cx.quadraticCurveTo(X + j * L * .26, B - L * .5, X + 5, B); cx.fill(); } }
   cx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 14; i++) { const t2 = ((tNow * .05 + i * .0714) % 1), X = ((i * .173 + Math.sin(tNow * .4 + i) * .01) % 1) * w, Y = gy + h * .1 - t2 * h * .5; cx.fillStyle = `rgba(160,255,225,${Math.sin(t2 * Math.PI) * .7})`; circ(X, Y, 2 + (i % 3)); cx.fill(); } cx.globalCompositeOperation = 'source-over';
-  const ly = { ship: gy - sL * 1.2, fruit: gy - h * .37, city: hz - h * .4, butterfly: h * .6, fish: h * .6, tree: gy - h * .55, rock: gy - rs * 2.1, door: gy - rs * 2.1 };
-  for (const k in PT) { const t = PT[k]; if (t.x == null || k === 'city' || (k === 'door' && !S.rock) || (k === 'rock' && S.rock)) continue; if (Math.abs(PL.x - t.x) < .11) pill(t.label, Math.max(46, Math.min(w - 46, t.x * w)), ly[k]); }
 }
+function farCity(w, h, hz, par) { cx.save(); cx.translate(-par * w * .04, 0);
+  'RCI'.split('').forEach((k, i) => { const f = litFrac(k), x0 = [.1, .27, .44][i] * w, dw = w * .15; for (let b = 0; b < 4; b++) { const bw = dw * .22, bh = h * (.07 + ((b * 7 + i * 3) % 5) * .024), X = x0 + b * dw * .26, Y = hz - bh; cx.fillStyle = f > 0 ? '#3d3684' : '#2a2560'; cx.fillRect(X, Y, bw, bh + 2); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(X, Y, bw, bh + 2); cx.fillStyle = CITY[k].col; cx.fillRect(X - 1, Y, bw + 2, 4);
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) { const lit = ((b * 6 + r * 2 + c) * 7 % 24) < f * 24; cx.fillStyle = lit ? '#fff0a8' : '#141136'; cx.fillRect(X + bw * (.2 + c * .4), Y + bh * (.18 + r * .26), bw * .22, bh * .14); } } });
+  towerDraw(w * .655, hz, h * .36, w * .028, !!V().plan); cx.restore(); }
+function towerDraw(X, base, th, half, on) { const top = base - th; cx.strokeStyle = INK; cx.lineWidth = 5; cx.beginPath(); cx.moveTo(X - half, base); cx.lineTo(X, top); cx.lineTo(X + half, base); cx.stroke(); cx.strokeStyle = '#c9d2df'; cx.lineWidth = 3; cx.stroke();
+  for (let j = 1; j < 4; j++) { const yy = base - th * j / 4, ww = half * (1 - j / 4); cx.beginPath(); cx.moveTo(X - ww, yy); cx.lineTo(X + ww, yy); cx.stroke(); } const r = Math.max(6, half * .45);
+  cx.fillStyle = on ? '#fff3a6' : '#6b7689'; circ(X, top, r); cx.fill(); ol(2); if (on) { cx.globalCompositeOperation = 'lighter'; const g = cx.createRadialGradient(X, top, 0, X, top, r * 5); g.addColorStop(0, `rgba(255,240,150,${.55 + .2 * Math.sin(tNow * 3)})`); g.addColorStop(1, 'rgba(255,240,150,0)'); cx.fillStyle = g; circ(X, top, r * 5); cx.fill(); cx.globalCompositeOperation = 'source-over'; } }
+function gumbleDraw(fx, fy, r, tilt) { cx.save(); cx.translate(fx, fy); cx.rotate(tilt); cx.fillStyle = '#ffd166'; cx.beginPath(); cx.moveTo(-r * 1.1, 0); cx.lineTo(-r * 2, -r * .8); cx.lineTo(-r * 2, r * .8); cx.closePath(); cx.fill(); ol(1.5); cx.beginPath(); cx.ellipse(0, 0, r * 1.35, r * .85, 0, 0, 7); cx.fill(); ol(1.5); cx.fillStyle = '#ff9f5a'; cx.beginPath(); cx.moveTo(-r * .2, -r * .8); cx.lineTo(r * .2, -r * 1.35); cx.lineTo(r * .5, -r * .7); cx.fill();
+  cx.fillStyle = '#fff'; circ(r * .6, -r * .2, r * .26); cx.fill(); cx.fillStyle = INK; circ(r * .66, -r * .2, r * .13); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.beginPath(); cx.arc(r * .7, r * .2, r * .3, .2, 2.2); cx.stroke(); cx.restore(); }
+function vGround(w, h, top, c1, c2) { const g = cx.createLinearGradient(0, top, 0, vh); g.addColorStop(0, c1); g.addColorStop(1, c2); cx.fillStyle = g; cx.fillRect(0, top, w, vh - top + 2); }
+function drawRiverScene(w, h, hz, gy, par) { vSky(w, h, hz, par); vFar(w, h, hz, par);
+  const wt = cx.createLinearGradient(0, hz, 0, vh); wt.addColorStop(0, '#6fd0f5'); wt.addColorStop(.5, '#2f8fd8'); wt.addColorStop(1, '#1b4f9a'); cx.fillStyle = wt; cx.fillRect(0, hz, w, vh - hz);
+  cx.strokeStyle = 'rgba(255,255,255,.4)'; cx.lineWidth = 2; for (let i = 0; i < 16; i++) { const X = ((i * .137 + (calm ? 0 : tNow * .015)) % 1.1 - .05) * w, Y = hz + (vh - hz) * (.08 + (i * 31 % 80) / 100); cx.beginPath(); cx.moveTo(X, Y); cx.quadraticCurveTo(X + w * .025, Y - 4, X + w * .05, Y); cx.stroke(); }
+  for (let i = 0; i < 26; i++) { const a = Math.max(0, Math.sin(tNow * 3 + i * 1.7)), X = (i * .0397 + .012) * w, Y = hz + (vh - hz) * (.05 + (i * 29 % 90) / 100), z = 2 + a * 5; cx.fillStyle = `rgba(255,255,255,${a})`; cx.beginPath(); cx.moveTo(X, Y - z); cx.lineTo(X + z * .3, Y - z * .3); cx.lineTo(X + z, Y); cx.lineTo(X + z * .3, Y + z * .3); cx.lineTo(X, Y + z); cx.lineTo(X - z * .3, Y + z * .3); cx.lineTo(X - z, Y); cx.lineTo(X - z * .3, Y - z * .3); cx.fill(); }
+  for (const [x0, x1, sg] of [[-.05, .24, 1], [.76, 1.05, -1]]) { const g = cx.createLinearGradient(0, gy - h * .04, 0, vh); g.addColorStop(0, '#3fa07f'); g.addColorStop(1, '#17443c'); cx.fillStyle = g; cx.beginPath(); cx.moveTo(x0 * w, vh + 4); cx.lineTo(x0 * w, gy + h * .02); cx.lineTo((sg > 0 ? x1 : x0) * w, gy + h * .02);
+    if (sg > 0) { cx.quadraticCurveTo((x1 + .02) * w, gy + h * .06, (x1 - .03) * w, vh + 4); } else { cx.lineTo(x1 * w, gy + h * .02); cx.lineTo(x1 * w, vh + 4); cx.lineTo((x0 + .03) * w, vh + 4); cx.quadraticCurveTo((x0 - .02) * w, gy + h * .06, x0 * w, gy + h * .02); } cx.closePath(); cx.fill(); ol(2); }
+  alienTree(.06 * w, gy + h * .02, h * .3, 8, false, 5); alienTree(.93 * w, gy + h * .02, h * .26, -8, false, 6);
+  cx.fillStyle = '#8a5a3a'; cx.fillRect(w * .86, gy - h * .1, 5, h * .12); cx.fillStyle = '#fbf3dc'; rr(w * .845, gy - h * .16, Math.max(54, w * .07), h * .06, 4); cx.fill(); ol(2); cx.fillStyle = INK; cx.font = `700 ${Math.max(10, h * .028)}px "Chakra Petch", sans-serif`; cx.textAlign = 'left'; cx.fillText('CITY →', w * .852, gy - h * .118);
+  if (V().fed) STONEX.forEach((sx0, i) => { const X = sx0 * w, Y = gy + h * .035, rx0 = Math.max(18, w * .04), act = widget && widget.kind === 'stones' && widget.hop === i; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(X, Y + h * .02, rx0 * 1.1, h * .014, 0, 0, 7); cx.fill(); cx.fillStyle = act ? '#ffe9a6' : '#aab3c4'; cx.beginPath(); cx.ellipse(X, Y, rx0, h * .028, 0, 0, 7); cx.fill(); ol(2); cx.fillStyle = '#5fae8a'; cx.beginPath(); cx.ellipse(X - rx0 * .3, Y - h * .012, rx0 * .4, h * .009, 0, 0, 7); cx.fill(); });
+  const bob = Math.sin(tNow * 2) * h * .012; gumbleDraw(w * .5, gy + h * .1 + bob, Math.max(11, h * .034), Math.sin(tNow * 1.3) * .15); cx.strokeStyle = 'rgba(255,255,255,.6)'; cx.lineWidth = 2; cx.beginPath(); cx.ellipse(w * .5, gy + h * .135, w * .05, h * .012, 0, 0, 7); cx.stroke();
+  if (widget && widget.kind === 'stones') { const lo = widget.lo, n = widget.n, x0 = w * .16, x1 = w * .84, Y = h * .34, X = x0 + (x1 - x0) * (n - lo) / 100, fs = Math.max(15, Math.min(30, w * .034)); cx.fillStyle = 'rgba(6,9,18,.72)'; rr(x0 - fs * 2.2, Y - fs * 2.6, x1 - x0 + fs * 4.4, fs * 5.4, 12); cx.fill();
+    cx.strokeStyle = '#e8eef8'; cx.lineWidth = 4; cx.beginPath(); cx.moveTo(x0, Y); cx.lineTo(x1, Y); cx.stroke(); for (let k = 0; k <= 10; k++) { const tx = x0 + (x1 - x0) * k / 10, big = k % 10 === 0, mid = k === 5; cx.lineWidth = big ? 5 : mid ? 3 : 2; cx.beginPath(); cx.moveTo(tx, Y - (big ? fs * .9 : mid ? fs * .6 : fs * .35)); cx.lineTo(tx, Y + (big ? fs * .9 : mid ? fs * .6 : fs * .35)); cx.stroke(); }
+    cx.fillStyle = '#fff'; cx.font = `700 ${fs}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(lo, x0, Y + fs * 2.1); cx.fillText(lo + 100, x1, Y + fs * 2.1);
+    cx.globalCompositeOperation = 'lighter'; const g = cx.createRadialGradient(X, Y, 0, X, Y, fs * 1.6); g.addColorStop(0, 'rgba(255,200,90,.8)'); g.addColorStop(1, 'rgba(255,200,90,0)'); cx.fillStyle = g; circ(X, Y, fs * 1.6); cx.fill(); cx.globalCompositeOperation = 'source-over'; cx.fillStyle = '#ffb23e'; circ(X, Y, fs * .5); cx.fill(); ol(2); cx.fillStyle = '#ffcf5a'; cx.fillText(n, X, Y - fs * 1.2); cx.textAlign = 'left'; } }
+function lamp(X, gy, h, on) { cx.fillStyle = '#39445a'; rr(X - 3, gy - h * .2, 6, h * .2, 0); cx.fill(); ol(1); cx.fillStyle = on ? '#fff0a8' : '#59657a'; circ(X, gy - h * .21, Math.max(6, h * .018)); cx.fill(); ol(1.5); if (on) { cx.globalCompositeOperation = 'lighter'; const g = cx.createRadialGradient(X, gy - h * .21, 0, X, gy - h * .21, h * .12); g.addColorStop(0, 'rgba(255,235,150,.5)'); g.addColorStop(1, 'rgba(255,235,150,0)'); cx.fillStyle = g; circ(X, gy - h * .21, h * .12); cx.fill(); cx.globalCompositeOperation = 'source-over'; } }
+function pave(w, h, gy) { vGround(w, h, gy - h * .02, '#5a5f86', '#2b2d4d'); cx.strokeStyle = 'rgba(255,255,255,.08)'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { cx.beginPath(); cx.moveTo(w * (i / 13), gy - h * .02); cx.lineTo(w * (i / 13 - .5) * 1.6 + w * .5, vh); cx.stroke(); } }
+function drawPlaza(w, h, hz, gy, par) { const on = !!V().plan; vSky(w, h, hz, par); vFar(w, h, hz, par); vGround(w, h, hz, '#49a888', '#3a8f76'); pave(w, h, gy);
+  const nx = w * .13; cx.fillStyle = '#8a5a3a'; cx.fillRect(nx - 3, gy - h * .2, 6, h * .2); cx.fillStyle = '#fbf3dc'; rr(nx - w * .045, gy - h * .32, w * .09, h * .14, 4); cx.fill(); ol(2); cx.fillStyle = '#d2553a'; cx.font = `700 ${Math.max(11, h * .034)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('SOS', nx, gy - h * .25); cx.fillStyle = INK; for (let i = 0; i < 2; i++) cx.fillRect(nx - w * .03, gy - h * (.225 - i * .022), w * .06, 2.5);
+  const tx = w * .4; cx.fillStyle = '#2a3552'; rr(tx - w * .07, gy - h * .2, w * .14, h * .2, [10, 10, 0, 0]); cx.fill(); ol(2); cx.fillStyle = V().count ? '#123b2c' : '#101826'; rr(tx - w * .028, gy - h * .15, w * .056, h * .15, [6, 6, 0, 0]); cx.fill(); ol(2);
+  for (let i = 0; i < 3; i++) { cx.fillStyle = ['#b9a3ff', '#6fd08a', '#ffb23e'][i]; cx.globalAlpha = .6 + .4 * Math.sin(tNow * 2 + i); circ(tx - w * .012 + i * w * .012, gy - h * (.05 + (i % 2) * .03), Math.max(3, h * .012)); cx.fill(); } cx.globalAlpha = 1; if (!V().count) { cx.fillStyle = '#f2c94c'; rr(tx - 6, gy - h * .1, 12, 14, 3); cx.fill(); ol(1.5); }
+  towerDraw(tx, gy - h * .2, h * .46, w * .05, on);
+  const fx = w * .6; cx.fillStyle = '#8795ab'; cx.beginPath(); cx.ellipse(fx, gy + h * .01, w * .06, h * .03, 0, 0, 7); cx.fill(); ol(2); cx.fillStyle = on ? '#59c4f0' : '#39445a'; cx.beginPath(); cx.ellipse(fx, gy, w * .05, h * .02, 0, 0, 7); cx.fill(); cx.fillStyle = '#aab3c4'; rr(fx - 4, gy - h * .09, 8, h * .09, 0); cx.fill(); ol(1);
+  if (on) { cx.strokeStyle = 'rgba(160,225,255,.85)'; cx.lineWidth = 3; for (const sg of [-1, 1]) { cx.beginPath(); cx.moveTo(fx, gy - h * .09); cx.quadraticCurveTo(fx + sg * w * .03, gy - h * (.16 + .01 * Math.sin(tNow * 6)), fx + sg * w * .035, gy); cx.stroke(); } if (!S.secrets.includes('coin')) { cx.fillStyle = `rgba(255,220,110,${.6 + .4 * Math.sin(tNow * 4)})`; circ(fx + w * .015, gy + h * .003, 4); cx.fill(); } }
+  const hx = w * .83, hw = w * .24, hh = h * .34; cx.fillStyle = '#6a54b8'; rr(hx - hw / 2, gy - hh, hw, hh, 6); cx.fill(); ol(2); cx.fillStyle = '#8a6fd6'; cx.beginPath(); cx.moveTo(hx - hw * .56, gy - hh); cx.lineTo(hx, gy - hh - h * .12); cx.lineTo(hx + hw * .56, gy - hh); cx.closePath(); cx.fill(); ol(2);
+  for (let i = 0; i < 4; i++) { cx.fillStyle = '#e8e0ff'; rr(hx - hw * .42 + i * hw * .26, gy - hh * .86, hw * .07, hh * .86, 0); cx.fill(); ol(1); } cx.fillStyle = '#fff0a8'; rr(hx - hw * .09, gy - hh * .52, hw * .18, hh * .52, [8, 8, 0, 0]); cx.fill(); ol(2); cx.fillStyle = '#ffe58a'; cx.font = `700 ${Math.max(10, h * .028)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('ENERGY COUNCIL', hx, gy - hh - h * .025);
+  lamp(w * .26, gy, h, on); lamp(w * .7, gy, h, on); cx.textAlign = 'left'; }
+function bldg(X, gy, bw, bh, k, lit, seed) { const body = lit ? '#4a43a0' : '#2a2560', trim = CITY[k].col, Y = gy - bh; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.fillRect(X - bw / 2 + 4, gy - 2, bw, 6); cx.fillStyle = body; cx.fillRect(X - bw / 2, Y, bw, bh); cx.strokeStyle = INK; cx.lineWidth = 2; cx.strokeRect(X - bw / 2, Y, bw, bh); cx.fillStyle = trim;
+  if (k === 'R') { cx.beginPath(); cx.moveTo(X - bw * .58, Y); cx.lineTo(X, Y - bh * .3); cx.lineTo(X + bw * .58, Y); cx.closePath(); cx.fill(); ol(2); } else if (k === 'C') { rr(X - bw * .54, Y, bw * 1.08, bh * .1, 0); cx.fill(); ol(1); for (let a = 0; a < 4; a++) { cx.fillStyle = a % 2 ? '#f4f7fb' : trim; cx.fillRect(X - bw / 2 + a * bw / 4, gy - bh * .34, bw / 4, bh * .08); } }
+  else { cx.beginPath(); for (let a = 0; a < 3; a++) { cx.moveTo(X - bw / 2 + a * bw / 3, Y); cx.lineTo(X - bw / 2 + a * bw / 3, Y - bh * .16); cx.lineTo(X - bw / 2 + (a + 1) * bw / 3, Y); } cx.fill(); cx.fillStyle = '#59657a'; cx.fillRect(X + bw * .22, Y - bh * .4, bw * .16, bh * .4); cx.strokeRect(X + bw * .22, Y - bh * .4, bw * .16, bh * .4);
+    if (lit) for (let p = 0; p < 3; p++) { const t2 = ((tNow * .3 + p * .33 + seed) % 1); cx.fillStyle = `rgba(235,235,255,${(1 - t2) * .5})`; circ(X + bw * .3 + Math.sin(t2 * 5 + p) * 5, Y - bh * .4 - t2 * bh * .5, 4 + t2 * 9); cx.fill(); } }
+  const cols = Math.max(2, Math.round(bw / 22)), rows = Math.max(1, Math.round(bh * .5 / 22)); for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const wx = X - bw / 2 + (c + .5) * bw / cols, wy = Y + bh * .14 + (r + .5) * bh * .46 / rows, z = Math.min(8, bw / cols * .3), on = lit && (c + r + seed) % 5 !== 0; if (on) { cx.fillStyle = 'rgba(255,225,130,.3)'; cx.fillRect(wx - z * 1.5, wy - z * 1.5, z * 3, z * 3); } cx.fillStyle = on ? '#fff0a8' : '#141136'; cx.fillRect(wx - z, wy - z, z * 2, z * 2); }
+  cx.fillStyle = lit ? '#ffe58a' : '#141136'; rr(X - bw * .1, gy - bh * .24, bw * .2, bh * .24, [4, 4, 0, 0]); cx.fill(); ol(1.5); }
+function drawStreet(w, h, hz, gy, par) { const k = VSC[V().sc].k, c = CITY[k], n = c.places.length; vSky(w, h, hz, par); vFar(w, h, hz, par); cx.fillStyle = '#231f55'; for (let i = 0; i < 9; i++) { const bx = (i / 9 - par * .03) * w, bh = h * (.1 + (i * 7 % 5) * .03); cx.fillRect(bx, hz - bh + h * .1, w * .09, bh + h * .2); } pave(w, h, gy);
+  SPOTS.filter(p => p.k === k).forEach(p => { const X = spotX(p) * w, bw = Math.min(w * .76 / n * .82, h * .3), bh = h * (.2 + Math.min(.22, p.need / 250 * .2)), lit = powered(p.i); bldg(X, gy - h * .02, bw, bh, k, lit, p.i);
+    const fs = Math.max(11, Math.min(17, w * .017)), t = String(p.need), tw = fs * (t.length * .62 + .9); cx.fillStyle = 'rgba(6,9,18,.86)'; rr(X - tw / 2, gy - bh - h * .02 - fs * (k === 'R' ? 3.6 : 2.2), tw, fs * 1.5, 6); cx.fill(); cx.fillStyle = lit ? '#6fd08a' : c.col; cx.font = `700 ${fs}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(t, X, gy - bh - h * .02 - fs * (k === 'R' ? 3.6 : 2.2) + fs * 1.1); });
+  const bx = w * .07; cx.fillStyle = '#8a5a3a'; cx.fillRect(bx - 3, gy - h * .18, 6, h * .18); cx.fillStyle = '#132035'; rr(bx - w * .04, gy - h * .34, w * .08, h * .18, 5); cx.fill(); cx.strokeStyle = c.col; cx.lineWidth = 3; cx.stroke(); cx.fillStyle = c.col; for (let i = 0; i < 4; i++) cx.fillRect(bx - w * .028, gy - h * (.31 - i * .035), w * (.056 - (i % 2) * .016), 3);
+  if (V().need[k]) { cx.fillStyle = '#6fd08a'; cx.font = `700 ${Math.max(11, h * .03)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText(c.total, bx, gy - h * .185); }
+  if (k === 'I' && V().lost) { const X = w * .95, pu = .5 + .5 * Math.sin(tNow * 5); cx.fillStyle = '#39445a'; cx.beginPath(); cx.ellipse(X, gy + h * .005, w * .035, h * .016, 0, 0, 7); cx.fill(); ol(2); cx.strokeStyle = `rgba(255,178,62,${.4 + .5 * pu})`; cx.lineWidth = 2; for (let i = 1; i < 4; i++) { cx.beginPath(); cx.ellipse(X, gy - h * .01, w * .02 * i * (.6 + .4 * pu), h * .012 * i, 0, Math.PI, 0); cx.stroke(); } }
+  for (let i = 0; i < 3; i++) lamp(w * (.3 + i * .27), gy, h * .8, litFrac(k) > 0); cx.textAlign = 'left'; }
+function alienGuy(X, Y, r, col, eyes, t) { cx.fillStyle = col; cx.beginPath(); cx.ellipse(X, Y, r * .78, r, 0, 0, 7); cx.fill(); ol(2); cx.strokeStyle = INK; cx.lineWidth = 2; for (const sg of [-1, 1]) { cx.beginPath(); cx.moveTo(X + sg * r * .3, Y - r * .9); cx.lineTo(X + sg * r * .5, Y - r * 1.45 + Math.sin(tNow * 2 + t + sg) * 2); cx.stroke(); cx.fillStyle = '#ffd25e'; circ(X + sg * r * .5, Y - r * 1.45 + Math.sin(tNow * 2 + t + sg) * 2, r * .1); cx.fill(); ol(1); }
+  for (let i = 0; i < eyes; i++) { const ex = X + (i - (eyes - 1) / 2) * r * .42; cx.fillStyle = '#fff'; circ(ex, Y - r * .25, r * .17); cx.fill(); ol(1); cx.fillStyle = INK; circ(ex + Math.sin(tNow + t) * r * .04, Y - r * .23, r * .08); cx.fill(); } cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.arc(X, Y + r * .2, r * .25, .2, Math.PI - .2); cx.stroke(); }
+function drawHall(w, h, hz, gy, par) { const wall = cx.createLinearGradient(0, 0, 0, gy); wall.addColorStop(0, '#2c2466'); wall.addColorStop(1, '#4a3f8f'); cx.fillStyle = wall; cx.fillRect(0, 0, w, gy); vGround(w, h, gy - h * .02, '#6a5b9c', '#2f2757');
+  for (let i = 0; i < 6; i++) { cx.fillStyle = '#5a4ea6'; cx.fillRect(w * (.02 + i * .196), 0, w * .03, gy - h * .02); cx.fillStyle = '#7a6ec6'; cx.fillRect(w * (.02 + i * .196), 0, w * .008, gy - h * .02); }
+  for (const wx of [.47, .62, .77]) { const X = w * wx, ww = w * .09, wh = h * .3, Y = h * .1, g = cx.createLinearGradient(0, Y, 0, Y + wh); ['#2c2a8f', '#c26fe8', '#ff8fb1', '#ffe58a'].forEach((c, i, a) => g.addColorStop(i / (a.length - 1), c)); cx.fillStyle = g; rr(X - ww / 2, Y, ww, wh, [ww / 2, ww / 2, 4, 4]); cx.fill(); ol(3); cx.fillStyle = 'rgba(255,255,255,.8)'; for (let i = 0; i < 4; i++) cx.fillRect(X - ww * .3 + (i * 37 % 50) / 50 * ww * .6, Y + wh * (.12 + i * .09), 2, 2); cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X, Y); cx.lineTo(X, Y + wh); cx.stroke(); }
+  cx.fillStyle = '#fff0a8'; rr(w * .01, gy - h * .36, w * .06, h * .34, [10, 10, 0, 0]); cx.fill(); ol(2);
+  const mx = w * .11, mw = w * .19, my = h * .2, mh = h * .34; cx.fillStyle = '#101826'; rr(mx, my, mw, mh, 8); cx.fill(); cx.strokeStyle = '#b9a3ff'; cx.lineWidth = 3; cx.stroke(); 'RCI'.split('').forEach((k, r) => SPOTS.filter(p => p.k === k).forEach(p => { const X = mx + mw * (.1 + p.j * .8 / 7.5), Y = my + mh * (.24 + r * .27), on = powered(p.i); cx.fillStyle = on ? '#fff0a8' : rgba(CITY[k].col, .35); circ(X, Y, Math.max(3, mw * .035)); cx.fill(); if (on) { cx.globalCompositeOperation = 'lighter'; cx.fillStyle = 'rgba(255,235,150,.35)'; circ(X, Y, mw * .07); cx.fill(); cx.globalCompositeOperation = 'source-over'; } }));
+  const tx = w * .38; cx.fillStyle = '#39306e'; cx.beginPath(); cx.ellipse(tx, gy - h * .06, w * .07, h * .025, 0, 0, 7); cx.fill(); ol(2); cx.fillRect(tx - w * .012, gy - h * .06, w * .024, h * .06); cx.globalCompositeOperation = 'lighter'; const hg = cx.createRadialGradient(tx, gy - h * .16, 0, tx, gy - h * .16, h * .14); hg.addColorStop(0, `rgba(140,220,255,${.5 + .2 * Math.sin(tNow * 3)})`); hg.addColorStop(1, 'rgba(140,220,255,0)'); cx.fillStyle = hg; circ(tx, gy - h * .16, h * .14); cx.fill(); cx.globalCompositeOperation = 'source-over'; towerDraw(tx, gy - h * .08, h * .16, w * .016, !!V().plan);
+  cx.fillStyle = '#231c52'; rr(w * .5, gy - h * .17, w * .34, h * .15, [14, 14, 0, 0]); cx.fill(); ol(2); { const r = Math.max(16, Math.min(h * .075, w * .045)); [['#6fd08a', 2], ['#ff9ec4', 3], ['#6db3ff', 2]].forEach(([c, e], i) => alienGuy(w * .67 + (i - 1) * r * 2.3, gy - h * .17 - r * .9, r, c, e, i * 2)); }
+  cx.fillStyle = '#3a2f7a'; rr(w * .5, gy - h * .15, w * .34, h * .13, [10, 10, 0, 0]); cx.fill(); ol(2); cx.fillStyle = '#ffe58a'; cx.font = `700 ${Math.max(10, h * .028)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('ENERGY COUNCIL', w * .67, gy - h * .075);
+  if (V().plan) { const lx = w * .88, lw = w * .1; cx.fillStyle = '#101826'; rr(lx, h * .22, lw, h * .26, 6); cx.fill(); cx.strokeStyle = V().lost ? '#6fd08a' : `rgba(255,90,77,${.6 + .4 * Math.sin(tNow * 6)})`; cx.lineWidth = 3; cx.stroke(); for (let i = 0; i < 4; i++) { cx.fillStyle = '#6db3ff'; cx.fillRect(lx + lw * .12, h * (.26 + i * .05), lw * .3, 3); cx.fillStyle = '#ff9486'; cx.fillRect(lx + lw * .54, h * (.26 + i * .05), lw * .36, 3); } } cx.textAlign = 'left'; }
+function drawTunnel(w, h, hz, gy, par) { cx.fillStyle = '#0d0b1c'; cx.fillRect(0, 0, w, vh); for (let i = 0; i < 9; i++) { cx.fillStyle = ['#6db3ff', '#b9a3ff', '#8ff5d6'][i % 3]; cx.globalAlpha = .5 + .4 * Math.sin(tNow * 2 + i); cx.beginPath(); const X = w * (.12 + i * .1), Y = h * (.2 + (i * 37 % 20) / 100); cx.moveTo(X, Y - 9); cx.lineTo(X + 5, Y); cx.lineTo(X, Y + 9); cx.lineTo(X - 5, Y); cx.fill(); } cx.globalAlpha = 1; cx.fillStyle = '#2b2548'; cx.beginPath(); cx.moveTo(0, h * .3); for (let x = 0; x <= w; x += w / 16) cx.lineTo(x, h * (.26 + .05 * Math.sin(x / w * 13))); cx.lineTo(w, gy + h * .02); cx.lineTo(0, gy + h * .02); cx.fill(); vGround(w, h, gy - h * .01, '#3b3460', '#141024');
+  cx.strokeStyle = INK; cx.lineWidth = 9; cx.beginPath(); cx.moveTo(0, h * .5); for (let x = 0; x <= w; x += w / 20) cx.lineTo(x, h * (.5 + .02 * Math.sin(x / w * 9))); cx.stroke(); cx.strokeStyle = '#59657a'; cx.lineWidth = 6; cx.stroke(); cx.strokeStyle = `rgba(255,178,62,${.5 + .4 * Math.sin(tNow * 5)})`; cx.lineWidth = 2; cx.setLineDash([12, 16]); cx.lineDashOffset = -tNow * 60; cx.stroke(); cx.setLineDash([]);
+  cx.strokeStyle = '#ffd25e'; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(w * .5, h * .5); cx.quadraticCurveTo(w * .7, h * .62, w, h * .58); cx.stroke();
+  cx.fillStyle = '#39445a'; rr(w * .02, h * .1, w * .06, h * .2, 4); cx.fill(); cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; for (let i = 0; i < 5; i++) { cx.beginPath(); cx.moveTo(w * .025, h * (.3 + i * .1)); cx.lineTo(w * .075, h * (.3 + i * .1)); cx.stroke(); } }
+function drawHollow(w, h, hz, gy, par) { const g = cx.createRadialGradient(w * .6, h * .4, h * .1, w * .6, h * .4, w * .7); g.addColorStop(0, '#3a2a66'); g.addColorStop(1, '#0d0a1c'); cx.fillStyle = g; cx.fillRect(0, 0, w, vh); vGround(w, h, gy - h * .01, '#3b3160', '#120e24');
+  cx.fillStyle = '#7a4f22'; rr(w * .03, gy - h * .1, w * .035, h * .09, [8, 8, 2, 2]); cx.fill(); ol(2); cx.fillStyle = '#fff0a8'; circ(w * .058, gy - h * .05, 2.5); cx.fill();
+  const x0 = w * .36, x1 = w * .9, y0 = h * .14, dy = h * .105; for (let r = 0; r < 5; r++) { const Y = y0 + r * dy + dy * .7; cx.fillStyle = '#54437f'; rr(x0 - w * .02, Y, x1 - x0 + w * .04, h * .016, 4); cx.fill(); ol(1.5);
+    for (let c = 0; c < 6; c++) { const X = x0 + (c + .5) * (x1 - x0) / 6, z = Math.min((x1 - x0) / 6 * .5, dy * .62), pu = .7 + .3 * Math.sin(tNow * 3 + r * 2 + c); cx.globalCompositeOperation = 'lighter'; cx.fillStyle = `rgba(255,220,120,${.22 * pu})`; circ(X, Y - z * .4, z * 1.1); cx.fill(); cx.globalCompositeOperation = 'source-over';
+      cx.fillStyle = ['#ff9ec4', '#8ff5d6', '#b9a3ff'][(r + c) % 3]; cx.fillRect(X - z * .5, Y - z * .7, z, z * .7); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(X - z * .5, Y - z * .7, z, z * .7); cx.fillStyle = '#6a4466'; cx.beginPath(); cx.moveTo(X - z * .62, Y - z * .7); cx.lineTo(X, Y - z * 1.15); cx.lineTo(X + z * .62, Y - z * .7); cx.closePath(); cx.fill(); ol(1.5); cx.fillStyle = `rgba(255,240,170,${pu})`; cx.fillRect(X - z * .16, Y - z * .5, z * .32, z * .3); } }
+  cx.strokeStyle = '#ffd25e'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(w, h * .58); cx.quadraticCurveTo(w * .95, h * .2, x1 + w * .02, y0 + dy * .7); cx.stroke(); cx.fillStyle = '#39445a'; rr(x1 + w * .005, y0 + dy * .4, w * .03, h * .05, 3); cx.fill(); ol(1.5);
+  const ex = w * .2; cx.fillStyle = '#e8e0ff'; cx.fillRect(ex - 4, gy - h * .06, 8, h * .06); cx.fillStyle = '#ff9ec4'; cx.beginPath(); cx.ellipse(ex, gy - h * .06, w * .028, h * .022, 0, Math.PI, 0); cx.fill(); ol(2);
+  const er = Math.max(5, h * .014), ey = gy - h * .085 - er; cx.fillStyle = '#8ff5d6'; circ(ex, ey, er); cx.fill(); ol(1.5); cx.fillStyle = '#e8eef8'; cx.beginPath(); cx.moveTo(ex - er * .5, ey + er * .3); cx.lineTo(ex, ey + er * 2); cx.lineTo(ex + er * .5, ey + er * .3); cx.fill(); cx.fillStyle = INK; circ(ex - er * .3, ey - er * .1, 1.5); cx.fill(); circ(ex + er * .3, ey - er * .1, 1.5); cx.fill(); }
+const VDRAW = { meadow: drawMeadow, river: drawRiverScene, plaza: drawPlaza, homes: drawStreet, shops: drawStreet, works: drawStreet, hall: drawHall, tunnel: drawTunnel, hollow: drawHollow };
+function drawPlanet(dt) {
+  const w = vw, h = Math.max(220, vh), hz = h * .56, gy = h * .86;
+  if (PL.to != null) { const d = PL.to - PL.x, st = .3 * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
+  const v = V(), sc = v.sc, par = PL.x - .5;      // read the place only after the step: a step can carry you into the next place
+  VDRAW[sc](w, h, hz, gy, par);
+  const s = Math.max(48, h * .15), hopping = sc === 'river' && PL.to != null && PL.x > .2 && PL.x < .8, ay = hopping ? -Math.abs(Math.sin(PL.x * 26)) * h * .05 : 0;
+  drawAstro(PL.x * w, gy - s * .3 + ay + (sc === 'river' && PL.x > .24 && PL.x < .76 ? h * .012 : 0), s, PL.to != null, PL.to != null || PL.idle < 2 ? (PL.face > 0 ? 'right' : 'left') : 'down', PL.step);
+  if (sc === 'meadow') frontMeadow(w, h, hz, gy, par);
+  if (sc === 'tunnel') { const X = PL.x * w, Y = gy - s * .5, R = has('stone') ? Math.max(w, h) * .95 : h * .13, g = cx.createRadialGradient(X, Y, R * .25, X, Y, R); g.addColorStop(0, has('stone') ? 'rgba(150,255,230,.1)' : 'rgba(0,0,0,0)'); g.addColorStop(1, has('stone') ? 'rgba(2,2,8,.8)' : 'rgba(2,2,8,.97)'); cx.fillStyle = g; cx.fillRect(0, 0, w, vh); }
+  if (!widget) { for (const t of vThings()) { if (t.x == null || Math.abs(PL.x - t.x) > (t.spot ? .07 : .11)) continue; pill(t.label, Math.max(50, Math.min(w - 50, t.x * w)), t.spot ? gy - h * .52 : sc === 'hall' && t.id === 'council' ? gy - h * .42 : gy - h * .27 - (t.id === 'tree' ? h * .28 : t.id === 'tower' ? h * .2 : 0)); }
+    cx.font = `700 ${Math.max(12, Math.min(16, w * .02))}px "Chakra Petch", sans-serif`; for (const [d, X, al] of [['e', w - 10, 'right'], ['w', 10, 'left']]) { const to = VSC[sc][d]; if (!to || (sc === 'river' && d === 'e' && !v.crossed) || (sc === 'tunnel' && d === 'e' && !has('stone'))) continue; const t = d === 'e' ? `${VSC[to].name} »` : `« ${VSC[to].name}`, tw = cx.measureText(t).width + 16; cx.fillStyle = 'rgba(6,9,18,.82)'; rr(d === 'e' ? X - tw : X, gy + h * .055, tw, 24, 7); cx.fill(); cx.fillStyle = '#ffcf5a'; cx.textAlign = al; cx.textBaseline = 'middle'; cx.fillText(t, d === 'e' ? X - 8 : X + 8, gy + h * .055 + 13); cx.textBaseline = 'alphabetic'; }
+    // a strip map: where you are on Voltara
+    const order = ['meadow', 'river', 'plaza', 'homes', 'shops', 'works'], small = w < 520, mw = small ? w * .3 : Math.min(w * .5, 230), mx = w - mw - 12, myy = 16; cx.fillStyle = 'rgba(6,9,18,.75)'; rr(mx - 8, myy - 10, mw + 16, small ? 20 : 30, 8); cx.fill(); cx.strokeStyle = '#59657a'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(mx + 6, myy); cx.lineTo(mx + mw - 6, myy); cx.stroke();
+    order.forEach((o, i) => { const X = mx + 6 + (mw - 12) * i / 5, here = o === sc || (sc === 'hall' && o === 'plaza') || ((sc === 'tunnel' || sc === 'hollow') && o === 'works'); cx.fillStyle = here ? '#ffb23e' : '#6d8fc0'; circ(X, myy, here ? 6 : 4); cx.fill(); if (here && !small) { cx.fillStyle = '#fff'; cx.font = '700 10px "Chakra Petch", sans-serif'; cx.textAlign = i > 3 ? 'right' : i < 2 ? 'left' : 'center'; cx.fillText(VSC[sc].name.toUpperCase(), X, myy + 16); } }); cx.textAlign = 'left'; }
+  if (PL.fade > 0) { cx.fillStyle = `rgba(4,6,14,${Math.min(1, PL.fade)})`; cx.fillRect(0, 0, w, vh); PL.fade -= dt * 2.4; }
+}
+
 /* =====================================================================
    THE OPENING. The words are Marc's own, from the student site's home page
    ("Earth Needs Your Help!") and its Space Station Tasks page (shortened).
@@ -1978,7 +2225,7 @@ window.addEventListener('resize', size);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
 size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
-S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.ship && rude(S.ship)) S.ship = ''; if (S.botName && rude(S.botName)) S.botName = ''; drawStars();
+S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.secrets.includes('stone') && !S.inv.includes('stone')) S.inv.push('stone'); if (S.ship && rude(S.ship)) S.ship = ''; if (S.botName && rude(S.botName)) S.botName = ''; drawStars();
 if (S.tut == null) S.tut = 3;
 say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
