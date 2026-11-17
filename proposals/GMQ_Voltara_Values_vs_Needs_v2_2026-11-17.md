@@ -1,6 +1,6 @@
 # GMQ — Voltara: your "values on every place" idea, compared with my "nine needs" — v2 — 2026-11-17
 
-**Stage:** analysis. Nothing in this file is built. The sketch is still version 20.
+**Stage:** analysis. **Later on 2026-11-17 this was built,** with changes, as sketch version 21. The built rules and numbers are in `GMQ_Voltara_Quest_Guide_v3_2026-11-17.md` section 5. Where the two files differ, the guide is right.
 **Tags:** [Source] = your words or your material. [Proposal] = my suggestion.
 **New in v2:** section 0. You corrected how I read your idea. Sections 1 to 8 are v1, kept as they were, with one note in section 6.
 **Check file:** `checks/voltara_values_model_check.py`. It tries all 2,097,152 plans.
