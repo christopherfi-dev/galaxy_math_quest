@@ -19,10 +19,15 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
     await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
-    // the teacher shortcut: from the opening screen, straight to the Landing Meadow, with nothing lost
-    const cut = await p.evaluate(() => { const cards = S.cards.length; $('tovolt').click(); const r = { mode: S.mode, sc: S.v.sc, toy: !$('toy').hidden, cards: S.cards.length === cards, text: lines[lines.length - 1].text }; restart(); return r; });
-    if (cut.mode !== 'planet' || cut.sc !== 'meadow' || cut.toy || !cut.cards || !/Teacher shortcut/.test(cut.text)) bad.push(name + ': teacher shortcut ' + JSON.stringify(cut));
-    await p.waitForTimeout(200);
+    // the teacher shortcuts: from a station bay, a real tap on the bar at the top lands in the meadow. Nothing is lost. And back again.
+    await p.evaluate(() => skipIntro()); await p.fill('#cmd', 'go to shield'); await p.press('#cmd', 'Enter'); await p.waitForTimeout(2600);
+    const before = await p.evaluate(() => ({ cards: S.cards.length, room: S.room })); await p.locator('#t_volt').tap(); await p.waitForTimeout(900);
+    let cut = await p.evaluate(() => { const d = cx.getImageData(Math.round(cv.width * .5), Math.round(cv.height * .1), 1, 1).data; return { mode: S.mode, sc: S.v.sc, toy: !$('toy').hidden, cards: S.cards.length, now: $('t_now').textContent, sky: d[0] > 150, text: lines[lines.length - 1].text }; });
+    if (cut.mode !== 'planet' || cut.sc !== 'meadow' || cut.toy || cut.cards !== before.cards || !cut.sky || !/Landing Meadow/.test(cut.now) || !/Teacher shortcut/.test(cut.text)) bad.push(name + ': teacher shortcut to Voltara ' + JSON.stringify(cut));
+    await p.locator('#t_stn').tap(); await p.waitForTimeout(700); cut = await p.evaluate(() => ({ mode: S.mode, room: S.room, now: $('t_now').textContent, ended: S.ended }));
+    if (cut.mode !== 'station' || cut.room !== before.room || cut.ended || !/Shield Bay/.test(cut.now)) bad.push(name + ': teacher shortcut back to the station ' + JSON.stringify(cut));
+    await p.fill('#cmd', 'teacher voltara'); await p.press('#cmd', 'Enter'); await p.waitForTimeout(300); if ((await p.evaluate(() => S.mode)) !== 'planet') bad.push(name + ': typing "teacher voltara" did not work');
+    await p.evaluate(() => restart()); await p.waitForTimeout(200);
     // start from a finished station, in space beside Galaxy Numerix
     await p.evaluate(() => { skipIntro(); TASKS.forEach(t => S.done[t[0]] = true); syncParts(); S.course = true; S.ended = true; S.mode = 'space'; S.at = 'numerix'; SP.x = GAL.numerix.x; SP.y = GAL.numerix.y; SP.zoom = 1; save(); drawStatus(); }); await p.waitForTimeout(300);
     const idle = async () => { for (let i = 0; i < 200; i++) { if (await p.evaluate(() => PL.to == null && !PL.then)) return; await p.waitForTimeout(100); } bad.push(name + ': still walking'); };

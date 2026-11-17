@@ -122,6 +122,7 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .toy:has(.wires), .toy:has(.codes) { max-height: 64dvh; }
 .field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .wires .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
 .word.hintb { border-style: dashed; }
+.tbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; } .tbar .word { border-style: dashed; }
 .art3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .art3 svg, .art svg.picsvg { width: 100%; height: auto; }
 @media (max-width: 600px) { .art3 { grid-template-columns: 1fr; } .art3 svg { max-height: 60px; } }
 .toy:has(.wire[data-p]) { max-height: 74dvh; } .toy .cn { margin-right: 4px; }
@@ -178,6 +179,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 </style>
 
 <div class="wrap">
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span></p>
   <div class="console">
     <div class="stage">
       <canvas id="cv" tabindex="0" aria-label="The game. Tap the ground to walk. Tap a thing to look at it."></canvas>
@@ -599,6 +601,7 @@ function findThing(tokens) {
 const findItem = tokens => S.inv.find(i => tokens.some(t => ITEM_WORDS[i].includes(t))) || null;
 function act(raw) {
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
+  if (/^teacher (voltara|station)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : goStation(); }
   $('cmd').value = ''; mark();
   const out = s => { if (s) say(s, raw.trim()); else { lines.push({ you: raw.trim() }); drawLog(); } };
   if (S.mode === 'intro' || S.mode === 'arrive') return out('Tap Next to go on.');
@@ -1328,7 +1331,7 @@ function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
-function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2024', 'Earth, 2024', 'Earth, 2024', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { placeText = t; $('place').textContent = t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
+function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2024', 'Earth, 2024', 'Earth, 2024', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : 'like: push crate'; } }
 function tState(c) { if (c.t === 'void') return 0; if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
@@ -1559,12 +1562,17 @@ function minimap() {
   cx.fillStyle = `rgba(255,255,255,${.35 + .3 * Math.sin(tNow * 5)})`; circ(X + (P.x + .5) * k, Y + (P.y + .5) * k, k * 2.2); cx.fill(); cx.fillStyle = '#fff'; circ(X + (P.x + .5) * k, Y + (P.y + .5) * k, Math.max(2.4, k * 1.1)); cx.fill();
   cx.fillStyle = '#a9b9d0'; cx.font = '700 10px "Chakra Petch", sans-serif'; cx.textAlign = 'left'; cx.fillText('MAP  N ↑', X, Y + mh + 9);
 }
-function frame(now) {
+let drawFail = '';
+function drawOops(e) { console.error(e); for (let i = 0; i < 12; i++) cx.restore(); const dpr = Math.min(2, window.devicePixelRatio || 1), m = String((e && e.message) || e); cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over'; cx.setLineDash([]);
+  cx.fillStyle = '#0b1322'; cx.fillRect(0, 0, vw, vh); cx.textAlign = 'left'; cx.textBaseline = 'alphabetic'; cx.fillStyle = '#ffb23e'; cx.font = '700 16px sans-serif'; cx.fillText('This place could not be drawn.', 16, 76); cx.fillStyle = '#e8eef8'; cx.font = '13px sans-serif'; for (let i = 0; i < 5; i++) cx.fillText(m.slice(i * 46, i * 46 + 46), 16, 100 + i * 18);
+  if (drawFail !== m) { drawFail = m; say('Something went wrong drawing this place. Please tell Claude: ' + m.slice(0, 140)); } }
+function frame(now) { try { frame1(now); } catch (e) { drawOops(e); requestAnimationFrame(frame); } }
+function frame1(now) {
   const dt = Math.min(.05, (now - (frame.last || now)) / 1000); frame.last = now; tNow += dt; zap = Math.max(0, zap - dt); setPlace();
   if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();
   if (S.mode === 'intro' || S.mode === 'arrive') { drawIntro(dt); return requestAnimationFrame(frame); }
   if (S.mode === 'space') { drawSpace(dt); return requestAnimationFrame(frame); }
-  if (S.mode === 'planet') { try { drawPlanet(dt); } catch (e) { console.error(e); cx.setTransform(Math.min(2, devicePixelRatio || 1), 0, 0, Math.min(2, devicePixelRatio || 1), 0, 0); cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over'; } return requestAnimationFrame(frame); }
+  if (S.mode === 'planet') { try { drawPlanet(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 4.6 * dt; P.step += dt; P.idle = 0;
     if (Math.abs(dx) > Math.abs(dy)) P.dir = dx > 0 ? 'right' : 'left'; else if (dy) P.dir = dy > 0 ? 'down' : 'up';
     if (Math.random() < dt * 9) DUST.push({ x: P.x + .5 + (Math.random() - .5) * .2, y: P.y + .92, t: .5 });
@@ -2220,11 +2228,12 @@ S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y
 $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
-/* a teacher shortcut: land on Voltara now, without doing the station */
-$('tovolt').onclick = () => { try { speechSynthesis.cancel(); } catch (e) {} closeToy(); $('report').hidden = true; S.beat = 0; S.ended = true; S.at = 'numerix'; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; snap = true;
-  land(); drawBag(); drawCards(); say(S.v.crossed ? `Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.` : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); };
-$('bank').onclick = () => { teacher = !teacher; $('bank').textContent = (teacher ? 'Hide' : 'Show') + ' the skills bank'; drawStars(); if (teacher) $('stars').scrollIntoView({ block: 'nearest' }); };
-$('replay').onclick = () => { if (widget && widget.kind !== 'intro') return say('Finish this first.'); S.mode = 'intro'; S.beat = 0; introPanel(); $('place').scrollIntoView({ block: 'nearest' }); };
+/* teacher shortcuts: jump between the station and Voltara. The place changes first. Tidying up comes after, and cannot stop it. */
+function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
+function goVoltara() { const again = !!(S.v && S.v.crossed); S.mode = 'planet'; S.ended = true; S.at = 'numerix'; S.beat = 0; V().sc = 'meadow'; PL.x = .13; PL.fade = 1; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; tidy();
+  say(again ? 'Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.' : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); }
+function goStation() { S.mode = 'station'; S.ended = false; S.beat = 0; if (S.tut == null) S.tut = 3; tidy(); P.x = S.x; P.y = S.y; say(`Teacher shortcut. You are on the KIS Station, in the ${ROOMS[S.room].name}.`); $('place').scrollIntoView({ block: 'nearest' }); }
+$('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation;
 window.addEventListener('resize', size);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
 size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
