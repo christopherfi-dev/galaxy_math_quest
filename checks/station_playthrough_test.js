@@ -49,6 +49,7 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await say('go to shield'); await p.waitForTimeout(300);
     for (let i = 0; i < 4; i++) { const r = (await q()).match(/(\d+) rows\. (\d+) rocks/); await type(r[1] * r[2]); } expect(await last(), /1 of 3 Shield tasks/, 'asteroid field');
     await say('use magnet on grate'); expect(await say('fix robot'), /wakes/i, 'robot'); await say('push poster');
+    expect(await say('talk robot'), /beeps: .*energy grid/i, 'the robot gives the next step'); if (await p.evaluate(() => !!widget)) bad.push(name + ': the robot opened a quiz');
     await say('use grid'); let t = await q(), g = t.match(/(\d+) sections\. Each section holds (\d+)/); await type(g[1] * g[2]); t = await q(); g = t.match(/Share the (\d+) cells equally over (\d+)/); await type(g[1] / g[2]);
     t = await q(); g = t.match(/held (\d+) cells\. Now each holds (\d+)/); await shot('2_grid'); await type(g[2] - g[1]); expect(await last(), /2 of 3 Shield tasks/, 'energy grid');
     await slip('use mat', 'calib'); expect(await last(), /Shield part is fitted/, 'shield part after three tasks');

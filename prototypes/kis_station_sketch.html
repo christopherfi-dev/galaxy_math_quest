@@ -215,14 +215,14 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
       <li>After launch you fly across a galaxy map and see other cadets’ ships. Fly to Galaxy Numerix and land on Voltara.</li>
       <li>Voltara is drawn from your own words: rainbow skies, cotton-candy clouds, glowing trees, a sparkling river, a Gumblefish, FlavorBursts. You can dig holes, and they stay.</li>
       <li>The city shows the Energy Council problem. As a child types a plan, each district lights up. The numbers are 570, 920 and 450 against 1,650, from your drafts.</li>
-      <li>The station is a ship check. Each of your five ship parts has one basic skill, as in your "Space Station Info": counting, add and subtract, multiply and divide, odd and even, place value. The robot asks 12 small skills across them. A wrong answer gets one more try. A second miss gets small steps, then three in a row.</li>
+      <li>The robot is a guide. Talk to it and it names the next thing to try, the same as the Hint button. It used to ask 12 ship-check questions. With 15 tasks, those are not needed.</li>
       <li>On Voltara the animals ask four place-value skills, for Numbers Quest 1.</li>
       <li>56 more skills are built and tested: clocks, graphs, area, fractions, shapes, star maps and coins. They are filed under your own quests and stay hidden until a planet for that quest exists. The teacher view of the star chart lists them.</li>
       <li>Each skill shows its maths word and what it means. Code picks every number, draws every picture and marks every answer. Stories come from a bank of 234.</li>
       <li>This sketch knows about 40 words. On your site, your constrained AI would answer any other sentence.</li>
       <li>The robot is a new character. It is a proposal. Card names are samples from your files. Odds are 70, 25, 5.</li>
     </ul>
-    <p><button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
+    <p><button class="btn quiet" type="button" id="bank">Show the skills bank</button> <button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
     <p class="note">The opening uses your own words from the student site: the home page, then the Space Station Tasks page, shortened.</p>
   </details>
 </div>
@@ -276,7 +276,7 @@ const TASKS = [
 const SLIPS = {
   calib: { code: 479506, steps: s => [`Take the shield mat and ${s.tok} power tokens.`, 'The shield has 5 sections.', 'Share the tokens equally over the 5 sections.', 'Show your teacher. Say how many are on each section.'] },
   starmap: { code: 591289, steps: () => ['Paint a star map on dark paper.', 'Use five kinds of stars. Make the brown dwarf mostly orange.', 'Show your teacher. Your teacher draws a path on it.', 'Count the stars on the path.'] },
-  target: { code: 516892, steps: () => ['Stand behind the line.', 'Throw at the wall of numbers, 1 to 9.', 'Write down each number you hit. Keep a running total.', 'Stop when your total is even, from 32 to 40.'] },
+  target: { code: 516892, steps: () => ['Stand behind the line.', 'Throw at the wall of numbers, 1 to 9.', 'Write down each number you hit. Keep a running total.', 'Stop when your total is even, from 32 to 40. A total of 32 or 40 counts.'] },
   alloc: { code: 636594, steps: () => ['Work with a partner. Use base-ten blocks.', 'Build these four numbers: Engine 1,237. Navigation 1,193. Shield 1,097. Weapons 933.', 'You have only 2 thousand-blocks. Swap for hundreds where you must.', 'Show your teacher.'] }
 };
 const LEFT = [[29, 12], [30, 12], [31, 12], [30, 11]];   // the four crates left behind after the cargo is loaded
@@ -607,7 +607,7 @@ function act(raw) {
   if (!verb) return out(findThing(tk) ? 'Start with a doing word: look, take, open, push or use.' : 'The station does not know that yet. In the real world it would answer. Try: look, take, open, push, use, go.');
   const rest = tk.slice(1);
   if (S.bot && ['talk', 'use'].includes(verb) && tk[0] !== 'fix' && (rest.length === 0 && verb === 'talk' || rest.some(t => OBJ.robot.words.includes(t) || t === 'zip' || (S.botName && t === S.botName.toLowerCase())))) return out(zipTalk());
-  if (S.bot && verb === 'look' && rest.some(t => OBJ.robot.words.includes(t) || (S.botName && t === S.botName.toLowerCase()))) return out('Your repair robot. Talk to it and it will train you.');
+  if (S.bot && verb === 'look' && rest.some(t => OBJ.robot.words.includes(t) || (S.botName && t === S.botName.toLowerCase()))) return out('Your repair robot. It follows you. Talk to it and it tells you what to try next.');
   if (verb === 'hint') return out(hint());
   if (verb === 'help') return out('Type a doing word and a thing. Like: look ship. push crate. use wrench on vent. Or: go north.');
   if (verb === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
@@ -1032,17 +1032,17 @@ function finishSkill(status) {
   if (status === 'FAILED-FOUNDATIONAL') return say('This one needs some building blocks first. You can come back to it.');
   chime(); card(); say({ PASSED: `You know this one! A star lights up: ${nm}.`, 'SELF-CORRECTED': `You fixed your own slip. A star lights up: ${nm}.`, REMEDIATED: `You learned it step by step! A gold star lights up: ${nm}.` }[status]);
 }
-function zipTalk() { const r = nextUnlit(AT_STATION), name = S.botName || 'the robot'; if (!r) return `${cap(name)} beeps happily. Your ship check is done! More skills wait on the planets.`; startSkill(r, name, 'station'); return `${cap(name)} beeps. It has a question for you.`; }
+function zipTalk() { return hint(); }      // the robot points the way. Its old 12-question ship check is no longer asked.
 function drawStars() {
   const star = l => { const k = S.skill[l[0]], c = !k ? 'off' : k.status === 'PASSED' || k.status === 'SELF-CORRECTED' ? 'lit' : k.status === 'REMEDIATED' ? 'gold' : 'low';
     return `<span class="star ${c}"><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .7-4.4 4.2 1.2 6L10 14.6 4.6 17.5l1.2-6L1.4 7.3l6-.7z"/></svg>${l[1]}${teacher ? ` <em>${k ? k.status + ', ' + k.tries + ' answers' : 'NOT-TESTED'}</em>` : ''}</span>`; };
   const rowsFor = list => { const g = {}; list.forEach(l => (g[l[5]] = g[l[5]] || []).push(l)); return Object.entries(g).map(([q, ls]) => `<div class="const"><span class="cn">${q}</span>${ls.map(star).join('')}</div>`).join(''); };
   const isLit = l => S.skill[l[0]] && S.skill[l[0]].status !== 'FAILED-FOUNDATIONAL', here = LADDER.filter(l => l[4] === 'Station'), volt = LADDER.filter(l => AT_VOLTARA.includes(l[0])), rest = LADDER.filter(l => l[4] !== 'Station' && !AT_VOLTARA.includes(l[0]));
   const beenToVoltara = S.secrets.some(x => ['fruit', 'stone', 'door'].includes(x)) || volt.some(l => S.skill[l[0]]) || S.at === 'voltara' || S.mode === 'planet';
-  $('stars').innerHTML = `<h3>Ship check: ${here.filter(isLit).length} of ${here.length} stars lit</h3><p class="note">Each ship part has a few basic skills. ${S.bot ? 'Talk to your robot to light the next star.' : 'Fix the robot in the Shield Bay. It will ask you.'}</p>` + rowsFor(here) +
-    (beenToVoltara || teacher ? `<h3 class="sub">Voltara: ${volt.filter(isLit).length} of ${volt.length} stars lit</h3><p class="note">The animals of Voltara ask these.</p>` + rowsFor(volt) : '') +
-    (teacher ? `<h3 class="sub">Waiting for their planets: ${rest.length} skills</h3><p class="note">These are built and tested. Students do not see them until a planet for that quest exists. The groups are your own quests.</p>` + rowsFor(rest) : '') +
-    `<p><button class="btn quiet" type="button" id="tview">${teacher ? 'Hide' : 'Show'} teacher view</button></p>`;
+  $('stars').hidden = !(teacher || beenToVoltara);      // on the station the 15 tasks are the maths. The star chart starts on Voltara.
+  $('stars').innerHTML = (beenToVoltara || teacher ? `<h3>Voltara: ${volt.filter(isLit).length} of ${volt.length} stars lit</h3><p class="note">The animals of Voltara ask these.</p>` + rowsFor(volt) : '') +
+    (teacher ? `<h3 class="sub">The skills bank: ${here.length + rest.length} more skills</h3><p class="note">These are built and tested, and filed under your own ship parts and quests. No one is asked them now. They are ready for the planets.</p>` + rowsFor(here) + rowsFor(rest) : '') +
+    `<p><button class="btn quiet" type="button" id="tview">${teacher ? 'Hide' : 'Show'} the skills bank</button></p>`;
   $('tview').onclick = () => { teacher = !teacher; drawStars(); };
 }
 
@@ -1972,6 +1972,7 @@ S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y
 $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
+$('bank').onclick = () => { teacher = !teacher; $('bank').textContent = (teacher ? 'Hide' : 'Show') + ' the skills bank'; drawStars(); if (teacher) $('stars').scrollIntoView({ block: 'nearest' }); };
 $('replay').onclick = () => { if (widget && widget.kind !== 'intro') return say('Finish this first.'); S.mode = 'intro'; S.beat = 0; introPanel(); $('place').scrollIntoView({ block: 'nearest' }); };
 window.addEventListener('resize', size);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);

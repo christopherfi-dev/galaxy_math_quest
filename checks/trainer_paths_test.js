@@ -52,15 +52,14 @@ const path = require('path');
     const n = await run(rule, ['wrong', 'wrong', 'steps', 'wrong', 'steps', 'wrong']); if (n.status !== 'FAILED-FOUNDATIONAL') bad.push(`${rule}: not-ready path gave ${n.status}`);
   }
   console.log('Slip and not-ready paths played on 6 skills.');
-  // who asks what: the robot asks only the station's ship-check skills, in Marc's ship-part order. Voltara's animals ask only Numbers Quest 1.
+  // who asks what: on the station the robot is a guide and asks nothing. Voltara's animals ask only Numbers Quest 1. The rest is a bank.
   const scope = await p.evaluate(() => { const walk = list => { S.skill = {}; const seq = []; let r, n = 0; while ((r = nextUnlit(list)) && n++ < 99) { seq.push(r); S.skill[r] = { status: 'PASSED', tries: 3 }; } return seq; };
-    const st = walk(AT_STATION), vo = walk(AT_VOLTARA); S.skill = { count_on: { status: 'FAILED-FOUNDATIONAL', tries: 9 } }; const afterFail = nextUnlit(AT_STATION); S.skill = {}; S.bot = true; save(); drawStars();
-    return { st, vo, afterFail, parts: [...new Set(st.map(r => LADDER.find(l => l[0] === r)[5]))], chart: $('stars').innerText, total: LADDER.length }; });
-  if (scope.st.length !== 12 || scope.parts.length !== 5) bad.push('station should ask 12 skills over 5 ship parts, got ' + scope.st.length + ' over ' + scope.parts.length);
+    const vo = walk(AT_VOLTARA); S.skill = {}; S.bot = true; save(); drawStars(); const talk = zipTalk(), asked = !!widget;
+    return { vo, talk, asked, hidden: $('stars').hidden, total: LADDER.length }; });
   if (scope.vo.length !== 4) bad.push('Voltara should ask 4 skills, got ' + scope.vo.length);
-  if (scope.afterFail === 'count_on') bad.push('a skill that needs building blocks is asked again straight away');
-  if (!/Ship check: 0 of 12/.test(scope.chart) || /Clock|Pictograph|coins/i.test(scope.chart)) bad.push('the student star chart shows more than the ship check');
-  console.log(`Robot asks ${scope.st.length} station skills over ${scope.parts.length} ship parts. Voltara asks ${scope.vo.length}. ${scope.total - 16} more are built and hidden.`);
+  if (scope.asked || !/beeps: /.test(scope.talk)) bad.push('the robot should give a hint and ask nothing: ' + scope.talk);
+  if (!scope.hidden) bad.push('the star chart should be hidden on the station');
+  console.log(`The robot gives a hint and asks nothing. Voltara asks ${scope.vo.length}. ${scope.total - 4} more skills wait in the bank.`);
   if (out) for (const rule of ['clock_minute', 'bar_build', 'frac_model', 'nl_frac', 'coord_what', 'frac_parts', 'area_tile', 'sym_line', 'picto_multi', 'frac_thirds']) {
     await p.evaluate(r => { S.seed = 99; startSkill(r, 'Zip', 'station'); }, rule); await p.waitForTimeout(80); await p.screenshot({ path: path.join(out, `toy_${rule}.png`) }); await p.evaluate(() => leave()); }
   for (const t of bad) console.log('  PROBLEM', t);

@@ -171,11 +171,14 @@ Stuck at any point: tap **Hint**. It names the next task.
 
 ---
 
-## 10. Decisions for you
+## 10. Decisions: your answers [Source: Marc, 2026-11-16 and 17]
 
-1. **Which tasks are real life?** I chose 1-3, 3-3, 4-3 and 5-2. Any task can be switched.
-2. **Codes:** fixed for now (A). For the real build, B or C?
-3. **Cards:** exactly 15, or 15 plus 6 for secrets?
-4. **Shield Calibration:** is 30 to 50 tokens right, or do you want your 80?
-5. **Target Practice:** do 32 and 40 count? Your files do not say.
-6. **The robot** still asks 12 ship-check questions if you talk to it. With 15 tasks, it may not be needed.
+| Question | Your answer | Done |
+|---|---|---|
+| Which tasks are real life? | Target Practice and the star map painting, and "things like that". | Four tasks are real life. |
+| Cards: 15 or 21? | 21 is fine. | Six secrets still give a card. |
+| Shield Calibration tokens | 30 to 50 is fine. | Kept. |
+| Target Practice: do 32 and 40 count? | Yes. | The steps now say so. |
+| The robot | "You decide." | **My decision:** the robot is a guide. Talk to it and it names the next thing to try. It no longer asks 12 questions. The 15 tasks carry the maths. |
+
+**Still open:** how you want to give codes in the real build: one fixed code, a code you can change, or a tap on your own screen.
