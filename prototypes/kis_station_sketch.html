@@ -183,10 +183,25 @@ table.report { width: 100%; border-collapse: collapse; font-size: .98rem; color:
 #stars h3.sub { margin-top: 14px; }
 details.box summary { font-family: var(--display); font-weight: 700; cursor: pointer; }
 details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; max-width: 40em; }
+/* the floating number pad */
+#pad { position: fixed; z-index: 60; width: 190px; background: #101a30; border: 2px solid #ffb23e; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.5); padding: 6px; -webkit-user-select: none; user-select: none; touch-action: none; }
+#pad[hidden] { display: none; }
+#padbar { display: flex; align-items: center; justify-content: space-between; gap: 6px; color: #aab6d6; font: 600 .8rem var(--display); padding: 2px 2px 6px 6px; cursor: grab; touch-action: none; }
+#padbar button { border: 1px solid #3a4c78; background: #1a2746; color: #dfe7ff; border-radius: 8px; font: 700 .85rem var(--display); padding: 5px 9px; }
+#padkeys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+#padkeys button { height: 50px; font: 700 1.35rem var(--display); border-radius: 10px; border: 0; background: #24345c; color: #fff; touch-action: manipulation; }
+#padkeys button:active, #padkeys button.hit { background: #ffb23e; color: #101a30; }
+#padkeys button[disabled] { visibility: hidden; }
+#padkeys .wide { grid-column: 1 / -1; height: 44px; font-size: 1.02rem; }
+#padkeys .ok { background: #6db3ff; color: #06203f; }
+#pad.mini { width: auto; } #pad.mini #padkeys { display: none; } #pad.mini #padbar { padding: 2px; }
+@media (max-width: 480px) { #pad { width: 168px; } #padkeys button { height: 44px; } }
 </style>
 
+<div id="pad" hidden role="group" aria-label="Number pad"><div id="padbar"><span id="padgrip">⠿ move me</span><button type="button" id="padkb" aria-label="Use the full keyboard">ABC</button></div>
+  <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 22</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 23</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -1114,8 +1129,36 @@ function card(force) {
 /* =====================================================================
    TOYS: locker lock, mini battle, mini quest, project
    ===================================================================== */
-function toy(html) { const t = $('toy'); t.hidden = false; t.innerHTML = html; }
-function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; }
+function toy(html) { const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); }
+function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); }
+/* THE NUMBER PAD.  [Source: Marc, 2026-11-17: "a little number keypad... floating, they can move around... it's annoying that they get the full keyboard"]
+   Every number box uses it. The iPad keyboard stays away. Drag the top bar to move it; the place is remembered on this device. "ABC" brings the full keyboard back. */
+const PAD = { target: null, mini: false, pos: null, drag: null };
+try { PAD.mini = localStorage.getItem('gmq-pad-mini') === '1'; PAD.pos = JSON.parse(localStorage.getItem('gmq-pad-pos') || 'null'); } catch (e) {}
+const padBoxes = () => Array.prototype.slice.call(document.querySelectorAll('#toy input')).filter(i => i.getAttribute('inputmode') === 'numeric' || i.getAttribute('inputmode') === 'none');
+function padPrep() { const ins = padBoxes(); ins.forEach(i => i.setAttribute('inputmode', PAD.mini ? 'numeric' : 'none')); if (!ins.length) padHide(); }
+function padHide() { PAD.target = null; $('pad').hidden = true; }
+function padPlace() { const el = $('pad'), w = el.offsetWidth, h = el.offsetHeight, W = window.innerWidth, H = window.innerHeight; let x, y;
+  if (PAD.pos) { x = PAD.pos[0] * W; y = PAD.pos[1] * H; } else { const t = PAD.target && PAD.target.getBoundingClientRect(); x = W - w - 10; y = t ? t.top - 8 : H * .5;      /* level with the answer box, on the right, so the question stays in view */
+    if (t && t.right > x - 8) y = t.bottom + 10 + h < H ? t.bottom + 10 : t.top - h - 10; }
+  el.style.left = Math.max(4, Math.min(W - w - 4, x)) + 'px'; el.style.top = Math.max(4, Math.min(H - h - 4, y)) + 'px'; }
+function padShow(t) { PAD.target = t; const el = $('pad'), k = widget && widget.akind, x = $('padx'), extra = k === 'time' ? ':' : k === 'money' ? '.' : ''; x.textContent = extra; x.disabled = !extra; x.dataset.k = extra || 'x';
+  $('padnext').hidden = padBoxes().length < 2; el.classList.toggle('mini', PAD.mini); $('padkb').textContent = PAD.mini ? '123' : 'ABC'; $('padkb').setAttribute('aria-label', PAD.mini ? 'Use the number pad' : 'Use the full keyboard'); $('padgrip').textContent = PAD.mini ? '⠿' : '⠿ move me'; el.hidden = false; padPlace(); }
+function padKey(k) { const t = PAD.target; if (!t || !document.body.contains(t)) return padHide();
+  if (k === 'ok') { const b = $('try'); if (b) b.click(); return; }
+  if (k === 'next') { const ins = padBoxes(), n = ins[(ins.indexOf(t) + 1) % ins.length]; if (n) n.focus({ preventScroll: true }); return; }
+  const max = +t.getAttribute('maxlength') || 12; let v = t.value; if (k === 'del') v = v.slice(0, -1); else if (max === 1) v = k; else if (v.length < max) v += k; t.value = v; beep(k === 'del' ? 300 : 620, .03);
+  try { t.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {} if (document.activeElement !== t && document.body.contains(t)) t.focus({ preventScroll: true }); }
+document.addEventListener('focusin', e => { const t = e.target; if (!t || t.tagName !== 'INPUT') return; if (padBoxes().indexOf(t) >= 0) padShow(t); else padHide(); });
+$('padkeys').addEventListener('pointerdown', e => { e.preventDefault(); });                 /* a tap on the pad must not take the cursor out of the box */
+$('padkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b && !b.disabled) padKey(b.dataset.k); });
+$('padkb').addEventListener('pointerdown', e => { e.stopPropagation(); });
+$('padkb').addEventListener('click', () => { PAD.mini = !PAD.mini; try { localStorage.setItem('gmq-pad-mini', PAD.mini ? '1' : '0'); } catch (e) {} const t = PAD.target; padPrep(); if (t && document.body.contains(t)) { t.blur(); padShow(t); t.focus({ preventScroll: true }); } });
+$('padbar').addEventListener('pointerdown', e => { const r = $('pad').getBoundingClientRect(); PAD.drag = [e.clientX - r.left, e.clientY - r.top]; try { $('padbar').setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
+$('padbar').addEventListener('pointermove', e => { if (!PAD.drag) return; const el = $('pad'), W = window.innerWidth, H = window.innerHeight, x = Math.max(4, Math.min(W - el.offsetWidth - 4, e.clientX - PAD.drag[0])), y = Math.max(4, Math.min(H - el.offsetHeight - 4, e.clientY - PAD.drag[1])); el.style.left = x + 'px'; el.style.top = y + 'px'; PAD.pos = [x / W, y / H]; });
+const padDrop = () => { if (!PAD.drag) return; PAD.drag = null; try { localStorage.setItem('gmq-pad-pos', JSON.stringify(PAD.pos)); } catch (e) {} if (PAD.target && document.body.contains(PAD.target)) PAD.target.focus({ preventScroll: true }); };
+$('padbar').addEventListener('pointerup', padDrop); $('padbar').addEventListener('pointercancel', padDrop);
+window.addEventListener('resize', () => { if (!$('pad').hidden) padPlace(); });
 function leave() { closeToy(); say('You step back. You can try again later.'); }
 function numberToy(head, unit) {
   const pips = widget.need > 1 ? `<div class="meter">${Array.from({ length: widget.need }, (_, i) => `<span class="pip${i < widget.hits ? ' on' : ''}"></span>`).join('')}<span>${widget.hits} of ${widget.need}</span></div>` : '';

@@ -217,3 +217,17 @@ Stuck at any point: tap **Hint**. It names the next task.
 
 **You can also give me words to add,** in any language.
 
+---
+
+## Added 2026-11-17: the number pad [Source: Marc, "a little number keypad... floating, they can move around"]
+
+- **Every number box uses it.** That is every answer box, on the station and on Voltara, and the boxes for your codes.
+- **The device keyboard stays away.** The page tells the iPad not to open its own keyboard for these boxes.
+- **It starts on the right,** level with the answer box, so the question stays in view.
+- **Drag the top bar to move it.** It cannot leave the screen. It remembers its place on that device.
+- **Keys:** 0 to 9, rub out, and Check. With two or more boxes there is "Next box". For a time answer it adds ":". For money it adds ".".
+- **"ABC"** folds the pad away and brings the full keyboard back. **"123"** brings the pad back. A keyboard plugged into the iPad still works.
+- **Not covered:** the locker code. It is typed on the command line, which needs letters, so it still opens the full keyboard.
+- **Checked by `checks/number_pad_test.js`** at iPad upright, iPad sideways and phone size, with touch.
+- **Not tested on a real iPad.** If the full keyboard still appears on your iPads, tell me which iPadOS they run.
+
