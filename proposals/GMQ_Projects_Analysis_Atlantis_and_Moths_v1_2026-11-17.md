@@ -14,6 +14,12 @@
 
 **What changed in my thinking?** I had set your class's level too low. Section 3 says where.
 
+**Corrected later on 2026-11-17.** Your voice message had been garbled. What you meant [Source]:
+- The Atlantis project was your **data handling** unit.
+- The point is to **show students things so they understand the idea behind them before they do them**.
+
+I had that as one bone among eleven. You are saying it is the main one. Section 4a is about it.
+
 ---
 
 ## 2. What each project does [Source]
@@ -76,7 +82,7 @@ This is what I would keep. The content can change every time.
 | 1 | **A job, not a worksheet.** Students get a title. | Zoo Architects, then Zookeeper Detectives | scientists with a data set |
 | 2 | **A question the maths answers.** | "How do we even know what to build?" | "What caused this?" |
 | 3 | **Hands first.** | cut and sort real cards | make the table and the graph by hand |
-| 4 | **Teach the tool when it is needed.** | "Why do we make graphs?" comes just before the graphs | — |
+| 4 | **See the idea before you do it.** Your main point. | "Why do we make graphs?" comes before any graph is drawn. "What does a square meter even mean?" comes before any area is worked out. | the graph shows the change before anyone explains it |
 | 5 | **Each stage feeds the next.** | the sort becomes the graph, the graph becomes the habitat sizes | the graph becomes the question for the reading |
 | 6 | **Spiral back.** Old skills return inside new ones. | sorting, then times 5 and 10, then adding, then graphs again | graphs again, in science |
 | 7 | **Room to disagree.** | small, medium or large? | "predict what might have caused it" |
@@ -85,7 +91,33 @@ This is what I would keep. The content can change every time.
 | 10 | **Every reader gets there.** | — | one text at three levels, the same question |
 | 11 | **End by explaining,** in words. | why are the herbivores falling? | 2 to 3 sentences |
 
+**The one you say matters most is number 4.** See section 4a.
+
 **The one I had missed completely is number 8.** My own sketches end when the sum is right. Yours end when a student says "wait, could it be...". That is what makes a project a quest.
+
+---
+
+## 4a. Understand it first, then do it [Source: Marc, 2026-11-17]
+
+**How your slides do it:**
+
+| Before students... | ...they first | Slide |
+|---|---|---|
+| draw a bar graph | read the same facts as a hard paragraph, then as a graph, and talk about which is easier | 9 to 14 |
+| work out any area | talk about what a square metre is, and draw one for the class | 18 |
+| plot a line graph | read one, say what it tells us, and predict from it | 27 |
+| explain the moths | see the two lines cross on their own graph | moth sheet |
+
+So no student uses a tool before they know what it is for.
+
+**How my work stands against this. Not well.**
+
+- **The station tasks start with doing.** A student opens Ammo Count and is asked to make numbers even at once. That may be right for the station, because you said it only checks basic skills. It would be wrong on a planet.
+- **The "Maths word" line tells. It does not show.** "The perimeter is the distance all the way round a shape" is a sentence to read. Your slide has students draw a square metre.
+- **The trainer I built tests first and teaches only after two wrong answers.** That is the order of your Math Skills engine. It is the opposite of this.
+- **My Seed Keepers outline had no "see it first" step.** I have added two in section 6.
+
+**What I would change [Proposal]:** every stage of a big quest opens with a short "see it" moment before any answer is asked for. On screen that can be something to move or compare. In class it is a talk with a partner, as on your slides.
 
 ---
 
@@ -115,7 +147,9 @@ This is an outline, not a finished quest. It is for your **Magnificent Measureme
 |---|---|---|---|
 | Hook | A probe returns with 20 sealed seed pods from a dying garden world. You are the Seed Keepers. | — | on screen |
 | Sort | Pod cards show soil, water and light. Sort them three ways. Graph each. Decide which beds to build. | **spirals back:** sorting and bar graphs | table, then on screen |
+| **See it first** | Measure one bed in hand spans. Two students get two answers. Why? What would fix it? Then find three things about 1 cm wide. | **the idea:** why we share a unit | class talk |
 | Measure | Each pod needs a strip of bed a set number of centimetres long. Measure and cut real paper strips. Lay out each bed on the floor. | **new:** length in cm and m | real life, your code |
+| **See it first** | Pour water into a litre jug, 100 ml at a time. How many pours fill it? What does 1 ml look like? | **the idea:** what a litre is | class talk |
 | Water | Each pod drinks a set number of millilitres a day. Work out a bed's water for a day. Fill a real jug to check. | **spirals back:** multiply. **new:** ml and litres | real life, your code |
 | Watch | Four weeks of plant heights for two beds. Plot two lines. | **spirals back:** line graphs | on screen |
 | Twist | The bed with **more** water is growing **slower**. Why? | reasoning | class talk |
@@ -152,6 +186,7 @@ This is an outline, not a finished quest. It is for your **Magnificent Measureme
 
 ## 9. Decisions for you
 
+0. **The station tasks start with doing, not with the idea.** Is that right for a check of basic skills, or do you want a "see it first" moment there too?
 1. **Shall I write a first big quest in full,** on these bones? If yes, for which planet: Voltara, which exists, or a new one?
 2. **Shared data or own data** for projects?
 3. **The "above Grade 3" flags** in my review: shall I go back through them with this evidence?
