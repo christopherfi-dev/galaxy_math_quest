@@ -186,7 +186,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 </style>
 
 <div class="wrap">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 21</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 22</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -521,9 +521,32 @@ function hint() {
     : 'Your ship is ready. Go to the Launch Bay. Type: launch.';
   return who + t;
 }
-/* names are painted where everyone can see them, so rude words do not stick. On Marc's site the server would hold the real list. */
-const RUDE = /(sh[i1!]+t|f+u+c*k|b[i1]tch|c[u*]nt|n[i1]gg|wh[o0]re|slut|bastard|p[e3]n[i1]s|vag[i1]na|b[o0]{2}b)/, RUDE_W = ['ass', 'arse', 'sex', 'cock', 'dick', 'damn', 'crap', 'piss', 'fag', 'hell'];
-const rude = t => { const l = String(t).toLowerCase(); return RUDE.test(l.replace(/[^a-z0-9!*]/g, '')) || l.split(/[^a-z]+/).some(w => RUDE_W.includes(w)); };
+/* KIND WORDS ONLY.  [Source: Marc, 2026-11-17: "our children cannot write curse words, for the ship name or anywhere"]
+   Three guards. (1) rude() refuses rude words, also when written with numbers or signs, with stretched letters, or spelled out with spaces.
+   (2) A rude command is not done and not shown. (3) The game only ever repeats words it knows: any other typed word is shown as "…".
+   On Marc's site the server must hold the real list, because a page can be changed by the person using it. */
+const LEET = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '8': 'b', '@': 'a', '$': 's', '!': 'i', '+': 't', '|': 'i' };
+/* rude inside any word */
+const RUDE = /(f+[uv]+c*k|f+c+k|p+h+u+c*k|s+h+[iy]+t|b+[iy]+t+c+h|b+[iy]+a+t+c+h|c+u+n+t|n+[iy]+g+g+[ae]|w+h+o+r+e|s+l+u+t|b+a+s+t+a+r+d|p+e+n+[iy]+s|v+a+g+[iy]+n|b+o+o+b|p+u+s+s+y|p+o+r+n|w+a+n+k|t+w+a+t|a+s+s+h+o+l+e|a+r+s+e+h+o+l+e|d+[iy]+c+k+h+e+a+d|(dumb|jack|bad|smart|kick|fat|butt|kiss)a+s+s|j+e+r+k+o+f|d+o+u+c+h+e|r+e+t+a+r+d|m+o+f+o|b+o+l+l+o+c+k|b+u+g+g+e+r|f+a+g+g|d+[iy]+l+d+o|b+u+t+t+h+o+l+e|b+u+t+t+h+e+a+d|p+o+o+p+h+e+a+d|b+u+l+l+s+h|s+h+[iy]+z|s+u+c+k+s|s+u+c+k+e+r)/;
+/* rude only as a whole word, so "glass", "cockpit", "butterfly", "scrap" and "hello" are fine */
+const RUDE_W = ['ass', 'asses', 'arse', 'sex', 'sexy', 'cock', 'cocks', 'dick', 'dicks', 'damn', 'damned', 'dammit', 'crap', 'crappy', 'craps', 'piss', 'pissed', 'pissing', 'fag', 'fags', 'hell', 'butt', 'butts', 'bum', 'bums', 'booty', 'poo', 'poop', 'poops', 'poopy', 'pee', 'fart', 'farts', 'farty', 'tit', 'tits', 'titty', 'titties', 'prick', 'shag', 'hoe', 'hoes', 'turd', 'turds', 'wtf', 'stfu', 'omfg', 'lmfao', 'fml', 'fu', 'fk', 'fck', 'fuk', 'suck', 'stupid', 'idiot', 'idiots', 'dumb', 'dummy', 'loser', 'losers', 'ugly', 'moron', 'jerk', 'jerks', 'hate', 'bloody', 'bugger', 'git', 'nazi', 'kkk'];
+const rudeWord = w => !!w && (RUDE.test(w) || RUDE_W.includes(w));
+/* strict is for names: there, the letters are also read with the spaces taken out, so "sh it" does not get through */
+function rude(t, strict) { const words = String(t).toLowerCase().split(/\s+/).filter(Boolean).map(w => /^[0-9]+$/.test(w) ? '' : w.split('').map(c => LEET[c] || c).join('').replace(/[^a-z]/g, '')).filter(Boolean);
+  if (words.some(rudeWord)) return true; let run = '';
+  for (const w of words.concat([''])) { if (w.length === 1) run += w; else { if (rudeWord(run)) return true; run = ''; } }      /* letters spelled out one by one */
+  return !!strict && words.length > 1 && rudeWord(words.join('')); }
+/* the game repeats only words it knows. Numbers are fine. Anything else is shown as … */
+let KNOWN = null;
+function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place'.split(' '));
+  const add = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); });
+  [VERBS, PV].forEach(o => Object.keys(o).forEach(key => { add(key); o[key].forEach(add); }));
+  [OBJ, VT].forEach(o => Object.keys(o).forEach(id => { add(id); (o[id].words || []).forEach(add); add(o[id].label); }));
+  [ROOMS, VSC, GAL].forEach(o => Object.keys(o).forEach(id => { add(id); add(o[id].name); })); SPOTS.forEach(p => add(p.name)); add(NOMAD.name); Object.keys(CITY).forEach(c => add(CITY[c].street));
+  [...k].forEach(w => { if (rude(w)) k.delete(w); }); return KNOWN = k; }
+function echoSafe(raw) { const k = knownWords(), own = `${S.ship || ''} ${S.botName || ''}`.toLowerCase().split(/\s+/), out = [];
+  String(raw).toLowerCase().split(/\s+/).forEach(t => { const w = t.replace(/[^a-z0-9]/g, ''); if (!w) return; const ok = /^[0-9]+$/.test(w) || k.has(w) || own.includes(w); if (ok) out.push(w); else if (out[out.length - 1] !== '…') out.push('…'); });
+  return out.join(' ') || '…'; }
 function openLocker() { S.locker = true; give('magnet'); secret('locker', 'Click! The locker opens. A magnet is inside.'); }
 function tryLocker(n) { if (!walkToObj('locker', () => { if (+n === S.rows * S.cols) openLocker(); else { beep(140, .2, 'square'); say('The lock stays shut. Count the stacked crates again.'); } })) say('You cannot reach the locker.'); }
 const DO = {
@@ -613,7 +636,8 @@ function act(raw) {
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
   if (/^teacher (voltara|station)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : goStation(); }
   $('cmd').value = ''; mark();
-  const out = s => { if (s) say(s, raw.trim()); else { lines.push({ you: raw.trim() }); drawLog(); } };
+  if (rude(raw)) return say('Kind words only, cadet. Try a command like: look, take, open, push, use, go.', '…');
+  const shown = echoSafe(raw), out = s => { if (s) say(s, shown); else { lines.push({ you: shown }); drawLog(); } };
   if (S.mode === 'intro' || S.mode === 'arrive') return out('Tap Next to go on.');
   if (S.mode === 'space') return actSpace(text, out);
   if (S.mode === 'planet') return actPlanet(text, out);
@@ -638,7 +662,7 @@ function act(raw) {
   if (verb === 'name') {
     const isBot = rest.some(t => OBJ.robot.words.includes(t)), nm = rest.filter(t => !['ship', 'rocket', ...OBJ.robot.words, 'it'].includes(t)).join(' ').slice(0, 12).replace(/\b\w/g, c => c.toUpperCase());
     if (!nm) return out('Name what? Like: name ship Comet.');
-    if (rude(nm)) return out('The paint will not stick. Pick a kind name.');
+    if (rude(nm, true) || rude(rest.join(' '), true)) return out('The paint will not stick. Pick a kind name.');
     if (isBot) { if (!S.bot) return out('The robot is broken. Fix it first.'); S.botName = nm; save(); return out(`The robot beeps twice. Its name is ${nm} now.`); }
     S.ship = nm; save(); return out(`You paint the name on the hull: ${nm}. It will stay there.`);
   }
@@ -2216,9 +2240,10 @@ function shipReport() {
     <p>Scrap metal holds the hull in place. The engine core ran on fumes. It was a miracle you made it here.</p>
     <p class="note">Five parts are missing. Earn each one on the station.</p>
     <ul class="parts">${PART_SKILL.map(([n, k]) => `<li><b>${n}</b><span class="bad">MISSING</span><span class="note">${k}</span></li>`).join('')}</ul>
-    <form class="field name" id="nameform"><label for="shipname">What is your ship called?</label><input id="shipname" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn" type="submit">Name my ship</button><button class="btn quiet" type="button" id="later">Later</button></form>`);
+    <form class="field name" id="nameform"><label for="shipname">What is your ship called?</label><input id="shipname" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn" type="submit">Name my ship</button><button class="btn quiet" type="button" id="later">Later</button></form><div class="msg" id="msg" role="status"></div>`);
   const done = nm => { if (nm) S.ship = nm; closeToy(); save(); say(`${nm ? 'You paint ' + nm + ' on the hull. ' : ''}Welcome to your journey, cadet. The universe awaits.`); };
-  $('nameform').addEventListener('submit', e => { e.preventDefault(); done($('shipname').value.replace(/[^a-zA-Z0-9 ]/g, '').trim().slice(0, 12).replace(/\b\w/g, c => c.toUpperCase())); });
+  $('nameform').addEventListener('submit', e => { e.preventDefault(); const raw = $('shipname').value, nm = raw.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, ' ').trim().slice(0, 12).replace(/\b\w/g, c => c.toUpperCase());
+    if (rude(raw, true) || rude(nm, true)) { $('shipname').value = ''; $('msg').className = 'msg bad'; $('msg').textContent = 'The paint will not stick. Pick a kind name.'; beep(140, .2, 'square'); return; } done(nm); });
   $('later').onclick = () => done('');
 }
 function earth(X, Y, R, sick) {
@@ -2308,7 +2333,7 @@ window.addEventListener('resize', size);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
 size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
-S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.secrets.includes('stone') && !S.inv.includes('stone')) S.inv.push('stone'); if (S.ship && rude(S.ship)) S.ship = ''; if (S.botName && rude(S.botName)) S.botName = ''; drawStars();
+S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.secrets.includes('stone') && !S.inv.includes('stone')) S.inv.push('stone'); if (S.ship && rude(S.ship, true)) S.ship = ''; if (S.botName && rude(S.botName, true)) S.botName = ''; drawStars();
 if (S.tut == null) S.tut = 3;
 say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }

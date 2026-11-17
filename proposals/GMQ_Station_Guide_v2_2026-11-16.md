@@ -182,3 +182,38 @@ Stuck at any point: tap **Hint**. It names the next task.
 | The robot | "You decide." | **My decision:** the robot is a guide. Talk to it and it names the next thing to try. It no longer asks 12 questions. The 15 tasks carry the maths. |
 
 **Still open:** how you want to give codes in the real build: one fixed code, a code you can change, or a tap on your own screen.
+
+---
+
+## Added 2026-11-17: kind words only [Source: Marc, "our children cannot write curse words, for the ship name or anywhere"]
+
+**Where a child can type words:** the ship-name box at the start, and the command line. Every other box takes numbers only.
+
+**What is built (sketch version 22):**
+
+| Guard | What it does |
+|---|---|
+| The word check | Refuses rude words. Also with numbers or signs for letters, stretched letters, or letters spelled out with spaces. Words that only look close, like "glass", "cockpit" and "butterfly", are let through. |
+| Names | The start box, `name ship` and `name robot` all use the check, in a stricter form that also reads the name with the spaces taken out. The answer is "The paint will not stick. Pick a kind name." |
+| Commands | A rude command is not done. The game answers "Kind words only, cadet." |
+| What the game shows back | Only words the game knows, and numbers. Any other typed word is shown as "…". So a rude word that is not on my list still never appears on the screen. |
+| Old names | A rude name already saved on a device is wiped when the page opens. |
+
+**Checked by `checks/kind_words_test.js`:** 110 rude inputs refused, 77 ordinary names and commands let through, and none of the game's own 819 words refused.
+
+**What this cannot do. Please read.**
+
+- **No word list is complete.** A child can invent a rude name that is not on it. For names, the list is the only guard.
+- **Thai words written in English letters are not on the list.** I do not know them well enough to list them without also blocking ordinary words. Thai letters cannot be typed into a name at all, and are never shown back.
+- **In the real game the server must do the check.** A page can be changed by the person using it.
+
+**Decision for you: how should ships be named?**
+
+| Option | Cost |
+|---|---|
+| **A. Free typing with the word check** (built) | A clever child may still find a gap. |
+| **B. Pick from two lists,** such as "Silver" + "Comet" | No gap at all. But children lose the fun of their own name. |
+| **C. Free typing, but only you see a new name until you approve it** | No gap, and free choice. Needs your server, and a minute of your time per class. |
+
+**You can also give me words to add,** in any language.
+

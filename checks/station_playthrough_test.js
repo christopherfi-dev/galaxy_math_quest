@@ -36,7 +36,7 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
 
     // ---- Arrival Dock: the sign, the locker, a number typed on its own
     expect(await say('hint'), /ship|hatch/i, 'first hint');
-    expect(await say('name ship shit'), /will not stick/, 'rude name');
+    expect(await say('name ship shit'), /will not stick|Kind words only/, 'rude name');
     expect(await say('open hatch'), /wrench/i, 'hatch');
     expect(await say('read sign'), /open locker/, 'the sign says what to do');
     const m = (await say('look crates')).match(/(\d+) rows\. (\d+) crates/), code = m[1] * m[2];
