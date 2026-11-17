@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+engines/gmq-world/server/api/config.php
+engines/gmq-world/server/api/data/

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GMQ Commander's Desk</title>
+<style>
+  :root { --bg: #f3f6fb; --panel: #fff; --ink: #18223a; --muted: #5b6885; --line: #cfd8ea; --accent: #1f5fd0; --good: #1c7a45; --bad: #b3261e; --warn: #9a5b00; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0d1424; --panel: #152038; --ink: #e8eef8; --muted: #a9b9d0; --line: #33476a; --accent: #6db3ff; --good: #6fd08a; --bad: #ff9486; --warn: #ffb23e; } }
+  * { box-sizing: border-box; } body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; } h1 { font-size: 1.4rem; margin: 6px 0 12px; } h2 { font-size: 1.1rem; margin: 18px 0 8px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+  button { font: inherit; font-weight: 600; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+  button.quiet { background: transparent; color: var(--accent); } button.danger { border-color: var(--bad); color: var(--bad); background: transparent; }
+  input, select { font: inherit; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .note { color: var(--muted); font-size: .92rem; } .msg { min-height: 1.4em; color: var(--bad); }
+  .scroll { overflow-x: auto; } table { border-collapse: collapse; width: 100%; min-width: 760px; } th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; } th { color: var(--muted); font-weight: 600; font-size: .9rem; }
+  .big { font-size: 1.5rem; font-weight: 700; letter-spacing: .12em; } .good { color: var(--good); } .bad { color: var(--bad); } .warn { color: var(--warn); font-weight: 600; }
+  .codes label { display: inline-flex; flex-direction: column; font-size: .85rem; color: var(--muted); } .codes input { width: 5.5em; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Galaxy Math Quest · Commander's Desk</h1>
+
+  <section class="panel" id="login">
+    <h2>Teacher log in</h2>
+    <form class="row" id="loginform"><input type="password" id="pw" placeholder="teacher password" autocomplete="current-password"><button type="submit">Log in</button></form>
+    <p class="msg" id="loginmsg" role="status"></p>
+  </section>
+
+  <section class="panel" id="classes" hidden>
+    <h2>Your classes</h2>
+    <div class="row" id="classlist"></div>
+    <form class="row" id="newclass" style="margin-top:10px"><input id="newname" placeholder="new class name, like 3B" maxlength="30"><button type="submit" class="quiet">Make a class</button></form>
+    <p class="msg" id="classmsg" role="status"></p>
+  </section>
+
+  <section class="panel" id="class" hidden>
+    <div class="row"><h2 id="classname" style="margin:0"></h2><span class="note">Class code for cadets:</span><span class="big" id="classcode"></span><button class="quiet" id="refresh" type="button">Refresh</button></div>
+    <p class="note">A cadet logs in with this class code, their name, and a 4-digit secret number they choose.</p>
+
+    <h2>Codes for the real-life tasks</h2>
+    <form class="row codes" id="codes"></form>
+    <div class="row" style="margin-top:8px">
+      <label class="note">Ship names: <select id="names"><option value="approve">wait for me to approve</option><option value="auto">accept kind names at once</option></select></label>
+      <label class="note"><input type="checkbox" id="closed"> closed to new cadets</label>
+      <button type="button" id="savecodes" class="quiet">Save these settings</button><span class="note" id="codesmsg" role="status"></span>
+    </div>
+
+    <h2>Cadets</h2>
+    <div class="scroll"><table><thead><tr><th>Name</th><th>Last saved</th><th>Station</th><th>Voltara</th><th>Trade</th><th>Cards</th><th>Real-life tasks done</th><th>Ship name</th><th></th></tr></thead><tbody id="cadets"></tbody></table></div>
+    <p class="msg" id="cadetmsg" role="status"></p>
+  </section>
+</main>
+<script>
+const API = 'api/gmq-world-api.php', $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const TASKS = { calib: 'Shield Calibration', starmap: 'Star Map', target: 'Target Practice', alloc: 'Power Allocation', choice: "Voltara: the Council's choice" };
+let current = null;
+async function call(body) { try { const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) }); const j = await r.json(); j.status = r.status; return j; } catch (e) { return { ok: false, error: 'The server did not answer.' }; } }
+$('loginform').onsubmit = async e => { e.preventDefault(); const r = await call({ action: 't_login', password: $('pw').value }); $('pw').value = ''; if (!r.ok) { $('loginmsg').textContent = r.error; return; } $('login').hidden = true; $('classes').hidden = false; listClasses(); };
+async function listClasses() { const r = await call({ action: 't_classes' }); if (!r.ok) { if (r.status === 401) { $('login').hidden = false; $('classes').hidden = true; $('class').hidden = true; } return; }
+  $('classlist').innerHTML = r.classes.length ? r.classes.map(c => `<button type="button" class="quiet" data-c="${esc(c.code)}">${esc(c.name)} · ${c.cadets} cadets</button>`).join('') : '<span class="note">No classes yet. Make one below.</span>';
+  document.querySelectorAll('#classlist button').forEach(b => b.onclick = () => openClass(b.dataset.c)); }
+$('newclass').onsubmit = async e => { e.preventDefault(); const r = await call({ action: 't_new_class', name: $('newname').value }); $('classmsg').textContent = r.ok ? '' : r.error; if (r.ok) { $('newname').value = ''; await listClasses(); openClass(r.code); } };
+const when = t => { if (!t) return '<span class="note">never</span>'; const d = new Date(t), mins = Math.round((Date.now() - d) / 60000); return mins < 2 ? 'just now' : mins < 60 ? mins + ' min ago' : mins < 1440 ? Math.round(mins / 60) + ' h ago' : d.toLocaleDateString(); };
+async function openClass(code) { const r = await call({ action: 't_class', class: code }); if (!r.ok) { $('classmsg').textContent = r.error; return; } current = code; $('class').hidden = false; $('classname').textContent = r.class.name; $('classcode').textContent = r.class.code.toUpperCase();
+  $('codes').innerHTML = Object.keys(TASKS).map(k => `<label>${esc(TASKS[k])}<input inputmode="numeric" maxlength="4" data-k="${k}" value="${esc(r.class.codes[k])}"></label>`).join(''); $('names').value = r.class.names; $('closed').checked = r.class.closed;
+  $('cadets').innerHTML = r.cadets.length ? r.cadets.map(c => { const s = c.summary || {}, ship = c.ship || {};
+    return `<tr><td><b>${esc(c.name)}</b>${c.locked ? ' <span class="warn">locked</span>' : ''}</td><td>${when(c.saved_at)}</td><td>${s.tasks == null ? '<span class="note">not started</span>' : `${s.tasks} of 15 tasks · ${s.parts} of 5 parts`}</td>
+      <td>${s.voltara ? `<span class="${s.voltara === 'Voltara shines' ? 'good' : s.voltara === 'Worse off' ? 'bad' : ''}">${esc(s.voltara)}</span> · day ${s.voltara_day}` : s.voltara_day ? 'day ' + s.voltara_day : '<span class="note">not yet</span>'}</td>
+      <td>${s.gems || s.trade_best ? `${Number(s.gems).toLocaleString()} gems${s.trade_best ? ` · best ${Number(s.trade_best).toLocaleString()}` : ''}` : '<span class="note">not yet</span>'}</td><td>${s.cards == null ? '' : s.cards}</td>
+      <td>${(c.codes_ok || []).map(k => esc(TASKS[k] || k)).join(', ') || '<span class="note">none</span>'}</td>
+      <td>${ship.status === 'waiting' ? `<span class="warn">wants: ${esc(ship.wants)}</span><br><button type="button" data-a="yes" data-id="${esc(c.id)}">Approve</button> <button type="button" class="quiet" data-a="no" data-id="${esc(c.id)}">Refuse</button>` : esc(ship.name) || '<span class="note">no name</span>'}</td>
+      <td><button type="button" class="quiet" data-a="number" data-id="${esc(c.id)}">New secret number</button> <button type="button" class="danger" data-a="game" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Clear game</button> <button type="button" class="danger" data-a="remove" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Remove</button></td></tr>`; }).join('') : '<tr><td colspan="9" class="note">No cadets have joined yet.</td></tr>';
+  document.querySelectorAll('#cadets button').forEach(b => b.onclick = () => cadetAct(b.dataset.a, b.dataset.id, b.dataset.n)); }
+async function cadetAct(a, id, name) { let r;
+  if (a === 'yes' || a === 'no') r = await call({ action: 't_name', class: current, id, ok: a === 'yes' });
+  else if (a === 'number') { const pin = prompt('New 4-digit secret number for this cadet:'); if (pin == null) return; r = await call({ action: 't_reset', class: current, id, what: 'number', pin }); }
+  else { if (!confirm(a === 'game' ? `Clear the whole saved game of ${name}? This cannot be undone.` : `Remove ${name} from the class? Their saved game is deleted. This cannot be undone.`)) return; r = await call({ action: 't_reset', class: current, id, what: a }); }
+  $('cadetmsg').textContent = r.ok ? '' : r.error; openClass(current); }
+$('savecodes').onclick = async () => { const codes = {}; document.querySelectorAll('#codes input').forEach(i => codes[i.dataset.k] = i.value.trim()); const r = await call({ action: 't_set', class: current, codes, names: $('names').value, closed: $('closed').checked }); $('codesmsg').textContent = r.ok ? 'Saved.' : r.error; openClass(current); };
+$('refresh').onclick = () => openClass(current);
+(async () => { const r = await call({ action: 't_classes' }); if (r.ok) { $('login').hidden = true; $('classes').hidden = false; listClasses(); } })();
+</script>
+</body>
+</html>
