@@ -1,8 +1,82 @@
-# GMQ — Voltara: your "values on every place" idea, compared with my "nine needs" — v1 — 2026-11-17
+# GMQ — Voltara: your "values on every place" idea, compared with my "nine needs" — v2 — 2026-11-17
 
 **Stage:** analysis. Nothing in this file is built. The sketch is still version 20.
 **Tags:** [Source] = your words or your material. [Proposal] = my suggestion.
+**New in v2:** section 0. You corrected how I read your idea. Sections 1 to 8 are v1, kept as they were, with one note in section 6.
 **Check file:** `checks/voltara_values_model_check.py`. It tries all 2,097,152 plans.
+
+---
+
+## 0. Your correction, and what it changes [Source: Marc, 2026-11-17]
+
+### What you said
+
+- "Factory could make more power. But make people unhappy because of pollution."
+- "Amusement park makes people happy. But doesn't provide any power."
+- "Things like that as well."
+
+### What I had wrong
+
+- I read your values as: happy **if a place is lit**, unhappy **if it is dark**.
+- You mean something stronger: **one place can be good for one number and bad for another while it is running.**
+- So the trade-off sits inside the place itself. That is a better idea than the one I analysed.
+
+### The kinds of place this gives [Proposal: the grouping]
+
+| Kind | Energy | People | Examples |
+|---|---|---|---|
+| Fun | uses it | happy | Amusement Park, Zoo, Parks |
+| Needed | uses it | unhappy if it is dark | Hospital, Neighborhoods, Supermarket |
+| Clean power | costs some today, gives more tomorrow | no effect | Solar Power Plant |
+| Dirty power | gives a lot | unhappy while it runs, from pollution | Factory |
+
+"Things like that as well": I take the first two rows to stay, and the last row to be the new one.
+
+### One thing your sources disagree on [Conflict]
+
+- Your City List says the Factory **needs** 200 energy. [Source]
+- Your new idea says the Factory **makes** power. [Source]
+- Options:
+  - **A.** The Factory uses 200 today and gives more back tomorrow, like the solar plant, but with smoke. The City List stays true.
+  - **B.** The Factory only makes power and needs none. Then the city needs 2,020, not 2,220, and the "570 short" sum changes.
+  - **C.** Add a new place, such as a coal plant, and leave the Factory alone. Then there are 22 places.
+- I tested with A, because it changes none of your numbers.
+
+### What I tested, and what I found
+
+Draft numbers, mine: the Factory uses 200 today and gives 400 tomorrow. While it runs, 60 people are unhappy from smoke. The goal allows up to 60 unhappy people.
+
+| Day 1 choice | Happy on day 1 | Tower on day 2 | Most happy on day 2 |
+|---|---|---|---|
+| no power places | 780 | 1,380 | 720 |
+| solar only | 720 | 1,680 | 780 |
+| factory only | 740 | 1,750 | 800 |
+| solar and factory | 650 | 2,050 | 840 |
+
+**What this shows:**
+
+- **The short-term and long-term pull is real.** Lighting no power place gives the best day 1 and the worst day 2.
+- **But the Factory beats the solar plant on every number.** More happy today, a bigger tower tomorrow. If the smoke fits under the limit, it is free.
+- **If the smoke does not fit under the limit, the Factory is banned.** I tried 100 unhappy from smoke with a limit of 60. No plan with the Factory passes.
+- So with a simple limit on unhappy people, pollution is either **free or forbidden**. Neither is a choice.
+
+### How to make pollution a real choice [Proposal]
+
+| Option | How it works | Cost |
+|---|---|---|
+| **1. Smoke builds up.** | Day 1 with the Factory: 20 unhappy. Day 2: 40. Day 3: 60. A day with it off clears some. | One more rule. But the question becomes "how many days can I run it?", and that is a real sum. The sky over Factory Row can show the smog. |
+| **2. Smoke lands on the neighbours.** | The places next to the Factory lose happy people while it runs. | Students must know where places are. That suits a world you walk in. |
+| **3. Unhappy people take away from happy people.** | One total: happy minus unhappy. | Simple. But my v1 test showed the fault: a mall can then make up for a dark hospital. |
+
+- I lean to **option 1**. It is the mirror of the solar plant. The solar plant costs today and pays tomorrow. The Factory pays today and costs tomorrow.
+- It also gives your "leave the planet worse off" ending a picture: a rich tower under a brown sky.
+- I have not tested option 1 in code yet. I will before building it.
+
+### What stays true from v1
+
+- Your idea is the better core.
+- Keep the numbers apart. Do not add them into one score.
+- Keep my days. Your correction needs them even more: pollution only matters if tomorrow comes.
 
 ---
 
@@ -123,6 +197,7 @@ I lean to B. It is your decision.
 
 **From your idea:**
 - Every place has three values: energy, happy if lit, unhappy if dark.
+- **v2 note:** after your correction, a place can also make energy, and can make people unhappy while it runs. See section 0.
 - **You find the values by looking at the place.** The street board gives only the energy. A notebook fills in as you look, so nobody has to write 63 numbers down.
 - The Council sets a goal with three targets. For example: 600 happy, no more than 60 unhappy, and a tower no weaker than when you came.
 - The plan table shows three running totals, not nine ticks.

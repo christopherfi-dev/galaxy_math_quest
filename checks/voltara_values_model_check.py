@@ -76,3 +76,30 @@ print("D. Can one place make up for another? (the 'mall beats the hospital' test
 net = lambda m: H[m] - unh(m); bn = max(net(m) for m in fits); nearn = [m for m in fits if net(m) >= bn - 30]
 hosp = idx['Hospital']; print(f"   best net = {bn}. Near-best plans: {len(nearn)}. Of those, the Hospital is dark in {sum(1 for m in nearn if not m >> hosp & 1)}.")
 mid = [m for m in fits if net(m) >= 450]; print(f"   plans with a 'good' net of 450 or more: {len(mid):,}. Hospital dark in {sum(1 for m in mid if not m >> hosp & 1):,}. A Neighborhood dark in {sum(1 for m in mid if (m & 3) != 3):,}.")
+
+print()
+print("E. Marc's correction (2026-11-17): one place can be good for one number and bad for another WHILE IT RUNS.")
+print("   'Factory could make more power, but make people unhappy because of pollution. Amusement park makes people happy, but gives no power.'")
+print("   DRAFT [Proposal]: the Factory uses 200 today and gives FACT more energy tomorrow. While it runs, SMOKE people are unhappy. It gives 30 people jobs.")
+print("   The Solar Power Plant uses 250 today and gives 300 tomorrow. It is clean. Night theft (240) is left out here, to keep the picture clear.")
+fa = idx['Factory']
+def best(S, solar, fact, cap, smoke):
+    """most happy people with energy <= S, the two power places on or off as told, and unhappy people <= cap"""
+    b = (-1, 0)
+    want = (solar << sp) | (fact << fa); both = (1 << sp) | (1 << fa)
+    for m in fits_all:
+        if m & both == want and E[m] <= S:
+            h = H[m] - (20 if fact else 0)                  # in this model a running Factory makes 30 people happy (jobs), not the 50 of the table above
+            unhappy = ALLU - U[m] + (smoke if fact else -20)   # dark essentials, plus smoke if it runs. A dark Factory upsets no one here, so its 20 from the table is taken off.
+            if unhappy <= cap and h > b[0]: b = (h, m)
+    return b
+fits_all = [m for m in range(1 << N) if E[m] <= 2600]
+for FACT, SMOKE, CAP in [(400, 60, 60), (400, 100, 60), (400, 100, 100), (600, 100, 100), (300, 60, 60)]:
+    print(f"\n   Factory gives {FACT} tomorrow, {SMOKE} unhappy from smoke. Goal: at most {CAP} unhappy.")
+    print("     day 1 choice               day 1 happy   day 2 tower   day 2 most happy (clean day)   (factory again)")
+    for solar, fact, label in [(0, 0, 'no power places   '), (1, 0, 'solar only        '), (0, 1, 'factory only      '), (1, 1, 'solar and factory ')]:
+        h1, m1 = best(SUPPLY, solar, fact, CAP, SMOKE)
+        if h1 < 0: print(f"     {label}        cannot keep unhappy people under {CAP}"); continue
+        S2 = BASE + (SOLAR if solar else 0) + (FACT if fact else 0) + SUPPLY - E[m1]
+        clean = max(best(S2, s, 0, CAP, SMOKE)[0] for s in (0, 1)); dirty = max(best(S2, s, 1, CAP, SMOKE)[0] for s in (0, 1))
+        print(f"     {label}        {h1:>5}        {S2:>6,}          {clean:>5}                      {dirty if dirty >= 0 else 'not allowed':>5}")
