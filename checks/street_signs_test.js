@@ -10,7 +10,7 @@ const { chromium } = require('playwright'); const path = require('path');
   for (const [name, w, h, wantNames] of [['ipad-wide', 1180, 820, true], ['ipad-tall', 820, 1180, true], ['ipad-old-wide', 1024, 768, true], ['ipad-old-tall', 768, 1024, true], ['board', 1920, 1080, true], ['phone', 390, 760, false]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 1 }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); } catch (e) {} });
+    await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-rats', 'off'); } catch (e) {} });
     await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
     const ok = (c, what) => { if (!c) bad.push(`${name}: ${what}`); };
     if (name === 'ipad-wide') {

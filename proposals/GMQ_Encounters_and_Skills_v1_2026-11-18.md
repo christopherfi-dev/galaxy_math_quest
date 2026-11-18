@@ -88,6 +88,36 @@ You asked for surprise pop-ups. I built something you can see and choose.
 
 ---
 
+## 4b. Added the same day: mud rats, your way (sketch version 35)
+
+After reading the above you wrote: "Even the sideways scrolling one. You're walking into the dark neighborhood and suddenly something pops up, and it says a band of mud rats attack you from the dark. You have one minute to defeat them all or you run back to your ship." [Source: Marc, 2026-11-18]
+
+So the surprise is built too, on Voltara. Now both kinds exist and you can compare them: wisps you choose, and rats that jump out.
+
+**How it plays:**
+- A cadet walks into a street on Voltara that has no lights. About two seconds later: "A band of 10 mud rats attacks you from the dark! You have one minute to beat them all. Or you run back to your ship."
+- The cadet taps **Fight!** The one-minute clock starts only then. Or they tap **Run to your ship**.
+- Each right sum scares one rat off. The rats are in the street, and they leave one by one.
+- **Beaten:** a common card. That street is safe for the rest of the day.
+- **Too slow, or running:** the cadet is back at the ship in the Landing Meadow, and walks back.
+
+**What I added to your idea [Proposal], and why:**
+
+| Rule | Why |
+|---|---|
+| Rats come only where a street has **no light at all**. | The dark means something. And your energy plan ends it: light a street and the rats are gone. The plan now matters in one more way. |
+| A band that is beaten stays away **for that day**. If the street is still dark the next day, they are back. | Leaving a street dark has a cost that returns. |
+| After any attack the rats **rest for two minutes**. | Nobody can be trapped. A child who loses can walk back through. |
+| The band fits the cadet's level: 10 rats for sums within 10 or 20, 7 for 2-digit sums, 5 for 2-digit sums with regrouping. | One minute stays one minute, as you said. The harder the sum, the fewer rats. |
+| The rats wait while a reading card or a task is open. | They never land on top of something the child is doing. |
+| Teacher switch: **Voltara: mud rats.** | You may want a calm lesson. |
+
+**What I still think you should watch for:** the first attack comes the first time a child walks into Home Street, before they have met the board. If it feels like being thrown out of the story, the rats could wait until after the Council has asked for help.
+
+**Checked by** `checks/mud_rats_test.js`: the attack, a win, running, too slow, light, the next day, band sizes for each level, the rest, and the switch.
+
+---
+
 ## 5. "The world has to be a little bit bigger"
 
 Not done. Chronosia's map is one screen.
@@ -115,7 +145,7 @@ The test is `checks/time_wisps_test.js`.
 
 ## 7. Decisions for you
 
-1. **Seen or surprise?** Wisps you choose (built), or things that jump out?
+1. **Seen or surprise?** Both are built now: wisps you choose on Chronosia, and mud rats that jump out on Voltara. Play both and say which you want where.
 2. **The swap numbers:** 12 and 24 as you said, or dearer?
 3. **Which cards can be swapped:** any common card (built), or only ones won from wisps?
 4. **The reading pop-up:** A, B, C or D in section 2. Or your daughter's idea.
