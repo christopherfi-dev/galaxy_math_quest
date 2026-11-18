@@ -1,6 +1,6 @@
 # GMQ — things that pop up as you walk, the card swap, and a skills record — v1 — 2026-11-18
 
-**Stage:** a small trial is built on Chronosia (sketch version 34). Played by tests only.
+**Stage:** a small trial is built on Chronosia and Voltara (sketch version 36). Played by tests only.
 **Tags:** [Source] = your words. [Proposal] = my suggestion, yours to change.
 
 ---
@@ -51,7 +51,7 @@ On Chronosia's map, three small swirls of light drift about. They are time wisps
 
 - **Tap a wisp, or type `catch wisp`.** The cadet walks to it and it asks three quick questions.
 - The questions: one sum at the cadet's own level from the space hazards, and time questions. What time is it 20 minutes later? How many minutes from 2:40 to 3:05? What time does this clock show?
-- **Three right: the wisp turns into one common card.** [Source: your rule]
+- **Three right: the cadet earns ¼ of a credit.** (Version 34 gave a whole card. That was my mistake. See "Practice credits" below.)
 - One slip is allowed. Two slips, or stepping away, and the wisp slips off. No card. Nothing is lost.
 - A new wisp drifts in about 20 seconds later.
 - Teacher switch: **Chronosia: time wisps**, on or off.
@@ -67,18 +67,39 @@ You asked for surprise pop-ups. I built something you can see and choose.
 
 **What could prove me wrong:** if children never go for a wisp, they are too easy to avoid. Then the wisps should come to the child. That is a small change.
 
-### The card swap [Source: your numbers]
+### Practice credits (changed in sketch version 36) [Source: your correction]
 
-- In the card panel: with 12 common cards, a button says "Swap 12 for 1 rare card". Beside it: "Or save them. 11 more make a gold card."
-- With 24: "Swap 24 for 1 gold card".
-- It asks "Are you sure? Tap again" first.
-- It takes the newest common cards, so a cadet's first cards stay.
+I had this wrong in version 34. I made each win one common card, and I let common cards be swapped for better ones. You corrected both:
 
-**Where I push back:**
+- A little battle is **not** a card. It is **a quarter of a credit**: ¼, or 0.25. "Always using math wherever we can."
+- Credits are their own thing. You collect them and turn them in. **Cards are never traded for better cards.** "That's not the game."
+- One whole credit, which is 4 quarters, buys a common card. A gold card is 96 quarters.
 
-1. **Gold may get cheap.** My guess is that a wisp takes under a minute. So 24 wins is about half an hour of quick sums. A gold card from Voltara takes a whole quest and a hard choice. Options: keep your numbers and see; or raise them; or wins give "sparks" and several sparks make one common card.
-2. **Any common card counts,** even ones from station tasks. If those are meant for your battles, the swap eats them. Option: only cards won from wisps can be swapped.
-3. **Which is worth more, two rares or one gold?** That is the real choice you are giving a child, and it is a good one. It depends on your battle rules, which I have not touched.
+**What is built now:**
+
+| | Credits | Wins needed |
+|---|---|---|
+| One win (a wisp caught, or a band of rats beaten) | ¼ | 1 |
+| A common card | 1 | 4 |
+| A rare card | 12 | 48 |
+| A gold card | 24 | 96 |
+
+- The card swap is gone. Cards from tasks and quests can never be used up.
+- The card panel shows the credits as maths: "Practice credits: 2¾ = 2.75 = 11 quarters", with a circle cut in four.
+- Under it: "Turn in 1 credit for a common card", and "A rare card costs 12. You need 9¼ more."
+- Turning in asks "Are you sure? Tap again".
+- The status row shows "Credits 2¾".
+
+**Your question: 10 or 12 for a rare card?**
+
+| Rare costs | Gold costs | What it means |
+|---|---|---|
+| **12** (built) | 24 | A gold card costs exactly two rare cards. It is doubling: 12 and 24, or 48 wins and 96 wins. Easy to explain to a child. |
+| 10 | 24 | A gold card costs more than two rare cards (24 against 20). Saving for gold is the dearer choice. "How many more to 10" is easier than "to 12". |
+
+**My pick is 12 and 24.** It is what you said first, your 96 fits it (4 × 24), and a child can see that gold is double. It is one number in the code if you want 10.
+
+**How long is 96 wins?** My guess is about a minute for each wisp, with the walk. So a gold card is somewhere near two hours of practice. That is a guess. It answers my worry in version 34 that gold would be cheap.
 
 ### The skills record
 
@@ -98,7 +119,7 @@ So the surprise is built too, on Voltara. Now both kinds exist and you can compa
 - A cadet walks into a street on Voltara that has no lights. About two seconds later: "A band of 10 mud rats attacks you from the dark! You have one minute to beat them all. Or you run back to your ship."
 - The cadet taps **Fight!** The one-minute clock starts only then. Or they tap **Run to your ship**.
 - Each right sum scares one rat off. The rats are in the street, and they leave one by one.
-- **Beaten:** a common card. That street is safe for the rest of the day.
+- **Beaten:** ¼ of a credit. That street is safe for the rest of the day.
 - **Too slow, or running:** the cadet is back at the ship in the Landing Meadow, and walks back.
 
 **What I added to your idea [Proposal], and why:**
@@ -135,8 +156,10 @@ Not done. Chronosia's map is one screen.
 | 60,000 wisp questions: every answer worked out again from the words of the question | 0 wrong |
 | A wisp is only on open ground, never on a door, and can always be walked to | yes, 300 rounds |
 | A wisp never steps onto a cadet who stands still. Walking past one does not start it. | yes |
-| Three right gives one common card. Two slips or stepping away gives none. | yes |
-| The swap: 12 for a rare, 24 for a gold, and it asks first | yes |
+| Three right gives a quarter of a credit and no card. Two slips or stepping away gives nothing. | yes |
+| Credits are written correctly as a mixed number for every count from 0 to 400 | yes |
+| 1 credit for a common card, 12 for a rare, 24 for a gold, and it asks first | yes |
+| With 30 common cards and no credits, nothing can be traded | yes |
 | The catches, the tally and the cards are kept after a reload | yes |
 
 The test is `checks/time_wisps_test.js`.
@@ -146,8 +169,8 @@ The test is `checks/time_wisps_test.js`.
 ## 7. Decisions for you
 
 1. **Seen or surprise?** Both are built now: wisps you choose on Chronosia, and mud rats that jump out on Voltara. Play both and say which you want where.
-2. **The swap numbers:** 12 and 24 as you said, or dearer?
-3. **Which cards can be swapped:** any common card (built), or only ones won from wisps?
+2. **A rare card:** 12 credits (built) or 10?
+3. **What to call them.** I used your word, "credits". They could have a name from the world.
 4. **The reading pop-up:** A, B, C or D in section 2. Or your daughter's idea.
 5. **The dashboard:** send the zip here, without student data.
 6. **Wisps elsewhere:** in space, and on Voltara too?

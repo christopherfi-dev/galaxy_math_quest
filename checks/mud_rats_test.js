@@ -2,7 +2,7 @@
 // [Source: Marc, 2026-11-18: "a band of mud rats attack you from the dark. You have one minute to defeat them all or you run back to your ship."]
 //   - walking into a street with no lights brings the band, about two seconds later. A street with any light is safe.
 //   - the size of the band fits the cadet's level: 10, 10, 7, 5. Each sum fits the level. The clock is one minute.
-//   - beaten: a common card, and that street is safe for the day. Next day, if it is still dark, they are back.
+//   - beaten: a quarter of a credit (not a card), and that street is safe for the day. Next day, if it is still dark, they are back.
 //   - too slow, or running: back at the ship. The rats then rest, so the cadet can always get through. The teacher switch turns them off.
 // Run: node checks/mud_rats_test.js [folder for screenshots]
 const { chromium } = require('playwright'); const path = require('path');
@@ -27,12 +27,12 @@ const { chromium } = require('playwright'); const path = require('path');
     const fits = await p.evaluate(() => widget.qs.every(q => q[0] + q[1] <= 10) && new Set(widget.qs.map(q => Math.min(q[0], q[1]) + '+' + Math.max(q[0], q[1]))).size === 10); ok(fits, 'ten different sums within 10');
     const answer = async wrongFirst => { const q = await p.evaluate(() => widget.qs[widget.i]), a = String(q[0] + q[1]); if (wrongFirst) { for (const d of String(q[0] + q[1] === 10 ? 11 : q[0] + q[1] + 1).slice(0, a.length)) await key(d); await p.waitForTimeout(60); } for (const d of a) await key(d); await p.waitForTimeout(40); };
     await answer(true); ok(await p.evaluate(() => widget.miss === 1 && widget.i === 1), 'a wrong answer is a slip, then the right one scares a rat off'); for (let i = 1; i < 10; i++) await answer(); await p.waitForTimeout(250);
-    expect(await last(), /The last mud rat squeaks and runs off.*The band is beaten! You earn a common card\. Light this street/, 'beating the band');
-    let st = await p.evaluate(() => ({ n: S.cards.length, r: S.cards[S.cards.length - 1].r, beat: V().ratBeat, sc: V().sc, log: S.log[S.log.length - 1].result, sk: S.sk })); ok(st.n === c0 + 1 && st.r === 'common' && st.beat.R === 1 && st.sc === 'homes', 'after a win: ' + JSON.stringify(st)); expect(st.log, /beaten: 10 sums in \d+ s, 1 slips/, 'the log line'); ok(st.sk.add1[0] === 10 && st.sk.add1[1] === 1, 'the skill tally: ' + JSON.stringify(st.sk));
+    expect(await last(), /The last mud rat squeaks and runs off.*The band is beaten! You earn ¼ of a credit \(0\.25\)\. You have ¼ credit\..*Light this street/, 'beating the band');
+    let st = await p.evaluate(() => ({ n: S.cards.length, q: S.q4, beat: V().ratBeat, sc: V().sc, log: S.log[S.log.length - 1].result, sk: S.sk })); ok(st.n === c0 && st.q === 1 && st.beat.R === 1 && st.sc === 'homes', 'after a win, a quarter and no card: ' + JSON.stringify(st)); expect(st.log, /beaten: 10 sums in \d+ s, 1 slips/, 'the log line'); ok(st.sk.add1[0] === 10 && st.sk.add1[1] === 1, 'the skill tally: ' + JSON.stringify(st.sk));
     // ---- the rats rest; a beaten street stays safe today; another dark street is still dangerous after the rest
     ok(await enter('shops') === null, 'the rats rest after an ambush, so the next street is quiet'); await p.evaluate(() => { RATS.rest = 0; }); ok(await enter('homes') === null, 'a beaten street is safe for the day'); ok(await enter('shops') === 'rats', 'another dark street has its own band');
     // ---- running away
-    await p.tap('#leave'); await p.waitForTimeout(250); expect(await last(), /You do not stay to fight\. There are too many mud rats! You run all the way back to your ship/, 'running away'); ok(await p.evaluate(n => V().sc === 'meadow' && !widget && S.cards.length === n && !(V().ratBeat || {}).C, c0 + 1), 'running: back at the ship, no card');
+    await p.tap('#leave'); await p.waitForTimeout(250); expect(await last(), /You do not stay to fight\. There are too many mud rats! You run all the way back to your ship/, 'running away'); ok(await p.evaluate(n => V().sc === 'meadow' && !widget && S.cards.length === n && S.q4 === 1 && !(V().ratBeat || {}).C, c0), 'running: back at the ship, nothing earned');
     ok(await enter('shops') === null, 'after running, the cadet can walk through: the rats rest');
     // ---- too slow
     await p.evaluate(() => { RATS.rest = 0; RATS.secs = 2; }); ok(await enter('works') === 'rats', 'Factory Row has a band too'); await p.tap('#hzgo'); await p.waitForTimeout(150); await answer(); await p.waitForTimeout(2300);
