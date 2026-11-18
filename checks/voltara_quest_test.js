@@ -82,7 +82,7 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     expect(await say('use table'), /21 places/, 'the plan table');
     const spots = await p.evaluate(() => SPOTS.map(s => ({ i: s.i, name: s.name, need: s.need }))), id = n => n === 'Nomad Hollow' ? 21 : spots.find(s => s.name === n).i, cost = n => n === 'Nomad Hollow' ? 240 : spots.find(s => s.name === n).need, fmt = n => n.toLocaleString('en-US');
     // the rules, written out again here so the page is checked against them and not against itself.  place: [happy if lit, unhappy if dark]
-    const VALS = { 'Neighborhood 1': [80, 250], 'Neighborhood 2': [80, 250], 'Schools': [60, 60], 'Hospital': [40, 300], 'Parks': [40, 0], 'Zoo': [30, 0], 'Swimming Pool': [20, 0], 'Supermarket': [60, 250], 'Shopping Mall': [80, 0], 'Office Buildings': [50, 20], 'Hotels': [30, 0], 'Restaurants': [60, 0],
+    const VALS = { 'Round Houses': [80, 250], 'Stilt Houses': [80, 250], 'Schools': [60, 60], 'Hospital': [40, 300], 'Parks': [40, 0], 'Zoo': [30, 0], 'Swimming Pool': [20, 0], 'Supermarket': [60, 250], 'Shopping Mall': [80, 0], 'Office Buildings': [50, 20], 'Hotels': [30, 0], 'Restaurants': [60, 0],
       'Sports Arena': [40, 0], 'Arts Theater': [30, 0], 'Bus Stop': [30, 40], 'Amusement Park': [70, 0], 'Factory': [40, 0], 'Solar Power Plant': [0, 0], 'Warehouse': [20, 0], 'Recycling Plant': [20, 40], 'Gas Station': [20, 20], 'Nomad Hollow': [40, 40] };
     const GIVES = { 'Solar Power Plant': 600, 'Factory': 500, 'Nomad Hollow': 100 }, VITAL = Object.keys(VALS).filter(n => VALS[n][1] && n !== 'Nomad Hollow');
     let supply = 1650, day = 1, kin = false, smoke = 0; const record = [];
@@ -109,7 +109,7 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
       if (look.on === look.off || !/255, 178, 62/.test(look.on) || !/✓/.test(look.tick) || look.pressed !== 'true') bad.push(name + ': a tapped place does not look lit ' + JSON.stringify(look)); }
     { const fit = await p.evaluate(() => { const t = $('toy').getBoundingClientRect(), b = $('try').getBoundingClientRect(); return b.bottom <= t.bottom + 1 && b.top >= t.top; }); if (!fit && name === 'ipad') bad.push(name + ': the Switch on button is cut off'); }
     // DAY 1, a careless plan: fun first. No power place, no school, no bus, no recycling. It is allowed. It has a price.
-    const careless = ['Hospital', 'Shopping Mall', 'Amusement Park', 'Hotels', 'Restaurants', 'Sports Arena', 'Arts Theater', 'Zoo', 'Swimming Pool', 'Parks', 'Office Buildings', 'Neighborhood 1', 'Neighborhood 2', 'Supermarket'];
+    const careless = ['Hospital', 'Shopping Mall', 'Amusement Park', 'Hotels', 'Restaurants', 'Sports Arena', 'Arts Theater', 'Zoo', 'Swimming Pool', 'Parks', 'Office Buildings', 'Round Houses', 'Stilt Houses', 'Supermarket'];
     const cardsA = await p.evaluate(() => S.cards.length); await setPlan(careless); await shot('9_plan'); let pl = await switchOn(careless);
     expect(await say('talk council'), /In the morning, read the tower log/, 'the Council points to the log');
     await say('use log'); await shot('10_morning'); await p.click('#leave'); expect(await morning(careless, pl), /240 energy vanished/, 'the mystery comes out of the morning sum'); if (supply !== 950) bad.push(name + ': after the careless day the tower should hold 950, not ' + supply);
@@ -130,7 +130,7 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     await say('talk elder'); await fill([29]); expect(await msg(), /Count one row/, 'a wrong count'); await fill([5 * 6]); await fill([30 * 1]); expect(await last(), /missing energy/, 'the mystery solved');
     // DAY 2: yesterday's plan no longer fits the weaker tower. The quick fix: run the Factory. It gives power, and smoke.
     await walk('west', 5); await say('enter hall'); await say('use table'); await p.click('#try'); expect(await msg(), /Too much.*only 950/, 'yesterday\'s plan no longer fits the weaker tower');
-    const quick = ['Factory', 'Neighborhood 1', 'Neighborhood 2', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Swimming Pool'];
+    const quick = ['Factory', 'Round Houses', 'Stilt Houses', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Swimming Pool'];
     const cardsB = await p.evaluate(() => S.cards.length); pl = await switchOn(quick); expect(await morning(quick, pl), /240 went missing again/, 'the second morning'); if (supply !== 1320 || smoke !== 50) bad.push(name + `: after day 2 expected tower 1,320 and smoke 50, got ${supply} and ${smoke}`);
     if ((await p.evaluate(() => S.cards.length)) !== cardsB) bad.push(name + ': later days should not give cards');
     // ---- the Council's choice: a real-life step with the teacher's code
@@ -139,7 +139,7 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     { const dark = await p.evaluate(() => [VDO.houses.look(), VDO.elder.talk(), V().final && !powered(21)]); if (!/lights are out/.test(dark[0]) || !/very dark/.test(dark[1]) || !dark[2]) bad.push(name + ': the hollow should be dark until it is in a plan: ' + dark.join(' | ')); }
     // DAY 3: both power places, and the Factory for a second day. The tower fills to its limit. The sky is brown. POWER, BUT NOT HAPPY.
     expect(await say('use table'), /Nomad Hollow is among them/, 'Nomad Hollow joins the table'); if ((await p.locator('#toy .wire').count()) !== 22) bad.push(name + ': the table should show 22 places after the choice');
-    const power = ['Factory', 'Solar Power Plant', 'Neighborhood 1', 'Neighborhood 2', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Gas Station', 'Amusement Park', 'Swimming Pool'];
+    const power = ['Factory', 'Solar Power Plant', 'Round Houses', 'Stilt Houses', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Gas Station', 'Amusement Park', 'Swimming Pool'];
     pl = await switchOn(power); const d3 = await morning(power, pl); expect(d3, /full at 2,000\. 160 energy was lost/, 'the tower is full at 2,000'); if (/missing/.test(d3) || supply !== 2000 || smoke !== 100) bad.push(name + `: day 3 should end with no theft, a full tower and smoke 100, got ${supply}, ${smoke}: ${d3}`);
     { const m = await p.evaluate(() => $('mission').innerText); if (!/enough power\. But the people are not happy/.test(m) || !/Smoke hangs/.test(m)) bad.push(name + ': the mission box should say power but not happy, with smoke: ' + m.slice(-260)); }
     // DAY 4: the clean way. Every place people need, the solar plant, the Nomads, and the best-value fun. VOLTARA SHINES, though the smoke is still clearing.

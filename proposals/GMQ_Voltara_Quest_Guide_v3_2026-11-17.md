@@ -37,12 +37,14 @@
 
 ## 3. The nine places
 
+**Changed 2026-11-18 (sketch version 32) [Source: Marc]:** "Neighborhood 1" and "Neighborhood 2" are now **Round Houses** and **Stilt Houses**. The old names were confusing. On each street, every place now wears a bright sign with its name, its number and a picture. The street board says LIST and glows while it is the next thing to do. No number changed.
+
 | Place | What is there | What you can do |
 |---|---|---|
 | **Landing Meadow** | your ship, a FlavorBurst tree, a butterfly, a tall glowing tree, a loose rock, the dark city far off | eat or take a FlavorBurst, talk, dig, push the rock, fly away |
 | **The Sparkling River** | a hungry Gumblefish, four stepping stones under the water | feed the fish, cross by rounding |
 | **Power Plaza** | an SOS notice, the energy tower and its store, a dry fountain, the Council Hall | read, open the store, enter the hall |
-| **Home Street** | a street board and 8 places, from Neighborhood 1 to the Supermarket | read the board, look at every place, feed the zebra at the Zoo |
+| **Home Street** | a street board and 8 places, from the Round Houses to the Supermarket | read the board, look at every place, feed the zebra at the Zoo |
 | **Market Street** | a street board and 8 places, from the Shopping Mall to the Amusement Park | read the board, ride the big wheel if you lit it |
 | **Factory Row** | a street board and 5 places, and later a humming hatch | read the board, open the hatch |
 | **Energy Council Hall** | three councillors, a wall map, the plan table, the tower log | talk, plan, read the log |
@@ -97,8 +99,8 @@ A strip map in the corner shows where you are. Each place says what it is like t
 
 | Place | Uses | Happy if lit | Unhappy if dark | Gives tomorrow |
 |---|---|---|---|---|
-| Neighborhood 1 ! | 200 | 80 | 250 | |
-| Neighborhood 2 ! | 200 | 80 | 250 | |
+| Round Houses ! | 200 | 80 | 250 | |
+| Stilt Houses ! | 200 | 80 | 250 | |
 | Schools ! | 100 | 60 | 60 | |
 | Hospital ! | 50 | 40 | 300 | |
 | Parks | 50 | 40 | | |

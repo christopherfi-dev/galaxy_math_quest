@@ -8,7 +8,7 @@ Run:  python3 checks/voltara_quest_check.py     (standard library only)
 """
 import random
 
-CITY = {"Home Street": [("Neighborhood 1", 200), ("Neighborhood 2", 200), ("Schools", 100), ("Hospital", 50), ("Parks", 50), ("Zoo", 30), ("Swimming Pool", 20), ("Supermarket", 100)],
+CITY = {"Home Street": [("Round Houses", 200), ("Stilt Houses", 200), ("Schools", 100), ("Hospital", 50), ("Parks", 50), ("Zoo", 30), ("Swimming Pool", 20), ("Supermarket", 100)],
         "Market Street": [("Shopping Mall", 250), ("Office Buildings", 200), ("Hotels", 150), ("Restaurants", 100), ("Sports Arena", 50), ("Arts Theater", 30), ("Bus Stop", 20), ("Amusement Park", 80)],
         "Factory Row": [("Factory", 200), ("Solar Power Plant", 250), ("Warehouse", 50), ("Recycling Plant", 50), ("Gas Station", 40)]}
 SUPPLY = 1650
@@ -54,7 +54,7 @@ check("every stone has one right answer, and only the last is halfway", bad == 0
 
 print("3. The values [Proposal: Claude's numbers, on Marc's idea]. Every place uses energy and makes people happy. Some make people unhappy if dark.")
 #  place: (people happy if lit, people unhappy if dark)
-VAL = {"Neighborhood 1": (80, 250), "Neighborhood 2": (80, 250), "Schools": (60, 60), "Hospital": (40, 300), "Parks": (40, 0), "Zoo": (30, 0), "Swimming Pool": (20, 0), "Supermarket": (60, 250),
+VAL = {"Round Houses": (80, 250), "Stilt Houses": (80, 250), "Schools": (60, 60), "Hospital": (40, 300), "Parks": (40, 0), "Zoo": (30, 0), "Swimming Pool": (20, 0), "Supermarket": (60, 250),
        "Shopping Mall": (80, 0), "Office Buildings": (50, 20), "Hotels": (30, 0), "Restaurants": (60, 0), "Sports Arena": (40, 0), "Arts Theater": (30, 0), "Bus Stop": (30, 40), "Amusement Park": (70, 0),
        "Factory": (40, 0), "Solar Power Plant": (0, 0), "Warehouse": (20, 0), "Recycling Plant": (20, 40), "Gas Station": (20, 20), "Nomad Hollow": (40, 40)}
 MAKES = {"Solar Power Plant": 600, "Factory": 500, "Nomad Hollow": 100}       # energy for tomorrow, if lit today
@@ -124,7 +124,7 @@ for i in (3, 2, 1, 0): print(f"      {ENDING[i]:<28} {count[i]:>9,} plans")
 check("all four endings can happen on day 1", all(count))
 check("both goals can be met on day 1, with or without the Factory", clean_perfect > 0 and count[3] > clean_perfect, f"{clean_perfect:,} clean plans, {count[3] - clean_perfect:,} with the Factory")
 check("the Factory makes it easier today", count[3] - clean_perfect > 2 * clean_perfect)
-for must in ("Hospital", "Neighborhood 1", "Neighborhood 2", "Supermarket"):
+for must in ("Hospital", "Round Houses", "Stilt Houses", "Supermarket"):
     top = max(one(m, CAP, 0, True, nom)[0] for m in range(1 << N) if not m & bit[must] for nom in (False, True) if E[m] + (NOMAD_E if nom else 0) <= CAP)
     check(f"no plan makes the people happy with the {must} dark, even with a full tower", top < GOAL, f"best is {top}")
 h, u, _, _, t = day(SUPPLY, 0, best_value_child(SUPPLY, False, 0, False), False)
@@ -195,9 +195,9 @@ check("the same after the choice", not K, f"{run2} days in a row")
 check("the worst morning is 810: spend everything, light no power place", BASE - THEFT == 810 and any(E[m] == SUPPLY and not m & (FAC | SOL) for m in range(1 << N)))
 
 # the five days the Playwright test plays
-D1 = {'Hospital', 'Shopping Mall', 'Amusement Park', 'Hotels', 'Restaurants', 'Sports Arena', 'Arts Theater', 'Zoo', 'Swimming Pool', 'Parks', 'Office Buildings', 'Neighborhood 1', 'Neighborhood 2', 'Supermarket'}
-D2 = {'Factory', 'Neighborhood 1', 'Neighborhood 2', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Swimming Pool'}
-D3 = {'Factory', 'Solar Power Plant', 'Neighborhood 1', 'Neighborhood 2', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Gas Station', 'Amusement Park', 'Swimming Pool'}
+D1 = {'Hospital', 'Shopping Mall', 'Amusement Park', 'Hotels', 'Restaurants', 'Sports Arena', 'Arts Theater', 'Zoo', 'Swimming Pool', 'Parks', 'Office Buildings', 'Round Houses', 'Stilt Houses', 'Supermarket'}
+D2 = {'Factory', 'Round Houses', 'Stilt Houses', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Swimming Pool'}
+D3 = {'Factory', 'Solar Power Plant', 'Round Houses', 'Stilt Houses', 'Hospital', 'Supermarket', 'Schools', 'Bus Stop', 'Recycling Plant', 'Gas Station', 'Amusement Park', 'Swimming Pool'}
 D4 = set(VITAL) | {'Solar Power Plant', 'Nomad Hollow', 'Amusement Park', 'Parks', 'Sports Arena', 'Restaurants', 'Zoo', 'Swimming Pool', 'Arts Theater', 'Warehouse'}
 D5 = set(names) - {'Factory', 'Solar Power Plant'}
 S_, sm, path = SUPPLY, 0, []

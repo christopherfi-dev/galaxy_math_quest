@@ -5,8 +5,8 @@ The question: what kind of decision does each way of scoring make? Every one of 
 """
 SUPPLY, BASE, SOLAR = 1650, 1350, 300
 #        place               energy  happy if lit  unhappy if dark
-P = [("Neighborhood 1",       200,    80,           80),
-     ("Neighborhood 2",       200,    80,           80),
+P = [("Round Houses",       200,    80,           80),
+     ("Stilt Houses",       200,    80,           80),
      ("Schools",              100,    60,           40),
      ("Hospital",              50,    40,          100),
      ("Parks",                 50,    30,            0),
