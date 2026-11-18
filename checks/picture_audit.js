@@ -14,7 +14,7 @@ const path = require('path');
   const b = await chromium.launch(), errs = [];
   const p = await (await b.newContext({ viewport: { width: 1500, height: 1000 }, deviceScaleFactor: 1 })).newPage();
   p.on('pageerror', e => errs.push('pageerror: ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-  await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); } catch (e) {} });
+  await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); } catch (e) {} });
   await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
   await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); });
   const res = await p.evaluate(() => {

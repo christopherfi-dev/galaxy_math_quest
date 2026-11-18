@@ -83,7 +83,8 @@ function summary(array $state): array {
     $t = is_array($state['trade'] ?? null) ? $state['trade'] : null;
     return ['where' => (string)($state['mode'] ?? ''), 'room' => (string)($state['room'] ?? ''), 'tasks' => min(15, $done), 'parts' => is_array($state['parts'] ?? null) ? min(5, count($state['parts'])) : 0,
         'cards' => is_array($state['cards'] ?? null) ? count($state['cards']) : 0, 'secrets' => is_array($state['secrets'] ?? null) ? count($state['secrets']) : 0,
-        'voltara_day' => $v ? (int)($v['day'] ?? 0) : 0, 'voltara' => $ending, 'gems' => $t ? (int)($t['gems'] ?? 0) : 0, 'trade_best' => $t ? (int)($t['best'] ?? 0) : 0];
+        'voltara_day' => $v ? (int)($v['day'] ?? 0) : 0, 'voltara' => $ending, 'gems' => $t ? (int)($t['gems'] ?? 0) : 0, 'trade_best' => $t ? (int)($t['best'] ?? 0) : 0,
+        'hazards' => is_array($state['flu'] ?? null) ? max(0, min(4, (int)($state['flu']['lvl'] ?? 1) - 1)) : 0];
 }
 
 /* ---------------------------------------------------------------- the cadet */

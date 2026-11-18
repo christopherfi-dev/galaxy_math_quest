@@ -50,7 +50,7 @@
     </div>
 
     <h2>Cadets</h2>
-    <div class="scroll"><table><thead><tr><th>Name</th><th>Last saved</th><th>Station</th><th>Voltara</th><th>Trade</th><th>Cards</th><th>Real-life tasks done</th><th>Ship name</th><th></th></tr></thead><tbody id="cadets"></tbody></table></div>
+    <div class="scroll"><table><thead><tr><th>Name</th><th>Last saved</th><th>Station</th><th>Voltara</th><th>Trade</th><th>Quick sums</th><th>Cards</th><th>Real-life tasks done</th><th>Ship name</th><th></th></tr></thead><tbody id="cadets"></tbody></table></div>
     <p class="msg" id="cadetmsg" role="status"></p>
   </section>
 </main>
@@ -71,10 +71,10 @@ async function openClass(code) { const r = await call({ action: 't_class', class
   $('cadets').innerHTML = r.cadets.length ? r.cadets.map(c => { const s = c.summary || {}, ship = c.ship || {};
     return `<tr><td><b>${esc(c.name)}</b>${c.locked ? ' <span class="warn">locked</span>' : ''}</td><td>${when(c.saved_at)}</td><td>${s.tasks == null ? '<span class="note">not started</span>' : `${s.tasks} of 15 tasks · ${s.parts} of 5 parts`}</td>
       <td>${s.voltara ? `<span class="${s.voltara === 'Voltara shines' ? 'good' : s.voltara === 'Worse off' ? 'bad' : ''}">${esc(s.voltara)}</span> · day ${s.voltara_day}` : s.voltara_day ? 'day ' + s.voltara_day : '<span class="note">not yet</span>'}</td>
-      <td>${s.gems || s.trade_best ? `${Number(s.gems).toLocaleString()} gems${s.trade_best ? ` · best ${Number(s.trade_best).toLocaleString()}` : ''}` : '<span class="note">not yet</span>'}</td><td>${s.cards == null ? '' : s.cards}</td>
+      <td>${s.gems || s.trade_best ? `${Number(s.gems).toLocaleString()} gems${s.trade_best ? ` · best ${Number(s.trade_best).toLocaleString()}` : ''}` : '<span class="note">not yet</span>'}</td><td>${s.hazards ? s.hazards + ' of 4 hazards' : '<span class="note">not yet</span>'}</td><td>${s.cards == null ? '' : s.cards}</td>
       <td>${(c.codes_ok || []).map(k => esc(TASKS[k] || k)).join(', ') || '<span class="note">none</span>'}</td>
       <td>${ship.status === 'waiting' ? `<span class="warn">wants: ${esc(ship.wants)}</span><br><button type="button" data-a="yes" data-id="${esc(c.id)}">Approve</button> <button type="button" class="quiet" data-a="no" data-id="${esc(c.id)}">Refuse</button>` : esc(ship.name) || '<span class="note">no name</span>'}</td>
-      <td><button type="button" class="quiet" data-a="number" data-id="${esc(c.id)}">New secret number</button> <button type="button" class="danger" data-a="game" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Clear game</button> <button type="button" class="danger" data-a="remove" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Remove</button></td></tr>`; }).join('') : '<tr><td colspan="9" class="note">No cadets have joined yet.</td></tr>';
+      <td><button type="button" class="quiet" data-a="number" data-id="${esc(c.id)}">New secret number</button> <button type="button" class="danger" data-a="game" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Clear game</button> <button type="button" class="danger" data-a="remove" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Remove</button></td></tr>`; }).join('') : '<tr><td colspan="10" class="note">No cadets have joined yet.</td></tr>';
   document.querySelectorAll('#cadets button').forEach(b => b.onclick = () => cadetAct(b.dataset.a, b.dataset.id, b.dataset.n)); }
 async function cadetAct(a, id, name) { let r;
   if (a === 'yes' || a === 'no') r = await call({ action: 't_name', class: current, id, ok: a === 'yes' });

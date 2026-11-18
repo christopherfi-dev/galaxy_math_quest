@@ -20,7 +20,7 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
   for (const [name, w, h] of [['ipad', 820, 1180], ['phone', 390, 760]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); } catch (e) {} }); /* reading cards have their own test: reading_card_test.js */ await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
+    await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); } catch (e) {} }); /* reading cards have their own test: reading_card_test.js */ await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
     // the teacher shortcuts: from a station bay, a real tap on the bar at the top lands in the meadow. Nothing is lost. And back again.
     await p.evaluate(() => skipIntro()); await p.fill('#cmd', 'go to shield'); await p.press('#cmd', 'Enter'); await p.waitForTimeout(2600);
     const before = await p.evaluate(() => ({ cards: S.cards.length, room: S.room })); await p.locator('#t_volt').tap(); await p.waitForTimeout(900);

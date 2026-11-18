@@ -90,6 +90,11 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .q { font-weight: 700; font-size: 1.18rem; }
 .field { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .field input { width: 6.5em; font: inherit; font-size: 1.35rem; font-weight: 700; text-align: center; padding: 8px; border: 2px solid var(--ink); border-radius: 10px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; }
+.race { position: relative; height: 44px; border-radius: 22px; background: linear-gradient(90deg, #131c33, #1d2c52); border: 1px solid var(--line, #33476a); overflow: hidden; }
+.race span { position: absolute; top: 50%; font-size: 26px; line-height: 1; transform: translate(-50%, -50%); transition: left .25s linear; } .race .rend { right: 8px; left: auto; transform: translateY(-50%); font-size: 20px; }
+.hsum { font-family: var(--display); font-weight: 700; font-size: 2.3rem; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; } .hsum input { width: 3.2em; font: inherit; text-align: center; padding: 4px 6px; border-radius: 10px; background: #f4f8ff; color: #10203c; border: 3px solid var(--accent); }
+.hsum.no { animation: hno .25s; } @keyframes hno { 25% { transform: translateX(-7px); } 75% { transform: translateX(7px); } } @media (prefers-reduced-motion: reduce) { .hsum.no { animation: none; } .race span { transition: none; } }
+.tipbox { border-left: 4px solid var(--accent); padding: 4px 12px; margin: 4px 0; } .tipbox p { margin: 3px 0; font-size: 1.08rem; }
 .msg { min-height: 1.4em; font-weight: 700; } .msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
 .meter { display: flex; gap: 6px; align-items: center; font-family: var(--display); font-size: .85rem; color: var(--muted); }
 .pip { width: 26px; height: 12px; border-radius: 3px; border: 1.5px solid var(--muted); } .pip.on { background: var(--good); border-color: var(--good); }
@@ -227,7 +232,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 30</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 31</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -281,6 +286,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
       <li>This sketch knows about 40 words. On your site, your constrained AI would answer any other sentence.</li>
       <li>The robot is a new character. It is a proposal. Card names are samples from your files. Odds are 70, 25, 5.</li>
     </ul>
+    <p><label class="note"><input type="checkbox" id="hazOn" checked> Space hazards: quick sums against the clock on flights between galaxies</label></p>
     <p><label class="note"><input type="checkbox" id="cardsOn" checked> Reading cards: new words come up over the picture and wait for OK</label></p>
     <p><button class="btn quiet" type="button" id="bank">Show the skills bank</button> <button class="btn quiet" type="button" id="tovolt">Go straight to Voltara</button> <button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
     <p class="note">"Go straight to Voltara" skips the opening and the station. It keeps the cards, the bag and anything already done. It is for you, to look at the quest. Students reach Voltara by fitting their five ship parts and launching.</p>
@@ -523,6 +529,7 @@ let lines = [];
    Words already read once go straight to the line below, with a flash [Proposal], so walking back through known places is not a string of OKs. */
 const READ = { on: true, open: false, q: [], tm: 0, wait: 0 };
 READ.on = getKeep('gmq-cards') !== 'off';
+const HAZON = { on: getKeep('gmq-hazards') !== 'off' };
 const hashT = t => { let h = 7; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return h; };
 function say(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-4); text = String(text);
   if (READ.on && S && !widget && S.mode !== 'intro' && S.mode !== 'arrive') { const seen = S.read || (S.read = []), h = hashT(text); if (seen.indexOf(h) < 0) { seen.push(h); if (seen.length > 700) seen.splice(0, 200); readShow(text); } }
@@ -534,7 +541,7 @@ function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arr
   if (S.mode === 'station') return Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => [OBJ[i].words[0], OBJ[i].label]);
   if (S.mode === 'planet') return vThings().filter(t => t.x != null).map(t => [t.spot ? t.spot.name.toLowerCase() : t.words[0], t.label]);
   if (S.mode === 'world') return wThings(wKit(WORLD().at)).map(t => [t.words[t.words.length - 1].indexOf(' ') > 0 ? t.words[0] : t.words[0], t.label]);
-  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name]); }
+  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name]); }
 function drawWords() { let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
   el.innerHTML = '<span class="lab">Here</span>' + list.map(x => `<button class="word noun" type="button" data-w="${esc(x[0])}">${esc(x[1])}</button>`).join('');
   el.querySelectorAll('button').forEach(b => b.onclick = () => { const w = b.dataset.w, draft = $('cmd').value.trim().toLowerCase(); if (/^(fly to|land|trade)/.test(w)) return act(w); act(/^(look|take|open|push|use|go|talk|eat|touch|dig|give)( [a-z ]+ on)?$/.test(draft) ? `${draft} ${w}` : `look ${w}`); }); }
@@ -617,7 +624,7 @@ function rude(t, strict) { const words = String(t).toLowerCase().split(/\s+/).fi
   return !!strict && words.length > 1 && rudeWord(words.join('')); }
 /* the game repeats only words it knows. Numbers are fine. Anything else is shown as … */
 let KNOWN = null;
-function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place trade beacon routes route trader traders gems space fly galaxy planet hint help touch poke shake dig creature animal alien rock post stall flag seed star east west'.split(' '));
+function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place trade beacon routes route trader traders gems space fly galaxy planet hint help touch poke shake dig creature animal alien rock post stall flag seed star east west hazard practice practise sums sum asteroid asteroids worm worms wind wormhole hole tree down'.split(' ')); Object.keys(SOFT).forEach(g => SOFT[g].forEach(x => k.add(x)));
   Object.keys(ITEM_WORDS).forEach(i => ITEM_WORDS[i].forEach(x => k.add(x))); Object.keys(ITEMS).forEach(i => ITEMS[i].toLowerCase().split(' ').forEach(x => k.add(x)));
   Object.keys(WKIT.flora).forEach(t => WKIT.flora[t][0].split(' ').forEach(x => k.add(x))); WKIT.rock.forEach(r => r[0].split(' ').forEach(x => k.add(x))); Object.keys(TR).forEach(n => { const kk = wKit(n); k.add(kk.name.toLowerCase()); k.add(kk.cr.name.toLowerCase()); });
   const add = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); });
@@ -745,7 +752,7 @@ function act(raw) {
   let tk = text.split(/\s+/).filter(t => !['the', 'a', 'an', 'my', 'at', 'to', 'into', 'in', 'up', 'around', 'under', 'behind', 'inside', 'please'].includes(t) || DIRS[t] && text.split(/\s+/).length <= 2);
   if (DIRS[tk[0]]) tk = ['go', tk[0]];
   let verb = Object.keys(VERBS).find(v => VERBS[v].includes(tk[0]));
-  if (!verb) return findThing(tk) ? out('Start with a doing word: look, take, open, push or use.') : netAsk(text, 'The station does not know that yet. Try: look, take, open, push, use, go.', out);
+  if (!verb) { const ft = findThing(tk); return ft ? out(softTry(tk[0], OBJ[ft].label, 'look, take, open, push or use')) : netAsk(text, softNone(tk[0]) || 'The station does not know that yet. Try: look, take, open, push, use, go.', out); }
   const rest = tk.slice(1);
   if (S.bot && ['talk', 'use'].includes(verb) && tk[0] !== 'fix' && (rest.length === 0 && verb === 'talk' || rest.some(t => OBJ.robot.words.includes(t) || t === 'zip' || (S.botName && t === S.botName.toLowerCase())))) return out(zipTalk());
   if (S.bot && verb === 'look' && rest.some(t => OBJ.robot.words.includes(t) || (S.botName && t === S.botName.toLowerCase()))) return out('Your repair robot. It follows you. Talk to it and it tells you what to try next.');
@@ -1269,7 +1276,7 @@ function padPlace() { const el = $('pad'), w = el.offsetWidth, h = el.offsetHeig
     if (t && t.right > x - 8) y = t.bottom + 10 + h < H ? t.bottom + 10 : t.top - h - 10; }
   el.style.left = Math.max(4, Math.min(W - w - 4, x)) + 'px'; el.style.top = Math.max(4, Math.min(H - h - 4, y)) + 'px'; }
 function padShow(t) { PAD.target = t; const el = $('pad'), k = widget && widget.akind, x = $('padx'), extra = k === 'time' ? ':' : k === 'money' ? '.' : ''; x.textContent = extra; x.disabled = !extra; x.dataset.k = extra || 'x';
-  $('padnext').hidden = padBoxes().length < 2; el.classList.toggle('mini', PAD.mini); $('padkb').textContent = PAD.mini ? '123' : 'ABC'; $('padkb').setAttribute('aria-label', PAD.mini ? 'Use the number pad' : 'Use the full keyboard'); $('padgrip').textContent = PAD.mini ? '⠿' : '⠿ move me'; el.hidden = false; padPlace(); }
+  $('padnext').hidden = padBoxes().length < 2; { const okb = $('padkeys').querySelector('[data-k="ok"]') || $('pad').querySelector('[data-k="ok"]'); if (okb) okb.style.visibility = $('try') ? '' : 'hidden'; } el.classList.toggle('mini', PAD.mini); $('padkb').textContent = PAD.mini ? '123' : 'ABC'; $('padkb').setAttribute('aria-label', PAD.mini ? 'Use the number pad' : 'Use the full keyboard'); $('padgrip').textContent = PAD.mini ? '⠿' : '⠿ move me'; el.hidden = false; padPlace(); }
 function padKey(k) { const t = PAD.target; if (!t || !document.body.contains(t)) return padHide();
   if (k === 'ok') { const b = $('try'); if (b) b.click(); return; }
   if (k === 'next') { const ins = padBoxes(), n = ins[(ins.indexOf(t) + 1) % ins.length]; if (n) n.focus({ preventScroll: true }); return; }
@@ -1902,13 +1909,67 @@ function drawSpace(dt) {
     if (k > .9) { rocket(vw * .17 + Math.sin(tNow * .6) * 6, vh * .76 + Math.cos(tNow * .5) * 4, m * .2, -.5, { flame: true }); pill('Planet Voltara', vw * .56, vh * .5 + m * .41, true); pill('Tap the planet, or type: land', vw * .56, vh * .5 + m * .41 + 32);
       { const bx = vw * .2, by = vh * .26, z = m * .05, open = tradeOpen(), blink = open && Math.sin(tNow * 5) > 0; cx.fillStyle = '#5f7aa8'; cx.fillRect(bx - z * 1.7, by - z * .22, z * 1.1, z * .44); cx.fillRect(bx + z * .6, by - z * .22, z * 1.1, z * .44); cx.fillStyle = '#c4cfdf'; rr(bx - z * .5, by - z * .5, z, z, z * .2); cx.fill(); ol(2); cx.fillStyle = blink ? '#ffe58a' : open ? '#a8862f' : '#39415c'; circ(bx, by - z * .78, z * .2); cx.fill(); if (blink) { cx.globalCompositeOperation = 'lighter'; cx.fillStyle = 'rgba(255,229,138,.35)'; circ(bx, by - z * .78, z * .6); cx.fill(); cx.globalCompositeOperation = 'source-over'; } pill(open ? 'Trade beacon' : 'Trade beacon (silent)', bx, by + z * 1.25); } } }
 }
+/* SPACE HAZARDS: quick sums on the way. [Source: Marc, 2026-11-18: asteroids, space worms, solar winds, a wormhole; four addition levels; a speed to hit; tens first; a record for each player]
+   [Proposal: the times, which card, and that a flight always goes on.] Checked by checks/space_hazards_test.js. */
+const HAZ = [null,
+  { name: 'Asteroid field', icon: '☄️', skill: 'Add within 10', secs: 40, story: 'Rocks tumble all around your ship. Blast a path before they close in!', tip: ['Start at the bigger number. Count on.', '6 + 3: say 6, then 7, 8, 9.'] },
+  { name: 'Space worms', icon: '🐛', skill: 'Add within 20', secs: 50, story: 'A giant space worm is behind you. It is hungry. Stay ahead of it!', tip: ['Make ten first.', '8 + 5: 8 + 2 = 10. There are 3 left. 10 + 3 = 13.'] },
+  { name: 'Solar wind', icon: '🌞', skill: 'Add 2-digit numbers, no regrouping', secs: 80, story: 'A storm from the star rolls after you. Reach calm space first!', tip: ['Tens first. Then ones. Then add.', '34 + 25: 30 + 20 = 50. Then 4 + 5 = 9. Then 50 + 9 = 59.'] },
+  { name: 'Wormhole pull', icon: '🌀', skill: 'Add 2-digit numbers, with regrouping', secs: 110, story: 'A wormhole has opened. It pulls your ship back. Fight the pull!', tip: ['Tens first. Then ones. Then add.', '47 + 38: 40 + 30 = 70. Then 7 + 8 = 15. Then 70 + 15 = 85.'] }];
+const HAZ_N = 10;
+function FLU() { if (!S.flu) S.flu = { lvl: 1, best: {}, tries: {}, pass: {} }; return S.flu; }
+function fluQ(lvl, r) { r = r || Math.random; const n = (a, b) => a + Math.floor(r() * (b - a + 1)); let a, b;
+  if (lvl === 1) { a = n(1, 9); b = n(1, 10 - a); }
+  else if (lvl === 2) { a = n(2, 10); b = n(Math.max(1, 11 - a), 10); }
+  else if (lvl === 3) { const ta = n(1, 8), tb = n(1, 9 - ta), oa = n(0, 9), ob = n(0, 9 - oa); a = ta * 10 + oa; b = tb * 10 + ob; }
+  else { const oa = n(1, 9), ob = n(10 - oa, 9), ta = n(1, 7), tb = n(1, 8 - ta); a = ta * 10 + oa; b = tb * 10 + ob; }
+  return [a, b]; }
+function fluRound(lvl, r) { const qs = [], seen = {}; let guard = 0; while (qs.length < HAZ_N && guard++ < 999) { const q = fluQ(lvl, r), key = Math.min(q[0], q[1]) + '+' + Math.max(q[0], q[1]); if (seen[key]) continue; seen[key] = 1; qs.push(q); } return qs; }
+function startHaz(lvl, dest) { const h = HAZ[lvl], f = FLU(); widget = { kind: 'haz', lvl, dest };
+  toy(`<p class="eyebrow">Space hazard · level ${lvl} of 4 · ${h.skill}</p><h3>${h.icon} ${h.name}</h3><p>${h.story}</p><div class="tipbox"><p><b>A quick way:</b> ${h.tip[0]}</p><p>${h.tip[1]}</p></div>
+    <p class="q">Answer ${HAZ_N} sums in ${h.secs} seconds.${f.best[lvl] ? ` Your best: ${f.best[lvl]} seconds.` : ''}</p><div class="field"><button class="btn" type="button" id="hzgo">Go!</button><button class="btn quiet" type="button" id="leave">Fly around it</button></div>`);
+  $('hzgo').onclick = hazGo; $('leave').onclick = () => hazOut('You fly the long way around. It is slow, but safe. The hazard will be back.'); }
+function hazOut(text) { const w = widget, d = w && w.dest; if (w && w.tick) clearInterval(w.tick); closeToy(); if (d) hazFly(d); save(); say(text + (d ? ` You fly on to ${GAL[d].name}.` : '')); }
+function hazGo() { const w = widget, h = HAZ[w.lvl]; w.qs = fluRound(w.lvl); w.i = 0; w.miss = 0; w.times = []; w.t0 = w.tq = Date.now();
+  toy(`<p class="eyebrow">${h.icon} ${h.name} · <span id="hzn">sum 1 of ${HAZ_N}</span></p><div class="race" aria-hidden="true"><span class="rend">🏁</span><span id="hzb" style="left:-4%">${h.icon}</span><span id="hzs" style="left:8%">🚀</span></div>
+    <div class="hsum" id="hzq"><span id="hzt"></span><input id="ans" inputmode="numeric" autocomplete="off" aria-label="Your answer"></div><div class="msg" id="msg" role="status"></div><div class="field"><button class="btn quiet" type="button" id="leave">Fly around it</button></div>`);
+  $('leave').onclick = () => hazOut('You turn away and fly the long way around. The hazard will be back.');
+  const a = $('ans'); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); const q = w.qs[w.i], want = String(q[0] + q[1]); if (a.value.length < want.length) return;
+    if (a.value === want) { beep(700 + w.i * 40, .06); w.times.push([Date.now() - w.tq, q]); w.tq = Date.now(); w.i++; if (w.i >= HAZ_N) return hazEnd(true); hazShow(); }
+    else { w.miss++; beep(140, .15, 'square'); const box = $('hzq'); box.classList.remove('no'); void box.offsetWidth; box.classList.add('no'); $('msg').className = 'msg bad'; $('msg').textContent = 'Not that. Try again.'; a.value = ''; } };
+  w.tick = setInterval(() => { if (widget !== w) return clearInterval(w.tick); const t = (Date.now() - w.t0) / 1000, b = $('hzb'); if (b) b.style.left = Math.min(92, -4 + 96 * t / h.secs) + '%'; if (t >= h.secs) hazEnd(false); }, 100);
+  hazShow(); }
+function hazShow() { const w = widget, q = w.qs[w.i], a = $('ans'); $('hzt').textContent = `${q[0]} + ${q[1]} =`; $('hzn').textContent = `sum ${w.i + 1} of ${HAZ_N}`; $('hzs').style.left = (8 + 80 * w.i / HAZ_N) + '%'; $('msg').textContent = ''; a.value = ''; a.setAttribute('maxlength', '2'); a.focus({ preventScroll: true }); }
+function hazEnd(ok) { const w = widget, h = HAZ[w.lvl], f = FLU(), secs = Math.max(1, Math.round((Date.now() - w.t0) / 1000)); clearInterval(w.tick);
+  const slow = w.times.slice().sort((x, y) => y[0] - x[0])[0], slowSay = slow ? `, slowest: ${slow[1][0]} + ${slow[1][1]}` : ''; f.tries[w.lvl] = (f.tries[w.lvl] || 0) + 1; let text;
+  if (ok) { const first = !f.pass[w.lvl], better = !first && secs < f.best[w.lvl]; f.pass[w.lvl] = 1; if (!f.best[w.lvl] || secs < f.best[w.lvl]) f.best[w.lvl] = secs; if (f.lvl === w.lvl) f.lvl = w.lvl + 1;
+    S.log.push({ what: `Space hazard ${w.lvl}: ${h.name}`, skill: h.skill, result: `passed: ${HAZ_N} sums in ${secs} s (goal ${h.secs} s), ${w.miss} slips${slowSay}`, tries: f.tries[w.lvl], need: 1 });
+    chime(); if (first) card(w.lvl === 4 ? 'gold' : 'rare'); else if (better) card();
+    text = `You made it through the ${h.name.toLowerCase()}! ${HAZ_N} sums in ${secs} seconds.` + (first ? ` You earn a ${w.lvl === 4 ? 'gold' : 'rare'} card.` + (w.lvl < 4 ? ` Next time: ${HAZ[w.lvl + 1].name.toLowerCase()}.` : ' You have beaten every hazard on the star map!') : better ? ' A new best! You earn a card.' : ` Your best is ${f.best[w.lvl]} seconds.`); }
+  else { S.log.push({ what: `Space hazard ${w.lvl}: ${h.name}`, skill: h.skill, result: `not yet: ${w.i} of ${HAZ_N} sums in ${h.secs} s, ${w.miss} slips${slowSay}`, tries: f.tries[w.lvl], need: 1 }); beep(140, .3, 'square');
+    text = `Too slow this time. You did ${w.i} of ${HAZ_N}. The ${h.name.toLowerCase()} bumps your ship, and you creep out the side. Remember: ${h.tip[0]} You can try again on your next flight.`; }
+  hazOut(text); drawStatus(); }
+/* doing words the game knows of, but has no use for. A cadet who tries one gets an answer, not "use a verb". [Source: Marc, 2026-11-18: "cut down the tree"] */
+const SOFT = { tool: ['cut', 'chop', 'saw', 'slice', 'trim'], rough: ['kick', 'hit', 'punch', 'break', 'smash', 'burn', 'destroy', 'crush', 'stomp', 'hurt', 'throw', 'bite'],
+  gentle: ['climb', 'smell', 'sniff', 'shake', 'hug', 'jump', 'sit', 'lift', 'water', 'plant', 'paint', 'ride', 'lick', 'taste', 'listen', 'knock', 'wave', 'dig', 'pet', 'stroke', 'tickle', 'sing', 'dance', 'sleep', 'hide', 'draw', 'write', 'build', 'clean', 'wash', 'swim', 'drink', 'roll', 'carry', 'bury', 'scratch', 'blow', 'pull', 'eat', 'feed', 'fix'] };
+const SOFT_TO = { sit: 'sit on', jump: 'jump on', listen: 'listen to', knock: 'knock on', dance: 'dance with', sing: 'sing to', sleep: 'sleep on', hide: 'hide behind', swim: 'swim in', write: 'write on', draw: 'draw on', wave: 'wave at', blow: 'blow on', dig: 'dig under' };
+function softKind(word) { return Object.keys(SOFT).find(g => SOFT[g].includes(word)) || null; }
+function softTry(word, label, can) { const g = softKind(word), tail = ` Here you can: ${can}.`;
+  if (!g) return `Start with a doing word: ${can}.`;
+  return (g === 'tool' ? `You have no tool to ${word} the ${label}. It stays as it is.` : g === 'rough' ? `Cadets do no harm. You leave the ${label} alone.` : `You try to ${SOFT_TO[word] || word} the ${label}. Nothing happens.`) + tail; }
+function softNone(word) { const g = softKind(word); return !g ? null : word === 'dig' ? 'You dig a small hole. Nothing is under it. You fill it in again.' : g === 'tool' ? `There is nothing here to ${word}.` : g === 'rough' ? 'Cadets do no harm.' : `You ${word}. Nothing happens here.`; }
 function flyTo(id, out) {
   if (id === 'patternox') return out('The wormhole to Patternox is broken. It is closed for now.');
   if (id === S.at && !SP.to) return out('You are here already.');
-  if (!widget) closeToy(); SP.to = id; S.at = null; beep(200, .4, 'sawtooth'); out(`You fly to ${GAL[id].name}.`);
+  const hz = HAZON.on && !widget && FLU().lvl <= 4 ? FLU().lvl : 0;
+  if (hz) { out(`You set off for ${GAL[id].name}. But something is in the way!`); return startHaz(hz, id); }
+  if (!widget) closeToy(); hazFly(id); out(`You fly to ${GAL[id].name}.`);
 }
+function hazFly(id) { SP.to = id; S.at = null; beep(200, .4, 'sawtooth'); }
 function land() { if (!widget) closeToy(); S.mode = 'planet'; V().sc = 'meadow'; PL.x = .13; PL.to = null; PL.fade = 1; save(); drawStatus(); beep(300, .3); }
 function actSpace(text, out) {
+  if (widget && widget.kind === 'haz') { out('You are in a space hazard. Answer the sums, or tap Fly around it.'); const an = $('ans'); if (an) setTimeout(() => { if (document.body.contains(an)) an.focus({ preventScroll: true }); }, 30); return; }
+  if (/\b(hazard|hazards|practice|practise|sums|asteroid|asteroids|worm|worms|wormhole)\b/.test(text)) { if (widget || SP.to) return out('Finish this first.'); const f = FLU(), top = Math.min(4, f.lvl), want = +(text.match(/\b[1-4]\b/) || [0])[0]; out('You steer into a practice hazard.'); return startHaz(want && want <= top ? want : top, null); }
   const tk = text.split(/\s+/), id = Object.keys(GAL).find(g => tk.some(t => t.length > 2 && GAL[g].name.toLowerCase().split(' ').some(w => w !== 'galaxy' && w.startsWith(t))));
   if (tk.includes('land') || tk.includes('voltara')) { if (S.at !== 'numerix' || SP.to) return out('There is no planet to land on here. Fly to Galaxy Numerix.'); land(); return out('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); }
   if (tk.some(t => ['trade', 'beacon', 'routes', 'route', 'trader', 'traders', 'gems'].includes(t))) return out(tradeTry());
@@ -1921,6 +1982,7 @@ function actSpace(text, out) {
 function tapSpace(e) {
   const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, s = t => say(t);
   if (widget && widget.kind === 'trade') return tradeTap(x, y);
+  if (widget && widget.kind === 'haz') return;
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .2) * vw, (y - .26) * vh) < Math.min(vw, vh) * .1) return say(tradeTry());
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .56) * vw, (y - .5) * vh) < Math.min(vw, vh) * .34) { land(); return say('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); }
   if (GHOSTS.some(g => { const [gx, gy] = ghostPos(g); return Math.hypot(x - gx, y - gy) < .05; })) return say('Another cadet. Battles between ships come later. They will use your cards.');
@@ -2097,10 +2159,11 @@ function actWorld(text, out) { if (widget) return out('Finish this first. Or tap
   if (verb === 'hint') return out(w.finds.indexOf(k.n) >= 0 ? 'You have this world\'s star seed. Fly on from your ship.' : w.talks < 2 ? `Watch the ${k.cr.name}. Talk to it twice.` : `The ${k.cr.name} looked at the ${things.find(t => t.id === k.at).label}. Touch it.`);
   if (verb === 'bag') return out(`You carry ${w.finds.length} of 20 star seeds.`);
   if (verb === 'fly' || (th && th.id === 'ship' && verb && verb !== 'look')) return leaveWorld(out);
-  if (!verb) return th ? out('Start with a doing word: look, touch, take or talk.') : netAsk(text, `${k.name} does not know that yet. Try: look, touch, take, talk.`, out);
+  if (!verb) return th ? out(softTry(tk[0], th.label, 'look, touch, take or talk')) : netAsk(text, softNone(tk[0]) || `${k.name} does not know that yet. Try: look, touch, take, talk.`, out);
   if (verb === 'look' && !rest.length) return out(`${k.name}. ${k.sky[2]} ${k.far[1]} You see: ${things.map(t => t.label).join(', ')}.`);
   if (verb === 'go' && !th) { if (rest.includes('east') || rest.includes('right')) { strayed(); PL.to = Math.min(.96, PL.x + .3); return out('You walk east.'); } if (rest.includes('west') || rest.includes('left')) { strayed(); PL.to = Math.max(.04, PL.x - .3); return out('You walk west.'); } return out('Go where? East or west. Or tap a thing.'); }
   if (!th && !rest.filter(t => !VAGUE.includes(t)).length) return askWhat(out, tk[0] + ' ', `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`);
+  if (!th && tk[0] === 'dig' && rest.includes('hole')) return out(softNone('dig'));
   if (!th) return netAsk(text, 'You do not see that here.', out);
   FOCUS = { k: 'world:' + w.at, id: th.id };
   if (th.id === 'ship' ) return out(`Your ship${S.ship ? ', the ' + S.ship : ''}. It waits for you. To leave, type: fly.`);
@@ -2301,7 +2364,7 @@ function actPlanet(text, out) {
   const item = [...S.inv].reverse().find(i => rest.some(t => ITEM_WORDS[i].includes(t))) || null, cut = rest.findIndex(t => t === 'on' || t === 'with'), names = cut < 0 ? rest.filter(t => !(item && v === 'use' && ITEM_WORDS[item].includes(t))) : rest.slice(cut + 1);
   const score = t => names.filter(n => t.words.includes(n)).length; let best = things.filter(t => score(t) > 0).sort((a, b) => score(b) - score(a) || Math.abs((a.x || 0) - PL.x) - Math.abs((b.x || 0) - PL.x))[0] || null;
   if (dir && dir[0] && (v === 'go' || !v)) return out(vWalkOut(dir[0] > 0 ? 'e' : 'w'));
-  if (!v) return best ? out('Start with a doing word: look, take, push, use, talk or dig.') : netAsk(text, 'Voltara does not know that yet. Try: look, take, use, talk, go, dig.', out);
+  if (!v) return best ? out(softTry(tk[0], best.label, 'look, take, push, use, talk or dig')) : netAsk(text, softNone(tk[0]) || 'Voltara does not know that yet. Try: look, take, use, talk, go, dig.', out);
   if (v === 'hint') return out('The butterfly whispers: ' + planetHint());
   if (v === 'leave') return out(sc === 'hall' ? VDO.exit.go() : sc === 'meadow' ? 'To leave Voltara, type: fly.' : 'Walk west to go back.');
   if (v === 'fly' || (best && best.id === 'ship' && ['use', 'go', 'open'].includes(v))) { if (sc !== 'meadow') return out('Your ship is back in the Landing Meadow.'); if (lastDay()) { startEnding(); return out('Before you go, look back at what you did here.'); } liftOff(); return out(`You lift off. Voltara shrinks below you. ${planetState()}`); }
@@ -2725,6 +2788,7 @@ $('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').valu
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
 netStart();
+$('hazOn').checked = HAZON.on; $('hazOn').onchange = () => { HAZON.on = $('hazOn').checked; setKeep('gmq-hazards', HAZON.on ? 'on' : 'off'); };
 $('cardsOn').checked = READ.on; $('cardsOn').onchange = () => { READ.on = $('cardsOn').checked; setKeep('gmq-cards', READ.on ? 'on' : 'off'); if (!READ.on) readOk(true); };
 /* teacher shortcuts: jump between the station and Voltara. The place changes first. Tidying up comes after, and cannot stop it. */
 function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(true); widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
