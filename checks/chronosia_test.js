@@ -18,7 +18,7 @@ const { chromium } = require('playwright'); const path = require('path');
     const last = () => p.evaluate(() => lines[lines.length - 1].text || '');
     const idle = async () => { for (let i = 0; i < 200; i++) { if (await p.evaluate(() => !CM.route.length && PL.to == null && !PL.then)) return; await p.waitForTimeout(80); } bad.push(name + ': still walking'); };
     const say = async t => { await p.fill('#cmd', t); await p.press('#cmd', 'Enter'); await p.waitForTimeout(150); await idle(); await p.waitForTimeout(150); return last(); };
-    const tapTile = async (x, y) => { const pt = await p.evaluate(([x, y]) => { const g = cGeo(), r = cv.getBoundingClientRect(); return [r.left + g.ox + (x + .5) * g.ts, r.top + g.oy + (y + .5) * g.ts]; }, [x, y]); await p.evaluate(() => window.scrollTo(0, 0)); await p.touchscreen.tap(pt[0], pt[1]); await p.waitForTimeout(120); await idle(); await p.waitForTimeout(150); };
+    const tapTile = async (x, y) => { await p.evaluate(() => { window.scrollTo(0, 0); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); }); await p.waitForTimeout(60); const pt = await p.evaluate(([x, y]) => { const g = cGeo(), r = cv.getBoundingClientRect(); return [r.left + g.ox + (x + .5) * g.ts, r.top + g.oy + (y + .5) * g.ts]; }, [x, y]); await p.touchscreen.tap(pt[0], pt[1]); await p.waitForTimeout(120); await idle(); await p.waitForTimeout(150); };
 
     if (name === 'ipad') {      // ---- the numbers
       const n = await p.evaluate(() => { skipIntro(); const res = { bad: [], seeds: 0 }, B = m => res.bad.push(m);
@@ -55,6 +55,7 @@ const { chromium } = require('playwright'); const path = require('path');
       n.bad.forEach(x => bad.push('numbers: ' + x)); console.log(`numbers: the clocks, quakes, timetable and map checked; ${n.seeds.toLocaleString()} seeds for the Tortoise and the Cougar; ${n.bad.length} wrong`);
     }
 
+    try {
     // ---- play
     await p.evaluate(() => { skipIntro(); goSpace(); }); await p.waitForTimeout(200);
     await say('fly to metrica'); for (let i = 0; i < 100; i++) { if (await p.evaluate(() => S.at === 'metrica' && !SP.to)) break; await p.waitForTimeout(100); }
@@ -74,8 +75,7 @@ const { chromium } = require('playwright'); const path = require('path');
         if (opts.leaveAt === s2.i && !opts.didLeave) { opts.didLeave = true; await p.tap('#leave'); await p.waitForTimeout(150); ok(await p.evaluate(([id, i]) => !widget && C().prog[id] === i, [id, s2.i]), `${id}: leaving should keep the place`); await say(opts.again); await p.waitForTimeout(200); ok(await p.evaluate(i => widget && widget.i === i, s2.i), `${id}: coming back should go on from step ${s2.i + 1}`); continue; }
         if (s2.kind === 'info') await p.tap('#try'); else if (s2.kind === 'yn') await p.tap(s2.ans ? '#yes' : '#no'); else if (s2.kind === 'num') { await p.fill('#ah', String(s2.ans[0])); await p.tap('#try'); } else if (s2.kind === 'time') { const a = s2.ans[s2.ans.length - 1]; await p.fill('#ah', String(a[0])); await p.fill('#am', String(a[1]).padStart(2, '0')); await p.tap('#try'); } else { await p.fill('#ah', String(s2.ans[1])); await p.fill('#am', String(s2.ans[0])); await p.tap('#try'); }
         await p.waitForTimeout(90); } bad.push(`${name}: ${id}: the quest did not end`); };
-    await say('use board'); await p.waitForTimeout(200); ok(await p.evaluate(() => widget && widget.kind === 'cq' && widget.id === 'clocks' && !$('pad').hidden === false || true), 'clocks open');
-    ok(await p.evaluate(() => widget && widget.id === 'clocks'), 'the board should open the clocks'); if (out && name !== 'phone') { await p.tap('#try'); await p.waitForTimeout(150); await p.screenshot({ path: path.join(out, `chronosia_${name}_2_clocks.png`) }); }
+    await say('use board'); await p.waitForTimeout(200);     ok(await p.evaluate(() => widget && widget.id === 'clocks'), 'the board should open the clocks'); if (out && name !== 'phone' && await p.$('#try')) { await p.tap('#try'); await p.waitForTimeout(150); await p.screenshot({ path: path.join(out, `chronosia_${name}_2_clocks.png`) }); }
     const cards0 = await p.evaluate(() => S.cards.length); await play('clocks', { wrongAt: 2, leaveAt: 5, again: 'use board' }); await p.waitForTimeout(250);
     expect(await last(), /great clock ticks again.*You earn a card/, 'clocks done'); ok(await p.evaluate(n => C().done.clocks && S.cards.length === n + 1 && C().miss.clocks === 1, cards0), 'clocks: done, one card, one slip counted');
     expect(await say('use door'), /You climb the stairs/, 'the door opens after the clocks'); expect(await say('leave'), /step back out/, 'leave a place'); ok(await p.evaluate(() => C().at === 'map' && C().x === 4 && C().y === 5), 'leaving puts you by the door');
@@ -95,8 +95,8 @@ const { chromium } = require('playwright'); const path = require('path');
     if (out && name !== 'phone') { await p.evaluate(() => { widget.i = 4; cqShow(); }); await p.waitForTimeout(150); await p.screenshot({ path: path.join(out, `chronosia_${name}_4_timetable.png`) }); await p.evaluate(() => { widget.i = 0; cqShow(); }); }
     await play('plan'); await p.waitForTimeout(200); expect(await last(), /Sara goes to the Time Capsule.*Tim can go to both/, 'plan done'); await say('leave');
     // Cougar Rock, the fruit and the sundial
-    await say('go to rock'); ok(await p.evaluate(() => !cFound('C') || C().at === 'ridge' || true), 'rock'); await tapTile(4, 9); await tapTile(10, 10); await say('go to rock'); ok(await p.evaluate(() => C().at === 'ridge'), 'walk to Cougar Rock'); await say('use cougar'); await p.waitForTimeout(200);
-    if (out && name !== 'phone') { await p.tap('#try'); await p.waitForTimeout(150); await p.screenshot({ path: path.join(out, `chronosia_${name}_5_cougar.png`) }); } const before = await p.evaluate(() => S.cards.map(c => c.r));
+    expect(await say('go to rock'), /not found that place yet/, 'Cougar Rock is still in the mist'); await tapTile(4, 9); await tapTile(11, 10); await say('go to rock'); ok(await p.evaluate(() => C().at === 'ridge'), 'walk to Cougar Rock'); await say('use cougar'); await p.waitForTimeout(200);
+    if (out && name !== 'phone' && await p.$('#try')) { await p.tap('#try'); await p.waitForTimeout(150); await p.screenshot({ path: path.join(out, `chronosia_${name}_5_cougar.png`) }); } const before = await p.evaluate(() => S.cards.map(c => c.r));
     await play('cougar'); await p.waitForTimeout(250); expect(await last(), /last job on Chronosia.*Timekeeper Cadet.*gold card/, 'all six done: the gold card'); const after = await p.evaluate(() => S.cards.map(c => c.r)); ok(after.length === before.length + 2 && after[after.length - 1] === 'gold', 'the last quest gives a card and a gold card');
     expect(await p.textContent('#status'), /Chronosia 6 of 6/, 'the status row'); await say('leave'); await tapTile(17, 10); expect(await last(), /ground sounds hollow/, 'the stone ring hints'); expect(await say('dig'), /old sundial.*You earn a card/, 'dig up the sundial'); expect(await say('dig'), /dug here before/, 'dig twice');
     await tapTile(4, 9); await tapTile(4, 7); await tapTile(16, 4); expect(await say('taste fruit'), /walk to the TimeTweak tree|TimeTweak fruit/, 'fruit'); await idle(); await p.waitForTimeout(300); expect(await last(), /everything runs backward/, 'tasting the fruit');
@@ -104,7 +104,8 @@ const { chromium } = require('playwright'); const path = require('path');
     // the record is kept; fly away; land again
     await p.waitForTimeout(300); await p.reload(); await p.waitForTimeout(500); ok(await p.evaluate(() => S.mode === 'chrono' && Object.keys(CQ).every(q => C().done[q]) && C().finds.length === 2 && C().gold === true), 'everything should be kept after a reload');
     expect(await say('fly'), /You walk to your ship|You lift off/, 'fly from anywhere'); for (let i = 0; i < 150; i++) { if (await p.evaluate(() => S.mode === 'space')) break; await p.waitForTimeout(100); } ok(await p.evaluate(() => S.mode === 'space' && S.at === 'metrica'), 'flying leaves you at Galaxy Metrica');
-    expect(await say('land'), /You land on Planet Chronosia/, 'land again'); expect(await say('hint'), /Every job on Chronosia is done/, 'the hint when all is done'); expect(await say('go to hall'), /You walk to the Council Hall/, 'found places stay found');
+    expect(await say('land'), /You land on Planet Chronosia/, 'land again'); expect(await say('hint'), /Every job on Chronosia is done/, 'the hint when all is done'); expect(await say('go to hall'), /The Council Hall\. A hall of tall pillars/, 'found places stay found');
+    } catch (e) { bad.push(`${name}: the test stopped: ${String(e.message).split('\n')[0]} (last words: "${await last().catch(() => '?')}")`); }
     await ctx.close();
   }
   await b.close(); bad.forEach(x => console.log('FAILED ' + x)); console.log('console errors: ' + (errs.length ? errs.join(' | ') : 'none')); console.log('RESULT: ' + (bad.length || errs.length ? 'FAIL' : 'PASS')); process.exit(bad.length || errs.length ? 1 : 0);
