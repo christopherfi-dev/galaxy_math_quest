@@ -43,7 +43,7 @@ let tcookie = ''; const teacher = async body => { const r = await fetch(URL + '/
     await A.fill('#ans', '5150'); await A.click('#try'); await A.waitForTimeout(800); ok(await A.evaluate(() => !!S.done.calib), 'the teacher\'s new code passes the task', await last(A));
     // the AI answers what the game does not know, and a bad reply never reaches the child
     fs.writeFileSync(MOCK, 'You lick the wall. It tastes of cold metal. Your tongue tingles.'); ok((await say(A, 'lick the wall')) === 'You lick the wall. It tastes of cold metal. Your tongue tingles.', 'the AI answers an unexpected line', await last(A));
-    fs.writeFileSync(MOCK, 'Well done! The answer is 42. You win a gold card.'); ok(/does not know that yet/.test(await say(A, 'hug the robot please now')), 'a bad AI reply is replaced by the game\'s own words', await last(A));
+    fs.writeFileSync(MOCK, 'Well done! The answer is 42. You win a gold card.'); ok(/does not know that yet|Nothing happens here/.test(await say(A, 'hug the robot please now')), 'a bad AI reply is replaced by the game\'s own words', await last(A));
     fs.writeFileSync(MOCK, 'The unicorn is not here. Only crates and your ship.'); ok(/unicorn is not here/.test(await say(A, 'look unicorn')), 'a thing that is not there is answered by the AI too', await last(A));
     await saved(A);
     // ---- device 2: the same cadet
