@@ -566,3 +566,79 @@ Five older tests were changed to match, because they expected the keys to float 
 - Children may miss the box during a task. Watch whether anyone looks for it.
 - You said the counts are not needed. A child who likes to see "Tasks 7 of 15" now has to tap More, My ship. If they ask for it, one small count could come back.
 
+## Added 2026-11-19 (sketch version 44): the first day with a class, and dead ends [Source: Marc]
+
+You told me what happened in class:
+
+- 13 of 14 students were engaged. They wanted to keep going through break, "even with the wonky keyboard and things popping up and down".
+- A couple of children tapped OPEN, then the crate. It did not work. They gave up.
+- One student stopped after about two minutes.
+
+### What the crate said
+
+| A child tries | The game said | What is in it |
+|---|---|---|
+| look crate | "One crate sits alone by the wall. Cold air comes from behind it." | The clue |
+| take crate | "Too heavy to carry. Maybe you can push it." | The answer |
+| open crate | "It is nailed shut." | Nothing to go on |
+| use crate | "Nothing happens." | Nothing to go on |
+
+So a child who tapped OPEN got a true answer and no reason to try again.
+
+Two more facts. [Proposal: read from the code]
+
+- **The crate is a secret, not a gate.** Pushing it opens a gap to a tunnel, a chest and a badge. Nothing else needs it. But the game never says so. The third tip on the screen says "now try your own idea. Push, open, take or use something."
+- **The Hint does not know what the child is working on.** At that moment it says "Look at your ship. Open the hatch under its wing."
+
+### The whole station
+
+`checks/dead_ends_count.js` takes every thing on the station with take, open, push and use. This is the count before today's change.
+
+| | Pairs |
+|---|---|
+| Things | 40 |
+| Thing-and-word pairs | 160 |
+| The word does something | 73 |
+| The game refuses | 87 |
+| Of those: one flat sentence ("It does not open." "Nothing happens.") | 75 |
+| Of those: a refusal with a second sentence to go on | 12 |
+
+The crate held two of the 75: open and use. So 73 are left.
+
+### Your own engine says dead ends are real [Conflict]
+
+Your Novus engine has a law: "Dead Ends Are Real. Most investigations lead nowhere useful. That's realistic." It also says the world gives "no directional cues" until the student has earned them. [Source: `reference/novus_txt v3_4`]
+
+Today two children met the first dead end and stopped. So your law and your class point different ways. That is your call, not mine.
+
+One thing may help you decide. There are two kinds of dead end.
+
+- **A dead end in the world.** The child looked into something and it led nowhere. They learned something true. Novus means this kind.
+- **A dead end in the words.** The child had the right idea, do something to that crate, and picked the wrong doing word. That teaches them nothing about the world. It teaches them the game is fussy.
+
+Novus never returns nothing. Every probe returns a measurement. A flat "It does not open." is not a measurement.
+
+### What I changed (only the crate)
+
+- open crate: "It is nailed shut. Cold air comes from behind it."
+- use crate: "You put your hands on the crate. It rocks a little."
+
+Open still fails. The dead end is still dead. The reply now carries what a child standing there would notice. It does not name the doing word.
+
+### Choices for the other 73 [Proposal]
+
+| Choice | What it costs |
+|---|---|
+| Leave them. Dead ends are real. | Some children stop at the first one. You say "try another word" a lot. |
+| Every "no" says one true thing the child would notice. No doing word is named. | I write about 73 short replies. Each needs a check that it gives no puzzle away. |
+| After two failed tries on one thing, the game names a doing word that works | Fastest for the child. It breaks "no directional cues". |
+| The first room is kind, the rest is not | The first room teaches how the game works. Children then meet real dead ends once they know to keep trying. |
+| The Hint looks at what the child last touched | A child at the crate gets a hint about the crate. It makes the Hint stronger everywhere. |
+
+### What could prove this wrong
+
+- I do not know whether the two children gave up on the crate or on the game. If they walked off and did something else, a dead end did its job.
+- Wanting to go on through break on day one may be newness. The real sign is whether they still ask in week three.
+- Being engaged is not the same as doing maths. A quick look at More, My ship on a few iPads shows tasks done.
+- One student in 14 is one student. Two things in the game are hard on a weak reader all the same: everything it says is text, and "Read to me" exists only in the opening story. The first reward also takes three steps: walk, look at the ship, open the hatch.
+

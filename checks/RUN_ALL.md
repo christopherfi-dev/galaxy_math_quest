@@ -37,6 +37,8 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `world_online_test.js` | The game page playing against the world server |
 | `world_teacher_page_test.js` | The Commander's Desk page |
 
+One more file is a count, not a test: `dead_ends_count.js` lists every thing on the station with take, open, push and use, and says how many replies are a flat "no". Run it with `node checks/dead_ends_count.js`.
+
 ## Number checks: every number worked out again in code
 
 | File | What it checks |

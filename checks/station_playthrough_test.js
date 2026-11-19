@@ -43,6 +43,8 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     expect(await say(String(code + 1)), /stays shut/, 'wrong locker code typed alone');
     expect(await say(String(code)), /magnet/i, 'locker code typed alone'); if (!(await onScreen('locker'))) bad.push(name + ': the locker is off the screen when you stand at it');
     await shot('1_locker');
+    // Marc's class, 2026-11-19: a couple of children tapped OPEN, crate, got a flat no, and gave up. Open still fails, but the reply must give them something to go on.
+    { const o = await say('open crate'); expect(o, /nailed shut\. .*(air|behind)/i, 'open crate should say more than no'); if (await p.evaluate(() => S.crate)) bad.push(name + ': open crate must not move the crate'); expect(await say('use crate'), /rocks/i, 'use crate should say more than nothing happens'); }
     await say('push crate'); await say('use wrench on vent'); await say('go gap'); await say('east'); expect(await say('open chest'), /badge/i, 'chest'); await say('go to dock');
     expect(await say('launch'), /Launch Bay/, 'launch from the dock');
     // ---- Shield Bay: 3-1 Asteroid Field, 3-2 Energy Grid, 3-3 Shield Calibration (real life)
