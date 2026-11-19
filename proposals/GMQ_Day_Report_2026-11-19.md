@@ -12,6 +12,7 @@
 |---|---|---|
 | 1 | **Built Operation Stardust**, your Galaxy Databa quest | preview link only |
 | 2 | **Put back a rule of yours I had dropped:** see the idea before you do it | in Stardust |
+| 3 | **Had your two unbuilt 2023 drafts read in full:** Shapes Quest 1 and Magnificent Measurements | a review, and a note of choices |
 
 The preview link is now **version 49**. The class link is still **version 43**. Your students see nothing new until you say "update the class link".
 
@@ -81,6 +82,7 @@ I wrote that down as the lead principle. Then I built Xylophora and the first dr
 | Xylophora: the lock, real tiles, "squares" or "square metres", the grove | Xylophora guide, section 13 |
 | Chronosia: keep the three open sheets, or put the steps back | Chronosia guide, "Changed 2026-11-19, overnight" |
 | The skills page (still paused) | `GMQ_Skills_Page_Design_v2_2026-11-19.md`, section 10 |
+| The last four standards: Planet Lengthar, Planet Geometria, Zephyron cut down, or leave them to the classroom | `GMQ_Last_Four_Standards_Options_v1_2026-11-19.md` |
 | The card battle: I need your rules and the card set | your word |
 
 ---
@@ -95,7 +97,7 @@ I wrote that down as the lead principle. Then I built Xylophora and the first dr
 
 "Has a quest" is not the same as "strong". Most of the new ones are met once.
 
-**What could fill the last four [Proposal]:** your own unbuilt plans match two of them. "Shapes Quest 1" (the Alien Construction Site on planet Geometria) is 2D shapes. "Magnificent Measurements" (Planet Lengthar) is measuring length. I have read only the first part of each. I have not started either. Say the word and I will read them in full and bring you options.
+**What could fill the last four [Proposal]:** your own unbuilt plans match two of them. "Shapes Quest 1" (planet Geometria) is 2D shapes. "Magnificent Measurements" (Planet Lengthar) is measuring. Both are now read in full. They are frames, not tasks: a story and names, with no shapes, objects, numbers or answers. So I did not build either. The choices, with what each costs, are in `GMQ_Last_Four_Standards_Options_v1_2026-11-19.md`. It is one page.
 
 ---
 
@@ -112,7 +114,8 @@ I wrote that down as the lead principle. Then I built Xylophora and the first dr
 
 ## 9. How it was checked
 
-TEST_LINE
+- **25 play tests** drive the game in a browser. All pass on the final version 49, in one run of everything. One of them plays the whole ship on three screens, wrong tries included.
+- **One fault was found on the way, by luck.** On an iPad mini held sideways, the locker's question slid out of view for cadets with long food names. A test failed one run in three. The table is smaller now, and the test always uses the longest names. A real iPad mini is the only full check.
 
 - **20,000 cadets' numbers** for Stardust, worked out again in Python. All 20,000 are different. Every one gives a ship that can be cleared.
 - **No reply and no nudge shows an answer.** The play test checks each one.
@@ -126,6 +129,8 @@ TEST_LINE
 | File | What it is |
 |---|---|
 | `proposals/GMQ_Stardust_Guide_v1_2026-11-19.md` | The ship: map, quests, a key for you, standards, what could prove it wrong, decisions |
+| `proposals/GMQ_Last_Four_Standards_Options_v1_2026-11-19.md` | One page: choices for the four standards with nothing |
+| `reviews/shapes_q1_and_measurements_q1.md` | The full review of your two unbuilt drafts |
 | `proposals/GMQ_AERO_Grade3_Map_v1_2026-11-19.md` | See the last section |
 | `proposals/GMQ_Night_Report_2026-11-19.md` | Last night: Xylophora, and Chronosia's open quests |
 | `HANDOFF_2026-11-17.md` | Everything, for the next session |
