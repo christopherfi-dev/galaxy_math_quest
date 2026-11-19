@@ -336,3 +336,43 @@ You were feeding the Gumblefish and said: "I keep thinking I can just tap that w
 
 Test: `checks/tap_words_test.js`.
 
+---
+
+## Added 2026-11-19 (sketch version 40): Go buttons and a small keyboard [Source: Marc]
+
+You asked: "Can you also add West East north and south as buttons to tap? Maybe a little mini keyboard, if possible, because every time they need to type it, their giant keyboard comes up on their iPad."
+
+### Go buttons
+
+A new row called **Go** sits under the doing words.
+
+| Place | Buttons |
+|---|---|
+| The station | north, south, east, west |
+| Voltara and the small worlds | west, east |
+| Chronosia's map | north, south, east, west |
+| Inside a place on Chronosia, in space, or while a task is open | none |
+
+One tap walks. No typing.
+
+### The small keyboard
+
+- **On a touch screen, tapping the command box no longer brings the iPad's big keyboard.** It brings small letter keys instead.
+- The small keys sit at the bottom of the screen. The page moves so that the box, the doing words, the Go row and the Here row stay in view above them.
+- They have the 26 letters, rub out, space and their own **Do it**.
+- **After a command they step aside,** so the answer and the picture can be seen. A tap on the box brings them back.
+- They can be moved by the bar at the top, and hidden with the cross.
+- **"Big keys"** on that bar switches to the iPad's own keyboard. A "Small keys" button then appears beside the box to switch back. The choice is remembered on that iPad.
+- A computer with a real keyboard sees none of this. Typing and Enter work as before.
+
+### The bag button no longer erases what you typed
+
+You said the FlavorBurst button "just pops up and describes what it is and then erased what you already just typed". That was the old behaviour, still on the class link when you tried it. From version 39 a bag word is added to the box.
+
+**What could prove this wrong:**
+- The letter keys are about as wide as a phone's. Watch whether small fingers hit the right one.
+- Watch whether children miss the picture when the page moves up to make room.
+- If a child types a lot, having to tap the box again after every command may annoy them. Then the keys should stay up.
+
+Test: `checks/small_keyboard_test.js`.
+
