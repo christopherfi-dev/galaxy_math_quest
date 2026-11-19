@@ -3,7 +3,8 @@
 //  because every time they need to type it, their giant keyboard comes up on their iPad."]
 //   - Go buttons: four on the station and on Chronosia's map, west and east on Voltara and the small worlds, none where they mean nothing. A tap walks.
 //   - on a touch screen the command box does not call the big keyboard. A tap on the box brings small letter keys. They type, rub out and send.
-//   - the small keys never cover the box, the Do row, the Go row or the Here row. They step aside after a command. They can be moved and hidden.
+//   - the small keys sit just above the box. They never cover the box, the Do row, the Go row, the Here row or the bag. The page does not move.
+//     They step aside after a command. They can be moved and hidden.
 //   - "Big keys" switches to the device's own keyboard and back, and the choice is remembered. With typed words in the box, a bag word is added, not erased.
 // Run: node checks/small_keyboard_test.js [folder for screenshots]
 const { chromium } = require('playwright'); const path = require('path');
@@ -35,7 +36,7 @@ const { chromium } = require('playwright'); const path = require('path');
     ok(await p.evaluate(() => $('cmd').getAttribute('inputmode') === 'none' && $('kb').hidden && $('kbt').hidden), 'on a touch screen the box should not call the big keyboard, the small keys start hidden, and no keyboard switch sits beside Do it');
     await p.tap('#cmd'); await p.waitForTimeout(350); ok(await p.evaluate(() => !$('kb').hidden && document.querySelectorAll('#kbkeys button').length === 29), 'a tap on the box should bring 26 letters, rub out, space and Do it');
     const lay = await p.evaluate(() => { const k = $('kb').getBoundingClientRect(), R = id => $(id).getBoundingClientRect(), over = r => r.width > 0 && r.left < k.right && k.left < r.right && r.top < k.bottom && k.top < r.bottom, inView = r => r.top >= 0 && r.bottom <= innerHeight; return { cmd: over(R('cmd')), verbs: over(R('verbs')), dirs: over(R('dirs')), nouns: over(R('nouns')), bag: over(R('bag')), cmdIn: inView(R('cmd')), nounsIn: inView(R('nouns')), kbIn: k.top >= 0 && k.bottom <= innerHeight && k.left >= 0 && k.right <= innerWidth, keyW: document.querySelector('#kbkeys button[data-k="q"]').getBoundingClientRect().width }; });
-    ok(!lay.cmd && !lay.verbs && !lay.dirs && !lay.nouns, 'the small keys cover the box or the word rows: ' + JSON.stringify(lay)); ok(lay.cmdIn && lay.nounsIn && lay.kbIn, 'the box, the Here row and the keys should all be on the screen: ' + JSON.stringify(lay)); ok(name === 'phone' || !lay.bag, 'the small keys cover the bag row'); ok(lay.keyW >= 30, 'a letter key is too narrow to tap: ' + lay.keyW);
+    ok(!lay.cmd && !lay.verbs && !lay.dirs && !lay.nouns && !lay.bag, 'the small keys cover the box or the word rows: ' + JSON.stringify(lay)); ok(lay.cmdIn && lay.kbIn, 'the box and the keys should both be on the screen: ' + JSON.stringify(lay)); ok(lay.keyW >= 30, 'a letter key is too narrow to tap: ' + lay.keyW);
     if (out) await p.screenshot({ path: path.join(out, `smallkeys_${name}.png`) });
     for (const k of ['g', 'i', 'v', 'e', 'x']) await kkey(k); await kkey('del'); await kkey('space'); await kkey('space'); r = await st(); ok(r.box === 'give ' && r.kb, 'typing g-i-v-e-x, rub out, space should leave "give ": "' + r.box + '"');
     // typed words, then a word from the bag: added, not erased
@@ -43,6 +44,8 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.tap('#nouns button[data-w="gumblefish"]'); r = await st(); expect(r.last, /Gulp! The Gumblefish spins/, 'type give, tap FlavorBurst, tap Gumblefish');
     // type a whole command on the small keys and send it with their own Do it
     await p.tap('#cmd'); await p.waitForTimeout(300); for (const k of ['l', 'o', 'o', 'k']) await kkey(k); await kkey('ok'); r = await st(); expect(r.last, /Sparkling River|river sparkles/i, 'l-o-o-k and Do it on the small keys'); ok(!r.kb && r.box === '', 'the small keys step aside after a command');
+    // the page must not move when the keys come and go
+    const y0 = await p.evaluate(() => { $('cmd').blur(); return window.scrollY; }); const y1 = await p.evaluate(() => { $('cmd').focus({ preventScroll: true }); return [window.scrollY, !$('kb').hidden]; }); await kkey('l'); await kkey('ok'); await p.waitForTimeout(400); const y2 = await p.evaluate(() => window.scrollY); ok(y1[1] && y1[0] === y0 && y2 === y0, `the page should not move when the small keys come and go: ${y0}, ${y1[0]}, ${y2}`);
     // move it, hide it
     await p.tap('#cmd'); await p.waitForTimeout(300); const before = await p.evaluate(() => $('kb').getBoundingClientRect().top); const g = await p.evaluate(() => { const q = $('kbgrip').getBoundingClientRect(); return [q.left + 10, q.top + 6]; });
     await p.mouse.move(g[0], g[1]); await p.mouse.down(); await p.mouse.move(g[0] + 10, g[1] - 120, { steps: 4 }); await p.mouse.up(); await p.waitForTimeout(150); ok(await p.evaluate(t => Math.abs($('kb').getBoundingClientRect().top - t) > 60 && !$('kb').hidden, before), 'the small keys should move when dragged by the bar');

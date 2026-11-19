@@ -358,7 +358,7 @@ One tap walks. No typing.
 ### The small keyboard
 
 - **On a touch screen, tapping the command box no longer brings the iPad's big keyboard.** It brings small letter keys instead.
-- The small keys sit at the bottom of the screen. The page moves so that the box, the doing words, the Go row and the Here row stay in view above them.
+- The small keys sit just above the box. They never cover the box, the doing words, the Go row, the Here row or the bag. The page does not move.
 - They have the 26 letters, rub out, space and their own **Do it**.
 - **After a command they step aside,** so the answer and the picture can be seen. A tap on the box brings them back.
 - They can be moved by the bar at the top, and hidden with the cross.
@@ -371,7 +371,7 @@ You said the FlavorBurst button "just pops up and describes what it is and then 
 
 **What could prove this wrong:**
 - The letter keys are about as wide as a phone's. Watch whether small fingers hit the right one.
-- Watch whether children miss the picture when the page moves up to make room.
+- While a child types, the keys cover the last lines of the log and the bottom edge of the picture. Watch whether that matters.
 - If a child types a lot, having to tap the box again after every command may annoy them. Then the keys should stay up.
 
 Test: `checks/small_keyboard_test.js`.
