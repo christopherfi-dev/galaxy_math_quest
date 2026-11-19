@@ -54,7 +54,7 @@ The eight missions, by page: 3 Restore Ancient Atlantis, 4 Sun Alignment Ceremon
 | # | Quest | Where | The maths | Yours or mine | Answers |
 |---|---|---|---|---|---|
 | 1 | Fix the clocks | Clock Tower | minutes past 59 make a new hour | [Source] your Task 1 | 7 "fine or broken", 4 times to fix |
-| 2 | The Time Quake log | Quake Station | how long between two times; a pattern | [Source] your Task 2 | 10 |
+| 2 | The seventh quake | Quake Station | find two patterns in time, and use them | [Source] your Task 2 | 1 open problem: two times |
 | 3 | Who goes where? | Council Hall | reading for detail, **with the booklet** | [Source] your Task 4, first half | 4 pairs of page numbers |
 | 4 | The Council timetable | Council Hall | read a timetable; how long between two times | [Source] your Tasks 3 and 4 | 10 |
 | 5 | The sleepy tortoise | Tortoise Grove | add minutes to a time | [Proposal] | 3, different for each cadet |
@@ -64,6 +64,34 @@ The eight missions, by page: 3 Restore Ancient Atlantis, 4 Sun Alignment Ceremon
 - A cadet can leave a quest half way. Their place is kept.
 - A wrong answer gives a hint. Some hints come close to the answer, so that nobody is stuck.
 - The sundial under the stones gives one more card.
+
+### Changed 2026-11-19 (sketch version 38): the quake quest is now one open problem [Source: Marc]
+
+You said the quake quest walked students through every step and gave them no chance to struggle. It has been rebuilt as the test case for how a big quest should work.
+
+**Before:** eleven small steps, each one marked. The game told the child to find each length, then asked for the +5, then told them about the 30 minutes of calm.
+
+**Now:**
+- **The purpose** [Source: your 2023 story]: the Watcher fears the seventh quake will break Chronosia apart. The Time Stabilizer can hold it, but only if it switches on at the very minute the quake begins and off at the very minute it ends.
+- **The log** shows the six quakes: when each began and ended. Nothing else. No "lasted" column. There is a box for notes that nobody marks. Paper is welcome.
+- **No steps are given.** The child decides what to work out.
+- **The answer goes into the Stabilizer:** an ON time and an OFF time.
+- **A wrong try plays out in the world.** "The Stabilizer roars. But the ground is still. It burns out before the quake begins. Too early." The four outcomes are too early, too late, too soon and too long. The right time is never shown. Then time winds back.
+- **A wrong try costs a charge.** The Stabilizer has three. When they are gone, **a caught time wisp recharges it.** So guessing is dear and thinking is cheap, and the quick practice feeds the big quest. If wisps are switched off, it recharges after a minute.
+- **A hint comes only when asked for.** The child taps Hint, or types `hint`. The Watcher gives one nudge at a time, four in all. No nudge holds a number. After the fourth she says: "The rest is yours to work out."
+- **The log for you** says how it went: "solved on try 3, with 1 nudge".
+
+**The four nudges:**
+1. "Look at one quake. How long did it last? Then look at the next one."
+2. "Write down how long each quake lasted. Do you see something?"
+3. "Now look at the quiet time: from the end of one quake to the start of the next."
+4. "You know how the quakes grow. You know how long the quiet lasts. So when does the seventh begin? And how long will it last?"
+
+**The answer:** ON at 5:34, OFF at 6:09.
+
+**What it costs:** some children will be stuck for a while. That is the point, but it needs you near, or the nudges. A child with all four nudges still has to do the sums.
+
+**Not changed yet:** the other three of your quests on Chronosia (the clocks, who goes where, the timetable) are still lists of steps.
 
 ### What is not built
 
@@ -91,7 +119,7 @@ The eight missions, by page: 3 Restore Ancient Atlantis, 4 Sun Alignment Ceremon
 
 ### Quest 2: the quakes [Source, recomputed]
 
-Lasted: 5, 10, 15, 20, 25, 30 minutes. Each is 5 longer. The calm between quakes is 30 minutes. Quake 7 begins at 5:34, lasts 35 minutes and ends at 6:09.
+Lasted: 5, 10, 15, 20, 25, 30 minutes. Each is 5 longer. The calm between quakes is 30 minutes. Quake 7 begins at 5:34, lasts 35 minutes and ends at 6:09. The child is not told any of this. They must find it.
 
 ### Quest 3: who goes where [Source: your profiles]
 
