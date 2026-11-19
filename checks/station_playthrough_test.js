@@ -51,7 +51,15 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await say('use magnet on grate'); expect(await say('fix robot'), /wakes/i, 'robot'); await say('push poster');
     expect(await say('talk robot'), /beeps: .*energy grid/i, 'the robot gives the next step'); if (await p.evaluate(() => !!widget)) bad.push(name + ': the robot opened a quiz');
     await say('use grid'); let t = await q(), g = t.match(/(\d+) sections\. Each section holds (\d+)/); await type(g[1] * g[2]); t = await q(); g = t.match(/Share the (\d+) cells equally over (\d+)/); await type(g[1] / g[2]);
-    t = await q(); g = t.match(/held (\d+) cells\. Now each holds (\d+)/); await shot('2_grid'); await type(g[2] - g[1]); expect(await last(), /2 of 3 Shield tasks/, 'energy grid');
+    t = await q(); g = t.match(/it held (\d+) cells\. Now it holds (\d+) cells/); await shot('2_grid');
+    // step 3 must ask about ONE section. A child could also think of the cells that moved (Marc typed 8), or of the whole grid (0 more). Both get kind words, and neither is marked right.
+    if (!g || !/^Look at one section\./.test(t) || !/than before\?$/.test(t)) bad.push(name + ': grid step 3 does not ask about one section: "' + t + '"');
+    if (!(await p.$('#toy .art svg[aria-label^="One section before: ' + g[1] + ' dots. One section now: ' + g[2] + ' dots"]'))) bad.push(name + ': grid step 3 has no before-and-now picture');
+    await type(g[1]); expect(await p.textContent('#msg'), new RegExp('one section only\\. How many more is ' + g[2] + ' than ' + g[1] + '\\?'), 'grid: the cells that moved');
+    { const see = await p.evaluate(() => { const m = document.getElementById('msg').getBoundingClientRect(), t = document.getElementById('toy').getBoundingClientRect(), a = document.querySelector('#toy .art').getBoundingClientRect(), y = document.getElementById('try').getBoundingClientRect(); return { msg: m.bottom <= Math.min(t.bottom, innerHeight) + 1 && m.top >= t.top - 1, pic: a.top >= t.top - 1, btn: y.bottom <= Math.min(t.bottom, innerHeight) + 1 }; });
+      if (!see.msg) bad.push(name + ': grid: the words after a wrong answer are out of sight'); if (!see.pic) bad.push(name + ': grid: the picture is cut off when the words show'); if (!see.btn) bad.push(name + ': grid: the Check button is out of sight when the words show'); }
+    await type(0); expect(await p.textContent('#msg'), /grid still has \d+ cells\. But one section holds more/, 'grid: 0 more');
+    await type(g[2] - g[1]); expect(await last(), /2 of 3 Shield tasks/, 'energy grid');
     await slip('use mat', 'calib'); expect(await last(), /Shield part is fitted/, 'shield part after three tasks');
     // ---- Engine Bay: 1-1 Alien Artifacts, 1-2 Alien Species, 1-3 Star Map (real life)
     await say('go to engine'); await p.waitForTimeout(200); await shot('3_engine');

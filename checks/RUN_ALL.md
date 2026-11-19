@@ -3,7 +3,7 @@
 Run from the top folder of the project.
 
 ```
-for c in checks/*_check.py; do echo "$c: $(python3 -I $c | tail -1)"; done
+for c in checks/*_check.py; do echo "$c: $(python3 $c | tail -1)"; done
 for t in checks/*_test.js checks/picture_audit.js; do echo "$t: $(node $t | tail -1)"; done
 ```
 
@@ -13,7 +13,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 
 | File | What it plays |
 |---|---|
-| `station_playthrough_test.js` | The whole station: 15 tasks, 5 parts, 18 secrets, launch |
+| `station_playthrough_test.js` | The whole station: 15 tasks, 5 parts, 18 secrets, launch. On the Energy Grid it also types the two other numbers a child could mean, and checks the words that come back are on the screen |
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
@@ -40,6 +40,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 
 | File | What it checks |
 |---|---|
+| `energy_grid_check.py` | The station's Energy Grid as built: all eight number pairs, the three ways the old third question could be read, and that the question now names one section |
 | `voltara_quest_check.py` | Voltara as built: the city, the river, every plan, the days, the four endings |
 | `galactic_trade_check.py` | Galactic Trade as built: rounding, every first trip, every season |
 | `chronosia_quest_design_check.py` | The Chronosia design: clocks, quakes, quake day |

@@ -32,7 +32,7 @@ The names and numbers are your own. [Source]
 | 2-3 Cargo Load | cargo scale | On screen | Tap 7 crates on to the scale to make 30 tons. |
 | **Shield Generator: multiply and divide** | Shield Bay | | |
 | 3-1 Asteroid Field | shield panel | On screen | Rocks drift in rows outside the windows. How many? |
-| 3-2 Energy Grid | grid on the wall | On screen | Equal groups of cells. A rock breaks a section. Share them again. |
+| 3-2 Energy Grid | grid on the wall | On screen | Equal groups of cells. A rock breaks a section. Share them again. Then: how many more does one section hold? (Reworded in version 42. See the end of this guide.) |
 | 3-3 Shield Calibration | token mat | **Real life** | Share real tokens equally over 5 sections of a mat. |
 | **Weapon System: odd and even** | Weapons Bay | | |
 | 4-1 Weapons Coding | cannon | On screen | Tap every odd drone, then every even one. |
@@ -425,4 +425,74 @@ The version number is still in view, at the end of the More row.
 - Students can still open Teacher. It is two taps away now, not in their face. If they still use it, it should go behind a code or the address trick.
 
 Test: `checks/one_screen_test.js`. It checks six screens: four iPads, a classroom board and a laptop.
+
+## Added 2026-11-19 (sketch version 42): the Energy Grid question, and words you can see [Source: Marc]
+
+You sent a photo of a student's iPad. It showed the Energy Grid, step 3 of 3: "Each section held 8 cells. Now each holds 10. How many more is that?" You wrote: "This question is unclear. I think it's 8? But that's wrong."
+
+You were right. The sentence was mine, and it was a bad one.
+
+### Three numbers fitted the old sentence
+
+The child in your photo had 5 sections of 8 cells. That is 40 cells. A rock breaks one section. The 40 cells are shared over 4 sections, 10 in each.
+
+| What a child could think | Answer | Is the thinking sound? |
+|---|---|---|
+| One section holds 2 more than before | 2 | Yes. This is what the game wanted. |
+| 8 cells moved: 2 more in each of 4 sections | 8 | Yes. This is what you thought. |
+| The whole grid holds the same as before | 0 | Yes. 40 before, 40 now. |
+
+"How many more is that?" did not say more of what. So a child who reasoned well could be marked wrong. [Proposal: mine, and wrong]
+
+Your own task did not have this step. It had two parts: the total, then the share. [Source: `reviews/station_bays_1-3.md`, 3-2] I added the third step when I built the station.
+
+### What changed
+
+- **Step 3 now asks about one section.** "Look at one section. Before the rock, it held 8 cells. Now it holds 10 cells. How many more cells does it hold now than before?" [Proposal]
+- **The picture for step 3 is new.** It shows one section before (8 dots) and one section now (10 dots), one under the other. The child can see the 2 extra. The old picture showed the whole new grid, which pointed at the whole-grid answers. [Proposal]
+- **A wrong answer gets one short line.** "Not yet. Look at one section only. How many more is 10 than 8?" A child who types 0 gets: "The grid still has 40 cells. But one section holds more. How many more?" [Proposal]
+- **Steps 1 and 2 are as they were.**
+
+### All eight number pairs, worked out again
+
+`checks/energy_grid_check.py` reads the pairs from the game page and works out each one.
+
+| Sections | Cells in each | In all | Sections after the rock | Cells in each now | One section gets | Cells that moved | Whole grid |
+|---|---|---|---|---|---|---|---|
+| 3 | 2 | 6 | 2 | 3 | 1 | 2 | 0 |
+| 3 | 4 | 12 | 2 | 6 | 2 | 4 | 0 |
+| 3 | 6 | 18 | 2 | 9 | 3 | 6 | 0 |
+| 4 | 3 | 12 | 3 | 4 | 1 | 3 | 0 |
+| 4 | 6 | 24 | 3 | 8 | 2 | 6 | 0 |
+| 5 | 4 | 20 | 4 | 5 | 1 | 4 | 0 |
+| 5 | 8 | 40 | 4 | 10 | 2 | 8 | 0 |
+| 6 | 5 | 30 | 5 | 6 | 1 | 5 | 0 |
+
+- Every answer is a whole number.
+- In every pair the three readings are three different numbers. So the old sentence was unclear for every child, not only the one in your photo.
+- The cells that moved are always the broken section's cells. That is why your 8 was also the "before" number.
+
+### A second fault: the words after a wrong answer were out of sight
+
+While I tested the new sentence I took a picture of the screen after a wrong answer. The words were not on it.
+
+- On an iPad mini held sideways, the task box is short. The line "Not yet…" sat below its bottom edge.
+- So a child who was wrong saw the answer box shake and go empty. No words. They had to guess why.
+- I measured five station tasks that take a typed number, on the class version (38), at the size of an iPad mini held sideways. Three hid their words: the fuel task, the Energy Grid and the power blocks. Two showed them: the asteroid battle and the locker. On version 42 all five show them. [Proposal: measured in a test browser, not seen on a real iPad]
+- Now, when a task says something back, the box moves just enough to show it. The picture, the question, the answer box and the Check button stay in view. A long message keeps both its lines. Before, the second line was cut off.
+
+### What could prove this wrong
+
+- A child may still type 10 for step 3, reading "how many cells does it hold now". The game then says "How many more is 10 than 8?" Watch whether that line is enough.
+- The new picture lets a child count the 2 extra dots. That is a fair way to compare at this stage. If you want the step to be mental subtraction, the picture should go.
+- I checked the wrong-answer words on screens the size of an iPad mini, an iPad and a phone, in a test browser. A real iPad's bars can differ by a few points.
+- I read the other number questions for the same fault: every "how many more" and "how far now" question in full, and the last sentence of the rest. I found none where two numbers both fit. One in the skills bank is a little loose: "Homes got 34 energy blocks this morning. They got 25 more at noon. How many blocks did homes get?" (The two numbers change each time.) It means in all, and does not say so. I have not changed it.
+
+### Choices for you [Proposal]
+
+| Choice | What it costs |
+|---|---|
+| Keep step 3 with the new words (built, on the preview link) | A comparison step that was not in your task |
+| Take step 3 out, so the task has your two parts | The task gets shorter. One line of code. |
+| Change the class link now | Say "update the class link" for all of version 42. Or say "fix the class question" and only this task changes on the class copy (it would show as version 38b). I have tried that small change on a copy and it works. |
 

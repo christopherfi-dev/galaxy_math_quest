@@ -115,7 +115,7 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .credits { margin-top: 10px; border-top: 1px solid var(--line, #33476a); padding-top: 8px; } .credits .pies { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
 .ratbar { height: 12px; border-radius: 6px; background: #1d2c52; overflow: hidden; } .ratbar div { height: 100%; width: 100%; background: #ffb23e; transition: width .1s linear; } .ratrow { font-size: 1.5rem; margin: 0; letter-spacing: 2px; line-height: 1.2; }
 .tipbox { border-left: 4px solid var(--accent); padding: 4px 12px; margin: 4px 0; } .tipbox p { margin: 3px 0; font-size: 1.08rem; }
-.msg { min-height: 1.4em; font-weight: 700; } .msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
+.msg { min-height: 1.4em; font-weight: 700; flex: none; } .msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
 .meter { display: flex; gap: 6px; align-items: center; font-family: var(--display); font-size: .85rem; color: var(--muted); }
 .pip { width: 26px; height: 12px; border-radius: 3px; border: 1.5px solid var(--muted); } .pip.on { background: var(--good); border-color: var(--good); }
 .crates { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 6px; }
@@ -282,7 +282,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 41</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 42</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -1041,6 +1041,7 @@ const PIC = {
     if (d.hu && (d.te || d.on)) x += 8; for (let i = 0; i < d.te; i++) { s += `<rect x="${x}" y="8" width="5" height="40" fill="${PK.green}" stroke="${PK.white}" stroke-width="1"/>`; for (let k = 1; k < 10; k++) s += LN(x, 8 + k * 4, x + 5, 8 + k * 4, PK.deep, .5); x += 9; }
     if (d.te && d.on) x += 8; for (let i = 0; i < d.on; i++) s += sq(x + Math.floor(i / 5) * 9, 8 + (i % 5) * 8.4, 6, PK.amber); if (d.on) x += d.on > 5 ? 18 : 9;
     return SV(Math.max(150, x + 6), 56, s, 'base-ten blocks: big squares, rods and small cubes'); },
+  beforeNow(d) { const u = Math.min(20, 190 / d.b), row = (y, n, lab) => TX(8, y + u / 2 + 4, lab, { a: 'start', s: 12, f: PK.ink }) + Array.from({ length: n }, (_, i) => `<circle cx="${f1(64 + i * u + u / 2)}" cy="${f1(y + u / 2)}" r="${f1(u * .36)}" fill="${PK.amber}"/>`).join(''); return SV(260, f1(u * 2 + 26), row(6, d.a, 'Before') + row(u + 20, d.b, 'Now'), `One section before: ${d.a} dots. One section now: ${d.b} dots.`).replace('style="', 'style="max-height:100px;'); },
   array(d) { const u = Math.min(24, 240 / d.c, 120 / d.r), ox = (260 - d.c * u) / 2; let s = ''; for (let y = 0; y < d.r; y++) for (let x = 0; x < d.c; x++) s += `<circle cx="${f1(ox + x * u + u / 2)}" cy="${f1(6 + y * u + u / 2)}" r="${f1(u * .36)}" fill="${PK.amber}"/>`; return SV(260, f1(d.r * u + 12), s, `${d.r} rows of ${d.c} dots`); },
   shape(d) {
     let s = d.circle ? `<circle cx="100" cy="75" r="58" fill="${PK.blue}" fill-opacity=".85" stroke="${PK.white}" stroke-width="2.5"/>` : `<polygon points="${d.pts.map(p => p.map(f1).join(',')).join(' ')}" fill="${PK.blue}" fill-opacity=".85" stroke="${PK.white}" stroke-width="2.5" stroke-linejoin="round"/>`;
@@ -1291,6 +1292,11 @@ function card(force) {
 /* =====================================================================
    TOYS: locker lock, mini battle, mini quest, project
    ===================================================================== */
+/* The words a task says back (right, not yet, a pointer) must never sit below the edge of the task box.
+   On an iPad mini held sideways the box is short, and a child who was wrong saw only a shake. */
+function msgSee() { const t = $('toy'), m = $('msg'); if (!t || t.hidden || !m || !m.textContent) return; const mr = m.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (mr.bottom > tr.bottom - 6) t.scrollTop += mr.bottom - tr.bottom + 10; }
+try { new MutationObserver(ms => { const m = $('msg'); if (m && ms.some(x => x.target === m || x.target.parentNode === m)) msgSee(); }).observe($('toy'), { childList: true, characterData: true, subtree: true }); } catch (e) {}
+
 function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; try { fit(); } catch (e) {}      /* give the task its room now, before the number pad is placed */
   padPrep(); drawWords(); if (typeof kbHide === 'function') kbHide(); }
 function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); drawWords(); }
@@ -1408,6 +1414,7 @@ function check() {
   } else {
     beep(140, .2, 'square'); m.className = 'msg bad';
     m.textContent = { battle: 'Not yet. Count one row. Then count the rows.', fuel: 'Not yet. Take away the tens. Then the ones.', grid: 'Not yet. Look at the rows of cells.', blocks: 'Not yet. Count the big squares, then the rods, then the small cubes.', shells: 'Not yet. Add the tens. Then add the ones.', locker: 'The lock stays shut. Read the sign. Then count.' }[widget.kind];
+    if (widget.bad) { const t = widget.bad(parseInt(v, 10)); if (t) m.textContent = t; }
     $('ans').value = ''; $('ans').classList.remove('shake'); void $('ans').offsetWidth; $('ans').classList.add('shake');
   }
 }
@@ -1525,9 +1532,10 @@ function nextHop() {
 /* 3-2 ENERGY GRID: equal groups, then share them again. Each answer feeds the next question. */
 const GRIDS = [[3, 2], [3, 4], [3, 6], [4, 3], [4, 6], [5, 4], [5, 8], [6, 5]];
 function startGrid() { const [g, e] = pick(GRIDS); widget = { kind: 'grid', hits: 0, need: 3, tries: 0, g, e, next: nextGrid }; nextGrid(); }
-function nextGrid() { const w = widget, T = w.g * w.e, q = T / (w.g - 1), st = [[`The grid has ${w.g} sections. Each section holds ${w.e} power cells. How many cells in all?`, T], [`A rock breaks one section. Share the ${T} cells equally over ${w.g - 1} sections. How many in each?`, q], [`Each section held ${w.e} cells. Now each holds ${q}. How many more is that?`, q - w.e]][w.hits]; w.ans = st[1];
+function nextGrid() { const w = widget, T = w.g * w.e, q = T / (w.g - 1), st = [[`The grid has ${w.g} sections. Each section holds ${w.e} power cells. How many cells in all?`, T], [`A rock breaks one section. Share the ${T} cells equally over ${w.g - 1} sections. How many in each?`, q], [`Look at one section. Before the rock, it held ${w.e} cells. Now it holds ${q} cells. How many more cells does it hold now than before?`, q - w.e]][w.hits]; w.ans = st[1];
+  w.bad = w.hits === 2 ? n => n === 0 ? `The grid still has ${T} cells. But one section holds more. How many more?` : `Not yet. Look at one section only. How many more is ${q} than ${w.e}?` : null;
   numberToy(`<p class="eyebrow">Shield Generator · task 2 of 3 · step ${w.hits + 1} of 3</p><p class="mw"><b>Maths word: equal groups.</b> Equal groups all hold the same number. To divide is to share into equal groups.</p><h3>Energy Grid</h3>
-    <div class="art">${drawPic({ t: 'array', r: w.hits === 2 ? w.g - 1 : w.g, c: w.hits === 2 ? q : w.e })}</div><p class="q">${st[0]}</p>`, 'cells'); }
+    <div class="art">${drawPic(w.hits === 2 ? { t: 'beforeNow', a: w.e, b: q } : { t: 'array', r: w.g, c: w.e })}</div><p class="q">${st[0]}</p>`, 'cells'); }
 /* 4-2 AMMO COUNT: five colours of counters. Every rack must hold an even number. */
 const RACKC = [['red', '#ff7a6b'], ['blue', '#6db3ff'], ['green', '#6fd08a'], ['gold', '#ffd25e'], ['white', '#f4f7fc']];
 function startRacks() {
