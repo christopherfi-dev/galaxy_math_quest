@@ -28,7 +28,8 @@ let tcookie = ''; const teacher = async body => { const r = await fetch(URL + '/
     const A = await open(820, 1180);
     ok(await A.evaluate(() => NET.found && !NET.on && widget && widget.kind === 'login' && !$('toy').hidden), 'with a server beside it, the page asks who is flying');
     ok(await A.evaluate(() => getComputedStyle(document.querySelector('.tbar')).display === 'none'), 'the teacher bar is hidden from cadets');
-    await A.fill('#cmd', 'look ship'); await A.press('#cmd', 'Enter'); ok(await A.evaluate(() => widget && widget.kind === 'login'), 'nothing can be played behind the log in');
+    if (await A.isVisible('#cmd')) { await A.fill('#cmd', 'look ship'); await A.press('#cmd', 'Enter'); }      /* on an iPad the log in takes the whole desk, so there is no box to type in (sketch version 43) */
+    ok(await A.evaluate(() => widget && widget.kind === 'login'), 'nothing can be played behind the log in');
     await login(A, 'Poop Head', '1234'); ok(/own name/.test(await A.textContent('#msg')), 'a rude name is refused at log in', await A.textContent('#msg'));
     await login(A, 'Mia', '48'); ok(/4 digits/.test(await A.textContent('#msg')), 'a short secret number is refused');
     await login(A, 'Mia', '4821'); let st = await A.evaluate(() => ({ on: NET.on, name: $('netname').textContent, bar: !$('netbar').hidden, mode: S.mode, cards: S.cards.length }));

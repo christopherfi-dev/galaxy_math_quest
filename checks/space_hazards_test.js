@@ -46,7 +46,8 @@ const { chromium } = require('playwright'); const path = require('path');
     ok(await p.evaluate(() => !$('pad').hidden && $('ans').getAttribute('inputmode') === 'none'), 'the number pad should be up, with no full keyboard');
     const vis = await p.evaluate(() => { const r = $('hzq').getBoundingClientRect(), pr = $('pad').getBoundingClientRect(); return { inView: r.top >= 0 && r.bottom <= innerHeight, clear: pr.left >= r.right || pr.top >= r.bottom || pr.bottom <= r.top || pr.right <= r.left || pr.left > $('ans').getBoundingClientRect().right }; });
     ok(vis.inView, 'the sum is not in view'); ok(vis.clear, 'the number pad covers the sum');
-    expect(await say('fly to databa'), /space hazard/i, 'typing during a hazard');
+    // On an iPad a task takes the desk, so there is no box to type in during a hazard (sketch version 43). On a phone the box is still there and the game says where you are.
+    if (await p.isVisible('#cmd')) expect(await say('fly to databa'), /space hazard/i, 'typing during a hazard'); else ok(await p.evaluate(() => document.body.classList.contains('desk') && !!document.getElementById('leave')), 'during a hazard on an iPad the desk should hold only the hazard, with its own way out');
     await answer(true); ok(await p.evaluate(() => widget.miss === 1 && widget.i === 1), 'a wrong answer should count one slip, then the right one moves on');
     if (out) await p.screenshot({ path: path.join(out, `hazard_${name}_2_sum.png`) });
     for (let i = 1; i < 10; i++) await answer(false); await p.waitForTimeout(250);

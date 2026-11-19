@@ -17,8 +17,9 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
+| `still_picture_test.js` | The picture stays still: 23 moments of play on six screens. After each one the picture is in the same place at the same size, the page has not scrolled, no keys and no task sit on the picture, keys show only when needed, and the counts are off the main screen |
 | `one_screen_test.js` | The picture, the box and every word row are on the screen at once on four iPad screens, a board and a laptop; the More menu hides the mission, ship, cards and teacher's things until asked |
-| `small_keyboard_test.js` | Go buttons for each kind of place; the small letter keyboard: it never covers the box or the word rows, types, sends, moves, hides, and hands over to the big keyboard and back |
+| `small_keyboard_test.js` | Go buttons for each kind of place; the small letter keyboard: on an iPad it sits on the desk, never on the picture or the box, and cannot be dragged; it types, sends, hides, and hands over to the big keyboard and back |
 | `tap_words_test.js` | A tapped word goes into the box: the Gumblefish moment, doing word and thing in either order, bag things, the doing words for each kind of place |
 | `practice_evidence_test.js` | Practice evidence under the dashboard's 37 skill codes: what is kept, the teacher view with a tab for each thread, counts only, readable, kept after a reload |
 | `mud_rats_test.js` | Mud rats on Voltara: the surprise attack in a dark street, a win, running, too slow, light ends it, band sizes, the rest, the switch |
@@ -28,7 +29,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `space_hazards_test.js` | The four space hazards: 200,000 sums checked, a hazard passed, failed and flown around, the record kept, and replies to doing words like "cut" |
 | `remember_test.js` | The game remembers what you were looking at: "use wrench", "open", "push it" |
 | `reading_card_test.js` | The "read, then OK" cards |
-| `number_pad_test.js` | The floating number pad |
+| `number_pad_test.js` | The number pad: on an iPad it has its own place on the desk and never sits on the picture; on a phone it floats and can be moved |
 | `kind_words_test.js` | Rude words are refused and never shown |
 | `trainer_paths_test.js` | The teacher's skills bank |
 | `picture_audit.js` | 10,000 problems for each picture skill |

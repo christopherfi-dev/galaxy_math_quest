@@ -496,3 +496,73 @@ While I tested the new sentence I took a picture of the screen after a wrong ans
 | Take step 3 out, so the task has your two parts | The task gets shorter. One line of code. |
 | Change the class link now | Say "update the class link" for all of version 42. Or say "fix the class question" and only this task changes on the class copy (it would show as version 38b). I have tried that small change on a copy and it works. |
 
+## Added 2026-11-19 (sketch version 43): the picture stays still [Source: Marc]
+
+You wrote: "All of that stuff below the buttons, about the number of ship parts and all of that, is not needed on the main screen. They don't need a keyboard. Unless it only appears when they type. We don't want to cover the screen? We don't want the playing area to move up or down and move away from the screen. It keeps jumping around."
+
+I had read your second photo as a question about the sum. It was about the screen. This section is the answer to what you meant.
+
+### What I measured first
+
+I played the same moments on the class version (38) and on the preview version (42), at the size of an iPad held sideways.
+
+| Your point | Class version (38) | Preview version (42) |
+|---|---|---|
+| The picture should not move | To reach a doing word, the page had to slide up 444 points, and most of the picture went off the top. When a task opened, the picture shrank from 509 to 134 points high. That is the thin strip in your photo. | It stayed in place. But it still shrank, from 609 to 234 points high, when a task opened. |
+| Nothing should cover the screen | The number keys sat on the task | The letter keys sat on the picture |
+| The counts are not needed | Always on the screen | Always on the screen |
+
+So version 42 had not fixed what you saw. [Proposal: measured in a test browser]
+
+### What changed: a picture and a desk
+
+On an iPad the screen now has two fixed parts.
+
+- **The picture.** It never moves. It never changes size. Nothing is ever put on top of it.
+- **The desk.** It holds the box and the word rows. Held sideways, the desk is beside the picture. Held upright, it is under the picture.
+
+Then four rules. [Proposal]
+
+1. **A task opens on the desk.** It takes the place of the box and the word rows. They are not needed while a task is open: the game only said "Finish this first" if a child used them. When the task closes, they are back in the same places.
+2. **Number keys come only with a task that asks for a number.** They lie on the desk, under or beside the task. They do not float and cannot be dragged onto the picture.
+3. **Letter keys come only when a child taps the box.** They sit at the far end of the desk. They go when the command is sent.
+4. **The counts are under More, My ship.** Secrets, parts, tasks, mission and cards. The main screen shows the picture, the game's words, the box and the word rows. Nothing else.
+
+The game's words under the picture now have a fixed height too. Before, a long reply made that strip taller and the picture a little shorter.
+
+### What a task looks like now
+
+- Held sideways, a task is as narrow as a phone screen. So it uses the phone's layout: picture above the words.
+- It has the whole height of the desk. Before, it had less than half the screen and its top or bottom was often cut off.
+- If a task is a little too tall, it opens with its question, answer box and Check in view. The heading is above; a child can scroll up to it.
+
+I opened 31 kinds of task this way: every station task, a space hazard, eight Voltara tasks and seven Chronosia tasks. All fit. The picture did not move for any of them.
+
+### What it costs
+
+- **During a task there is no box, no word rows and no More.** To use them, tap Leave. This includes you: the Teacher shortcuts are behind More, so leave the task first.
+- **The asteroid battle opens by itself** when a child walks into the Shield Bay. It now takes the desk at once. Leave closes it.
+- **Held upright, the letter keys cover the right-hand end of the lower word rows.** The first word of each row stays in reach. Held sideways they cover nothing.
+- **On an older, smaller iPad held sideways** the picture is about 30 points narrower than before, because the desk must be wide enough for a task.
+- **A phone is unchanged.** It is too small for two fixed parts. Your students use iPads.
+
+### How it is checked
+
+`checks/still_picture_test.js` plays 23 moments on six screens: an iPad and an iPad mini, each sideways and upright, a classroom board and a laptop. After every moment it checks:
+
+- the picture is in exactly the same place, at exactly the same size
+- the page has not scrolled, and cannot scroll
+- no keys and no task are on the picture
+- keys are on the screen only when the box was tapped, or a task asks for a number
+- the counts are not on the main screen
+- in a task, the question, the answer box, Check and the words after a wrong answer can all be seen
+
+Five older tests were changed to match, because they expected the keys to float or the box to be there during a task: the number pad, the small keyboard, one screen, space hazards, and the two that use the Teacher shortcut or the log in.
+
+### What could prove this wrong
+
+- I tested in a browser set to iPad sizes. A real iPad's bars change the height by a few points, and Safari can behave differently when a real finger taps a box. One student's iPad, held both ways, is the real test.
+- The picture and the desk are sized from the screen when the page opens or turns. If Safari's bars slide away mid-game, the sizes are worked out again. That would be one small move, not a jump per tap. I could not test it here.
+- Children may miss the box during a task. Watch whether anyone looks for it.
+- You said the counts are not needed. A child who likes to see "Tasks 7 of 15" now has to tap More, My ship. If they ask for it, one small count could come back.
+
