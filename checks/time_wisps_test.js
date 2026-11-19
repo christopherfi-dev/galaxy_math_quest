@@ -58,6 +58,7 @@ const { chromium } = require('playwright'); const path = require('path');
     // cards are never traded up
     await p.evaluate(() => { S.q4 = 0; S.cards = []; for (let i = 0; i < 30; i++) S.cards.push({ r: 'common', n: 'Laser Cannon' }); drawCards(); }); ok(!(await p.$('#cards button')) && !/Swap/.test(await p.textContent('#cards')), '30 common cards and no credits: nothing can be traded');
     // turning credits in
+    await p.evaluate(() => { menuOpen('cards'); }); await p.waitForTimeout(150);      /* the cards wait behind the More row */
     await p.evaluate(() => { S.cards = [{ r: 'rare', n: 'Void Vortex' }]; S.q4 = 11; drawCards(); }); expect(await p.textContent('#cards'), /Practice credits: 2¾ = 2\.75 = 11 quarters[\s\S]*Turn in 1 credit for a common card[\s\S]*A rare card costs 12\. You need 9¼ more\.[\s\S]*A gold card costs 24\. You need 21¼ more\./, 'with 2¾ credits');
     await p.tap('#cards button[data-to="common"]'); await p.waitForTimeout(150); ok(await p.evaluate(() => S.cards.length === 1 && S.q4 === 11), 'one tap must not turn in'); expect(await p.textContent('#cards button[data-to="common"]'), /Are you sure\? Tap again/, 'turning in asks first');
     await p.tap('#cards button[data-to="common"]'); await p.waitForTimeout(200); st = await p.evaluate(() => ({ c: S.cards.map(c => c.r).join(), q: S.q4 })); ok(st.c === 'rare,common' && st.q === 7, 'after turning in 1 credit: ' + JSON.stringify(st)); expect(await last(), /You turn in 1 credit for a common card\. You have 1¾ credits left\./, 'the turn-in words');

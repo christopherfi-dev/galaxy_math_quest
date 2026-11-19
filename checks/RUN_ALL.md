@@ -17,6 +17,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
+| `one_screen_test.js` | The picture, the box and every word row are on the screen at once on four iPad screens, a board and a laptop; the More menu hides the mission, ship, cards and teacher's things until asked |
 | `small_keyboard_test.js` | Go buttons for each kind of place; the small letter keyboard: it never covers the box or the word rows, types, sends, moves, hides, and hands over to the big keyboard and back |
 | `tap_words_test.js` | A tapped word goes into the box: the Gumblefish moment, doing word and thing in either order, bag things, the doing words for each kind of place |
 | `practice_evidence_test.js` | Practice evidence under the dashboard's 37 skill codes: what is kept, the teacher view with a tab for each thread, counts only, readable, kept after a reload |

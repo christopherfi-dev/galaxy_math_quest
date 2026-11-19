@@ -36,7 +36,8 @@ const { chromium } = require('playwright'); const path = require('path');
     const bar = await p.locator('#padbar').boundingBox(); await p.mouse.move(bar.x + 20, bar.y + 10); await p.mouse.down(); await p.mouse.move(60, 200, { steps: 6 }); await p.mouse.up(); const moved = await pad();
     if (Math.abs(moved.x - 40) > 12 || Math.abs(moved.y - 190) > 12) bad.push(name + ': dragging the bar should move the pad: ' + JSON.stringify(moved));
     await p.mouse.move(moved.x + 20, moved.y + 10); await p.mouse.down(); await p.mouse.move(-500, -500, { steps: 4 }); await p.mouse.up(); const edge = await pad(); if (edge.x < 0 || edge.y < 0) bad.push(name + ': the pad can be dragged off the screen');
-    await p.mouse.move(edge.x + 20, edge.y + 10); await p.mouse.down(); await p.mouse.move(120, 300, { steps: 6 }); await p.mouse.up(); const kept = await pad(); if (out) await p.screenshot({ path: path.join(out, `pad_${name}_2_moved.png`) });
+    const clearY = await p.evaluate(() => Math.max(14, Math.min(300, $('leave').getBoundingClientRect().top - $('pad').offsetHeight - 24)));      /* park the pad where it does not sit on the task's own buttons */
+    await p.mouse.move(edge.x + 20, edge.y + 10); await p.mouse.down(); await p.mouse.move(120, clearY + 10, { steps: 6 }); await p.mouse.up(); const kept = await pad(); if (out) await p.screenshot({ path: path.join(out, `pad_${name}_2_moved.png`) });
     // the full keyboard, and back
     await p.locator('#padkb').tap(); await p.waitForTimeout(150); A = await first(); st = await pad(); bx = await box(A); if (!st.mini || bx.mode !== 'numeric') bad.push(name + ': ABC should fold the pad and give the device keyboard back: ' + JSON.stringify([st, bx]));
     if (await p.locator('#padkeys').isVisible()) bad.push(name + ': the keys should be hidden when the pad is folded');

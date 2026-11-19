@@ -28,6 +28,19 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
+/* ONE SCREEN. [Source: Marc, 2026-11-19, with a photo of a student's iPad: "this entire bottom screen pops up. It should be hidden until they want to see it... like a little mini menu."]
+   The picture, the box and the word rows share the screen. Everything else waits behind the More row. On a screen held sideways the controls sit beside the picture. */
+#side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+#panels { display: flex; flex-direction: column; gap: 10px; } #panels > * { display: none; } #teacherbox { flex-direction: column; gap: 10px; }
+#panels[data-open="mission"] > [data-m="mission"]:not([hidden]), #panels[data-open="ship"] > [data-m="ship"], #panels[data-open="cards"] > [data-m="cards"], #panels[data-open="teacher"] > [data-m="teacher"] { display: flex; }
+.mbtn { border-style: dotted; } .mbtn.on { background: var(--accent); color: var(--accent-ink); border-style: solid; } .mbtn.new::after { content: ' ●'; color: #d9534f; }
+body.online #m_teacher { display: none; } body.online.teacher #m_teacher { display: revert; }
+@media (orientation: landscape) and (min-width: 900px) {
+  body .wrap { max-width: 1500px; display: grid; grid-template-columns: minmax(0, 1fr) clamp(290px, 30vw, 370px); column-gap: 14px; row-gap: 8px; align-items: start; padding-block: 8px 8px; }
+  body .wrap > #netbar, body .wrap > #toold { grid-column: 1 / -1; }
+  body .wrap > .console { height: calc(100vh - 34px); height: calc(100dvh - 34px); min-height: 300px; }
+  body #side { max-height: calc(100vh - 34px); max-height: calc(100dvh - 34px); overflow-y: auto; padding: 2px 4px 2px 2px; }
+}
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.08rem; line-height: 1.45; }
 .wrap { max-width: 880px; margin: 0 auto; padding-block: 10px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -134,7 +147,7 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .toy:has(.wires), .toy:has(.codes) { max-height: 64vh; max-height: 64dvh; }
 .field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .toy .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
 .word.hintb { border-style: dashed; }
-#t_ver { margin-left: auto; } #toold { border-color: var(--bad); }
+#t_ver { margin-left: auto; font-size: .78rem; } #toold { border-color: var(--bad); }
 .toy .wire.on::before { content: '✓ '; font-weight: 700; } .toy .wire { transition: background .12s, transform .12s; } .toy .wire:active { transform: scale(.96); }
 .plan21 { gap: 5px 6px; margin: 0; } .plan21 .wire { padding: 5px 10px; font-size: .93rem; } .plan21 .cn { min-width: 6.4em; } .planrow { gap: 8px 14px; } .planrow #spare { color: #6fd08a; } .toy:has(.plan21) { gap: 5px; max-height: 80vh; max-height: 80dvh; }
 .pv { font-weight: 500; opacity: .85; font-size: .88em; white-space: nowrap; } .key { font-size: .8rem; margin: 0 0 2px; } #info { min-height: 1.3em; margin: 2px 0; color: var(--ink, inherit); } #tmw { flex-basis: 100%; font-size: .85rem; }
@@ -244,7 +257,6 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 40</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -258,6 +270,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     <div class="log" role="log" aria-live="polite"><div class="chips" id="status"></div><div id="log"></div></div>
   </div>
 
+  <div id="side">
   <form id="say" autocomplete="off">
     <div class="sayrow">
       <input id="cmd" type="text" maxlength="50" placeholder="like: push crate" autocapitalize="off" spellcheck="false" aria-label="What do you do?">
@@ -269,13 +282,16 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 41</span></div>
 
-  <section class="box" id="mission" aria-label="Your mission on Voltara" hidden></section>
-  <section class="box" id="partsbox" aria-label="Your ship parts and tasks"></section>
-  <section class="box" id="stars" aria-label="Your star chart"></section>
-  <section class="box" id="cards" aria-label="Your cards"></section>
   <section class="box" id="report" aria-label="Mission report" hidden></section>
-
+  <div id="panels">
+  <section class="box" id="mission" data-m="mission" aria-label="Your mission on Voltara" hidden></section>
+  <section class="box" id="partsbox" data-m="ship" aria-label="Your ship parts and tasks"></section>
+  <section class="box" id="cards" data-m="cards" aria-label="Your cards"></section>
+  <div id="teacherbox" data-m="teacher">
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><span class="note" id="t_now"></span></p>
+  <section class="box" id="stars" aria-label="Your star chart"></section>
   <details class="box">
     <summary>For the teacher: what this sketch shows</summary>
     <p class="note">Galaxy Math Quest. This is a sketch, not the real build.</p>
@@ -310,6 +326,9 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     <p class="note">"Go straight to Voltara" skips the opening and the station. It keeps the cards, the bag and anything already done. It is for you, to look at the quest. Students reach Voltara by fitting their five ship parts and launching.</p>
     <p class="note">The opening uses your own words from the student site: the home page, then the Space Station Tasks page, shortened.</p>
   </details>
+  </div>
+  </div>
+  </div>
 </div>
 
 <script>
@@ -564,7 +583,7 @@ function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arr
 /* ways to go, as words to tap [Source: Marc, 2026-11-19: "Can you also add West East north and south as buttons to tap?"] */
 function dirWords() { if (!S || widget) return []; return S.mode === 'station' ? ['north', 'south', 'east', 'west'] : S.mode === 'planet' || S.mode === 'world' ? ['west', 'east'] : S.mode === 'chrono' && C().at === 'map' ? ['north', 'south', 'east', 'west'] : []; }
 function drawDirs() { const el = $('dirs'); let d = []; try { d = dirWords(); } catch (e) {} const sig = d.join(); if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !d.length; el.innerHTML = '<span class="lab">Go</span>' + d.map(x => `<button class="word dir" type="button" data-d="${x}">${x}</button>`).join(''); el.querySelectorAll('button').forEach(b => b.onclick = () => act('go ' + b.dataset.d)); }
-function drawWords() { drawDirs(); if (S && drawWords.m !== S.mode) { drawWords.m = S.mode; try { drawBag(); } catch (e) {} }      /* the doing words fit the kind of place */
+function drawWords() { fitSoon(); drawDirs(); if (S && drawWords.m !== S.mode) { drawWords.m = S.mode; try { drawBag(); } catch (e) {} }      /* the doing words fit the kind of place */
   let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
   el.innerHTML = '<span class="lab">Here</span>' + list.map(x => `<button class="word noun" type="button" data-w="${esc(x[0])}">${esc(x[1])}</button>`).join('');
   el.querySelectorAll('button').forEach(b => b.onclick = () => chipTap(b.dataset.w, b.textContent, false)); }
@@ -580,7 +599,17 @@ $('card').addEventListener('pointerdown', e => { if (!(e.target.closest && e.tar
 document.addEventListener('keydown', e => { if (!READ.open || (e.key !== 'Enter' && e.key !== ' ')) return; e.preventDefault(); e.stopPropagation(); if ($('cardok').disabled) readNudge(); else readOk(); }, true);
 const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your ship. Or type: look ship.', 'Tip: now try your own idea. Push, open, take or use something.'];
 function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
-function drawStatus() {
+const MENU = { open: null, seen: {} }, FIT = { ctl: 0, key: '' };
+function menuCounts() { return { cards: S.cards.length + (S.q4 || 0), ship: S.parts.length * 100 + tasksDone() }; }
+function drawMenu() { const p = $('panels'); if (!p || !S) return; if (MENU.open === 'mission' && !S.v) MENU.open = null; if (MENU.open) p.dataset.open = MENU.open; else delete p.dataset.open; $('m_mission').hidden = !S.v;
+  const n = menuCounts(); document.querySelectorAll('#menu .mbtn').forEach(b => { const k = b.dataset.m, on = k === MENU.open; b.classList.toggle('on', on); b.setAttribute('aria-expanded', on ? 'true' : 'false'); if (n[k] != null) { if (on || MENU.seen[k] == null) MENU.seen[k] = n[k]; b.classList.toggle('new', n[k] > MENU.seen[k]); } }); }
+function menuOpen(k) { MENU.open = k || null; drawMenu(); fitSoon(); if (MENU.open) { const el = document.querySelector(`#panels > [data-m="${MENU.open}"]`); if (el && el.scrollIntoView) setTimeout(() => el.scrollIntoView({ block: 'nearest' }), 30); } }
+/* with the controls under the picture, the picture takes the room that is left, so the box and the word rows are never below the edge of the screen */
+function fit() { const c = document.querySelector('.console'); if (!c) return; if (window.innerWidth < 600 || window.matchMedia('(orientation: landscape) and (min-width: 900px)').matches) { if (c.style.height) { c.style.height = ''; c.style.minHeight = ''; } FIT.key = ''; return; }      /* a phone is too small to fit it all: it keeps the old layout */
+  const key = window.innerWidth + 'x' + window.innerHeight; if (FIT.key !== key) { FIT.key = key; FIT.ctl = 0; } let ctl = 0; ['say', 'verbs', 'dirs', 'nouns', 'bag', 'menu'].forEach(id => { const e = $(id); if (e && !e.hidden) ctl += e.offsetHeight + 8; }); FIT.ctl = Math.max(FIT.ctl, ctl);
+  const top = c.getBoundingClientRect().top + window.scrollY, room = Math.max(300, Math.min(window.innerHeight * .82, window.innerHeight - top - FIT.ctl - 26)), want = Math.round(widget ? Math.max(room, Math.min(window.innerHeight * .82, window.innerWidth * 1.5)) : room);      /* a task needs the room it had before; the word rows are not used while one is open */ if (Math.abs((parseFloat(c.style.height) || 0) - want) > 2) { c.style.minHeight = '0'; c.style.height = want + 'px'; if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); } }      /* the number pad and the small keys follow, or they would sit on top of what just moved */
+function fitSoon() { if (FIT.t) return; FIT.t = requestAnimationFrame(() => { FIT.t = 0; try { fit(); } catch (e) {} }); }
+function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
@@ -1262,7 +1291,8 @@ function card(force) {
 /* =====================================================================
    TOYS: locker lock, mini battle, mini quest, project
    ===================================================================== */
-function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); drawWords(); if (typeof kbHide === 'function') kbHide(); }
+function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; try { fit(); } catch (e) {}      /* give the task its room now, before the number pad is placed */
+  padPrep(); drawWords(); if (typeof kbHide === 'function') kbHide(); }
 function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); drawWords(); }
 /* THE WORLD SERVER (only when the page sits beside one). [Proposal: engines/gmq-world/server]
    With no server, as on the sketch's own link, nothing here runs and the game is kept on the device as before.
@@ -3251,7 +3281,9 @@ function goVoltara() { const again = !!(S.v && S.v.crossed); S.mode = 'planet'; 
   say(again ? 'Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.' : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); }
 function goStation() { S.mode = 'station'; S.ended = false; S.beat = 0; if (S.tut == null) S.tut = 3; tidy(); P.x = S.x; P.y = S.y; say(`Teacher shortcut. You are on the KIS Station, in the ${ROOMS[S.room].name}.`); $('place').scrollIntoView({ block: 'nearest' }); }
 $('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation; $('t_space').onclick = goSpace; $('t_chr').onclick = goChronosia;
-window.addEventListener('resize', size);
+window.addEventListener('resize', size); window.addEventListener('resize', fitSoon); window.addEventListener('orientationchange', fitSoon);
+document.querySelectorAll('#menu .mbtn').forEach(b => b.addEventListener('click', () => menuOpen(MENU.open === b.dataset.m ? null : b.dataset.m)));
+setTimeout(() => { drawMenu(); fit(); }, 0);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
 size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();

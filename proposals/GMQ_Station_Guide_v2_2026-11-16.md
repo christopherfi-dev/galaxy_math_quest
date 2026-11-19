@@ -376,3 +376,53 @@ You said the FlavorBurst button "just pops up and describes what it is and then 
 
 Test: `checks/small_keyboard_test.js`.
 
+---
+
+## Added 2026-11-19 (sketch version 41): one screen, and a small menu [Source: Marc]
+
+You sent a photo of a student's iPad mini, held sideways, and said: "Every time the students do something and they need to type something, this entire bottom screen pops up. It should be hidden until they want to see it. There's a lot of information here they do not need popping up all the time. This should be like a little mini menu or something."
+
+### What the photo showed
+
+The picture of the game was not on the screen at all. I measured why.
+
+| Screen | Where the command box was | Where the word rows were |
+|---|---|---|
+| iPad mini held sideways (about 670 high) | cut off by the bottom edge | below the screen |
+| iPad held sideways (about 750 high) | at the very bottom | below the screen |
+| iPad mini or iPad held upright | at the bottom | below the screen |
+
+So to tap a word, a child had to scroll down. Then the picture slid off the top, and the mission list and the ship list filled the screen. My tests had never checked this.
+
+### What changed
+
+**1. Everything a child plays with is now on one screen.**
+- **Held sideways:** the picture is on the left, and it is bigger. The box, the doing words, the Go buttons, the Here words and the bag are in a column on the right. The page cannot scroll.
+- **Held upright:** the picture is on top and takes the room that is left, so the box and all the word rows sit under it, in view.
+- A phone is too small for this and keeps the old layout.
+
+**2. A small menu, called More.** It is a row of buttons under the bag:
+
+| Button | Opens |
+|---|---|
+| Mission | the Voltara mission steps. The button appears only once there is a mission. |
+| My ship | the five parts and their tasks |
+| My cards | the cards and the practice credits |
+| Teacher | your shortcut buttons, the switches and the notes |
+
+- Everything behind these is **hidden until its button is tapped.** One opens at a time. Tap again to close.
+- A red dot appears on **My cards** when a new card is earned.
+- After a reload they are all closed again.
+
+**3. The Teacher bar has moved.** It was a row of buttons across the top of every student's screen: Go to Voltara, Go to the station, and so on. It is now inside **More, then Teacher**. In the photo the student's screen showed "Mission Voltara" while they were still on the station. That happens when someone taps Go to Voltara and comes back.
+
+The version number is still in view, at the end of the More row.
+
+### What could prove this wrong
+
+- A sideways iPad gives the controls a narrow column. With many Here words the column gets long. It scrolls by itself, and the picture stays put. Watch whether that is clear to a child.
+- Watch whether children find the More row at all. If nobody ever opens My cards, the dot is not enough.
+- Students can still open Teacher. It is two taps away now, not in their face. If they still use it, it should go behind a code or the address trick.
+
+Test: `checks/one_screen_test.js`. It checks six screens: four iPads, a classroom board and a laptop.
+

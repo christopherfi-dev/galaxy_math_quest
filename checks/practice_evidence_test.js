@@ -34,7 +34,7 @@ const { chromium } = require('playwright'); const path = require('path');
     // ---- a time skill is kept, but it is not on the number map
     await p.evaluate(() => { skTally('TIME.READ', true, 'time wisp', 'a clock that shows 3:25', true); });
     // ---- the teacher's view
-    await p.evaluate(() => { document.querySelectorAll('details').forEach(d => { d.open = true; }); drawEvidence('FACT'); }); await p.waitForTimeout(150);
+    await p.evaluate(() => { menuOpen('teacher'); document.querySelectorAll('details').forEach(d => { d.open = true; }); drawEvidence('FACT'); }); await p.waitForTimeout(150);
     let view = await p.textContent('#evbox'); expect(view, /Counts only[\s\S]*No status is worked out here[\s\S]*Map: num-2\.0/, 'the view says what it is');
     expect(view, /NUM\.FACT\.1\s*Addition and Subtraction Facts Within 20\s*9\s*1\s*1\s*1\s*\d{4}-\d\d-\d\d\s*space hazard/, 'NUM.FACT.1 should show 9 first tries right, 1 wrong, 1 later try, 1 day'); expect(view, /NUM\.FACT\.2[\s\S]*The game has no quick questions for this skill yet\./, 'a skill the game cannot practise says so');
     const tabs = await p.evaluate(() => Array.from(document.querySelectorAll('#evbox .evtabs button')).map(x => x.dataset.t + (x.classList.contains('has') ? '*' : ''))); ok(tabs.join() === 'REL,FACT*,PV*,EST,ADD*,SUB,MULT,DIV,PROB,PAT,FRAC,GAP*', 'a tab for each thread, marked where there is practice: ' + tabs);
