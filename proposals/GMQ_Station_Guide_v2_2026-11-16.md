@@ -439,7 +439,8 @@ The child in your photo had 5 sections of 8 cells. That is 40 cells. A rock brea
 | What a child could think | Answer | Is the thinking sound? |
 |---|---|---|
 | One section holds 2 more than before | 2 | Yes. This is what the game wanted. |
-| 8 cells moved: 2 more in each of 4 sections | 8 | Yes. This is what you thought. |
+| 8 more in all: the picture shows 4 sections, 4 × 8 = 32 before, 4 × 10 = 40 now | 8 | Yes. This is how you read it (your words, later the same day). |
+| 8 cells moved: 2 more in each of 4 sections | 8 | Yes. Another way to the same 8. |
 | The whole grid holds the same as before | 0 | Yes. 40 before, 40 now. |
 
 "How many more is that?" did not say more of what. So a child who reasoned well could be marked wrong. [Proposal: mine, and wrong]
