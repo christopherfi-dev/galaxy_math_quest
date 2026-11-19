@@ -14,7 +14,7 @@
 | 2 | **Built Planet Xylophora**, your second planet in Galaxy Metrica | preview link only |
 | 3 | **Opened up three Chronosia quests**: the clocks, who goes where, the timetable | preview link only |
 
-The preview link is now **version 47**. The class link is still **version 43**. Your students see nothing new until you say "update the class link".
+The preview link is now **version 48**. The class link is still **version 43**. Your students see nothing new until you say "update the class link".
 
 - Preview: https://christopherfi-dev.github.io/galaxy_math_quest/next/
 - Class: https://christopherfi-dev.github.io/galaxy_math_quest/
@@ -59,7 +59,7 @@ The four quests take longer than ten minutes. That is on purpose.
 
 | Decision | Where it is laid out |
 |---|---|
-| Update the class link to version 47, or wait until you have tried it | this note |
+| Update the class link to version 48, or wait until you have tried it | this note |
 | Xylophora: the lock, real magnetic tiles, "squares" or "square metres", how tight the grove is, names | Xylophora guide, section 13 |
 | Chronosia: keep the three open sheets, or put the steps back | Chronosia guide, "Changed 2026-11-19, overnight" |
 | The skills page (still paused) | `GMQ_Skills_Page_Design_v2_2026-11-19.md`, section 10 |
@@ -79,7 +79,7 @@ The four quests take longer than ten minutes. That is on purpose.
 
 ## 7. How it was checked
 
-- **24 play tests** drive the game in a browser. All pass on version 47. One of them plays the whole of Xylophora on three screens, wrong tries included.
+- **24 play tests** drive the game in a browser. All pass on version 48. One of them plays the whole of Xylophora on three screens, wrong tries included.
 - **20,000 cadets' numbers** for Xylophora, worked out again in Python. Every one gives a planet that can be finished.
 - **No reply and no nudge shows an answer.** The tests check each one.
 - **The picture stays still.** The six-screen test now walks Xylophora too.

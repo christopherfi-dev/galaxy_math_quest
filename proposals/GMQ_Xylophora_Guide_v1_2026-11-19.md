@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-19 (built overnight)
 **For:** Marc
-**What it is:** your second planet in Galaxy Metrica, playable on the preview link. Built as sketch version 45. The preview link is now version 47.
+**What it is:** your second planet in Galaxy Metrica, playable on the preview link. Built as sketch version 45. The preview link is now version 48.
 **Marks:** [Source] is from your material. [Proposal] is mine. [Conflict] means your sources disagree.
 
 You said: "You choose. You have the standards now." This is what I chose, why, and exactly what I built.
