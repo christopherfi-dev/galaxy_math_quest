@@ -1,6 +1,8 @@
 # GMQ — joining the game to your maths dashboard: a first step — v1 — 2026-11-19
 
-**Stage:** a first step is built in sketch version 37. Played by tests only.
+**PAUSED, 2026-11-19.** After this was written, Marc said the dashboard is "a reference, not an exemplar that must be followed", and that the game's skills tracking could be done better. This note treats the dashboard as the model. Read it as a record of what was built, not as the plan.
+
+**Stage:** a first step is built in sketch version 37. It is saved in the repository but not published to the game link. Played by tests only.
 **Tags:** [Source] = from your dashboard files or your words. [Proposal] = my suggestion, yours to change.
 
 ---
