@@ -78,7 +78,7 @@ You said: "Ok. Continue. Do as much as you can overall." This is the next big pi
 | 30 energy points for each person each month | 10 or 20 | Four foods and crates of 10 cannot reach 360. See section 13. |
 | Nine months, or twelve, of fuel data | Six months | Six bars can be read on an iPad. Twelve cannot. |
 | Dairy 400 then 120 (site), or 200 then 320 (sheet) | Each cadet's own numbers | Your two versions disagree. Neither is used. |
-| Shelf life "0.5 months" | "2 weeks" | 0.5 is a decimal. That is above Grade 3. |
+| Shelf life "0.5 months" | "½" (of a month) | 0.5 is a decimal. That is above Grade 3. A half is not. |
 | Foods also have a label and a nutrition score | Not shown | Two numbers in a row is enough to read. |
 
 ---
@@ -141,11 +141,11 @@ Copying last trip's chart does not work. It is last trip's.
 
 ### Quest 2. The last-quarter locker (your Task 1)
 
-**The purpose.** The Supply Chief: "Months ten, eleven and twelve. Help me fill the locker for them. There are four of us. Each one needs 20 energy points a month. Nothing in the locker may go bad before the trip ends. And there must be exactly enough."
+**The purpose.** The Supply Chief: "Months ten, eleven and twelve. Help me fill the locker for them. There are four of us. Each one needs 20 energy points a month. Nothing in the locker may go bad before the trip ends. And there must be exactly enough. The locker is small: ten packs of any one food, and no more."
 
 **What is not given:** the whole amount. The child must find 4 people × 20 points × 3 months = 240.
 
-**The shelf** has six of your foods. Four last the trip. Two do not. The table shows the energy in one pack and how long it lasts.
+**The shelf** has six of your foods. Four last the trip. Two do not. The table shows the energy in one pack and how many months it lasts.
 
 **What happens when it is wrong:**
 
@@ -332,6 +332,7 @@ This guide is in a public repository. A student who finds it has these tables.
 ## 12. What could prove this wrong
 
 - **Reading a thermometer may be the hard part, not the graph.** Each small line is 1 degree. Only the tens have numbers. If children misread by one line, the chart will keep saying "1 bar does not match" and they will not know why. Watch the first child at a thermometer.
+- **The locker table was too big for an iPad mini,** for cadets with long food names. The question slid out of view when the number keys opened. A test caught it only because it failed one run in three. The table is smaller now, and the test always uses the six longest names. It is the kind of fault only a real iPad mini will fully settle.
 - **"Breaks its plate" may not be clear.** It is my phrase. If a child asks "what plate?", the words are wrong, not the child.
 - **The locker may be guess-and-fix, not planning.** "Too little" and "too much" let a child creep up on the answer one pack at a time. That is still adding and multiplying, but it is not a plan. Look at how many tries the log shows.
 - **Children may never find the whole amount.** If nobody multiplies 4 × 20 × 3, the locker is the wrong place to hide it.

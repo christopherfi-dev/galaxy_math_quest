@@ -91,16 +91,18 @@ const path = require('path');
     await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { XY().done.skin = true; act('build home'); }); await p.waitForTimeout(2600); verbs0 = (await look()).verbs; await step('marking a floor');
     // The mission ship (Operation Stardust): walking with the camera; a thermometer drawn big in the picture (a number); the wall chart (taps on the picture);
     // last trip's chart, then a new one; the fuel log (two charts in the picture); the locker (a table with six boxes); the fuel pump (three boxes)
+    const settle = async () => { await p.waitForTimeout(200); for (let i = 0; i < 300; i++) { if (await p.evaluate(() => !SM.route.length && !SM.then)) break; await p.waitForTimeout(100); } await p.waitForTimeout(400); };      /* wait until the cadet has arrived, however long the walk takes */
     await p.evaluate(() => goStardust()); await p.waitForTimeout(600); verbs0 = (await look()).verbs; await step('on the mission ship');
-    await p.evaluate(() => { SD().seen = Object.keys(SRM); sGo(4, 4); }); await p.waitForTimeout(4500); verbs0 = (await look()).verbs; await step('walking on the mission ship');
-    await p.evaluate(() => { act('use thermometer'); }); await p.waitForTimeout(1800); await step('a thermometer', { task: true, pad: true });
+    await p.evaluate(() => { SD().seen = Object.keys(SRM); sGo(4, 4); }); await settle(); verbs0 = (await look()).verbs; await step('walking on the mission ship');
+    await p.evaluate(() => { act('use thermometer'); }); await settle(); await step('a thermometer', { task: true, pad: true });
     await p.click('#leave'); await p.waitForTimeout(200); verbs0 = (await look()).verbs; await step('the thermometer left');
-    await p.evaluate(() => { act('use chart'); }); await p.waitForTimeout(1800); await step('last trip\'s chart on the wall', { task: true });
+    await p.evaluate(() => { act('use chart'); }); await settle(); await step('last trip\'s chart on the wall', { task: true });
     await p.click('#try'); await step('a new wall chart', { task: true }); await p.click('#try'); await step('the wall chart, wrong', { task: true, msg: true });
-    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { act('use computer'); }); await p.waitForTimeout(1800); await step('the fuel log', { task: true });
-    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { sGo(6, 12); }); await p.waitForTimeout(4200); await p.evaluate(() => { act('use locker'); }); await p.waitForTimeout(1400); await step('the locker', { task: true });
+    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { act('use computer'); }); await settle(); await step('the fuel log', { task: true });
+    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { sGo(6, 12); }); await settle(); await p.evaluate(() => { sNums(SD().seed).shelf = [['Freeze-Dried Apple', 5, 18], ['Whole Wheat Bread', 6, 1], ['Canned Peaches', 5, 36], ['Dark Chocolate', 8, 24], ['Fresh Spinach', 4, .5], ['Dried Lentils', 7, 12]]; act('use locker'); }); await settle(); await step('the locker', { task: true });      /* the six longest food names, so the tallest and widest table there can be */
+    { const fit = await p.evaluate(() => { const c = document.querySelector('#toy .cart'), rows = Array.from(document.querySelectorAll('#toy tbody tr')).map(r => Math.round(r.getBoundingClientRect().height)); return { wide: c.scrollWidth - c.clientWidth, rows: Math.max.apply(null, rows) - Math.min.apply(null, rows) }; }); if (fit.wide > 1) bad.push(`${name}: the locker table is ${fit.wide} too wide for the desk`); if (fit.rows > 8) bad.push(`${name}: a food name wraps onto a second line in the locker table`); }
     await tapOrClick('#l0'); await step('the locker, a box tapped', { task: true, pad: true });
-    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { SD().done.month = true; sGo(16, 13); }); await p.waitForTimeout(3600); await p.evaluate(() => { act('use pump'); }); await p.waitForTimeout(1400); await step('the fuel pump', { task: true });
+    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { SD().done.month = true; sGo(16, 13); }); await settle(); await p.evaluate(() => { act('use pump'); }); await settle(); await step('the fuel pump', { task: true });
     await p.click('#leave'); await p.waitForTimeout(200); verbs0 = (await look()).verbs; await step('the pump left');
     notes.push(`${name}: ${n} moments, picture at ${first}`);
     await ctx.close();

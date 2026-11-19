@@ -172,8 +172,8 @@ const CHECK = 26692101;      // the same number is in checks/stardust_quest_chec
     await say('look main tank'); expect(await toyText(), /The needle is on FULL/, 'a full gauge'); await back();
 
     // ---- QUEST 2, the last-quarter locker
-    await room('food'); { const t = await say('talk chief'); expect(t, new RegExp(`There are four of us\\. Each one needs ${v.p} energy points a month\\. Nothing in the locker may go bad before the trip ends\\. And there must be exactly enough`), 'the Chief gives the facts'); noAnswer(t, 'the Chief', new RegExp(`\\b${T}\\b`)); }
-    expect(await say('look locker'), /Each crate has a label/, 'look locker');
+    await room('food'); { const t = await say('talk chief'); expect(t, new RegExp(`There are four of us\\. Each one needs ${v.p} energy points a month\\. Nothing in the locker may go bad before the trip ends\\. And there must be exactly enough\\. The locker is small: ten packs of any one food, and no more`), 'the Chief gives the facts'); noAnswer(t, 'the Chief', new RegExp(`\\b${T}\\b`)); }
+    expect(await say('look locker'), /A crate holds 10 packs\. Each crate has a label/, 'look locker');
     await say('use locker'); ok(await p.evaluate(() => widget && widget.kind === 'slocker' && document.querySelectorAll('#toy tbody tr').length === 6), 'the locker should list six foods'); noAnswer(await toyText(), 'the locker', new RegExp(`\\b${T}\\b`)); if (name !== 'phone') ok((await stage()) === st0, `the picture moved when the locker opened: ${st0} became ${await stage()}`); await shot('6_locker');
     await p.click('#try'); expect(await msg(), /The locker is empty/, 'an empty locker');
     await fillLocker(packs({ [good[0]]: 3, [spoil[0]]: 1 })); { const t = await msg(); expect(t, /One kind of food has gone bad\. Nobody can eat it/, 'one food that goes bad'); noAnswer(t, 'the gone-bad reply', new RegExp(`${v.shelf[spoil[0]][0]}|\\b${T}\\b`)); }
