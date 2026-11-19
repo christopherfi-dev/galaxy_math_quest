@@ -28,6 +28,45 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
+/* ONE SCREEN. [Source: Marc, 2026-11-19, with a photo of a student's iPad: "this entire bottom screen pops up. It should be hidden until they want to see it... like a little mini menu."]
+   The picture, the box and the word rows share the screen. Everything else waits behind the More row. On a screen held sideways the controls sit beside the picture. */
+#side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+#panels { display: flex; flex-direction: column; gap: 10px; } #panels > * { display: none; } #teacherbox { flex-direction: column; gap: 10px; }
+#panels[data-open="mission"] > [data-m="mission"]:not([hidden]), #panels[data-open="ship"] > [data-m="ship"], #panels[data-open="cards"] > [data-m="cards"], #panels[data-open="teacher"] > [data-m="teacher"] { display: flex; }
+.mbtn { border-style: dotted; } .mbtn.on { background: var(--accent); color: var(--accent-ink); border-style: solid; } .mbtn.new::after { content: ' ●'; color: #d9534f; }
+body.online #m_teacher { display: none; } body.online.teacher #m_teacher { display: revert; }
+/* PICTURE AND DESK. [Source: Marc, 2026-11-19: "We don't want the playing area to move up or down and move away from the screen. It keeps jumping around."
+   "All of that stuff below the buttons, about the number of ship parts and all of that, is not needed on the main screen. They don't need a keyboard. Unless it only appears when they type."]
+   On an iPad the screen has two fixed parts: the picture, and a desk for the box and the word rows. Neither moves or changes size.
+   A task opens on the desk, in place of the box and the word rows. The number keys and the letter keys sit on the desk too, never on the picture.
+   A phone is too small for two fixed parts, so it keeps the old way. body.desk and body.sidecol are set in deskSet(). */
+.toy { --bg: #0b1422; --panel: #132035; --ink: #e8eef8; --muted: #a9b9d0; --line: #33476a; --hull: #1c2c46; --accent: #6db3ff; --accent-ink: #08121f; --good: #6fd08a; --bad: #ff9486; color: var(--ink); color-scheme: dark; }
+body.desk .wrap { padding-bottom: 8px; }
+body.desk .console { grid-template-rows: minmax(0, 1fr) auto; }
+body.desk .log { height: 6.3em; min-height: 0; overflow-y: auto; justify-content: flex-start; }
+body.desk #side { overflow-y: auto; }
+body.desk #side > .toy { flex: 1 1 auto; min-height: 0; max-height: none; border: 2px solid #ffb23e; border-radius: 16px; }
+body.desk.task #side { overflow: hidden; }
+body.desk.task #side > :not(.toy) { display: none !important; }
+body.desk #pad, body.desk #kb { box-shadow: none; } body.desk #padgrip, body.desk #kbgrip { visibility: hidden; } body.desk #padbar, body.desk #kbbar { cursor: default; padding-bottom: 4px; }
+body.sidecol #padkeys { grid-template-columns: repeat(5, 1fr); } body.sidecol #padkeys button { height: 48px; }
+body.sidecol #padkeys [data-k="0"] { order: 1; } body.sidecol #padkeys [data-k="x"] { order: 2; grid-column: 2; } body.sidecol #padkeys [data-k="del"] { order: 3; } body.sidecol #padkeys [data-k="ok"] { order: 4; grid-column: auto / span 2; height: 48px; } body.sidecol #padkeys [data-k="next"] { order: 5; grid-column: 2 / -1; height: 48px; }
+body.sidecol #pad:not(.mini) { position: fixed; } body.sidecol #pad:not(.mini) #padbar { position: absolute; left: 6px; bottom: 6px; width: calc((100% - 12px - 24px) / 5); height: 48px; padding: 0; } body.sidecol #pad:not(.mini) #padgrip { display: none; } body.sidecol #pad:not(.mini) #padkb { width: 100%; height: 100%; }
+body.sidecol #side .toy .mw { font-size: .84rem; } body.sidecol #side .toy { gap: 5px; } body.sidecol #side .toy table.tt { font-size: .78rem; } body.sidecol #side .toy table.tt th, body.sidecol #side .toy table.tt td { padding-right: 6px; }
+body.sidecol #pad.mini { width: auto !important; }
+#panels > .chips { gap: 6px; } #panels > .chips .chip { font-size: .9rem; border: 1.5px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+@media (orientation: landscape) and (min-width: 900px) {
+  body .wrap { max-width: 1500px; display: grid; grid-template-columns: minmax(0, 1fr) clamp(340px, 31vw, 400px); column-gap: 14px; row-gap: 8px; align-items: start; padding-block: 8px 8px; }
+  body .wrap > #netbar, body .wrap > #toold { grid-column: 1 / -1; }
+  body .wrap > .console { height: calc(100vh - 34px); height: calc(100dvh - 34px); min-height: 300px; }
+  body #side { max-height: calc(100vh - 34px); max-height: calc(100dvh - 34px); overflow-y: auto; padding: 2px 4px 2px 2px; }
+  body.desk #side { height: calc(100vh - 34px); height: calc(100dvh - 34px); }
+  /* a task on the desk beside the picture is as narrow as a phone, so it gets the phone's rules: picture above the words */
+  body.desk #side .toy { padding: 10px 12px; }
+  body.desk #side .toy .picrow { flex-direction: column; align-items: stretch; gap: 6px; } body.desk #side .toy .picrow .pic { width: 100%; }
+  body.desk #side .toy .art3 { grid-template-columns: 1fr; } body.desk #side .toy .art3 svg { max-height: 60px; }
+  body.desk #side .toy .picsvg { max-height: min(30vh, 250px); max-height: min(30dvh, 250px); }
+}
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.08rem; line-height: 1.45; }
 .wrap { max-width: 880px; margin: 0 auto; padding-block: 10px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -102,7 +141,7 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .credits { margin-top: 10px; border-top: 1px solid var(--line, #33476a); padding-top: 8px; } .credits .pies { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
 .ratbar { height: 12px; border-radius: 6px; background: #1d2c52; overflow: hidden; } .ratbar div { height: 100%; width: 100%; background: #ffb23e; transition: width .1s linear; } .ratrow { font-size: 1.5rem; margin: 0; letter-spacing: 2px; line-height: 1.2; }
 .tipbox { border-left: 4px solid var(--accent); padding: 4px 12px; margin: 4px 0; } .tipbox p { margin: 3px 0; font-size: 1.08rem; }
-.msg { min-height: 1.4em; font-weight: 700; } .msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
+.msg { min-height: 1.4em; font-weight: 700; flex: none; } .msg.good { color: var(--good); } .msg.bad { color: var(--bad); }
 .meter { display: flex; gap: 6px; align-items: center; font-family: var(--display); font-size: .85rem; color: var(--muted); }
 .pip { width: 26px; height: 12px; border-radius: 3px; border: 1.5px solid var(--muted); } .pip.on { background: var(--good); border-color: var(--good); }
 .crates { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 6px; }
@@ -134,7 +173,7 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 .toy:has(.wires), .toy:has(.codes) { max-height: 64vh; max-height: 64dvh; }
 .field.wires { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .wires .wire { min-width: 0; padding-left: 4px; padding-right: 4px; } .toy .wire.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
 .word.hintb { border-style: dashed; }
-#t_ver { margin-left: auto; } #toold { border-color: var(--bad); }
+#t_ver { margin-left: auto; font-size: .78rem; } #toold { border-color: var(--bad); }
 .toy .wire.on::before { content: '✓ '; font-weight: 700; } .toy .wire { transition: background .12s, transform .12s; } .toy .wire:active { transform: scale(.96); }
 .plan21 { gap: 5px 6px; margin: 0; } .plan21 .wire { padding: 5px 10px; font-size: .93rem; } .plan21 .cn { min-width: 6.4em; } .planrow { gap: 8px 14px; } .planrow #spare { color: #6fd08a; } .toy:has(.plan21) { gap: 5px; max-height: 80vh; max-height: 80dvh; }
 .pv { font-weight: 500; opacity: .85; font-size: .88em; white-space: nowrap; } .key { font-size: .8rem; margin: 0 0 2px; } #info { min-height: 1.3em; margin: 2px 0; color: var(--ink, inherit); } #tmw { flex-basis: 100%; font-size: .85rem; }
@@ -223,6 +262,10 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
 /* the floating number pad */
 #pad { position: fixed; z-index: 60; width: 190px; background: #101a30; border: 2px solid #ffb23e; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.5); padding: 6px; -webkit-user-select: none; user-select: none; touch-action: none; }
 #pad[hidden] { display: none; }
+#kb { position: fixed; z-index: 60; width: min(440px, calc(100vw - 8px)); background: #101a30; border: 2px solid #ffb23e; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.5); padding: 6px; -webkit-user-select: none; user-select: none; touch-action: none; } #kb[hidden] { display: none; }
+#kbbar { display: flex; align-items: center; justify-content: space-between; gap: 6px; color: #aab6d6; font: 600 .8rem var(--display); padding: 2px 2px 6px 6px; cursor: grab; touch-action: none; } #kbbar button { border: 1px solid #3a4c78; background: #1a2746; color: #dfe7ff; border-radius: 8px; font: 700 .85rem var(--display); padding: 5px 9px; }
+#kbkeys .kr { display: flex; gap: 4px; justify-content: center; margin-bottom: 4px; } #kbkeys button { flex: 1 1 0; min-width: 0; height: 42px; font: 700 1.15rem var(--display); border-radius: 8px; border: 0; background: #24345c; color: #fff; touch-action: manipulation; padding: 0; } #kbkeys button:active { background: #ffb23e; color: #101a30; }
+#kbkeys .kwide { flex: 5 1 0; font-size: .9rem; } #kbkeys .kdel { flex: 1.6 1 0; } #kbkeys .kok { flex: 2.6 1 0; background: #6db3ff; color: #101a30; font-size: 1rem; } #kbt { white-space: nowrap; padding-left: 10px; padding-right: 10px; }
 #padbar { display: flex; align-items: center; justify-content: space-between; gap: 6px; color: #aab6d6; font: 600 .8rem var(--display); padding: 2px 2px 6px 6px; cursor: grab; touch-action: none; }
 #padbar button { border: 1px solid #3a4c78; background: #1a2746; color: #dfe7ff; border-radius: 8px; font: 700 .85rem var(--display); padding: 5px 9px; }
 #padkeys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
@@ -235,11 +278,11 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
 @media (max-width: 480px) { #pad { width: 168px; } #padkeys button { height: 44px; } }
 </style>
 
+<div id="kb" hidden role="group" aria-label="Small keyboard"><div id="kbbar"><span id="kbgrip">⠿ move me</span><span><button type="button" id="kbbig" aria-label="Use the big keyboard">Big keys</button> <button type="button" id="kbx" aria-label="Hide the keyboard">✕</button></span></div><div id="kbkeys"></div></div>
 <div id="pad" hidden role="group" aria-label="Number pad"><div id="padbar"><span id="padgrip">⠿ move me</span><button type="button" id="padkb" aria-label="Use the full keyboard">ABC</button></div>
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 38</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -250,25 +293,32 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
       <div id="card" hidden role="dialog" aria-live="polite" aria-label="Read this, then tap OK"><div id="cardbox"><div id="cardtext"></div><div id="cardrow"><button class="btn" type="button" id="cardok" disabled><span id="cardfill"></span><b id="cardlab">Read…</b></button></div></div></div>
     </div>
     <section id="toy" class="toy" hidden></section>
-    <div class="log" role="log" aria-live="polite"><div class="chips" id="status"></div><div id="log"></div></div>
+    <div class="log" role="log" aria-live="polite"><div id="log"></div></div>
   </div>
 
+  <div id="side">
   <form id="say" autocomplete="off">
     <div class="sayrow">
       <input id="cmd" type="text" maxlength="50" placeholder="like: push crate" autocapitalize="off" spellcheck="false" aria-label="What do you do?">
+      <button class="btn quiet" type="button" id="kbt" hidden>Small keys</button>
       <button class="btn" type="submit">Do it</button>
     </div>
   </form>
   <div class="words" id="verbs"></div>
+  <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 43</span></div>
 
-  <section class="box" id="mission" aria-label="Your mission on Voltara" hidden></section>
-  <section class="box" id="partsbox" aria-label="Your ship parts and tasks"></section>
-  <section class="box" id="stars" aria-label="Your star chart"></section>
-  <section class="box" id="cards" aria-label="Your cards"></section>
   <section class="box" id="report" aria-label="Mission report" hidden></section>
-
+  <div id="panels">
+  <div class="chips" id="status" data-m="ship" aria-label="Your counts"></div>
+  <section class="box" id="mission" data-m="mission" aria-label="Your mission on Voltara" hidden></section>
+  <section class="box" id="partsbox" data-m="ship" aria-label="Your ship parts and tasks"></section>
+  <section class="box" id="cards" data-m="cards" aria-label="Your cards"></section>
+  <div id="teacherbox" data-m="teacher">
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><span class="note" id="t_now"></span></p>
+  <section class="box" id="stars" aria-label="Your star chart"></section>
   <details class="box">
     <summary>For the teacher: what this sketch shows</summary>
     <p class="note">Galaxy Math Quest. This is a sketch, not the real build.</p>
@@ -303,6 +353,9 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     <p class="note">"Go straight to Voltara" skips the opening and the station. It keeps the cards, the bag and anything already done. It is for you, to look at the quest. Students reach Voltara by fitting their five ship parts and launching.</p>
     <p class="note">The opening uses your own words from the student site: the home page, then the Space Station Tasks page, shortened.</p>
   </details>
+  </div>
+  </div>
+  </div>
 </div>
 
 <script>
@@ -554,9 +607,13 @@ function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arr
   if (S.mode === 'chrono') return cHere();
   if (S.mode === 'world') return wThings(wKit(WORLD().at)).map(t => [t.words[t.words.length - 1].indexOf(' ') > 0 ? t.words[0] : t.words[0], t.label]);
   return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia']] : []).concat(Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name])); }
-function drawWords() { let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
+/* ways to go, as words to tap [Source: Marc, 2026-11-19: "Can you also add West East north and south as buttons to tap?"] */
+function dirWords() { if (!S || widget) return []; return S.mode === 'station' ? ['north', 'south', 'east', 'west'] : S.mode === 'planet' || S.mode === 'world' ? ['west', 'east'] : S.mode === 'chrono' && C().at === 'map' ? ['north', 'south', 'east', 'west'] : []; }
+function drawDirs() { const el = $('dirs'); let d = []; try { d = dirWords(); } catch (e) {} const sig = d.join(); if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !d.length; el.innerHTML = '<span class="lab">Go</span>' + d.map(x => `<button class="word dir" type="button" data-d="${x}">${x}</button>`).join(''); el.querySelectorAll('button').forEach(b => b.onclick = () => act('go ' + b.dataset.d)); }
+function drawWords() { fitSoon(); drawDirs(); if (S && drawWords.m !== S.mode) { drawWords.m = S.mode; try { drawBag(); } catch (e) {} }      /* the doing words fit the kind of place */
+  let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
   el.innerHTML = '<span class="lab">Here</span>' + list.map(x => `<button class="word noun" type="button" data-w="${esc(x[0])}">${esc(x[1])}</button>`).join('');
-  el.querySelectorAll('button').forEach(b => b.onclick = () => { const w = b.dataset.w, draft = $('cmd').value.trim().toLowerCase(); if (/^(fly|land|trade|go to|taste|leave|catch)/.test(w)) return act(w); act(/^(look|take|open|push|use|go|talk|eat|touch|dig|give)( [a-z ]+ on)?$/.test(draft) ? `${draft} ${w}` : `look ${w}`); }); }
+  el.querySelectorAll('button').forEach(b => b.onclick = () => chipTap(b.dataset.w, b.textContent, false)); }
 function flashLog() { const n = document.querySelector('#log .new'); if (n) { n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); } }
 function readShow(text) { READ.q.push(text); READ.open = true; $('cardtext').innerHTML = READ.q.map(t => `<p>${esc(t)}</p>`).join(''); const words = READ.q.join(' ').split(/\s+/).length; READ.wait = Math.min(3500, 500 + words * 160);
   const c = $('card'), b = $('cardok'), fl = $('cardfill'); c.hidden = false; c.classList.remove('drop'); b.disabled = true; $('cardlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `cardfill ${READ.wait}ms linear forwards`;
@@ -568,22 +625,50 @@ $('cardok').addEventListener('click', () => { if (!$('cardok').disabled) readOk(
 $('card').addEventListener('pointerdown', e => { if (!(e.target.closest && e.target.closest('#cardok'))) readNudge(); });
 document.addEventListener('keydown', e => { if (!READ.open || (e.key !== 'Enter' && e.key !== ' ')) return; e.preventDefault(); e.stopPropagation(); if ($('cardok').disabled) readNudge(); else readOk(); }, true);
 const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your ship. Or type: look ship.', 'Tip: now try your own idea. Push, open, take or use something.'];
-function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); }
-function drawStatus() {
+function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); const L = $('log').parentNode; if (L) L.scrollTop = L.scrollHeight; }
+const MENU = { open: null, seen: {} }, FIT = { ctl: 0, key: '' };
+function menuCounts() { return { cards: S.cards.length + (S.q4 || 0), ship: S.parts.length * 100 + tasksDone() }; }
+function drawMenu() { const p = $('panels'); if (!p || !S) return; if (MENU.open === 'mission' && !S.v) MENU.open = null; if (MENU.open) p.dataset.open = MENU.open; else delete p.dataset.open; $('m_mission').hidden = !S.v;
+  const n = menuCounts(); document.querySelectorAll('#menu .mbtn').forEach(b => { const k = b.dataset.m, on = k === MENU.open; b.classList.toggle('on', on); b.setAttribute('aria-expanded', on ? 'true' : 'false'); if (n[k] != null) { if (on || MENU.seen[k] == null) MENU.seen[k] = n[k]; b.classList.toggle('new', n[k] > MENU.seen[k]); } }); }
+function menuOpen(k) { MENU.open = k || null; drawMenu(); fitSoon(); if (MENU.open) { const el = document.querySelector(`#panels > [data-m="${MENU.open}"]`); if (el && el.scrollIntoView) setTimeout(() => el.scrollIntoView({ block: 'nearest' }), 30); } }
+/* with the controls under the picture, the picture takes the room that is left, so the box and the word rows are never below the edge of the screen */
+const DESK = { on: false, col: false };
+function deskSet() { const t = $('toy'), side = $('side'), con = document.querySelector('.console'); if (!t || !side || !con) return; const on = window.innerWidth >= 600 && window.innerHeight > 560, col = on && window.matchMedia('(orientation: landscape) and (min-width: 900px)').matches;
+  if (on === DESK.on && col === DESK.col && t.parentNode === (on ? side : con)) return; DESK.on = on; DESK.col = col; document.body.classList.toggle('desk', on); document.body.classList.toggle('sidecol', col);
+  if (on) side.insertBefore(t, side.firstChild); else { con.insertBefore(t, con.querySelector('.log')); side.style.height = ''; t.style.marginBottom = ''; t.style.marginRight = ''; } }
+function fit() { deskSet(); const c = document.querySelector('.console'); if (!c) return; if (window.innerWidth < 600 || window.matchMedia('(orientation: landscape) and (min-width: 900px)').matches) { if (c.style.height) { c.style.height = ''; c.style.minHeight = ''; } $('side').style.height = ''; FIT.key = ''; if (DESK.on) { if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); } return; }
+  if (DESK.on) { const H = window.innerHeight, top = c.getBoundingClientRect().top + window.scrollY, desk = Math.round(Math.max(350, Math.min(440, H * .4))), want = Math.max(260, Math.round(H - top - desk - 28));      /* held upright: the picture above, the desk below, both a fixed size. Nothing a child does changes them. */
+    $('side').style.height = desk + 'px'; if (Math.abs((parseFloat(c.style.height) || 0) - want) > 2) { c.style.minHeight = '0'; c.style.height = want + 'px'; } if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); return; }      /* a phone is too small to fit it all: it keeps the old layout */
+  const key = window.innerWidth + 'x' + window.innerHeight; if (FIT.key !== key) { FIT.key = key; FIT.ctl = 0; } let ctl = 0; ['say', 'verbs', 'dirs', 'nouns', 'bag', 'menu'].forEach(id => { const e = $(id); if (e && !e.hidden) ctl += e.offsetHeight + 8; }); FIT.ctl = Math.max(FIT.ctl, ctl);
+  const top = c.getBoundingClientRect().top + window.scrollY, room = Math.max(300, Math.min(window.innerHeight * .82, window.innerHeight - top - FIT.ctl - 26)), want = Math.round(widget ? Math.max(room, Math.min(window.innerHeight * .82, window.innerWidth * 1.5)) : room);      /* a task needs the room it had before; the word rows are not used while one is open */ if (Math.abs((parseFloat(c.style.height) || 0) - want) > 2) { c.style.minHeight = '0'; c.style.height = want + 'px'; if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); } }      /* the number pad and the small keys follow, or they would sit on top of what just moved */
+function fitSoon() { if (FIT.t) return; FIT.t = requestAnimationFrame(() => { FIT.t = 0; try { fit(); } catch (e) {} }); }
+function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. Purple tasks are done in real life, with your teacher.</p>` +
     PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${t[3] ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
 }
+/* A TAPPED WORD GOES INTO THE BOX.
+   [Source: Marc, 2026-11-19, feeding the Gumblefish: "I keep thinking I can just tap that word to add instead of typing. But it just talks about them. And then I can't easily tap the word into the blank."]
+   Before, a tapped thing was looked at straight away, and anything already typed was thrown away. Now a tap adds the word. A command runs when it has a doing word and a thing.
+   A thing alone waits for a doing word, or for Do it, which looks at it. */
+const VCHIPS = { station: ['look', 'take', 'open', 'push', 'use', 'go'], planet: ['look', 'take', 'use', 'give', 'talk', 'eat', 'dig', 'go'], world: ['look', 'touch', 'take', 'talk', 'go'], chrono: ['look', 'use', 'talk', 'go'] };
+const TWO = ['use', 'give', 'put', 'feed']; let CHIPN = '', VWORDS = null;
+function verbWords() { if (VWORDS) return VWORDS; VWORDS = new Set(); [VERBS, PV, WV, CVB].forEach(o => Object.keys(o).forEach(v => o[v].forEach(x => VWORDS.add(x)))); Object.keys(SOFT).forEach(g => SOFT[g].forEach(x => VWORDS.add(x))); return VWORDS; }
+function chipTap(w, label, bag) { const box = $('cmd'), draft = box.value.replace(/\s+/g, ' ').replace(/^ /, '').toLowerCase(), words = draft.trim() ? draft.trim().split(' ') : [], first = words[0] || '';
+  if (/^(fly|land|trade|go to|taste|leave|catch)/.test(w)) return act(w);                                   /* some words in the Here row are whole commands */
+  if (!words.length || (CHIPN && draft.trim() === CHIPN)) { box.value = (words.length ? draft.trim() + ' ' : '') + w + ' '; CHIPN = box.value.trim(); mark(); beep(620, .03); return say(`${label}. Now tap a doing word. Or tap Do it to look.`, null, 'chip thing'); }
+  CHIPN = ''; if (bag && words.length === 1 && TWO.indexOf(first) >= 0) { const to = first === 'give' || first === 'feed' ? 'to' : 'on'; box.value = `${first} ${w} ${to} `; mark(); beep(620, .03); return say(`${first[0].toUpperCase() + first.slice(1)} the ${label} ${to} what? Tap a thing.`, null, 'chip two'); }
+  const next = draft.replace(/ $/, '') + ' ' + w; if (verbWords().has(first)) return act(next); box.value = next + ' '; mark(); beep(620, .03); }
 function drawBag() {
-  $('verbs').innerHTML = '<span class="lab">Do</span>' + ['look', 'take', 'open', 'push', 'use', 'go'].map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('') + `<button class="word hintb" id="hintb" type="button">Hint</button><button class="snd" id="snd" type="button">Sound: ${soundOn ? 'on' : 'off'}</button>`;
+  $('verbs').innerHTML = '<span class="lab">Do</span>' + (VCHIPS[S && S.mode] || VCHIPS.station).map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('') + `<button class="word hintb" id="hintb" type="button">Hint</button><button class="snd" id="snd" type="button">Sound: ${soundOn ? 'on' : 'off'}</button>`;
   $('hintb').onclick = () => act('hint');
   $('snd').onclick = () => { soundOn = !soundOn; $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); if (soundOn) beep(660, .1); };
-  $('verbs').querySelectorAll('.word[data-v]').forEach(b => b.onclick = () => { $('cmd').value = b.dataset.v + ' '; mark(); if (b.dataset.v === 'go') say('Go where? Type north, south, east or west. Or tap the floor.'); });
+  $('verbs').querySelectorAll('.word[data-v]').forEach(b => b.onclick = () => { const v = b.dataset.v, draft = $('cmd').value.replace(/\s+/g, ' ').trim().toLowerCase(); if (CHIPN && draft === CHIPN) return act(v + ' ' + draft);      /* things were tapped first: now there is a doing word */
+    CHIPN = ''; $('cmd').value = v + ' '; mark(); if (v === 'go') say(S.mode === 'station' ? 'Go where? Type north, south, east or west. Or tap the floor.' : 'Go where? Tap a word below. Or tap the picture.'); });
   $('bag').innerHTML = '<span class="lab">Bag</span>' + (S.inv.length ? S.inv.map(i => `<button class="word item" type="button" data-i="${i}">${ITEMS[i]}</button>`).join('') : '<span class="note">Empty. Find things and take them.</span>');
-  $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => { const v = $('cmd').value.trim().toLowerCase(), w = ITEM_WORDS[b.dataset.i][0];
-    if (v === 'use') { $('cmd').value = `use ${w} on `; mark(); } else act('look ' + w); });
+  $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => chipTap(ITEM_WORDS[b.dataset.i][0], ITEMS[b.dataset.i], true));
   mark();
 }
 function mark() { const v = $('cmd').value.trim().split(' ')[0].toLowerCase(); $('verbs').querySelectorAll('.word').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
@@ -745,7 +830,7 @@ const strayed = () => { if (FOCUS) FOCUS.moved = true; };
 const focusOf = key => FOCUS && FOCUS.k === key && !FOCUS.moved ? FOCUS.id : null, VAGUE = ['it', 'that', 'this', 'them', 'him', 'her', 'on', 'with', 'here'];
 function nearObj() { const c = Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i]) && (OBJ[i].tiles || []).some(t => Math.hypot(t[0] - P.x, t[1] - P.y) < 1.7)); return c.length === 1 ? c[0] : null; }
 function askWhat(out, draft, text) { $('cmd').value = draft; mark(); out(text + ' Tap a thing.'); }
-function act(raw) {
+function act(raw) { CHIPN = '';
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
   if (widget && widget.kind === 'login') return;
   if (READ.open && !/^teacher (voltara|station|space|chronosia)$/.test(text)) return readNudge();
@@ -989,6 +1074,7 @@ const PIC = {
     if (d.hu && (d.te || d.on)) x += 8; for (let i = 0; i < d.te; i++) { s += `<rect x="${x}" y="8" width="5" height="40" fill="${PK.green}" stroke="${PK.white}" stroke-width="1"/>`; for (let k = 1; k < 10; k++) s += LN(x, 8 + k * 4, x + 5, 8 + k * 4, PK.deep, .5); x += 9; }
     if (d.te && d.on) x += 8; for (let i = 0; i < d.on; i++) s += sq(x + Math.floor(i / 5) * 9, 8 + (i % 5) * 8.4, 6, PK.amber); if (d.on) x += d.on > 5 ? 18 : 9;
     return SV(Math.max(150, x + 6), 56, s, 'base-ten blocks: big squares, rods and small cubes'); },
+  beforeNow(d) { const u = Math.min(20, 190 / d.b), row = (y, n, lab) => TX(8, y + u / 2 + 4, lab, { a: 'start', s: 12, f: PK.ink }) + Array.from({ length: n }, (_, i) => `<circle cx="${f1(64 + i * u + u / 2)}" cy="${f1(y + u / 2)}" r="${f1(u * .36)}" fill="${PK.amber}"/>`).join(''); return SV(260, f1(u * 2 + 26), row(6, d.a, 'Before') + row(u + 20, d.b, 'Now'), `One section before: ${d.a} dots. One section now: ${d.b} dots.`).replace('style="', 'style="max-height:100px;'); },
   array(d) { const u = Math.min(24, 240 / d.c, 120 / d.r), ox = (260 - d.c * u) / 2; let s = ''; for (let y = 0; y < d.r; y++) for (let x = 0; x < d.c; x++) s += `<circle cx="${f1(ox + x * u + u / 2)}" cy="${f1(6 + y * u + u / 2)}" r="${f1(u * .36)}" fill="${PK.amber}"/>`; return SV(260, f1(d.r * u + 12), s, `${d.r} rows of ${d.c} dots`); },
   shape(d) {
     let s = d.circle ? `<circle cx="100" cy="75" r="58" fill="${PK.blue}" fill-opacity=".85" stroke="${PK.white}" stroke-width="2.5"/>` : `<polygon points="${d.pts.map(p => p.map(f1).join(',')).join(' ')}" fill="${PK.blue}" fill-opacity=".85" stroke="${PK.white}" stroke-width="2.5" stroke-linejoin="round"/>`;
@@ -1239,8 +1325,16 @@ function card(force) {
 /* =====================================================================
    TOYS: locker lock, mini battle, mini quest, project
    ===================================================================== */
-function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; padPrep(); drawWords(); }
-function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; padHide(); drawWords(); }
+/* The words a task says back (right, not yet, a pointer) must never sit below the edge of the task box.
+   On an iPad mini held sideways the box is short, and a child who was wrong saw only a shake. */
+function msgSee() { const t = $('toy'), m = $('msg'); if (!t || t.hidden || !m || !m.textContent) return; const mr = m.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (mr.bottom > tr.bottom - 6) t.scrollTop += mr.bottom - tr.bottom + 10; }
+function toySee() { const t = $('toy'); if (!t || t.hidden) return; const more = t.scrollHeight - t.clientHeight; if (more > 2 && more <= 90 && t.scrollTop < 2 && !$('ans')) { t.scrollTop = more; return; }      /* a task that is only a little too tall skips its heading, so its buttons are in view */
+  const tr = t.getBoundingClientRect(); let low = 0; ['ans', 'try', 'msg'].forEach(id => { const e = $(id); if (e && t.contains(e)) low = Math.max(low, e.getBoundingClientRect().bottom); }); if (low > tr.bottom - 6) t.scrollTop += low - tr.bottom + 10; }      /* the answer box and Check are never below the edge of the task */
+try { new MutationObserver(ms => { const t = $('toy'), m = $('msg'); document.body.classList.toggle('task', !t.hidden); if (m && ms.some(x => x.target === m || x.target.parentNode === m)) msgSee(); }).observe($('toy'), { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['hidden'] }); } catch (e) {}
+
+function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; t.scrollTop = 0; document.body.classList.add('task'); setTimeout(toySee, 40); try { fit(); } catch (e) {}      /* give the task its room now, before the number pad is placed */
+  padPrep(); drawWords(); if (typeof kbHide === 'function') kbHide(); }
+function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; document.body.classList.remove('task'); padHide(); drawWords(); }
 /* THE WORLD SERVER (only when the page sits beside one). [Proposal: engines/gmq-world/server]
    With no server, as on the sketch's own link, nothing here runs and the game is kept on the device as before.
    With a server: a cadet logs in, and their game follows them to any device. The teacher's codes are checked by the server.
@@ -1289,10 +1383,18 @@ const PAD = { target: null, mini: false, pos: null, drag: null };
 try { PAD.mini = getKeep('gmq-pad-mini') === '1'; PAD.pos = JSON.parse(getKeep('gmq-pad-pos') || 'null'); } catch (e) {}
 const padBoxes = () => Array.prototype.slice.call(document.querySelectorAll('#toy input')).filter(i => i.getAttribute('inputmode') === 'numeric' || i.getAttribute('inputmode') === 'none');
 function padPrep() { const ins = padBoxes(); ins.forEach(i => i.setAttribute('inputmode', PAD.mini ? 'numeric' : 'none')); if (!ins.length) padHide(); }
-function padHide() { PAD.target = null; $('pad').hidden = true; }
-function padPlace() { const el = $('pad'), w = el.offsetWidth, h = el.offsetHeight, W = window.innerWidth, H = window.innerHeight; let x, y;
+function padHide() { PAD.target = null; $('pad').hidden = true; { const t = $('toy'); t.style.marginBottom = ''; t.style.marginRight = ''; $('pad').style.width = ''; } if (PAD.back != null) { if (Math.abs(window.scrollY - PAD.at) < 8) window.scrollTo(0, PAD.back); PAD.back = null; } }      /* if the pad moved the page, the page goes back when the pad leaves */
+function padPlace() { const el = $('pad');
+  if (DESK.on) { const t = $('toy'), s = $('side').getBoundingClientRect();      /* on an iPad the pad does not float. Beside the picture it lies along the bottom of the desk. Under the picture it stands at the right end of the desk. The task keeps clear of it. */
+    if (DESK.col) { el.style.width = PAD.mini ? '' : Math.round(s.width - 6) + 'px'; t.style.marginRight = ''; t.style.marginBottom = PAD.mini ? '' : (el.offsetHeight + 8) + 'px'; el.style.left = Math.round(PAD.mini ? s.right - el.offsetWidth - 4 : s.left + 2) + 'px'; el.style.top = Math.round(s.bottom - el.offsetHeight) + 'px'; }
+    else { el.style.width = ''; t.style.marginBottom = ''; t.style.marginRight = PAD.mini ? '' : (el.offsetWidth + 10) + 'px'; el.style.left = Math.round(s.right - el.offsetWidth - 2) + 'px'; el.style.top = Math.round(PAD.mini ? s.top + 4 : s.bottom - el.offsetHeight) + 'px'; }
+    toySee(); return; }
+  const w = el.offsetWidth, h = el.offsetHeight, W = window.innerWidth, H = window.innerHeight; let x, y;
   if (PAD.pos) { x = PAD.pos[0] * W; y = PAD.pos[1] * H; } else { const t = PAD.target && PAD.target.getBoundingClientRect(); x = W - w - 10; y = t ? t.top - 8 : H * .5;      /* level with the answer box, on the right, so the question stays in view */
-    if (t && t.right > x - 8) y = t.bottom + 10 + h < H ? t.bottom + 10 : t.top - h - 10; }
+    if (t && t.right > x - 8) y = t.bottom + 10 + h < H ? t.bottom + 10 : t.top - h - 10;
+    /* never on top of the answer box or the task's own Check button: if it would be, sit at the bottom of the screen and move the page so both show above it */
+    x = Math.max(4, Math.min(W - w - 4, x)); y = Math.max(4, Math.min(H - h - 4, y)); const b = $('try') ? $('try').getBoundingClientRect() : null, over = r => r && r.height && x < r.right + 4 && x + w > r.left - 4 && y < r.bottom + 4 && y + h > r.top - 4;
+    if (over(t) || over(b)) { x = W - w - 4; y = H - h - 4; const dy = Math.max(t ? t.bottom : 0, b ? b.bottom : 0) + 8 - y; if (dy > 0) { if (PAD.back == null) PAD.back = window.scrollY; window.scrollBy(0, dy); PAD.at = window.scrollY; } } }
   el.style.left = Math.max(4, Math.min(W - w - 4, x)) + 'px'; el.style.top = Math.max(4, Math.min(H - h - 4, y)) + 'px'; }
 function padShow(t) { PAD.target = t; const el = $('pad'), k = widget && widget.akind, x = $('padx'), extra = k === 'time' ? ':' : k === 'money' ? '.' : ''; x.textContent = extra; x.disabled = !extra; x.dataset.k = extra || 'x';
   $('padnext').hidden = padBoxes().length < 2; { const okb = $('padkeys').querySelector('[data-k="ok"]') || $('pad').querySelector('[data-k="ok"]'); if (okb) okb.style.visibility = $('try') ? '' : 'hidden'; } el.classList.toggle('mini', PAD.mini); $('padkb').textContent = PAD.mini ? '123' : 'ABC'; $('padkb').setAttribute('aria-label', PAD.mini ? 'Use the number pad' : 'Use the full keyboard'); $('padgrip').textContent = PAD.mini ? '⠿' : '⠿ move me'; el.hidden = false; padPlace(); }
@@ -1306,7 +1408,7 @@ $('padkeys').addEventListener('pointerdown', e => { e.preventDefault(); });     
 $('padkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b && !b.disabled) padKey(b.dataset.k); });
 $('padkb').addEventListener('pointerdown', e => { e.stopPropagation(); });
 $('padkb').addEventListener('click', () => { PAD.mini = !PAD.mini; setKeep('gmq-pad-mini', PAD.mini ? '1' : '0'); const t = PAD.target; padPrep(); if (t && document.body.contains(t)) { t.blur(); padShow(t); t.focus({ preventScroll: true }); } });
-$('padbar').addEventListener('pointerdown', e => { const r = $('pad').getBoundingClientRect(); PAD.drag = [e.clientX - r.left, e.clientY - r.top]; try { $('padbar').setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
+$('padbar').addEventListener('pointerdown', e => { if (DESK.on) { e.preventDefault(); return; } const r = $('pad').getBoundingClientRect(); PAD.drag = [e.clientX - r.left, e.clientY - r.top]; try { $('padbar').setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
 $('padbar').addEventListener('pointermove', e => { if (!PAD.drag) return; const el = $('pad'), W = window.innerWidth, H = window.innerHeight, x = Math.max(4, Math.min(W - el.offsetWidth - 4, e.clientX - PAD.drag[0])), y = Math.max(4, Math.min(H - el.offsetHeight - 4, e.clientY - PAD.drag[1])); el.style.left = x + 'px'; el.style.top = y + 'px'; PAD.pos = [x / W, y / H]; });
 const padDrop = () => { if (!PAD.drag) return; PAD.drag = null; setKeep('gmq-pad-pos', JSON.stringify(PAD.pos)); if (PAD.target && document.body.contains(PAD.target)) PAD.target.focus({ preventScroll: true }); };
 $('padbar').addEventListener('pointerup', padDrop); $('padbar').addEventListener('pointercancel', padDrop);
@@ -1352,6 +1454,7 @@ function check() {
   } else {
     beep(140, .2, 'square'); m.className = 'msg bad';
     m.textContent = { battle: 'Not yet. Count one row. Then count the rows.', fuel: 'Not yet. Take away the tens. Then the ones.', grid: 'Not yet. Look at the rows of cells.', blocks: 'Not yet. Count the big squares, then the rods, then the small cubes.', shells: 'Not yet. Add the tens. Then add the ones.', locker: 'The lock stays shut. Read the sign. Then count.' }[widget.kind];
+    if (widget.bad) { const t = widget.bad(parseInt(v, 10)); if (t) m.textContent = t; }
     $('ans').value = ''; $('ans').classList.remove('shake'); void $('ans').offsetWidth; $('ans').classList.add('shake');
   }
 }
@@ -1469,9 +1572,10 @@ function nextHop() {
 /* 3-2 ENERGY GRID: equal groups, then share them again. Each answer feeds the next question. */
 const GRIDS = [[3, 2], [3, 4], [3, 6], [4, 3], [4, 6], [5, 4], [5, 8], [6, 5]];
 function startGrid() { const [g, e] = pick(GRIDS); widget = { kind: 'grid', hits: 0, need: 3, tries: 0, g, e, next: nextGrid }; nextGrid(); }
-function nextGrid() { const w = widget, T = w.g * w.e, q = T / (w.g - 1), st = [[`The grid has ${w.g} sections. Each section holds ${w.e} power cells. How many cells in all?`, T], [`A rock breaks one section. Share the ${T} cells equally over ${w.g - 1} sections. How many in each?`, q], [`Each section held ${w.e} cells. Now each holds ${q}. How many more is that?`, q - w.e]][w.hits]; w.ans = st[1];
+function nextGrid() { const w = widget, T = w.g * w.e, q = T / (w.g - 1), st = [[`The grid has ${w.g} sections. Each section holds ${w.e} power cells. How many cells in all?`, T], [`A rock breaks one section. Share the ${T} cells equally over ${w.g - 1} sections. How many in each?`, q], [`Look at one section. Before the rock, it held ${w.e} cells. Now it holds ${q} cells. How many more cells does it hold now than before?`, q - w.e]][w.hits]; w.ans = st[1];
+  w.bad = w.hits === 2 ? n => n === 0 ? `The grid still has ${T} cells. But one section holds more. How many more?` : `Not yet. Look at one section only. How many more is ${q} than ${w.e}?` : null;
   numberToy(`<p class="eyebrow">Shield Generator · task 2 of 3 · step ${w.hits + 1} of 3</p><p class="mw"><b>Maths word: equal groups.</b> Equal groups all hold the same number. To divide is to share into equal groups.</p><h3>Energy Grid</h3>
-    <div class="art">${drawPic({ t: 'array', r: w.hits === 2 ? w.g - 1 : w.g, c: w.hits === 2 ? q : w.e })}</div><p class="q">${st[0]}</p>`, 'cells'); }
+    <div class="art">${drawPic(w.hits === 2 ? { t: 'beforeNow', a: w.e, b: q } : { t: 'array', r: w.g, c: w.e })}</div><p class="q">${st[0]}</p>`, 'cells'); }
 /* 4-2 AMMO COUNT: five colours of counters. Every rack must hold an even number. */
 const RACKC = [['red', '#ff7a6b'], ['blue', '#6db3ff'], ['green', '#6fd08a'], ['gold', '#ffd25e'], ['white', '#f4f7fc']];
 function startRacks() {
@@ -2368,7 +2472,7 @@ const VDO = {
   sky: { look: 'Rainbow skies. Clouds like cotton candy.', take: 'You cannot reach the clouds.' },
   gumble: { look: () => V().fed ? 'The Gumblefish giggles and blows a bubble.' : 'A Gumblefish giggles in the sparkling river. It keeps looking at the fruit tree.',
     talk: () => V().crossed ? 'The Gumblefish says: hop over any time!' : V().fed ? startStones() || 'The Gumblefish says: I call a number. You hop to the nearest hundred!' : 'The Gumblefish says: I am SO hungry. Bring me a FlavorBurst and I will call up the stepping stones.',
-    use: it => { if (V().fed) return VDO.gumble.talk(); if (it !== 'burst') return 'The Gumblefish says: I only want a FlavorBurst.'; S.inv = S.inv.filter(i => i !== 'burst'); V().fed = true; save(); drawBag(); beep(700, .15); return 'Gulp! The Gumblefish spins. Four stones rise out of the river. Talk to it to cross.'; }, take: 'It slips away, giggling.' },
+    use: it => { if (V().fed) return VDO.gumble.talk(); if (!it && has('burst')) it = 'burst'; if (it !== 'burst') return has('burst') ? 'The Gumblefish says: I only want a FlavorBurst.' : 'The Gumblefish says: I am SO hungry. I only want a FlavorBurst. They grow on the tree by your ship.'; S.inv = S.inv.filter(i => i !== 'burst'); V().fed = true; save(); drawBag(); beep(700, .15); return 'Gulp! The Gumblefish spins. Four stones rise out of the river. Talk to it to cross.'; }, take: 'It slips away, giggling.' },
   stones: { look: () => V().fed ? 'Four stepping stones. Each has a number carved on it.' : 'The river is wide and deep. There is no way across yet.', use: () => V().crossed ? vCross() : V().fed ? startStones() || 'You step up to the first stone.' : 'There is nothing to stand on. The Gumblefish may know a way.', take: 'It is far too heavy.' },
   notice: { look: 'A notice from the Galactic Council: SOS. VOLTARA HAS AN ENERGY CRISIS. THE ENERGY COUNCIL NEEDS HELP. COME TO THE HALL.' },
   tower: { look: () => V().count ? 'The energy tower. It holds 1,650 energy. You counted it.' : 'The energy tower. Crystals glow behind a locked door.',
@@ -2676,7 +2780,7 @@ function bldg(X, gy, bw, bh, k, lit, seed, kind) { const body = lit ? '#4a43a0' 
   cx.fillStyle = lit ? '#ffe58a' : '#141136'; rr(X - bw * .1, gy - leg - hB * .24, bw * .2, hB * .24, round ? [bw * .1, bw * .1, 0, 0] : [4, 4, 0, 0]); cx.fill(); ol(1.5); }
 /* the name of a place in one or two lines, whichever is narrower than the room it has */
 function nameLines(name, maxW) { const ws = name.split(' '); if (ws.length < 2 || cx.measureText(name).width <= maxW) return [name]; let best = null; for (let i = 1; i < ws.length; i++) { const a = ws.slice(0, i).join(' '), b = ws.slice(i).join(' '), m = Math.max(cx.measureText(a).width, cx.measureText(b).width); if (!best || m < best[0]) best = [m, [a, b]]; } return best[1]; }
-const streetNames = (w, n) => w * .76 / n >= 60;
+const streetNames = (w, n) => w * .76 / n >= 58;      /* 58, not 60: on an older iPad held sideways the picture is a little narrower now that the desk is wide enough for a task */
 function drawStreet(w, h, hz, gy, par) { const k = VSC[V().sc].k, c = CITY[k], n = c.places.length; vSky(w, h, hz, par); vFar(w, h, hz, par); cx.fillStyle = '#231f55'; for (let i = 0; i < 9; i++) { const bx = (i / 9 - par * .03) * w, bh = h * (.1 + (i * 7 % 5) * .03); cx.fillRect(bx, hz - bh + h * .1, w * .09, bh + h * .2); } pave(w, h, gy);
   const slot = w * .76 / n, names = streetNames(w, n), fsN = Math.max(11, Math.min(14, w * .0155)), fsV = Math.max(12, Math.min(19, w * .021)), base = gy - h * .02, plates = [];
   SPOTS.filter(p => p.k === k).forEach(p => { const X = spotX(p) * w, bw = Math.min(slot * .82, h * .3), bh = h * (.2 + Math.min(.22, p.need / 250 * .2)), lit = powered(p.i), kind = p.name === 'Round Houses' ? 'round' : p.name === 'Stilt Houses' ? 'stilt' : ''; bldg(X, base, bw, bh, k, lit, p.i, kind);
@@ -2889,7 +2993,7 @@ function bookShow() { const w = widget, p = w.page, e = CBOOK[p]; let body;
   $('bk').disabled = p <= 1; $('nx').disabled = p >= 10; $('bk').onclick = () => { w.page--; beep(500, .04); bookShow(); }; $('nx').onclick = () => { w.page++; beep(560, .04); bookShow(); }; $('leave').onclick = () => { closeToy(); say('You close the book.'); }; }
 
 /* ---- little pictures for the questions */
-function clockFace(h, m) { const a = (h % 12 + m / 60) * 30 - 90, b = m * 6 - 90, r = d => d * Math.PI / 180; let s = '<svg viewBox="0 0 120 120" role="img" aria-label="A clock with two hands" style="width:170px;max-width:60%"><circle cx="60" cy="60" r="56" fill="#fff7dc" stroke="#1a1640" stroke-width="4"/>';
+function cClock(h, m) { const a = (h % 12 + m / 60) * 30 - 90, b = m * 6 - 90, r = d => d * Math.PI / 180; let s = '<svg viewBox="0 0 120 120" role="img" aria-label="A clock with two hands" style="width:170px;max-width:60%"><circle cx="60" cy="60" r="56" fill="#fff7dc" stroke="#1a1640" stroke-width="4"/>';
   for (let i = 1; i <= 12; i++) s += `<text x="${60 + 44 * Math.cos(r(i * 30 - 90))}" y="${60 + 44 * Math.sin(r(i * 30 - 90)) + 5}" text-anchor="middle" font-size="13" style="fill:#1a1640">${i}</text>`;
   for (let i = 0; i < 60; i++) if (i % 5) s += `<circle cx="${60 + 53 * Math.cos(r(i * 6))}" cy="${60 + 53 * Math.sin(r(i * 6))}" r=".9" fill="#1a1640"/>`;
   return s + `<line x1="60" y1="60" x2="${60 + 25 * Math.cos(r(a))}" y2="${60 + 25 * Math.sin(r(a))}" stroke="#1a1640" stroke-width="6" stroke-linecap="round"/><line x1="60" y1="60" x2="${60 + 39 * Math.cos(r(b))}" y2="${60 + 39 * Math.sin(r(b))}" stroke="#c0392b" stroke-width="3.5" stroke-linecap="round"/><circle cx="60" cy="60" r="4" fill="#1a1640"/></svg>`; }
@@ -2928,7 +3032,7 @@ const CQ = {
   tortoise: { title: 'The sleepy tortoise', place: 'grove', skill: 'Add minutes to a time', word: ['later', 'A later time comes after. To find it, count on in minutes.'], win: 'The Temporal Tortoise blinks slowly. "So that is the time. Thank you." It walks off, backward, looking pleased.',
     steps: () => [{ kind: 'info', art: '', q: 'The Temporal Tortoise walks backward. It has lost track of time. "I keep falling asleep," it says. "Help me work out when I woke up."' }].concat(cTort(C().seed).map((t, i) => ({ kind: 'time', art: digi(`${t.h}:${String(t.m).padStart(2, '0')}`, 0), q: `"${['I closed my eyes', 'Then I napped again', 'My last nap began'][i]} at ${t.h}:${String(t.m).padStart(2, '0')}. I slept for ${t.d} minutes." What time did it wake up?`, ans: [t.ans], hint: t.m + t.d >= 60 ? `Count on to ${t.h + 1}:00 first. That uses ${60 - t.m} minutes. ${t.d - (60 - t.m) ? `Then there are ${t.d - (60 - t.m)} left.` : 'That is all of them.'}` : `Add ${t.d} to the ${t.m} minutes.` }))) },
   cougar: { title: 'Wind the Clockwork Cougar', place: 'ridge', skill: 'Read a clock to 5 minutes', word: ['clock face', 'The short hand shows the hour. The long hand shows the minutes. Each number is 5 minutes.'], win: 'Click. Whirr. The Clockwork Cougar stretches and purrs like a ticking watch. Its clock runs again.',
-    steps: () => [{ kind: 'info', art: '', q: 'The Clockwork Cougar does not move. A clock in its chest has stopped. To wind it, you must read the time it shows. Three times.' }].concat(cCoug(C().seed).map((t, i) => ({ kind: 'time', art: clockFace(t[0], t[1]), q: `Winding ${i + 1} of 3. What time does the clock show?`, ans: [[t[0], t[1]]], hint: t[1] >= 35 ? 'The short hand has not reached the next number yet. The long hand: each number is 5 minutes.' : 'The short hand shows the hour. The long hand shows the minutes. Each number is 5 minutes.' }))) } };
+    steps: () => [{ kind: 'info', art: '', q: 'The Clockwork Cougar does not move. A clock in its chest has stopped. To wind it, you must read the time it shows. Three times.' }].concat(cCoug(C().seed).map((t, i) => ({ kind: 'time', art: cClock(t[0], t[1]), q: `Winding ${i + 1} of 3. What time does the clock show?`, ans: [[t[0], t[1]]], hint: t[1] >= 35 ? 'The short hand has not reached the next number yet. The long hand: each number is 5 minutes.' : 'The short hand shows the hour. The long hand shows the minutes. Each number is 5 minutes.' }))) } };
 /* TIME WISPS: quick practice that you can see coming.
    [Source: Marc, 2026-11-18: little things that pop up as you walk around, like the old overhead games, for extra practice; a win gives one common card;
     save 12 commons for a rare card, or 24 for a gold card; and a record of which skills each cadet has practised.]
@@ -2962,7 +3066,7 @@ function wispQs(r, lvl) { const n = (a, b) => a + Math.floor(r() * (b - a + 1)),
   return pool.map(k => { if (k === 'add') { const q = fluQ(lvl, r); return { kind: 'num', sk: addNode(lvl), art: '', q: `${q[0]} + ${q[1]} = ?`, ans: [q[0] + q[1]], hint: lvl >= 3 ? 'Tens first. Then ones. Then add.' : lvl === 2 ? 'Make ten first.' : 'Start at the bigger number. Count on.' }; }
     if (k === 'later') { const h = n(1, 10), m = n(0, 11) * 5, d = n(1, 6) * 5, t = h * 60 + m + d; return { kind: 'time', sk: 'TIME.LATER', art: digi(T(h, m), 0), q: `It is ${T(h, m)}. What time will it be ${d} minutes later?`, ans: [[Math.floor(t / 60), t % 60]], hint: m + d >= 60 ? `Count on to ${h + 1}:00 first. That uses ${60 - m} minutes.` : `Count on ${d} minutes from ${T(h, m)}.` }; }
     if (k === 'between') { const h = n(1, 10), m = n(0, 11) * 5, d = n(2, 10) * 5, t = h * 60 + m + d; return { kind: 'num', sk: 'TIME.BETWEEN', art: '', q: `How many minutes is it from ${T(h, m)} to ${T(Math.floor(t / 60), t % 60)}?`, ans: [d], hint: m + d > 60 ? `Count on to ${h + 1}:00 first. Then count the rest.` : 'Count on in fives.' }; }
-    const h = n(1, 12), m = n(0, 11) * 5; return { kind: 'time', sk: 'TIME.READ', ev: `a clock that shows ${T(h, m)}`, art: clockFace(h, m), q: 'What time does this clock show?', ans: [[h, m]], hint: 'The short hand shows the hour. The long hand shows the minutes. Each number is 5 minutes.' }; }); }
+    const h = n(1, 12), m = n(0, 11) * 5; return { kind: 'time', sk: 'TIME.READ', ev: `a clock that shows ${T(h, m)}`, art: cClock(h, m), q: 'What time does this clock show?', ans: [[h, m]], hint: 'The short hand shows the hour. The long hand shows the minutes. Each number is 5 minutes.' }; }); }
 function wispChase(o) { if (Math.abs(o.x - C().x) + Math.abs(o.y - C().y) <= 1 && !CM.route.length) return startWisp(o); cGo(o.x, o.y); CM.chase = o; }
 function startWisp(w) { beep(660, .12); widget = { kind: 'cq', id: 'wisp', q: { title: 'A time wisp' }, steps: wispQs(Math.random, Math.min(4, FLU().lvl)), i: 0, tries: 0, wisp: w, slips: 0 }; say('A time wisp! It hums around you. Answer three quick questions to catch it. One slip is allowed.'); cqShow(); }
 function wispEnd(win, text) { const w = widget.wisp, c = C(); CWISP = CWISP.filter(o => o !== w); CWNEXT = 20; closeToy(); S.log.push({ what: 'Chronosia: a time wisp', skill: 'Quick practice: sums and time', result: win ? 'caught' : 'slipped away' });
@@ -3191,7 +3295,30 @@ cv.addEventListener('pointerdown', e => {
    START
    ===================================================================== */
 S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y; }
-$('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
+function sayGo() { let v = $('cmd').value; if (CHIPN && v.replace(/\s+/g, ' ').trim().toLowerCase() === CHIPN) v = 'look ' + v; act(v); if (KB.touch && !KB.big && !$('kb').hidden) { $('cmd').blur(); kbHide(); } }
+$('say').addEventListener('submit', e => { e.preventDefault(); sayGo(); });
+/* A SMALL KEYBOARD for the command box, so the iPad's own big one stays away.
+   [Source: Marc, 2026-11-19: "a little mini keyboard, if possible, because every time they need to type it, their giant keyboard comes [up on] their iPad."]
+   On a touch screen the box does not call the big keyboard. Tapping the box brings up small letter keys that can be moved. "Big keys" switches to the iPad's own keyboard, and back. */
+const KB = { big: getKeep('gmq-kb') === 'big', touch: ('ontouchstart' in window) || navigator.maxTouchPoints > 0, pos: null, drag: null };
+$('kbkeys').innerHTML = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'].map((r, i) => `<div class="kr">${r.split('').map(k => `<button type="button" data-k="${k}">${k}</button>`).join('')}${i === 2 ? '<button type="button" class="kdel" data-k="del" aria-label="rub out">⌫</button>' : ''}</div>`).join('') + '<div class="kr"><button type="button" class="kwide" data-k="space">space</button><button type="button" class="kok" data-k="ok">Do it</button></div>';
+function kbPrep() { $('cmd').setAttribute('inputmode', KB.touch && !KB.big ? 'none' : 'text'); $('kbt').hidden = !(KB.touch && KB.big); $('kbt').textContent = 'Small keys'; $('kbt').setAttribute('aria-label', 'Use the small keyboard'); }      /* the way to the big keyboard is on the small one's own bar, not beside Do it, where a finger could hit it by mistake */
+function kbPlace() { const el = $('kb');
+  if (DESK.on) { const s = $('side').getBoundingClientRect(), b = $('say').getBoundingClientRect(), kw = Math.round(DESK.col ? s.width - 4 : Math.min(460, s.width * .6)); el.style.width = kw + 'px'; el.style.left = Math.round(DESK.col ? s.left + 2 : s.right - kw - 2) + 'px'; el.style.top = Math.round(Math.min(window.innerHeight - el.offsetHeight - 4, Math.max(b.bottom + 6, s.bottom - el.offsetHeight))) + 'px'; return; }      /* on the desk, at its far end: beside the picture that is the bottom of the desk, so the word rows stay in reach while you type. Never on the picture or the box. It goes when the command is sent. */
+  el.style.width = ''; const W = window.innerWidth, H = window.innerHeight, w = el.offsetWidth, h = el.offsetHeight, r = $('cmd').getBoundingClientRect(); let x, y; if (KB.pos) { x = KB.pos[0] * W; y = KB.pos[1] * H; } else { x = r.left + r.width / 2 - w / 2; y = r.top - h - 8; if (y < 4) { const bb = $('bag').getBoundingClientRect().bottom; y = bb + 8 + h <= H ? bb + 8 : H - h - 6; } } el.style.left = Math.max(4, Math.min(W - w - 4, x)) + 'px'; el.style.top = Math.max(4, Math.min(H - h - 4, y)) + 'px'; }
+function kbShow() { if (!KB.touch || KB.big) return; $('kb').hidden = false; kbPlace(); }      /* just above the box: it covers the last few lines of the log while you type, never the box or the word rows, and the page does not move */
+function kbHide() { $('kb').hidden = true; }
+function kbKey(k) { const c = $('cmd'); if (k === 'ok') return sayGo(); let v = c.value; if (k === 'del') v = v.slice(0, -1); else if (k === 'space') { if (v && !/ $/.test(v)) v += ' '; } else if (v.length < 50) v += k; c.value = v; CHIPN = ''; mark(); beep(k === 'del' ? 300 : 620, .03); if (document.activeElement !== c) c.focus({ preventScroll: true }); }
+function kbSwitch() { KB.big = !KB.big; setKeep('gmq-kb', KB.big ? 'big' : 'small'); kbPrep(); const c = $('cmd'); c.blur(); kbHide(); setTimeout(() => c.focus({ preventScroll: true }), 30); }
+$('cmd').addEventListener('focus', kbShow); $('cmd').addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== $('cmd')) kbHide(); }, 150));
+$('kbkeys').addEventListener('pointerdown', e => { e.preventDefault(); });                      /* a tap on a key must not take the cursor out of the box */
+$('kbkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b) kbKey(b.dataset.k); });
+$('kbt').addEventListener('click', kbSwitch); $('kbbig').addEventListener('pointerdown', e => e.stopPropagation()); $('kbbig').addEventListener('click', kbSwitch); $('kbx').addEventListener('pointerdown', e => e.stopPropagation()); $('kbx').addEventListener('click', () => { $('cmd').blur(); kbHide(); });
+$('kbbar').addEventListener('pointerdown', e => { if (DESK.on) { e.preventDefault(); return; } const r = $('kb').getBoundingClientRect(); KB.drag = [e.clientX - r.left, e.clientY - r.top]; try { $('kbbar').setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
+$('kbbar').addEventListener('pointermove', e => { if (!KB.drag) return; const el = $('kb'), W = window.innerWidth, H = window.innerHeight, x = Math.max(4, Math.min(W - el.offsetWidth - 4, e.clientX - KB.drag[0])), y = Math.max(4, Math.min(H - el.offsetHeight - 4, e.clientY - KB.drag[1])); el.style.left = x + 'px'; el.style.top = y + 'px'; KB.pos = [x / W, y / H]; });
+['pointerup', 'pointercancel'].forEach(t => $('kbbar').addEventListener(t, () => { KB.drag = null; }));
+kbPrep();
+$('cmd').addEventListener('input', () => { CHIPN = ''; });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
 netStart();
@@ -3207,7 +3334,9 @@ function goVoltara() { const again = !!(S.v && S.v.crossed); S.mode = 'planet'; 
   say(again ? 'Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.' : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); }
 function goStation() { S.mode = 'station'; S.ended = false; S.beat = 0; if (S.tut == null) S.tut = 3; tidy(); P.x = S.x; P.y = S.y; say(`Teacher shortcut. You are on the KIS Station, in the ${ROOMS[S.room].name}.`); $('place').scrollIntoView({ block: 'nearest' }); }
 $('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation; $('t_space').onclick = goSpace; $('t_chr').onclick = goChronosia;
-window.addEventListener('resize', size);
+window.addEventListener('resize', size); window.addEventListener('resize', fitSoon); window.addEventListener('orientationchange', fitSoon);
+document.querySelectorAll('#menu .mbtn').forEach(b => b.addEventListener('click', () => menuOpen(MENU.open === b.dataset.m ? null : b.dataset.m)));
+setTimeout(() => { drawMenu(); fit(); }, 0);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
 size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
