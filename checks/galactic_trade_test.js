@@ -32,7 +32,7 @@ const r = (n, m) => Math.floor((n + m / 2) / m) * m, fuel = n => r(P[n][0], 10),
     await p.evaluate(() => { skipIntro(); S.ended = true; S.mode = 'space'; S.at = 'numerix'; SP.x = GAL.numerix.x; SP.y = GAL.numerix.y; save(); }); await p.waitForTimeout(1500);
     expect(await say('trade'), /silent.*energy plan/, 'the beacon before Voltara has a plan'); if (await p.evaluate(() => !$('toy').hidden)) bad.push(name + ': the trade map opened too early');
     await p.evaluate(() => { V().plan = [0, 1]; save(); }); expect(await say('hint'), /trade beacon/, 'the hint names the beacon once it is open');
-    await p.evaluate(() => { S.v = null; }); await p.locator('#t_space').tap(); await p.waitForTimeout(1600); expect(await last(), /Teacher shortcut.*trade beacon is open/, 'the teacher shortcut to space'); await shot('0_beacon');
+    await p.evaluate(() => { S.v = null; }); await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_space').tap(); await p.waitForTimeout(1600); expect(await last(), /Teacher shortcut.*trade beacon is open/, 'the teacher shortcut to space'); await shot('0_beacon');
     // 1. tap the beacon on the picture. The idea comes first.
     const st = await p.locator('.stage').boundingBox(); await p.touchscreen.tap(st.x + st.width * .2, st.y + st.height * .26); await p.waitForTimeout(300);
     expect(await p.textContent('#toy .eyebrow').catch(() => ''), /See it first/, 'rounding to the nearest ten is shown first'); await shot('1_demo'); await p.click('#try'); await p.waitForTimeout(200);

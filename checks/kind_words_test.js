@@ -50,7 +50,7 @@ const GOOD_CMD = ['push it', 'push crate', 'look at glass', 'use wrench on hatch
   await say('look crate'); if ((await echo()) !== 'look crate') bad.push('a normal command should be echoed in full: ' + await echo());
   await say('look at the ไอ้ crate'); if (/[^\x00-\x7F…]/.test((await echo()).replace(/…/g, ''))) bad.push('letters from another alphabet were echoed: ' + await echo());
   // 4. the same on Voltara
-  await p.locator('#t_volt').click(); await p.waitForTimeout(900);
+  await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_volt').click(); await p.waitForTimeout(900);
   await say('eat poop fruit'); if ((await echo()) !== '…' || !/Kind words only/.test(await last())) bad.push('Voltara: a rude command got through: ' + await echo() + ' / ' + await last());
   await say('talk blorp butterfly'); if ((await echo()) !== 'talk … butterfly') bad.push('Voltara: echo was ' + await echo());
   // 5. a rude name saved on the device before this guard existed is wiped when the page opens

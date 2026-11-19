@@ -34,7 +34,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.locator('#verbs [data-v="look"]').tap(); await p.locator('#nouns .noun', { hasText: /ship/ }).first().tap(); await p.waitForTimeout(200); await idle(); expect(await last(), /Your ship|scrap|hull/i, 'a doing word then a thing word runs the command');
     await p.locator('#nouns .noun').nth(1).tap(); await p.waitForTimeout(200); await idle(); if (!(await last())) bad.push(name + ': tapping a thing word alone should look at it');
     // ---- a small world
-    await p.locator('#t_space').tap(); await p.waitForTimeout(1500); await say('trade'); await p.click('#try'); await p.waitForTimeout(200);
+    await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_space').tap(); await p.waitForTimeout(1500); await say('trade'); await p.click('#try'); await p.waitForTimeout(200);
     if (await p.locator('#toy .land').count()) bad.push(name + ': no planet can be landed on before it is scanned');
     await p.click('#toy .wire[data-n="C"]'); await p.fill('#ans', '30'); await p.fill('#ans2', '1200'); await p.click('#try'); await p.waitForTimeout(200); await p.click('#toy .land[data-land="C"]'); await p.waitForTimeout(400);
     const k = await p.evaluate(() => { const k = wKit('C'), th = wThings(k); return { name: k.name, cr: k.cr.name, at: k.at, things: th.map(t => ({ id: t.id, w: t.words[0], label: t.label })), mode: S.mode, place: $('place').textContent, q: wLockQ(k, 0) }; });
@@ -57,7 +57,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await say('trade'); if (!/Land on C ★/.test(await p.textContent('#toy'))) bad.push(name + ': a planet whose seed is found should show a star'); await p.click('#leave');
     if (out) for (const n of ['A', 'F', 'G', 'I']) { await p.evaluate(n => { TRADE().scan.push(n); landWorld(n); }, n); await p.waitForTimeout(600); await p.screenshot({ path: path.join(out, `world_${name}_${n}.png`) }); }
     // ---- tap the words: on Voltara
-    await p.locator('#t_volt').tap(); await p.waitForTimeout(800); words = await p.evaluate(() => [...document.querySelectorAll('#nouns .noun')].map(x => x.textContent)); if (!words.some(x => /butterfly/.test(x))) bad.push(name + ': Voltara should show its things as words: ' + words.join(', '));
+    await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_volt').tap(); await p.waitForTimeout(800); words = await p.evaluate(() => [...document.querySelectorAll('#nouns .noun')].map(x => x.textContent)); if (!words.some(x => /butterfly/.test(x))) bad.push(name + ': Voltara should show its things as words: ' + words.join(', '));
     console.log(`${name}: a small world played, words tapped`); await ctx.close();
   }
   for (const t of bad) console.log('  PROBLEM', t);
