@@ -83,7 +83,7 @@ I wrote that down as the lead principle. Then I built Xylophora and the first dr
 | Chronosia: keep the three open sheets, or put the steps back | Chronosia guide, "Changed 2026-11-19, overnight" |
 | The skills page (still paused) | `GMQ_Skills_Page_Design_v2_2026-11-19.md`, section 10 |
 | The last four standards: Planet Lengthar, Planet Geometria, Zephyron cut down, or leave them to the classroom | `GMQ_Last_Four_Standards_Options_v1_2026-11-19.md` |
-| The card battle: I need your rules and the card set | your word |
+| The card battle: is the board current, which of the four card sets, and six smaller points | `GMQ_Card_Battle_What_Is_Known_v1_2026-11-19.md` (added late on the 19th, after you sent the board and the rules file) |
 
 ---
 

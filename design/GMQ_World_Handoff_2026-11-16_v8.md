@@ -273,6 +273,7 @@ A **round** is both players playing a card. A card that says "for the next 2 tur
 **Still open (Marc will answer the battle details later; battles are a later stage)**
 1. The hand limit by level (see Setup).
 2. **Which lost part stops which kind of card.** Weapons at 0 means the ship cannot attack at all (confirmed by Marc). The rest of the board, read as text, probably says: Shield Generator, cannot defend; Power Module, cannot heal; Engine Core and Navigation, lose 1 card in hand. Marc should confirm.
+   - **Added 2026-11-19:** Marc sent the board as a PDF. It says exactly that, word for word [Source: `reference/marc-2026/5_Card_Battle/Battle_Game_Board.pdf`]. Still open: whether the board is current (the Canva design is dated June 2024, his voice rules November 2026); whether "lose 1 card in hand" is one card at that moment or a smaller hand for the rest of the battle; whether "cannot defend" stops defence cards only or the Main Shield too. See `proposals/GMQ_Card_Battle_What_Is_Known_v1_2026-11-19.md`.
 3. **Challenge battles:**
     - What is the final stake: a gold card from each player, or one of the loser's cards drawn at random?
     - Can a student with no gold card take part?
