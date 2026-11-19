@@ -308,7 +308,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 44</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 43</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -743,7 +743,7 @@ const DO = {
     take: 'Too heavy to carry.', open: 'They are nailed shut.' },
   crate: { look: () => S.crate ? 'The loose crate. You moved it.' : 'One crate sits alone by the wall. Cold air comes from behind it.',
     push: () => { if (S.crate) return 'It will not go any further.'; S.crate = true; S.gap = true; save(); beep(160, .25, 'sawtooth'); secret('gap', 'The crate slides. There is a gap in the wall!'); },
-    take: 'Too heavy to carry. Maybe you can push it.', open: 'It is nailed shut. Cold air comes from behind it.', use: 'You put your hands on the crate. It rocks a little.' },
+    take: 'Too heavy to carry. Maybe you can push it.', open: 'It is nailed shut.' },
   gap: { look: 'A dark gap in the wall. You could crawl in.', go: () => { walkTo((x, y) => x === 15 && y === 16); return 'You crawl into the dark.'; }, use: () => DO.gap.go() },
   sign: { look: () => S.locker ? 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. You did that.' : 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. An arrow points to a grey locker in the east corner. Go there and type: open locker.', take: 'It is fixed to the wall.' },
   vent: { look: () => S.vent ? 'The vent is open. It is empty now.' : 'A vent in the wall. Four screws hold it shut. Something shines inside.',
