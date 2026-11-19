@@ -89,6 +89,19 @@ const path = require('path');
     await p.click('#leave'); await p.waitForTimeout(200); verbs0 = (await look()).verbs; await step('the post left');
     await p.evaluate(() => { act('use board'); }); await p.waitForTimeout(1500); await step('the order board', { task: true, noq: true });      /* a board to read, with no question on it */
     await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { XY().done.skin = true; act('build home'); }); await p.waitForTimeout(2600); verbs0 = (await look()).verbs; await step('marking a floor');
+    // The mission ship (Operation Stardust): walking with the camera; a thermometer drawn big in the picture (a number); the wall chart (taps on the picture);
+    // last trip's chart, then a new one; the fuel log (two charts in the picture); the locker (a table with six boxes); the fuel pump (three boxes)
+    await p.evaluate(() => goStardust()); await p.waitForTimeout(600); verbs0 = (await look()).verbs; await step('on the mission ship');
+    await p.evaluate(() => { SD().seen = Object.keys(SRM); sGo(4, 4); }); await p.waitForTimeout(4500); verbs0 = (await look()).verbs; await step('walking on the mission ship');
+    await p.evaluate(() => { act('use thermometer'); }); await p.waitForTimeout(1800); await step('a thermometer', { task: true, pad: true });
+    await p.click('#leave'); await p.waitForTimeout(200); verbs0 = (await look()).verbs; await step('the thermometer left');
+    await p.evaluate(() => { act('use chart'); }); await p.waitForTimeout(1800); await step('last trip\'s chart on the wall', { task: true });
+    await p.click('#try'); await step('a new wall chart', { task: true }); await p.click('#try'); await step('the wall chart, wrong', { task: true, msg: true });
+    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { act('use computer'); }); await p.waitForTimeout(1800); await step('the fuel log', { task: true });
+    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { sGo(6, 12); }); await p.waitForTimeout(4200); await p.evaluate(() => { act('use locker'); }); await p.waitForTimeout(1400); await step('the locker', { task: true });
+    await tapOrClick('#l0'); await step('the locker, a box tapped', { task: true, pad: true });
+    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { SD().done.month = true; sGo(16, 13); }); await p.waitForTimeout(3600); await p.evaluate(() => { act('use pump'); }); await p.waitForTimeout(1400); await step('the fuel pump', { task: true });
+    await p.click('#leave'); await p.waitForTimeout(200); verbs0 = (await look()).verbs; await step('the pump left');
     notes.push(`${name}: ${n} moments, picture at ${first}`);
     await ctx.close();
   }

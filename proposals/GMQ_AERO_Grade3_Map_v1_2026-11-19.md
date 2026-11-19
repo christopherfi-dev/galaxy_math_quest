@@ -215,3 +215,24 @@ Xylophora is built on the preview link (sketch version 45). The table in section
 
 A quest that is done once shows that a child can do it once, with time to think. It is not the same as "strong". The full account is in `GMQ_Xylophora_Guide_v1_2026-11-19.md`, section 9.
 
+---
+
+## Added 2026-11-19, later still: Operation Stardust changes this map [Proposal]
+
+Operation Stardust is built on the preview link (sketch version 49). These rows change again.
+
+| Standard | In short | Before | Now |
+|---|---|---|---|
+| 3.MD.3 | scaled picture and bar graphs | to check | Stardust: draw a bar graph with a scale of 2; "how many more" from one; compare two graphs. Bar graphs only, no picture graphs. |
+| 3.NF.2 | fractions on a number line | nothing | Stardust: three fuel gauges, each a line from EMPTY to FULL cut into equal parts |
+| 3.NF.1 | unit fractions, equal parts of a whole | named, not asked | Stardust: used on the gauges. Still never written as 3/5. |
+| 3.MD.2 | litres, grams, kilograms | nothing | Stardust: litres in the tanks and the watering can. No grams. |
+| 3.NBT.3 | one digit × a multiple of 10 | to check | Stardust: 4 × 20, then × 3, for the locker. 4 × 50 for a tank. |
+| 3.OA.8 | two-step problems | strong | also Stardust: the locker, the tanks, the watering can |
+| 3.OA.9 | arithmetic patterns | light | also Stardust: the radio signal, once |
+
+**Still nothing:** 3.OA.5, 3.NF.3, 3.MD.4, 3.G.1.
+
+**To check, as before:** 3.OA.6.
+
+**One reading you may not share:** a fuel gauge asks for a fraction of an amount (3 fifths of 200 litres). Read strictly, that is past 3.NF.2. A child can do it with Grade 3 tools: 200 ÷ 5, then × 3. The full account is in `GMQ_Stardust_Guide_v1_2026-11-19.md`, section 9.

@@ -17,7 +17,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
-| `still_picture_test.js` | The picture stays still: 30 moments of play on six screens, six of them on Xylophora, where the picture follows the cadet. After each one the picture is in the same place at the same size, the page has not scrolled, no keys and no task sit on the picture, keys show only when needed, and the counts are off the main screen |
+| `still_picture_test.js` | The picture stays still: 42 moments of play on six screens, six of them on Xylophora and twelve on the mission ship, where the picture follows the cadet. After each one the picture is in the same place at the same size, the page has not scrolled, no keys and no task sit on the picture, keys show only when needed, and the counts are off the main screen |
 | `one_screen_test.js` | The picture, the box and every word row are on the screen at once on four iPad screens, a board and a laptop; the More menu hides the mission, ship, cards and teacher's things until asked |
 | `small_keyboard_test.js` | Go buttons for each kind of place; the small letter keyboard: on an iPad it sits on the desk, never on the picture or the box, and cannot be dragged; it types, sends, hides, and hands over to the big keyboard and back |
 | `tap_words_test.js` | A tapped word goes into the box: the Gumblefish moment, doing word and thing in either order, bag things, the doing words for each kind of place |
@@ -25,6 +25,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `mud_rats_test.js` | Mud rats on Voltara: the surprise attack in a dark street, a win, running, too slow, light ends it, band sizes, the rest, the switch |
 | `time_wisps_test.js` | Time wisps on Chronosia: 60,000 questions worked out again, where wisps may be, catching and slipping, practice credits (quarters, and turning them in for cards), the skill tally |
 | `xylophora_test.js` | Planet Xylophora: the game's numbers against the Python check, the skin counted on the map for 3,000 seeds, and a full play-through on three screens with wrong tries, the dry grove, laying the Home again, the map key, the herder's field, two secrets, a reload. No reply may show an answer |
+| `stardust_test.js` | Operation Stardust (the mission ship): the game's numbers against the Python check, every square reachable, and a full play-through on three screens with a different cadet on each: five thermometers, last trip's chart shown first, the wall chart (wrong three ways), the fuel log (three wrong months), three tanks (short, right, over), the locker (food gone bad, too little, too much), the food charts, lift-off, both side jobs, dead ends, a reload. No reply may show an answer. Each thermometer, bar and needle is checked as pixels |
 | `chronosia_test.js` | Planet Chronosia: the clocks, quakes and timetable worked out again, 20,000 seeds for the two per-cadet quests, the map, and a full play-through of all six quests. Four are open problems: the quakes (wrong tries, charges, nudges), and the clocks, who goes where and the Council's day (one sheet each, a count for a wrong sheet, nudges that run out, no answer shown) |
 | `street_signs_test.js` | Voltara's three streets can be read: a sign for every place on six screen sizes, no sign covers another, the board, and old saved games |
 | `space_hazards_test.js` | The four space hazards: 200,000 sums checked, a hazard passed, failed and flown around, the record kept, and replies to doing words like "cut" |
@@ -42,6 +43,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 
 | File | What it checks |
 |---|---|
+| `stardust_quest_check.py` | Operation Stardust as built: 20,000 cadets' numbers. One room breaks its plate, the locker can be filled exactly in 13 ways or more, one month went wrong and one graph alone cannot show it, every tank needs a whole number of litres, one food fell the most |
 | `xylophora_quest_check.py` | Xylophora as built: 20,000 cadets' numbers. The skin's area, one best Hospital, one best Food Store, the floors fit, the leaves are enough, one answer for more Homes, every fact inside 10 × 10 |
 | `energy_grid_check.py` | The station's Energy Grid as built: all eight number pairs, the three ways the old third question could be read, and that the question now names one section |
 | `voltara_quest_check.py` | Voltara as built: the city, the river, every plan, the days, the four endings |
