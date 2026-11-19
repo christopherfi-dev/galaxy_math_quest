@@ -239,7 +239,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 38</span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><span class="note" id="t_now"></span><span class="note" id="t_ver">Sketch version 39</span></p>
   <p class="box" id="toold">This browser is too old to run the game. If you opened the link inside a chat or mail window, open it in Chrome or Safari instead.</p>
   <div class="console">
     <div class="stage">
@@ -554,9 +554,10 @@ function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arr
   if (S.mode === 'chrono') return cHere();
   if (S.mode === 'world') return wThings(wKit(WORLD().at)).map(t => [t.words[t.words.length - 1].indexOf(' ') > 0 ? t.words[0] : t.words[0], t.label]);
   return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia']] : []).concat(Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name])); }
-function drawWords() { let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
+function drawWords() { if (S && drawWords.m !== S.mode) { drawWords.m = S.mode; try { drawBag(); } catch (e) {} }      /* the doing words fit the kind of place */
+  let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
   el.innerHTML = '<span class="lab">Here</span>' + list.map(x => `<button class="word noun" type="button" data-w="${esc(x[0])}">${esc(x[1])}</button>`).join('');
-  el.querySelectorAll('button').forEach(b => b.onclick = () => { const w = b.dataset.w, draft = $('cmd').value.trim().toLowerCase(); if (/^(fly|land|trade|go to|taste|leave|catch)/.test(w)) return act(w); act(/^(look|take|open|push|use|go|talk|eat|touch|dig|give)( [a-z ]+ on)?$/.test(draft) ? `${draft} ${w}` : `look ${w}`); }); }
+  el.querySelectorAll('button').forEach(b => b.onclick = () => chipTap(b.dataset.w, b.textContent, false)); }
 function flashLog() { const n = document.querySelector('#log .new'); if (n) { n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); } }
 function readShow(text) { READ.q.push(text); READ.open = true; $('cardtext').innerHTML = READ.q.map(t => `<p>${esc(t)}</p>`).join(''); const words = READ.q.join(' ').split(/\s+/).length; READ.wait = Math.min(3500, 500 + words * 160);
   const c = $('card'), b = $('cardok'), fl = $('cardfill'); c.hidden = false; c.classList.remove('drop'); b.disabled = true; $('cardlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `cardfill ${READ.wait}ms linear forwards`;
@@ -576,14 +577,26 @@ function drawStatus() {
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. Purple tasks are done in real life, with your teacher.</p>` +
     PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${t[3] ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
 }
+/* A TAPPED WORD GOES INTO THE BOX.
+   [Source: Marc, 2026-11-19, feeding the Gumblefish: "I keep thinking I can just tap that word to add instead of typing. But it just talks about them. And then I can't easily tap the word into the blank."]
+   Before, a tapped thing was looked at straight away, and anything already typed was thrown away. Now a tap adds the word. A command runs when it has a doing word and a thing.
+   A thing alone waits for a doing word, or for Do it, which looks at it. */
+const VCHIPS = { station: ['look', 'take', 'open', 'push', 'use', 'go'], planet: ['look', 'take', 'use', 'give', 'talk', 'eat', 'dig', 'go'], world: ['look', 'touch', 'take', 'talk', 'go'], chrono: ['look', 'use', 'talk', 'go'] };
+const TWO = ['use', 'give', 'put', 'feed']; let CHIPN = '', VWORDS = null;
+function verbWords() { if (VWORDS) return VWORDS; VWORDS = new Set(); [VERBS, PV, WV, CVB].forEach(o => Object.keys(o).forEach(v => o[v].forEach(x => VWORDS.add(x)))); Object.keys(SOFT).forEach(g => SOFT[g].forEach(x => VWORDS.add(x))); return VWORDS; }
+function chipTap(w, label, bag) { const box = $('cmd'), draft = box.value.replace(/\s+/g, ' ').replace(/^ /, '').toLowerCase(), words = draft.trim() ? draft.trim().split(' ') : [], first = words[0] || '';
+  if (/^(fly|land|trade|go to|taste|leave|catch)/.test(w)) return act(w);                                   /* some words in the Here row are whole commands */
+  if (!words.length || (CHIPN && draft.trim() === CHIPN)) { box.value = (words.length ? draft.trim() + ' ' : '') + w + ' '; CHIPN = box.value.trim(); mark(); beep(620, .03); return say(`${label}. Now tap a doing word. Or tap Do it to look.`, null, 'chip thing'); }
+  CHIPN = ''; if (bag && words.length === 1 && TWO.indexOf(first) >= 0) { const to = first === 'give' || first === 'feed' ? 'to' : 'on'; box.value = `${first} ${w} ${to} `; mark(); beep(620, .03); return say(`${first[0].toUpperCase() + first.slice(1)} the ${label} ${to} what? Tap a thing.`, null, 'chip two'); }
+  const next = draft.replace(/ $/, '') + ' ' + w; if (verbWords().has(first)) return act(next); box.value = next + ' '; mark(); beep(620, .03); }
 function drawBag() {
-  $('verbs').innerHTML = '<span class="lab">Do</span>' + ['look', 'take', 'open', 'push', 'use', 'go'].map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('') + `<button class="word hintb" id="hintb" type="button">Hint</button><button class="snd" id="snd" type="button">Sound: ${soundOn ? 'on' : 'off'}</button>`;
+  $('verbs').innerHTML = '<span class="lab">Do</span>' + (VCHIPS[S && S.mode] || VCHIPS.station).map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('') + `<button class="word hintb" id="hintb" type="button">Hint</button><button class="snd" id="snd" type="button">Sound: ${soundOn ? 'on' : 'off'}</button>`;
   $('hintb').onclick = () => act('hint');
   $('snd').onclick = () => { soundOn = !soundOn; $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); if (soundOn) beep(660, .1); };
-  $('verbs').querySelectorAll('.word[data-v]').forEach(b => b.onclick = () => { $('cmd').value = b.dataset.v + ' '; mark(); if (b.dataset.v === 'go') say('Go where? Type north, south, east or west. Or tap the floor.'); });
+  $('verbs').querySelectorAll('.word[data-v]').forEach(b => b.onclick = () => { const v = b.dataset.v, draft = $('cmd').value.replace(/\s+/g, ' ').trim().toLowerCase(); if (CHIPN && draft === CHIPN) return act(v + ' ' + draft);      /* things were tapped first: now there is a doing word */
+    CHIPN = ''; $('cmd').value = v + ' '; mark(); if (v === 'go') say(S.mode === 'station' ? 'Go where? Type north, south, east or west. Or tap the floor.' : 'Go where? Tap a word below. Or tap the picture.'); });
   $('bag').innerHTML = '<span class="lab">Bag</span>' + (S.inv.length ? S.inv.map(i => `<button class="word item" type="button" data-i="${i}">${ITEMS[i]}</button>`).join('') : '<span class="note">Empty. Find things and take them.</span>');
-  $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => { const v = $('cmd').value.trim().toLowerCase(), w = ITEM_WORDS[b.dataset.i][0];
-    if (v === 'use') { $('cmd').value = `use ${w} on `; mark(); } else act('look ' + w); });
+  $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => chipTap(ITEM_WORDS[b.dataset.i][0], ITEMS[b.dataset.i], true));
   mark();
 }
 function mark() { const v = $('cmd').value.trim().split(' ')[0].toLowerCase(); $('verbs').querySelectorAll('.word').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
@@ -745,7 +758,7 @@ const strayed = () => { if (FOCUS) FOCUS.moved = true; };
 const focusOf = key => FOCUS && FOCUS.k === key && !FOCUS.moved ? FOCUS.id : null, VAGUE = ['it', 'that', 'this', 'them', 'him', 'her', 'on', 'with', 'here'];
 function nearObj() { const c = Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i]) && (OBJ[i].tiles || []).some(t => Math.hypot(t[0] - P.x, t[1] - P.y) < 1.7)); return c.length === 1 ? c[0] : null; }
 function askWhat(out, draft, text) { $('cmd').value = draft; mark(); out(text + ' Tap a thing.'); }
-function act(raw) {
+function act(raw) { CHIPN = '';
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
   if (widget && widget.kind === 'login') return;
   if (READ.open && !/^teacher (voltara|station|space|chronosia)$/.test(text)) return readNudge();
@@ -2368,7 +2381,7 @@ const VDO = {
   sky: { look: 'Rainbow skies. Clouds like cotton candy.', take: 'You cannot reach the clouds.' },
   gumble: { look: () => V().fed ? 'The Gumblefish giggles and blows a bubble.' : 'A Gumblefish giggles in the sparkling river. It keeps looking at the fruit tree.',
     talk: () => V().crossed ? 'The Gumblefish says: hop over any time!' : V().fed ? startStones() || 'The Gumblefish says: I call a number. You hop to the nearest hundred!' : 'The Gumblefish says: I am SO hungry. Bring me a FlavorBurst and I will call up the stepping stones.',
-    use: it => { if (V().fed) return VDO.gumble.talk(); if (it !== 'burst') return 'The Gumblefish says: I only want a FlavorBurst.'; S.inv = S.inv.filter(i => i !== 'burst'); V().fed = true; save(); drawBag(); beep(700, .15); return 'Gulp! The Gumblefish spins. Four stones rise out of the river. Talk to it to cross.'; }, take: 'It slips away, giggling.' },
+    use: it => { if (V().fed) return VDO.gumble.talk(); if (!it && has('burst')) it = 'burst'; if (it !== 'burst') return has('burst') ? 'The Gumblefish says: I only want a FlavorBurst.' : 'The Gumblefish says: I am SO hungry. I only want a FlavorBurst. They grow on the tree by your ship.'; S.inv = S.inv.filter(i => i !== 'burst'); V().fed = true; save(); drawBag(); beep(700, .15); return 'Gulp! The Gumblefish spins. Four stones rise out of the river. Talk to it to cross.'; }, take: 'It slips away, giggling.' },
   stones: { look: () => V().fed ? 'Four stepping stones. Each has a number carved on it.' : 'The river is wide and deep. There is no way across yet.', use: () => V().crossed ? vCross() : V().fed ? startStones() || 'You step up to the first stone.' : 'There is nothing to stand on. The Gumblefish may know a way.', take: 'It is far too heavy.' },
   notice: { look: 'A notice from the Galactic Council: SOS. VOLTARA HAS AN ENERGY CRISIS. THE ENERGY COUNCIL NEEDS HELP. COME TO THE HALL.' },
   tower: { look: () => V().count ? 'The energy tower. It holds 1,650 energy. You counted it.' : 'The energy tower. Crystals glow behind a locked door.',
@@ -3191,7 +3204,8 @@ cv.addEventListener('pointerdown', e => {
    START
    ===================================================================== */
 S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y; }
-$('say').addEventListener('submit', e => { e.preventDefault(); act($('cmd').value); });
+$('say').addEventListener('submit', e => { e.preventDefault(); let v = $('cmd').value; if (CHIPN && v.replace(/\s+/g, ' ').trim().toLowerCase() === CHIPN) v = 'look ' + v; act(v); });
+$('cmd').addEventListener('input', () => { CHIPN = ''; });
 $('cmd').addEventListener('input', mark);
 $('reset').onclick = restart;
 netStart();

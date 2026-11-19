@@ -17,6 +17,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
+| `tap_words_test.js` | A tapped word goes into the box: the Gumblefish moment, doing word and thing in either order, bag things, the doing words for each kind of place |
 | `practice_evidence_test.js` | Practice evidence under the dashboard's 37 skill codes: what is kept, the teacher view with a tab for each thread, counts only, readable, kept after a reload |
 | `mud_rats_test.js` | Mud rats on Voltara: the surprise attack in a dark street, a win, running, too slow, light ends it, band sizes, the rest, the switch |
 | `time_wisps_test.js` | Time wisps on Chronosia: 60,000 questions worked out again, where wisps may be, catching and slipping, practice credits (quarters, and turning them in for cards), the skill tally |

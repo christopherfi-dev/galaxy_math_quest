@@ -308,3 +308,31 @@ Stuck at any point: tap **Hint**. It names the next task.
 
 **The one case left:** a child stands between two things, having walked there, and types `open`. On the station the game asks which. On Voltara and the small worlds it takes the nearer one, which is the one with its name showing above it.
 
+---
+
+## Added 2026-11-19 (sketch version 39): a tapped word goes into the box [Source: Marc]
+
+You were feeding the Gumblefish and said: "I keep thinking I can just tap that word to add instead of typing. But it just talks about them. And then I can't easily tap the word into the blank."
+
+**What was wrong:**
+- You typed "feed the" and tapped the word Gumblefish. The game threw your typing away and only looked at the fish.
+- "Feed gumblefish" said "I only want a FlavorBurst", even when you were carrying one.
+
+**How it works now, everywhere in the game:**
+
+| You do | What happens |
+|---|---|
+| Type "feed the", then tap **Gumblefish** | The word is added. The command runs. |
+| Tap **GIVE**, tap **FlavorBurst** in the bag, tap **Gumblefish** | "give flavorburst to gumblefish". Three taps, no typing. |
+| Tap **GIVE**, tap **Gumblefish** | The fruit you carry is used. |
+| Tap a thing first | It waits in the box. The game says: "Now tap a doing word. Or tap Do it to look." |
+| Tap a thing, then a doing word | It runs. The order does not matter. |
+| Tap a thing, then **Do it** | You look at it. |
+
+- **Each kind of place now shows its own doing words.** Voltara has look, take, use, give, talk, eat, dig, go. The station keeps look, take, open, push, use, go. A small world has touch. Chronosia has use and talk.
+- **One thing changed that you should know:** tapping a thing's word by itself no longer looks at it straight away. It waits for a doing word. Tapping the thing in the picture still looks at it at once.
+
+**What could prove this wrong:** if children tap a word, see it sit in the box and do not know what to do next, the waiting is confusing. Then a lone thing should look at once again, and only add itself when something is already in the box.
+
+Test: `checks/tap_words_test.js`.
+
