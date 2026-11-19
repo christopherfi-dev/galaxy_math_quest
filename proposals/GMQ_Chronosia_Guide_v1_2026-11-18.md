@@ -93,6 +93,47 @@ You said the quake quest walked students through every step and gave them no cha
 
 **Not changed yet:** the other three of your quests on Chronosia (the clocks, who goes where, the timetable) are still lists of steps.
 
+### Changed 2026-11-19, overnight (sketch version 46): three more quests are open problems [Source: Marc]
+
+You said the big quests "should require them to actually think and solve and struggle." The quake quest was changed that day. The clocks, who goes where and the timetable were still lists of small steps, with a hint after every slip. Now each is one sheet.
+
+| Quest | Before | Now |
+|---|---|---|
+| The clocks | 12 steps. Clock 1 was worked out for the child. Then "can that be a real time?" and "fix it", one clock at a time. | One board with all eight clocks. Tap a clock to set it. Then pull the lever. |
+| Who goes where | 4 steps, one member at a time, with that member's card shown. | One list: four members, two pages each. The members tell you about themselves. The book has the missions. |
+| The timetable | 10 steps: four "how many minutes", the clash, then each member's rule put as a question. | One list: for each member, the page they must miss, or 0. Each member tells you their own reason. |
+
+**What the game says to a wrong sheet:** a count, and nothing else.
+
+- "You pull the lever. Gears grind, and stop. 5 of the eight gears do not turn."
+- "The Council reads your list. 2 of the four nod. 2 shake their heads."
+- "The Council sets out. By evening, 1 of the four is back with a long face."
+
+It never says which clock, which member or why.
+
+**Nudges** come only when the child taps Hint in that place. Three for each quest. Then: "The keeper has no more to tell you. The rest is yours to work out."
+
+**What each member now says** after the first list is right. These are your four conditions. [Source]
+
+| Member | Their words |
+|---|---|
+| Sara | "But I must stay on Chronosia all week. There is an important meeting here." |
+| Tim | "But I cannot travel to other dimensions." |
+| Alex | "But I may not go on a risky mission without a chaperone. Risky means something big is about to hit the place. And we have no chaperones." |
+| Zara | "But I cannot be away for longer than 45 minutes at a time." |
+
+"Risky" was never defined in your pages. [Conflict] Your own note said only the dinosaur mission is risky. So Alex now says what risky means. [Proposal]
+
+**What is lost:** the four "how many minutes is that?" questions, and the question about the two missions that clash on Oct 4. A child now works out a length only where a member's reason needs it. That is Zara's. The clash is still true on the timetable, but nothing asks about it.
+
+**What the teacher's log shows:** the try it was solved on, and how many nudges were used.
+
+**The answers have not changed.** They are in section 3. The clocks: 4:07, 15:15 (or 3:15), 1:00, 8:39, 1:30, and three that are right. The pages: Sara 3 and 9, Tim 4 and 6, Alex 7 and 8, Zara 5 and 10. Must miss: Sara 3, Tim none, Alex 7, Zara 5.
+
+**The Tortoise and the Cougar are still step lists.** They are short practice, three questions each, not big quests. I left them.
+
+**What could prove this wrong:** the count may be too little to go on. A child with "5 of the eight gears do not turn" has to find for themselves that 3:67 cannot be a time. If most children stall there, the first nudge should come sooner, or the keeper should say one more thing.
+
 ### What is not built
 
 - **Quake day**, the big choice with a price. It is designed in `GMQ_Chronosia_Quest_Design_v1_2026-11-17.md`. Chronosia has six things to do, but not yet one decision that matters, as Voltara has.

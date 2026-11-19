@@ -308,7 +308,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 43</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 45</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -317,7 +317,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <section class="box" id="partsbox" data-m="ship" aria-label="Your ship parts and tasks"></section>
   <section class="box" id="cards" data-m="cards" aria-label="Your cards"></section>
   <div id="teacherbox" data-m="teacher">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><span class="note" id="t_now"></span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><button class="word" type="button" id="t_xyl">Go to Xylophora</button><span class="note" id="t_now"></span></p>
   <section class="box" id="stars" aria-label="Your star chart"></section>
   <details class="box">
     <summary>For the teacher: what this sketch shows</summary>
@@ -605,10 +605,11 @@ function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arr
   if (S.mode === 'station') return Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => [OBJ[i].words[0], OBJ[i].label]);
   if (S.mode === 'planet') return vThings().filter(t => t.x != null).map(t => [t.spot ? t.spot.name.toLowerCase() : t.words[0], t.label]);
   if (S.mode === 'chrono') return cHere();
+  if (S.mode === 'xylo') return xHere();
   if (S.mode === 'world') return wThings(wKit(WORLD().at)).map(t => [t.words[t.words.length - 1].indexOf(' ') > 0 ? t.words[0] : t.words[0], t.label]);
-  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia']] : []).concat(Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name])); }
+  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia'], ['land xylophora', 'land on Xylophora']] : []).concat(Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name])); }
 /* ways to go, as words to tap [Source: Marc, 2026-11-19: "Can you also add West East north and south as buttons to tap?"] */
-function dirWords() { if (!S || widget) return []; return S.mode === 'station' ? ['north', 'south', 'east', 'west'] : S.mode === 'planet' || S.mode === 'world' ? ['west', 'east'] : S.mode === 'chrono' && C().at === 'map' ? ['north', 'south', 'east', 'west'] : []; }
+function dirWords() { if (!S || widget) return []; return S.mode === 'station' ? ['north', 'south', 'east', 'west'] : S.mode === 'planet' || S.mode === 'world' ? ['west', 'east'] : (S.mode === 'chrono' && C().at === 'map') || S.mode === 'xylo' ? ['north', 'south', 'east', 'west'] : []; }
 function drawDirs() { const el = $('dirs'); let d = []; try { d = dirWords(); } catch (e) {} const sig = d.join(); if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !d.length; el.innerHTML = '<span class="lab">Go</span>' + d.map(x => `<button class="word dir" type="button" data-d="${x}">${x}</button>`).join(''); el.querySelectorAll('button').forEach(b => b.onclick = () => act('go ' + b.dataset.d)); }
 function drawWords() { fitSoon(); drawDirs(); if (S && drawWords.m !== S.mode) { drawWords.m = S.mode; try { drawBag(); } catch (e) {} }      /* the doing words fit the kind of place */
   let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
@@ -644,7 +645,7 @@ function fit() { deskSet(); const c = document.querySelector('.console'); if (!c
 function fitSoon() { if (FIT.t) return; FIT.t = requestAnimationFrame(() => { FIT.t = 0; try { fit(); } catch (e) {} }); }
 function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
-    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
+    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.xy ? `<span class="chip${xCount() ? ' on' : ''}">Xylophora ${xCount()} of 5</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. Purple tasks are done in real life, with your teacher.</p>` +
     PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${t[3] ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
@@ -653,9 +654,9 @@ function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
    [Source: Marc, 2026-11-19, feeding the Gumblefish: "I keep thinking I can just tap that word to add instead of typing. But it just talks about them. And then I can't easily tap the word into the blank."]
    Before, a tapped thing was looked at straight away, and anything already typed was thrown away. Now a tap adds the word. A command runs when it has a doing word and a thing.
    A thing alone waits for a doing word, or for Do it, which looks at it. */
-const VCHIPS = { station: ['look', 'take', 'open', 'push', 'use', 'go'], planet: ['look', 'take', 'use', 'give', 'talk', 'eat', 'dig', 'go'], world: ['look', 'touch', 'take', 'talk', 'go'], chrono: ['look', 'use', 'talk', 'go'] };
+const VCHIPS = { station: ['look', 'take', 'open', 'push', 'use', 'go'], planet: ['look', 'take', 'use', 'give', 'talk', 'eat', 'dig', 'go'], world: ['look', 'touch', 'take', 'talk', 'go'], chrono: ['look', 'use', 'talk', 'go'], xylo: ['look', 'talk', 'take', 'use', 'build', 'dig', 'go'] };
 const TWO = ['use', 'give', 'put', 'feed']; let CHIPN = '', VWORDS = null;
-function verbWords() { if (VWORDS) return VWORDS; VWORDS = new Set(); [VERBS, PV, WV, CVB].forEach(o => Object.keys(o).forEach(v => o[v].forEach(x => VWORDS.add(x)))); Object.keys(SOFT).forEach(g => SOFT[g].forEach(x => VWORDS.add(x))); return VWORDS; }
+function verbWords() { if (VWORDS) return VWORDS; VWORDS = new Set(); [VERBS, PV, WV, CVB, XVB].forEach(o => Object.keys(o).forEach(v => o[v].forEach(x => VWORDS.add(x)))); Object.keys(SOFT).forEach(g => SOFT[g].forEach(x => VWORDS.add(x))); return VWORDS; }
 function chipTap(w, label, bag) { const box = $('cmd'), draft = box.value.replace(/\s+/g, ' ').replace(/^ /, '').toLowerCase(), words = draft.trim() ? draft.trim().split(' ') : [], first = words[0] || '';
   if (/^(fly|land|trade|go to|taste|leave|catch)/.test(w)) return act(w);                                   /* some words in the Here row are whole commands */
   if (!words.length || (CHIPN && draft.trim() === CHIPN)) { box.value = (words.length ? draft.trim() + ' ' : '') + w + ' '; CHIPN = box.value.trim(); mark(); beep(620, .03); return say(`${label}. Now tap a doing word. Or tap Do it to look.`, null, 'chip thing'); }
@@ -667,8 +668,8 @@ function drawBag() {
   $('snd').onclick = () => { soundOn = !soundOn; $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); if (soundOn) beep(660, .1); };
   $('verbs').querySelectorAll('.word[data-v]').forEach(b => b.onclick = () => { const v = b.dataset.v, draft = $('cmd').value.replace(/\s+/g, ' ').trim().toLowerCase(); if (CHIPN && draft === CHIPN) return act(v + ' ' + draft);      /* things were tapped first: now there is a doing word */
     CHIPN = ''; $('cmd').value = v + ' '; mark(); if (v === 'go') say(S.mode === 'station' ? 'Go where? Type north, south, east or west. Or tap the floor.' : 'Go where? Tap a word below. Or tap the picture.'); });
-  $('bag').innerHTML = '<span class="lab">Bag</span>' + (S.inv.length ? S.inv.map(i => `<button class="word item" type="button" data-i="${i}">${ITEMS[i]}</button>`).join('') : '<span class="note">Empty. Find things and take them.</span>');
-  $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => chipTap(ITEM_WORDS[b.dataset.i][0], ITEMS[b.dataset.i], true));
+  { const xl = S.mode === 'xylo' && S.xy && S.xy.bag ? `<button class="word item" type="button" data-x="leaf">square leaves × ${S.xy.bag}</button>` : ''; $('bag').innerHTML = '<span class="lab">Bag</span>' + (S.inv.length || xl ? S.inv.map(i => `<button class="word item" type="button" data-i="${i}">${ITEMS[i]}</button>`).join('') + xl : '<span class="note">Empty. Find things and take them.</span>'); }
+  $('bag').querySelectorAll('.word').forEach(b => b.onclick = () => b.dataset.x ? say(`You carry ${XY().bag} square lea${XY().bag === 1 ? 'f' : 'ves'}. Each one is 2 squares by 2 squares.`, null, 'xbag') : chipTap(ITEM_WORDS[b.dataset.i][0], ITEMS[b.dataset.i], true));
   mark();
 }
 function mark() { const v = $('cmd').value.trim().split(' ')[0].toLowerCase(); $('verbs').querySelectorAll('.word').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
@@ -722,7 +723,7 @@ function rude(t, strict) { const words = String(t).toLowerCase().split(/\s+/).fi
 /* the game repeats only words it knows. Numbers are fine. Anything else is shown as … */
 let KNOWN = null;
 function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place trade beacon routes route trader traders gems space fly galaxy planet hint help touch poke shake dig creature animal alien rock post stall flag seed star east west hazard practice practise sums sum asteroid asteroids worm worms wind wormhole hole tree down'.split(' ')); Object.keys(SOFT).forEach(g => SOFT[g].forEach(x => k.add(x)));
-  { const addc = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); }); Object.keys(CPL).forEach(p => { addc(CPL[p].name); CPL[p].words.forEach(addc); }); Object.keys(CSC).forEach(p => { addc(CSC[p].name); CSC[p].things.forEach(t => { addc(t.label); t.words.forEach(addc); }); }); Object.keys(CVB).forEach(v => CVB[v].forEach(addc)); Object.keys(CDIR).forEach(addc); 'chronosia fruit timetweak taste metrica bridge river mist wisp wisps swap rat rats mud fight credit credits quarter quarters nudge stabilizer quake seventh'.split(' ').forEach(addc); }
+  { const addc = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); }); Object.keys(CPL).forEach(p => { addc(CPL[p].name); CPL[p].words.forEach(addc); }); Object.keys(CSC).forEach(p => { addc(CSC[p].name); CSC[p].things.forEach(t => { addc(t.label); t.words.forEach(addc); }); }); Object.keys(CVB).forEach(v => CVB[v].forEach(addc)); Object.keys(CDIR).forEach(addc); XT.forEach(t => { addc(t.label); t.words.forEach(addc); }); Object.keys(XVB).forEach(v => XVB[v].forEach(addc)); 'xylophora pioneer architect manager innovator colonist panel panels square squares floor floors roof roofs wall walls'.split(' ').forEach(addc); 'chronosia fruit timetweak taste metrica bridge river mist wisp wisps swap rat rats mud fight credit credits quarter quarters nudge stabilizer quake seventh'.split(' ').forEach(addc); }
   Object.keys(ITEM_WORDS).forEach(i => ITEM_WORDS[i].forEach(x => k.add(x))); Object.keys(ITEMS).forEach(i => ITEMS[i].toLowerCase().split(' ').forEach(x => k.add(x)));
   Object.keys(WKIT.flora).forEach(t => WKIT.flora[t][0].split(' ').forEach(x => k.add(x))); WKIT.rock.forEach(r => r[0].split(' ').forEach(x => k.add(x))); Object.keys(TR).forEach(n => { const kk = wKit(n); k.add(kk.name.toLowerCase()); k.add(kk.cr.name.toLowerCase()); });
   const add = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); });
@@ -833,8 +834,8 @@ function askWhat(out, draft, text) { $('cmd').value = draft; mark(); out(text + 
 function act(raw) { CHIPN = '';
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
   if (widget && widget.kind === 'login') return;
-  if (READ.open && !/^teacher (voltara|station|space|chronosia)$/.test(text)) return readNudge();
-  if (/^teacher (voltara|station|space|chronosia)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : text.endsWith('space') ? goSpace() : text.endsWith('chronosia') ? goChronosia() : goStation(); }
+  if (READ.open && !/^teacher (voltara|station|space|chronosia|xylophora)$/.test(text)) return readNudge();
+  if (/^teacher (voltara|station|space|chronosia|xylophora)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : text.endsWith('space') ? goSpace() : text.endsWith('chronosia') ? goChronosia() : text.endsWith('xylophora') ? goXylophora() : goStation(); }
   $('cmd').value = ''; mark();
   if (rude(raw)) return say('Kind words only, cadet. Try a command like: look, take, open, push, use, go.', '…');
   let shown = echoSafe(raw); const out = s => { if (s) say(s, shown); else { lines.push({ you: shown }); drawLog(); } };
@@ -843,6 +844,7 @@ function act(raw) { CHIPN = '';
   if (S.mode === 'planet') return actPlanet(text, out);
   if (S.mode === 'world') return actWorld(text, out);
   if (S.mode === 'chrono') return actChrono(text, out);
+  if (S.mode === 'xylo') return xAct(text, out);
   if (widget && widget.kind === 'drones' && /^\D*\d+\D*$/.test(text)) { const i = widget.d.findIndex(d => d.n === +text.match(/\d+/)[0] && !d.hit); out(null); return i < 0 ? say('No drone shows that number.') : droneTap(i); }
   if (widget) return out('Finish this first. Or tap Leave.');
   const num = (text.match(/\b\d+\b/) || [])[0];
@@ -1370,6 +1372,7 @@ function netName(nm, tell) { netCall({ action: 'name', ship: nm }).then(r => { i
 function worldSlice() { const bag = S.inv.map(i => ITEMS[i] || i).join(', ') || 'nothing';
   if (S.mode === 'planet') { const sc = V().sc; return `PLACE: ${VSC[sc].name}, on Planet Voltara. FACTS: ${VSEE[sc] || ''} THINGS HERE: ${vThings().filter(t => t.x != null).map(t => t.label).join(', ')}. CADET CARRIES: ${bag}.`; }
   if (S.mode === 'chrono') { const c = C(); return c.at === 'map' ? `PLACE: Planet Chronosia, seen from above. FACTS: The sky is in stripes of colour. Time is broken here. A river cuts the land in two. PLACES FOUND: ${Object.keys(CPL).filter(k => cFound(k)).map(k => CPL[k].name).join(', ')}. CADET CARRIES: ${bag}.` : `PLACE: ${CSC[c.at].name}, on Planet Chronosia. FACTS: ${CSC[c.at].see} THINGS HERE: ${CSC[c.at].things.map(t => t.label).join(', ')}. CADET CARRIES: ${bag}.`; }
+  if (S.mode === 'xylo') return `PLACE: ${xPlaceName()}, on Planet Xylophora, seen from above. FACTS: The ground is a patchwork of squares. A giant sleeps in the north. A crew from Earth has a camp here. THINGS NEAR: ${xHere().filter(h => h[0] !== 'fly').map(h => h[1]).join(', ') || 'grass'}. CADET CARRIES: ${XY().bag ? XY().bag + ' square leaves' : 'nothing'}.`;
   if (S.mode === 'world') { const k = wKit(WORLD().at); return `PLACE: ${k.name}, a small trade planet. FACTS: ${k.sky[2]} ${k.far[1]} The ${k.cr.name} is a creature with ${k.cr.eyes} eyes and ${k.cr.legs} legs. It does not use words. THINGS HERE: ${wThings(k).map(t => t.label).join(', ')}. CADET CARRIES: ${bag}.`; }
   if (S.mode === 'space') return `PLACE: deep space, in the cadet's own ship. FACTS: Five galaxies glow around the KIS Station. The cadet is ${S.at ? 'near ' + GAL[S.at].name : 'flying between galaxies'}. THINGS HERE: stars, galaxies, other cadets' ships far away. CADET CARRIES: ${bag}.`;
   return `PLACE: ${ROOMS[S.room].name}, on the KIS Station. FACTS: A space station. Low gravity. The cadet's ship is docked here for repairs. THINGS HERE: ${Object.keys(OBJ).filter(i => OBJ[i].room === S.room && objOn(OBJ[i])).map(i => OBJ[i].label).join(', ')}. CADET CARRIES: ${bag}. SHIP PARTS FITTED: ${S.parts.length} of 5.`; }
@@ -1668,7 +1671,7 @@ function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
-function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2028', 'Earth, 2028', 'Earth, 2028', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'chrono' ? cPlaceName() : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : S.mode === 'chrono' ? (C().at === 'map' ? 'like: go north' : 'like: talk keeper') : S.mode === 'world' ? 'like: touch rock' : 'like: push crate'; } }
+function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2028', 'Earth, 2028', 'Earth, 2028', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'chrono' ? cPlaceName() : S.mode === 'xylo' ? xPlaceName() : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : S.mode === 'chrono' ? (C().at === 'map' ? 'like: go north' : 'like: talk keeper') : S.mode === 'world' ? 'like: touch rock' : S.mode === 'xylo' ? 'like: look giant' : 'like: push crate'; } }
 function tState(c) { if (c.t === 'void') return 0; if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
@@ -1912,6 +1915,7 @@ function frame1(now) {
   if (S.mode === 'planet') { try { drawPlanet(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (S.mode === 'world') { try { drawWorld(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (S.mode === 'chrono') { try { drawChrono(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
+  if (S.mode === 'xylo') { try { drawXylo(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 4.6 * dt; P.step += dt; P.idle = 0;
     if (Math.abs(dx) > Math.abs(dy)) P.dir = dx > 0 ? 'right' : 'left'; else if (dy) P.dir = dy > 0 ? 'down' : 'up';
     if (Math.random() < dt * 9) DUST.push({ x: P.x + .5 + (Math.random() - .5) * .2, y: P.y + .92, t: .5 });
@@ -2023,7 +2027,7 @@ function drawSpace(dt) {
   for (const gh of GHOSTS) { const [gx, gy, dir] = ghostPos(gh); rocket(gx * vw, gy * vh, R * .42, dir > 0 ? .3 : Math.PI - .3, { flame: true, col: '#c4cfdf', col2: '#5f7aa8' }); cx.font = `700 ${Math.max(11, vw * .015)}px "Chakra Petch", sans-serif`; cx.fillStyle = '#c4cfdf'; cx.textAlign = 'center'; cx.fillText(gh.n, gx * vw, gy * vh - R * .3); }
   if (SP.to) { const T = GAL[SP.to], dx = T.x - SP.x, dy = T.y - SP.y, d = Math.hypot(dx, dy), step = .2 * dt; SP.ang = Math.atan2(dy * vh, dx * vw); TRAIL.push([SP.x, SP.y, 1]);
     if (d <= step + .075) { const id = SP.to; SP.to = null; S.at = id; save(); beep(520, .15);
-      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planet Chronosia is open. Tap the galaxy again to land. Or type: land. Xylophora is not built yet.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'Operation Stardust waits here. It is not built yet.' }[id] || ''}`); }
+      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planet Chronosia is open. So is Planet Xylophora. Tap a word below to land.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'Operation Stardust waits here. It is not built yet.' }[id] || ''}`); }
     else { SP.x += dx / d * step; SP.y += dy / d * step; } }
   cx.globalCompositeOperation = 'lighter'; for (const t of TRAIL) { t[2] -= dt * .9; cx.fillStyle = `rgba(255,190,90,${Math.max(0, t[2]) * .7})`; circ(t[0] * vw, t[1] * vh, R * .05 * (1.4 - t[2])); cx.fill(); } cx.globalCompositeOperation = 'source-over'; while (TRAIL.length && TRAIL[0][2] <= 0) TRAIL.shift();
   SP.zoom = Math.max(0, Math.min(1, SP.zoom + (S.at === 'numerix' && !SP.to ? .9 : -3) * dt));
@@ -2095,6 +2099,8 @@ function actSpace(text, out) {
   if (widget && widget.kind === 'haz') { out('You are in a space hazard. Answer the sums, or tap Fly around it.'); const an = $('ans'); if (an) setTimeout(() => { if (document.body.contains(an)) an.focus({ preventScroll: true }); }, 30); return; }
   if (/\b(hazard|hazards|practice|practise|sums|asteroid|asteroids|worm|worms|wormhole)\b/.test(text)) { if (widget || SP.to) return out('Finish this first.'); const f = FLU(), top = Math.min(4, f.lvl), want = +(text.match(/\b[1-4]\b/) || [0])[0]; out('You steer into a practice hazard.'); return startHaz(want && want <= top ? want : top, null); }
   const tk = text.split(/\s+/), id = Object.keys(GAL).find(g => tk.some(t => t.length > 2 && GAL[g].name.toLowerCase().split(' ').some(w => w !== 'galaxy' && w.startsWith(t))));
+  if (S.at === 'metrica' && !SP.to && tk.includes('xylophora')) return landXylo();
+  if (tk.includes('xylophora')) return out('Planet Xylophora is in Galaxy Metrica. Fly there first.');
   if (S.at === 'metrica' && !SP.to && (tk.includes('land') || tk.includes('chronosia'))) return landChrono();
   if (tk.includes('chronosia')) return out('Planet Chronosia is in Galaxy Metrica. Fly there first.');
   if (tk.includes('land') || tk.includes('voltara')) { if (S.at !== 'numerix' || SP.to) return out('There is no planet to land on here. Fly to Galaxy Numerix.'); land(); return out('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); }
@@ -2112,7 +2118,7 @@ function tapSpace(e) {
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .2) * vw, (y - .26) * vh) < Math.min(vw, vh) * .1) return say(tradeTry());
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .56) * vw, (y - .5) * vh) < Math.min(vw, vh) * .34) { land(); return say('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); }
   if (GHOSTS.some(g => { const [gx, gy] = ghostPos(g); return Math.hypot(x - gx, y - gy) < .05; })) return say('Another cadet. Battles between ships come later. They will use your cards.');
-  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'metrica' && S.at === 'metrica' && !SP.to) return landChrono(); if (id) flyTo(id, s);
+  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'metrica' && S.at === 'metrica' && !SP.to) return say('Two planets are open here. Tap a word below: land on Chronosia, or land on Xylophora.'); if (id) flyTo(id, s);
 }
 
 /* =====================================================================
@@ -3265,6 +3271,290 @@ function drawCScene(dt) { const c = C(), sc = CSC[c.at], w = vw, h = Math.max(22
 function drawChrono(dt) { if (C().at === 'map') drawCMap(dt); else drawCScene(dt); }
 
 /* =====================================================================
+   PLANET XYLOPHORA (Galaxy Metrica). The planet of shapes.   XYLO-BEGIN
+   [Source: Marc's quest "Planetary Pioneers: Constructing Xylophora" and its four tasks: Architectural Origami (four buildings: a Home, a Hospital,
+    a Food Store and a Solar Factory), Efficient Use of Alien Resources (the sleeping giant, whose shed skin is the building material),
+    Roofing Challenge (the skin fails as a roof, "It's collapsing"; Xylotrees with stiff square leaves, 2 by 2), Designing the Xylophora Colony
+    (a grid map and a map key). The ground "a patchwork of perfect squares, triangles, and rectangles", Polygonal Pines, Circular Cacti,
+    creatures "resembling living origami", the Modular Meadows, the Leafgroves. The roles: Space Architect, Resource Manager, Resource Innovator, Colonist.]
+   [Source: Marc, 2026-11-19: big quests "should require them to actually think and solve and struggle"; planets must be bigger; dead ends stay;
+    "You choose. You have the standards now."]
+   [Proposal: the map is the maths. The whole planet is seen from above on a grid of squares, bigger than the screen. One tile is one square.
+    A child measures by walking and looking, and builds by tapping squares. The game answers with what happened, never with what to do.
+    The Site Chief, the survey post, the order board, the Sun Ledge, the herder's field, where each place sits, and every number rule are mine.]
+   Numbers: checks/xylophora_quest_check.py. Play test: checks/xylophora_test.js. Standards: AERO 3.MD.5 to 3.MD.8, 3.OA.2 to 3.OA.4, 3.G.2.
+   ===================================================================== */
+const XW = 40, XH = 26, XR = { skin: [2, 3, 13, 8], ground: [14, 13, 14, 8], ledge: [16, 8, 10, 3], field: [30, 13, 8, 4], giant: [17, 2, 12, 3] };
+const XB = { home: 'Home', hosp: 'Hospital', store: 'Food Store', fact: 'Solar Factory' }, XBK = ['home', 'hosp', 'store', 'fact'];
+const XTREE = [[35, 3], [37, 3], [35, 6], [37, 6]], XSTART = [6, 21], XSHIP = [5, 21], XDIG = [33, 22];
+const xIn = (r, x, y) => x >= r[0] && y >= r[1] && x < r[0] + r[2] && y < r[1] + r[3];
+const XG = (() => { const g = []; for (let y = 0; y < XH; y++) { g.push([]); for (let x = 0; x < XW; x++) g[y].push(x === 0 || y === 0 || x === XW - 1 || y === XH - 1 ? 'P' : '.'); }
+  const put = (x, y, w, h, c) => { for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) g[j][i] = c; }, one = (c, list) => list.forEach(p => { g[p[1]][p[0]] = c; });
+  put(14, 13, 14, 8, 'B'); put(16, 8, 10, 3, 'L'); one('r', [[15, 8], [15, 9], [15, 10], [26, 8], [26, 9], [26, 10]]);
+  put(17, 2, 10, 3, 'g'); put(27, 2, 2, 3, 'G'); put(2, 14, 4, 3, '~');
+  put(30, 1, 2, 10, 'P'); one('.', [[30, 7], [31, 7]]); put(32, 9, 7, 2, 'P'); one('.', [[35, 9], [35, 10]]);       /* the pines that hide the Leafgrove, with two gaps */
+  one('X', XTREE); one('c', [[32, 21], [34, 21], [32, 23], [34, 23], [31, 22], [35, 22]]); one('o', [XDIG]);
+  one('P', [[6, 12], [7, 12], [6, 11], [20, 23], [21, 23], [22, 23], [21, 24], [2, 11], [2, 12], [2, 19], [3, 18], [37, 20], [36, 21], [27, 11], [28, 12], [28, 6]]);
+  one('n', [[11, 16], [11, 14], [9, 12], [33, 18], XSHIP]); one('t', [[9, 15], [10, 15]]);
+  for (let x = 6; x <= 12; x++) g[21][x] = ':'; for (let y = 17; y <= 20; y++) g[y][12] = ':'; one(':', [[12, 16], [13, 16]]); for (let x = 14; x <= 27; x++) g[22][x] = ':'; one(':', [[13, 22], [12, 22]]);
+  return g; })();
+const xTile = (x, y) => (XG[y] || [])[x] || 'P', xOpen = (x, y) => '.:BLo'.indexOf(xTile(x, y)) >= 0;
+const XM = { px: 6, py: 21, route: [], dir: 'down', step: 0, then: null, mark: null, cx: 0, cy: 0, ts: 40, ox: 0, oy: 0 };
+function XY() { if (!S.xy) S.xy = { x: XSTART[0], y: XSTART[1], seen: '', seed: 1 + Math.floor(Math.random() * 99990), done: {}, fl: {}, roof: {}, bag: 0, trees: null, finds: [], tries: {}, nud: {}, saw: {}, key: null, hum: 0, told: '' }; return S.xy; }
+
+/* ---- each cadet's own numbers. One rule, the same in checks/xylophora_quest_check.py */
+const xLv = (w, l) => Math.ceil(w / 2) * Math.ceil(l / 2);                                           /* leaves, each 2 by 2, to cover a floor w by l */
+const xRects = A => { const o = []; for (let w = 1; w * w <= A; w++) if (A % w === 0) o.push([w, A / w]); return o; };
+const xBestWall = A => Math.min.apply(null, xRects(A).map(r => 2 * (r[0] + r[1])));                    /* the shortest wall around A squares */
+const xBestFloor = P => { const w = Math.floor(P / 4); return [w, P / 2 - w]; };                       /* the biggest floor inside a wall of P panels */
+const XNUMS = {};
+function xNums(seed) { if (XNUMS[seed]) return XNUMS[seed]; const r = wrng(seed), pk = xs => xs[Math.floor(r() * xs.length)]; let v = null;
+  for (let i = 0; i < 200 && !v; i++) { const a = pk([8, 9, 10]), b = pk([6, 7, 8]), c = pk([3, 4, 5].filter(x => a + x <= 13)), d = pk([2, 3, 4, 5].filter(x => x <= b - 2)), S0 = a * b + c * d;
+    const h = pk([6, 8, 12]), p = pk([12, 16, 20, 24]), W = pk([10, 12, 14, 16, 18]), k = pk([5, 6, 7, 8]), sf = xBestFloor(W), st = sf[0] * sf[1], f = 3 * k, T = h + p + st + f, n = Math.floor((S0 - T) / h);
+    if (n >= 2 && n <= 6) v = { a, b, c, d, S: S0, h, p, W, sf, st, k, f, T, left: S0 - T, n, rem: (S0 - T) % h }; }
+  v.fx = r() < .5; v.fy = r() < .5; v.field = pk([[4, 2], [4, 3], [4, 4], [6, 2], [6, 4], [8, 2], [8, 3], [8, 4]]); v.part = v.field[0] * v.field[1] / 4; v.bestP = xBestWall(v.p);
+  const hd = xRects(v.p).find(q => 2 * (q[0] + q[1]) === v.bestP), fr = xRects(v.f).filter(q => q[0] <= 3 && q[1] <= 10);
+  v.need = { home: Math.min.apply(null, xRects(v.h).map(q => xLv(q[0], q[1]))), hosp: xLv(hd[0], hd[1]), store: xLv(v.sf[0], v.sf[1]), fact: Math.min.apply(null, fr.map(q => xLv(q[0], q[1]))) };
+  v.G = v.need.home + v.need.hosp + v.need.store + v.need.fact + 1;                                    /* the grove grows enough for careful roofs, and one leaf more */
+  v.trees = [0, 1, 2, 3].map(i => Math.floor(v.G / 4) + (i < v.G % 4 ? 1 : 0)); return XNUMS[seed] = v; }
+function xSkinAt(x, y) { if (!xIn(XR.skin, x, y)) return false; const v = xNums(XY().seed), wd = v.a + v.c; let lx = x - XR.skin[0] - Math.floor((13 - wd) / 2), ly = y - XR.skin[1] - Math.floor((8 - v.b) / 2);
+  if (v.fx) lx = wd - 1 - lx; if (v.fy) ly = v.b - 1 - ly; return (lx >= 0 && lx < v.a && ly >= 0 && ly < v.b) || (lx >= v.a && lx < wd && ly >= v.b - v.d && ly < v.b); }
+function xTrees() { const c = XY(); if (!c.trees) c.trees = xNums(c.seed).trees.slice(); return c.trees; }
+const xLeavesLeft = () => xTrees().reduce((a, b) => a + b, 0);
+const xStage = () => { const d = XY().done; return !d.skin ? 'skin' : !d.floors ? 'floors' : !d.roofs ? 'roofs' : !d.homes ? 'homes' : !d.key ? 'key' : 'end'; };
+const xCells = f => Math.ceil(f[2] / 2) * Math.ceil(f[3] / 2), xWhole = b => { const c = XY(), f = c.fl[b]; return !!f && (c.roof[b] || []).length >= xCells(f); };
+const xRoofsWhole = () => XBK.every(xWhole), xCount = () => ['skin', 'floors', 'roofs', 'homes', 'key'].filter(k => XY().done[k]).length;
+const xToldKey = () => xStage() + (XY().saw.skin ? '+' : '') + (XY().saw.tree ? 't' : '');
+
+/* ---- walking, mist and the camera */
+function xSee() { const c = XY(); let s = c.seen.length === XW * XH ? c.seen.split('') : new Array(XW * XH).fill('0'); for (let y = Math.max(0, c.y - 5); y <= Math.min(XH - 1, c.y + 5); y++) for (let x = Math.max(0, c.x - 6); x <= Math.min(XW - 1, c.x + 6); x++) if (Math.hypot((x - c.x) * .85, y - c.y) <= 4.7) s[y * XW + x] = '1';
+  [XR.skin, XR.ground, XR.ledge, XR.giant, XR.field].forEach(r => { let any = false; for (let y = r[1]; y < r[1] + r[3] && !any; y++) for (let x = r[0]; x < r[0] + r[2]; x++) if (s[y * XW + x] === '1') { any = true; break; } if (any) for (let y = r[1]; y < r[1] + r[3]; y++) for (let x = r[0]; x < r[0] + r[2]; x++) s[y * XW + x] = '1'; });      /* something big and flat is seen whole, not square by square */
+  c.seen = s.join('');
+  if (!c.saw.skin) for (let y = XR.skin[1]; y < XR.skin[1] + 8 && !c.saw.skin; y++) for (let x = XR.skin[0]; x < XR.skin[0] + 13; x++) if (s[y * XW + x] === '1' && xSkinAt(x, y)) { c.saw.skin = 1; break; }
+  if (!c.saw.tree && XTREE.some(t => s[t[1] * XW + t[0]] === '1')) c.saw.tree = 1; }
+const xSeen = (x, y) => XY().seen[y * XW + x] === '1';
+function xPath(tx, ty) { const c = XY(), key = (x, y) => y * XW + x, from = {}, q = [[c.x, c.y]]; from[key(c.x, c.y)] = -1; let best = [c.x, c.y], bd = Math.hypot(c.x - tx, c.y - ty);
+  while (q.length) { const [x, y] = q.shift(), d = Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = [x, y]; } if (x === tx && y === ty) break;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= XW || ny >= XH || !xOpen(nx, ny) || from[key(nx, ny)] !== undefined) continue; from[key(nx, ny)] = key(x, y); q.push([nx, ny]); } }
+  const path = []; let k = key(best[0], best[1]); while (from[k] !== -1 && from[k] !== undefined) { path.unshift([k % XW, Math.floor(k / XW)]); k = from[k]; } return path; }
+function xGo(tx, ty, then) { XM.route = xPath(tx, ty); XM.then = then || null; if (!XM.route.length && then) { const c = XY(); XM.then = null; if (Math.abs(c.x - tx) + Math.abs(c.y - ty) <= 1) then(); } return XM.route.length; }
+function xArrive() { const f = XM.then; XM.then = null; save(); drawWords(); if (f) f(); }
+function xPlaceName() { const c = XY(), x = c.x, y = c.y; return xSkinAt(x, y) ? 'The Giant’s Skin' : xIn(XR.ground, x, y) ? 'Building Ground' : xIn(XR.ledge, x, y) ? 'Sun Ledge' : x >= 32 && y <= 8 ? 'Leafgrove' : y <= 6 && x >= 15 && x <= 29 ? 'The Sleeping Giant' : x >= 29 && y >= 11 && y <= 19 ? 'Modular Meadows' : x >= 8 && x <= 13 && y >= 13 && y <= 18 ? 'The Camp' : x <= 9 && y >= 19 ? 'Landing Square' : 'Planet Xylophora'; }
+function landXylo(text) { const c = XY(); closeToy(); S.mode = 'xylo'; c.x = XSTART[0]; c.y = XSTART[1]; XM.px = c.x; XM.py = c.y; XM.route = []; XM.then = null; XM.mark = null; XM.dir = 'down'; XM.cx = -1; PL.fade = 1; xSee(); save(); drawStatus(); beep(300, .3); drawWords();
+  say(text || 'You land on Planet Xylophora. The ground is a patchwork of squares. Smoke rises from a camp to the east. Walk around.'); }
+function leaveXylo(out) { closeToy(); XM.mark = null; S.mode = 'space'; S.at = 'metrica'; SP.to = null; SP.x = GAL.metrica.x + .06; SP.y = GAL.metrica.y + .04; save(); drawStatus(); beep(200, .4, 'sawtooth'); drawWords(); out('You lift off from Xylophora. Galaxy Metrica glows around you.'); }
+function goXylophora() { S.ended = true; S.beat = 0; tidy(); landXylo('Teacher shortcut. You land on Planet Xylophora. The ground is a patchwork of squares. Smoke rises from a camp to the east. Walk around.'); $('place').scrollIntoView({ block: 'nearest' }); }
+
+/* ---- a number, asked on the desk. A wrong number closes the box: the world shows what happened, and the cadet goes back to look. */
+function xAsk(o) { widget = { kind: 'xask' };
+  toy(`<p class="eyebrow">Planet Xylophora · ${o.where}</p>${o.mw ? `<p class="mw">${o.mw}</p>` : ''}<h3>${o.title}</h3><p class="q">${o.q}</p><div class="field"><label for="ans" class="note">${o.label || 'Your answer'}</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="3"><span class="note">${o.unit || ''}</span><button class="btn" type="button" id="try">${o.go || 'Check'}</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const a = $('ans'), m = $('msg'); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 3); }; a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; a.focus({ preventScroll: true });
+  $('leave').onclick = () => { closeToy(); say(o.bye || 'You step back.'); };
+  $('try').onclick = () => { if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; } const r = o.on(+a.value); if (r) { m.className = 'msg bad'; m.textContent = r; a.value = ''; beep(140, .2, 'square'); } }; }
+function xWin(what, skill, k, text) { const c = XY(), t = c.tries[k] || 1, nd = c.nud[k] || 0; c.done[k] = true; S.log.push({ what: 'Xylophora: ' + what, skill, result: `solved on try ${t}, with ${nd} nudge${nd === 1 ? '' : 's'}`, tries: t, need: 1 }); closeToy(); save(); drawStatus(); chime(); card(); say(text); }
+
+/* QUEST 1, the skin [his Task 2]. How many squares? Two rectangles, joined. Nothing says so. */
+function xPost() { const c = XY(), v = xNums(c.seed); if (c.done.skin) return `The survey post reads ${v.S}. The cutters are at work.`;
+  xAsk({ where: 'the giant’s skin', mw: '<b>Maths word: area.</b> Area is how many squares cover a flat shape.', title: 'The survey post', q: 'How many squares of skin are there? Set the number wheel.', unit: 'squares', go: 'Set the wheel', bye: 'You step back from the post.',
+    on: n => { c.tries.skin = (c.tries.skin || 0) + 1; if (n === v.S) return xWin('the giant’s skin', 'Area of a shape made of two rectangles (AERO 3.MD.7)', 'skin', `You set the wheel to ${v.S}. The cutters measure. It fits to the last square! ${v.S} squares of skin. You earn a card. The Site Chief will want to know.`);
+      save(); closeToy(); say(n < v.S ? `You set the wheel to ${n}. The cutters measure out ${n} squares. There is skin left over. The count is too small.` : `You set the wheel to ${n}. The cutters measure. The skin runs out before they reach ${n}. The count is too big.`); } }); return ''; }
+
+/* QUEST 2, the floors [his Tasks 1 and 4]. Four orders. The cadet marks a rectangle on the ground: two taps, two corners. */
+function xOrders(v) { return [['Home', `A floor of ${v.h} squares. Any rectangle will do.`], ['Hospital', `A floor of ${v.p} squares. Wall panels are scarce: use as few as you can.`], ['Food Store', `${v.W} wall panels are set aside for it. Use them all. Make the floor as big as you can.`], ['Solar Factory', `A floor of ${v.f} squares. It must stand on the Sun Ledge.`]]; }
+function xBoard() { const c = XY(), v = xNums(c.seed); widget = { kind: 'xboard' };
+  toy(`<p class="eyebrow">Planet Xylophora · the camp</p><p class="mw"><b>Maths word: perimeter.</b> The perimeter is the distance all the way around a shape.</p><h3>The order board</h3><div class="cart"><table class="fx tt"><tbody>${xOrders(v).map((o, i) => `<tr><td>${c.fl[XBK[i]] ? '✓ ' : ''}${o[0]}</td><td>${o[1]}</td></tr>`).join('')}</tbody></table></div><p class="note">Every floor is a rectangle. One wall panel is as long as one square. Leave a path between buildings.</p><p class="note">You may work on paper. Or keep notes here. Nobody marks them.</p><textarea id="qnotes" rows="3" maxlength="400" style="width:100%" aria-label="Your notes"></textarea><div class="field"><button class="btn quiet" type="button" id="leave">Step back</button></div>`);
+  const n = $('qnotes'); n.value = c.notes || ''; n.oninput = () => { c.notes = n.value.slice(0, 400); }; $('leave').onclick = () => { save(); closeToy(); say('You step back from the board.'); }; return ''; }
+function xBuild(b, out) { const c = XY(); if (!c.done.skin) return out('The cutters have cut no skin yet. They are waiting for a count.'); if (c.done.roofs) return out('The colony is built. Nothing needs to move now.');
+  const go = () => { let more = ''; if (c.fl[b]) { const n = (c.roof[b] || []).length; c.bag += n; delete c.fl[b]; delete c.roof[b]; more = `You take up the ${XB[b]} floor.${n ? ` Its ${n} leaves go back in your arms.` : ''} `; drawBag(); }
+    XM.mark = { b, c1: null }; save(); say(`${more}Mark the ${XB[b]} floor. Tap one corner on ${b === 'fact' ? 'the Sun Ledge' : 'the building ground'}. Then tap the corner across from it.`, null, 'xmark ' + b); };
+  const r = XR[b === 'fact' ? 'ledge' : 'ground'], tx = r[0] + Math.floor(r[2] / 2), ty = r[1] + Math.floor(r[3] / 2); if (Math.hypot(tx - c.x, ty - c.y) <= 2.5) { out(null); return go(); }
+  out(`You walk to ${b === 'fact' ? 'the Sun Ledge' : 'the building ground'}.`); xGo(tx, ty, go); }
+function xMarkTap(tx, ty) { const c = XY(), m = XM.mark, b = m.b, v = xNums(c.seed), reg = XR[b === 'fact' ? 'ledge' : 'ground'];
+  if (!xIn(reg, tx, ty)) { XM.mark = null; return say(b === 'fact' ? 'That square is not on the Sun Ledge. You stop marking.' : 'That square is not on the building ground. You stop marking.'); }
+  if (!m.c1) { m.c1 = [tx, ty]; beep(620, .04); return say('One corner is marked. Now tap the corner across from it.', null, 'xmark corner'); }
+  const x = Math.min(m.c1[0], tx), y = Math.min(m.c1[1], ty), w = Math.abs(m.c1[0] - tx) + 1, l = Math.abs(m.c1[1] - ty) + 1, A = w * l, P = 2 * (w + l), nm = XB[b], head = `You mark a floor ${w} by ${l}.`; XM.mark = null; c.tries.floors = (c.tries.floors || 0) + 1;
+  const hit = XBK.find(o => o !== b && c.fl[o] && x <= c.fl[o][0] + c.fl[o][2] && c.fl[o][0] <= x + w && y <= c.fl[o][1] + c.fl[o][3] && c.fl[o][1] <= y + l);
+  const no = t => { save(); beep(140, .2, 'square'); say(`${head} ${t}`); };
+  if (hit) return no(`It touches the ${XB[hit]}. The Chief wants a path between buildings.`);
+  const want = b === 'home' ? v.h : b === 'hosp' ? v.p : b === 'fact' ? v.f : 0;
+  if (want && A !== want) return no(`The ${nm} order is for ${want} squares. This floor is too ${A < want ? 'small' : 'big'}.`);
+  if (b === 'hosp' && P !== v.bestP) return no(`It is ${v.p} squares. But the Chief counts the wall panels and shakes her head. "Too many panels. The same floor can sit inside a shorter wall."`);
+  if (b === 'store' && P !== v.W) return no(`The Food Store has ${v.W} wall panels. This wall needs ${P > v.W ? 'more' : 'fewer'}.`);
+  if (b === 'store' && A !== v.st) return no(`Its wall uses all ${v.W} panels. But the Chief frowns at the floor. "The same panels can hold a bigger store."`);
+  c.fl[b] = [x, y, w, l]; c.roof[b] = []; beep(520, .1); const all = XBK.every(o => c.fl[o]);
+  if (all && !c.done.floors) return xWin('four floors', 'Area and perimeter of rectangles (AERO 3.MD.7, 3.MD.8)', 'floors', `${head} The cutters lay ${A} squares of skin. All four floors are down! You earn a card. By evening the walls are up. The crew stretches skin over the Home for a roof. In the night the skin sags, and the roof falls in. Skin is too soft for a roof. The colony needs something stiff and flat. And the rains are coming.`);
+  save(); drawWords(); say(`${head} The cutters lay ${A} squares of skin. The ${nm} floor is down.`); }
+
+/* QUEST 3, the roofs [his Task 3]. Stiff square leaves, 2 by 2. Nobody says where they grow. A wasteful floor wastes leaves, and the grove is small. */
+function xTake() { const c = XY(), tr = xTrees(), all = xLeavesLeft(); if (!all) return 'The Xylotrees are bare. Every leaf has been picked.'; if (c.bag >= 6) return `Your arms are full. You carry ${c.bag} leaves.`;
+  xAsk({ where: 'the Leafgrove', title: 'The Xylotrees', q: `How many leaves do you pick? Your arms can hold ${6 - c.bag} more.`, unit: 'leaves', go: 'Pick', bye: 'You leave the leaves on the tree.',
+    on: n => { if (!n) return 'Pick at least one leaf.'; if (n > 6 - c.bag) return `Your arms hold 6 leaves at most. You carry ${c.bag} now.`; if (n > all) return `The trees have only ${all} leaves left.`;
+      let k = n; XTREE.map((t, i) => [Math.hypot(t[0] - c.x, t[1] - c.y), i]).sort((p, q) => p[0] - q[0]).forEach(p => { const g = Math.min(k, tr[p[1]]); tr[p[1]] -= g; k -= g; });
+      c.bag += n; closeToy(); save(); drawBag(); beep(700, .08); say(`You pick ${n} lea${n === 1 ? 'f' : 'ves'}. You carry ${c.bag}.${xLeavesLeft() ? '' : ' The grove is bare now.'}`, null, 'xpick'); } }); return ''; }
+function xLayAt(tx, ty, take) { const c = XY(), b = XBK.find(o => c.fl[o] && xIn(c.fl[o], tx, ty)); if (!b) return false; const f = c.fl[b], cols = Math.ceil(f[2] / 2), i = Math.floor((tx - f[0]) / 2) + cols * Math.floor((ty - f[1]) / 2), rf = c.roof[b] || (c.roof[b] = []), at = rf.indexOf(i);
+  if (!c.done.floors) { say(`The ${XB[b]} floor. Skin, laid flat. The walls are not up yet.`, null, 'xfloor'); return true; }
+  if (c.done.roofs) { say(`The ${XB[b]}. Its roof of leaves is whole.`, null, 'xroofed'); return true; }
+  if (at >= 0) { if (take) { rf.splice(at, 1); c.bag++; save(); drawBag(); beep(400, .05); say(`You lift a leaf off the ${XB[b]}. You carry ${c.bag}.`, null, 'xlift'); } else say('A leaf lies here already.', null, 'xlaid'); return true; }
+  if (c.bag <= 0) { say(c.saw.tree ? 'You have no leaves with you.' : `The ${XB[b]} has walls and no roof. It is open to the sky.`, null, 'xnoleaf'); return true; }
+  rf.push(i); c.bag--; drawBag(); beep(660, .05);
+  if (xRoofsWhole()) { xWin('four roofs', 'Covering a rectangle with equal squares (AERO 3.MD.5, 3.MD.6)', 'roofs', `You lay the last leaf. Every roof is whole! That night the first rain falls. Every room stays dry. You earn a card. The Site Chief is waving to you.`); return true; }
+  save(); say(xWhole(b) ? `You lay a leaf. The ${XB[b]} roof is whole.` : `You lay a leaf on the ${XB[b]}. You carry ${c.bag}.`, null, 'xlay' + (xWhole(b) ? b : '')); return true; }
+
+/* QUEST 4, more Homes, and the map key [his Tasks 2 and 4]. */
+function xHomes() { const c = XY(), v = xNums(c.seed);
+  xAsk({ where: 'the camp', title: 'More Homes', q: `The Site Chief says: "More families are coming. The cutters have ${v.left} squares of skin left. Each family needs a Home like yours: ${v.h} squares. How many more Homes can they cut?"`, unit: 'Homes', go: 'Tell the Chief', bye: 'You tell the Chief you will think about it.',
+    on: n => { c.tries.homes = (c.tries.homes || 0) + 1; if (n === v.n) return xWin('more Homes', 'Sharing into equal groups (AERO 3.OA.2, 3.OA.3)', 'homes', `${v.n} more Homes. The cutters cut them, one by one. ${v.rem ? `${v.rem} square${v.rem === 1 ? ' is' : 's are'} left over: not enough for another.` : 'Not one square is left over.'} You earn a card. The Site Chief has one last job for you.`);
+      save(); closeToy(); say(n < v.n ? `You say ${n}. The cutters cut ${n} Home${n === 1 ? '' : 's'}. There is still skin enough for another one.` : `You say ${n}. The cutters start. The skin runs out before Home number ${n}.`); } }); }
+const XKC = [['#e85d75', 'red'], ['#f2b84b', 'gold'], ['#4fb0e8', 'blue'], ['#9b7be0', 'violet'], ['#f4f1e6', 'white']];
+function xKey() { const c = XY(), pick = {}; widget = { kind: 'xkey' };
+  toy(`<p class="eyebrow">Planet Xylophora · the colony map</p><h3>The map key</h3><p class="q">Every map needs a key. Choose a roof colour for each kind of building.</p>${XBK.map(b => `<p class="note" style="margin-bottom:-2px"><b>${XB[b]}</b></p><p class="chips" data-b="${b}">${XKC.map((k, i) => `<button class="word" type="button" data-i="${i}" aria-label="${k[1]}" style="background:${k[0]};min-width:2.5em;color:#1a1640">&nbsp;</button>`).join('')}</p>`).join('')}<div class="field"><button class="btn" type="button" id="try" disabled>Draw the map</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  document.querySelectorAll('#toy p.chips button').forEach(bt => bt.onclick = () => { const b = bt.parentNode.dataset.b; pick[b] = +bt.dataset.i; bt.parentNode.querySelectorAll('button').forEach(o => { o.textContent = o === bt ? '✓' : ' '; }); $('try').disabled = XBK.some(o => pick[o] == null); beep(620, .03); });
+  $('leave').onclick = () => { closeToy(); say('You step back.'); };
+  $('try').onclick = () => { const v = xNums(c.seed); if (new Set(XBK.map(o => pick[o])).size < 4) { $('msg').className = 'msg bad'; $('msg').textContent = 'Two kinds have the same colour. A key needs a different colour for each kind.'; return; }
+    c.key = pick; c.done.key = true; const laid = XBK.reduce((a, o) => a + (c.roof[o] || []).length, 0), pan = XBK.reduce((a, o) => a + 2 * (c.fl[o][2] + c.fl[o][3]), 0); if (!c.gold) { c.gold = true; card('gold'); }
+    S.log.push({ what: 'Xylophora: the colony', skill: 'A map with a key', result: `${4 + v.n} buildings` }); closeToy(); save(); drawStatus(); chime();
+    say(`The map is drawn. The colony of Xylophora stands: a Hospital, a Food Store, a Solar Factory and ${1 + v.n} Homes. Skin: ${v.S} squares found, ${v.S - v.rem} used, ${v.rem} left over. Leaves: ${laid} laid, ${xLeavesLeft() + c.bag} to spare. Wall panels: ${pan}. The Site Chief names you a Planetary Pioneer. You earn a gold card.`); }; }
+
+/* A side job in the Modular Meadows: equal parts [AERO 3.G.2, 3.NF.1]. And two secrets. */
+function xShare() { const c = XY(), v = xNums(c.seed), A = v.field[0] * v.field[1]; if (c.done.share) return `The herder folds into a bird, then back. "One quarter each. ${v.part} squares. The herds are at peace."`;
+  xAsk({ where: 'the Modular Meadows', mw: '<b>Maths word: equal parts.</b> Equal parts are all the same size.', title: 'The herder’s field', q: 'The herder rustles: "Four herds graze this field. Each herd must get an equal part. How many squares is one part?"', unit: 'squares', go: 'Tell the herder', bye: 'The herder folds its arms. All six of them.',
+    on: n => { c.tries.share = (c.tries.share || 0) + 1; if (n === v.part) { c.finds.push('share'); return xWin('the herder’s field', 'Equal parts of a shape, and one quarter (AERO 3.G.2, 3.NF.1)', 'share', `You say ${n}. The herder folds four fences. Four equal parts, ${n} squares each. Each herd gets one quarter of the field. The herder folds into a bird with joy. You earn a card.`); }
+      save(); closeToy(); say(n * 4 < A ? `You say ${n}. The herder folds four fences. Four parts of ${n} squares. But some grass is left outside every fence.` : `You say ${n}. The herder starts to fold fences. Four parts of ${n} squares do not fit in the field.`); } }); return ''; }
+function xHum() { const c = XY(); if (c.finds.indexOf('hum') >= 0) return 'The giant sleeps on. Deep inside, it still hums your tune.'; c.hum = (c.hum || 0) + 1; save();
+  if (c.hum === 1) return 'You say hello. The giant does not wake. Its side rises and falls, very slowly.'; if (c.hum === 2) return 'You speak louder. Nothing. One breath takes a whole minute.';
+  c.finds.push('hum'); S.log.push({ what: 'Xylophora: the giant hums', skill: 'A secret', result: 'found' }); save(); chime(); card(); return 'You hum a tune. Deep inside the giant, something hums back. One long, low note. The squares of the ground shake. You earn a card.'; }
+function xDig() { const c = XY(); if (c.x !== XDIG[0] || c.y !== XDIG[1]) return 'You lift a square of ground. Under it is more ground, also square. You put it back.'; if (c.finds.indexOf('print') >= 0) return 'You dug here before. The stone with the leaf print lies in the sand.';
+  c.finds.push('print'); S.log.push({ what: 'Xylophora: the leaf print', skill: 'A secret', result: 'found' }); save(); chime(); card(); return 'You dig in the sand between the cacti. Clink! A flat stone, with a print pressed into it: a square leaf, from long, long ago. You earn a card.'; }
+function xChief() { const c = XY(), v = xNums(c.seed), st = xStage(); c.told = xToldKey(); save();
+  if (st === 'skin') return c.saw.skin ? 'The Site Chief says: "The giant’s old skin! Leathery. Rubbery. Strong. It could be our floors and our walls. The cutters need one number first. How many squares of skin are there? Set it on the survey post, by the skin."' : 'The Site Chief says: "Welcome, cadet. Earth is sending families. They need four buildings before the rains: a Home, a Hospital, a Food Store and a Solar Factory. We have tools. We have no building material. Nothing near the camp is strong enough."';
+  if (st === 'floors') return `The Site Chief says: "${v.S} squares of skin. Good work, Resource Manager. Now you are our Space Architect. The orders are on the board. Mark each floor on the building ground. The cutters will lay the skin."`;
+  if (st === 'roofs') return !xLeavesLeft() && !c.bag && !xRoofsWhole() ? 'The Site Chief says: "No leaves left on the trees? Then some roof is using too many."' : c.saw.tree ? 'The Site Chief says: "Stiff leaves! They may just work, Resource Innovator. Cover every roof."' : 'The Site Chief says: "Skin sags. We need something stiff and flat. I have seen nothing like that near the camp."';
+  if (st === 'homes') { xHomes(); return ''; } if (st === 'key') { xKey(); return ''; }
+  return 'The Site Chief says: "A colony, where there was only grass. Thank you, Planetary Pioneer."'; }
+const XN = { find: ['You have not seen the whole planet. Walk into the mist.', 'Something very big lies to the north.'], skin: ['Counting one by one is slow, and easy to get wrong. Rows help.', 'The skin is two rectangles, joined together.', 'Take one rectangle. How many squares in a row? How many rows? Then the other rectangle.'],
+  floors: ['Read the order board at the camp. Each order says what its floor must be.', 'Many rectangles hold the same number of squares. A long thin one. A fat one. Their walls are not the same length.', 'Try some on paper. How wide? How long? How many squares? How long is the wall?'],
+  seek: ['Something stiff, flat and square. Have you seen anything like that on your walks?', 'Trees grow where the pines open, far to the east.'], roofs: ['One leaf covers 2 squares one way and 2 squares the other.', 'A leaf that hangs over a wall is partly wasted. Some floors waste more than others.', 'You may lay a floor again in a new shape. Type: build home.'],
+  homes: ['Every new Home uses the same number of squares.', 'Cut one Home. Then another. Then another. When is there not enough skin left?'], key: ['Talk to the Site Chief.'], end: ['Xylophora is built. You can still walk, look and dig.'] };
+function xHint() { const c = XY(), st = xStage(), k = st === 'skin' && !c.saw.skin ? 'find' : st === 'roofs' && !c.saw.tree ? 'seek' : st, list = XN[k], i = c.nud[k] || 0; if (k === 'key' || k === 'end') return list[0];
+  if (i >= list.length) return 'That is all the help there is. The rest is yours to work out.'; c.nud[k] = i + 1; if (k === 'find') c.nud.skin = c.nud.skin || 0; save(); return list[i]; }
+
+/* ---- the things of the planet. Most of them are only things. [Marc's Novus law: "Dead Ends Are Real."] */
+const XT = [
+  { id: 'ship', label: 'your ship', words: ['ship', 'rocket'], at: XSHIP, look: 'Your ship, on the Landing Square. To leave Xylophora, type: fly.' },
+  { id: 'chief', label: 'Site Chief', words: ['chief', 'site', 'boss', 'woman', 'her'], at: [11, 16], who: 1, look: 'The Site Chief. Her suit is grey with dust. She holds a plan with nothing drawn on it yet.', talk: xChief },
+  { id: 'board', label: 'order board', words: ['board', 'orders', 'order'], at: [11, 14], look: xBoard, use: xBoard, take: 'It is nailed to two posts.' },
+  { id: 'tent', label: 'tent', words: ['tent', 'camp'], rect: [9, 15, 2, 1], look: 'The crew’s tent. Tools, rope and empty plans.', use: 'You look inside. Tools, rope and empty plans. Nothing to build with.', take: 'It is pegged down.' },
+  { id: 'post', label: 'survey post', words: ['post', 'survey', 'wheel'], at: [9, 12], look: () => XY().done.skin ? xPost() : XY().saw.skin ? 'A survey post, with a number wheel on top. The cutters wait beside it for a count.' : 'A survey post, with a number wheel on top. Nobody has set it.', use: () => XY().saw.skin || XY().done.skin ? xPost() : 'A number wheel. You turn it. Click, click. You do not know what there is to count.', take: 'It is set deep in the ground.' },
+  { id: 'skin', label: 'giant’s skin', words: ['skin', 'sheet', 'hide'], fn: xSkinAt, look: 'A great sheet of skin. The giant shed it long ago. It is leathery, rubbery and bright. It lies flat on the ground, in perfect squares.', take: 'You pull at one edge. It is far too big to carry.', push: 'It does not slide. It is heavier than it looks.', use: 'You stamp on it. It springs back. Strong stuff.' },
+  { id: 'giant', label: 'sleeping giant', words: ['giant', 'creature', 'monster', 'alien'], rect: XR.giant, look: 'A gentle giant of Xylophora, in a very long sleep. It is as long as a street. Its skin has ridges, like a ploughed field.', talk: xHum, push: 'You push. It is like pushing a hill.', take: 'You cannot take a giant.', use: 'You pat its side. Warm. It does not wake.' },
+  { id: 'ground', label: 'building ground', words: ['ground', 'yard', 'plot'], rect: XR.ground, look: 'The building ground. Flat clay, marked out in squares. It is 14 squares one way and 8 the other.' },
+  { id: 'ledge', label: 'Sun Ledge', words: ['ledge', 'shelf', 'sun'], rect: XR.ledge, look: 'The Sun Ledge. A shelf of pale rock. The sun is on it all day. It is long and narrow.' },
+  { id: 'leaf', label: 'fallen leaf', words: ['leaf', 'leaves', 'fallen'], rect: [8, 23, 2, 2], look: 'A square leaf, fallen long ago. It is as stiff as a board. It covers 2 squares one way and 2 squares the other.', take: 'You lift one corner. The old leaf cracks. It is too dry to carry.', push: 'It scrapes over the ground. Stiff as a board.' },
+  { id: 'tree', label: 'Xylotree', words: ['tree', 'trees', 'xylotree', 'xylotrees', 'leaf', 'leaves'], multi: XTREE, look: () => { const n = xLeavesLeft(); return `Xylotrees. Their leaves are stiff green squares, each as big as 2 squares by 2 squares. ${n ? `There ${n === 1 ? 'is 1 leaf' : `are ${n} leaves`} on the trees.` : 'Every leaf has been picked.'}`; }, take: xTake, use: xTake, push: 'The trunk is as hard as stone.' },
+  { id: 'field', label: 'herder’s field', words: ['field', 'meadow', 'fence'], fn: (x, y) => { const f = xNums(XY().seed).field; return x >= XR.field[0] && y >= XR.field[1] && x < XR.field[0] + f[0] && y < XR.field[1] + f[1]; }, look: 'A fenced field in the Modular Meadows. Sweet grass, in squares.' },
+  { id: 'herder', label: 'origami herder', words: ['herder', 'origami', 'paper', 'folder'], at: [33, 18], who: 1, look: 'A creature as thin as paper, folded like origami. It unfolds a little to look at you.', talk: xShare, take: 'It folds itself flat, and slips out of your hands.', push: 'It folds itself flat. You push nothing.' },
+  { id: 'pond', label: 'square pond', words: ['pond', 'water', 'lake'], rect: [2, 14, 4, 3], look: 'A square pond. The water is still. You can see the bottom: more squares.', take: 'The water runs through your gloves.', use: 'You splash. Square ripples.' },
+  { id: 'ring', label: 'ring of cacti', words: ['cactus', 'cacti', 'ring'], rect: [31, 21, 5, 3], look: 'Circular Cacti, standing in a ring. Each one is perfectly round, and very sharp. The sand in the middle is soft.', take: 'Ouch! No.', push: 'Ouch! No.' },
+  { id: 'pines', label: 'Polygonal Pines', words: ['pine', 'pines', 'forest', 'woods'], tile: 'P', look: 'Polygonal Pines. Every branch is a triangle. They grow too thick to walk through.', take: 'A branch snaps off. It is only a triangle of wood. You drop it.', push: 'The pines do not move.' }
+];
+XBK.forEach(b => XT.push({ id: b, label: XB[b], words: b === 'home' ? ['home', 'house'] : b === 'hosp' ? ['hospital'] : b === 'store' ? ['store', 'food', 'shop'] : ['factory', 'solar'], fn: (x, y) => { const f = XY().fl[b]; return !!f && xIn(f, x, y); }, when: () => XY().done.skin && !!XY().fl[b],
+  look: () => { const c = XY(), f = c.fl[b]; if (!f) return `The ${XB[b]} is not built. Its order is on the board.`; const n = (c.roof[b] || []).length; return `The ${XB[b]}. Its floor is ${f[2]} by ${f[3]}.${!c.done.floors ? '' : xWhole(b) ? ' Its roof is whole.' : n ? ` ${n} lea${n === 1 ? 'f lies' : 'ves lie'} on its roof. Part of it is still open.` : ' It has walls and no roof.'}`; } }));
+const xThingTiles = t => t.at ? [t.at] : t.multi ? t.multi : t.rect ? [[t.rect[0] + Math.floor(t.rect[2] / 2), t.rect[1] + Math.floor(t.rect[3] / 2)]] : null;
+function xDist(t) { const c = XY(); if (t.fn || t.tile) { let best = 99; for (let y = Math.max(0, c.y - 7); y <= Math.min(XH - 1, c.y + 7); y++) for (let x = Math.max(0, c.x - 8); x <= Math.min(XW - 1, c.x + 8); x++) if (xSeen(x, y) && (t.fn ? t.fn(x, y) : xTile(x, y) === t.tile)) best = Math.min(best, Math.hypot(x - c.x, y - c.y)); return best; }
+  if (t.rect) { const r = t.rect, dx = Math.max(r[0] - c.x, 0, c.x - (r[0] + r[2] - 1)), dy = Math.max(r[1] - c.y, 0, c.y - (r[1] + r[3] - 1)); return xSeen(Math.max(r[0], Math.min(r[0] + r[2] - 1, c.x)), Math.max(r[1], Math.min(r[1] + r[3] - 1, c.y))) ? Math.hypot(dx, dy) : 99; }
+  return Math.min.apply(null, xThingTiles(t).map(p => xSeen(p[0], p[1]) ? Math.hypot(p[0] - c.x, p[1] - c.y) : 99)); }
+function xThingAt(tx, ty) { return XT.find(t => (!t.when || t.when()) && (t.at ? t.at[0] === tx && t.at[1] === ty : t.multi ? t.multi.some(p => p[0] === tx && p[1] === ty) : t.fn ? t.fn(tx, ty) : t.tile ? xTile(tx, ty) === t.tile : t.rect ? xIn(t.rect, tx, ty) && t.id !== 'ground' && t.id !== 'ledge' : false)) || null; }
+function xSpot(t) { const c = XY(); let best = null, bd = 1e9; const tiles = []; if (t.fn || t.tile) { for (let y = 0; y < XH; y++) for (let x = 0; x < XW; x++) if (xSeen(x, y) && (t.fn ? t.fn(x, y) : xTile(x, y) === t.tile)) tiles.push([x, y]); } else if (t.rect) { for (let y = t.rect[1]; y < t.rect[1] + t.rect[3]; y++) for (let x = t.rect[0]; x < t.rect[0] + t.rect[2]; x++) tiles.push([x, y]); } else xThingTiles(t).forEach(p => tiles.push(p));
+  tiles.forEach(p => { [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(d => { const x = p[0] + d[0], y = p[1] + d[1]; if (!xOpen(x, y)) return; const dd = Math.hypot(x - c.x, y - c.y); if (dd < bd) { bd = dd; best = [x, y]; } }); }); return best; }
+function xHere() { const c = XY(), st = xStage(), out = []; XT.forEach(t => { if (t.when && !t.when()) return; if (XBK.indexOf(t.id) >= 0 || t.id === 'pines') return; const d = xDist(t); if (d <= (t.rect || t.fn ? 3 : 5.5)) out.push([d, [t.words[0], t.label]]); }); const list = out.sort((a, b) => a[0] - b[0]).slice(0, 5).map(o => o[1]);
+  if (c.done.skin && !c.done.roofs && (xDist(XT.find(t => t.id === 'ground')) <= 4 || xDist(XT.find(t => t.id === 'ledge')) <= 4)) XBK.forEach(b => list.push([{ home: 'home', hosp: 'hospital', store: 'store', fact: 'factory' }[b], (c.fl[b] ? '✓ ' : '') + XB[b]]));
+  if (Math.hypot(c.x - XSHIP[0], c.y - XSHIP[1]) <= 5) list.push(['fly', 'fly away']); return list; }
+
+/* ---- what the cadet types or taps */
+const XVB = { look: ['look', 'l', 'examine', 'x', 'see', 'read', 'watch', 'check', 'count', 'measure'], use: ['use', 'open', 'press', 'turn', 'touch', 'set', 'pat', 'enter', 'climb'], talk: ['talk', 'ask', 'say', 'hello', 'hi', 'greet', 'help', 'hum', 'sing'], take: ['take', 'get', 'grab', 'pick', 'catch', 'lift', 'carry'], push: ['push', 'pull', 'move', 'shove'], build: ['build', 'mark', 'make', 'lay', 'cover'], dig: ['dig'], go: ['go', 'walk', 'run'], fly: ['fly', 'launch', 'blast', 'liftoff'], leave: ['leave', 'exit', 'out', 'back'], hint: ['hint'] };
+function xAct(text, out) { if (widget) return out('Finish this first. Or tap Leave.'); const c = XY(), tk = text.split(/\s+/).filter(t => ['the', 'a', 'an', 'my', 'at', 'to', 'by', 'in', 'on', 'into', 'of', 'up', 'please', 'with', 'some'].indexOf(t) < 0 || (t === 'up' && text.split(/\s+/).length <= 2)); if (!tk.length) return;
+  const verb = Object.keys(XVB).find(v => XVB[v].indexOf(tk[0]) >= 0), rest = verb ? tk.slice(1) : tk; XM.mark = null;
+  if (verb === 'hint') return out(xHint());
+  const dir = CDIR[tk[verb === 'go' ? 1 : 0]];
+  if (dir && (!verb || verb === 'go')) { let x = c.x, y = c.y, n = 0; while (n < 3 && xOpen(x + dir[0], y + dir[1])) { x += dir[0]; y += dir[1]; n++; } if (!n) return out('You cannot go that way.'); xGo(x, y); return out(`You walk ${Object.keys(CDIR).find(k => CDIR[k][0] === dir[0] && CDIR[k][1] === dir[1])}.`); }
+  if (verb === 'fly' || (verb === 'use' && rest.some(r => r === 'ship' || r === 'rocket'))) { if (Math.abs(c.x - XSTART[0]) + Math.abs(c.y - XSTART[1]) <= 1) return leaveXylo(out); xGo(XSTART[0], XSTART[1], () => leaveXylo(say)); return out('You walk to your ship.'); }
+  if (verb === 'dig') return out(xDig());
+  if (verb === 'leave') return out('You are out in the open already. To leave Xylophora, walk to your ship and type: fly.');
+  const bk = XBK.find(b => XT.find(t => t.id === b).words.some(w => rest.indexOf(w) >= 0));
+  if (verb === 'build') { if (rest.some(r => r === 'leaf' || r === 'leaves' || r === 'roof') || (tk[0] === 'lay' || tk[0] === 'cover')) { const b = bk || XBK.filter(o => c.fl[o] && !xWhole(o)).sort((p, q) => Math.hypot(c.fl[p][0] - c.x, c.fl[p][1] - c.y) - Math.hypot(c.fl[q][0] - c.x, c.fl[q][1] - c.y))[0]; if (!b || !c.fl[b]) return out('There is no floor to cover.'); const f = c.fl[b], cols = Math.ceil(f[2] / 2), rows = Math.ceil(f[3] / 2); let cell = -1; for (let i = 0; i < cols * rows && cell < 0; i++) if ((c.roof[b] || []).indexOf(i) < 0) cell = i; if (cell < 0) return out(`The ${XB[b]} roof is whole.`); out(null); return void xLayAt(f[0] + 2 * (cell % cols), f[1] + 2 * Math.floor(cell / cols), false); }
+    if (!bk) return askWhat(out, 'build ', 'Build what? A home, a hospital, a store or a factory.'); return xBuild(bk, out); }
+  const cands = XT.filter(t => (!t.when || t.when()) && rest.some(r => t.words.indexOf(r) >= 0)).map(t => [xDist(t), t]).filter(p => p[0] < 99).sort((a, b) => a[0] - b[0]), th = cands.length ? cands[0][1] : null, vague = !rest.filter(r => VAGUE.indexOf(r) < 0).length;
+  if (bk && !c.fl[bk] && verb !== 'go') return out(c.done.skin ? `The ${XB[bk]} is not built. Its order is on the board.` : 'Nothing is built yet.');
+  if (verb === 'take' && rest.some(r => r === 'leaf' || r === 'leaves') && c.done.floors && !c.done.roofs) { const b = XBK.filter(o => c.fl[o] && (c.roof[o] || []).length && Math.hypot(Math.max(c.fl[o][0] - c.x, 0, c.x - (c.fl[o][0] + c.fl[o][2] - 1)), Math.max(c.fl[o][1] - c.y, 0, c.y - (c.fl[o][1] + c.fl[o][3] - 1))) <= 3)[0]; if (b && Math.min.apply(null, XTREE.map(t => Math.hypot(t[0] - c.x, t[1] - c.y))) > 6) { const f = c.fl[b], i = c.roof[b][c.roof[b].length - 1], cols = Math.ceil(f[2] / 2); out(null); return void xLayAt(f[0] + 2 * (i % cols), f[1] + 2 * Math.floor(i / cols), true); } }
+  if (verb === 'look' && !th && !rest.length) return out(`${xPlaceName()}, on Planet Xylophora. The ground is a patchwork of squares, as far as the mist. ${xHere().filter(h => h[0] !== 'fly').length ? 'Near you: ' + xHere().filter(h => h[0] !== 'fly').map(h => h[1].replace('✓ ', '')).join(', ') + '.' : 'Nothing is near you but grass.'}`);
+  if (!verb) return th ? out(softTry(tk[0], th.label, 'look, talk, take or use')) : netAsk(text, softNone(tk[0]) || 'Xylophora does not know that yet. Try: look, talk, take, use, build, go north.', out);
+  if (!th) return vague ? askWhat(out, tk[0] + ' ', `${tk[0][0].toUpperCase() + tk[0].slice(1)} what?`) : netAsk(text, rest.some(r => XT.some(t => t.words.indexOf(r) >= 0)) ? 'You have not found that yet. Walk into the mist.' : 'You do not see that here.', out);
+  const v = verb === 'go' ? 'go' : th[verb] !== undefined ? verb : verb === 'use' && th.talk ? 'talk' : verb;
+  const doIt = () => { let r = v === 'go' ? `You walk to the ${th.label}.` : v === 'talk' && !th.talk ? `The ${th.label} does not answer.` : th[v] === undefined ? (v === 'take' ? (th.who ? 'You cannot take that. It is not yours.' : 'It stays where it is.') : v === 'push' ? 'It does not move.' : 'Nothing happens.') : typeof th[v] === 'function' ? th[v]() : th[v]; if (r === '') { lines.push({ you: echoSafe(text) }); drawLog(); return; } say(r); };
+  const sp = xSpot(th); if (verb === 'look' && xDist(th) <= 5.5) { out(null); return doIt(); } if (!sp) return out('You cannot reach it.'); if (sp[0] === c.x && sp[1] === c.y) { out(null); return doIt(); } out(`You walk to the ${th.label}.`); xGo(sp[0], sp[1], doIt); }
+function xTap(e) { const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, c = XY(), draft = $('cmd').value.trim().toLowerCase(); if (widget) return say('Finish this first. Or tap Leave.');
+  const tx = Math.floor((mx - XM.ox) / XM.ts + XM.cx), ty = Math.floor((my - XM.oy) / XM.ts + XM.cy); if (tx < 0 || ty < 0 || tx >= XW || ty >= XH) return; if (!xSeen(tx, ty)) { if (XM.mark) { XM.mark = null; say('You stop marking.'); } xGo(tx, ty); return; } strayed();
+  if (XM.mark) return xMarkTap(tx, ty);
+  if (XBK.some(b => c.fl[b] && xIn(c.fl[b], tx, ty)) && !/^(look|talk|push|use|build)$/.test(draft)) { const near = XBK.find(b => c.fl[b] && xIn(c.fl[b], tx, ty)), f = c.fl[near], d = Math.hypot(Math.max(f[0] - c.x, 0, c.x - (f[0] + f[2] - 1)), Math.max(f[1] - c.y, 0, c.y - (f[1] + f[3] - 1))); const go = () => xLayAt(tx, ty, draft === 'take'); if (draft === 'take') { $('cmd').value = ''; mark(); } if (d <= 2.5) return void go(); const sp = xSpot({ rect: f }); return void xGo(sp[0], sp[1], go); }
+  const th = xThingAt(tx, ty); if (th) return act(`${/^(look|take|push|use|talk)$/.test(draft) ? draft : th.talk && th.who ? 'talk' : th.id === 'post' || th.id === 'board' ? 'use' : 'look'} ${th.words[0]}`);
+  if (tx === c.x && ty === c.y && xTile(tx, ty) === 'o') return act('dig');
+  if (!xGo(tx, ty) && !xOpen(tx, ty)) say(xTile(tx, ty) === 'r' ? 'Sharp rock. You cannot climb it.' : xTile(tx, ty) === 'c' ? 'A Circular Cactus. Perfectly round. Very sharp.' : xTile(tx, ty) === 'X' ? 'A Xylotree trunk.' : 'You cannot walk there.', null, 'xblock'); }
+
+/* ---- drawing the planet from above */
+const XPAL = ['#3d9a6e', '#46a878', '#3a8f7c', '#4fae6a'], XMEAD = ['#e58fb8', '#f2c75c', '#9fd66b', '#b79be8', '#6fc7d9'];
+function xPerson(Xp, Yp, s, col) { cx.fillStyle = col; rr(Xp - s * .22, Yp - s * .1, s * .44, s * .5, s * .12); cx.fill(); ol(1.5); cx.fillStyle = '#f4f7fb'; circ(Xp, Yp - s * .28, s * .24); cx.fill(); ol(1.5); cx.fillStyle = '#243a5e'; rr(Xp - s * .15, Yp - s * .36, s * .3, s * .16, s * .06); cx.fill(); }
+function xHerder(Xp, Yp, s) { const fl = Math.sin(tNow * 2) * s * .04; cx.fillStyle = '#fbf6e9'; cx.beginPath(); cx.moveTo(Xp, Yp - s * .5 - fl); cx.lineTo(Xp + s * .36, Yp + s * .05); cx.lineTo(Xp, Yp + s * .38); cx.lineTo(Xp - s * .36, Yp + s * .05); cx.closePath(); cx.fill(); ol(1.5); cx.strokeStyle = '#b9ad90'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(Xp, Yp - s * .5 - fl); cx.lineTo(Xp, Yp + s * .38); cx.moveTo(Xp - s * .36, Yp + s * .05); cx.lineTo(Xp + s * .36, Yp + s * .05); cx.stroke();
+  cx.fillStyle = '#fbf6e9'; cx.beginPath(); cx.moveTo(Xp + s * .1, Yp - s * .2); cx.lineTo(Xp + s * .55, Yp - s * .42 + fl); cx.lineTo(Xp + s * .3, Yp - s * .05); cx.closePath(); cx.fill(); ol(1.2); cx.fillStyle = INK; circ(Xp - s * .08, Yp - s * .2, s * .035); cx.fill(); circ(Xp + s * .08, Yp - s * .2, s * .035); cx.fill(); }
+function xLeaf(px, py, sz, old) { cx.fillStyle = old ? '#a8a05a' : '#58c26a'; rr(px + sz * .04, py + sz * .04, sz * .92, sz * .92, sz * .1); cx.fill(); ol(1.5); cx.strokeStyle = old ? '#7c7440' : '#2f8a45'; cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(px + sz * .5, py + sz * .1); cx.lineTo(px + sz * .5, py + sz * .9); cx.moveTo(px + sz * .1, py + sz * .5); cx.lineTo(px + sz * .9, py + sz * .5); cx.stroke(); }
+function drawXylo(dt) { const c = XY(), w = vw, h = vh, v = xNums(c.seed); if (c.seen.length !== XW * XH) xSee();
+  if (XM.route.length) { const [tx, ty] = XM.route[0], dx = tx - XM.px, dy = ty - XM.py, d = Math.hypot(dx, dy), st = 5.6 * dt; XM.step += dt; if (Math.abs(dx) > Math.abs(dy)) XM.dir = dx > 0 ? 'right' : 'left'; else if (dy) XM.dir = dy > 0 ? 'down' : 'up';
+    if (d <= st) { XM.px = tx; XM.py = ty; c.x = tx; c.y = ty; XM.route.shift(); xSee(); if (!XM.route.length) xArrive(); } else { XM.px += dx / d * st; XM.py += dy / d * st; } }
+  const mr = XM.mark ? XR[XM.mark.b === 'fact' ? 'ledge' : 'ground'] : null, ts0 = Math.max(26, Math.min(50, Math.min(w / 16, h / 11))), ts = mr ? Math.min(ts0, w / (mr[2] + .6), h / (mr[3] + .6)) : ts0, cols = w / ts, rows = h / ts, fxc = mr ? mr[0] + mr[2] / 2 : XM.px + .5, fyc = mr ? mr[1] + mr[3] / 2 : XM.py + .5;
+  const tcx = cols >= XW ? (XW - cols) / 2 : Math.max(0, Math.min(XW - cols, fxc - cols / 2)), tcy = rows >= XH ? (XH - rows) / 2 : Math.max(0, Math.min(XH - rows, fyc - rows / 2));
+  if (XM.cx < 0) { XM.cx = tcx; XM.cy = tcy; } else { const k = Math.min(1, dt * 7); XM.cx += (tcx - XM.cx) * k; XM.cy += (tcy - XM.cy) * k; } XM.ts = ts; XM.ox = 0; XM.oy = 0;
+  const Xs = x => (x - XM.cx) * ts, Ys = y => (y - XM.cy) * ts, x0 = Math.max(0, Math.floor(XM.cx)), x1 = Math.min(XW - 1, Math.ceil(XM.cx + cols)), y0 = Math.max(0, Math.floor(XM.cy)), y1 = Math.min(XH - 1, Math.ceil(XM.cy + rows));
+  cx.fillStyle = '#141a33'; cx.fillRect(0, 0, w, h); const fld = v.field, grid = col => { cx.strokeStyle = col; cx.lineWidth = 1; };
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (!xSeen(x, y)) continue; const t = xTile(x, y), px = Xs(x), py = Ys(y), mead = x >= 29 && y >= 11 && y <= 19 && t === '.', inF = x >= XR.field[0] && y >= XR.field[1] && x < XR.field[0] + fld[0] && y < XR.field[1] + fld[1];
+    cx.fillStyle = t === 'B' ? ((x + y) % 2 ? '#d9c29a' : '#d2ba90') : t === 'L' ? ((x + y) % 2 ? '#e9e2cf' : '#e2dac4') : t === ':' ? '#e2cf9a' : t === '~' ? '#3f86d6' : t === 'o' || t === 'c' ? '#e6d49c' : inF ? ((x + y) % 2 ? '#8fd45c' : '#86cb55') : mead ? XMEAD[(Math.floor(x / 3) * 3 + Math.floor(y / 2) * 5) % 5] : XPAL[(Math.floor(x / 3) + Math.floor(y / 2) * 3) % 4];
+    cx.fillRect(px, py, ts + 1, ts + 1); grid(t === 'B' || t === 'L' ? 'rgba(90,70,40,.45)' : 'rgba(10,30,30,.22)'); cx.strokeRect(px + .5, py + .5, ts, ts);
+    if (xSkinAt(x, y)) { cx.fillStyle = (x + y) % 2 ? '#e8613f' : '#f0733f'; cx.fillRect(px, py, ts + 1, ts + 1); cx.strokeStyle = '#8a2f1c'; cx.lineWidth = 1.5; cx.strokeRect(px + .5, py + .5, ts, ts); cx.fillStyle = 'rgba(255,220,120,.5)'; circ(px + ts * .3, py + ts * .3, ts * .06); cx.fill(); circ(px + ts * .7, py + ts * .65, ts * .05); cx.fill(); }
+    else if (t === 'P') { cx.fillStyle = '#5a3d1e'; cx.fillRect(px + ts * .44, py + ts * .7, ts * .12, ts * .26); for (const [yy, ww, col] of [[.72, .46, '#1f6f5f'], [.48, .36, '#2a8a70']]) { cx.fillStyle = (x * 7 + y * 3) % 3 ? col : '#24607c'; cx.beginPath(); cx.moveTo(px + ts * (.5 - ww), py + ts * yy); cx.lineTo(px + ts * .5, py + ts * (yy - .5)); cx.lineTo(px + ts * (.5 + ww), py + ts * yy); cx.closePath(); cx.fill(); ol(1.5); } }
+    else if (t === 'c') { cx.fillStyle = '#4fae6a'; circ(px + ts * .5, py + ts * .5, ts * .34); cx.fill(); ol(1.5); cx.strokeStyle = '#1d5a33'; cx.lineWidth = 1.5; for (let k = 0; k < 8; k++) { const a = k * .785; cx.beginPath(); cx.moveTo(px + ts * (.5 + .34 * Math.cos(a)), py + ts * (.5 + .34 * Math.sin(a))); cx.lineTo(px + ts * (.5 + .46 * Math.cos(a)), py + ts * (.5 + .46 * Math.sin(a))); cx.stroke(); } }
+    else if (t === 'r') { cx.fillStyle = '#8f8aa8'; cx.beginPath(); cx.moveTo(px + ts * .08, py + ts * .92); cx.lineTo(px + ts * .3, py + ts * .2); cx.lineTo(px + ts * .62, py + ts * .1); cx.lineTo(px + ts * .92, py + ts * .9); cx.closePath(); cx.fill(); ol(1.5); }
+    else if (t === '~') { cx.strokeStyle = 'rgba(255,255,255,.5)'; cx.lineWidth = 1.5; cx.strokeRect(px + ts * .25, py + ts * .25, ts * .5, ts * .5); }
+    else if (t === 'o') { const got = c.finds.indexOf('print') >= 0; cx.fillStyle = got ? '#b9b2d6' : '#d8c282'; rr(px + ts * .22, py + ts * .22, ts * .56, ts * .56, 4); cx.fill(); if (got) { ol(1.5); cx.strokeStyle = INK; cx.strokeRect(px + ts * .36, py + ts * .36, ts * .28, ts * .28); } }
+    else if (t === 't') { cx.fillStyle = '#c96f4a'; cx.beginPath(); cx.moveTo(px, py + ts * .95); cx.lineTo(px + ts * .5, py + ts * .1); cx.lineTo(px + ts, py + ts * .95); cx.closePath(); cx.fill(); ol(1.5); } }
+  /* the herder's field: a fence, and four parts once it is shared */
+  if (xSeen(XR.field[0], XR.field[1]) || xSeen(XR.field[0] + fld[0] - 1, XR.field[1] + fld[1] - 1)) { const fx = Xs(XR.field[0]), fy = Ys(XR.field[1]); if (c.done.share) { const tint = ['rgba(255,255,255,.28)', 'rgba(60,40,120,.18)', 'rgba(255,200,60,.25)', 'rgba(20,90,60,.2)'], hw = fld[0] / 2, hh = fld[1] / 2; for (let q = 0; q < 4; q++) { const vert = fld[1] % 2 === 1; cx.fillStyle = tint[q]; if (vert) cx.fillRect(fx + q * fld[0] / 4 * ts, fy, fld[0] / 4 * ts, fld[1] * ts); else cx.fillRect(fx + (q % 2) * hw * ts, fy + Math.floor(q / 2) * hh * ts, hw * ts, hh * ts); }
+      cx.strokeStyle = '#7a5a2c'; cx.lineWidth = 2; cx.beginPath(); if (fld[1] % 2 === 1) { for (let q = 1; q < 4; q++) { cx.moveTo(fx + q * fld[0] / 4 * ts, fy); cx.lineTo(fx + q * fld[0] / 4 * ts, fy + fld[1] * ts); } } else { cx.moveTo(fx + hw * ts, fy); cx.lineTo(fx + hw * ts, fy + fld[1] * ts); cx.moveTo(fx, fy + hh * ts); cx.lineTo(fx + fld[0] * ts, fy + hh * ts); } cx.stroke(); }
+    cx.strokeStyle = '#7a5a2c'; cx.lineWidth = 3; cx.strokeRect(fx, fy, fld[0] * ts, fld[1] * ts); }
+  /* the giant: long, ridged, breathing once a minute */
+  if (xSeen(17, 3) || xSeen(22, 3) || xSeen(26, 3) || xSeen(28, 3)) { const gx = Xs(17), gy = Ys(2), gw = 12 * ts, gh = 3 * ts, br = Math.sin(tNow * .105) * ts * .05; cx.fillStyle = '#7d5bd1'; rr(gx + ts * .1, gy + ts * .12 - br, gw - ts * .2, gh - ts * .24 + br * 2, ts * 1.3); cx.fill(); ol(2.5);
+    for (let k = 1; k < 10; k++) { cx.strokeStyle = k % 2 ? '#f2a03f' : '#57c7c0'; cx.lineWidth = Math.max(2, ts * .1); cx.beginPath(); cx.moveTo(gx + k * ts, gy + ts * .4 - br); cx.quadraticCurveTo(gx + k * ts + ts * .3, gy + gh / 2, gx + k * ts, gy + gh - ts * .4 + br); cx.stroke(); }
+    cx.strokeStyle = INK; cx.lineWidth = 2.5; cx.beginPath(); cx.arc(gx + ts * 11, gy + ts * 1.3, ts * .28, .15 * Math.PI, .85 * Math.PI); cx.stroke(); cx.beginPath(); cx.arc(gx + ts * 11.1, gy + ts * 2.05, ts * .2, 0, Math.PI); cx.stroke(); }
+  /* floors, walls, roofs */
+  XBK.forEach(b => { const f = c.fl[b]; if (!f || !xSeen(f[0], f[1]) && !xSeen(f[0] + f[2] - 1, f[1] + f[3] - 1)) return; const px = Xs(f[0]), py = Ys(f[1]); for (let j = 0; j < f[3]; j++) for (let i = 0; i < f[2]; i++) { cx.fillStyle = (i + j) % 2 ? '#e8613f' : '#f0733f'; cx.fillRect(px + i * ts, py + j * ts, ts + 1, ts + 1); cx.strokeStyle = '#8a2f1c'; cx.lineWidth = 1; cx.strokeRect(px + i * ts + .5, py + j * ts + .5, ts, ts); }
+    if (c.done.floors) { const colc = Math.ceil(f[2] / 2); (c.roof[b] || []).forEach(i => { const lx = px + (i % colc) * 2 * ts, ly = py + Math.floor(i / colc) * 2 * ts; xLeaf(lx, ly, ts * 2, false); if (c.key) { cx.fillStyle = XKC[c.key[b]][0]; cx.globalAlpha = .78; rr(lx + ts * .1, ly + ts * .1, ts * 1.8, ts * 1.8, ts * .15); cx.fill(); cx.globalAlpha = 1; } }); cx.strokeStyle = '#4a2a14'; cx.lineWidth = Math.max(3, ts * .12); cx.strokeRect(px, py, f[2] * ts, f[3] * ts); }
+    if (px + f[2] * ts > 0 && px < w && py > 16 && py < h) pill(XB[b], Math.max(50, Math.min(w - 50, px + f[2] * ts / 2)), py - 8); });
+  if (c.done.homes) for (let i = 0; i < v.n; i++) { const hx = 14 + i * 2, hy = 23; if (!xSeen(hx, hy)) continue; const px = Xs(hx), py = Ys(hy); cx.fillStyle = '#f0733f'; cx.fillRect(px + ts * .1, py + ts * .2, ts * .8, ts * .7); ol(1.5); cx.strokeStyle = INK; cx.strokeRect(px + ts * .1, py + ts * .2, ts * .8, ts * .7); cx.fillStyle = c.key ? XKC[c.key.home][0] : '#58c26a'; cx.beginPath(); cx.moveTo(px, py + ts * .25); cx.lineTo(px + ts * .5, py - ts * .15); cx.lineTo(px + ts, py + ts * .25); cx.closePath(); cx.fill(); ol(1.5); }
+  if (XM.mark && XM.mark.c1) { const px = Xs(XM.mark.c1[0]), py = Ys(XM.mark.c1[1]); cx.strokeStyle = '#ffd25e'; cx.lineWidth = 4; cx.strokeRect(px + 2, py + 2, ts - 4, ts - 4); }
+  if (XM.mark) { const r = XR[XM.mark.b === 'fact' ? 'ledge' : 'ground']; cx.strokeStyle = `rgba(255,210,94,${.5 + .4 * Math.sin(tNow * 5)})`; cx.lineWidth = 3; cx.strokeRect(Xs(r[0]), Ys(r[1]), r[2] * ts, r[3] * ts); }
+  /* the fallen leaf, the trees, the camp, the people */
+  if (xSeen(8, 23)) xLeaf(Xs(8), Ys(23), ts * 2, true);
+  XTREE.forEach((t, i) => { if (!xSeen(t[0], t[1])) return; const px = Xs(t[0]), py = Ys(t[1]), n = xTrees()[i]; cx.fillStyle = '#6b4a22'; cx.fillRect(px + ts * .36, py + ts * .2, ts * .28, ts * .7); ol(1.5); cx.strokeStyle = INK; cx.strokeRect(px + ts * .36, py + ts * .2, ts * .28, ts * .7); for (let k = 0; k < n; k++) { const col = k % 3, row = Math.floor(k / 3); xLeaf(px + ts * (-.55 + col * .7), py - ts * (.5 + row * .7), ts * .66, false); } });
+  const lab = (t, x, y) => { const px = Xs(x) + ts / 2, py = Ys(y) - ts * .45; if (xSeen(x, y) && px > 30 && px < w - 30 && py > 10 && py < h - 6) pill(t, px, py); };      /* a name is shown only when its owner is on the screen */
+  if (xSeen(11, 14)) { const px = Xs(11), py = Ys(14); cx.fillStyle = '#6b4a22'; cx.fillRect(px + ts * .15, py + ts * .5, ts * .1, ts * .45); cx.fillRect(px + ts * .75, py + ts * .5, ts * .1, ts * .45); cx.fillStyle = '#f3e7c4'; cx.fillRect(px + ts * .05, py + ts * .1, ts * .9, ts * .5); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(px + ts * .05, py + ts * .1, ts * .9, ts * .5); for (let k = 0; k < 3; k++) { cx.beginPath(); cx.moveTo(px + ts * .15, py + ts * (.22 + k * .12)); cx.lineTo(px + ts * .85, py + ts * (.22 + k * .12)); cx.stroke(); } }
+  if (xSeen(9, 12)) { const px = Xs(9), py = Ys(12); cx.fillStyle = '#8a6a3a'; cx.fillRect(px + ts * .44, py + ts * .3, ts * .12, ts * .65); cx.fillStyle = c.done.skin ? '#6fd08a' : '#ffd25e'; circ(px + ts * .5, py + ts * .28, ts * .22); cx.fill(); ol(1.5); }
+  if (xSeen(11, 16)) { xPerson(Xs(11) + ts / 2, Ys(16) + ts * .6, ts, '#e0a04a'); if (c.told !== xToldKey() && (xStage() !== 'roofs' || c.told.indexOf('roofs') < 0)) { const by = Ys(16) - ts * .35 - Math.abs(Math.sin(tNow * 3)) * 5; cx.fillStyle = '#ffd25e'; circ(Xs(11) + ts / 2, by, Math.max(8, ts * .24)); cx.fill(); ol(2); cx.fillStyle = INK; cx.font = `700 ${Math.max(11, ts * .34)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('!', Xs(11) + ts / 2, by + 1); cx.textBaseline = 'alphabetic'; cx.textAlign = 'left'; } }
+  if (xSeen(33, 18)) xHerder(Xs(33) + ts / 2, Ys(18) + ts * .55, ts);
+  if (xSeen(XSHIP[0], XSHIP[1])) rocket(Xs(XSHIP[0]) + ts / 2, Ys(XSHIP[1]) + ts * .45, ts * 1.5, -Math.PI / 2, {});
+  drawAstro(Xs(XM.px) + ts / 2, Ys(XM.py) + ts / 2 - ts * .1, ts * 1.3, XM.route.length > 0, XM.dir, XM.step);
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (xSeen(x, y)) continue; const px = Xs(x), py = Ys(y), e = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(d => x + d[0] >= 0 && y + d[1] >= 0 && x + d[0] < XW && y + d[1] < XH && xSeen(x + d[0], y + d[1])); cx.fillStyle = e ? '#2a3260' : '#1a2046'; cx.fillRect(px, py, ts + 1, ts + 1); if ((x + y) % 2 === 0) { cx.fillStyle = 'rgba(190,200,255,.07)'; cx.beginPath(); cx.ellipse(px + ts * (.6 + .3 * Math.sin(tNow * .3 + x * 1.7 + y)), py + ts * (.5 + .2 * Math.cos(tNow * .25 + y * 1.3 + x)), ts * .8, ts * .3, 0, 0, 7); cx.fill(); } }
+  lab('Site Chief', 11, 16); lab('order board', 11, 14); lab('survey post', 9, 12); lab('herder', 33, 18);
+  if (PL.fade > 0) { cx.fillStyle = `rgba(4,6,14,${Math.min(1, PL.fade)})`; cx.fillRect(0, 0, w, h); PL.fade -= dt * 2.4; } }
+/* XYLO-END */
+
+/* =====================================================================
    TAPPING THE WORLD
    ===================================================================== */
 function thingAt(tx, ty) { for (const id in OBJ) { const o = OBJ[id]; if (objOn(o) && o.room === S.room && objTiles(id).some(t => t[0] === tx && t[1] === ty)) return id; } return null; }
@@ -3278,6 +3568,7 @@ cv.addEventListener('pointerdown', e => {
   if (S.mode === 'planet') return tapPlanet(e);
   if (S.mode === 'world') return tapWorld(e);
   if (S.mode === 'chrono') return tapChrono(e);
+  if (S.mode === 'xylo') return xTap(e);
   if (widget && widget.kind === 'cargo') { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y, on = [...widget.on];
     const k = on.findIndex((_, j) => { const p = slot(j); return fx >= p[0] && fx <= p[0] + .78 && fy >= p[1] && fy <= p[1] + .78; }); if (k >= 0) return cargoToggle(on[k]);
     const i = PILE.findIndex(p => fx >= p[0] && fx <= p[0] + 1 && fy >= p[1] && fy <= p[1] + 1); if (i >= 0 && !widget.on.has(i)) cargoToggle(i); return; }
@@ -3329,11 +3620,11 @@ $('bookOn').checked = BOOKON.on; $('bookOn').onchange = () => { BOOKON.on = $('b
 $('hazOn').checked = HAZON.on; $('hazOn').onchange = () => { HAZON.on = $('hazOn').checked; setKeep('gmq-hazards', HAZON.on ? 'on' : 'off'); };
 $('cardsOn').checked = READ.on; $('cardsOn').onchange = () => { READ.on = $('cardsOn').checked; setKeep('gmq-cards', READ.on ? 'on' : 'off'); if (!READ.on) readOk(true); };
 /* teacher shortcuts: jump between the station and Voltara. The place changes first. Tidying up comes after, and cannot stop it. */
-function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(true); widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
+function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(true); widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; XM.route = []; XM.then = null; XM.mark = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
 function goVoltara() { const again = !!(S.v && S.v.crossed); S.mode = 'planet'; S.ended = true; S.at = 'numerix'; S.beat = 0; V().sc = 'meadow'; PL.x = .13; PL.fade = 1; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; tidy();
   say(again ? 'Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.' : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); }
 function goStation() { S.mode = 'station'; S.ended = false; S.beat = 0; if (S.tut == null) S.tut = 3; tidy(); P.x = S.x; P.y = S.y; say(`Teacher shortcut. You are on the KIS Station, in the ${ROOMS[S.room].name}.`); $('place').scrollIntoView({ block: 'nearest' }); }
-$('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation; $('t_space').onclick = goSpace; $('t_chr').onclick = goChronosia;
+$('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation; $('t_space').onclick = goSpace; $('t_chr').onclick = goChronosia; $('t_xyl').onclick = goXylophora;
 window.addEventListener('resize', size); window.addEventListener('resize', fitSoon); window.addEventListener('orientationchange', fitSoon);
 document.querySelectorAll('#menu .mbtn').forEach(b => b.addEventListener('click', () => menuOpen(MENU.open === b.dataset.m ? null : b.dataset.m)));
 setTimeout(() => { drawMenu(); fit(); }, 0);
@@ -3342,7 +3633,8 @@ size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
 S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.secrets.includes('stone') && !S.inv.includes('stone')) S.inv.push('stone'); if (S.ship && rude(S.ship, true)) S.ship = ''; if (S.botName && rude(S.botName, true)) S.botName = ''; drawStars();
 if (S.tut == null) S.tut = 3;
-say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'chrono' ? 'You are on Planet Chronosia.' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
+if (S.xy) { XM.px = S.xy.x; XM.py = S.xy.y; XM.cx = -1; }
+say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'chrono' ? 'You are on Planet Chronosia.' : S.mode === 'xylo' ? 'You are on Planet Xylophora.' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
 if (S.ended) showEnding();
 requestAnimationFrame(frame);

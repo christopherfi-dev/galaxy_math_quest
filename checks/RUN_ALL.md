@@ -7,7 +7,7 @@ for c in checks/*_check.py; do echo "$c: $(python3 $c | tail -1)"; done
 for t in checks/*_test.js checks/picture_audit.js; do echo "$t: $(node $t | tail -1)"; done
 ```
 
-Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node and Playwright. The server tests also need PHP. All of them together take about 25 minutes.
+Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node and Playwright. The server tests also need PHP. All of them together take about 30 minutes.
 
 ## Play tests: a real browser plays the game
 
@@ -17,13 +17,14 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |
-| `still_picture_test.js` | The picture stays still: 23 moments of play on six screens. After each one the picture is in the same place at the same size, the page has not scrolled, no keys and no task sit on the picture, keys show only when needed, and the counts are off the main screen |
+| `still_picture_test.js` | The picture stays still: 30 moments of play on six screens, six of them on Xylophora, where the picture follows the cadet. After each one the picture is in the same place at the same size, the page has not scrolled, no keys and no task sit on the picture, keys show only when needed, and the counts are off the main screen |
 | `one_screen_test.js` | The picture, the box and every word row are on the screen at once on four iPad screens, a board and a laptop; the More menu hides the mission, ship, cards and teacher's things until asked |
 | `small_keyboard_test.js` | Go buttons for each kind of place; the small letter keyboard: on an iPad it sits on the desk, never on the picture or the box, and cannot be dragged; it types, sends, hides, and hands over to the big keyboard and back |
 | `tap_words_test.js` | A tapped word goes into the box: the Gumblefish moment, doing word and thing in either order, bag things, the doing words for each kind of place |
 | `practice_evidence_test.js` | Practice evidence under the dashboard's 37 skill codes: what is kept, the teacher view with a tab for each thread, counts only, readable, kept after a reload |
 | `mud_rats_test.js` | Mud rats on Voltara: the surprise attack in a dark street, a win, running, too slow, light ends it, band sizes, the rest, the switch |
 | `time_wisps_test.js` | Time wisps on Chronosia: 60,000 questions worked out again, where wisps may be, catching and slipping, practice credits (quarters, and turning them in for cards), the skill tally |
+| `xylophora_test.js` | Planet Xylophora: the game's numbers against the Python check, the skin counted on the map for 3,000 seeds, and a full play-through on three screens with wrong tries, the dry grove, laying the Home again, the map key, the herder's field, two secrets, a reload. No reply may show an answer |
 | `chronosia_test.js` | Planet Chronosia: the clocks, quakes and timetable worked out again, 20,000 seeds for the two per-cadet quests, the map, and a full play-through of all six quests, with the quake quest as one open problem (wrong tries, charges, nudges) |
 | `street_signs_test.js` | Voltara's three streets can be read: a sign for every place on six screen sizes, no sign covers another, the board, and old saved games |
 | `space_hazards_test.js` | The four space hazards: 200,000 sums checked, a hazard passed, failed and flown around, the record kept, and replies to doing words like "cut" |
@@ -41,6 +42,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 
 | File | What it checks |
 |---|---|
+| `xylophora_quest_check.py` | Xylophora as built: 20,000 cadets' numbers. The skin's area, one best Hospital, one best Food Store, the floors fit, the leaves are enough, one answer for more Homes, every fact inside 10 × 10 |
 | `energy_grid_check.py` | The station's Energy Grid as built: all eight number pairs, the three ways the old third question could be read, and that the question now names one section |
 | `voltara_quest_check.py` | Voltara as built: the city, the river, every plan, the days, the four endings |
 | `galactic_trade_check.py` | Galactic Trade as built: rounding, every first trip, every season |

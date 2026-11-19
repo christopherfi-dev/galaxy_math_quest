@@ -49,7 +49,7 @@ const path = require('path');
       if (v.pad !== !!want.pad) fail(want.pad ? 'no number keys for a number task' : 'number keys on the screen with no number to type');
       if (touch && v.kb !== !!want.kb) fail(want.kb ? 'no letter keys after the box was tapped' : 'letter keys on the screen though nobody is typing');
       if (v.kb && v.kbOnBox) fail('the letter keys cover the box');
-      if (want.task) { if (!v.toyOnDesk) fail('the task is not on the desk'); if (v.box) fail('the box and the word rows are still there beside the task'); if (!v.q) fail('the question cannot be seen'); if (want.pad && !v.ans) fail('the answer box cannot be seen'); if (want.pad && !v.btn) fail('Check cannot be seen'); if (want.msg && v.msg !== true) fail('the words after a wrong answer cannot be seen'); }
+      if (want.task) { if (!v.toyOnDesk) fail('the task is not on the desk'); if (v.box) fail('the box and the word rows are still there beside the task'); if (!v.q && !want.noq) fail('the question cannot be seen'); if (want.pad && !v.ans) fail('the answer box cannot be seen'); if (want.pad && !v.btn) fail('Check cannot be seen'); if (want.msg && v.msg !== true) fail('the words after a wrong answer cannot be seen'); }
       else { if (!v.box) fail('the box is not on the screen'); if (v.verbs !== verbs0) fail(`the word rows moved: ${verbs0} became ${v.verbs}`); }
       if (out) await p.screenshot({ path: path.join(out, `still_${name.replace(/\W+/g, '_')}_${String(n).padStart(2, '0')}_${label.replace(/\W+/g, '_')}.png`) }); return v; };
     const tapOrClick = sel => touch ? p.tap(sel) : p.click(sel);
@@ -81,6 +81,14 @@ const path = require('path');
     await p.click('#leave'); await step('the Voltara task left');
     await p.evaluate(() => goChronosia()); await p.waitForTimeout(500); verbs0 = (await look()).verbs; await step('on Chronosia');
     await p.evaluate(() => startBook(1)); await step('the Council book open', { task: true });
+    await p.click('#leave'); await step('the book closed');
+    // Planet Xylophora: walking with the camera, the survey post (a number), marking a floor, the order board
+    await p.evaluate(() => goXylophora()); await p.waitForTimeout(600); verbs0 = (await look()).verbs; await step('on Xylophora');
+    await p.evaluate(() => { xGo(10, 14); }); await p.waitForTimeout(3200); verbs0 = (await look()).verbs; await step('walking on Xylophora');
+    await p.evaluate(() => { XY().saw.skin = 1; act('use post'); }); await p.waitForTimeout(2200); await step('the survey post', { task: true, pad: true });
+    await p.click('#leave'); await p.waitForTimeout(200); verbs0 = (await look()).verbs; await step('the post left');
+    await p.evaluate(() => { act('use board'); }); await p.waitForTimeout(1500); await step('the order board', { task: true, noq: true });      /* a board to read, with no question on it */
+    await p.click('#leave'); await p.waitForTimeout(200); await p.evaluate(() => { XY().done.skin = true; act('build home'); }); await p.waitForTimeout(2600); verbs0 = (await look()).verbs; await step('marking a floor');
     notes.push(`${name}: ${n} moments, picture at ${first}`);
     await ctx.close();
   }

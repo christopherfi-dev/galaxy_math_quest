@@ -191,3 +191,27 @@ In every option a seventh group is needed: **before Grade 3**.
 4. **Does the game say something about a skill, or only show what happened?** Still open from before.
 5. **Which gap first, if any:** times tables (3.OA.7), fractions (3.NF), area (3.MD.5 to 7), or shapes (3.G)?
 6. **Can you send the AERO document for Grades K to 2?** Then the earlier skills get real codes.
+
+---
+
+## Added 2026-11-19, later: Planet Xylophora changes this map [Proposal]
+
+Xylophora is built on the preview link (sketch version 45). The table in section 3 above was written before it. These rows change.
+
+| Standard | In short | Section 3 said | Now |
+|---|---|---|---|
+| 3.OA.2 | ÷ as sharing or grouping | nothing | Xylophora: how many more Homes from the skin left. Once. |
+| 3.OA.4 | find the unknown in 3 × ? = 24 | nothing | Xylophora: the Solar Factory on the narrow ledge. Once. |
+| 3.MD.5 | what area is | nothing | Xylophora: the skin, and roofs covered with leaves |
+| 3.MD.6 | area by counting squares | nothing | Xylophora: the skin, and roofs |
+| 3.MD.7 | area and multiplication | nothing | Xylophora: the skin (two rectangles), four floors |
+| 3.MD.8 | perimeter | nothing | Xylophora: the Hospital's shortest wall, the Food Store's biggest floor |
+| 3.G.2 | cut a shape into equal parts | nothing | Xylophora: the herder's field. Once. |
+| 3.NF.1 | unit fractions | named, not asked | named again ("one quarter"), still not asked |
+
+**Still nothing:** 3.OA.5, 3.NF.2, 3.NF.3, 3.MD.2, 3.MD.4, 3.G.1.
+
+**To check, as before:** 3.OA.6, 3.NBT.3, 3.MD.3.
+
+A quest that is done once shows that a child can do it once, with time to think. It is not the same as "strong". The full account is in `GMQ_Xylophora_Guide_v1_2026-11-19.md`, section 9.
+

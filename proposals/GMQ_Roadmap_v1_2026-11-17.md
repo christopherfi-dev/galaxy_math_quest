@@ -47,7 +47,7 @@ Your site and Drive hold five galaxies. [Source] This is what is in them.
 | | **Voltara**, Task 2: Galactic Trade. It is set **in space**: "We've just left Planet Voltara". | full, ran in class | good rounding work. Several chance cards are broken. | **Built tonight.** See section 6. |
 | | Voltara, the Final Boss | two versions [Conflict] | totals reach 10,800, money can go below zero | not started |
 | **Metrica** (measuring) | **Chronosia**: four time tasks | full, printed, with videos | the best material you have. No wrong sums. | **designed tonight, not built.** My pick for the next planet. |
-| | Xylophora: area | only Task 1 has materials | 3 of 4 tasks need redoing | not started |
+| | Xylophora: area | only Task 1 has materials | 3 of 4 tasks need redoing | **Built 2026-11-19, on the preview link.** See `GMQ_Xylophora_Guide_v1_2026-11-19.md`. |
 | **Geometrica** (shapes) | Zephyron: maps and scale | 3 full tasks on A3 maps | the scale needs decimals. The maps may be someone else's art. | not started |
 | **Databa** (data) | Operation Stardust, on the ship | 6 lessons, ran | you said it was too long | not started. Your Atlantis project is a better model for it. |
 | **Patternox** (patterns) | closed: "the wormhole is broken" | drafts only | it opens after "Numbers Quest 2", which does not exist [Conflict] | not started |
