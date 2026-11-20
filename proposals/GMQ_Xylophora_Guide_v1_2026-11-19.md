@@ -9,6 +9,25 @@ You said: "You choose. You have the standards now." This is what I chose, why, a
 
 ---
 
+## Changed 20 November (version 52, preview link): finding the trees
+
+You stood at the camp. The Chief said "Stiff leaves! They may just work. Cover every roof." You wrote: "Where do I get these leaves? I can only find one leaf on the ground."
+
+**What was wrong, and it was mine.** The game counted the Xylotrees as seen as soon as the mist cleared one tree square. That happens at the gap in the pines, before you go in. From then on:
+
+- the Chief talked as if you knew about the leaves;
+- the Hint button stopped saying where trees grow, and moved on to roofs.
+
+So the game had taken away its own help, and you had not found anything.
+
+**Now:** the trees count as found when a cadet looks at one or picks a leaf. Until then the Chief still says she has seen nothing stiff and flat near the camp, and Hint still gives its two nudges. The second one now says "far to the north-east", which is where the grove is. It used to say "far to the east".
+
+**Not changed:** the Chief still has no lead. The grove is still behind the pines. A child must still go and look.
+
+**Where the leaves are, for you:** east to the meadow, then north through the gap in the pines. Four Xylotrees stand in the top right corner of the planet.
+
+---
+
 ## 1. The short version
 
 - **Planet Xylophora is built.** It is your quest "Planetary Pioneers: Constructing Xylophora". [Source]

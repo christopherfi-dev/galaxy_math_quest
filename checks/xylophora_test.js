@@ -99,11 +99,14 @@ const CHECK = 2708402;      // the same number is in checks/xylophora_quest_chec
     // QUEST 3: roofs
     { const t = await say('talk chief'); expect(t, /Skin sags\. We need something stiff and flat\. I have seen nothing like that near the camp/, 'the Chief has no lead'); }
     await walk(15, 12); await tapTile(15, 13); expect(await last(), /has walls and no roof\. It is open to the sky/, 'a tap on a roof with no leaves');
-    { const t1 = await say('hint'), t2 = await say('hint'); expect(t1, /stiff, flat and square/, 'the first roof nudge'); expect(t2, /far to the east/, 'the second roof nudge'); }
+    { const t1 = await say('hint'), t2 = await say('hint'); expect(t1, /stiff, flat and square/, 'the first roof nudge'); expect(t2, /Trees grow where the pines open, far to the north-east/, 'the second roof nudge'); }
     await walk(29, 7); ok(await p.evaluate(() => !XY().saw.tree), 'the Leafgrove should stay hidden until the cadet is at the gap'); await walk(36, 5); ok(await p.evaluate(() => !!XY().saw.tree && $('place').textContent === 'Leafgrove'), 'through the gap is the Leafgrove');
+    // the mist has cleared the trees, but the cadet has not looked at one or picked a leaf: that is not finding them (Marc was told "Stiff leaves!" and could not find any)
+    ok(await p.evaluate(() => !xKnowsTrees() && /Skin sags\. We need something stiff and flat/.test(xChief())), 'trees cleared by the mist are not found trees: the Chief should still have no lead'); { const t = await say('hint'); ok(!/One leaf covers|hangs over a wall|lay a floor again/.test(t), `Hint should not move on to the roofs before the trees are found: "${t}"`); }
+    await walk(15, 12); await tapTile(15, 13); expect(await last(), /has walls and no roof\. It is open to the sky/, 'a roof tapped before the trees are found'); await walk(36, 5);
     const G = await p.evaluate(() => xLeavesLeft()), needMin = Math.min(...rects(v.h).map(q => lv(q[0], q[1]))) + lv(hos[0], hos[1]) + lv(sto[0], sto[1]) + Math.min(...rects(f).filter(q => q[0] <= 3 && q[1] <= 10).map(q => lv(q[0], q[1])));
     ok(G === needMin + 1, `the grove should hold the leaves careful roofs need, and one more: ${G} against ${needMin} + 1`);
-    expect(await say('look tree'), new RegExp(`each as big as 2 squares by 2 squares\\. There are ${G} leaves on the trees`), 'the Xylotrees');
+    expect(await say('look tree'), new RegExp(`each as big as 2 squares by 2 squares\\. There are ${G} leaves on the trees`), 'the Xylotrees'); ok(await p.evaluate(() => xKnowsTrees() && /Stiff leaves! They may just work/.test(xChief())), 'once a tree has been looked at, the Chief knows about the leaves');
     await say('take leaves'); await type(9); expect(await p.textContent('#msg'), /Your arms hold 6 leaves at most/, 'picking more than arms can hold'); await type(6); expect(await last(), /You pick 6 leaves\. You carry 6/, 'picking six'); expect(await say('take leaves'), /Your arms are full/, 'full arms');
     ok(await p.evaluate(() => /square leaves × 6/.test($('bag').textContent)), 'the bag row should show the leaves');
     // a leaf is laid at the roof, by hand. From the grove, the word walks the cadet all the way there first.

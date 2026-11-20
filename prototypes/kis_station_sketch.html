@@ -309,7 +309,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 51</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 52</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -3358,7 +3358,10 @@ const xLeavesLeft = () => xTrees().reduce((a, b) => a + b, 0);
 const xStage = () => { const d = XY().done; return !d.skin ? 'skin' : !d.floors ? 'floors' : !d.roofs ? 'roofs' : !d.homes ? 'homes' : !d.key ? 'key' : 'end'; };
 const xCells = f => Math.ceil(f[2] / 2) * Math.ceil(f[3] / 2), xWhole = b => { const c = XY(), f = c.fl[b]; return !!f && (c.roof[b] || []).length >= xCells(f); };
 const xRoofsWhole = () => XBK.every(xWhole), xCount = () => ['skin', 'floors', 'roofs', 'homes', 'key'].filter(k => XY().done[k]).length;
-const xToldKey = () => xStage() + (XY().saw.skin ? '+' : '') + (XY().saw.tree ? 't' : '');
+/* Finding the trees is something a cadet does: look at one, or pick a leaf. The mist clearing a tree at the edge of the screen is not finding it.
+   [Source: Marc, 2026-11-20: "Where do I get these leaves? I can only find one leaf on the ground." The game had counted the trees as seen, so the Chief said "Stiff leaves!" and Hint stopped saying where they grow.] */
+const xKnowsTrees = () => { const c = XY(); return !!c.saw.grove || c.bag > 0 || (!!c.trees && c.trees.some((n, i) => n < xNums(c.seed).trees[i])); };
+const xToldKey = () => xStage() + (XY().saw.skin ? '+' : '') + (xKnowsTrees() ? 't' : '');
 
 /* ---- walking, mist and the camera */
 function xSee() { const c = XY(); let s = c.seen.length === XW * XH ? c.seen.split('') : new Array(XW * XH).fill('0'); for (let y = Math.max(0, c.y - 5); y <= Math.min(XH - 1, c.y + 5); y++) for (let x = Math.max(0, c.x - 6); x <= Math.min(XW - 1, c.x + 6); x++) if (Math.hypot((x - c.x) * .85, y - c.y) <= 4.7) s[y * XW + x] = '1';
@@ -3420,7 +3423,7 @@ function xMarkTap(tx, ty) { const c = XY(), m = XM.mark, b = m.b, v = xNums(c.se
   save(); drawWords(); say(`${head} The cutters lay ${A} squares of skin. The ${nm} floor is down.`); }
 
 /* QUEST 3, the roofs [his Task 3]. Stiff square leaves, 2 by 2. Nobody says where they grow. A wasteful floor wastes leaves, and the grove is small. */
-function xTake() { const c = XY(), tr = xTrees(), all = xLeavesLeft(); if (!all) return 'The Xylotrees are bare. Every leaf has been picked.'; if (c.bag >= 6) return `Your arms are full. You carry ${c.bag} leaves.`;
+function xTake() { const c = XY(), tr = xTrees(), all = xLeavesLeft(); c.saw.grove = 1; if (!all) return 'The Xylotrees are bare. Every leaf has been picked.'; if (c.bag >= 6) return `Your arms are full. You carry ${c.bag} leaves.`;
   xAsk({ where: 'the Leafgrove', title: 'The Xylotrees', q: `How many leaves do you pick? Your arms can hold ${6 - c.bag} more.`, unit: 'leaves', go: 'Pick', bye: 'You leave the leaves on the tree.',
     on: n => { if (!n) return 'Pick at least one leaf.'; if (n > 6 - c.bag) return `Your arms hold 6 leaves at most. You carry ${c.bag} now.`; if (n > all) return `The trees have only ${all} leaves left.`;
       let k = n; XTREE.map((t, i) => [Math.hypot(t[0] - c.x, t[1] - c.y), i]).sort((p, q) => p[0] - q[0]).forEach(p => { const g = Math.min(k, tr[p[1]]); tr[p[1]] -= g; k -= g; });
@@ -3429,7 +3432,7 @@ function xLayAt(tx, ty, take) { const c = XY(), b = XBK.find(o => c.fl[o] && xIn
   if (!c.done.floors) { say(`The ${XB[b]} floor. Skin, laid flat. The walls are not up yet.`, null, 'xfloor'); return true; }
   if (c.done.roofs) { say(`The ${XB[b]}. Its roof of leaves is whole.`, null, 'xroofed'); return true; }
   if (at >= 0) { if (take) { rf.splice(at, 1); c.bag++; save(); drawBag(); beep(400, .05); say(`You lift a leaf off the ${XB[b]}. You carry ${c.bag}.`, null, 'xlift'); } else say('A leaf lies here already.', null, 'xlaid'); return true; }
-  if (c.bag <= 0) { say(c.saw.tree ? 'You have no leaves with you.' : `The ${XB[b]} has walls and no roof. It is open to the sky.`, null, 'xnoleaf'); return true; }
+  if (c.bag <= 0) { say(xKnowsTrees() ? 'You have no leaves with you.' : `The ${XB[b]} has walls and no roof. It is open to the sky.`, null, 'xnoleaf'); return true; }
   rf.push(i); c.bag--; drawBag(); beep(660, .05);
   if (xRoofsWhole()) { xWin('four roofs', 'Covering a rectangle with equal squares (AERO 3.MD.5, 3.MD.6)', 'roofs', `You lay the last leaf. Every roof is whole! That night the first rain falls. Every room stays dry. You earn a card. The Site Chief is waving to you.`); return true; }
   save(); say(xWhole(b) ? `You lay a leaf. The ${XB[b]} roof is whole.` : `You lay a leaf on the ${XB[b]}. You carry ${c.bag}.`, null, 'xlay' + (xWhole(b) ? b : '')); return true; }
@@ -3462,14 +3465,14 @@ function xDig() { const c = XY(); if (c.x !== XDIG[0] || c.y !== XDIG[1]) return
 function xChief() { const c = XY(), v = xNums(c.seed), st = xStage(); c.told = xToldKey(); save();
   if (st === 'skin') return c.saw.skin ? 'The Site Chief says: "The giant’s old skin! Leathery. Rubbery. Strong. It could be our floors and our walls. The cutters need one number first. How many squares of skin are there? Set it on the survey post, by the skin."' : 'The Site Chief says: "Welcome, cadet. Earth is sending families. They need four buildings before the rains: a Home, a Hospital, a Food Store and a Solar Factory. We have tools. We have no building material. Nothing near the camp is strong enough."';
   if (st === 'floors') return `The Site Chief says: "${v.S} squares of skin. Good work, Resource Manager. Now you are our Space Architect. The orders are on the board. Mark each floor on the building ground. The cutters will lay the skin."`;
-  if (st === 'roofs') return !xLeavesLeft() && !c.bag && !xRoofsWhole() ? 'The Site Chief says: "No leaves left on the trees? Then some roof is using too many."' : c.saw.tree ? 'The Site Chief says: "Stiff leaves! They may just work, Resource Innovator. Cover every roof."' : 'The Site Chief says: "Skin sags. We need something stiff and flat. I have seen nothing like that near the camp."';
+  if (st === 'roofs') return !xLeavesLeft() && !c.bag && !xRoofsWhole() ? 'The Site Chief says: "No leaves left on the trees? Then some roof is using too many."' : xKnowsTrees() ? 'The Site Chief says: "Stiff leaves! They may just work, Resource Innovator. Cover every roof."' : 'The Site Chief says: "Skin sags. We need something stiff and flat. I have seen nothing like that near the camp."';
   if (st === 'homes') { xHomes(); return ''; } if (st === 'key') { xKey(); return ''; }
   return 'The Site Chief says: "A colony, where there was only grass. Thank you, Planetary Pioneer."'; }
 const XN = { find: ['You have not seen the whole planet. Walk into the mist.', 'Something very big lies to the north.'], skin: ['Counting one by one is slow, and easy to get wrong. Rows help.', 'The skin is two rectangles, joined together.', 'Take one rectangle. How many squares in a row? How many rows? Then the other rectangle.'],
   floors: ['Read the order board at the camp. Each order says what its floor must be.', 'Many rectangles hold the same number of squares. A long thin one. A fat one. Their walls are not the same length.', 'Try some on paper. How wide? How long? How many squares? How long is the wall?'],
-  seek: ['Something stiff, flat and square. Have you seen anything like that on your walks?', 'Trees grow where the pines open, far to the east.'], roofs: ['One leaf covers 2 squares one way and 2 squares the other.', 'A leaf that hangs over a wall is partly wasted. Some floors waste more than others.', 'You may lay a floor again in a new shape. Type: build home.'],
+  seek: ['Something stiff, flat and square. Have you seen anything like that on your walks?', 'Trees grow where the pines open, far to the north-east.'], roofs: ['One leaf covers 2 squares one way and 2 squares the other.', 'A leaf that hangs over a wall is partly wasted. Some floors waste more than others.', 'You may lay a floor again in a new shape. Type: build home.'],
   homes: ['Every new Home uses the same number of squares.', 'Cut one Home. Then another. Then another. When is there not enough skin left?'], key: ['Talk to the Site Chief.'], end: ['Xylophora is built. You can still walk, look and dig.'] };
-function xHint() { const c = XY(), st = xStage(), k = st === 'skin' && !c.saw.skin ? 'find' : st === 'roofs' && !c.saw.tree ? 'seek' : st, list = XN[k], i = c.nud[k] || 0; if (k === 'key' || k === 'end') return list[0];
+function xHint() { const c = XY(), st = xStage(), k = st === 'skin' && !c.saw.skin ? 'find' : st === 'roofs' && !xKnowsTrees() ? 'seek' : st, list = XN[k], i = c.nud[k] || 0; if (k === 'key' || k === 'end') return list[0];
   if (i >= list.length) return 'That is all the help there is. The rest is yours to work out.'; c.nud[k] = i + 1; if (k === 'find') c.nud.skin = c.nud.skin || 0; save(); return list[i]; }
 
 /* ---- the things of the planet. Most of them are only things. [Marc's Novus law: "Dead Ends Are Real."] */
@@ -3484,7 +3487,7 @@ const XT = [
   { id: 'ground', label: 'building ground', words: ['ground', 'yard', 'plot'], rect: XR.ground, look: 'The building ground. Flat clay, marked out in squares. It is 14 squares one way and 8 the other.' },
   { id: 'ledge', label: 'Sun Ledge', words: ['ledge', 'shelf', 'sun'], rect: XR.ledge, look: 'The Sun Ledge. A shelf of pale rock. The sun is on it all day. It is long and narrow.' },
   { id: 'leaf', label: 'fallen leaf', words: ['leaf', 'leaves', 'fallen'], rect: [8, 23, 2, 2], look: 'A square leaf, fallen long ago. It is as stiff as a board. It covers 2 squares one way and 2 squares the other.', take: 'You lift one corner. The old leaf cracks. It is too dry to carry.', push: 'It scrapes over the ground. Stiff as a board.' },
-  { id: 'tree', label: 'Xylotree', words: ['tree', 'trees', 'xylotree', 'xylotrees', 'leaf', 'leaves'], multi: XTREE, look: () => { const n = xLeavesLeft(); return `Xylotrees. Their leaves are stiff green squares, each as big as 2 squares by 2 squares. ${n ? `There ${n === 1 ? 'is 1 leaf' : `are ${n} leaves`} on the trees.` : 'Every leaf has been picked.'}`; }, take: xTake, use: xTake, push: 'The trunk is as hard as stone.' },
+  { id: 'tree', label: 'Xylotree', words: ['tree', 'trees', 'xylotree', 'xylotrees', 'leaf', 'leaves'], multi: XTREE, look: () => { XY().saw.grove = 1; const n = xLeavesLeft(); return `Xylotrees. Their leaves are stiff green squares, each as big as 2 squares by 2 squares. ${n ? `There ${n === 1 ? 'is 1 leaf' : `are ${n} leaves`} on the trees.` : 'Every leaf has been picked.'}`; }, take: xTake, use: xTake, push: 'The trunk is as hard as stone.' },
   { id: 'field', label: 'herder’s field', words: ['field', 'meadow', 'fence'], fn: (x, y) => { const f = xNums(XY().seed).field; return x >= XR.field[0] && y >= XR.field[1] && x < XR.field[0] + f[0] && y < XR.field[1] + f[1]; }, look: 'A fenced field in the Modular Meadows. Sweet grass, in squares.' },
   { id: 'herder', label: 'origami herder', words: ['herder', 'origami', 'paper', 'folder'], at: [33, 18], who: 1, look: 'A creature as thin as paper, folded like origami. It unfolds a little to look at you.', talk: xShare, take: 'It folds itself flat, and slips out of your hands.', push: 'It folds itself flat. You push nothing.' },
   { id: 'pond', label: 'square pond', words: ['pond', 'water', 'lake'], rect: [2, 14, 4, 3], look: 'A square pond. The water is still. You can see the bottom: more squares.', take: 'The water runs through your gloves.', use: 'You splash. Square ripples.' },
