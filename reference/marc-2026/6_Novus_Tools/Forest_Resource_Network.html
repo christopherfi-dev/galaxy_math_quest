@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Region Resource Network</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            margin: 0;
+            padding: 20px;
+            color: #1a3a0f;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2d5016;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .instructions strong {
+            color: #2d5016;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .resource-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .resource-card.sustainable {
+            border-color: #27ae60;
+            background: #e8f8f5;
+        }
+        
+        .resource-card.deficit {
+            border-color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .resource-card.critical {
+            border-color: #c0392b;
+            background: #f5b7b1;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .resource-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .resource-stats {
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+        
+        .status-icon {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+        
+        .budget-card {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+            border: none;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .map-container {
+            background: #f0f7ed;
+            border: 3px solid #2d5016;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            min-height: 600px;
+        }
+        
+        .path-status {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .path-status.active {
+            display: block;
+        }
+        
+        .path-cost {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 5px 0;
+        }
+        
+        .grid-map {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            margin-top: 10px;
+        }
+        
+        .grid-cell {
+            aspect-ratio: 1;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .terrain-clear { background: #a8d5a3; }
+        .terrain-dense { background: #5d8c54; }
+        .terrain-river { background: #4a90e2; color: white; }
+        
+        .grid-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        
+        .grid-cell.in-path {
+            background: #81c784 !important;
+            border: 2px solid #2e7d32;
+            box-shadow: 0 0 8px rgba(46, 125, 50, 0.5);
+        }
+        
+        .grid-cell.permanent-path {
+            background: #66bb6a !important;
+            border: 2px solid #1b5e20;
+        }
+        
+        .resource-node {
+            border: 3px solid #000;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .resource-node.water { border-color: #3498db; background: #ebf5fb !important; }
+        .resource-node.food { border-color: #e67e22; background: #fef5e7 !important; }
+        .resource-node.energy { border-color: #f39c12; background: #fef9e7 !important; }
+        .resource-node.building { border-color: #95a5a6; background: #f2f3f4 !important; }
+        .resource-node.special { border-color: #8b4513; background: #f4e8d8 !important; }
+        
+        .resource-node.connected {
+            box-shadow: 0 0 15px rgba(46, 125, 50, 0.8);
+        }
+        
+        .resource-node.target {
+            animation: targetPulse 1s infinite;
+        }
+        
+        @keyframes targetPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .settlement {
+            background: #e74c3c !important;
+            color: white;
+            font-weight: bold;
+            border: 3px solid #c0392b;
+            font-size: 1.2em;
+        }
+        
+        .resource-panel {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .resource-option {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .resource-option:hover {
+            border-color: #495057;
+            transform: translateX(5px);
+        }
+        
+        .resource-option.connected {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .resource-option.building-path {
+            background: #fff3cd;
+            border-color: #ffc107;
+            border-width: 3px;
+        }
+        
+        .option-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .option-stats {
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .connect-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .connect-btn:hover {
+            background: #218838;
+        }
+        
+        .disconnect-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .disconnect-btn:hover {
+            background: #c82333;
+        }
+        
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: #5a6268;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+        }
+        
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #000;
+            border-radius: 3px;
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 15px 0 10px 0;
+            font-weight: bold;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .action-buttons button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌲 FOREST REGION RESOURCE NETWORK</h1>
+        <p class="subtitle">Design your settlement's resource connections - Navigate rivers and dense forest!</p>
+        
+        <div class="instructions">
+            <strong>HOW TO PLAY:</strong> Click a resource on the right to start building a path. Then click adjacent grid squares to draw your route from the settlement (🏠) to the resource. Rivers are expensive to cross!
+        </div>
+        
+        <div class="dashboard">
+            <div class="resource-card" id="water-card">
+                <div class="resource-title">💧 WATER</div>
+                <div class="resource-stats">Need: 1,000/month</div>
+                <div class="resource-stats" id="water-production">Production: 0/month</div>
+                <div class="status-icon" id="water-status">❌</div>
+                <div class="resource-stats" id="water-months">Supply: 18 months</div>
+            </div>
+            
+            <div class="resource-card" id="food-card">
+                <div class="resource-title">🌾 FOOD</div>
+                <div class="resource-stats">Need: 1,000/month</div>
+                <div class="resource-stats" id="food-production">Production: 0/month</div>
+                <div class="status-icon" id="food-status">❌</div>
+                <div class="resource-stats" id="food-months">Supply: 12 months</div>
+            </div>
+            
+            <div class="resource-card" id="energy-card">
+                <div class="resource-title">⚡ ENERGY</div>
+                <div class="resource-stats">Need: 500/month</div>
+                <div class="resource-stats" id="energy-production">Production: 0/month</div>
+                <div class="status-icon" id="energy-status">❌</div>
+                <div class="resource-stats" id="energy-months">Supply: 12 months</div>
+            </div>
+            
+            <div class="resource-card" id="building-card">
+                <div class="resource-title">🏗️ BUILDING</div>
+                <div class="resource-stats">Need: 50/month</div>
+                <div class="resource-stats" id="building-production">Production: 0/month</div>
+                <div class="status-icon" id="building-status">❌</div>
+                <div class="resource-stats" id="building-months">Supply: 30 months</div>
+            </div>
+            
+            <div class="resource-card budget-card">
+                <div class="resource-title">💰 CONSTRUCTION BUDGET</div>
+                <div class="resource-stats" id="budget-used">Used: 0/210 points</div>
+                <div class="status-icon">🏗️</div>
+                <div class="resource-stats" id="budget-remaining">Remaining: 210 points</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="map-container">
+                <h3>Settlement Map - Draw Your Paths!</h3>
+                
+                <div class="path-status" id="path-status">
+                    <div>🛤️ Building path to: <span id="target-name"></span></div>
+                    <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 5px;">
+                        <div style="font-size: 0.95em; margin: 3px 0;">Base Cost: <span id="base-cost">0</span> points</div>
+                        <div style="font-size: 0.95em; margin: 3px 0;">Current Path Cost: <span id="path-cost">0</span> points</div>
+                        <div class="path-cost" style="margin-top: 8px; padding-top: 8px; border-top: 2px solid #2e7d32;">TOTAL IF CONFIRMED: <span id="total-cost">0</span> points</div>
+                        <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Budget Remaining After: <span id="budget-after">210</span> points</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="connect-btn" onclick="confirmPath()">✅ Confirm Path</button>
+                        <button class="cancel-btn" onclick="cancelPath()">❌ Cancel</button>
+                        <button class="reset-btn" onclick="clearCurrentPath()">🔄 Clear Path</button>
+                    </div>
+                </div>
+                
+                <div class="grid-map" id="grid-map"></div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-box terrain-clear"></div>
+                        <span>Clear Ground (1 pt/cell)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box terrain-dense"></div>
+                        <span>Dense Forest (2 pts/cell)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box terrain-river"></div>
+                        <span>River Crossing (5 pts/cell)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box" style="background: #81c784;"></div>
+                        <span>Your Path</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box" style="background: #e74c3c;"></div>
+                        <span>Settlement Hub</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="resource-panel">
+                <h3>Available Resources</h3>
+                <p style="font-size: 0.9em; color: #666;">Click a resource to start building a path to it!</p>
+                
+                <div class="category-header">💧 WATER SOURCES</div>
+                <div class="resource-option" data-id="stream-alpha">
+                    <div class="option-header">
+                        <span>Mountain Stream Alpha</span>
+                        <button class="connect-btn" onclick="startPath('stream-alpha')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+600 water/month | Location: C5 (On River)</div>
+                    <div class="option-stats">Base Cost: 20 pts</div>
+                </div>
+                
+                <div class="resource-option" data-id="stream-beta">
+                    <div class="option-header">
+                        <span>Mountain Stream Beta</span>
+                        <button class="connect-btn" onclick="startPath('stream-beta')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+600 water/month | Location: H6 (On River)</div>
+                    <div class="option-stats">Base Cost: 20 pts</div>
+                </div>
+                
+                <div class="resource-option" data-id="forest-creek">
+                    <div class="option-header">
+                        <span>Forest Creek</span>
+                        <button class="connect-btn" onclick="startPath('forest-creek')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+400 water/month | Location: E5 (On River)</div>
+                    <div class="option-stats">Base Cost: 15 pts</div>
+                </div>
+                
+                <div class="resource-option" data-id="river-delta">
+                    <div class="option-header">
+                        <span>River Delta</span>
+                        <button class="connect-btn" onclick="startPath('river-delta')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+900 water/month | Location: J6 (River Delta)</div>
+                    <div class="option-stats">Base Cost: 35 pts</div>
+                </div>
+                
+                <div class="category-header">🌾 FOOD SOURCES</div>
+                <div class="resource-option" data-id="hunting-north">
+                    <div class="option-header">
+                        <span>Hunting Grounds North</span>
+                        <button class="connect-btn" onclick="startPath('hunting-north')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+700 food/month | Location: B4</div>
+                    <div class="option-stats">Base Cost: 30 pts</div>
+                </div>
+                
+                <div class="resource-option" data-id="berry-grove">
+                    <div class="option-header">
+                        <span>Berry Grove</span>
+                        <button class="connect-btn" onclick="startPath('berry-grove')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+500 food/month | Location: I10</div>
+                    <div class="option-stats">Base Cost: 25 pts</div>
+                </div>
+                
+                <div class="resource-option" data-id="fishing-site">
+                    <div class="option-header">
+                        <span>Fishing Site</span>
+                        <button class="connect-btn" onclick="startPath('fishing-site')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+600 food/month | Location: G6 (River Fishing)</div>
+                    <div class="option-stats">Base Cost: 30 pts</div>
+                </div>
+                
+                <div class="resource-option" data-id="foraging-zone">
+                    <div class="option-header">
+                        <span>Foraging Zone</span>
+                        <button class="connect-btn" onclick="startPath('foraging-zone')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+400 food/month | Location: H2</div>
+                    <div class="option-stats">Base Cost: 20 pts</div>
+                </div>
+                
+                <div class="category-header">⚡ ENERGY SOURCES</div>
+                <div class="resource-option" data-id="hydroelectric">
+                    <div class="option-header">
+                        <span>Hydroelectric Station</span>
+                        <button class="connect-btn" onclick="startPath('hydroelectric')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+800 energy/month | Location: J5 (Hydroelectric on River)</div>
+                    <div class="option-stats">Base Cost: 50 pts</div>
+                    <div class="option-stats" style="color: #f39c12; font-weight: bold;">⚠️ HIGH REWARD: River power at edge!</div>
+                </div>
+                
+                <div class="resource-option" data-id="biomass">
+                    <div class="option-header">
+                        <span>Biomass Burner</span>
+                        <button class="connect-btn" onclick="startPath('biomass')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+400 energy/month | Location: B9</div>
+                    <div class="option-stats">Base Cost: 25 pts</div>
+                </div>
+                
+                <div class="resource-option" data-id="waterwheel">
+                    <div class="option-header">
+                        <span>Small Waterwheel</span>
+                        <button class="connect-btn" onclick="startPath('waterwheel')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+300 energy/month | Location: D6 (Waterwheel on River)</div>
+                    <div class="option-stats">Base Cost: 20 pts</div>
+                </div>
+                
+                <div class="category-header">🏗️ BUILDING MATERIALS</div>
+                <div class="resource-option" data-id="clay">
+                    <div class="option-header">
+                        <span>Clay Deposits</span>
+                        <button class="connect-btn" onclick="startPath('clay')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+70 materials/month | Location: B2</div>
+                    <div class="option-stats">Base Cost: 25 pts</div>
+                </div>
+                
+                <div class="category-header">⭐ SPECIAL RESOURCE</div>
+                <div class="resource-option" data-id="timber">
+                    <div class="option-header">
+                        <span>Premium Timber Grove</span>
+                        <button class="connect-btn" onclick="startPath('timber')">Build Path</button>
+                    </div>
+                    <div class="option-stats">+120 timber/month | Location: J2 (Bottom Corner!)</div>
+                    <div class="option-stats">Base Cost: 60 pts</div>
+                    <div class="option-stats" style="color: #8b4513; font-weight: bold;">⚠️ TRADE GOOD: Valuable for future exchange!</div>
+                </div>
+                
+                <button class="reset-btn" onclick="resetAll()">🔄 Reset All Connections</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Game state
+        const state = {
+            water: 0,
+            food: 0,
+            energy: 0,
+            building: 0,
+            budget: 0,
+            connected: new Map(),
+            buildingPath: false,
+            currentTarget: null,
+            currentPath: [],
+            currentCost: 0,
+            gridCells: []
+        };
+        // Resource data with base costs and production values
+        const resources = {
+            'stream-alpha': { water: 600, pos: [2, 4], type: 'water', name: 'Mountain Stream Alpha', baseCost: 20 },
+            'stream-beta': { water: 600, pos: [7, 5], type: 'water', name: 'Mountain Stream Beta', baseCost: 20 },
+            'forest-creek': { water: 400, pos: [4, 4], type: 'water', name: 'Forest Creek', baseCost: 15 },
+            'river-delta': { water: 900, pos: [8, 2], type: 'water', name: 'River Delta', baseCost: 35 },
+            'hunting-north': { food: 700, pos: [1, 3], type: 'food', name: 'Hunting Grounds North', baseCost: 30 },
+            'berry-grove': { food: 500, pos: [3, 8], type: 'food', name: 'Berry Grove', baseCost: 25 },
+            'fishing-site': { food: 600, pos: [6, 5], type: 'food', name: 'Fishing Site', baseCost: 30 },
+            'foraging-zone': { food: 400, pos: [6, 2], type: 'food', name: 'Foraging Zone', baseCost: 20 },
+            'hydroelectric': { energy: 800, pos: [9, 4], type: 'energy', name: 'Hydroelectric Station', baseCost: 50 },
+            'biomass': { energy: 400, pos: [1, 8], type: 'energy', name: 'Biomass Burner', baseCost: 25 },
+            'waterwheel': { energy: 300, pos: [3, 5], type: 'energy', name: 'Small Waterwheel', baseCost: 20 },
+            'clay': { building: 70, pos: [1, 1], type: 'building', name: 'Clay Deposits', baseCost: 25 },
+            'timber': { timber: 120, pos: [9, 1], type: 'special', name: 'Premium Timber Grove', baseCost: 60 }
+        };
+        const SETTLEMENT_POS = [5, 3];
+        
+        // Terrain costs
+        const terrainCosts = {
+            'terrain-clear': 1,
+            'terrain-dense': 2,
+            'terrain-river': 5
+        };
+        
+        // Helper function to check if path has reached infrastructure
+        function hasReachedInfrastructure(row, col) {
+            // Check if we've reached the settlement
+            if (row === SETTLEMENT_POS[0] && col === SETTLEMENT_POS[1]) {
+                return true;
+            }
+            
+            // Check if we've touched any existing permanent path
+            for (const [resourceId, connection] of state.connected) {
+                for (const pathCell of connection.path) {
+                    if (pathCell[0] === row && pathCell[1] === col) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        // Initialize grid
+        function initGrid() {
+            const grid = document.getElementById('grid-map');
+            state.gridCells = [];
+            
+            // Forest terrain layout with river running vertically
+            const terrainMap = [
+                [1,1,2,1,5,5,1,2,1,2],
+                [2,1,1,2,5,5,2,1,2,1],
+                [1,2,1,1,5,5,1,2,1,2],
+                [2,1,2,1,5,5,2,1,2,1],
+                [1,2,1,2,5,5,1,2,1,2],
+                [2,1,2,0,5,5,2,1,2,1],
+                [1,2,1,2,5,5,1,2,1,2],
+                [2,1,2,1,5,5,2,1,2,1],
+                [1,2,1,2,5,5,1,2,1,2],
+                [2,1,2,1,5,5,2,1,2,1]
+            ];
+            
+            for (let i = 0; i < 100; i++) {
+                const row = Math.floor(i / 10);
+                const col = i % 10;
+                const cell = document.createElement('div');
+                
+                // Settlement at center
+                if (row === SETTLEMENT_POS[0] && col === SETTLEMENT_POS[1]) {
+                    cell.className = 'grid-cell settlement';
+                    cell.textContent = '🏠';
+                    cell.dataset.terrain = 'settlement';
+                    cell.dataset.cost = '0';
+                } else {
+                    // Use terrain map
+                    const terrainType = terrainMap[row][col];
+                    const terrainClass = terrainType === 5 ? 'terrain-river' : 
+                                       terrainType === 2 ? 'terrain-dense' : 'terrain-clear';
+                    cell.className = `grid-cell ${terrainClass}`;
+                    cell.dataset.terrain = terrainClass;
+                    cell.dataset.cost = terrainCosts[terrainClass];
+                    
+                    // Add resource nodes
+                    for (const [id, data] of Object.entries(resources)) {
+                        if (data.pos[0] === row && data.pos[1] === col) {
+                            cell.classList.add('resource-node', data.type);
+                            cell.dataset.resource = id;
+                            const icons = {water: '💧', food: '🍖', energy: '⚡', building: '🏗️', special: '🌲'};
+                            cell.textContent = icons[data.type];
+                        }
+                    }
+                }
+                
+                cell.dataset.row = row;
+                cell.dataset.col = col;
+                cell.addEventListener('click', () => handleCellClick(row, col));
+                
+                state.gridCells.push(cell);
+                grid.appendChild(cell);
+            }
+        }
+        function startPath(resourceId) {
+            if (state.connected.has(resourceId)) {
+                alert('This resource is already connected! Disconnect it first if you want to build a new path.');
+                return;
+            }
+            
+            if (state.buildingPath) {
+                alert('Finish or cancel your current path first!');
+                return;
+            }
+            
+            state.buildingPath = true;
+            state.currentTarget = resourceId;
+            
+            const resource = resources[resourceId];
+            state.currentPath = [resource.pos];
+            state.currentCost = 0;
+            
+            // Update UI
+            document.getElementById('target-name').textContent = resource.name;
+            document.getElementById('base-cost').textContent = resource.baseCost;
+            document.getElementById('path-status').classList.add('active');
+            document.querySelector(`[data-id="${resourceId}"]`).classList.add('building-path');
+            
+            // Highlight target resource
+            const targetCell = getCellAt(resource.pos[0], resource.pos[1]);
+            if (targetCell) targetCell.classList.add('target');
+            
+            updatePathDisplay();
+        }
+        function handleCellClick(row, col) {
+            if (!state.buildingPath) return;
+            
+            const cell = getCellAt(row, col);
+            const lastPos = state.currentPath[state.currentPath.length - 1];
+            
+            // Check if this is the starting resource (can't click it again)
+            const startPos = state.currentPath[0];
+            if (row === startPos[0] && col === startPos[1] && state.currentPath.length > 1) return;
+            
+            // Check if already in path
+            const posIndex = state.currentPath.findIndex(p => p[0] === row && p[1] === col);
+            if (posIndex !== -1) {
+                state.currentPath = state.currentPath.slice(0, posIndex + 1);
+                recalculatePathCost();
+                updatePathDisplay();
+                return;
+            }
+            
+            // Check if adjacent
+            const rowDiff = Math.abs(row - lastPos[0]);
+            const colDiff = Math.abs(col - lastPos[1]);
+            
+            if ((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1)) {
+                state.currentPath.push([row, col]);
+                const cost = parseInt(cell.dataset.cost) || 0;
+                state.currentCost += cost;
+                
+                cell.classList.add('in-path');
+                updatePathDisplay();
+            } else {
+                alert('Click an adjacent cell! You can only move one square at a time (up, down, left, right).');
+            }
+        }
+        function recalculatePathCost() {
+            state.currentCost = 0;
+            for (let i = 1; i < state.currentPath.length; i++) {
+                const [row, col] = state.currentPath[i];
+                const cell = getCellAt(row, col);
+                const cost = parseInt(cell.dataset.cost) || 0;
+                state.currentCost += cost;
+            }
+        }
+        function updatePathDisplay() {
+            document.querySelectorAll('.in-path').forEach(el => el.classList.remove('in-path'));
+            
+            state.currentPath.forEach(([row, col]) => {
+                const cell = getCellAt(row, col);
+                if (cell && !cell.classList.contains('settlement')) {
+                    cell.classList.add('in-path');
+                }
+            });
+            
+            const resource = resources[state.currentTarget];
+            const baseCost = resource.baseCost;
+            const totalCost = baseCost + state.currentCost;
+            const budgetAfter = 210 - state.budget - totalCost;
+            
+            document.getElementById('path-cost').textContent = state.currentCost;
+            document.getElementById('total-cost').textContent = totalCost;
+            document.getElementById('budget-after').textContent = budgetAfter;
+            
+            // Check if path has reached infrastructure (settlement or existing path)
+            const lastPos = state.currentPath[state.currentPath.length - 1];
+            const reachedInfrastructure = hasReachedInfrastructure(lastPos[0], lastPos[1]);
+            
+            document.querySelector('#path-status .connect-btn').disabled = !reachedInfrastructure;
+        }
+        function confirmPath() {
+            // Guard: prevent execution if not building path
+            if (!state.buildingPath || !state.currentTarget) {
+                return;
+            }
+            
+            // Guard: validate path exists
+            if (!state.currentPath || state.currentPath.length === 0) {
+                alert('Error: No path to confirm');
+                return;
+            }
+            
+            const target = resources[state.currentTarget];
+            const firstPos = state.currentPath[0];
+            const lastPos = state.currentPath[state.currentPath.length - 1];
+            
+            // Verify path STARTS at resource
+            if (firstPos[0] !== target.pos[0] || firstPos[1] !== target.pos[1]) {
+                alert('Path must start at the resource!');
+                return;
+            }
+            
+            // Verify path ENDS at infrastructure (settlement or existing connection)
+            if (!hasReachedInfrastructure(lastPos[0], lastPos[1])) {
+                alert('Path must reach the settlement or connect to an existing path!');
+                return;
+            }
+            
+            const totalCost = target.baseCost + state.currentCost;
+            
+            if (state.budget + totalCost > 210) {
+                alert(`Not enough budget! This connection costs ${totalCost} points (${target.baseCost} base + ${state.currentCost} path) but you only have ${210 - state.budget} remaining.`);
+                return;
+            }
+            
+            state.connected.set(state.currentTarget, {
+                path: [...state.currentPath],
+                cost: totalCost
+            });
+            
+            state.budget += totalCost;
+            
+            if (target.water) state.water += target.water;
+            if (target.food) state.food += target.food;
+            if (target.energy) state.energy += target.energy;
+            if (target.building) state.building += target.building;
+            
+            state.currentPath.forEach(([row, col]) => {
+                const cell = getCellAt(row, col);
+                if (cell) {
+                    cell.classList.remove('in-path');
+                    cell.classList.add('permanent-path');
+                }
+            });
+            
+            const targetCell = getCellAt(target.pos[0], target.pos[1]);
+            if (targetCell) {
+                targetCell.classList.add('connected');
+                targetCell.classList.remove('target');
+            }
+            
+            const option = document.querySelector(`[data-id="${state.currentTarget}"]`);
+            option.classList.add('connected');
+            option.classList.remove('building-path');
+            const btn = option.querySelector('button');
+            btn.textContent = 'Disconnect';
+            btn.classList.remove('connect-btn');
+            btn.classList.add('disconnect-btn');
+            const capturedId = state.currentTarget;
+            btn.onclick = () => disconnectResource(capturedId);
+            
+            state.buildingPath = false;
+            state.currentTarget = null;
+            state.currentPath = [];
+            state.currentCost = 0;
+            document.getElementById('path-status').classList.remove('active');
+            document.querySelector('#path-status .connect-btn').disabled = true;
+            
+            updateDashboard();
+        }
+        function cancelPath() {
+            if (!state.buildingPath) return;
+            
+            const target = resources[state.currentTarget];
+            const targetCell = getCellAt(target.pos[0], target.pos[1]);
+            if (targetCell) targetCell.classList.remove('target');
+            
+            document.querySelectorAll('.in-path').forEach(el => el.classList.remove('in-path'));
+            document.querySelector(`[data-id="${state.currentTarget}"]`).classList.remove('building-path');
+            
+            state.buildingPath = false;
+            state.currentTarget = null;
+            state.currentPath = [];
+            state.currentCost = 0;
+            document.getElementById('path-status').classList.remove('active');
+        }
+        function clearCurrentPath() {
+            if (!state.buildingPath) return;
+            
+            const resource = resources[state.currentTarget];
+            state.currentPath = [resource.pos];
+            state.currentCost = 0;
+            updatePathDisplay();
+        }
+        function disconnectResource(id) {
+            const connection = state.connected.get(id);
+            if (!connection) return;
+            
+            const resource = resources[id];
+            
+            state.connected.delete(id);
+            state.budget -= connection.cost;
+            
+            if (resource.water) state.water -= resource.water;
+            if (resource.food) state.food -= resource.food;
+            if (resource.energy) state.energy -= resource.energy;
+            if (resource.building) state.building -= resource.building;
+            
+            connection.path.forEach(([row, col]) => {
+                const cell = getCellAt(row, col);
+                if (cell) cell.classList.remove('permanent-path');
+            });
+            
+            const targetCell = getCellAt(resource.pos[0], resource.pos[1]);
+            if (targetCell) targetCell.classList.remove('connected');
+            
+            const option = document.querySelector(`[data-id="${id}"]`);
+            option.classList.remove('connected');
+            const btn = option.querySelector('button');
+            btn.textContent = 'Build Path';
+            btn.classList.remove('disconnect-btn');
+            btn.classList.add('connect-btn');
+            btn.onclick = () => startPath(id);
+            
+            updateDashboard();
+        }
+        function getCellAt(row, col) {
+            return state.gridCells[row * 10 + col];
+        }
+        function updateDashboard() {
+            // Water
+            document.getElementById('water-production').textContent = `Production: ${state.water}/month`;
+            const waterCard = document.getElementById('water-card');
+            const waterStatus = document.getElementById('water-status');
+            if (state.water >= 1000) {
+                waterCard.className = 'resource-card sustainable';
+                waterStatus.textContent = '✅';
+                document.getElementById('water-months').textContent = `SUSTAINABLE (+${state.water - 1000} surplus)`;
+            } else if (state.water > 0) {
+                waterCard.className = 'resource-card deficit';
+                waterStatus.textContent = '⚠️';
+                document.getElementById('water-months').textContent = `DEFICIT (-${1000 - state.water} shortage)`;
+            } else {
+                waterCard.className = 'resource-card critical';
+                waterStatus.textContent = '❌';
+                document.getElementById('water-months').textContent = 'Supply: 18 months';
+            }
+            
+            // Food
+            document.getElementById('food-production').textContent = `Production: ${state.food}/month`;
+            const foodCard = document.getElementById('food-card');
+            const foodStatus = document.getElementById('food-status');
+            if (state.food >= 1000) {
+                foodCard.className = 'resource-card sustainable';
+                foodStatus.textContent = '✅';
+                document.getElementById('food-months').textContent = `SUSTAINABLE (+${state.food - 1000} surplus)`;
+            } else if (state.food > 0) {
+                foodCard.className = 'resource-card deficit';
+                foodStatus.textContent = '⚠️';
+                document.getElementById('food-months').textContent = `DEFICIT (-${1000 - state.food} shortage)`;
+            } else {
+                foodCard.className = 'resource-card critical';
+                foodStatus.textContent = '❌';
+                document.getElementById('food-months').textContent = 'Supply: 12 months';
+            }
+            
+            // Energy
+            document.getElementById('energy-production').textContent = `Production: ${state.energy}/month`;
+            const energyCard = document.getElementById('energy-card');
+            const energyStatus = document.getElementById('energy-status');
+            if (state.energy >= 500) {
+                energyCard.className = 'resource-card sustainable';
+                energyStatus.textContent = '✅';
+                document.getElementById('energy-months').textContent = `SUSTAINABLE (+${state.energy - 500} surplus)`;
+            } else if (state.energy > 0) {
+                energyCard.className = 'resource-card deficit';
+                energyStatus.textContent = '⚠️';
+                document.getElementById('energy-months').textContent = `DEFICIT (-${500 - state.energy} shortage)`;
+            } else {
+                energyCard.className = 'resource-card critical';
+                energyStatus.textContent = '❌';
+                document.getElementById('energy-months').textContent = 'Supply: 12 months';
+            }
+            
+            // Building
+            document.getElementById('building-production').textContent = `Production: ${state.building}/month`;
+            const buildingCard = document.getElementById('building-card');
+            const buildingStatus = document.getElementById('building-status');
+            if (state.building >= 50) {
+                buildingCard.className = 'resource-card sustainable';
+                buildingStatus.textContent = '✅';
+                document.getElementById('building-months').textContent = `SUSTAINABLE (+${state.building - 50} surplus)`;
+            } else if (state.building > 0) {
+                buildingCard.className = 'resource-card deficit';
+                buildingStatus.textContent = '⚠️';
+                document.getElementById('building-months').textContent = `DEFICIT (-${50 - state.building} shortage)`;
+            } else {
+                buildingCard.className = 'resource-card critical';
+                buildingStatus.textContent = '❌';
+                document.getElementById('building-months').textContent = 'Supply: 30 months';
+            }
+            
+            // Budget
+            document.getElementById('budget-used').textContent = `Used: ${state.budget}/210 points`;
+            document.getElementById('budget-remaining').textContent = `Remaining: ${210 - state.budget} points`;
+        }
+        function resetAll() {
+            if (!confirm('Are you sure you want to disconnect ALL resources and start over?')) return;
+            
+            for (const id of Array.from(state.connected.keys())) {
+                disconnectResource(id);
+            }
+            
+            if (state.buildingPath) {
+                cancelPath();
+            }
+        }
+        window.onload = function() {
+            initGrid();
+            updateDashboard();
+            
+            // Attach event listeners for path control buttons
+            document.querySelector('#path-status .connect-btn').addEventListener('click', function() {
+                // Disable button immediately to prevent double-clicks
+                this.disabled = true;
+                
+                confirmPath();
+                
+                // Re-enable if confirmation failed (path still building)
+                if (state.buildingPath) {
+                    this.disabled = false;
+                }
+            });
+            
+            document.querySelector('#path-status .cancel-btn').addEventListener('click', function() {
+                cancelPath();
+            });
+            
+            document.querySelector('#path-status .reset-btn').addEventListener('click', function() {
+                clearCurrentPath();
+            });
+        };
+    </script>
+</body>
+</html>

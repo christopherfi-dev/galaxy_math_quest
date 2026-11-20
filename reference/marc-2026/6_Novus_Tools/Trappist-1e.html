@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trappist-1e Analysis</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f0f5ff;
+      color: #333;
+    }
+    
+    .planet-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .planet-header h1 {
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+    
+    .planet-image {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .planet-quote {
+      font-style: italic;
+      font-size: 1.1em;
+      color: #555;
+      padding: 15px;
+      border-left: 4px solid #3498db;
+      background-color: #e8f4fc;
+      margin-bottom: 25px;
+    }
+    
+    .category-section {
+      margin-bottom: 30px;
+    }
+    
+    .category-header {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    
+    .data-row {
+      cursor: pointer;
+      border-bottom: 1px solid #ddd;
+      transition: background-color 0.3s;
+    }
+    
+    .data-row:hover {
+      background-color: #eef7ff;
+    }
+    
+    .data-row td {
+      padding: 12px 15px;
+    }
+    
+    .data-row td:first-child {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    .data-explanation {
+      display: none;
+      background-color: #f9f9f9;
+    }
+    
+    .data-explanation.active {
+      display: table-row;
+    }
+    
+    .explanation-content {
+      padding: 20px;
+    }
+    
+    .explanation-header {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+    
+    .comparison-slider {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+    
+    .slider-track {
+      height: 10px;
+      background-color: #ddd;
+      border-radius: 5px;
+      position: relative;
+      margin: 10px 0;
+    }
+    
+    .slider-earth-marker {
+      position: absolute;
+      width: 4px;
+      height: 20px;
+      background-color: #27ae60;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .slider-planet-marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #e74c3c;
+      border-radius: 50%;
+      top: -1px;
+      transform: translateX(-50%);
+    }
+    
+    .slider-label {
+      font-size: 0.8em;
+      color: #777;
+    }
+    
+    .threshold-info {
+      margin-bottom: 15px;
+    }
+    
+    .implications {
+      margin-bottom: 15px;
+    }
+    
+    .technology-needed {
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    
+    .classification-container {
+      background-color: #f0f0f0;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    
+    .assessment-question {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .classification-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .classification-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    
+    .classification-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .classification-btn.selected {
+      transform: scale(1.1);
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+    
+    .advantage-btn {
+      background-color: #e6f7e6;
+      border: 2px solid #27ae60;
+      color: #27ae60;
+    }
+    
+    .challenge-btn {
+      background-color: #fef9e6;
+      border: 2px solid #f1c40f;
+      color: #d35400;
+    }
+    
+    .concern-btn {
+      background-color: #fbeee6;
+      border: 2px solid #e67e22;
+      color: #c0392b;
+    }
+    
+    .dealbreaker-btn {
+      background-color: #f8e6e6;
+      border: 2px solid #e74c3c;
+      color: #c0392b;
+    }
+    
+    .your-assessment {
+      font-weight: bold;
+      min-height: 20px;
+    }
+    
+    .submit-analysis {
+      display: block;
+      background-color: #3498db;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1em;
+      cursor: pointer;
+      margin: 30px auto;
+      transition: background-color 0.3s;
+    }
+    
+    .submit-analysis:hover {
+      background-color: #2980b9;
+    }
+    
+    .missing-classifications {
+      color: #e74c3c;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .results-display {
+      display: none;
+      background-color: #e8f4fc;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+    }
+    
+    .results-display h3 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    
+    .final-decision {
+      margin-top: 30px;
+      text-align: center;
+    }
+    
+    .final-decision-options {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .decision-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+    
+    .decision-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .decision-yes {
+      background-color: #27ae60;
+      color: white;
+    }
+    
+    .decision-maybe {
+      background-color: #f1c40f;
+      color: #7f8c8d;
+    }
+    
+    .decision-no {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .final-verdict {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    @media (max-width: 600px) {
+      .classification-options {
+        flex-direction: column;
+      }
+      
+      .data-row td {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="planet-header">
+    <h1>Trappist-1e</h1>
+    <span>Distance from Earth: 39.6 light years</span>
+  </div>
+  <img src="https://via.placeholder.com/1200x400?text=Trappist-1e+Landscape" alt="Trappist-1e Landscape" class="planet-image">
+  <div class="planet-quote">
+    "A potentially habitable world in a nearby solar system, with many Earth-like qualities — but not without its dangers." - Interplanetary Development Council Assessment
+  </div>
+
+  <p>Your mission is to analyze this exoplanet and determine if it's suitable for human settlement. For each factor, tap the row to reveal the data and decide how important it is for viability.</p>
+
+  <div class="category-section">
+    <h2 class="category-header">Basic Parameters</h2>
+    <table class="data-table">
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="planet-type">
+        <td>Planet Type</td>
+        <td>Terrestrial</td>
+        <td>Rocky and Earth-like</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Planet Type</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Not Earth-like</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 52%"></div>
+              </div>
+              <span class="slider-label">Very Earth-like</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> A solid surface, ideal for building structures and extracting resources.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Familiar geology for engineers and miners</li>
+                <li>Direct surface exploration possible</li>
+              </ul>
+            </div>
+            <div class="technology-needed">No specialized structural adaptations required.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="planet-type">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="planet-type-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="gravity">
+        <td>Gravity</td>
+        <td>1.06g</td>
+        <td>Slightly higher than Earth</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Gravity</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Lower than Earth</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 53%"></div>
+              </div>
+              <span class="slider-label">Higher than Earth</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> Human bodies would experience slightly more weight, but within adaptable range.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Minor muscular and cardiovascular adaptation required</li>
+                <li>Slight increase in energy expenditure for physical activities</li>
+                <li>Minimal impact on structural engineering requirements</li>
+              </ul>
+            </div>
+            <div class="technology-needed">No specialized technology needed; minor health monitoring recommended.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="gravity">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="gravity-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="day-length">
+        <td>Day Length</td>
+        <td>Tidally locked</td>
+        <td>One side always faces the star</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Day Length</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Very unlike Earth</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 15%"></div>
+              </div>
+              <span class="slider-label">Earth-like cycles</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> The planet doesn't rotate relative to its star, creating permanent day and night sides.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Extreme temperature differences between sides</li>
+                <li>Narrow habitable band at the terminator (twilight zone)</li>
+                <li>Challenging for human circadian rhythms</li>
+                <li>Potential for severe atmospheric circulation patterns</li>
+              </ul>
+            </div>
+            <div class="technology-needed">Artificial day/night cycles required; specialized climate control systems needed.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="day-length">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="day-length-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="eccentricity">
+        <td>Orbital Eccentricity</td>
+        <td>0.005</td>
+        <td>Nearly circular orbit</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Orbital Eccentricity</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Highly eccentric</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 95%"></div>
+              </div>
+              <span class="slider-label">Perfectly circular</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> Stable distance from its star, resulting in minimal seasonal temperature variations.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Predictable climate patterns</li>
+                <li>No extreme seasonal changes</li>
+                <li>Consistent solar energy for power generation</li>
+              </ul>
+            </div>
+            <div class="technology-needed">Standard climate adaptation technology sufficient.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="eccentricity">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="eccentricity-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="temp-range">
+        <td>Temperature Range</td>
+        <td>-25°C to +55°C</td>
+        <td>Varies by location</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Temperature Range</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Extreme conditions</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 40%"></div>
+              </div>
+              <span class="slider-label">Earth-like conditions</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> Wider temperature extremes than Earth, but habitable regions exist in the terminator zone.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Limited geographical areas suitable for settlement</li>
+                <li>Energy-intensive climate control required in many locations</li>
+                <li>Special construction materials needed for thermal insulation</li>
+              </ul>
+            </div>
+            <div class="technology-needed">Advanced thermal regulation systems; specialized building materials.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="temp-range">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="temp-range-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="oxygen">
+        <td>Oxygen Level</td>
+        <td>17%</td>
+        <td>Lower than Earth (21%)</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Oxygen Level</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Not breathable</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 42%"></div>
+              </div>
+              <span class="slider-label">Earth-like atmosphere</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> Breathable but would cause altitude sickness symptoms in most humans without adaptation.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Comparable to Earth's atmosphere at 2,500m elevation</li>
+                <li>Reduced physical performance without adaptation</li>
+                <li>Possible development of higher red blood cell counts after adaptation period</li>
+              </ul>
+            </div>
+            <div class="technology-needed">Supplemental oxygen for initial adaptation; oxygen enrichment for enclosed habitats.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="oxygen">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="oxygen-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="radiation">
+        <td>Radiation Levels</td>
+        <td>2.7x Earth baseline</td>
+        <td>Higher than Earth average</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Radiation Levels</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Dangerously high</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 30%"></div>
+              </div>
+              <span class="slider-label">Earth-like protection</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> Elevated radiation from the host star and weak magnetic field increases cancer risk and limits outdoor exposure time.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Regular health monitoring required</li>
+                <li>Limited outdoor activity durations</li>
+                <li>Genetic damage risk over long-term exposure</li>
+                <li>Potential fertility and reproductive issues</li>
+              </ul>
+            </div>
+            <div class="technology-needed">Radiation shielding in habitats; protective suits for outdoor activities; regular medical monitoring.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="radiation">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="radiation-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="rare-earth">
+        <td>Rare Earth Elements</td>
+        <td>Abundant</td>
+        <td>Higher than Earth concentrations</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Rare Earth Elements</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Scarce resources</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 85%"></div>
+              </div>
+              <span class="slider-label">Abundant resources</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> Critical elements for advanced technology and renewable energy are widely available.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Economically viable extraction operations</li>
+                <li>Self-sufficient technology production</li>
+                <li>Potential export industry</li>
+              </ul>
+            </div>
+            <div class="technology-needed">Standard mining and processing equipment; environmental protection measures.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="rare-earth">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="rare-earth-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="data-row" onclick="toggleExplanation(this)" data-param="soil-fertility">
+        <td>Soil Fertility</td>
+        <td>Moderate</td>
+        <td>Requires enhancement</td>
+      </tr>
+      <tr class="data-explanation">
+        <td colspan="3">
+          <div class="explanation-content">
+            <div class="explanation-header">Soil Fertility</div>
+            <div class="comparison-slider">
+              <span class="slider-label">Sterile</span>
+              <div class="slider-track">
+                <div class="slider-earth-marker"></div>
+                <div class="slider-planet-marker" style="left: 45%"></div>
+              </div>
+              <span class="slider-label">Highly fertile</span>
+            </div>
+            <div class="threshold-info">
+              <strong>What this means:</strong> Soil contains basic mineral nutrients but lacks organic matter and microbial diversity.
+            </div>
+            <div class="implications">
+              <ul>
+                <li>Agricultural development possible but requires significant inputs</li>
+                <li>Initial dependence on hydroponic systems</li>
+                <li>Long-term soil development project required</li>
+              </ul>
+            </div>
+            <div class="technology-needed">Soil amendments; composting systems; microbial inoculation; initial hydroponic infrastructure.</div>
+            <div class="classification-container">
+              <div class="assessment-question">How would you classify this factor?</div>
+              <div class="classification-options" data-param="soil-fertility">
+                <button class="classification-btn advantage-btn" onclick="classifyFactor(this, 'advantage')">🟢 Advantage</button>
+                <button class="classification-btn challenge-btn" onclick="classifyFactor(this, 'challenge')">🟡 Manageable Challenge</button>
+                <button class="classification-btn concern-btn" onclick="classifyFactor(this, 'concern')">🟠 Serious Concern</button>
+                <button class="classification-btn dealbreaker-btn" onclick="classifyFactor(this, 'dealbreaker')">🔴 Potential Deal-breaker</button>
+              </div>
+              <div class="your-assessment" id="soil-fertility-assessment"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <button class="submit-analysis" onclick="submitAnalysis()">Submit Your Analysis</button>
+  <div class="missing-classifications" id="missing-classifications">
+    You haven't classified all factors yet. Please make sure to classify all factors before submitting.
+  </div>
+
+  <div class="results-display" id="results-display">
+    <h3>Your Planet Analysis Summary</h3>
+    <div id="advantages-list">
+      <h4>Advantages:</h4>
+      <ul id="advantages-items"></ul>
+    </div>
+    <div id="challenges-list">
+      <h4>Manageable Challenges:</h4>
+      <ul id="challenges-items"></ul>
+    </div>
+    <div id="concerns-list">
+      <h4>Serious Concerns:</h4>
+      <ul id="concerns-items"></ul>
+    </div>
+    <div id="dealbreakers-list">
+      <h4>Potential Deal-breakers:</h4>
+      <ul id="dealbreakers-items"></ul>
+    </div>
+
+    <div class="final-decision">
+      <h3>Your Final Decision</h3>
+      <p>Based on your analysis, do you think Trappist-1e is suitable for human settlement?</p>
+      <div class="final-decision-options">
+        <button class="decision-btn decision-yes" onclick="makeFinalDecision('yes')">Yes - It's Suitable</button>
+        <button class="decision-btn decision-maybe" onclick="makeFinalDecision('maybe')">Maybe - With Advanced Technology</button>
+        <button class="decision-btn decision-no" onclick="makeFinalDecision('no')">No - Not Suitable</button>
+      </div>
+      <div class="final-verdict" id="final-verdict"></div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle explanation visibility when clicking on a data row
+    function toggleExplanation(row) {
+      const explanationRow = row.nextElementSibling;
+      explanationRow.classList.toggle('active');
+    }
+    
+    // Store user classifications
+    const classifications = {};
+    
+    // Classify a factor
+    function classifyFactor(button, category) {
+      const options = button.parentElement;
+      const param = options.getAttribute('data-param');
+      const assessment = document.getElementById(`${param}-assessment`);
+      
+      // Remove selected class from all buttons in this group
+      const buttons = options.querySelectorAll('.classification-btn');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+      
+      // Add selected class to clicked button
+      button.classList.add('selected');
+      
+      // Store classification
+      classifications[param] = category;
+      
+      // Update assessment text
+      let assessmentText = '';
+      switch(category) {
+        case 'advantage':
+          assessmentText = 'You classified this as an ADVANTAGE';
+          break;
+        case 'challenge':
+          assessmentText = 'You classified this as a MANAGEABLE CHALLENGE';
+          break;
+        case 'concern':
+          assessmentText = 'You classified this as a SERIOUS CONCERN';
+          break;
+        case 'dealbreaker':
+          assessmentText = 'You classified this as a POTENTIAL DEAL-BREAKER';
+          break;
+      }
+      assessment.textContent = assessmentText;
+    }
+    
+    // Submit analysis
+    function submitAnalysis() {
+      // Get all parameters
+      const allParams = document.querySelectorAll('.classification-options');
+      const paramCount = allParams.length;
+      const classifiedCount = Object.keys(classifications).length;
+      
+      // Check if all factors have been classified
+      if (classifiedCount < paramCount) {
+        document.getElementById('missing-classifications').style.display = 'block';
+        return;
+      }
+      
+      // Hide warning message
+      document.getElementById('missing-classifications').style.display = 'none';
+      
+      // Clear previous results
+      document.getElementById('advantages-items').innerHTML = '';
+      document.getElementById('challenges-items').innerHTML = '';
+      document.getElementById('concerns-items').innerHTML = '';
+      document.getElementById('dealbreakers-items').innerHTML = '';
+      
+      // Populate results
+      for (const [param, category] of Object.entries(classifications)) {
+        const paramName = getParamName(param);
+        const listItem = document.createElement('li');
+        listItem.textContent = paramName;
+        
+        switch(category) {
+          case 'advantage':
+            document.getElementById('advantages-items').appendChild(listItem);
+            break;
+          case 'challenge':
+            document.getElementById('challenges-items').appendChild(listItem);
+            break;
+          case 'concern':
+            document.getElementById('concerns-items').appendChild(listItem);
+            break;
+          case 'dealbreaker':
+            document.getElementById('dealbreakers-items').appendChild(listItem);
+            break;
+        }
+      }
+      
+      // Show results
+      document.getElementById('results-display').style.display = 'block';
+      
+      // Scroll to results
+      document.getElementById('results-display').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Get human-readable parameter name
+    function getParamName(param) {
+      const paramMap = {
+        'planet-type': 'Planet Type',
+        'gravity': 'Gravity',
+        'day-length': 'Day Length',
+        'eccentricity': 'Orbital Eccentricity',
+        'temp-range': 'Temperature Range',
+        'oxygen': 'Oxygen Level',
+        'radiation': 'Radiation Levels',
+        'rare-earth': 'Rare Earth Elements',
+        'soil-fertility': 'Soil Fertility'
+      };
+      return paramMap[param] || param;
+    }
+    
+    // Make final decision
+    function makeFinalDecision(decision) {
+      const verdictElement = document.getElementById('final-verdict');
+      const decisionButtons = document.querySelectorAll('.decision-btn');
+      
+      // Remove selected class from all buttons
+      decisionButtons.forEach(btn => btn.classList.remove('selected'));
+      
+      // Add selected class to clicked button
+      document.querySelector(`.decision-${decision}`).classList.add('selected');
+      
+      // Display verdict
+      let verdictText = '';
+      switch(decision) {
+        case 'yes':
+          verdictText = 'You have decided that Trappist-1e IS SUITABLE for human settlement. Your assessment has been recorded.';
+          break;
+        case 'maybe':
+          verdictText = 'You have decided that Trappist-1e MIGHT BE SUITABLE with advanced technology. Your assessment has been recorded.';
+          break;
+        case 'no':
+          verdictText = 'You have decided that Trappist-1e IS NOT SUITABLE for human settlement. Your assessment has been recorded.';
+          break;
+      }
+      verdictElement.textContent = verdictText;
+    }
+  </script>
+</body>
+</html>
