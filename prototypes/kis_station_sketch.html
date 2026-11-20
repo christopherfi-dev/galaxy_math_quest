@@ -310,7 +310,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 57</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 58</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -330,7 +330,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
       <li>The astronaut walks to the thing before acting, so every command shows movement.</li>
       <li>There are 18 secrets across eight station rooms, and 3 more on Voltara. Things change and stay changed. A thing found in one room often opens something in another.</li>
       <li>There are 15 station tasks, three for each ship part, named after your own. Each gives one card. A marker floats over each task: an amber ! to do, a green tick when done.</li>
-      <li>Four tasks are done in real life: Star Map, Shield Calibration, Target Practice and Power Allocation. They show a purple marker. The student reads the steps, does the task with you, and types the code you give. The codes are in the station guide, not on this page.</li>
+      <li>Four tasks can be done in real life: Star Map, Shield Calibration, Target Practice and Power Allocation. A switch below chooses. On: they show a purple marker; the student reads the steps, does the task with you, and types the code you give (the codes are in the station guide). Off, as it starts: the same four are played on screen.</li>
       <li>The ship cannot launch until all five parts are fitted.</li>
       <li>A Hint button gives the next thing to try, so no one stays stuck.</li>
       <li>Maths is staged in the world. Asteroids drift in rows outside the Shield Bay windows. Crates stack on the cargo scale. The locker code is the number of stacked crates, and each player gets a different stack.</li>
@@ -350,6 +350,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     <p><label class="note"><input type="checkbox" id="wispOn" checked> Chronosia: time wisps. Quick practice a cadet can walk into, for a quarter of a credit.</label></p>
     <p><label class="note"><input type="checkbox" id="bookOn" checked> Chronosia: the Council's book can be read on screen. Switch off to use printed copies only.</label></p>
     <p><label class="note"><input type="checkbox" id="hazOn" checked> Space hazards: quick sums against the clock on flights between galaxies</label></p>
+    <p><label class="note"><input type="checkbox" id="realOn"> Station: real-life tasks, with your codes. Off: the four are played on screen. For a whole class, add ?real to the end of the link.</label></p>
     <p><label class="note"><input type="checkbox" id="cardsOn" checked> Reading cards: new words come up over the picture and wait for OK</label></p>
     <p><button class="btn quiet" type="button" id="bank">Show the skills bank</button> <button class="btn quiet" type="button" id="tovolt">Go straight to Voltara</button> <button class="btn quiet" type="button" id="reset">Start again</button> <button class="btn quiet" type="button" id="replay">Watch the opening again</button></p>
     <p class="note">"Go straight to Voltara" skips the opening and the station. It keeps the cards, the bag and anything already done. It is for you, to look at the quest. Students reach Voltara by fitting their five ship parts and launching.</p>
@@ -392,18 +393,18 @@ const DSLOT = [[3, 14], [5, 14], [7, 14], [9, 14], [3, 16], [5, 16], [8, 16], [1
 const TASKS = [
   ['battle', 'Shield', 'Asteroid Field', 0, 'panel', 'Use the shield panel in the Shield Bay.'],
   ['grid', 'Shield', 'Energy Grid', 0, 'grid', 'Use the energy grid on the wall of the Shield Bay.'],
-  ['calib', 'Shield', 'Shield Calibration', 1, 'mat', 'Use the token mat in the Shield Bay. It is a real-life task.'],
+  ['calib', 'Shield', 'Shield Calibration', 1, 'mat', 'Use the token mat in the Shield Bay.'],
   ['core', 'Engine Core', 'Alien Artifacts', 0, 'core', 'Go north from the Shield Bay. Count the artifacts. Then open the cage.'],
   ['species', 'Engine Core', 'Alien Species', 0, 'scanner', 'Use the scanner on the wall of the Engine Bay.'],
-  ['starmap', 'Engine Core', 'Star Map', 1, 'easel', 'Use the easel in the Engine Bay. It is a real-life task.'],
+  ['starmap', 'Engine Core', 'Star Map', 1, 'easel', 'Use the easel in the Engine Bay.'],
   ['drones', 'Weapons', 'Weapons Coding', 0, 'cannon', 'Go south from the Shield Bay. Use the cannon.'],
   ['racks', 'Weapons', 'Ammo Count', 0, 'rack', 'Use the ammo racks on the wall of the Weapons Bay.'],
-  ['target', 'Weapons', 'Target Practice', 1, 'wall9', 'Use the target wall in the Weapons Bay. It is a real-life task.'],
+  ['target', 'Weapons', 'Target Practice', 1, 'wall9', 'Use the target wall in the Weapons Bay.'],
   ['fuel', 'Navigation', 'Fuel Calculation', 0, 'gauge', 'Go east to the Navigation Bay. Use the fuel gauge.'],
   ['hop', 'Navigation', 'Coordinate Plotting', 0, 'table', 'Use the star map table in the Navigation Bay.'],
   ['cargo', 'Navigation', 'Cargo Load', 0, 'scale', 'Use the cargo scale in the Navigation Bay.'],
   ['board', 'Power', 'Circuit Connection', 0, 'board', 'A door hides behind the cargo in the Navigation Bay. Go south. Use the circuit board.'],
-  ['alloc', 'Power', 'Power Allocation', 1, 'bench', 'Use the block bench in the Power Bay. It is a real-life task.'],
+  ['alloc', 'Power', 'Power Allocation', 1, 'bench', 'Use the block bench in the Power Bay.'],
   ['blocks', 'Power', 'Emergency Power', 0, 'cells', 'Use the power cells on the wall of the Power Bay.']
 ];
 /* real-life tasks: the student does them at a table or a wall, and the teacher gives a code. The steps are from Marc's own tasks. */
@@ -598,6 +599,7 @@ let lines = [];
    Words already read once go straight to the line below, with a flash [Proposal], so walking back through known places is not a string of OKs. */
 const READ = { on: true, open: false, q: [], i: 0, tm: 0, wait: 0 };
 READ.on = getKeep('gmq-cards') !== 'off';
+const REALON = { on: /[?&]real\b/.test(location.search) || getKeep('gmq-real') === 'on' },      /* the link ending ?real turns them on for every iPad that opens it */ isReal = t => !!t[3] && REALON.on;      /* the station's real-life tasks: off means they are played on screen */
 const HAZON = { on: getKeep('gmq-hazards') !== 'off' };
 const hashT = t => { let h = 7; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return h; };
 function say(text, you, key) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-4); text = String(text);      /* key: words that change only by a number count as read once */
@@ -665,8 +667,8 @@ function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
   $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.xy ? `<span class="chip${xCount() ? ' on' : ''}">Xylophora ${xCount()} of 5</span>` : ''}${S.sd ? `<span class="chip${sCount() ? ' on' : ''}">Stardust ${sCount()} of 5</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
-  $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. Purple tasks are done in real life, with your teacher.</p>` +
-    PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${t[3] ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
+  $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. ${REALON.on ? 'Purple tasks are done in real life, with your teacher.' : 'Every task is played here.'}</p>` +
+    PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${isReal(t) ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
 }
 /* A TAPPED WORD GOES INTO THE BOX.
    [Source: Marc, 2026-11-19, feeding the Gumblefish: "I keep thinking I can just tap that word to add instead of typing. But it just talks about them. And then I can't easily tap the word into the blank."]
@@ -810,7 +812,7 @@ const DO = {
   drones: { look: 'Practice drones. Each one can show a number. Use the cannon to start.', take: 'It floats out of reach.', push: 'It bobs away and comes back.', use: it => it === 'oil' && !S.junk ? DO.junk.use('oil') : DO.cannon.use() },
   ammo: { look: () => S.ammo ? 'The ammo box is open. Counters in five colours. Nothing else.' : 'An ammo box. Counters rattle inside.',
     open: () => { if (S.ammo) return 'It is open.'; S.ammo = true; give('fuse'); secret('ammo', 'Counters in five colours. And under them, a spare fuse!'); }, take: 'Too heavy. Open it.', use: () => DO.ammo.open(), push: 'It rattles.' },
-  wall9: { look: () => S.done.target ? 'The target wall. You passed target practice.' : 'A wall of targets, numbered 1 to 9. This one is a real-life task. Type: use wall.', use: () => slipFor('target'), open: () => slipFor('target'), push: 'It is part of the wall.', take: 'It is fixed.' },
+  wall9: { look: () => S.done.target ? 'The target wall. You passed target practice.' : 'A wall of targets, numbered 1 to 9. ' + (REALON.on ? 'This one is a real-life task. ' : '') + 'Type: use wall.', use: () => slipFor('target'), open: () => slipFor('target'), push: 'It is part of the wall.', take: 'It is fixed.' },
   board: { look: () => S.done.board ? 'The circuit board glows. Power flows to the ship.' : 'The Power Module circuit board. A number in the middle. Nine wires hang loose.',
     use: () => { if (S.done.board) return 'The power is on.'; startBoard(); return 'The board lights up.'; }, open: () => DO.board.use(), push: () => DO.board.use(), take: 'It is part of the wall.' },
   fusebox: { look: () => S.fuse ? 'The fuse box. A new fuse glows inside.' : 'A fuse box. One fuse is burnt black. The main lights are off.', open: () => S.fuse ? 'The fuse is in.' : 'One fuse is burnt. You need a new one.',
@@ -819,11 +821,11 @@ const DO = {
     open: () => { if (S.plate) return 'Nothing more is there.'; S.plate = true; save(); secret('plate', 'You lift the plate. A lost star chip sits in the dust!'); card(); } },
   battery: { look: 'A Standard Battery. It hums. Bigger ones exist, they say.', take: 'It is wired in.', push: 'It will not move.', use: 'It is already on.' },
   scanner: { look: () => S.done.species ? 'The scanner. Your graph of the aliens is saved.' : 'A scanner screen. It shows aliens from a far planet. Type: use scanner.', use: () => { if (S.done.species) return 'Your graph is saved.'; startSpecies(); return 'The scanner shows the aliens.'; }, open: () => DO.scanner.use(), push: () => DO.scanner.use(), take: 'It is part of the wall.' },
-  easel: { look: () => S.done.starmap ? 'The easel. Your star map passed.' : 'An easel, paints and dark paper. This one is a real-life task. Type: use easel.', use: () => slipFor('starmap'), open: () => slipFor('starmap'), take: 'Leave it for the next cadet.', push: 'It wobbles.' },
+  easel: { look: () => S.done.starmap ? 'The easel. Your star map passed.' : 'An easel, paints and dark paper. ' + (REALON.on ? 'This one is a real-life task. ' : '') + 'Type: use easel.', use: () => slipFor('starmap'), open: () => slipFor('starmap'), take: 'Leave it for the next cadet.', push: 'It wobbles.' },
   grid: { look: () => S.done.grid ? 'The energy grid hums. Every section is full.' : 'The energy grid. Its sections are empty. Type: use grid.', use: () => { if (S.done.grid) return 'The grid is full.'; startGrid(); return 'The grid lights up.'; }, open: () => DO.grid.use(), push: () => DO.grid.use(), take: 'It is part of the wall.' },
-  mat: { look: () => S.done.calib ? 'The token mat. You passed the calibration.' : 'A round mat with 5 sections, for power tokens. This one is a real-life task. Type: use mat.', use: () => slipFor('calib'), open: () => slipFor('calib'), take: 'It is stuck to the floor.', push: 'It does not slide.' },
+  mat: { look: () => S.done.calib ? 'The token mat. You passed the calibration.' : 'A round mat with 5 sections, for power tokens. ' + (REALON.on ? 'This one is a real-life task. ' : '') + 'Type: use mat.', use: () => slipFor('calib'), open: () => slipFor('calib'), take: 'It is stuck to the floor.', push: 'It does not slide.' },
   rack: { look: () => S.done.racks ? 'The ammo racks. Every rack is even.' : 'Five ammo racks. Each must hold an even number. Type: use racks.', use: () => { if (S.done.racks) return 'Every rack is even.'; startRacks(); return 'The racks slide out.'; }, open: () => DO.rack.use(), push: () => DO.rack.use(), take: 'They are fixed to the wall.' },
-  bench: { look: () => S.done.alloc ? 'The block bench. You passed the power build.' : 'A bench with base-ten blocks. This one is a real-life task. Type: use bench.', use: () => slipFor('alloc'), open: () => slipFor('alloc'), take: 'The blocks stay on the bench.', push: 'It is heavy.' },
+  bench: { look: () => S.done.alloc ? 'The block bench. You passed the power build.' : 'A bench with base-ten blocks. ' + (REALON.on ? 'This one is a real-life task. ' : '') + 'Type: use bench.', use: () => slipFor('alloc'), open: () => slipFor('alloc'), take: 'The blocks stay on the bench.', push: 'It is heavy.' },
   cells: { look: () => S.done.blocks ? 'The power cells glow a steady green.' : 'Emergency power cells. Their blocks flicker. Type: use cells.', use: () => { if (S.done.blocks) return 'The power is steady.'; startBlocks(); return 'The cells show their blocks.'; }, open: () => DO.cells.use(), push: () => DO.cells.use(), take: 'They are part of the wall.' }
 };
 const NOPE = { look: 'You see nothing special.', take: 'You cannot take that.', open: 'It does not open.', push: 'It does not move.', use: 'Nothing happens.', talk: 'It does not answer.' };
@@ -1545,9 +1547,87 @@ function nextBoard() {
     beep(880, .1); if (w.round === 0) { w.round = 1; nextBoard(); $('msg').className = 'msg good'; $('msg').textContent = 'The first board hums. One more.'; return; }
     taskWon('board', 'Place value', w.tries, w.miss, 'The board glows. Power flows to your ship.'); };
 }
+/* THE FOUR REAL-LIFE TASKS, ON SCREEN.  [Source: Marc, 2026-11-20: "For the meantime, change all the station tasks so everything is online. They don't need to wait
+   for me to figure out the code." And: the real-life tasks could be "set up as a backup... that can be a choice".] The teacher switch "real-life tasks" brings back
+   the steps and the codes. Off (the start): the same four tasks are played on screen, with Marc's own maths and numbers. [Proposal: how each one is played on screen.] */
+const OLR = id => { if (!S.olseed) { S.olseed = 1 + Math.floor(Math.random() * 99990); save(); } return wrng(S.olseed * 131 + id.charCodeAt(0) * 977 + id.length); };      /* each cadet's own star map */
+function olHead(id) { const t = TASKS.find(t => t[0] === id), n = tasksOf(t[1]).indexOf(t) + 1; return `<p class="eyebrow">${t[1]} · task ${n} of 3</p><h3>${t[2]}</h3>`; }
+function olStart(id) { widget = { kind: 'ol', id, tries: 0 }; if (id === 'calib') olCalib(); else if (id === 'starmap') olStars(); else if (id === 'target') olTarget(); else olAlloc(); }
+const olWin = (id, skill, text) => taskWon(id, skill, widget.tries, Math.max(0, widget.tries - 1), text);
+function olMsg(t, good) { const m = $('msg'); m.className = 'msg ' + (good ? 'good' : 'bad'); m.textContent = t; if (!good) beep(140, .2, 'square'); }
+/* Shield Calibration: deal the tokens out, as at a table. The sections show dots, never numbers. [Source: SLIPS.calib] */
+function olCalib() { const N = S.tok, E = N / 5, put = [0, 0, 0, 0, 0]; let take = false;
+  toy(`${olHead('calib')}<p class="story">The shield has 5 sections. Share ${N} power tokens equally over them. Tap a section to put a token on it.</p>
+    <svg id="olmat" viewBox="0 0 240 240" role="img" aria-label="A round shield mat in 5 sections" style="width:100%;max-width:290px;height:auto;aspect-ratio:1;flex:none;margin:0 auto;touch-action:manipulation;cursor:pointer"></svg>
+    <p class="q" id="olpile"></p><div class="field"><button class="word on" type="button" id="olput">Put a token</button><button class="word" type="button" id="oltake">Take one back</button></div>
+    <div class="field"><label for="ans" class="note">Tokens on each section</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="2"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const svg = $('olmat'), slots = []; for (let j = 0, r = 28; r <= 100; j++, r += 12) { const n = Math.floor(2 * Math.PI / 5 * r / 10); for (let k = 0; k < n; k++) slots.push([r, (k + .5) / n]); }
+  const draw = () => { let s = ''; for (let i = 0; i < 5; i++) { const a0 = -Math.PI / 2 + i * 2 * Math.PI / 5, a1 = a0 + 2 * Math.PI / 5, P = (r, a) => `${(120 + r * Math.cos(a)).toFixed(1)} ${(120 + r * Math.sin(a)).toFixed(1)}`;
+      s += `<path data-i="${i}" d="M120 120 L${P(112, a0)} A112 112 0 0 1 ${P(112, a1)} Z" fill="${i % 2 ? '#35606b' : '#2f5560'}" stroke="#9fe0d0" stroke-width="2"/>`;
+      for (let k = 0; k < Math.min(put[i], slots.length); k++) { const [r, f] = slots[k], a = a0 + (a1 - a0) * f; s += `<circle data-i="${i}" cx="${(120 + r * Math.cos(a)).toFixed(1)}" cy="${(120 + r * Math.sin(a)).toFixed(1)}" r="3.6" fill="#ffd25e" stroke="#0b1322" stroke-width="1"/>`; } }
+    svg.innerHTML = s; const left = N - put.reduce((a, b) => a + b, 0); $('olpile').textContent = left ? `Tokens left in the pile: ${left}` : 'The pile is empty.'; };
+  svg.onclick = e => { const el = e.target.closest('[data-i]'); if (!el) return; const i = +el.dataset.i, left = N - put.reduce((a, b) => a + b, 0); if (take) { if (put[i]) put[i]--; } else if (left) put[i]++; beep(take ? 380 : 620, .03); draw(); };
+  $('olput').onclick = () => { take = false; $('olput').classList.add('on'); $('oltake').classList.remove('on'); }; $('oltake').onclick = () => { take = true; $('oltake').classList.add('on'); $('olput').classList.remove('on'); };
+  $('leave').onclick = () => { closeToy(); say('You step back from the token mat.'); };
+  $('try').onclick = () => { const v = $('ans').value; widget.tries++; if (put.reduce((a, b) => a + b, 0) < N) return olMsg('Some tokens are still in the pile.'); if (put.some(x => x !== put[0])) return olMsg('The sections are not equal yet. Count the tokens on each one.');
+    if (v === '') return olMsg('Type how many tokens are on each section.'); if (+v !== E) return olMsg('Count the tokens on one section again.');
+    olWin('calib', 'Sharing equally: division (AERO 3.OA.2)', `${N} tokens, ${E} on each of the 5 sections. The shield hums, even all round. You passed Shield Calibration!`); };
+  $('ans').oninput = () => { $('ans').value = $('ans').value.replace(/[^0-9]/g, '').slice(0, 2); }; draw(); }
+/* Star Map: five kinds of star, a path drawn across, count the stars on the path. [Source: SLIPS.starmap and Marc's five kinds: red, blue, white, yellow, orange.]
+   A shape for each kind, so colour is never the only clue. A star is either right on the path or well away from it. */
+const OLSTAR = [['Red', '#ff6b5a', 'c'], ['Blue', '#6db3ff', 'd'], ['White', '#f4f6fb', 'x'], ['Yellow', '#ffd25e', 's'], ['Brown dwarf (orange)', '#ff9a3e', 'q']];
+function olStarMap() { const r = OLR('starmap'), path = [[20, 40 + r() * 140]]; for (let i = 1; i <= 4; i++) path.push([20 + i * 75, 30 + r() * 160]);
+  const seg = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy))); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); }, dist = p => Math.min(...path.slice(1).map((b, i) => seg(p, path[i], b)));
+  const lens = path.slice(1).map((b, i) => Math.hypot(b[0] - path[i][0], b[1] - path[i][1])), L = lens.reduce((a, b) => a + b, 0), at = t => { let d = t * L; for (let i = 0; i < lens.length; i++) { if (d <= lens[i]) { const f = d / lens[i]; return [path[i][0] + (path[i + 1][0] - path[i][0]) * f, path[i][1] + (path[i + 1][1] - path[i][1]) * f]; } d -= lens[i]; } return path[4]; };
+  const on = OLSTAR.map(() => 1 + Math.floor(r() * 3)), kinds = [], stars = []; on.forEach((n, i) => { for (let k = 0; k < n; k++) kinds.push(i); }); for (let i = kinds.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)), t = kinds[i]; kinds[i] = kinds[j]; kinds[j] = t; }
+  kinds.forEach((k, n) => { const p = at((n + .5 + (r() - .5) * .3) / kinds.length); stars.push([p[0], p[1], k, 1]); });      /* spread along the path, so no two touch */
+  const placed = OLSTAR.map((k, i) => stars.filter(s => s[2] === i).length); for (let g = 0, n = 0; n < 18 && g < 4000; g++) { const p = [12 + r() * 316, 12 + r() * 196]; if (dist(p) > 22 && stars.every(s => Math.hypot(s[0] - p[0], s[1] - p[1]) > 15)) { stars.push([p[0], p[1], Math.floor(r() * 5), 0]); n++; } }
+  return { path, stars, on: placed }; }
+function olStarSvg(k, x, y, z) { const c = OLSTAR[k][1], sh = OLSTAR[k][2], st = `fill="${c}" stroke="#0b1322" stroke-width="1.2"`, P = pts => `<path d="M${pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L')} Z" ${st}/>`;
+  if (sh === 'c') return `<circle cx="${x}" cy="${y}" r="${z * .8}" ${st}/>`; if (sh === 'q') return `<rect x="${x - z * .7}" y="${y - z * .7}" width="${z * 1.4}" height="${z * 1.4}" ${st}/>`; if (sh === 'd') return P([[x, y - z], [x + z * .8, y], [x, y + z], [x - z * .8, y]]);
+  const n = sh === 'x' ? 4 : 5, pts = []; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, rr2 = i % 2 ? z * .45 : z * 1.15; pts.push([x + rr2 * Math.cos(a), y + rr2 * Math.sin(a)]); } return P(pts); }
+function olStars() { const M = olStarMap();
+  toy(`${olHead('starmap')}<p class="story">Your teacher drew a path across the star map. Count the stars on the path. How many of each kind?</p>
+    <svg viewBox="0 0 340 220" role="img" aria-label="A star map with five kinds of star and a path drawn across it" style="width:100%;max-width:420px;height:auto;aspect-ratio:340/220;flex:none;background:#0b1322;border-radius:10px"><polyline points="${M.path.map(p => p.join(',')).join(' ')}" fill="none" stroke="#e8eef8" stroke-width="2.5" stroke-dasharray="7 5"/>${M.stars.map(s => olStarSvg(s[2], +s[0].toFixed(1), +s[1].toFixed(1), 6)).join('')}</svg>
+    <div class="field codes">${OLSTAR.map((k, i) => `<label class="code"><svg viewBox="0 0 20 20" width="22" height="22" aria-hidden="true">${olStarSvg(i, 10, 10, 7)}</svg><span class="note">${k[0]}</span><input id="ol${i}" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="${k[0]} stars on the path"></label>`).join('')}</div>
+    <div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  OLSTAR.forEach((k, i) => { const a = $('ol' + i); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); }; });
+  $('leave').onclick = () => { closeToy(); say('You step back from the easel.'); };
+  $('try').onclick = () => { const v = OLSTAR.map((k, i) => $('ol' + i).value); if (v.some(x => x === '')) return olMsg('Fill in all five. Write 0 for none.'); widget.tries++; const w = v.filter((x, i) => +x !== M.on[i]).length;
+    if (w) return olMsg(`${w} of your 5 counts ${w === 1 ? 'does' : 'do'} not match the path.`); const all = M.on.reduce((a, b) => a + b, 0);
+    olWin('starmap', 'Sorting and counting into a table (AERO 3.MD.3)', `${all} stars on the path, counted kind by kind. The star map is ready for the Engine Core. You passed Star Map!`); }; }
+/* Target Practice: throw at a wall of 1 to 9, keep the running total yourself, stop on an even total from 32 to 40. [Source: SLIPS.target]
+   A throw does not always land where you aim: sometimes it hits the next square. The total is never shown. */
+const OL9 = [[7, 8, 9], [4, 5, 6], [1, 2, 3]];
+function olTarget() { const W = widget; W.hits = W.hits || [];
+  toy(`${olHead('target')}<p class="story">Throw at the wall. Keep a running total on paper. Stop when your total is even, from 32 to 40. 32 and 40 count. Past 40, the round is lost.</p>
+    <div id="ol9" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:240px;flex:none">${OL9.flat().map(n => `<button class="btn quiet" type="button" data-n="${n}" style="font-size:1.5rem;padding:12px 0">${n}</button>`).join('')}</div>
+    <p class="q" id="olhits"></p><div class="field"><label for="ans" class="note">My total</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="2"><button class="btn" type="button" id="try">Stop and report</button><button class="btn quiet" type="button" id="olnew">New round</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  const show = t => { $('olhits').textContent = W.hits.length ? `${t ? t + ' ' : ''}Your hits: ${W.hits.join(', ')}.` : 'No throws yet. Tap a number to throw.'; };
+  document.querySelectorAll('#ol9 button').forEach(b => b.onclick = () => { const n = +b.dataset.n; let y = 0, x = 0; OL9.forEach((row, j) => row.forEach((m, i) => { if (m === n) { y = j; x = i; } }));
+    let hit = n; if (Math.random() < .35) { const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(d => OL9[y + d[1]] && OL9[y + d[1]][x + d[0]]); const d = nb[Math.floor(Math.random() * nb.length)]; hit = OL9[y + d[1]][x + d[0]]; }
+    W.hits.push(hit); beep(300 + hit * 40, .05); $('msg').textContent = ''; show(hit === n ? `You aim at ${n}. Hit!` : `You aim at ${n}. It lands on ${hit}.`); });
+  $('olnew').onclick = () => { W.hits = []; $('ans').value = ''; $('msg').textContent = ''; show(); };
+  $('leave').onclick = () => { closeToy(); say('You step back from the target wall.'); };
+  $('ans').oninput = () => { $('ans').value = $('ans').value.replace(/[^0-9]/g, '').slice(0, 2); };
+  $('try').onclick = () => { const v = $('ans').value, sum = W.hits.reduce((a, b) => a + b, 0); if (!W.hits.length) return olMsg('Throw first.'); if (v === '') return olMsg('Type your total.'); W.tries++;
+    if (+v !== sum) return olMsg('Add your hits again.'); if (sum > 40) return olMsg('Your total is past 40. The round is lost. Tap New round.'); if (sum < 32) return olMsg('Keep throwing. Your total must reach 32.'); if (sum % 2) return olMsg('Your total is odd. Keep throwing, but do not pass 40.');
+    olWin('target', 'Adding a running total; even and odd (AERO 3.OA.9, 3.NBT.2)', `${W.hits.length} throws. Your total is ${sum}: even, and from 32 to 40. You passed Target Practice!`); }; show(); }
+/* Power Allocation: build four numbers from base-ten blocks with only 2 thousand-blocks. [Source: SLIPS.alloc, Marc's own four numbers] */
+const OLALLOC = [['Engine', 1237], ['Navigation', 1193], ['Shield', 1097], ['Weapons', 933]];
+function olAlloc() { const col = ['thousands', 'hundreds', 'tens', 'ones'];
+  toy(`${olHead('alloc')}<p class="story">Build each number from base-ten blocks. You have only 2 thousand-blocks. Swap a thousand for 10 hundreds where you must.</p>
+    <table class="tt fct" style="flex:none"><tr><th></th>${col.map(c => `<th>${c[0].toUpperCase() + c.slice(1)}</th>`).join('')}</tr>${OLALLOC.map((p, i) => `<tr><td><b>${p[0]}</b><br><span class="note">${p[1].toLocaleString('en')}</span></td>${col.map((c, j) => `<td><input id="ol${i}${j}" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="${p[0]}, ${c}"></td>`).join('')}</tr>`).join('')}</table>
+    <div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  OLALLOC.forEach((p, i) => col.forEach((c, j) => { const a = $('ol' + i + j); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); }; }));
+  $('leave').onclick = () => { closeToy(); say('You step back from the block bench.'); };
+  $('try').onclick = () => { const v = OLALLOC.map((p, i) => col.map((c, j) => $('ol' + i + j).value)); if (v.some(r => r.some(x => x === ''))) return olMsg('Fill every box. Write 0 for none.'); widget.tries++;
+    const th = v.reduce((a, r) => a + +r[0], 0), w = OLALLOC.filter((p, i) => +v[i][0] * 1000 + +v[i][1] * 100 + +v[i][2] * 10 + +v[i][3] !== p[1]).length;
+    if (w) return olMsg(`${w} of the 4 numbers ${w === 1 ? 'is' : 'are'} not built right.`); if (th > 2) return olMsg(`You used ${th} thousand-blocks. You have only 2.`);
+    olWin('alloc', 'Place value and regrouping: a thousand is ten hundreds (AERO 3.NBT)', 'All four numbers are built, with only 2 thousand-blocks. Power flows to every part. You passed Power Allocation!'); }; }
 /* A REAL-LIFE TASK. The student does it away from the screen. The teacher watches, then gives a code. */
 const scramble = n => (n * 7919 + 104729) % 1000003;
-function slipFor(id) { const t = TASKS.find(t => t[0] === id); if (S.done[id]) return `You passed ${t[2]} already.`; startSlip(id); return 'A real-life task. Read the steps.'; }
+function slipFor(id) { const t = TASKS.find(t => t[0] === id); if (S.done[id]) return `You passed ${t[2]} already.`; if (!REALON.on) { olStart(id); return `${t[2]}. Read the task.`; } startSlip(id); return 'A real-life task. Read the steps.'; }
 function startSlip(id) {
   const t = TASKS.find(t => t[0] === id), sl = SLIPS[id], n = tasksOf(t[1]).indexOf(t) + 1; widget = { kind: 'slip', id, tries: 0 };
   toy(`<p class="eyebrow real">${t[1]} · task ${n} of 3 · a real-life task</p><h3>${t[2]}</h3><ol class="slip">${sl.steps(S).map(x => `<li>${esc(x)}</li>`).join('')}</ol>
@@ -1975,7 +2055,7 @@ function frame1(now) {
     for (const [bx, by] of [[2.4, 6.3], [10.6, 6.3], [2.4, 12.6], [10.6, 12.6]]) { cx.fillStyle = '#ff5a4d'; circ(sx(bx), sy(by), ts * .13); cx.fill(); ol(1.5); } }
   if ((S.room === 'tunnel' || S.room === 'store') && !S.poster) { const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, g = cx.createRadialGradient(X, Y, ts * .55, X, Y, ts * 2); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,4,8,.98)');      /* really dark: a step or two, no more */ cx.fillStyle = g; cx.fillRect(-4, 0, vw + 8, vh); }
   if (!widget) for (const t of TASKS) { const o = OBJ[t[4]]; if (o.room !== S.room) continue; const tl = objTiles(t[4]), X = sx(tl.reduce((a, p) => a + p[0], 0) / tl.length) + ts / 2, Y = sy(Math.min(...tl.map(p => p[1]))) - ts * .08 + (S.done[t[0]] ? 0 : Math.sin(tNow * 4) * ts * .05), r = Math.max(8, ts * .17);   // a marker over every task: ! to do, a tick when done, purple for real life
-    cx.fillStyle = S.done[t[0]] ? '#1c7c3a' : t[3] ? '#8a63e6' : '#ffb23e'; circ(X, Y, r); cx.fill(); ol(2); cx.fillStyle = S.done[t[0]] || t[3] ? '#fff' : '#2b1a00'; cx.font = `700 ${r * 1.35}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(S.done[t[0]] ? '✓' : '!', X, Y + r * .08); cx.textBaseline = 'alphabetic'; }
+    cx.fillStyle = S.done[t[0]] ? '#1c7c3a' : isReal(t) ? '#8a63e6' : '#ffb23e'; circ(X, Y, r); cx.fill(); ol(2); cx.fillStyle = S.done[t[0]] || isReal(t) ? '#fff' : '#2b1a00'; cx.font = `700 ${r * 1.35}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(S.done[t[0]] ? '✓' : '!', X, Y + r * .08); cx.textBaseline = 'alphabetic'; }
   if (!widget) for (const id in OBJ) label(id);
   if (!widget) for (const d of DOORSIGN) { const here = S.room === d.a ? d.pa : S.room === d.b ? d.pb : null; if (!here) continue; cx.font = `700 ${Math.max(12, ts * .28)}px "Chakra Petch", sans-serif`; const w = cx.measureText(here[3]).width + 14, X = sx(here[0]) - (here[2] === 'right' ? w : 0), Y = sy(here[1]); cx.fillStyle = 'rgba(6,9,18,.85)'; rr(X, Y - 11, w, 22, 6); cx.fill(); cx.fillStyle = '#ffcf5a'; cx.textAlign = 'left'; cx.textBaseline = 'middle'; cx.fillText(here[3], X + 7, Y + 1); cx.textBaseline = 'alphabetic'; }
   if (sparkle) { sparkle.t -= dt; const X = sx(sparkle.x) + ts / 2, Y = sy(sparkle.y) + ts / 2, k = 1.2 - sparkle.t; cx.fillStyle = `rgba(255,220,110,${Math.max(0, sparkle.t)})`; for (let i = 0; i < 8; i++) { const an = i * .785, r = k * ts * 1.1; cx.beginPath(); cx.moveTo(X + Math.cos(an) * r, Y + Math.sin(an) * r - ts * .1); cx.lineTo(X + Math.cos(an + .12) * (r + ts * .22), Y + Math.sin(an + .12) * (r + ts * .22) - ts * .1); cx.lineTo(X + Math.cos(an - .12) * (r + ts * .22), Y + Math.sin(an - .12) * (r + ts * .22) - ts * .1); cx.fill(); } if (sparkle.t <= 0) sparkle = null; }
@@ -3733,7 +3813,7 @@ function xOrders(v) { return [['Home', `A floor of ${v.h} squares. Any rectangle
 function xBoard() { const c = XY(), v = xNums(c.seed); widget = { kind: 'xboard' };
   toy(`<p class="eyebrow">Planet Xylophora · the camp</p><p class="mw"><b>Maths word: perimeter.</b> The perimeter is the distance all the way around a shape.</p><h3>The order board</h3><div class="cart"><table class="fx tt"><tbody>${xOrders(v).map((o, i) => `<tr><td>${c.fl[XBK[i]] ? '✓ ' : ''}${o[0]}</td><td>${o[1]}</td></tr>`).join('')}</tbody></table></div><p class="note">Every floor is a rectangle. One wall panel is as long as one square. Leave a path between buildings.</p><p class="note">You may work on paper. Or keep notes here. Nobody marks them.</p><textarea id="qnotes" rows="3" maxlength="400" style="width:100%" aria-label="Your notes"></textarea><div class="field"><button class="btn quiet" type="button" id="leave">Step back</button></div>`);
   const n = $('qnotes'); n.value = c.notes || ''; n.oninput = () => { c.notes = n.value.slice(0, 400); }; $('leave').onclick = () => { save(); closeToy(); say('You step back from the board.'); }; return ''; }
-function xBuild(b, out) { const c = XY(); if (!c.done.skin) return out('The cutters have cut no skin yet. They are waiting for a count.'); if (c.done.roofs) return out('The colony is built. Nothing needs to move now.');
+function xBuild(b, out) { const c = XY(); if (!c.done.skin) return out('The cutters have cut no skin yet. They wait at the survey post for a count.'); if (c.done.roofs) return out('The colony is built. Nothing needs to move now.');
   const go = () => { let more = ''; if (c.fl[b]) { const n = (c.roof[b] || []).length; c.bag += n; delete c.fl[b]; delete c.roof[b]; more = `You take up the ${XB[b]} floor.${n ? ` Its ${n} leaves go back in your arms.` : ''} `; drawBag(); }
     XM.mark = { b, c1: null }; save(); say(`${more}Mark the ${XB[b]} floor. Tap one corner on ${b === 'fact' ? 'the Sun Ledge' : 'the building ground'}. Then tap the corner across from it.`, null, 'xmark ' + b); };
   const r = XR[b === 'fact' ? 'ledge' : 'ground'], tx = r[0] + Math.floor(r[2] / 2), ty = r[1] + Math.floor(r[3] / 2); if (Math.hypot(tx - c.x, ty - c.y) <= 2.5) { out(null); return go(); }
@@ -4000,12 +4080,15 @@ function sTherm(k) { const c = SD(), rm = SRM[k]; c.at = 'th'; c.k = k;
   sAsk({ where: rm.n, title: 'The thermometer', q: 'Read the thermometer. Write what it shows on your clipboard.', unit: 'degrees', label: 'It shows', go: 'Write it down', val: c.rec[k], bye: 'You step back from the thermometer.',
     on: n => { c.rec[k] = n; c.at = 'map'; save(); closeToy(); drawMission(); say(`You write on your clipboard: ${rm.n}, ${n} degrees.`); } }); return ''; }
 const sClip = () => { const c = SD(); return SRK.map(k => `${SRM[k].s} ${c.rec[k] == null ? '?' : c.rec[k]}`).join(' · '); };
+/* [Source: Marc, 2026-11-20, after another AI read two rooms as out of range: "2 small fixes".] When the child's own clipboard has two rooms out of range, or none,
+   the game says so, as Marc's Case 1 does ("Nobody has three ✓? Or two people do?"). It never says which room. */
+const sClipOut = () => { const c = SD(); if (SRK.some(k => c.rec[k] == null)) return ''; const n = SRK.filter(k => c.rec[k] < SRM[k].lo || c.rec[k] > SRM[k].hi).length; return n === 1 ? '' : `<p class="note">Your clipboard: ${sClip()}. It shows ${n ? n + ' rooms' : 'no room'} out of range. Only one room is. Read the thermometers again.</p>`; };
 function sChart(lookOnly) { const c = SD(), v = sNums(c.seed); if (c.done.chart) return 'The wall chart shows five bars. One of them is red: the room you found.'; widget = { kind: 'schart' }; let room = -1;
   /* SEE IT FIRST [Source: Marc, 2026-11-17: students see the idea before they do it. His slides show a finished graph before any graph is drawn.] An old chart is still pinned up. */
   const old = () => { c.at = 'old'; toy(`<p class="eyebrow">Operation Stardust · Control Room</p><p class="mw"><b>Maths word: bar graph.</b> A bar graph uses bars to show how many. Read the scale at the side.</p><h3>The wall chart</h3><p class="q">An old chart is still pinned here. It is about lamps: how many each room has.</p><p class="note">Find the Greenhouse bar. It ends three lines above 20. Each line is a step of 2. So the Greenhouse has 26 lamps.</p><div class="field"><button class="btn" type="button" id="try">${c.sawOld ? 'Go on with your chart' : 'Start a new chart'}</button><button class="btn quiet" type="button" id="leave">Step back</button></div><div class="msg" id="msg" role="status"></div>`);
     $('leave').onclick = sBack('You step back from the chart.'); $('try').onclick = () => { c.sawOld = true; save(); beep(620, .05); draw(); }; };
   const draw = () => { c.at = 'chart'; toy(`<p class="eyebrow">Operation Stardust · Control Room</p><p class="mw"><b>Maths word: bar graph.</b> A bar graph uses bars to show how many. Read the scale at the side.</p><h3>The wall chart</h3>${!c.barsOk ? `<p class="q">Mission Control needs a bar for each room: how warm it is. Tap the big chart to set each bar.</p><p class="note" id="sclip">Your clipboard: ${sClip()}</p><div class="field"><button class="btn" type="button" id="try">Send the chart</button><button class="btn quiet" type="button" id="leave">Step back</button></div>`
-      : `<p class="q">Mission Control has your chart. "Now look at the sign above each thermometer. One room is too hot or too cold for its sign. Which room? By how many degrees?"</p><p class="chips" id="srooms">${SRK.map((k, i) => `<button class="word" type="button" data-i="${i}">${SRM[k].s}</button>`).join('')}</p><div class="field"><label for="ans" class="note">By</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="2"><span class="note">degrees</span><button class="btn" type="button" id="try">Tell Mission Control</button><button class="btn quiet" type="button" id="leave">Step back</button></div>`}<div class="msg" id="msg" role="status"></div>`);
+      : `<p class="q">Mission Control has your chart. "Now look at the sign above each thermometer. One room is too hot or too cold for its sign. Which room? By how many degrees?"</p>${sClipOut()}<p class="chips" id="srooms">${SRK.map((k, i) => `<button class="word" type="button" data-i="${i}">${SRM[k].s}</button>`).join('')}</p><div class="field"><label for="ans" class="note">By</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="2"><span class="note">degrees</span><button class="btn" type="button" id="try">Tell Mission Control</button><button class="btn quiet" type="button" id="leave">Step back</button></div>`}<div class="msg" id="msg" role="status"></div>`);
     $('leave').onclick = sBack(c.barsOk ? 'You step back from the chart.' : 'You step back from the chart. Your bars are kept.');
     if (!c.barsOk) { $('try').onclick = () => { const bad = SRK.filter((k, i) => c.bars[i] !== v.temp[i]).length; if (bad) { c.tries.chart = (c.tries.chart || 0) + 1; save(); return cNo(`You send the chart. Mission Control checks each bar against the room. ${bad} of the five bars ${bad === 1 ? 'does' : 'do'} not match.`); } c.barsOk = true; save(); beep(880, .1); draw(); }; return; }
     sPickOne('srooms', i => { room = i; }); const a = $('ans'); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, ''); }; a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } };
@@ -4258,6 +4341,7 @@ $('ratsOn').checked = RATON.on; $('ratsOn').onchange = () => { RATON.on = $('rat
 $('wispOn').checked = WISPON.on; $('wispOn').onchange = () => { WISPON.on = $('wispOn').checked; setKeep('gmq-wisps', WISPON.on ? 'on' : 'off'); if (!WISPON.on) CWISP = []; };
 $('bookOn').checked = BOOKON.on; $('bookOn').onchange = () => { BOOKON.on = $('bookOn').checked; setKeep('gmq-book', BOOKON.on ? 'on' : 'off'); };
 $('hazOn').checked = HAZON.on; $('hazOn').onchange = () => { HAZON.on = $('hazOn').checked; setKeep('gmq-hazards', HAZON.on ? 'on' : 'off'); };
+$('realOn').checked = REALON.on; $('realOn').onchange = () => { REALON.on = $('realOn').checked; setKeep('gmq-real', REALON.on ? 'on' : 'off'); drawStatus(); };
 $('cardsOn').checked = READ.on; $('cardsOn').onchange = () => { READ.on = $('cardsOn').checked; setKeep('gmq-cards', READ.on ? 'on' : 'off'); if (!READ.on) readOk(true); };
 /* teacher shortcuts: jump between the station and Voltara. The place changes first. Tidying up comes after, and cannot stop it. */
 function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(true); widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; $('report').hidden = true; P.route = []; P.then = null; PL.to = null; PL.then = null; XM.route = []; XM.then = null; XM.mark = null; SM.route = []; SM.then = null; SM.pick = null; snap = true; save(); drawStatus(); drawBag(); drawCards(); } catch (e) { console.error(e); } }
