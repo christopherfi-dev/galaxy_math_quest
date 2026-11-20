@@ -1,6 +1,7 @@
 # Day report, 19 November 2026
 
 **For:** Marc. Read this first.
+**Added 20 November:** you said "Push the kids version". The class link is now version 49, the same as the preview. Where this report says the class link is version 43, that was true when it was written.
 **You said:** "Ok. Continue. Do as much as you can overall."
 **Marks:** [Source] is from your material. [Proposal] is mine.
 

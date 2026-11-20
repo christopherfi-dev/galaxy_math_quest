@@ -9,6 +9,35 @@ Nothing here is built. The battle rules are yours. This note only sorts what is 
 
 ---
 
+## Added 20 November: your answers
+
+You wrote: "Shields 100 hp. Turn those are same. They go same time. Defender chopped. All parts zero. Common, rare., epic. We will remake card set."
+
+| Topic | Your answer | How I read it |
+|---|---|---|
+| The shield at the start | "Shields 100 hp" | 100 HP. Not 80. |
+| A turn | "Those are same. They go same time." | The two descriptions are one thing. Both players go at the same time. |
+| Who picks the part that is hit | "Defender chopped" | The defender. I read "chopped" as "chooses", or "chops the damage up". Tell me if that is wrong. |
+| How to win | "All parts zero" | A ship is beaten when all its parts are at 0. |
+| The three kinds of card | "Common, rare, epic" | Those three names. |
+| The card set | "We will remake card set" | None of the four old sets is official. A new one will be made. |
+
+So section 4 below is settled. Sections 1 to 5 are kept as the record of what was asked.
+
+**Still open, shorter now:**
+
+1. **The new card set.** What I would need before drafting one with you: do upgrade bonuses add up (it sets how big a card's number can be); do Spy and Policeman cards stay; is the mix still 50, 35 and 15.
+2. **Do upgrade bonuses add up?**
+3. **Does the shield still go to 140, 220 and 360** with Shield Generator Levels 3, 6 and 10?
+4. **"Lose 1 card in hand":** one card at that moment, or a smaller hand for the rest of the battle?
+5. **"Cannot defend":** defence cards only, or the Main Shield too?
+6. **"Same time":** does one player still lead and the other answer? Your Spy and Policeman rules need a leader. Or do both put a card down together?
+7. **The Level 3, 6 and 10 abilities:** keep the ones on your site?
+8. **Challenge battles:** what is at stake.
+9. **A word in the game.** The top kind of card is called "gold" in the game today, and you have said "gold" yourself. Should the game say "epic"?
+
+---
+
 ## 1. The short answer
 
 **Yes. But the biggest news is the board, not the rules file.**

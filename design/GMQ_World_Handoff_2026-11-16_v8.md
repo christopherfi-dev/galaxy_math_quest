@@ -207,6 +207,8 @@ Four versions exist:
 | November 2023 deck | FINAL DECK NOVEMBER CARDS DECK.pdf, Booster Cards - November sheet; also Galaxy Math quest Policeman.pdf (January 2024) | Adds SPY cards. The separate Policeman print adds SECURITY "Stop the Spy" cards. Marc's rules for both are in §7.2. |
 | January 2024 print | GMQ Cards Print - january.pdf | Attacks become "Add +X to your AP for this attack"; defences add HP to the Ship Shield or block attacks. This matches the battle board and is the easiest version to code. |
 
+**2026-11-20, Marc: "We will remake card set."** So none of the four is official, and a new set will be made. He also named the three kinds: **common, rare, epic.** The conflicts below are kept as a record of what the new set must not repeat.
+
 **Conflicts the official set must remove:**
 - **The same number is used for different cards in different versions.** 131–134 are Epic cards in the original doc and Common cards in Booster 2. 135, 146, 150, 151 and 153 are different cards in Booster 2 and in the January print.
 - **The same name is used for different cards:**
@@ -230,8 +232,11 @@ Marc gave these rules by voice, and they are written here as he described them. 
 - **Hand limit:** 5 cards, rising as students level up their ship parts. **Open (Marc will say later):** whether it is set by the Engine Core level, with the "Engine Cores" doc's numbers: 6 at Level 3, 7 at Level 6 and 8 at Level 10.
 - **Starting hand:** each player starts with a full hand, as many cards as their hand limit allows.
 - **Main Shield:** every player starts with 80 HP (Marc, 2026-11-16). Shield cards can rebuild a broken shield when the card says so.
+  - **Changed 2026-11-20:** 100 HP. Marc: "Shields 100 hp." Still to confirm: 140, 220 and 360 at Shield Generator Levels 3, 6 and 10.
 
 A **round** is both players playing a card. A card that says "for the next 2 turns" lasts 2 rounds.
+
+**Confirmed 2026-11-20:** shown the older wording ("you play one card on your turn; the other player may answer") beside this one, Marc said: "Those are same. They go same time." He also confirmed the defender decides the split, and that a ship is beaten when all its parts are at 0. Still open: whether one player still leads and the other answers (the Spy and Policeman rules below need that), or both put a card down together.
 
 **Each round**
 1. The leading player plays one card from their hand.
