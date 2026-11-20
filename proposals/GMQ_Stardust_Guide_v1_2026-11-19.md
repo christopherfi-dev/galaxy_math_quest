@@ -2,10 +2,32 @@
 
 **Date:** 2026-11-19
 **For:** Marc
-**What it is:** your Galaxy Databa quest, playable on the preview link as sketch version 49.
+**What it is:** your Galaxy Databa quest. On the class link as sketch version 49. The words of the wall chart are changed in version 50, on the preview link: see "Changed 20 November" just below.
 **Marks:** [Source] is from your material. [Proposal] is mine. [Conflict] means your sources disagree, or I left your source on purpose.
 
 You said: "Ok. Continue. Do as much as you can overall." This is the next big piece, why I chose it, and exactly what I built.
+
+---
+
+## Changed 20 November (version 50, preview link)
+
+You tried the wall chart at your board and could not tell what it asked. You wrote: "Not sure what to do here. I can't see the previous temperature? Or what else should I do?"
+
+**Three things were wrong, all mine:**
+
+| | What was wrong | Now |
+|---|---|---|
+| 1 | The question said "One room breaks its plate." Nothing had told you to notice a plate, or what one was. | "Now look at the sign above each thermometer. One room is too hot or too cold for its sign. Which room? By how many degrees?" |
+| 2 | The words said the plate was "under" the thermometer. In the picture it is above. | "above", and "sign" everywhere |
+| 3 | The finished chart shown first was "last trip's" temperatures. That made you look for a previous temperature to compare with. Comparing the two trips gives a different answer, so the question had two readings. | The finished chart is about lamps: "how many lamps each room has". It still shows how to read a bar. It cannot be compared with warmth. |
+
+**What I did not change:** the signs are still only in the rooms. A child who did not read them must walk back. That is the hard part, and it stays.
+
+**A choice for you [Proposal]:** the clipboard could also keep each room's sign when a child reads its thermometer. Then nobody walks back. That is smoothing, not fixing, so I have not done it.
+
+I had written in section 12 that "breaks its plate" might not be clear, and that if anyone asked "what plate?" the words were wrong. The first person to try it asked.
+
+The rest of this guide is updated to the new words.
 
 ---
 
@@ -58,15 +80,15 @@ You said: "Ok. Continue. Do as much as you can overall." This is the next big pi
 ### Mine [Proposal]
 
 - The ship as a place to walk, and rooms that are dark until entered.
-- Thermometers to read, and a plate under each one with the room's safe range.
-- A room that breaks its plate. It is not always the Engine Room.
+- Thermometers to read, and a sign above each one with the room's safe range.
+- A room that is too hot or too cold for its sign. It is not always the Engine Room.
 - Setting the bars by tapping the big chart.
 - The "last-quarter locker", the crate of 10 packs, and "exactly enough".
 - Tank gauges cut into equal parts, and a pump with a dial for each tank.
 - The month of "the long run to the far moon".
 - "Of the kinds on both charts, which fell the most?"
 - The watering can and the radio pattern.
-- Last trip's chart on the wall, and the glass test tank.
+- An old chart of lamps on the wall, and the glass test tank.
 - Every number rule.
 
 ### Where I left your source [Conflict]
@@ -120,24 +142,24 @@ They can be done in any order. Nothing tells the child which is first.
 
 **The purpose.** Mission Control: "This ship leaves at dawn. But the sensors on board are dead. How warm is each of the five rooms? Send us a chart."
 
-**See it first.** [Source: your rule] The first time a child opens the wall chart, last trip's chart is still pinned there: five finished bars. One bar is read aloud: "Find the Greenhouse bar. It ends three lines above 20. Each line is a step of 2. So the Greenhouse was at 26 degrees." Then: **Start a new chart**.
+**See it first.** [Source: your rule] The first time a child opens the wall chart, an old chart is still pinned there: five finished bars, how many lamps each room has. One bar is read aloud: "Find the Greenhouse bar. It ends three lines above 20. Each line is a step of 2. So the Greenhouse has 26 lamps." Then: **Start a new chart**.
 
-Copying last trip's chart does not work. It is last trip's.
+Copying the old chart does not work. It is about lamps.
 
 **What the child must work out, with no steps given:**
 
 1. Each room has a thermometer. Go and read it. Write it on the clipboard.
 2. Set five bars on the wall chart. Each line on the chart is a step of 2.
-3. Mission Control then asks: "One room breaks its plate. Which room? By how many degrees?"
+3. Mission Control then asks: "Now look at the sign above each thermometer. One room is too hot or too cold for its sign. Which room? By how many degrees?"
 
 **What happens when it is wrong:**
 
 - A wrong chart: "3 of the five bars do not match." It does not say which.
-- A wrong room: "Engineers hurry to the Greenhouse. It is just as its plate says."
-- Too few degrees: "The Engine Room still breaks its plate."
-- Too many: "It breaks its plate. But not by as much as 6 degrees."
+- A wrong room: "Engineers hurry to the Greenhouse. It is just as its sign says."
+- Too few degrees: "The Engine Room is still not as its sign says."
+- Too many: "It is not as its sign says. But it is not 6 degrees out."
 
-**The plates are not on the clipboard.** A child who forgot them must walk back and read them. That is on purpose.
+**The signs are not on the clipboard.** A child who forgot them must walk back and read them. That is on purpose.
 
 ### Quest 2. The last-quarter locker (your Task 1)
 
@@ -165,7 +187,7 @@ Copying last trip's chart does not work. It is last trip's.
 
 **Part two, the tanks.** "Fill the tanks. Every one to the top, and not a drop over."
 
-- Each tank has a plate: "MAIN TANK. HOLDS 200 LITRES WHEN FULL."
+- Each tank has a sign: "MAIN TANK. HOLDS 200 LITRES WHEN FULL."
 - Each gauge is one line from EMPTY to FULL, cut into equal parts. A needle stands at one of the marks.
 - **See it first:** a small glass test tank stands in the Engine Room. You can see the fuel in it: 3 of its 5 parts. Its gauge is drawn right under it, with the needle on the third mark. It shows what a gauge means. It gives no litres and does no sum. A child finds it by looking, or from the first nudge.
 - The pump has a dial for each tank: how many litres to add.
@@ -208,8 +230,8 @@ The game makes the numbers from a seed, once, when the cadet first docks.
 
 | Number | Chosen from |
 |---|---|
-| Each room's temperature | an even number inside its plate |
-| The room that breaks its plate | any of the five. Food Storage is only ever too warm. |
+| Each room's temperature | an even number inside its sign |
+| The room that is outside its sign | any of the five. Food Storage is only ever too warm. |
 | By how much | 2, 4 or 6 degrees |
 | Energy for one person for one month | 10 or 20 |
 | The shelf | four of your nine long-life foods, two of your eleven short-life foods |
@@ -223,7 +245,7 @@ The game makes the numbers from a seed, once, when the cadet first docks.
 **Checked on 20,000 seeds** (`checks/stardust_quest_check.py`, which shares no code with the game):
 
 - 20,000 different sets of numbers.
-- Exactly one room breaks its plate, every time. Each room is the one about one time in five.
+- Exactly one room is outside its sign, every time. Each room is the one about one time in five.
 - The room is too hot for 12,049 cadets and too cold for 7,951.
 - The locker can always be filled exactly, with no crate over 10. Fewest ways: 13. Middle: 100. Most: 171.
 - The whole amount is 120 for 12,827 cadets and 240 for 7,173.
@@ -239,9 +261,9 @@ The game makes the numbers from a seed, once, when the cadet first docks.
 
 Each child has their own numbers, so there is no one answer sheet. This is how to check a child's work at a glance.
 
-**The room:** read the five plates. One thermometer is outside its plate. The answer is how far outside.
+**The room:** read the five signs. One thermometer is outside its sign. The answer is how far outside.
 
-| Room | Its plate |
+| Room | Its sign |
 |---|---|
 | Control Room | 18 to 24 degrees |
 | Living Quarters | 18 to 24 degrees |
@@ -305,7 +327,7 @@ This guide is in a public repository. A student who finds it has these tables.
 | Big quests must make them think and struggle | No quest has steps. The whole amount for the locker is never given. The fuel graph alone cannot answer. |
 | Try and fail | A wrong try shows what happened: food gone bad, fuel on the floor, engineers sent to the wrong room. |
 | Dead ends are real | Most things on the ship do nothing. The pump is locked until Mission Control says so. |
-| Do not smooth what is hard | The plates are not written down for the child. A wrong chart says how many bars are wrong, not which. |
+| Do not smooth what is hard | The signs are not written down for the child. A wrong chart says how many bars are wrong, not which. |
 | A purpose and a story | The ship leaves at dawn. Nobody can clear it but the cadet. |
 | Not too long, not three times | The food is planned once, for one quarter, with six foods. |
 | The picture stays still | Checked: the six-screen test now walks the ship too. |
@@ -333,7 +355,7 @@ This guide is in a public repository. A student who finds it has these tables.
 
 - **Reading a thermometer may be the hard part, not the graph.** Each small line is 1 degree. Only the tens have numbers. If children misread by one line, the chart will keep saying "1 bar does not match" and they will not know why. Watch the first child at a thermometer.
 - **The locker table was too big for an iPad mini,** for cadets with long food names. The question slid out of view when the number keys opened. A test caught it only because it failed one run in three. The table is smaller now, and the test always uses the six longest names. It is the kind of fault only a real iPad mini will fully settle.
-- **"Breaks its plate" may not be clear.** It is my phrase. If a child asks "what plate?", the words are wrong, not the child.
+- **"Breaks its plate" was not clear.** It was my phrase. You asked what it meant on 20 November. The words are changed: see the top of this guide. The new words have not been tried by anyone either.
 - **The locker may be guess-and-fix, not planning.** "Too little" and "too much" let a child creep up on the answer one pack at a time. That is still adding and multiplying, but it is not a plan. Look at how many tries the log shows.
 - **Children may never find the whole amount.** If nobody multiplies 4 × 20 × 3, the locker is the wrong place to hide it.
 - **The fuel log can be solved by guessing.** Six months, six tries. The log will show it: a child who thought needs one or two tries.
@@ -343,7 +365,7 @@ This guide is in a public repository. A student who finds it has these tables.
 - **"See it first" here is a picture and three sentences.** On your slides it is a talk: "which is easier, the paragraph or the graph?" A screen cannot hold that talk. If the finished chart is skipped past with one tap, it has shown nothing.
 - **What your Atlantis unit has and this does not:** sorting real cards by hand, a twist ("it seems like a perfect success... but is it?"), and an ending where the child explains in words. Here every ending is a number.
 
-**What I would watch with one child:** do they go and read the thermometers without being told; do they write the plates down on paper; what is their first try at the locker; do they look at both fuel graphs.
+**What I would watch with one child:** do they go and read the thermometers without being told; do they write the signs down on paper; what is their first try at the locker; do they look at both fuel graphs.
 
 ---
 
@@ -360,7 +382,8 @@ This guide is in a public repository. A student who finds it has these tables.
 | Units | Litres and km (built) · Gallons and miles | Yours were gallons and miles. AERO names litres. |
 | A real-life step | None (built) · Draw the chart on paper, with a code | It keeps the hands-on part. It needs you in the room. |
 | See it first | A finished chart and a glass tank (built) · None · More: a talk with a partner before the chart | None is closer to "struggle". More is closer to your slides, and needs you in the room. |
-| Names | last-quarter locker, the far moon, "breaks its plate" | All mine. Change any of them. |
+| Names | last-quarter locker, the far moon, "the sign above each thermometer" | All mine. Change any of them. |
+| The signs on the clipboard | Not kept (built) · Kept with each reading | Kept means nobody walks back to a room. It also means nobody has to notice the signs for themselves. |
 
 ---
 
@@ -369,7 +392,7 @@ This guide is in a public repository. A student who finds it has these tables.
 | File | What it does |
 |---|---|
 | `checks/stardust_quest_check.py` | 20,000 seeds worked out again in Python: the eight checks listed at the top of the file |
-| `checks/stardust_test.js` | Plays the whole ship on an iPad sideways, an iPad upright and a phone, each with a different cadet's numbers: a room too hot, the cold room too warm, a room too cold. Every wrong try in section 5. Last trip's chart is shown first, and copying it fails. Checks that no reply and no nudge shows an answer. Looks at the pixels: each thermometer, bar and needle is drawn where its number says. |
+| `checks/stardust_test.js` | Plays the whole ship on an iPad sideways, an iPad upright and a phone, each with a different cadet's numbers: a room too hot, the cold room too warm, a room too cold. Every wrong try in section 5. An old chart is shown first, and copying it fails. Checks that no reply and no nudge shows an answer. Looks at the pixels: each thermometer, bar and needle is drawn where its number says. |
 | `checks/still_picture_test.js` | Now 42 moments on six screens, twelve of them on the ship. The picture never moves or changes size. |
 
 The first two share one check number, so the game's rule and the Python rule cannot drift apart unseen.
