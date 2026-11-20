@@ -309,7 +309,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 52</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 53</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -436,7 +436,7 @@ const OBJ = {
   chair:   { room: 'nav',    tiles: [[29, 10]], words: ['chair', 'seat', 'stool'], label: 'chair', block: 1 },
   bolt:    { room: 'nav',    tiles: [[29, 10]], words: ['bolt', 'screw'], label: 'bolt', when: s => s.chair && !s.bolt },
   console: { room: 'launch', tiles: [[30, 1]], words: ['console', 'controls', 'button', 'launch'], label: 'launch console', block: 1 },
-  chest:   { room: 'store',  tiles: [[22, 16]], words: ['chest', 'trunk', 'box'], label: 'old chest', block: 1 },
+  chest:   { room: 'store',  tiles: [[22, 16]], words: ['chest', 'trunk', 'box'], label: 'old chest', block: 1, when: s => s.poster },
   core:    { room: 'engine', tiles: [[6, 1], [7, 1]], words: ['core', 'engine', 'cage', 'lock', 'dials'], label: 'engine core', block: 1 },
   gems:    { room: 'engine', tiles: [], words: ['artifacts', 'artifact', 'crystals', 'crystal', 'gems', 'gem', 'stones', 'shapes'], label: 'alien artifacts', quiet: 1 },
   valve:   { room: 'engine', tiles: [[9, 0]], words: ['valve', 'wheel', 'pipe', 'steam', 'note'], label: 'valve', stand: [9, 1] },
@@ -526,6 +526,9 @@ function makeGems() {       // each student gets their own counts: four differen
   S.gems = []; let k = 0; cnt.forEach((n, c) => { for (let i = 0; i < n; i++) { const t = free[k++]; S.gems.push([t[0], t[1], c]); } }); S.gemCount = cnt; save();
 }
 const objOn = o => !o.when || o.when(S);
+/* A DARK SECTION. [Source: Marc, 2026-11-20: "The lights that we turn on in the space station and there's a humming from far away. Does that matter for anything? It should. There should be a section that's dark unless you turn on the lights."]
+   The switch behind the poster in the Shield Bay lights the Crawl Tunnel and the Old Store. Until it is on, nothing in there can be seen or used. */
+const roomDark = () => S.mode === 'station' && (S.room === 'tunnel' || S.room === 'store') && !S.poster;
 const objTiles = (id) => id === 'crate' && S.crate ? [[16, 13]] : id === 'chair' && S.chair ? [[28, 10]] : id === 'gems' ? (S.gems || []) : id === 'drones' ? DSLOT : OBJ[id].tiles;
 const PILE = [[26, 12], [27, 12], [28, 12], [29, 12], [30, 12], [31, 12], [26, 11], [27, 11], [28, 11], [29, 11], [30, 11]];
 function blocked(x, y) { if ((S.done.cargo ? LEFT : PILE).some(t => t[0] === x && t[1] === y)) return true; for (const id in OBJ) { const o = OBJ[id]; if (o.block && objOn(o) && objTiles(id).some(t => t[0] === x && t[1] === y)) return true; } return false; }
@@ -696,6 +699,7 @@ const missing = () => PARTS.filter(p => !S.parts.includes(p));
 function hint() {
   if (S.mode === 'planet') return 'The butterfly whispers: ' + planetHint();
   const who = S.bot ? `${cap(S.botName || 'the robot')} beeps: ` : 'A wall screen blinks: ', sec = id => S.secrets.includes(id);
+  if (roomDark()) return (S.bot ? who : '') + 'It is dark in here. The lights are off. A switch must be somewhere else on the station.';
   const t = !sec('wrench') ? 'Look at your ship. Open the hatch under its wing.'
     : !S.locker ? 'Read the sign in the dock. Count the stacked crates. Then open the grey locker on the east wall.'
     : !S.done.battle ? 'Go west to the Shield Bay. Use the shield panel.'
@@ -747,7 +751,7 @@ const DO = {
   crate: { look: () => S.crate ? 'The loose crate. You moved it.' : 'One crate sits alone by the wall. Cold air comes from behind it.',
     push: () => { if (S.crate) return 'It will not go any further.'; S.crate = true; S.gap = true; save(); beep(160, .25, 'sawtooth'); secret('gap', 'The crate slides. There is a gap in the wall!'); },
     take: 'Too heavy to carry. Maybe you can push it.', open: 'It is nailed shut.' },
-  gap: { look: 'A dark gap in the wall. You could crawl in.', go: () => { walkTo((x, y) => x === 15 && y === 16); return 'You crawl into the dark.'; }, use: () => DO.gap.go() },
+  gap: { look: 'A dark gap in the wall. You could crawl in.', go: () => { walkTo((x, y) => x === 15 && y === 16); return S.poster ? 'You crawl in. The lights are on in here. They hum.' : 'You crawl into the dark.'; }, use: () => DO.gap.go() },
   sign: { look: () => S.locker ? 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. You did that.' : 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. An arrow points to a grey locker in the east corner. Go there and type: open locker.', take: 'It is fixed to the wall.' },
   vent: { look: () => S.vent ? 'The vent is open. It is empty now.' : 'A vent in the wall. Four screws hold it shut. Something shines inside.',
     open: () => S.vent ? 'It is open.' : has('wrench') ? 'The screws are tight. Try: use wrench on vent.' : 'The screws are tight. You need a tool.',
@@ -861,6 +865,7 @@ function act(raw) { CHIPN = '';
   if (S.bot && ['talk', 'use'].includes(verb) && tk[0] !== 'fix' && (rest.length === 0 && verb === 'talk' || rest.some(t => OBJ.robot.words.includes(t) || t === 'zip' || (S.botName && t === S.botName.toLowerCase())))) return out(zipTalk());
   if (S.bot && verb === 'look' && rest.some(t => OBJ.robot.words.includes(t) || (S.botName && t === S.botName.toLowerCase()))) return out('Your repair robot. It follows you. Talk to it and it tells you what to try next.');
   if (verb === 'hint') return out(hint());
+  if (roomDark()) { if (verb === 'look' && !rest.length) return out('It is dark. You can see only a step or two. The lights are off in this part of the station.'); if (Object.keys(OBJ).some(i => OBJ[i].room === S.room && i !== 'gap' && rest.some(t => OBJ[i].words.includes(t)))) return out('It is too dark to see that. The lights are off in here.'); }
   if (verb === 'help') return out('Type a doing word and a thing. Like: look ship. push crate. use wrench on vent. Or: go north.');
   if (verb === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
   if (verb === 'dig') return out('You dig at the floor. Clang! It is metal. Planets have ground you can dig.');
@@ -1955,7 +1960,7 @@ function frame1(now) {
   if (S.room === 'power' && !S.fuse) { cx.fillStyle = 'rgba(2,4,10,.5)'; cx.fillRect(-4, 0, vw + 8, vh); }
   if (alarm > 0 || battle) { cx.globalCompositeOperation = 'lighter'; for (const [bx, by, ph] of [[2.4, 6.3, 0], [10.6, 6.3, 2], [2.4, 12.6, 4], [10.6, 12.6, 1]]) { const pu = .5 + .5 * Math.sin(tNow * 9 + ph), g = cx.createRadialGradient(sx(bx), sy(by), 0, sx(bx), sy(by), ts * 1.5); g.addColorStop(0, `rgba(255,70,50,${.55 * pu})`); g.addColorStop(1, 'rgba(255,70,50,0)'); cx.fillStyle = g; circ(sx(bx), sy(by), ts * 1.5); cx.fill(); } cx.globalCompositeOperation = 'source-over';
     for (const [bx, by] of [[2.4, 6.3], [10.6, 6.3], [2.4, 12.6], [10.6, 12.6]]) { cx.fillStyle = '#ff5a4d'; circ(sx(bx), sy(by), ts * .13); cx.fill(); ol(1.5); } }
-  if ((S.room === 'tunnel' || S.room === 'store') && !S.poster) { const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, g = cx.createRadialGradient(X, Y, ts * .9, X, Y, ts * 3.4); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,4,8,.96)'); cx.fillStyle = g; cx.fillRect(-4, 0, vw + 8, vh); }
+  if ((S.room === 'tunnel' || S.room === 'store') && !S.poster) { const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, g = cx.createRadialGradient(X, Y, ts * .55, X, Y, ts * 2); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,4,8,.98)');      /* really dark: a step or two, no more */ cx.fillStyle = g; cx.fillRect(-4, 0, vw + 8, vh); }
   if (!widget) for (const t of TASKS) { const o = OBJ[t[4]]; if (o.room !== S.room) continue; const tl = objTiles(t[4]), X = sx(tl.reduce((a, p) => a + p[0], 0) / tl.length) + ts / 2, Y = sy(Math.min(...tl.map(p => p[1]))) - ts * .08 + (S.done[t[0]] ? 0 : Math.sin(tNow * 4) * ts * .05), r = Math.max(8, ts * .17);   // a marker over every task: ! to do, a tick when done, purple for real life
     cx.fillStyle = S.done[t[0]] ? '#1c7c3a' : t[3] ? '#8a63e6' : '#ffb23e'; circ(X, Y, r); cx.fill(); ol(2); cx.fillStyle = S.done[t[0]] || t[3] ? '#fff' : '#2b1a00'; cx.font = `700 ${r * 1.35}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(S.done[t[0]] ? '✓' : '!', X, Y + r * .08); cx.textBaseline = 'alphabetic'; }
   if (!widget) for (const id in OBJ) label(id);

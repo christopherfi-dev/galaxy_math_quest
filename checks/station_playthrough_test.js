@@ -26,7 +26,7 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     const idle = async () => { for (let i = 0; i < 120; i++) { if (await p.evaluate(() => P.route.length === 0 && !P.then)) return; await p.waitForTimeout(100); } bad.push(name + ': still walking'); };
     const last = () => p.evaluate(() => lines[lines.length - 1].text || '');
     const say = async t => { await p.fill('#cmd', t); await p.press('#cmd', 'Enter'); await p.waitForTimeout(120); await idle(); await p.waitForTimeout(80); return last(); };
-    const expect = (got, re, what) => { if (!re.test(got)) bad.push(`${name}: ${what}: got "${got}"`); };
+    const ok2 = (c, what) => { if (!c) bad.push(what); }; const expect = (got, re, what) => { if (!re.test(got)) bad.push(`${name}: ${what}: got "${got}"`); };
     const shot = async n => { if (out) await p.screenshot({ path: path.join(out, `st_${name}_${n}.png`) }); };
     const onScreen = id => p.evaluate(id => { const t = objTiles(id)[0], X = sx(t[0]) + ts / 2, Y = sy(t[1]) + ts / 2; return X > 4 && X < vw - 4 && Y > 4 && Y < vh - 4; }, id);
     const q = async () => (await p.textContent('#toy .q')).trim();
@@ -43,12 +43,16 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     expect(await say(String(code + 1)), /stays shut/, 'wrong locker code typed alone');
     expect(await say(String(code)), /magnet/i, 'locker code typed alone'); if (!(await onScreen('locker'))) bad.push(name + ': the locker is off the screen when you stand at it');
     await shot('1_locker');
-    await say('push crate'); await say('use wrench on vent'); await say('go gap'); await say('east'); expect(await say('open chest'), /badge/i, 'chest'); await say('go to dock');
+    // the hidden section is dark until the switch behind the poster is found (Marc: the lights should matter)
+    await say('push crate'); await say('use wrench on vent'); expect(await say('go gap'), /You crawl into the dark/, 'crawling into the dark'); await say('east');
+    ok2(await p.evaluate(() => S.room === 'store' && roomDark() && !hereWords().length), name + ': in the dark Old Store nothing should be listed'); expect(await say('look'), /It is dark\. You can see only a step or two\. The lights are off/, 'look, in the dark'); expect(await say('open chest'), /It is too dark to see that\. The lights are off in here/, 'the chest in the dark'); expect(await say('hint'), /It is dark in here\. The lights are off\. A switch must be somewhere else/, 'the hint in the dark');
+    ok2(await p.evaluate(() => !S.chest && !S.inv.includes('badge')), name + ': the chest must not open in the dark'); await say('go to dock');
     expect(await say('launch'), /Launch Bay/, 'launch from the dock');
     // ---- Shield Bay: 3-1 Asteroid Field, 3-2 Energy Grid, 3-3 Shield Calibration (real life)
     await say('go to shield'); await p.waitForTimeout(300);
     for (let i = 0; i < 4; i++) { const r = (await q()).match(/(\d+) rows\. (\d+) rocks/); await type(r[1] * r[2]); } expect(await last(), /1 of 3 Shield tasks/, 'asteroid field');
-    await say('use magnet on grate'); expect(await say('fix robot'), /wakes/i, 'robot'); await say('push poster');
+    await say('use magnet on grate'); expect(await say('fix robot'), /wakes/i, 'robot'); expect(await say('push poster'), /A switch! Click\. Lights hum far away/, 'the switch behind the poster');
+    await say('go to dock'); expect(await say('go gap'), /The lights are on in here\. They hum/, 'the lights are on in the tunnel now'); await say('east'); ok2(await p.evaluate(() => S.room === 'store' && !roomDark() && hereWords().some(w => w[0] === 'chest')), name + ': with the lights on the chest can be seen'); expect(await say('open chest'), /badge/i, 'chest'); await say('go to dock'); await say('go to shield'); await p.waitForTimeout(300);
     expect(await say('talk robot'), /beeps: .*energy grid/i, 'the robot gives the next step'); if (await p.evaluate(() => !!widget)) bad.push(name + ': the robot opened a quiz');
     await say('use grid'); let t = await q(), g = t.match(/(\d+) sections\. Each section holds (\d+)/); await type(g[1] * g[2]); t = await q(); g = t.match(/Share the (\d+) cells equally over (\d+)/); await type(g[1] / g[2]);
     t = await q(); g = t.match(/it held (\d+) cells\. Now it holds (\d+) cells/); await shot('2_grid');

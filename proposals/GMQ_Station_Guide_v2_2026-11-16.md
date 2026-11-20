@@ -596,3 +596,40 @@ Your answer: "No. Don't fix the crate. 10 other kids passed it. You are reacting
 
 **My mistake, so it is not repeated:** I counted the two who stopped and did not ask about the ten who got through. Your Novus engine already says "Dead Ends Are Real." I read that and still softened one.
 
+---
+
+## Changed 2026-11-20 (sketch version 53, preview link): a section that is dark until the lights are on
+
+You asked: "The lights that we turn on in the space station and there's a humming from far away. Does that matter for anything? It should. There should be a section that's dark unless you turn on the lights."
+
+**What was true before:**
+
+- Behind the poster in the Shield Bay is a switch. Push the poster: "A switch! Click. Lights hum far away."
+- Those lights are in the hidden part of the station: the Crawl Tunnel behind the loose crate, and the Old Store at its end.
+- But the dark there was only a shadow. A child could see the old chest and open it without the lights. And nothing said what the switch had done.
+
+So the answer to "does that matter?" was: hardly.
+
+**Now:**
+
+| | Without the switch | With the switch |
+|---|---|---|
+| The picture | black, but for a step or two round the cadet | lit |
+| Crawling in | "You crawl into the dark." | "You crawl in. The lights are on in here. They hum." |
+| Look | "It is dark. You can see only a step or two. The lights are off in this part of the station." | the room, and the old chest |
+| The old chest | not shown, not listed, cannot be opened: "It is too dark to see that. The lights are off in here." | opens. A captain's badge and a card. |
+| Hint | "It is dark in here. The lights are off. A switch must be somewhere else on the station." | as before |
+
+**The other lights were already right.** The fuse box in the Power Bay: until a new fuse is in, the room is dim and the loose floor plate does not show.
+
+**Not changed:** where the switch is, and that nobody says so. A child who is in the dark must go and find it.
+
+**A child who already has the badge keeps it.**
+
+**Choices for you [Proposal]:**
+
+| Choice | Cost |
+|---|---|
+| More in the dark section: a second room, or more to find in the Old Store | an evening. It is the part of the station only curious children reach. |
+| A light a child carries: the glow stone from Voltara lights a dark place on another planet | small for each place. It makes one planet's find matter on another. |
+
