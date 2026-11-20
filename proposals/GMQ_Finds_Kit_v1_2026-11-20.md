@@ -1,10 +1,89 @@
 # The kit for finds
 
-**Date:** 20 November 2026. **For:** Marc. **Sketch version 55, on the preview link only.** The class link is still version 54.
+**Date:** 20 November 2026. **For:** Marc. **Sketch version 56, on the preview link only.** The class link is still version 54.
+
+**Added the same day, version 56:** one deep find, the Backward Mountain. It is section 0 below. Read that first.
 
 [Source: Marc, 2026-11-20] "things that they could just find in the world like a cave to go in and discover something new and they all have like math things involved in them, and some of them affect the outcome of the world."
 
 Everything below is **[Proposal]** unless it says [Source].
+
+---
+
+## 0. The Backward Mountain: one deep find (version 56)
+
+[Source: Marc, 2026-11-20] "An immersive, math based story that is real to them. The tasks I was giving them off-line were much more complex than clicking on things online. They took time."
+
+The nine finds below are one question each. That is clicking. This one is not.
+
+### Where it comes from
+
+| From your pages [Source] | Added by me [Proposal] |
+|---|---|
+| "mountains that age backward, getting smaller as you climb them" | The mountain has a name, three trails and an old climber at its foot |
+| Sara "loves to open time capsules" | Sara buried a capsule at the top, years ago |
+| "Time Capsule Unveiling", Chronosia, Oct 6 | The capsule on the mountain is the one for the Unveiling |
+| "too much time travel is ripping holes in the universe" | From the top, long ago, you can see the sky before it cracked |
+
+### What a child does
+
+1. **Finds three facts in three places.** They are not on one screen.
+   - The climbers' hut, north-west: how much the top comes down, and how many years younger the mountain grows, for every 10 minutes of climbing.
+   - The Council notice, by the Council Hall: how many years ago Sara buried the capsule.
+   - The sign at the mountain: how tall it is today, and how fast each of three trails climbs.
+2. **Hears the idea first.** The old climber tells it with a candle and a snail: a finished example about something else. [Source: your rule, "see the idea before you do it"]
+3. **Makes a plan on paper.** She will not let anyone climb without one: how many minutes to the top, how tall the top is by then, how many years younger.
+   - The top comes down while you go up. You arrive where the two heights meet.
+   - The natural way is a table with a row for every 10 minutes. Nothing on the screen draws it for them.
+4. **Tells her the plan.** A wrong plan gets only a count: "2 of your 3 numbers do not fit the Ramp."
+5. **Climbs, and meets the twist.**
+   - On the two slower trails the mountain goes back too far. The top is bare: **the capsule is not buried yet.** That is a dead end with a reason. It is also a secret: from there the sky has one thin crack, or none at all.
+   - Only the fastest trail arrives after the capsule was buried.
+6. **Chooses, and the choice stays.** [Source: your rule, "your decision must matter"]
+   - **Carry it down sealed:** a card. Sara will open it at the Unveiling. The child never sees inside.
+   - **Open it there:** the child sees what is inside. No card. The Unveiling is spoiled, and Sara says so.
+   - `look` on the map, the mountain itself and Sara's first words all change with the choice.
+
+### A key for you
+
+Every cadet has a different mountain. The rule, for the trail they choose:
+
+- **Minutes** = 10 × (height today ÷ (metres the trail climbs + metres the top comes down))
+- **Height then** = height today − (metres the top comes down × number of 10-minute steps)
+- **Years younger** = years for each step × number of steps
+
+One worked example. Height 72 m. The top comes down 4 m every 10 minutes. The mountain grows 3 years younger every 10 minutes. The Stair climbs 20 m every 10 minutes.
+
+| Minutes | You | The top |
+|---|---|---|
+| 0 | 0 | 72 |
+| 10 | 20 | 68 |
+| 20 | 40 | 64 |
+| 30 | 60 | 60 |
+
+So: 30 minutes, 60 metres, 9 years younger.
+
+### What was tested
+
+- 5,000 cadets' mountains were climbed step by step, the way a child's table would. All 15,000 climbs end exactly on a 10-minute step. Exactly one trail reaches the capsule, every time. No trail arrives in the very year of the burying.
+- There are 3,285 different mountains, so neighbours will not share numbers.
+- A browser played it on two screens: sealed on one, opened on the other.
+- The check now reads deep finds too. It caught one of my own nudges as too long.
+
+### What it does not do yet
+
+- **Nothing is done with hands.** It needs paper, but no blocks, no ruler, no partner. Your station tasks have a code you give after watching. This could have one.
+- **The picture of the mountain is small.** It is one square on the map. There is no view from the top.
+- **The crack in the sky leads nowhere yet.** It is a thread for a later quest.
+- **It is on Chronosia only.**
+
+### What could prove it wrong
+
+- **It may be too hard.** Two things move at once. Watch whether a child starts a table without being told, or stops.
+- **It may be too much reading.** The climber's story is 11 short sentences.
+- **Children may guess.** Three boxes with a count of wrong ones can be worn down. The log keeps the number of tries, so you can see it.
+- **The steepest trail is the right one.** A child may pick it by feel. They still have to work out the three numbers.
+- **Opening the capsule costs a card.** Some children will feel punished for being curious. That is the point of the choice, but it is yours to keep or change.
 
 ---
 
@@ -60,7 +139,7 @@ You wrote: "Can we make it so...quests do have effects. Or no." You did not deci
 
 ---
 
-## 4. The nine finds on Chronosia: a key for you
+## 4. The nine small finds on Chronosia: a key for you
 
 Every cadet gets different numbers, so the key gives the rule.
 
@@ -119,7 +198,7 @@ The test tries 21 broken finds on purpose. All 21 are caught.
   - 35,000 lock questions were worked out again a second way. None was wrong.
   - A browser played all nine at iPad size and at phone size: typing, tapping the map, tapping words, wrong answers, the hidden door, closing and opening the game, and an old saved game.
   - One find was done by taps only, with the reading cards on, as a child has them.
-- The four older tests that touch Chronosia and the word rows: see the handoff for the result.
+- The older tests that touch Chronosia, the word rows and the number pad passed for version 55. For version 56, see `INFO_FROM_MARC.md`, the last line of 20 November.
 - **The full run of 26 tests was not done.** You paused it. The kit adds one line to shared code (the list of words the game knows).
 
 **One real fault the test caught:** the kind-words filter read the clock time "4:55" as a rude word. It only mattered inside the check, and it is fixed there. It never reached a child.
