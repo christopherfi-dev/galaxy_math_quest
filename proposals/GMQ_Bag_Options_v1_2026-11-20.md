@@ -66,7 +66,7 @@ In the fullest room on the station, with all 10 things, an iPad mini held sidewa
 ## 5. Three more things in your photo
 
 1. **A thin scroll bar** at the right edge, beside the Here row. With three things, nothing should scroll on a board. I could not make it happen here. Does that side move when you drag it?
-2. **The Mission button.** It shows Voltara's mission, wherever you are. On the "mission ship" that is confusing. [Proposal] Call it "Voltara mission", or show it only on Voltara.
+2. **The Mission button.** It shows Voltara's mission, wherever you are. On the "mission ship" that is confusing. [Proposal] Call it "Voltara mission", or show it only on Voltara. **Fixed in version 51,** after you met it yourself: on the ship it shows Operation Stardust, and elsewhere it says "Voltara mission".
 3. **"Sound: off" sits alone on its own line** under Hint. It wastes a row. [Proposal] Move it under More.
 
 None of these is changed.

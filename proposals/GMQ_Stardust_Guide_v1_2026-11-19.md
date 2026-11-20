@@ -35,6 +35,28 @@ So row 1 is the fault you confirm. Rows 2 and 3 are my own changes. Row 2 is a p
 
 ---
 
+## Changed 20 November, later (version 51, preview link): the Mission button
+
+You were on the ship, tapped **Mission**, and got Voltara's nine steps. You wrote: "I am in Stardust. But my mission is stuck to Voltara."
+
+**Now the Mission button shows the mission of the place you are in.**
+
+- **On the mission ship:** "Operation Stardust: 2 of 5 jobs". Under it, one row for each job you have been asked, in the asker's words:
+  - "A chart for Mission Control: how warm is each room?"
+  - "Find what went wrong with the fuel on the last trip". After the month is found it reads "Fill every tank to the top, and not a drop over".
+  - "Fill the locker for months ten, eleven and twelve"
+  - "Which kind of food fell the most, and by how much?"
+  - "Lift-off", once the ship has gone.
+- **A job is not listed until somebody gives it.** Before you talk to anyone it says: "Nobody has asked you for anything yet. Look around the ship."
+- **A notebook under the rows:** your clipboard, the Chief's number ("four people, 20 energy points each a month, for months ten to twelve"), and the month of the solar wind once you have found it.
+- **No steps and no answers.** The whole amount for the locker is not there. The test checks.
+- **On Voltara:** as before.
+- **Anywhere else:** the button says "Voltara mission", so nobody takes it for the mission of where they stand.
+
+**A choice for you [Proposal]:** Chronosia and Xylophora have no Mission panel of their own. They could have one, built the same way. An evening each.
+
+---
+
 ## 1. The short version
 
 - **Operation Stardust is built.** It is your quest "Operation Stardust: Prepping for a Year-Long Space Adventure". [Source]
