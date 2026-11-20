@@ -1,0 +1,20 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/shield-generator/3-3-shield-calibration-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1Q1nTguZP9vj17vhYYqkTnAUmy_u0wssZi7Va5I1LnvU/edit?usp=sharing
+EMBEDS: none
+----
+role="main" tabindex="0">3-3 - Shield Calibration
+Objective:
+Listen up, Space Cadets! It's time to calibrate the spaceship's shield to protect us from the perils of the cosmos. We need your math skills to correctly divide and distribute the power of the shield among its different sections. The mission involves using repeated addition (which is essentially multiplication) and skip counting (a form of division).
+Mission Steps:
+Power Distribution: Now, we need to divide the total power amongst different sections of the ship. We have 80 total units of power. Use skip counting to distribute this power evenly across the shield.
+Mission Materials:
+Use counters or tokens to represent units of power, and a circular mat or platform divided into sections to represent the shield. Place the appropriate number of counters in each section to represent the power allocated.
+Learning Objectives:
+Understand and apply the concepts of multiplication using repeated addition and division using skip counting.
+Performance Assessment:
+Your ability to distribute the power evenly across the shield sections and your understanding of repeated addition and skip counting will determine your mission success.
+Mission Conclusion:
+Brilliant work, Space Cadets! Your deft calculations have ensured the ship's shield is well calibrated and powered up. You've successfully applied multiplication and division concepts to real-world scenarios. Share you work with your teacher and get a new card (or choose your ship part if you have completed all of the Shield Generator tasks)
+

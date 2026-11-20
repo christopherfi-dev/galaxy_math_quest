@@ -1,0 +1,40 @@
+﻿5 Buildings and their Distances
+
+
+
+
+Building Letter
+	Distance (in miles) from Target Building
+	
+
+
+
+A
+	
+
+	
+
+
+
+B
+	
+
+	
+
+
+
+C
+	
+
+	
+
+
+
+D
+	
+
+	
+
+
+
+E

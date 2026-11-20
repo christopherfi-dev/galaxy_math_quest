@@ -1,0 +1,27 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/ship-parts/weapons-system
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Weapons Systems
+Introduction:
+Your starship's Weapon System is its teeth and claws, the primary means of defense and offense in the vast and often dangerous cosmos. Each Weapon System type offers a unique balance between Health Points (HP) and Attack Points (AP), affecting both the durability of your armament and its damage-dealing potential. Choose and upgrade wisely to ensure you're never caught off-guard in the celestial wilderness.
+Starting Weapon Systems:
+Standard Arsenal: The balanced choice for explorers who value reliability and versatility. (HP - 10, AP - 15)
+Pulsar Phaser: For those who believe the best defense is a strong offense. (HP - 5, AP - 25)
+Proton Launcher: The perfect balance between firepower and durability. (HP - 15, AP - 15)
+Supernova Arsenal: The lucky draw for those who want it all - exceptional firepower and excellent durability. (HP - 15, AP - 30)
+Weapon System Enhancements:
+Boost your Weapon System to new heights with these upgrades. Each level not only increases your HP and AP but certain levels also grant special abilities that can turn the tide of battle.
+Level 2: Laser Sight Enhancer - Fine-tune your aim for greater effectiveness. (+4 HP, +3 AP)
+Level 3: Gauss Driver Booster - Improves your weaponry and activates Rapid Fire, allowing you to use two attack cards per turn. (+8 HP, +7 AP)
+Level 4: Proton Charge Amplifier - Supercharge your weapons for greater damage output. (+12 HP, +11 AP)
+Level 5: Neutron Beam Optimizer - Focus your firepower for maximum impact. (+16 HP, +15 AP)
+Level 6: Quantum Missile Matrix - Adds impressive power and activates Precision Strike, allowing you to bypass a ship's shield once per game. The defender can choose where the hit lands. (+20 HP, +19 AP)
+Level 7: Plasma Cannon Enhancer - Superheats your weapons for even greater power. (+24 HP, +23 AP)
+Level 8: Ion Blaster Booster - Unleashes a torrent of high-energy ions to pummel your enemies. (+28 HP, +27 AP)
+Level 9: Photon Torpedo Matrix - Harness the power of light itself to devastate your opponents. (+32 HP, +31 AP)
+Level 10: Galactic Arsenal Modifier - The ultimate weapon upgrade. Activates EMP Blast, allowing you to bypass a ship's shield once per game. Unlike Precision Strike, the attacker chooses where the hit lands. (+36 HP, +35 AP)
+Every journey through the cosmos is fraught with potential danger. A well-chosen and expertly upgraded Weapon System could mean the difference between reaching the stars and drifting aimlessly in the void. So, set your sights high and keep your cannons ready!
+

@@ -1,0 +1,31 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/navigation-system/2-3-cargo-load-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">2-3 - Cargo Load
+Objective: Before launch, fill cargo wisely. We have 11 options, 30-ton limit, but only 7 items fit.
+Mission Steps:
+Review Cargo: List shows items A-K, weights 1-7 tons. Examine.
+Pick Items: Choose 7 items. Total weight must equal 30 tons. Iterate combinations.
+Confirm Weight: Add weights, check equals 30 tons.
+Item Count: Verify only 7 items picked, no more, no less.
+Learning Goals:
+Use addition for real-world problems.
+Enhance critical thinking through optimization.
+Mission Materials: For this mission, you'll be provided with the following list of potential cargo items. Find them in a baggie.
+A. Space food supplies: 3 tons
+B. Life support system: 7 tons
+C. Science equipment: 5 tons
+D. Water reservoir: 6 tons
+E. Communications gear: 4 tons
+F. Spare parts: 4 ton
+G. Landing gear: 2 tons
+H. Energy cells: 4 tons
+I. Space suits: 2 tons
+J. Navigation systems: 3 tons
+K. Emergency rations: 3 tons
+Performance Assessment: Efficiency in meeting weight, selecting exactly 7 items.
+Mission Conclusion: Great job! You balanced our cargo optimally. Ship's ready for a balanced launch. Share your work with your teacher and get a new card or get your Navigation System ship card!
+

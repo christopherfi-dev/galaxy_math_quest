@@ -1,0 +1,27 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/ship-parts/engine-core
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Engine Cores
+Introduction:
+The beating heart of your starship, the Engine Core, is where all the magic happens. It's the powerhouse that provides the necessary energy to propel your ship through the star-studded infinity of space. The type of Engine Core you choose for your starship has a significant impact on your journey's success. Each core type boasts different stats for Health Points (HP) and Attack Points (AP), affecting your ship's resilience and offensive capabilities.
+Starting Engine Cores:
+Standard Reactor: The workhorse of the bunch. Reliable, sturdy, and balanced. (HP - 10, AP - 10)
+Quantum Reactor: Sacrifices durability for a significant boost in power output. (HP - 20, AP - 5)
+Neutron Reactor: The most resilient core, though lacking in offensive capability. (HP - 25, AP - 0)
+Stellar Reactor: The dream draw, offering unmatched durability and power. A rare jewel among Engine Cores. (HP - 30, AP - 10) (Lucky Draw)
+Engine Core Enhancements:
+Level Up your Engine Core to unlock fantastic upgrades that further boost your HP and AP, providing extra resilience and power to tackle the rigors of space exploration. Some levels even offer special game-changing abilities!
+Level 2: Booster Upgrade - A kickstart to your Engine Core's performance. (+4 HP, +3 AP)
+Level 3: Fusion Enhancer - Boosts your Core's output and activates Overdrive Mode for an enhanced hand size. (+8 HP, +7 AP) - Players start with 6 cards in hand.
+Level 4: Particle Accelerator - A significant leap in power and resilience. (+12 HP, +11 AP)
+Level 5: Antimatter Catalyst - Unleashes the hidden power of antimatter for a stellar boost. (+16 HP, +15 AP)
+Level 6: Dark Energy Matrix - Taps into dark energy for a massive boost and activates Warp Jump for an enlarged hand size. (+20 HP, +19 AP) - Players start with 7 cards in hand.
+Level 7: Quantum Transducer - Manipulates quantum forces to provide a massive boost. (+24 HP, +23 AP)
+Level 8: Plasma Converter - Uses high-energy plasma for an even greater enhancement. (+28 HP, +27 AP)
+Level 9: Singularity Forge - Harnesses the power of a singularity for a near-endgame boost. (+32 HP, +31 AP)
+Level 10: Cosmic Reactor - The ultimate Engine Core upgrade. It activates Singularity Surge, providing you with an imposing hand size. (+36 HP, +35 AP) - Players start with 8 cards in hand.
+Choose wisely and upgrade strategically! Your Engine Core's power and durability could be the deciding factor in your space exploration journey. Remember, the stars are waiting!
+

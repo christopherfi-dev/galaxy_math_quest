@@ -1,0 +1,29 @@
+﻿Bar Graph Data - First 3 Months for kinds of food eaten and how much:
+* Vegetables: 250 units
+* Protein: 400 units
+* Grains: 350 units
+* Dairy: 200 units
+* Snacks: 150 units
+* Fruits: 300 units
+ Bar Graph Data - Last 3 Months for kinds of food eaten and how much:
+Food Type
+	Units Consumed
+	Protein
+	100
+	Dairy
+	320
+	Grains
+	400
+	Canned Goods
+	200
+	Freeze Dried
+	150
+	Snacks
+	50
+	
+
+Questions:
+a. Which form of data display do you find easier to interpret, the bar graph or the table? Why?
+b. Can you identify any notable shifts in food type consumption between the first and last three months? What could explain these shifts?
+Assessment:
+Write short paragraphs or discuss your observations, focusing on shifts in consumption patterns. Consider the implications for future provisioning plans.

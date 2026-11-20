@@ -1,0 +1,22 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/shield-generator
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Shield Generator
+Welcome to the Shield Generator station, the protective heart of our spacecraft. This device creates a powerful force field around the spaceship, protecting it from space debris, asteroids, and harmful cosmic rays. Operating the Shield Generator requires a fundamental understanding of multiplication and division, skills you will practice and enhance in the tasks that follow.
+The tasks ahead are designed to simulate real space explorations and operations. By performing these tasks, you will assist in our space mission's success and hone your mathematical skills, particularly in multiplication and division.
+Task 1 - Asteroid Field
+Objective: Navigate through a simulated asteroid field, multiplying the number of rows with columns to determine the number of asteroids you will encounter, and divide total asteroids by number of potential pathways to calculate safe passages.
+Learning Outcome: This task provides an interactive approach to understanding multiplication and division. Students will understand how multiplication and division can be used to solve real-life problems, and they'll learn to think strategically about how to navigate through challenges.
+Task 2 - Shield Energy Management: The Power of Addition and Division.
+Objective: Calculate the total power needed to keep all sections of the Shield Generator active by using repeated addition (an introduction to multiplication).
+Learning Outcome: Students will develop a deeper understanding of the relationship between repeated addition and multiplication. This forms a critical base for more advanced mathematics and provides practical experience in calculating energy requirements.
+Objective: Determine how many shield sections can be kept active with a certain amount of power available, using sharing (an introduction to division).
+Learning Outcome: This task enhances students' understanding of division as sharing or partitioning. They will learn how to distribute resources evenly and understand the importance of efficient resource management in real-life situations.
+Task 3 - Shield Calibration
+Objective: Calibrate the strength of the shield and evenly distribute its power amongst different sections of the spaceship, using repeated addition (which is essentially multiplication) and skip counting.
+Learning Outcome: Through this activity, students will practice multiplication (as repeated addition) and division (as distribution or sharing). This will help to reinforce these concepts in a practical, engaging context and demonstrates their use in problem-solving.
+It's time to energize our shields and protect our spaceship from the hazards of space. Every calculation, every distribution, every division you perform strengthens our defenses and ensures the safety of our interstellar journey. With a robust shield system, we are ready to explore even the harshest cosmic landscapes!
+

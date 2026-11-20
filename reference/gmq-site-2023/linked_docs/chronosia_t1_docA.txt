@@ -1,0 +1,33 @@
+﻿Clocks
+* Clock 1:
+   * Displayed Time: 3:67
+   * Gear Unlocked  ▢
+   * Corrected Time: ___________
+* Clock 2:
+   * Displayed Time: 12:15 (PM)
+   * Gear Unlocked ▢
+   * Corrected Time: ___________
+* Clock 3:
+   * Displayed Time: 14:75
+   * Gear Unlocked ▢
+   * Corrected Time: ___________
+* Clock 4:
+   * Displayed Time: 9:42 (AM)
+   * Gear Unlocked ▢
+   * Corrected Time: ___________
+* Clock 5:
+   * Displayed Time: 25:00
+   * Gear Unlocked ▢
+   * Corrected Time: ___________
+* Clock 6:
+   * Displayed Time: 7:99
+   * Gear Unlocked ▢
+   * Corrected Time: ___________
+* Clock 7:
+   * Displayed Time: 5:30 (PM)
+   * Gear Unlocked ▢
+   * Corrected Time: ___________
+* Clock 8:
+   * Displayed Time: 0:00
+   * Gear Unlocked ▢
+   * Corrected Time: ___________

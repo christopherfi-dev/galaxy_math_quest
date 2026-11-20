@@ -1,0 +1,18 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Space Station Tasks
+When you arrive at the KIS Space Station, your spaceship is barely holding together.
+Scrap metal held the hull in place, the engine core ran on fumes, and the navigation system relied more on hope than coordinates. It was a miracle you even made it here. But, in the infinite expanse of the universe, you have found a beacon of hope, an opportunity to rebuild and rediscover the cosmos.
+The galaxy can be a dangerous place, but KIS Space Station has offered you a chance to prove your worth and revive your vessel. By completing tasks, not only do you acquire essential ship parts and systems, but you also demonstrate your ability to command a ship and navigate the uncertainties of space.
+The first task tests your ability to count and recognize numbers. The Engine Core of your ship is locked away and the only way to recover it is by calculating the correct codes. Counting space debris, identifying alien species in a grid, and mapping stars to find the right sequence of numbers will test your counting skills and help you recover your Engine Core.
+Next, you'll be challenged with basic addition and subtraction problems, the backbone of your Navigation System recalibration. Figuring out fuel calculations for your journey, plotting the right coordinates, and determining the maximum weight your ship can carry will hone your arithmetic skills and restore your Navigation System.
+The third task brings us to your Ship Defense: the Shield Generator. To protect yourself from threats, you'll need to master multiplication and division concepts. By calculating energy requirements, determining safe passage through asteroid fields, and calibrating your shield's strength, you will ensure your ship can withstand any assault.
+The fourth task involves upgrading your Offensive Systems: the Weapon System. Understanding the properties of odd and even numbers is crucial here. From coding your weapons to balancing your ammunition, to practicing targeting with your newfound knowledge of odd and even numbers, you will ensure that your ship is ready for any offensive action it may need to undertake.
+The final task is about Powering Up your ship's Power Module. You will need to understand the concept of place value to effectively distribute power across your spaceship. Connecting circuits in the right order, partitioning your ship's total power, and regrouping power distribution in an emergency scenario will test your understanding of numbers and their values.
+The universe is vast and unpredictable. Your spaceship is not just a vessel, but a lifeline in the cold expanse of space. To pilot it, you must understand its parts as much as you understand the numbers that guide its operations. These tasks are not just about improving your ship, they're about equipping you with the knowledge and skills necessary to explore, survive, and thrive among the stars.
+Welcome to your journey, cadet. The universe awaits.
+

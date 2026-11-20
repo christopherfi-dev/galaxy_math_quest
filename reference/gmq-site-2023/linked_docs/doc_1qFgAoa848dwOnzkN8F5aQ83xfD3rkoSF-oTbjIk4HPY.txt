@@ -1,0 +1,25 @@
+﻿Data Sheet on Fuel Usage and Distance Traveled
+Fuel Usage Data (in gallons)
+
+
+* January: 500
+* February: 480
+* March: 450
+* April: 530 
+* May: 400
+* June: 390
+* July: 360  
+* August: 480
+* September: 500
+Distance Traveled Data (in miles)
+
+
+* January: 1000
+* February: 900
+* March: 850
+* April: 700  
+* May: 950
+* June: 920
+* July: 1100 
+* August: 900
+* September: 1000

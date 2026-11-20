@@ -1,0 +1,25 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/engine-core/1-1-alien-artifacts
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/forms/d/e/1FAIpQLSfP_zT-UtVNC0DljgRFn0RzLw9Q81QE1ZhrTVikbrh2lMyFXw/viewform?usp=sf_link  https://www.loom.com/share/77fb44751f7644279ff07ada3201c9c6?sid=ed055545-803f-48bb-93fa-2375e4b2a444
+EMBEDS: none
+----
+role="main" tabindex="0">1-1 - Alien Artifacts
+Objective:
+Hi Space Cadets! We got a box of alien artifacts. There are 4 kinds. They are different colos.. Your job is to count them and use them to make a code to start our spaceship.
+Introduction Video
+Mission Steps:
+Look at the bag: Check out the box with colorful counters.
+Count Colors: Count each color. Keep each color’s count separate.
+Write Totals: Note down how many of each color.
+Make a Code: Put the counts in order (red-blue-green-yellow) to make a code (like 3642).
+Click here -----> Unlock the Engine Core: Enter the code to unlock the Engine Core and power our spaceship!
+Learning Objectives:
+Counting things and keeping track.
+Making a code from counts.
+Being a good noticer is key!
+Performance Assessment:
+Upon completing this task, we will assess your ability to accurately count, separate, and record different objects. We'll also evaluate your ability to correctly order these numbers to generate the Engine Core code.
+Mission Conclusion:
+Great work, Space Cadet! Your counts helps get spaceship ready to fly! Share your work with your teacher to get a new card. Let's power up the Engine Core!
+

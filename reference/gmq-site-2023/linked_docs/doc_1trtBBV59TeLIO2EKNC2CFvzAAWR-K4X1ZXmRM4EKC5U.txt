@@ -1,0 +1,165 @@
+﻿Distance Data Sheet with Potential Profits
+Round distance to the nearest 10. Each light year = 1 fuel token.
+Round profit to nearest 100.
+
+
+Planet Name
+	Distance
+	Distance
+Rounded
+	Profit
+	Profit
+Rounded
+	Planet A
+	12 light years
+	(10)
+	507
+	
+
+	Planet B
+	26
+	
+
+	812
+	
+
+	Planet C
+	33
+	
+
+	1209
+	
+
+	Planet D
+	18
+	
+
+	459
+	
+
+	Planet E
+	44
+	
+
+	1004
+	
+
+	Planet F
+	5
+	
+
+	307
+	
+
+	Planet G
+	22
+	
+
+	709
+	
+
+	Planet H
+	25
+	
+
+	756
+	
+
+	Planet I
+	45
+	
+
+	1408
+	
+
+	Planet J
+	17
+	
+
+	608
+	
+
+	
+
+
+
+For the Challenge Round - 
+Round distance to the nearest 10. 
+Round profit to nearest 100.
+
+
+Planet Name
+	Distance
+	Distance
+Rounded
+	Profit
+	Profit
+Rounded
+	Planet K
+	37
+	
+
+	1337
+	
+
+	Planet L
+	53
+	
+
+	889
+	
+
+	Planet M
+	28
+	
+
+	467
+	
+
+	Planet N
+	66
+	
+
+	3129
+	
+
+	Planet O
+	52
+	
+
+	2764
+	
+
+	Planet P
+	71
+	
+
+	1583
+	
+
+	Planet Q
+	48
+	
+
+	945
+	
+
+	Planet R
+	59
+	
+
+	2221
+	
+
+	Planet S
+	41
+	
+
+	1896
+	
+
+	Planet T
+	64
+	
+
+	1007

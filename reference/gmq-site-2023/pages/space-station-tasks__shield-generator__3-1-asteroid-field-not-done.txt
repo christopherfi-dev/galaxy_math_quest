@@ -1,0 +1,29 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/shield-generator/3-1-asteroid-field-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://drive.google.com/file/d/1-2R_xjOmqMMYe5-r2J3BXB1m_L2-lhOf/view?usp=sharing
+EMBEDS: none
+----
+role="main" tabindex="0">3-1 - Asteroid Field
+Objective:
+Space Navigators, we need to fly through a field full of asteroids! Your job is to find which path has fewer asteroids. Count the rocks on each path and pick the one with the least.
+Mission Steps:
+Look at the Grid: It shows a field of space rocks.
+Count Rocks: Rows x Columns = Total rocks.
+Find Paths: Three ways through the rocks. Which has fewer rocks?
+Pick Path: Use your counts to pick the safest way.
+Reflect: Write why you picked this way. Take a picture. Put it in your Portfolio.
+Learning Objectives:
+Learn to multiply and divide.
+Think ahead to solve problems.
+Materials Needed:
+Go get this sheet with the asteroid field.
+Pen and paper.
+Performance Assessment:
+Did you count right?
+Did you use math to pick a safe way?
+Did you think and write about it?
+Mission Conclusion:
+Wow, Space Navigators! You used math to find a safe way through rocks. It’s not just about counting, but how to use it.
+Share your work with your teacher and get a new card (or choose your ship part if you have completed all of the Shield Generator tasks).
+

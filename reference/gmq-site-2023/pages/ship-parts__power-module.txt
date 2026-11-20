@@ -1,0 +1,27 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/ship-parts/power-module
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Power Modules
+Introduction:
+In the infinite expanse of space, your starship's Power Module is the heart that keeps every system alive and functioning. A potent Power Module ensures that your engines hum, your shields shimmer, and your weapons crackle with energy. The HP represents its resilience, while the AP influences the overall power output affecting all other ship systems. Choose your Power Module carefully and upgrade it wisely to keep your starship pulsing with energy and ready for any challenge.
+Starting Power Modules:
+Standard Battery: A reliable and balanced power source, perfect for captains who value steadiness. (HP - 15, AP - 10)
+Quantum Dynamo: A cutting-edge technology offering balanced power output and durability. (HP - 25, AP - 5)
+Proton Generator: The top choice for those valuing durability over power output. (HP - 30, AP - 0)
+Galaxy Battery: The lucky draw for those who demand both exceptional durability and high power output. (HP - 30, AP - 15)
+Power Module Enhancements:
+Power up your ship to new heights with these spectacular upgrades. Each level not only increases your HP and AP but also grants special defensive abilities at certain levels.
+Level 2: Battery Optimizer - Enhances your power storage capacity. (+4 HP, +3 AP)
+Level 3: Energy Overload - Supercharges your module and grants you the ability to double a ship part's remaining HP during an attack, once per game, by discarding a card from your hand. (+8 HP, +7 AP)
+Level 4: Dynamo Booster - Gives your energy generation a significant boost. (+12 HP, +11 AP)
+Level 5: Reactor Amplifier - Drastically increases your power output. (+16 HP, +15 AP)
+Level 6: Force Field - Strengthens your defenses and grants you the ability to recover a ship part's full HP during an attack, once per game, by discarding two cards from your hand. (+20 HP, +19 AP)
+Level 7: Quantum Battery Enhancer - Enhances your power storage for the long haul. (+24 HP, +23 AP)
+Level 8: Neutron Reservoir Booster - Grants you a massive energy reservoir to draw from. (+28 HP, +27 AP)
+Level 9: Ion Capacitor Matrix - Improves your energy storage and transfer rates dramatically. (+32 HP, +31 AP)
+Level 10: Energy Conversion - Enables you the ability to recover the full HP for your Shield and Weapons once per game, by discarding three cards from your hand. (+36 HP, +35 AP)
+A powerful heart makes for a robust starship. Choose your Power Module and its upgrades wisely to ensure that your journey among the stars is both long and successful!
+

@@ -1,0 +1,39 @@
+﻿Coding Cards:
+
+
+Card 1:
+* Front: "3, 5, 7, 9, 11"
+* Back: "1"
+Card 2:
+* Front: "2, 4, 6, 8, 10"
+* Back: "2"
+Card 3:
+* Front: "5, 10, 15, 20, 25"
+* Back: "3"
+Card 4:
+* Front: "1, 3, 5, 7, 21"
+* Back: "4"
+Card 5:
+* Front: "9, 7, 5, 3, 1"
+* Back: "5"
+
+
+
+
+
+
+Card 6:
+* Front: "2, 3, 5, 7, 11"
+* Back: "6"
+Card 7:
+* Front: "10, 8, 6, 4, 2"
+* Back: "7"
+Card 8:
+* Front: "3, 3, 3, 3, 3"
+* Back: "8"
+Card 9:
+* Front: "1, 23, 43, 45, 55"
+* Back: "9"
+Card 10:
+* Front: "4, 8, 12, 16, 20"
+* Back: "10"

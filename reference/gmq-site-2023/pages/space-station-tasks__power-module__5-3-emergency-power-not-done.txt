@@ -1,0 +1,38 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/power-module/5-3-emergency-power-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">5-3 - Emergency Power
+Objective:
+Alert, Power Engineers! We're facing an emergency! An asteroid has damaged some of our systems and we need to quickly adjust our power allocation. Your mission is to regroup power distribution, focusing on keeping critical systems online. This task will reinforce your understanding of place value.
+YOU MAY WORK AS A TWO-PERSON TEAM ON THIS TASK!
+Mission Steps:
+Understand the Emergency: Our Shield Generator and Weapon System have been damaged and can no longer handle their original power allocation. Here are the new power limits:
+Shield Generator: 500 units (down from 1097)
+Weapon System: 150 units (down from 933)
+Prioritize Power: The Engine Core and Navigation System are crucial for our survival. We need to keep these systems online by ensuring their power allocation is as equal as possible.
+Redistribute Power: Using your 1000, 100, 10, and 1 blocks, redistribute power to each system respecting the new power limits and place value requirements. Remember, we need to balance power between the Engine Core and Navigation System while staying within the new limits for the Shield Generator and Weapon System.
+Remember - these are the previous numbers. You need to make sure the Engine Core and Navigation System are now the same.
+Study the Power Requirements: Each system requires power in different quantities. Here were the previous requirements:
+Engine Core: 1237 units
+Navigation System: 1193 units
+Shield Generator: 1097 units (now 500)
+Weapon System: 933 units (now 150)
+NOW YOU MUST MAKE SURE THE ENGINE CORE and NAVIGATION SYSTEM HAVE THE SAME UNITS! (and we must use all of the power available)
+Allocate Power: Using your 1000, 100, 10, and 1 blocks, allocate power to each system respecting its place value requirements. You need to ensure that no system gets more or less than its required units.
+Available Blocks:
+Two 1000 blocks
+Twenty 100 blocks
+Forty 10 blocks
+Sixty 1 blocks
+Review and Adjust: Once you've reassigned the power, double-check your work. Make sure that your allocations don't exceed the new limits and that power is balanced between the Engine Core and Navigation System.
+Make a video explaining how you moved the power around, and what your final numbers are. Put this in your Google Drive.
+Learning Objectives:
+By the end of this task, you should be able to re-allocate and balance numbers respecting place value, even in an emergency scenario.
+Performance Assessment:
+Your performance will be assessed based on how accurately you redistribute power, respecting the place value and the constraints of the emergency situation.
+Mission Conclusion:
+Excellent work, Power Engineers! You've shown great resourcefulness and quick thinking in a crisis. Your solid understanding of place value has saved the day! Brace yourself for your next challenge.  Share your work with your teacher and get a new card (or choose your ship part if you have completed all of the Power Module tasks).
+

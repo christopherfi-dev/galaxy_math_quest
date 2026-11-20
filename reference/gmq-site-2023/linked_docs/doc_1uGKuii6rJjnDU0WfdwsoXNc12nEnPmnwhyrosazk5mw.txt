@@ -1,0 +1,44 @@
+﻿Housing: 
+Positive Effect: You invested in quality housing! Your colony's residents are happy and productive, leading to a bonus in energy generation (+150 energy units for next cycle).
+Negative Effect: You skimped on housing. Residents are unhappy, reducing productivity. Prepare for a dip in energy (-75 energy units for next cycle).
+
+
+
+
+
+
+	Farming Drones: 
+Positive Effect: Your state-of-the-art farming domes produce enough food to not only feed the colony but also to export! (+240 energy units for next cycle).
+Negative Effect:  Your underinvestment in farming led to food scarcity. People are hungry and morale is low (-120 energy units for next cycle).
+	Research Facility: 
+Positive Effect: Your research facility made a groundbreaking discovery in energy conservation. You have +460 energy units for future projects.
+Negative Effect: Without sufficient investment, your researchers couldn't make progress. Missed opportunities cost you (-200 energy units for next cycle).
+
+
+
+
+	Spaceport: 
+Positive Effect: Efficient spaceports have attracted interstellar businesses to your colony (+560 energy units for next cycle).
+Negative Effect: Poorly planned spaceports create bottlenecks in trade. Delays cost you (-250 energy units for next cycle).
+	Solar Farms: 
+Positive Effect: Your solar farms are so efficient they're generating surplus energy (+470 energy units for next cycle).
+Negative Effect: Subpar solar farms can't meet the colony's energy needs. Prepare for blackouts (-240 energy units for next cycle).
+
+
+	Water Purification: 
+Positive Effect: Clean water boosts public health, increasing overall productivity (+320 energy units for next cycle).
+Negative Effect: Contaminated water causes a health crisis (-150 energy units for next cycle).
+	Commercial Centers: 
+Positive Effect: Booming businesses have led to a prosperous colony (+250 energy units for next cycle).
+Negative Effect: Low investment in commercial centers leads to high unemployment (-120 energy units for next cycle).
+
+
+	Communication Towers: 
+Positive Effect: Excellent communication boosts logistics and operations (+415 energy units for next cycle).
+Negative Effect: Poor communication leads to inefficiencies and mistakes (-210 energy units for next cycle).
+	Parks: 
+Positive Effect: Happy colonists are more productive (+225 energy units for next cycle).
+Negative Effect: Lack of recreational activities increases stress, reducing productivity (-115 energy units for next cycle).
+	Defense Systems: 
+Positive Effect: Your colony is safe from external threats, attracting more settlers (+330 energy units for next cycle).
+Negative Effect: Low defense investments make you vulnerable to attacks (-125 energy units for next cycle).

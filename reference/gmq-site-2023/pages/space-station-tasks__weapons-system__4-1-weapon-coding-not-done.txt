@@ -1,0 +1,23 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/weapons-system/4-1-weapon-coding-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1FgWsgQtBYs0bQJPfEEfT8x4v6dfz7SiO6cu4VpMKqEI/edit?usp=sharing  https://docs.google.com/forms/d/e/1FAIpQLSe_bd8mcCcUpLtAkq7PCUgj5A6A5a962pAIc1ZU3qZmRBe2zA/viewform?usp=sf_link
+EMBEDS: none
+----
+role="main" tabindex="0">4-1 - Weapons Coding
+Objective:
+Warriors, the spaceship's weapon system needs precise codes. Use your knowledge of odd and even number sequences to activate it.
+Mission Steps:
+Get the coding Cards: Each card you have been provided has a number sequence on it. This sequence is key to coding the weapon system.
+Analyze the Sequence: Examine each sequence closely. Determine if the sequence consists of odd or even numbers.
+Validate the Code: The criteria for activating our weapon system is finding sequences that are all odd numbers. Discover 5 such sequences among your cards.
+Order the Code: On the back of each card is a number from 1-10. Arrange these numbers in ascending order (from smallest to largest) to form the final code for the weapon system.
+Activate the Weapon System (click here): If your code is correct, the weapon system will spring to life, ready to protect us from potential dangers!
+Learning Objectives:
+By the end of this task, you should be able to differentiate between odd and even number sequences.
+You should be able to apply your understanding of sequences and odd numbers to solve a real-world problem – coding a weapon system.
+Performance Assessment:
+Your ability to correctly identify odd number sequences, arrange numbers in ascending order, and correctly apply your findings to activate the weapon system will be assessed.
+Mission Conclusion:
+Well done, Warrior! With your astute understanding of numbers and sequences, our spaceship's weapon system is now online and ready to face any intergalactic challenges that might come our way. Your careful analysis and precision have proven invaluable. Share you work with your teacher and get a new card (or choose your ship part if you have completed all of the Weapons Systems tasks).
+

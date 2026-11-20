@@ -1,0 +1,27 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/ship-parts/shield-generator
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Shield Generators
+Introduction:
+Your starship's Shield Generator is the first line of defense against the cosmic dangers lurking in the vast expanse of the universe. From micro-meteorites to hostile laser fire, your shields absorb and dissipate these threats, protecting the essential systems of your ship. The HP represents the shield's durability, while the AP represents its energy-absorption efficiency. Choose the best Shield Generator for your ship and upgrade it wisely to keep your crew and systems safe in the treacherous starry seas.
+Starting Shield Generators:
+Standard Shield: A balanced shielding option, perfect for those who value simplicity and reliability, and increases your ship's total shield to 100 HP. (HP - 20, AP - 0)
+Quantum Deflector: An advanced technology offering greater energy absorption at the cost of slight durability, and increases your ship's total shield to 100 HP. (HP - 35, AP - 0)
+Neutron Wall: A heavy-duty option for those who prioritize resilience over energy efficiency, and increases your ship's total shield to 100 HP. (HP - 30, AP - 5)
+Nova Shield: The lucky draw for captains seeking the best in both durability and absorption efficiency, and increases your ship's total shield to 100 HP (HP - 40, AP - 10)
+Shield Generator Enhancements:
+Protect your ship with these powerful upgrades. Each level not only increases your HP and AP, but also significantly enhances your ship's total shielding capacity at certain levels.
+Level 2: Magnetic Field Amplifier - Enhances the strength of your ship's magnetic field. (+4 HP, +3 AP)
+Level 3: Reinforced Shield Matrix - Amplifies your shield density and increases your ship's total shield to 140 HP. (+8 HP, +7 AP)
+Level 4: Ion Shield Reinforcer - Enhances your shield's ion absorption, preventing damage from ion-based attacks. (+12 HP, +11 AP)
+Level 5: Deflector Pattern Optimizer - Optimizes the pattern of your deflector shield for better energy efficiency. (+16 HP, +15 AP)
+Level 6: Adaptive Shield Harmonics - Enhances your shield to adapt to incoming attacks, increasing your ship's total shield to 220 HP. (+20 HP, +19 AP)
+Level 7: Quantum Aegis Amplifier - Boosts your shield's power, enhancing its energy-absorption efficiency. (+24 HP, +23 AP)
+Level 8: Proton Wall Enhancer - Amplifies the strength of your Proton Wall, creating an almost impenetrable barrier. (+28 HP, +27 AP)
+Level 9: Photon Shield Matrix - Optimizes your shield's photon absorption, preventing damage from photon-based attacks. (+32 HP, +31 AP)
+Level 10: Quantum Aegis Field - Creates a powerful field that significantly boosts your shield's durability and absorption efficiency, increasing your ship's total shield to 360 HP. (+36 HP, +35 AP)
+With a strong Shield Generator and its upgrades, your starship can face the toughest cosmic challenges head-on, ensuring your journey across the stars is a safe and successful one!
+

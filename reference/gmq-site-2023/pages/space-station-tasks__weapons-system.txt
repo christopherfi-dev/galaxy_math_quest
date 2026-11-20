@@ -1,0 +1,23 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/weapons-system
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Weapons System
+Welcome, space cadets, to the Weapon System Station! Here, our primary objective is to maintain a powerful and efficient defense system to protect us during our journey across the cosmos. Operating the Weapon System involves identifying sequences, keeping track of our ammunition, and refining our targeting capabilities. But here's the twist: it all revolves around your understanding of odd and even numbers.
+Let's dive in and explore how you can leverage your mathematical skills to ensure our voyage remains safe and secure.
+Task 1 - Weapon Coding
+Objective: Identify sequences of odd and even numbers to code the weapon system correctly.
+Engage in the process of Weapon Coding, where you'll be presented with different sequences of numbers. Your mission is to identify whether each sequence is made up of odd or even numbers. Successfully decoding these sequences will enable us to activate our Weapon System.
+Learning Outcome: This task introduces students to patterns and sequences of numbers, reinforcing their understanding of odd and even numbers and their ability to recognize sequences.
+Task 2 - Ammo Count
+Objective: Ensure the spaceship has an even number of each type of ammunition to maintain balance.
+Prepare yourself for an Ammo Count, a critical mission where you'll need to ensure that each type of ammunition we have on board is in even numbers. This mission is crucial for maintaining the balance and functionality of our Weapon System.
+Learning Outcome: This activity allows students to apply their understanding of odd and even numbers in a practical, hands-on way. It also reinforces counting skills and the concept of quantity balance.
+Task 3 - Target Practice
+Objective: Use your understanding of odd and even numbers to correctly target practice drones in a simulation.
+Lastly, put your skills to the test in Target Practice. In this thrilling simulation, you'll need to target drones marked with different numbers. Your mission is to achieve an even score between 32 and 40 points.
+Learning Outcome: This task presents a fun, interactive way to reinforce the concept of odd and even numbers. It also promotes physical activity and fine-tunes hand-eye coordination.
+Remember, every number sequence we decode, every piece of ammunition we count, and every drone we target brings us closer to a successful journey through the cosmos. Through these tasks, you'll see how math helps us to operate our Weapon System efficiently. Are you ready? Let's gear up and protect our spaceship!
+

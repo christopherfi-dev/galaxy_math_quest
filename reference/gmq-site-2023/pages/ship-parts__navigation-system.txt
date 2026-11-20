@@ -1,0 +1,27 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/ship-parts/navigation-system
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Navigation System
+Introduction:
+The Navigation System is the key to finding your way through the immense expanse of the cosmos. Whether you're charting a course through a dense asteroid field, plotting a hyperjump across the galaxy, or simply aligning with the nearest space station, your Navigation System will be there to guide your way. The HP signifies the system's resilience, while the AP indicates its computing power for calculating complex routes and maneuvers. Here are your primary options, along with subsequent enhancements.
+Starting Navigation Systems:
+Standard Navigator: The stalwart option for the practical captain, offering balanced resilience and computing power. (HP - 15, AP - 5)
+Astrolabe Navigator: Designed for complex navigational calculations, though it comes with reduced system resilience. (HP - 25, AP - 0)
+Celestial Cartographer: The pinnacle of resilience, but with reduced computational abilities. Ideal for explorers venturing into dangerous territories. (HP - 15, AP - 10)
+Cosmic Navigator: The lucky draw for explorers who want the best of both worlds—excellent durability and superior computational power. (HP - 20, AP - 15)
+Navigation System Enhancements:
+Take your navigation to the next level with these system upgrades, each boosting your system's HP and AP. Certain levels also provide strategic gameplay advantages.
+Level 2: Inertial Dampener - Provides additional stability during complex maneuvers. (+4 HP, +3 AP)
+Level 3: Hyperspace Jump - Enhances your system's capacity for rapid travel, allowing an extra move/attack once per game. (+8 HP, +7 AP)
+Level 4: Holographic Star Map - Expands your system's stellar cartography capabilities, providing precise cosmic positioning. (+12 HP, +11 AP)
+Level 5: Quantum Compass - Further enhances your course-plotting abilities with quantum calculations. (+16 HP, +15 AP)
+Level 6: Cosmic Pathway - Equips your ship with advanced evasion algorithms, enabling a 1/6 chance of dodging each and every attack. (+20 HP, +19 AP)
+Level 7: Celestial Sextant - Precisely measures the position of stars to help plot the most accurate courses. (+24 HP, +23 AP)
+Level 8: Galactic Wayfinder - Broadens your navigational scope to cover the entire galaxy. (+28 HP, +27 AP)
+Level 9: Hyperlane Mapper - Identifies and plots course through the fastest routes in space. (+32 HP, +31 AP)
+Level 10: Multiverse Mapping - Harnesses cutting-edge multiverse theories, allowing two consecutive turns once per game. (+36 HP, +35 AP)
+Equip your ship with a top-notch Navigation System, and the stars will never lead you astray! Chart your course and let the journey unfold.
+

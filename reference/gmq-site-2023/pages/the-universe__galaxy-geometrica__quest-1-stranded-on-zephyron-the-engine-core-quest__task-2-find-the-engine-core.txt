@@ -1,0 +1,31 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-geometrica/quest-1-stranded-on-zephyron-the-engine-core-quest/task-2-find-the-engine-core
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1Mdmgyvds2QoeMjkOvbaVYcjrOpdu0O5ck4u1ptWc4UI/edit?usp=sharing  https://docs.google.com/forms/d/e/1FAIpQLScfMvRKAocTGEIDNzz3qxiv-CGKGn6mz5P6AafaDlxymNCRog/viewform?usp=sf_link  https://drive.google.com/file/d/1_r7G97Td-BY03L_FB0WLVlyTFyWKHSYr/view?usp=drive_link  https://www.loom.com/share/3a7673201bf6485c9945c3421a75de2c?sid=42cd549a-0503-4636-bbaf-fa3bd530b0a2
+EMBEDS: none
+----
+role="main" tabindex="0">Task 2 - Find the Engine Core!
+Commanders -
+Now that we know which city has our needed Engine Core, the next step is getting into that city undetected. We have intel on 5 secret entrances into the city. Your mission is to find the entrance that is precisely 10 miles away from the building where the Engine Core is stored.
+Watch this video for instructions - LINK
+Objective:
+Identify the secret entrance that is exactly 10 miles away from the target building. The Target Building is the Green Flag! This will ensure we have a safe, quick, and strategic entry and exit.
+Materials Needed:
+City Map with Secret Entrances and Target Building: A detailed map with labeled secret entrances and the location of the building housing the Engine Core.
+Ruler for Measuring Scale: To measure distances accurately on the map.
+Mission Steps:
+Analyze the Entrances: The Target Building is the Green Flag! Which building is exactly 10 miles away?
+Begin Measuring: Use the scale on the city map to measure the distances from the target building to each of the 5 secret entrances.
+Record Your Findings: Note down the names or codes of the secret entrances along with their distances to the target building.
+Submit Your Answers: Click on the link to a Google Form and input the letter of the secret entrance exactly 10 miles away from the target building. If you put in the wrong answer, you cannot answer again for 1 day.
+Learning Objectives:
+By the end of this quest, you should be able to:
+Understand and apply the concept of map scales to real-world navigation.
+Use geometry tools like rulers to measure distance
+Performance Assessment:
+Your performance will be assessed based on your ability to:
+Accurately measure and understand distances using the map scale.
+Utilize geometric tools to make precise navigational decisions.
+Mission Conclusion:
+Well done, Covert Ops Team of Zephyron! You have identified the perfect secret entrance, ensuring our approach is as discreet as it is effective. This mission has honed your skills in real-world geometry and strategic planning. But keep your eyes open; our quest for the Engine Core isn't over yet.
+

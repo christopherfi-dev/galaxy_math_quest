@@ -1,0 +1,10 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-patternox
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Galaxy Patternox
+Galaxy Patternox is closed!
+The Wormhole to this galaxy has been broken! To fix it, you must first complete Quest 2 in the Numbers Universe.
+

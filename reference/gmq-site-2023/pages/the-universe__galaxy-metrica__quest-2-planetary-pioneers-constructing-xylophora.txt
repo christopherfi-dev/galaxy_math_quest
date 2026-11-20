@@ -1,0 +1,25 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-metrica/quest-2-planetary-pioneers-constructing-xylophora
+IMAGES ON PAGE: 1
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Quest 2 - Planetary Pioneers: Constructing Xylophora
+Mission Briefing:
+Greetings, Space Commanders! 🚀 Our next adventure takes us to the enchanting planet of Xylophora, a world where geometry and nature intertwine in the most extraordinary ways. Our mission is to establish a new colony, using our knowledge of area and shape to create structures in harmony with Xylophora's unique landscape.
+🚀 Where are we going?
+Prepare for a journey to Xylophora! 🌍 Envision a planet where landscapes are a tapestry of geometric forms, and the flora displays vibrant hues and bizarre shapes. The terrain is a patchwork of perfect squares, triangles, and rectangles, creating a surreal yet mesmerizing topography. 🌈📐
+You'll come across flora like the Polygonal Pines and Circular Cacti, each exhibiting shapes straight out of a geometry textbook. The local wildlife, too, reflects the geometric beauty of Xylophora, with creatures resembling living origami. 🌳🐾
+The most astounding feature? The Modular Meadows, where each patch of land is a distinct shape and size, fitting together like pieces of an ecological puzzle. 🌸🌳
+The Modular Meadows.
+Xylophora beckons with its geometric wonders, but it needs our help to build a sustainable colony that respects its unique environmental fabric. So, sharpen your pencils and rulers, Commanders, because Xylophora awaits!
+Prepare those blueprints and calculators, Commanders! We have a colony to build and a new understanding of area and geometry to achieve! 🌟
+Task 1 - Architectural Origami
+Objective: Use given shapes to design unique buildings for our colony, focusing on hospitals, houses, and more. Calculate the area each structure will cover.
+Task 2:  Efficient Use of Alien Resources
+Objective: Determine the total amount of the dried skin of the alien giant creature available for building. Calculate how many of each type of building you can build, ensuring you efficiently utilize the available resources.
+Task 3: Roofing Challenge
+Objective: Modify your building plans to include special leaf material for roofing, due to the original material's unsuitability. Recalculate the areas for the new roofing material and adjust your plans to optimize resource usage.
+Task 4: Designing the Xylophora Colony
+Objective: Arrange your buildings on a provided grid map to form a well-planned colony on Xylophora. Focus on the practical and strategic placement of each structure. Develop a map key to indicate different buildings, emphasizing thoughtful layout design.
+

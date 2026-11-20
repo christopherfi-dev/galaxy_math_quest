@@ -1,0 +1,39 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-databa/quest-1-operation-stardust-prepping-for-a-year-long-space-adventure/task-1-food-shopping/level-2-eating-schedule
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1Da255g08YtGJWyQ5MeybiqmrPBWlpaRUOP6xuLQYh_M/edit?usp=sharing  https://docs.google.com/document/d/1vkmsk7UKNOYRPDy7staScQ8NB_Wu0bKkHfys5SfduBc/edit?usp=sharing  https://www.loom.com/share/0f8ed1f69018403c81a7e8bc9cf73ad0?sid=80f6a6e9-b4bc-42bc-bcb8-50dc2b07a30c
+EMBEDS: none
+----
+role="main" tabindex="0">Level 2 - Eating Schedule
+Commanders, your food supplies are ready, but now comes the tricky part—making sure you consume them in the most efficient way! Some foods spoil faster than others. Your mission is to create a consumption schedule to make the most out of your supplies for a 12-month voyage. Can you do it?
+Watch this video for instructions - LINK
+Objective:
+Galactic Commanders, we have a big job to do! We're going to space for a whole year and we need to figure out what food to eat, and when to eat it. We need to think about how long the food can stay good and how much energy it gives us.
+Materials Needed:
+Food Supplies Data Sheet: A list of 20-25 food items with corresponding shelf life and nutritional values.
+12 Month Food Plan: Tables to fill out where you can calculate which foods to eat.
+Mission Steps:
+Get to know your food: Study the Food Info Sheet, noting how long each food lasts (shelf life), how much energy it provides (energy score), and its nutritional value. Food list is here.
+Energy Calculation: Let's calculate the energy needs for the crew for the entire voyage.
+12 months x 4 crew members x 30 energy points/month = 1440 energy points
+or 360 energy points every 3 months
+Divide your planning into four 3-month segments. Divide the 12-month journey into four 3-month parts. Pick foods for each segment based on their shelf life.
+Example -
+Months 1-3: Fresh Milk, Fresh Spinach
+5 units of Fresh Milk (5 x 6 = 30 energy points)
+4 units of Fresh Spinach (4 x 4 = 16 energy points)
+A healthy diet:  Try to make a balanced diet. Select foods with higher nutritional scores.
+Don't be Wasteful - Use up all of the food on our list.
+Finalize Your Plan: Combine all your lists into a complete 12-month food consumption schedule.
+Learning Objectives:
+By the end of this quest, you should be able to:
+You'll learn how to plan for a long trip in a way that keeps everyone healthy and doesn't waste resources.
+You'll get to apply real-world math to make sure everyone has enough energy for the journey.
+You'll practice problem-solving by balancing different factors like the variety of foods, their nutritional benefits, and how long they last.
+Performance Assessment:
+Your performance will be assessed based on your ability to:
+Your skill will be measured by how well you do the math for our energy needs and how wisely you pick the foods for each 3-month part.
+You'll also be assessed on how well you balance nutrition and make sure foods with a longer shelf life are saved for later.
+Mission Conclusion:
+Well done, Galactic Commanders! Your careful planning makes sure we have enough energy, good nutrition, and no waste for our year-long journey. Turn in your 12-month food charts to your teacher. Get ready for your next mission!
+

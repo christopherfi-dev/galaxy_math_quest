@@ -1,0 +1,17 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-databa/quest-1-operation-stardust-prepping-for-a-year-long-space-adventure/task-2-graphing-our-data
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Task 2 -
+Decoding Data with Graphs
+Hey there, future space commanders! Now that we have our food supplies figured out and know when we're going to eat them, it's time to become experts in something that even real astronauts need to know—how to understand data using graphs!
+Graphs are like secret codes that help us make smart choices. Whether we're checking how much fuel we have left or figuring out how far we've traveled in space, graphs make it all clear and easy to understand.
+Ready to dive in? Here's what we're going to explore:
+Task 2 - Decoding Data with Graphs
+Level 1 - Introduction to Bar Graphs: Voltara Mission Control: Data Analysis Quest
+Level 2 - Introduction to Line Graphs: Charting Our Galactic Journey
+Level 3 - Analyzing Fuel Usage and Distance Traveled: Charting Our Cosmic Journey
+Level 4 - Data Analysis in Space Exploration: Food for Thought in the Cosmic Kitchen
+

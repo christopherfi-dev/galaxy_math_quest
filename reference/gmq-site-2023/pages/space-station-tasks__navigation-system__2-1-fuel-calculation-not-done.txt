@@ -1,0 +1,26 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/navigation-system/2-1-fuel-calculation-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://drive.google.com/file/d/1a5_0wgmD4nOnttyD2Hcu0gv39OoN135R/view?usp=sharing
+EMBEDS: none
+----
+role="main" tabindex="0">2-1 - Fuel Calculation
+Objective:
+Attention, Space Cadets! We're flying far, but our fuel is limited. Plan a smart route and decide where to refuel. Use your add/subtract skills for fuel math.
+Click here for your ----- > Introduction Video
+Mission Steps:
+Read Map: We've got paths on a map, each cut into 5 legs max. Check the map here.
+Starting Fuel: You start with 100 liters. Different legs use different amounts.
+Pick Stop: Choose a smart place to refuel. Factor in future legs' fuel needs.
+Do Math: Add and subtract fuel for each leg. Calculate fuel needs after stops.
+What You'll Need:
+Map with paths and fuel use numbers.
+Spreadsheet for your answers. (Go find it in Google Classroom).
+What You'll Learn:
+Practical addition and subtraction.
+Smart route planning.
+Performance Assessment:
+We look at your fuel math and route choice. Better plans mean less fuel waste.
+Mission Conclusion:
+Great job, Space Cadets! Your smart fuel math gets us further. Share your work with your teacher for a new card.
+

@@ -1,0 +1,20 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/power-module
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Power Module
+Welcome to the Power Module station! This is the powerhouse of our spacecraft, where we manage and distribute the energy required for the spaceship's various operations. Working with the Power Module requires a strong understanding of place values, as we need to meticulously allocate power to every system in the spaceship.
+The tasks here are designed to simulate real spaceship operations, focusing on the allocation of power. By performing these tasks, you will help our space mission succeed and develop your understanding of place values in a practical context.
+Task 1 - Circuit Connection
+Objective: Connect circuits in the correct order to power up the Power Module using your understanding of place values.
+Learning Outcome: Students will deepen their understanding of place values through this practical, engaging task. They will see how place values can be used in real-life situations, such as electrical circuit configurations.
+Task 2 - Power Allocation
+Objective: Partition the ship's total power to different sections, using your understanding of place values.
+Learning Outcome: This task allows students to apply their understanding of place values to a practical situation. They will learn how to allocate resources efficiently and understand how place values can guide resource distribution.
+Task 3 - Emergency Power
+Objective: In an emergency scenario, reconfigure the power distribution to ensure critical systems stay online.
+Learning Outcome: This task demonstrates the practical application of place value understanding under pressure. Students will learn how to quickly reorganize resources in response to changing circumstances, a skill that has wide-ranging applications beyond mathematics.
+As we power up our spaceship and navigate through the vastness of space, remember that each correct allocation, each precise connection you make, brings us closer to the success of our mission. With a fully functional power module, we are ready to take on any challenges that come our way. Let's light up the stars!
+

@@ -1,0 +1,10 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-geometrica
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Galaxy Geometrica
+Galaxy Geometrica: A glittering expanse filled with complex shapes and spatial structures that will challenge your perception of shapes and spaces.
+Quest #1 -  Stranded on Zephyron: The Engine Core Quest
+

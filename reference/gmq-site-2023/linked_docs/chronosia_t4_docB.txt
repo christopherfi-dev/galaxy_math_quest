@@ -1,0 +1,13 @@
+﻿Character Profiles
+* Sara - The Ancient Explorer
+* Role: Senior Historian at Council of Timekeepers
+* Interests: Loves learning about ancient civilizations. Loves to open time capsules and learn from things that people put inside of them.
+* * Tim - The Starry-Eyed Engineer
+Role: Head of Astro-Tech Development
+Interests: Has been studying the sun and wants to stop it from spinning away!  Needs the help of aliens to stop the sun.
+* * Alex - The Dino-Robot Fanatic
+Role: Chief of Prehistoric and Robotic Studies
+Interests: Wants to have a pet stegosaurus. Has a robot dog, but is worried the robot is getting too smart.
+* * Zara - The Time Bender
+* Role: Quantum Physics Director
+Interests: Thinks a lot about time and space. Has realized that too much time travel is ripping holes in the universe. One of the holes is a huge black hole that is forming next to their planet!

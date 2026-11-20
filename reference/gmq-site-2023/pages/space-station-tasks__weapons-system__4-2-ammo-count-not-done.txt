@@ -1,0 +1,22 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/weapons-system/4-2-ammo-count-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://classroom.google.com/c/NzAzODU4MDA0MDE5/a/NzMxMDM5MDY0ODk4/details
+EMBEDS: none
+----
+role="main" tabindex="0">4-2 - Ammo Count
+Objective:
+Attention, Galactic Warriors! To maintain balance in our spaceship, we need to ensure an even count of each type of ammunition. Your task is to balance the ammunition count using your understanding of odd and even numbers.
+Mission Steps:
+Grab the Ammo: You get a box of counters. Each stands for a type of ammo.
+Count the Ammo: Tally each ammo type. Write it down.
+Make It Even: If you have an odd number? Make them even by adding or removing one counter.
+Verify the Counts: Once you've balanced all the counts, go through your numbers once again to confirm. And then go here and complete this bar graph.
+Learning Objectives:
+By the end of this task, you should be able to understand and apply the properties of odd and even numbers.
+You should be able to use your knowledge of odd and even numbers to solve a practical problem.
+Performance Assessment:
+Your ability to correctly identify and adjust odd counts to make them even will be assessed. It's crucial for the ship's balance that we maintain even numbers of each ammunition type.
+Mission Conclusion:
+Fantastic work, Warrior! Thanks to your careful counting and your grasp of odd and even numbers, our spaceship's ammunition is balanced, and we're ready to tackle any situation that comes our way. You've proven your ability to apply mathematical concepts in a practical scenario. Share you work with your teacher and get a new card (or choose your ship part if you have completed all of the Weapons Systems tasks).
+

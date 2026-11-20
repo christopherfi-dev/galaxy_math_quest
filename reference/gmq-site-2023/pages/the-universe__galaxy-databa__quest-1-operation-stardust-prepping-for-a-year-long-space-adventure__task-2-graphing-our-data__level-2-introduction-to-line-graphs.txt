@@ -1,0 +1,33 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-databa/quest-1-operation-stardust-prepping-for-a-year-long-space-adventure/task-2-graphing-our-data/level-2-introduction-to-line-graphs
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1qFgAoa848dwOnzkN8F5aQ83xfD3rkoSF-oTbjIk4HPY/edit?usp=sharing  https://www.loom.com/share/afcdee165d8b43ff9b9b3ebdb621c7b3?sid=a71857e0-b3b2-4dc7-a600-c15df8b28176
+EMBEDS: none
+----
+role="main" tabindex="0">Mission Control Level 2: Charting Our Galactic Journey
+Welcome, Commanders:
+We've just touched down on Planet X-205! As the mission moves forward, we'll be keeping track of how our spacecraft performs. You're responsible for plotting our fuel usage and distance traveled. We'll use line graphs to make this crystal clear!
+Watch this video for instructions - LINK
+Objective:
+Learn what a line graph is and create one to display the spacecraft's fuel usage and distance traveled over time.
+Materials Needed:
+Graph Paper
+Colored Pencils
+Data Sheet on Fuel Usage and Distance Traveled
+Mission Steps:
+Familiarize with Data: Check out the Pre-Collected Data Sheet your teacher has provided. You'll find fuel usage in gallons and distance traveled in miles for each month.
+Concept Check: Do you remember what a line graph is? It's a type of graph used to display information that changes over time. Each point on a line graph represents a particular time and value.
+Draw the Axes: On your graph paper, create a horizontal axis for time (months) and two vertical axes—one for fuel in gallons and another for distance in miles.
+Plot the Points: Using different colors, mark your points for fuel usage and distance traveled on the graph. Then, connect the dots to form lines.
+Be the Analyst: Label your axes, and give your graph a title. Also, write a few sentences on any patterns or oddities you see. Did the fuel usage decrease in a month? What might be the reason?
+Upload Your Work: Take a photo of your finished line graph and your written observations. Upload them to Google Drive.
+Learning Objectives:
+Understand how to construct a line graph.
+Apply your understanding to represent key mission data.
+Performance Assessment:
+Your success will be measured by:
+The completeness and accuracy of your line graph.
+Your ability to observe and discuss trends or anomalies in the data.
+Mission Conclusion:
+Awesome work, commanders! Your line graphs will be crucial for our journey’s next steps. Upload your graphs and observations to complete the mission. Await your next challenge!
+

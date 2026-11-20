@@ -1,0 +1,32 @@
+﻿Colony Needs Sheet
+Round these to the nearest 10
+* Housing
+   * Energy Units Needed: 325 - Rounded to nearest 10 = __(330)______
+   * Educational Theme: Basic infrastructure is essential.
+* Spaceport
+   * Energy Units Needed: 476 - Rounded to nearest 10 = ________
+   * Educational Theme: Transportation hubs are critical.
+* Research Facility
+   * Energy Units Needed: 248 - Rounded to nearest 10 = ________
+   * Educational Theme: Innovation requires energy.
+* Farming Domes
+   * Energy Units Needed: 365 - Rounded to nearest 10 = ________
+   * Educational Theme: Food production is vital.
+* Solar Farms
+   * Energy Units Needed: 631 - Rounded to nearest 10 = ________
+   * Educational Theme: Renewable energy sources.
+* Water Purification
+   * Energy Units Needed: 288 - Rounded to nearest 10 = ________
+   * Educational Theme: Clean water is crucial.
+* Commercial Centers
+   * Energy Units Needed: 550 - Rounded to nearest 10 = ________
+   * Educational Theme: Commerce is key to growth.
+* Communication Towers
+   * Energy Units Needed: 150 - Rounded to nearest 10 = ________
+   * Educational Theme: Communication infrastructure.
+* Recreation Facilities
+   * Energy Units Needed: 248 - Rounded to nearest 10 = ________
+   * Educational Theme: Quality of life matters.
+* Defense Systems
+   * Energy Units Needed: 462 - Rounded to nearest 10 = ________
+   * Educational Theme: Security is important.

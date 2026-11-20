@@ -1,0 +1,20 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/engine-core
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Engine Core
+Welcome to the Engine Core station, a place where the raw power of the spaceship is harnessed and controlled. This is the spacecraft's powerhouse, where all energy is generated and distributed to various parts of the spaceship. Operating and maintaining the Engine Core requires a strong understanding of numbers and keen observation skills.
+The tasks ahead are designed to simulate real space explorations and operations. By performing these tasks, you will aid in our space mission's success and at the same time, develop your numerical skills, problem-solving abilities, and understanding of data representation.
+Task 1 - Space Debris Count
+Objective: Count the number of specific debris pieces in a given image or set of images. The sum of these numbers will unlock the Engine Core.
+Learning Outcome: This task encourages visual attention and counting skills. It promotes observational accuracy and precision, vital in various scientific endeavors, especially in space, where attention to detail can mean the difference between success and failure.
+Task 2 - Alien Species Count
+Objective: Count and record the number of each alien species present in a grid, and create a simple bar graph to represent the data.
+Learning Outcome: This task develops counting skills and introduces basic data representation in the form of bar graphs. You will learn how to analyze and interpret visual data, an essential skill in scientific investigations and understanding the world around us.
+Task 3 - Star Mapping
+Objective: Follow a path of stars, counting the number of each type of star encountered. The sequence of numbers will form the code needed to unlock the Engine Core.
+Learning Outcome: This task promotes pattern recognition and sequence decoding, furthering numerical cognition. It also fosters an appreciation for astronomy and space exploration, by incorporating elements of celestial navigation and constellation mapping.
+Now, let's gear up and dive into the tasks. Remember, every count, every sequence, every graph brings us a step closer to our celestial journey's success. With the engine at full throttle, there's no corner of the universe we can't explore!
+

@@ -1,0 +1,73 @@
+﻿Distance Data Sheet for Galactic Expansion
+
+
+Colony Name
+	Distance in light years 
+	Energy Unit cost (round to nearest 100)
+	Potential Profit - Energy Units
+
+
+	Potential Profit - Energy Units
+(rounded)
+	Alpha
+	630  
+	600
+	943 
+	900
+	Beta
+	833  
+	800
+	1340 
+	1300
+	Gamma
+	955 
+	1000
+	1950 
+	2000
+	Delta
+	1042
+	
+
+	2025
+	
+
+	Epsilon
+	1186
+	
+
+	2155
+	
+
+	Zeta
+	609
+	
+
+	1123
+	
+
+	Theta
+	754
+	
+
+	960
+	
+
+	Iota
+	846
+	
+
+	1350
+	
+
+	Kappa
+	975
+	
+
+	2343
+	
+
+	Pi
+	1059
+	
+
+	2211

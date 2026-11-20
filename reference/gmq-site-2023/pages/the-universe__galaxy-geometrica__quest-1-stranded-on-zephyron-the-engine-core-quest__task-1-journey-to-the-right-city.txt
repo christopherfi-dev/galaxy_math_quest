@@ -1,0 +1,30 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-geometrica/quest-1-stranded-on-zephyron-the-engine-core-quest/task-1-journey-to-the-right-city
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1rXEIUOUskmNDTEuqfLRWMSTV8_yjLChL3CAiwQIstgU/edit?usp=sharing  https://docs.google.com/forms/d/e/1FAIpQLSewmX2lnBik4aDFat7-9OLU0aYMoWFPmq9ARym8kKws6kujBQ/viewform?usp=sf_link  https://drive.google.com/file/d/1dR3pnDeKXRRwoyNQqmWE2kr5kcjRIo_F/view?usp=drive_link  https://www.loom.com/share/afcdee165d8b43ff9b9b3ebdb621c7b3?sid=a71857e0-b3b2-4dc7-a600-c15df8b28176
+EMBEDS: none
+----
+role="main" tabindex="0">Task 1 - Journey to the Right City
+Greetings, Commanders! Our latest adventure didn't go as planned. We were off to an interstellar symposium on Zephyron when we crash-landed. Our spaceship needs a new Engine Core, and according to our intel, we must head to a city exactly 600 km away from our current location to find it.
+Watch this video for instructions - LINK
+Objective:
+Your mission is to navigate our way to the right city to find the Engine Core we so desperately need. The catch? Our map only shows a scale of up to 300 km at a time, so you'll have to use your math skills to figure this one out. We have to go 600 km!
+Materials Needed:
+World Map with Cities: A detailed map showing your current location and possible cities within 600 km.
+Ruler for Measuring Scale: To measure distances accurately on the map.
+Measurement Record: To record how far away different cities are by using the map scale
+Mission Steps:
+Measure to Multiple Points: Use the 300 km scale on the map to measure distances and calculate how to get to 5 different cities within 600 km from your current location.
+Record Your Findings: Write down the names of the 5 different cities and their calculated distances.
+Submit Your Answers: Click on the link to a Google Form and input the name of the city with our Engine Core.
+Learning Objectives:
+By the end of this quest, you should be able to:
+Understand and apply the concept of map scales to calculate real-world distances.
+Utilize coordinate planes to pinpoint locations on a map.
+Performance Assessment:
+Your performance will be assessed based on your ability to:
+Accurate calculation and understanding of distances using the map scale.
+Precise usage of the coordinate plane to identify locations.
+Mission Conclusion:
+Bravo, Navigators of Zephyron! Your mathematical prowess and strategic thinking have led us to the correct city. Not only have you figured out the intricate details of navigating with limited data, but you have also brought us a step closer to acquiring the Engine Core we need to get back home. Stay vigilant; another mission is just around the corner.
+

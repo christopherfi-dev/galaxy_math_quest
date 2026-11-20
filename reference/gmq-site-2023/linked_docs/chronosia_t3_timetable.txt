@@ -1,0 +1,67 @@
+﻿Council of Timekeepers: Annual Timetable
+Event
+	Timeline / Dimension
+	Date
+	Time (Local)
+	Duration (Minutes)
+	Restore Ancient Atlantis
+	Ancient Earth
+ New Timeline / Different Dimension
+	Oct 3, 267
+	12:00 - 12:30
+	 
+	Sun Alignment Ceremony
+	Solarius-IV
+Same Timeline / Same Dimension
+	Oct 4, 267
+	14:00 - 15:00
+	 
+	Stop the Black Hole
+	Galaxy ZY-31
+Same Timeline / Same Dimension
+	Oct 4, 267
+	14:45 - 15:45
+	 
+	Intergalactic Alien Peace Summit
+	Andromeda
+Same Timeline / Same Dimension
+	Oct 5, 267
+	10:00 - 11:30
+	 
+	Save the Dinosaurs
+	Prehistoric Earth
+ New Timeline / Different Dimension
+	Oct 5, 267
+	11:00 - 11:45
+	 
+	Prevent the Robot Uprising
+	CyberWorld-2077
+Same Timeline / Same Dimension
+	Oct 6, 267
+	09:00 - 10:30
+	 
+	Time Capsule Unveiling
+	Chronosia
+Same Timeline / Same Dimension
+	Oct 6, 267
+	09:30 - 10:00
+	 
+	Repair the Space-Time Fabric
+	Multiverse Core
+Same Timeline / Same Dimension
+	Oct 7, 267
+	13:00 - 13:20
+	 
+	________________
+
+
+
+
+
+
+1. Take your exam: Answer the following questions at the bottom of your timetable.
+* What is the shortest event on the timetable?
+* What is the longest event on the timetable?
+* Which two events are clashing on Oct 4, 267?
+* On which date are the most events scheduled?
+* How much time is there between the end of "Save the Dinosaurs" and the start of "Prevent the Robot Uprising"?

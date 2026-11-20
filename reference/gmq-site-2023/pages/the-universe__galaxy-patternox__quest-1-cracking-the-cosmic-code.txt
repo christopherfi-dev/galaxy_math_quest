@@ -1,0 +1,10 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-patternox/quest-1-cracking-the-cosmic-code
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Quest #1 - Cracking the Cosmic Code
+Quest #1 - "Cracking the Cosmic Code"
+Welcome aboard the S.S. Infinity, young explorer! Our alien spaceship is lost in the Pattern Universe, and we need your help to navigate. The secret to our course? Numeric codes. By deciphering these mysterious patterns, you will guide us home. Ready to crack the cosmic code?
+

@@ -1,0 +1,37 @@
+﻿Residential Sector 
+* Neighborhood 1: 200 units
+* Neighborhood 2: 200 units
+* Schools: 100 units
+* Hospital: 50 units
+* Parks: 50 units
+* Zoo:: 30 units
+* Swimming Pool: 20 units
+* Supermarket:  100 units
+________________
+
+
+Commercial Sector  
+* Shopping Mall: 250 units
+* Office Buildings: 200 units
+* Hotels: 150 units
+* Restaurants: 100 units
+* Sports Arena: 50 units
+* Arts Theater: 30 units
+* Bus Stop:: 20 units
+* Amusement Park: 80
+________________
+
+
+Industrial Sector  
+* Factory: 200 units
+* Solar Power Plant: 250 units
+* Warehouse: 50 units
+* Recycling Plant: 50 units
+* Gas Station: 40 units
+
+
+Available Blocks:
+150 of '1s' = 150
+70 of '10s' = 700
+8 of '100s' = 800
+Total: 1650 energy units available

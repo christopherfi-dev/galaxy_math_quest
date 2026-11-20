@@ -1,0 +1,12 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-databa/quest-1-operation-stardust-prepping-for-a-year-long-space-adventure/task-1-food-shopping
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Task 1 - Food Planning
+Welcome back, commanders! As we prepare for our next mission, we need to stock up our spacecraft with the right food supplies. We have a long list of options, but we need to make sure we are choosing the right mix to keep us healthy and make the food last. Your task is to categorize these foods in a meaningful way.
+Task 1 - Food Planning
+Level 1 - Food Shopping Lists
+Level 2 - Eating Schedule
+

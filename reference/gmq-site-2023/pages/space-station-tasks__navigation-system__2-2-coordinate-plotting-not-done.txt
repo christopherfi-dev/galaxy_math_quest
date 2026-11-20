@@ -1,0 +1,23 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/navigation-system/2-2-coordinate-plotting-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/forms/d/e/1FAIpQLSdTTiX82CwjVPoMY0ifSOZmVLAxHOSC3_wVFTnlGEv6_XZ0bw/viewform?usp=sf_link
+EMBEDS: none
+----
+role="main" tabindex="0">2-2 - Coordinate Plotting
+Objective: Space Cadets, our Navigation System's key part is lost. Retrieve it through a star map with math challenges. Get your add/subtract skills ready.
+Mission Steps:
+Examine Map: Look at the star map. It's a grid with different space locations.
+Decode Points: Each grid point is an add/subtract problem. For example, instead of (5,3), you'll see (2+3, 5-2).
+Solve Math: Find real coordinates by solving. For example, translate (2+3, 5-2) to (5,3).
+Draw Path: Follow instructions like "Go to (3+1, 4+2)." Plot a safe course through stars.
+Navigate: Use your path to find the lost part. Click HERE to guide the ship.
+What You'll Learn:
+Spatial addition and subtraction.
+Math decoding for strategic planning.
+Performance Assessment:
+Your ability to decipher coordinates, solve addition and subtraction problems, and plot a safe path will be assessed.
+Accuracy and efficiency in guiding the ship are key to the mission's success.
+Mission Conclusion:
+Great job! You found the lost part using math and strategy. Share your map with the teacher and prep for the next mission.
+

@@ -1,0 +1,23 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/power-module/5-1-circuit-connection-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1jf3NaVEP5NhaVgYMemx3JaN3bKy5d_tdAfpPoJOLjB0/edit?usp=sharing  https://docs.google.com/forms/d/e/1FAIpQLSeZX-plcESZogRZdWlzZhc95SVQjAGaa-lH7uG5FNXrijugcg/viewform?usp=sf_link
+EMBEDS: none
+----
+role="main" tabindex="0">5-1 - Circuit Connection
+Objective:
+Greetings, Engineer Cadets! Your task is to ensure the power module of the spaceship is functioning correctly. You need to use your understanding of place value to connect circuits in the correct order to power up the Power Module.
+Mission Steps:
+Step 1 -
+Go get a Power Module Circuit Board.
+Understand the Layout: You have a power module board in front of you. You must make the correct connections. Use different colors for each connection. Show your finished work to your teacher. Take a photo and upload it to your Portfolio.
+Step 2 -
+Analyze the Numbers: You will be given a three-digit number - for instance, 632. Your task is to break down this number based on place value. (For example, there are 6 hundreds, 3 tens, and 2 ones)
+Progress:  CLICK HERE FOR THE NUMBERS  Once you've successfully completed the first round, proceed with two more rounds. Each subsequent round will be more challenging than the last. CLICK HERE FOR THE NUMBERS
+Learning Objectives:
+By the end of this task, you should be able to break down numbers according to place value and apply this knowledge practically.
+Performance Assessment:
+Your performance will be assessed based on your ability to correctly identify the place values from the given number and make the correct circuit connections.
+Mission Conclusion:
+Excellent work, Cadet! You've successfully connected the circuits in the correct order, demonstrating your understanding of place value. The Power Module is functioning well, thanks to your efforts.  Share your work with your teacher and get a new card (or choose your ship part if you have completed all of the Power Module tasks).
+

@@ -1,0 +1,21 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/shield-generator/3-2-energy-grid-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/spreadsheets/d/1mBGZJRpojkMKw-ry-UKDUI_K-WCjAsZfJCO1uWTRWUo/edit?usp=sharing
+EMBEDS: none
+----
+role="main" tabindex="0">3-2 - Energy Grid
+Objective:
+Hey Space Navigators! We're going through a field of rocks in space. We need to know how much power we have for our shields. You'll add up power for all shield parts. Then you'll share out the power to see how many parts can stay on.
+Mission Steps:
+Each part of our shield needs 12 units of power. We have 5 parts. Add 12 over and over to find out how much power we need.
+Required Materials:
+Energy Grid
+Counters?
+Learning Objectives:
+Learn how to use adding again and again for multiplication. Learn how to use sharing for division.
+Performance Assessment:
+Did you find out how much power we need? How many shield parts can stay on? That will show how well you did.
+Mission Conclusion:
+Good job! You used adding and sharing to keep us safe in the rock field. Share your work with your teacher to get a new card or pick your ship part if you've finished all Shield Generator tasks.
+

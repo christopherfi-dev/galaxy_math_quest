@@ -1,0 +1,20 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/navigation-system
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Navigation System
+Welcome to the Navigation System station, where precision, calculation, and strategic planning are paramount for successful space exploration. This system is the heartbeat of any spaceship, designed to guide us accurately through the vast and unpredictable cosmos. Responsible for pathfinding, fuel management, and cargo optimization, the Navigation System ensures that the journey to distant galaxies and back is safe and efficient.
+The tasks you will be confronted with are real-world challenges that seasoned space explorers face. By taking on these tasks, you will not only bring us closer to achieving our mission, but also enhance your mathematical problem-solving skills, critical thinking, and decision-making abilities.
+Task 1 - Fuel Calculation
+Objective: Calculate the required fuel quantity for different journey stages by adding and subtracting fuel quantities based on given scenarios.
+Learning Outcome: This task will enhance your arithmetic skills and understanding of quantities, enabling you to accurately add and subtract numbers in real-life situations. It will also promote strategic thinking, as fuel management is crucial to the successful completion of our space journey.
+Task 2 - Coordinate Plotting
+Objective: Solve addition and subtraction problems to find the correct coordinates that guide the spaceship to the Navigation System part.
+Learning Outcome: This task will hone your ability to solve mathematical problems and apply them in a spatial context. By plotting coordinates, you will strengthen your understanding of two-dimensional space, and boost your spatial reasoning skills. Furthermore, it will foster problem-solving and critical thinking abilities as you navigate through the star field.
+Task 3 - Cargo Load
+Objective: Figure out the maximum amount of cargo the spaceship can carry by adding the weight of different items and subtracting from the weight limit.
+Learning Outcome: Through this task, you will refine your numerical reasoning and optimize decision-making skills. By managing cargo load, you'll gain a practical understanding of the concept of weight and limitations, an important aspect of many real-world logistics and planning scenarios.
+Now, let's embark on this exciting journey, where each task you complete brings us closer to our ultimate destination. Remember, the universe is filled with limitless possibilities, and with the right calculations, there's no star too far!
+

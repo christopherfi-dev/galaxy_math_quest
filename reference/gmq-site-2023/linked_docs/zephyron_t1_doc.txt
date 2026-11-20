@@ -1,0 +1,11 @@
+﻿5 Cities and their Distances
+
+
+
+
+City Name
+	Distance (in Kilometers) from crash site
+	Pävala
+	230
+	Talvela
+	152

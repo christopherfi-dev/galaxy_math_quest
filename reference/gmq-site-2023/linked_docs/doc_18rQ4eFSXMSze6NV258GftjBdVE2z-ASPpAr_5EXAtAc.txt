@@ -1,0 +1,131 @@
+﻿Energy Count Sheet
+Available Energy Blocks:
+Place Value
+	Number of Blocks
+	Total Energy Units
+	1s
+	150
+	150
+	10s
+	70
+	700
+	100s
+	8
+	800
+	1000s
+	0
+	0
+	Total
+	
+
+	1650 Units
+	________________
+________________
+Energy Allocation Plan:
+City Sector
+	Allocated Blocks
+	Allocated Units
+	Neighborhood 1
+	(example ten 1s and ten 10s)
+	(example - 110)
+	Neighborhood 2
+	
+
+	
+
+	Schools
+	
+
+	
+
+	Hospital
+	
+
+	
+
+	Parks & Recreational Areas
+	
+
+	
+
+	Public Swimming Pool
+	
+
+	
+
+	Shopping Mall
+	
+
+	
+
+	Office Complex
+	
+
+	
+
+	Hotels
+	
+
+	
+
+	Restaurants
+	
+
+	
+
+	Entertainment Zone
+	
+
+	
+
+	Sports Arena
+	
+
+	
+
+	Arts Theatre
+	
+
+	
+
+	Taxi & Bus Stand
+	
+
+	
+
+	Manufacturing Plant
+	
+
+	
+
+	Power Plant
+	
+
+	
+
+	Warehousing
+	
+
+	
+
+	Research & Development
+	
+
+	
+
+	Chemical Lab
+	
+
+	
+
+	Recycling Plant
+	
+
+	
+
+	Total Allocated Energy
+	
+
+	
+
+	Remaining Energy Blocks (Units)

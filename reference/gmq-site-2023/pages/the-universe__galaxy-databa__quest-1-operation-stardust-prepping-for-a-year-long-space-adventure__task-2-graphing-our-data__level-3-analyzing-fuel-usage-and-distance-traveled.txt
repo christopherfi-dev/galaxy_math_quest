@@ -1,0 +1,38 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-databa/quest-1-operation-stardust-prepping-for-a-year-long-space-adventure/task-2-graphing-our-data/level-3-analyzing-fuel-usage-and-distance-traveled
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://www.loom.com/share/afcdee165d8b43ff9b9b3ebdb621c7b3?sid=a71857e0-b3b2-4dc7-a600-c15df8b28176
+EMBEDS: none
+----
+role="main" tabindex="0">Level 3 - Charting Our Cosmic Journey
+Mission Briefing:
+Hey there, Commanders! 🌟 Our spaceship's Central Computer has been keeping tabs on how much fuel we've been using and how far we've zoomed through space each month. We need you to make sense of this data. Ready? Let's go!
+Watch this video for instructions - LINK
+Objective:
+Create a line graph and use it to help analyze the data.
+Materials Needed:
+Graph Paper
+Colored Pencils
+Data Sheet on Fuel Usage and Distance Traveled
+Your Quest:
+Part 1: Draw Your Own Line Graphs 📈
+Graph 1: Fuel Used Every Month
+Your mission is to create a line graph that shows how much fuel our spaceship has used each month.
+Label the months along the bottom (January, February, and so on).
+Put the fuel amounts on the side (like 400, 450, 500 gallons).
+Graph 2: How Far We Traveled Each Month
+Create another line graph for the distance we've traveled each month.
+Same as before—months at the bottom and distance on the side.
+👉 Materials: You'll need some graph paper and colored pencils for this.
+📝 Data for Your Graphs:
+Fuel Used (in gallons): January 500, February 480, March 450, April 530, May 400, June 390, July 360, August 480, September 500
+Distance Traveled (in miles): January 1000, February 900, March 850, April 700, May 950, June 920, July 1100, August 900, September 1000
+Part 2: What Do Your Graphs Tell You? 🤔
+Question 1: Which month did we use the most fuel? The least fuel?
+Question 2: Do you see any months where something strange happened? Like we used a lot of fuel but didn't go very far?
+Question 3: What do you think might have caused these strange months?
+Question 4: What do you notice when you look at both graphs together? Do they tell the same story?
+📝 Write Down Your Answers: Share your thoughts in a few sentences. Take a photo of your work and upload it to Google Drive.
+Mission Complete! 🌌
+Great work, Commanders! Understanding our fuel and travel data is super important for all the space adventures ahead of us. Hand in your graphs and answers to your teacher and get ready for our next mission!
+

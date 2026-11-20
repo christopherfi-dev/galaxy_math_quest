@@ -1,0 +1,41 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-metrica/quest-1-time-riddles-galactic-engineering-on-chronosia/task-4-timekeeper-cadets-challenge-plan-the-perfect-day
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1KU2nCJqUhHeuCkhPwUL1CXZYbJQuVIIYoMeAZWDFzP0/edit?usp=sharing  https://docs.google.com/document/d/1UbZLCWm2___INfffIB_aV38S-fru8oxXa7hPjXS4r3A/edit?usp=sharing  https://docs.google.com/document/d/1wKNKeZbAhgjKT00TdPh526m_jN_HsbT7KbSEJsoWk7I/edit?usp=sharing  https://docs.google.com/forms/d/e/1FAIpQLSf-bBDLbjv8aqVyTeTTZumdfVWYDmLMypO2ZrUTh2O3NBGbOw/viewform?usp=sf_link  https://drive.google.com/file/d/1zcB-28xsubvAqtu0pZDH_nM6shc0uokz/view?usp=drive_link  https://www.loom.com/share/f40c1a1379364c2a84b462cb4e89300b?sid=b737548e-df1a-42a8-94ac-c8d9b58ea379
+EMBEDS: none
+----
+role="main" tabindex="0">Task 4: Timekeeper Cadet's Challenge: Plan the Perfect Day
+Welcome, Timekeeper Cadets-
+You aced the Temporal Coordinator exam! As a newly minted Trainee, you have a critical task: scheduling a flawless day for Council Members Sara, Tim, Alex, and Zara. Are you ready for this time-bending challenge?
+Watch this video for instructions - LINK.
+Objective:
+Your role is to ensure each Council Member attends events that align with their interests and constraints. Can you achieve temporal harmony?
+Before you Begin -
+Read through the Events Description Brochure
+Do the Timetable quiz to make sure you are ready for this kind of event
+Materials Needed:
+Council of Timekeepers: Annual Timetable
+Events Description Brochure
+Character Profiles Sheet
+Pencil and Eraser: For making and correcting your calculations.
+Mission Steps:
+Make sure you have finished the quiz and understand the events.
+If you miss any questions, read the brochure carefully and re-do the quiz until you get them all right.
+Interests & Constraints: Quickly absorb the character profiles. Take note of their preferences and limitations.
+Draft Schedules: Use the timetable to allocate events for Sara, Tim, Alex, and Zara. Keep feasibility in mind.
+Optimization: Check your draft carefully. Identify and fix any possible problems.
+Special Conditions: Now read the following stipulations that apply to each character. Adapt your schedules accordingly:
+Sara needs to stay in Chronosia for an important meeting.
+Tim can't travel to other dimensions because he's still a trainee.
+Alex requires a chaperone for any risky missions. We have no chaperones.
+Zara can't do any events longer than 45 minutes due to her sleeping sickness. She must sleep every 46 minutes.
+Learning Objectives:
+By the end of this quest, you should be able to:
+Calculate the duration between two given times.
+Create your own timetable.
+Performance Assessment:
+Your performance will be assessed based on your ability to:
+Calculate the duration and time between events.
+Mission Conclusion:
+Great job, young Timekeepers! If you pass this test, you are one step closer to becoming a full-fledged Temporal Coordinator. New adventures and challenges await you!
+

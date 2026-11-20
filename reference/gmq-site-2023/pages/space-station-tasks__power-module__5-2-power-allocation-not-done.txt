@@ -1,0 +1,32 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/power-module/5-2-power-allocation-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">5-2 - Power Allocation
+Objective:
+Attention, Power Engineers! Your mission is to allocate power efficiently among different sections of our spaceship, using your understanding of place value. Power management is crucial for our mission's success.
+YOU MAY WORK AS A TWO-PERSON TEAM ON THIS TASK!
+Mission Steps:
+Understand the Situation: We have a total power capacity of 4460 units to distribute among various systems, including the Engine Core, Navigation System, Shield Generator, and Weapon System.
+Study the Power Requirements: Each system requires power in different quantities. Here are the requirements:
+Engine Core: 1237 units
+Navigation System: 1193 units
+Shield Generator: 1097 units
+Weapon System: 933 units
+Allocate Power: Using your 1000, 100, 10, and 1 blocks, allocate power to each system respecting its place value requirements. You need to ensure that no system gets more or less than its required units.
+Available Blocks:
+Two 1000 blocks
+Twenty 100 blocks
+Forty 10 blocks
+Sixty 1 blocks
+Check & Review: Once you've allocated the power, double-check your allocations to ensure the totals match the required power for each system.
+Take a photo and put it in your Portfolio for math. Explain what you did and how you solved it.
+Learning Objectives:
+By the end of this task, you should be able to partition numbers according to place value and apply this knowledge practically.
+Performance Assessment:
+Your performance will be assessed based on your ability to accurately allocate power respecting the place value and meeting system requirements.
+Mission Conclusion:
+Well done, Power Engineer! You've successfully distributed power to every system on the ship. Your understanding of place value has been instrumental in ensuring all systems are functioning optimally.  Share your work with your teacher and get a new card (or choose your ship part if you have completed all of the Power Module tasks).
+

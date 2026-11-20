@@ -1,0 +1,10 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-numerix
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">Galaxy Numerix
+Galaxy Numerix: A precise gridwork of interstellar distances and volumes, challenging your grasp of measurement, estimation, and unit conversion.
+Quest #1 - Voltara Energy Crisis & Galactic Trade
+

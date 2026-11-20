@@ -1,0 +1,38 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/the-universe/galaxy-databa/quest-1-operation-stardust-prepping-for-a-year-long-space-adventure/task-2-graphing-our-data/level-1-introduction-to-bar-graphs
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: https://docs.google.com/document/d/1Svml9Kf9eg67NZ978YrIjLorRHgYEjGJfplv7XDXm-8/edit?usp=share_link  https://www.ixl.com/math/grade-3/create-bar-graphs  https://www.ixl.com/math/grade-3/interpret-bar-graphs  https://www.loom.com/share/ee9b41ce1db646209800dce444889836?sid=4fa9b460-7c02-466c-b351-952d031cb8ed
+EMBEDS: none
+----
+role="main" tabindex="0">Level 1 -  Voltara Mission Control: Data Analysis Quest
+Welcome, Commanders:
+Mission Control at Voltara wants to monitor our voyage's progress and conditions. We're using bar graphs for this task. Bar graphs help us visually compare and represent data. Are you ready to create some?
+Watch this video for instructions - LINK
+Objective:
+Create accurate and insightful bar graphs to represent key data from the Voltara Mission Control Data Sheet.
+Before you Begin - IXL Practice:
+Grade 3 -
+UU- 1 - Interpret bar graphs
+UU-3 - Create bar graphs
+Materials Needed:
+Graph Paper
+Colored Pencils
+Voltara Mission Control Data Sheet
+Mission Steps:
+Understand the Data: Go through the Voltara Mission Control Data Sheet. You'll find data on temperature in various parts of the spaceship, fuel levels, and remaining food supplies.
+Choose Your Dataset: Decide whether you will make individual bar graphs for each category—temperature, fuel levels, and food supplies—or one complex multi-bar graph that includes them all.
+Draft Your Graph: On graph paper, sketch the bars corresponding to your chosen data points. For example, if you chose temperature, create bars for the Living Quarters, Engine Room, Food Storage, Greenhouse, and Control Room.
+Color Coding: Use colored pencils to differentiate between data categories or individual data points.
+Label Accurately: Don't forget to label your axes and provide a title for your graph.
+Reflect: Write a sentence or two about what your bar graph reveals. Is the Engine Room too hot? Are we low on certain food supplies?
+Submit: Take a photo of your completed bar graph(s) and reflection. Upload these to Google Drive.
+Learning Objectives:
+Accurately represent data using bar graphs.
+Interpret what the data implies about our mission's conditions.
+Performance Assessment:
+Your success will be measured by:
+The accuracy and completeness of your bar graphs.
+Your ability to interpret the data meaningfully.
+Mission Conclusion:
+Congratulations, commanders! Your bar graphs will help Mission Control make informed decisions. Upload your bar graphs and reflections to complete the quest. Stand by for your next mission!
+

@@ -1,0 +1,23 @@
+PAGE: https://sites.google.com/view/g3c-2023-space-math-quest/space-station-tasks/weapons-system/4-3-target-practice-not-done
+IMAGES ON PAGE: 0
+IMAGE ALT TEXTS: none
+LINKS OUT: none
+EMBEDS: none
+----
+role="main" tabindex="0">4-3 - Target Practice
+Objective:
+Greetings, Galactic Warriors! Your skills are needed in a simulation where you must hit targets to accumulate points. However, there is a twist - the total points you gain must be an even number between 32 and 40. Your understanding of odd and even numbers will be crucial here.
+Mission Steps:
+Understand the Game: There is a wall with numbers from 1 to 9. Each of these numbers represents a potential target.
+Strategize: Decide which targets to hit based on whether you're trying to hit odd or even numbers. Remember, your total score must end up as an even number between 32 and 40.
+Aim & Throw: Using a ball, aim for the numbers you've chosen. Every hit counts as a successful target and you gain that many points.
+Keep Track: Monitor your total points after each successful hit. Remember, your total points must be even and fall between 32 and 40.
+Repeat: Continue this process until you reach the required total score.
+Learning Objectives:
+By the end of this task, you should be able to apply your understanding of odd and even numbers in a dynamic context.
+You should be able to plan and implement a strategy based on the properties of numbers.
+Performance Assessment:
+Your ability to correctly identify and target the numbers that will help you achieve the desired total will be assessed. Your accuracy in hitting the targets and your strategic planning will also play a crucial role in your success.
+Mission Conclusion:
+Well done, Warrior! Through your accurate targeting and clever use of odd and even numbers, you've successfully completed the simulation. You've demonstrated your ability to use mathematical concepts in a strategic context.  Share you work with your teacher and get a new card (or choose your ship part if you have completed all of the Weapons Systems tasks).
+

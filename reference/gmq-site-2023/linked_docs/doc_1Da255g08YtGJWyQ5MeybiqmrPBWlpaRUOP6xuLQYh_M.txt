@@ -1,0 +1,106 @@
+﻿Food Supplies Data Sheet
+Food Item
+	Shelf Life (Months)
+	Nutritional Value
+	Nutritional Score (Out of 10)
+	Energy Score (Out of 10)
+	Freeze-Dried Apple
+	18
+	High
+	9
+	5
+	Canned Beans
+	24
+	High
+	8
+	7
+	Instant Ramen
+	12
+	Low
+	3
+	8
+	Brown Rice
+	6
+	Medium
+	6
+	6
+	Almonds
+	9
+	High
+	9
+	9
+	Protein Bars
+	18
+	High
+	8
+	10
+	Oats
+	8
+	High
+	7
+	8
+	Canned Tuna
+	36
+	Medium
+	6
+	6
+	Dried Lentils
+	12
+	High
+	8
+	7
+	Cornflakes
+	6
+	Low
+	2
+	5
+	Fresh Carrots
+	1
+	Medium
+	6
+	4
+	Dark Chocolate
+	24
+	Low
+	4
+	8
+	Trail Mix
+	9
+	Medium
+	6
+	7
+	Fresh Spinach
+	0.5
+	High
+	8
+	4
+	Peanut Butter
+	9
+	High
+	8
+	9
+	Whole Wheat Bread
+	1
+	Medium
+	6
+	6
+	Canned Peaches
+	36
+	Low
+	3
+	5
+	Fresh Milk
+	0.5
+	Medium
+	5
+	6
+	Chicken Jerky
+	12
+	Medium
+	7
+	7
+	Quinoa
+	8
+	High
+	9
+	7

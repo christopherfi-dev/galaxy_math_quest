@@ -1,0 +1,33 @@
+﻿Time Quake Data Analysis Worksheet
+
+
+Time Quake No.
+	Start Time
+	End Time
+	Duration (Minutes)
+	1
+	12:49
+	12:54
+	
+
+	2
+	1:24
+	1:34
+	 
+	3
+	2:04
+	2:19
+	 
+	4
+	2:49
+	3:09
+	 
+	5
+	3:39
+	4:04
+	 
+	6
+	4:34
+	5:04
+	 
+	Explosion Time Quake

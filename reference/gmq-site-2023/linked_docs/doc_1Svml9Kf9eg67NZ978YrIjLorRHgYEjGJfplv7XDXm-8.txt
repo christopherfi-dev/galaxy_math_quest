@@ -1,0 +1,27 @@
+﻿Voltara Mission Control Data Sheet
+Data collected for the 3rd month of the mission
+________________
+
+
+Temperature in Spaceship (in Celsius)
+* Living Quarters: 23
+* Engine Room: 30
+* Food Storage: 4
+* Greenhouse: 26
+* Control Room: 22
+Fuel Levels (in gallons)
+* Main Thrusters: 200
+* Backup Thrusters: 50
+* Emergency Reserve: 20
+Remaining Food Supplies (in units)
+Fruits
+* Freeze-Dried Apple: 30
+* Canned Peaches: 20
+Grains
+* Brown Rice: 25
+* Oats: 15
+* Quinoa: 10
+Proteins
+* Canned Tuna: 20
+* Chicken Jerky: 25
+* Protein Bars: 30

@@ -1,0 +1,103 @@
+﻿Galactic Festival: Double your profits from one planet.
+The galaxy is celebrating, and they're buying more!
+	Space Pirates!: Lose all profits from one planet.
+Arrr! Space Pirates stole your trades.
+	Wormhole Discovery: Cut the distance to a planet in half.
+A shortcut through space!
+	Fuel Price Surge: Lose 100 fuel tokens.
+Fuel prices went up, costing you extra.
+	Solar Flare: Lose half of your fuel tokens from one planet.
+A solar event scared off traders.
+	Meteor Shower: Add 20 light-years to one planet you’ll visit.
+A storm of meteors slows you down.
+
+
+	Trade Embargo: Lose profits from the farthest planet you picked.
+New laws mean you can't trade there.
+	New Engine Tech: Gain 50 extra fuel tokens.
+Better engines mean more fuel saved.
+	Alien Investors: Double the profits from your lowest-earning planet.
+Aliens loved your goods and bought more.
+
+
+	Black Market Boom: Add 200 tokens to your profits from one planet.
+Some items became really popular on the black market.
+	Cosmic Taxes: Lose 10% of your total profits so far.
+The Galactic Council needs its share.
+	Resource Scarcity: One planet you picked offers no profits this round.
+They ran out of stuff to trade!
+	Galactic Holiday: Gain 100 extra fuel tokens for not trading this round.
+Everyone's on holiday; the market is quiet.
+	Cosmic Windfall: Find 200 extra tokens in your ship.
+You found a hidden stash in your ship.
+	Quantum Glitch: Lose all your tokens, but gain 300 new ones.
+A glitch in your ship's computer changed your tokens!
+	
+
+	________________
+Scenario Cards:
+* * Galactic Festival: Double your profits from one planet.
+* The galaxy is celebrating, and they're buying more!
+* * Space Pirates!: Lose all profits from one planet.
+* Arrr! Space Pirates stole your trades.
+* * Wormhole Discovery: Cut the distance to a planet in half.
+* A shortcut through space!
+* * Fuel Price Surge: Lose 100 fuel tokens.
+* Fuel prices went up, costing you extra.
+* * New Engine Tech: Gain 50 extra fuel tokens.
+* Better engines mean more fuel saved.
+* * Trade Embargo: Lose profits from the farthest planet you picked.
+* New laws mean you can't trade there.
+* * Meteor Shower: Add 20 light-years to one planet you’ll visit.
+* A storm of meteors slows you down.
+* * Solar Flare: Lose half of your fuel tokens from one planet.
+* A solar event scared off traders.
+* * Alien Investors: Double the profits from your lowest-earning planet.
+* Aliens loved your goods and bought more.
+* * Black Market Boom: Add 200 tokens to your profits from one planet.
+* Some items became really popular on the black market.
+* * Cosmic Taxes: Lose 10% of your total profits so far.
+* The Galactic Council needs its share.
+* * Resource Scarcity: One planet you picked offers no profits this round.
+* They ran out of stuff to trade!
+* * Galactic Holiday: Gain 100 extra fuel tokens for not trading this round.
+* Everyone's on holiday; the market is quiet.
+* * Cosmic Windfall: Find 200 extra tokens in your ship.
+* You found a hidden stash in your ship.
+* * Quantum Glitch: Lose all your tokens, but gain 300 new ones.
+* A glitch in your ship's computer changed your tokens!
+* 
+
+
+
+Scenario Cards:
+* Galactic Festival: Double your profits from one planet.
+The galaxy is celebrating, and they're buying more!
+* Space Pirates!: Lose all profits from one planet.
+Arrr! Space Pirates stole your trades.
+* Wormhole Discovery: Cut the distance to a planet in half.
+A shortcut through space!
+* Fuel Price Surge: Lose 100 fuel tokens.
+Fuel prices went up, costing you extra.
+* New Engine Tech: Gain 50 extra fuel tokens.
+Better engines mean more fuel saved.
+* Trade Embargo: Lose profits from the farthest planet you picked.
+New laws mean you can't trade there.
+* Meteor Shower: Add 20 light-years to one planet you’ll visit.
+A storm of meteors slows you down.
+* Solar Flare: Lose half of your fuel tokens from one planet.
+A solar event scared off traders.
+* Alien Investors: Double the profits from your lowest-earning planet.
+Aliens loved your goods and bought more.
+* Black Market Boom: Add 200 tokens to your profits from one planet.
+Some items became really popular on the black market.
+* Cosmic Taxes: Lose 10% of your total profits so far.
+The Galactic Council needs its share.
+* Resource Scarcity: One planet you picked offers no profits this round.
+They ran out of stuff to trade!
+* Galactic Holiday: Gain 100 extra tokens for not trading this round.
+Everyone's on holiday; the market is quiet.
+* Cosmic Windfall: Find 200 extra tokens in your ship.
+You found a hidden stash in your ship.
+* Quantum Glitch: Lose all your tokens, but gain 300 new ones.
+A glitch in your ship's computer changed your tokens!
