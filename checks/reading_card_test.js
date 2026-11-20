@@ -5,6 +5,9 @@
 //   - OK drops the words to the line below
 //   - words already read once do not stop the game again
 //   - two messages at once share one card
+//   - a long speech comes on short cards, one after another: each waits to be read, Next brings the following one, OK ends it.
+//     No card is longer than about 30 words, a speech cut in two keeps its speech marks on both cards, and nothing is lost.
+//     [Source: Marc, 2026-11-20: "the guy just had like one giant block of text... you read it, you say OK and say OK."]
 //   - a task panel never has a card over it, and the result of a task does get one
 //   - the teacher can switch the cards off
 //   - the first steps on Voltara can be played with the cards on
@@ -30,7 +33,7 @@ const { chromium } = require('playwright'); const path = require('path');
     const st = await p.locator('.stage').boundingBox(); await p.touchscreen.tap(st.x + st.width * .5, st.y + st.height * .3); await p.waitForTimeout(500);
     if ((await p.evaluate(() => JSON.stringify([S.x, S.y, S.room, lines.length]))) !== before || !(await card()).open) bad.push(name + ': something happened while the card was up');
     // 3. the wait grows with the words, and has a top
-    const waits = await p.evaluate(() => { const r = []; ['Short one.', 'This one has quite a few more words in it than the first one did.', new Array(60).join('word ')].forEach(t => { READ.q = []; readShow(t); r.push(READ.wait); }); READ.q = []; readShow('Your ship limps into the dock. The station is a mess. Look around.'); return r; });
+    const waits = await p.evaluate(() => { const r = []; ['Short one.', 'This one has quite a few more words in it than the first one did.', new Array(60).join('word ')].forEach(t => { READ.open = false; READ.q = []; READ.i = 0; readShow(t); r.push(READ.wait); }); READ.open = false; READ.q = []; READ.i = 0; readShow('Your ship limps into the dock. The station is a mess. Look around.'); return r; });
     if (!(waits[0] < waits[1] && waits[1] < waits[2]) || waits[0] < 600 || waits[2] > 3500) bad.push(name + ': the waiting times are wrong: ' + waits.join(', '));
     // 4. OK drops the words to the line below
     await ok(); c = await card(); if (c.open || c.shown || !/limps into the dock/.test(c.log)) bad.push(name + ': after OK the words should be on the line below: ' + JSON.stringify(c));
@@ -40,6 +43,18 @@ const { chromium } = require('playwright'); const path = require('path');
     // 6. two messages at once share one card. Enter is OK on a keyboard.
     await p.evaluate(() => { say('The first new thing happens.'); say('Then a second new thing happens.'); }); c = await card(); if (c.paras !== 2) bad.push(name + ': two messages should share one card, got ' + c.paras);
     for (let i = 0; i < 60 && (await p.evaluate(() => $('cardok').disabled)); i++) await p.waitForTimeout(100); await p.keyboard.press('Enter'); await p.waitForTimeout(480); if ((await card()).open) bad.push(name + ': Enter should be OK');
+    // 6b. a long speech comes on short cards
+    { const speech = 'The Supply Chief says: "The last three months of the trip are the hard ones. Months ten, eleven and twelve. Help me fill the locker for them. There are four of us. Each one needs 20 energy points a month. Nothing in the locker may go bad before the trip ends. And there must be exactly enough. The locker is small: ten packs of any one food, and no more."';
+      const pages = await p.evaluate(t => readPages(t), speech), words = t => t.trim().split(/\s+/).length, strip = t => t.replace(/"/g, '').replace(/\s+/g, ' ').trim();
+      if (pages.length < 3 || pages.some(pg => words(pg) > 31)) bad.push(name + ': a long speech should come as three or more short cards: ' + pages.map(words).join(', ') + ' words');
+      if (strip(pages.join(' ')) !== strip(speech)) bad.push(name + ': the cards together should hold every word of the speech');
+      if (pages.some(pg => (pg.match(/"/g) || []).length % 2)) bad.push(name + ': every card of a speech should open and close its speech marks: ' + JSON.stringify(pages));
+      if ((await p.evaluate(() => readPages('A short line stays on one card.'))).length !== 1) bad.push(name + ': a short line should stay on one card');
+      await p.evaluate(t => say(t), speech); await p.waitForTimeout(150); let seen = [], labels = [];
+      for (let k = 0; k < pages.length; k++) { c = await card(); const st = await p.evaluate(() => ({ i: READ.i, n: READ.q.length, mark: ($('cardn') || {}).textContent || '' })); if (!c.open || !c.okOff || st.i !== k || st.mark !== `${k + 1} of ${pages.length}`) bad.push(name + `: card ${k + 1} of the speech: ` + JSON.stringify([c.open, c.okOff, st])); seen.push(c.text.replace(/\n+\d+ of \d+$/, '').trim());
+        for (let i = 0; i < 60 && (await p.evaluate(() => $('cardok').disabled)); i++) await p.waitForTimeout(100); labels.push(await p.evaluate(() => $('cardlab').textContent)); if (k === 0 && out) await p.screenshot({ path: path.join(out, `card_${name}_3_speech.png`) }); await p.locator('#cardok').tap(); await p.waitForTimeout(k === pages.length - 1 ? 480 : 200); }
+      c = await card(); if (c.open || labels.join() !== pages.map((x, k) => k < pages.length - 1 ? 'Next' : 'OK').join()) bad.push(name + ': the button should say Next until the last card, then OK, and then the card closes: ' + labels.join() + ' ' + c.open);
+      if (seen.join('|') !== pages.join('|')) bad.push(name + ': the cards shown were not the cards made'); if (!/The locker is small/.test(c.log)) bad.push(name + ': after the last card the words should be on the line below'); }
     // 7. Voltara with the cards on: land, eat, take, walk, feed the fish. A task panel has no card over it. Its result does.
     await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(150); await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_volt').tap(); await p.waitForTimeout(900); c = await card(); if (!c.open || !/Teacher shortcut/.test(c.text)) bad.push(name + ': arriving on Voltara should show a card: ' + JSON.stringify(c)); if (out) await p.screenshot({ path: path.join(out, `card_${name}_2_voltara.png`) }); await ok();
     let cards = 0; for (const t of ['eat fruit', 'take fruit', 'go east', 'give fruit to fish']) { await type(t); await idle(); await p.waitForTimeout(250); if ((await card()).open) { cards++; await ok(); } }

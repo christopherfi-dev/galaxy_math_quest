@@ -9,6 +9,44 @@ You said: "You choose. You have the standards now." This is what I chose, why, a
 
 ---
 
+## Changed 20 November (version 54, preview link): arriving, and short readings. A trial.
+
+You wrote: "The planet wasn't described to me. The dead skin wasn't really described. I didn't know what I was doing or why." And you asked for an intro screen on arriving, with a better view of the planet, two or three short readings, and Continue after 4 to 5 seconds. And for speech in three or four short pieces, with OK between.
+
+**1. Three arrival screens, the first time a cadet lands.** Each has a big picture in place of the map, and a short reading on the desk. **Next** is asleep for 5 seconds, then wakes. There is a **Read to me** button.
+
+| Screen | The picture | The words |
+|---|---|---|
+| Planet Xylophora | the planet from space, a ball of squares | "This whole planet is made of shapes. The ground is a patchwork of perfect squares. Even the pines and the cacti grow in neat shapes." |
+| The gentle giant | the giant asleep, and its skin on the fields | "A giant lies here, in a sleep that never ends. Long ago it shed its skin. The skin is leathery, rubbery and brightly coloured. It stretches across the fields." |
+| Your job | the camp, four empty outlines, rain coming | "Earth is sending families to live here. Before the rains come they need a Home, a Hospital, a Food Store and a Solar Factory. But there is nothing to build with. Find the Site Chief at the camp." |
+
+- The words are cut from your quest pages. [Source] "Before the rains" and "Long ago it shed its skin" are mine. [Proposal]
+- They come once. A cadet who has already started work here does not get them.
+- A teacher who switches the reading cards off switches these off too.
+
+**2. Short readings, in every place.** A long speech used to come as one block. Now it comes on cards of about 25 words. Each card waits to be read. The button says **Next**, and **OK** on the last one. A small "2 of 3" shows where you are.
+
+- The Site Chief's welcome: two cards.
+- The Supply Chief on the mission ship, the one you called "one giant block of text": three or four cards.
+
+**3. Why a floor is a rectangle.** You said you did not know whether a house had to be a rectangle. The order board said so, in small print. Now the Chief says it too: "The cutters cut the skin in straight lines. So every floor is a rectangle."
+
+**Not built, and yours to decide [Proposal]:**
+
+| Choice | Cost |
+|---|---|
+| Arrival screens for the mission ship, Chronosia and Voltara | about an evening each: three pictures and the words from your pages |
+| Better pictures | these are drawn in the game's flat style. A painted or photo-like planet would need pictures from you, or from Canva. |
+| Questions with answers to choose from, when a character speaks | a day for the first one. It changes how every speech is written. |
+| Stone paths between the buildings: fetch stones, lay them down | your idea. An evening or two. It could carry length or perimeter. |
+
+**One thing only you can settle [Conflict].** Your page says the giant rests "in eternal slumber". Your plan calls the skin "the dried skin of a giant alien creature". You called it "the dead skin" today. The game says the giant is asleep and shed its skin long ago. Tell me which it is.
+
+**What could prove this wrong:** three screens of reading before a child can move is a wait. Your daughter did not like waiting. Watch whether children read them or just watch the button.
+
+---
+
 ## Changed 20 November (version 52, preview link): finding the trees
 
 You stood at the camp. The Chief said "Stiff leaves! They may just work. Cover every roof." You wrote: "Where do I get these leaves? I can only find one leaf on the ground."

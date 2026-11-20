@@ -309,7 +309,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 53</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 54</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -595,7 +595,7 @@ let lines = [];
    "The words appear as an overlay and then you touch OK after you read them and then they drop back down to where they normally are."]
    New words come up over the picture. The game waits. OK wakes up after a moment that grows with the number of words [Proposal], so OK is not one more thing to tap fast.
    Words already read once go straight to the line below, with a flash [Proposal], so walking back through known places is not a string of OKs. */
-const READ = { on: true, open: false, q: [], tm: 0, wait: 0 };
+const READ = { on: true, open: false, q: [], i: 0, tm: 0, wait: 0 };
 READ.on = getKeep('gmq-cards') !== 'off';
 const HAZON = { on: getKeep('gmq-hazards') !== 'off' };
 const hashT = t => { let h = 7; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return h; };
@@ -621,10 +621,22 @@ function drawWords() { fitSoon(); drawDirs(); if (S && drawWords.m !== S.mode) {
   el.innerHTML = '<span class="lab">Here</span>' + list.map(x => `<button class="word noun" type="button" data-w="${esc(x[0])}">${esc(x[1])}</button>`).join('');
   el.querySelectorAll('button').forEach(b => b.onclick = () => chipTap(b.dataset.w, b.textContent, false)); }
 function flashLog() { const n = document.querySelector('#log .new'); if (n) { n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); } }
-function readShow(text) { READ.q.push(text); READ.open = true; $('cardtext').innerHTML = READ.q.map(t => `<p>${esc(t)}</p>`).join(''); const words = READ.q.join(' ').split(/\s+/).length; READ.wait = Math.min(3500, 500 + words * 160);
+/* SHORT READINGS. [Source: Marc, 2026-11-20: "the guy just had like one giant block of text. Then you could do like three or four different ones...
+   you read it, you say OK and say OK."] A long text comes a sentence or two at a time. Each card waits to be read, then Next brings the following one.
+   Two short messages that come at once still share one card. READ.q is a list of cards; a card is a list of paragraphs. */
+const READW = t => String(t).trim().split(/\s+/).filter(Boolean).length;
+function readPages(text) { const all = String(text).trim(); if (READW(all) <= 30) return [all]; const sents = all.match(/[\s\S]*?[.!?]+["”’')]*(?:\s+|$)|[\s\S]+$/g) || [all], pages = []; let cur = '';
+  const aim = READW(all) / Math.ceil(READW(all) / 26); for (const sn of sents) { if (cur && (READW(cur) >= aim - 1 || READW(cur) + READW(sn) > 30)) { pages.push(cur.trim()); cur = ''; } cur += sn; } if (cur.trim()) pages.push(cur.trim());      /* cards of about the same length */
+  let open = false; return pages.map(pg => { let t = (open ? '"' : '') + pg; if (((pg.match(/"/g) || []).length) % 2) open = !open; if (open) t += '"'; return t; }); }      /* a speech cut in two keeps its speech marks on both cards */
+function readShow(text) { const pg = readPages(text), last = READ.q.length - 1, fresh = !READ.open || !READ.q.length; if (fresh) { READ.q = []; READ.i = 0; }
+  else if (last >= READ.i && (READW(READ.q[last].join(' ')) <= 8 || READW(READ.q[last].join(' ')) + READW(pg[0]) <= 30)) READ.q[last].push(pg.shift());      /* a few words such as "You walk to the Chief." never get a card to themselves */
+  pg.forEach(x => READ.q.push([x])); READ.open = true; if (fresh || last === READ.i) readPage(); else readMark(); try { $('cmd').blur(); } catch (e) {} }
+function readPage() { const paras = READ.q[READ.i] || [''], n = READ.q.length, words = READW(paras.join(' ')); $('cardtext').innerHTML = paras.map(t => `<p>${esc(t)}</p>`).join('') + (n > 1 ? `<p class="note" id="cardn">${READ.i + 1} of ${n}</p>` : ''); READ.wait = Math.min(3500, 500 + words * 160);
   const c = $('card'), b = $('cardok'), fl = $('cardfill'); c.hidden = false; c.classList.remove('drop'); b.disabled = true; $('cardlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `cardfill ${READ.wait}ms linear forwards`;
-  clearTimeout(READ.tm); READ.tm = setTimeout(() => { b.disabled = false; $('cardlab').textContent = 'OK'; fl.style.animation = 'none'; }, READ.wait); try { $('cmd').blur(); } catch (e) {} }
-function readOk(quiet) { if (!READ.open) return; clearTimeout(READ.tm); READ.open = false; READ.q = []; const c = $('card'); drawLog(); if (quiet) { c.hidden = true; return; }
+  clearTimeout(READ.tm); READ.tm = setTimeout(() => { b.disabled = false; $('cardlab').textContent = READ.i < READ.q.length - 1 ? 'Next' : 'OK'; fl.style.animation = 'none'; }, READ.wait); }
+function readMark() { const n = READ.q.length, e = $('cardn'); if (e) e.textContent = `${READ.i + 1} of ${n}`; else if (n > 1) $('cardtext').insertAdjacentHTML('beforeend', `<p class="note" id="cardn">${READ.i + 1} of ${n}</p>`); if (!$('cardok').disabled) $('cardlab').textContent = READ.i < n - 1 ? 'Next' : 'OK'; }
+function readOk(quiet) { if (!READ.open) return; if (!quiet && READ.i < READ.q.length - 1) { READ.i++; beep(520, .05); return readPage(); }
+  clearTimeout(READ.tm); READ.open = false; READ.q = []; READ.i = 0; const c = $('card'); drawLog(); if (quiet) { c.hidden = true; return; }
   c.classList.add('drop'); beep(520, .05); flashLog(); setTimeout(() => { if (!READ.open) c.hidden = true; }, 400); }
 function readNudge() { const c = $('cardbox'); c.classList.remove('nudge'); void c.offsetWidth; c.classList.add('nudge'); beep(200, .08); }
 $('cardok').addEventListener('click', () => { if (!$('cardok').disabled) readOk(); });
@@ -3381,9 +3393,44 @@ function xPath(tx, ty) { const c = XY(), key = (x, y) => y * XW + x, from = {}, 
   const path = []; let k = key(best[0], best[1]); while (from[k] !== -1 && from[k] !== undefined) { path.unshift([k % XW, Math.floor(k / XW)]); k = from[k]; } return path; }
 function xGo(tx, ty, then) { XM.route = xPath(tx, ty); XM.then = then || null; if (!XM.route.length && then) { const c = XY(); XM.then = null; if (Math.abs(c.x - tx) + Math.abs(c.y - ty) <= 1) then(); } return XM.route.length; }
 function xArrive() { const f = XM.then; XM.then = null; save(); drawWords(); if (f) f(); }
-function xPlaceName() { const c = XY(), x = c.x, y = c.y; return xSkinAt(x, y) ? 'The Giant’s Skin' : xIn(XR.ground, x, y) ? 'Building Ground' : xIn(XR.ledge, x, y) ? 'Sun Ledge' : x >= 32 && y <= 8 ? 'Leafgrove' : y <= 6 && x >= 15 && x <= 29 ? 'The Sleeping Giant' : x >= 29 && y >= 11 && y <= 19 ? 'Modular Meadows' : x >= 8 && x <= 13 && y >= 13 && y <= 18 ? 'The Camp' : x <= 9 && y >= 19 ? 'Landing Square' : 'Planet Xylophora'; }
+function xPlaceName() { if (XM.intro != null) return 'Planet Xylophora'; const c = XY(), x = c.x, y = c.y; return xSkinAt(x, y) ? 'The Giant’s Skin' : xIn(XR.ground, x, y) ? 'Building Ground' : xIn(XR.ledge, x, y) ? 'Sun Ledge' : x >= 32 && y <= 8 ? 'Leafgrove' : y <= 6 && x >= 15 && x <= 29 ? 'The Sleeping Giant' : x >= 29 && y >= 11 && y <= 19 ? 'Modular Meadows' : x >= 8 && x <= 13 && y >= 13 && y <= 18 ? 'The Camp' : x <= 9 && y >= 19 ? 'Landing Square' : 'Planet Xylophora'; }
 function landXylo(text) { const c = XY(); closeToy(); S.mode = 'xylo'; c.x = XSTART[0]; c.y = XSTART[1]; XM.px = c.x; XM.py = c.y; XM.route = []; XM.then = null; XM.mark = null; XM.dir = 'down'; XM.cx = -1; PL.fade = 1; xSee(); save(); drawStatus(); beep(300, .3); drawWords();
+  if (xIntroDue()) return xIntro(0);
   say(text || 'You land on Planet Xylophora. The ground is a patchwork of squares. Smoke rises from a camp to the east. Walk around.'); }
+/* ARRIVING. [Source: Marc, 2026-11-20: "The planet wasn't described to me. The dead skin wasn't really described... I didn't know what I was doing or why."
+   "an intro screen as you go to each planet and we get like a better view of each planet as you get to it... shorter readings, but like two or three screens,
+   Continue after like 4-5 seconds so they have to read each thing and understand: oh wow, this is this world, this is what's happening."]
+   Three screens the first time a cadet lands: the planet, the giant and its skin, the job. The words are cut from his quest pages. [Proposal: "before the rains", "Long ago it shed its skin".]
+   A trial on this planet only. It follows the reading cards: a teacher who switches those off switches this off too. */
+const XINTRO = [['Planet Xylophora', 'This whole planet is made of shapes. The ground is a patchwork of perfect squares. Even the pines and the cacti grow in neat shapes.'],
+  ['The gentle giant', 'A giant lies here, in a sleep that never ends. Long ago it shed its skin. The skin is leathery, rubbery and brightly coloured. It stretches across the fields.'],
+  ['Your job', 'Earth is sending families to live here. Before the rains come they need a Home, a Hospital, a Food Store and a Solar Factory. But there is nothing to build with. Find the Site Chief at the camp.']];
+const xIntroDue = () => { const c = XY(); return READ.on && !c.intro && !Object.keys(c.done).length; };
+function xIntro(i) { const c = XY(); XM.intro = i; widget = { kind: 'xintro' }; const [title, text] = XINTRO[i], last = i === XINTRO.length - 1, wait = Math.max(3500, Math.min(5000, 700 + READW(text) * 180));
+  toy(`<p class="eyebrow">Planet Xylophora · ${i + 1} of ${XINTRO.length}</p><h3>${title}</h3><p class="story q">${text}</p><div class="field"><button class="btn" type="button" id="next" disabled>Read…</button><button class="btn quiet" type="button" id="readme">Read to me</button></div>`);
+  $('readme').onclick = () => speak(title + '. ' + text); const b = $('next'); XM.iwait = wait; clearTimeout(XM.itm); XM.itm = setTimeout(() => { if (document.body.contains(b)) { b.disabled = false; b.textContent = last ? 'Land' : 'Next'; } }, wait);
+  b.onclick = () => { if (b.disabled) return; beep(520, .06); if (!last) return xIntro(i + 1); c.intro = 1; XM.intro = null; closeToy(); save(); PL.fade = 1; say('You land on Planet Xylophora. Smoke rises from a camp to the east. Walk around.'); }; }
+/* the three pictures, drawn big in place of the map */
+function xIntroPic(i, w, h) { const m = Math.min(w, h), star = k => [((k * 97) % 101) / 101 * w, ((k * 53) % 89) / 89 * h];
+  const patch = (x0, y0, x1, y1, q, pal) => { for (let gy = 0, y = y0; y < y1; y += q, gy++) for (let gx = 0, x = x0; x < x1; x += q, gx++) { cx.fillStyle = pal[(gx * 7 + gy * 13 + ((gx * gy) % 3)) % pal.length]; cx.fillRect(x, y, q + 1, q + 1); cx.strokeStyle = 'rgba(10,30,30,.22)'; cx.lineWidth = 1; cx.strokeRect(x + .5, y + .5, q, q); } };
+  if (i === 0) { cx.fillStyle = '#05070f'; cx.fillRect(0, 0, w, h); for (let k = 0; k < 110; k++) { const [x, y] = star(k); cx.fillStyle = `rgba(255,255,255,${.35 + .35 * Math.sin(tNow * 1.5 + k)})`; cx.fillRect(x, y, k % 7 ? 1.5 : 2.5, k % 7 ? 1.5 : 2.5); }
+    const R = m * .36, CX = w * .54, CY = h * .55, q = R / 4.4; { const g = cx.createRadialGradient(CX, CY, R * .9, CX, CY, R * 1.35); g.addColorStop(0, 'rgba(120,220,190,.35)'); g.addColorStop(1, 'rgba(120,220,190,0)'); cx.fillStyle = g; circ(CX, CY, R * 1.35); cx.fill(); }
+    cx.save(); circ(CX, CY, R); cx.clip(); patch(CX - R, CY - R, CX + R, CY + R, q, XPAL.concat(['#46a878', '#3a8f7c', XMEAD[0], '#3d9a6e', XMEAD[1], '#4fae6a']));
+    cx.fillStyle = '#7d5bd1'; rr(CX - q * 2.2, CY - q * 2.9, q * 4.6, q * 1.1, q * .55); cx.fill(); ol(2); for (let a = 0; a < 3; a++) for (let b2 = 0; b2 < 2; b2++) { cx.fillStyle = (a + b2) % 2 ? '#e8613f' : '#f0733f'; cx.fillRect(CX - q * 3 + a * q, CY - q * .9 + b2 * q, q + 1, q + 1); } cx.fillStyle = '#d9c29a'; cx.fillRect(CX + q * .4, CY + q * .2, q * 3, q * 2);
+    { const g = cx.createRadialGradient(CX - R * .42, CY - R * .46, R * .08, CX, CY, R * 1.04); g.addColorStop(0, 'rgba(255,255,255,.22)'); g.addColorStop(.55, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,22,.68)'); cx.fillStyle = g; cx.fillRect(CX - R, CY - R, R * 2, R * 2); } cx.restore();
+    cx.strokeStyle = 'rgba(170,235,215,.6)'; cx.lineWidth = 3; circ(CX, CY, R); cx.stroke(); rocket(w * .13 + Math.sin(tNow * .6) * 6, h * .2 + Math.cos(tNow * .5) * 4, m * .16, .55, { flame: true }); return; }
+  if (i === 1) { const q = Math.max(w / 12, h / 8); patch(0, 0, w, h, q, XPAL); const gx = w * .07, gy = h * .13, gw = w * .86, gh = h * .28, br = Math.sin(tNow * 1.4) * gh * .02;
+    cx.fillStyle = '#7d5bd1'; rr(gx, gy - br, gw, gh + br * 2, gh * .5); cx.fill(); ol(3); for (let k = 1; k < 9; k++) { cx.strokeStyle = k % 2 ? '#f2a03f' : '#57c7c0'; cx.lineWidth = Math.max(3, gh * .05); cx.beginPath(); cx.moveTo(gx + gw * (.28 + k * .07), gy + gh * .16 - br); cx.quadraticCurveTo(gx + gw * (.3 + k * .07), gy + gh * .5, gx + gw * (.28 + k * .07), gy + gh * .84 + br); cx.stroke(); }
+    cx.strokeStyle = INK; cx.lineWidth = 3; [gh * .34, gh * .62].forEach(yy => { cx.beginPath(); cx.arc(gx + gw * .12, gy + yy, gh * .09, .15 * Math.PI, .85 * Math.PI); cx.stroke(); }); cx.fillStyle = '#fff'; cx.font = `700 ${Math.max(14, m * .05)}px "Chakra Petch", sans-serif`; cx.textAlign = 'left'; ['z', 'z', 'z'].forEach((z, k) => cx.fillText(z, gx + gw * .2 + k * m * .04, gy + gh * 1.32 - k * m * .035 - Math.sin(tNow * 2 + k) * 3));
+    const sq = Math.min(w / 16, h / 9.6), sx0 = w * .36, sy0 = h * .54; for (let b2 = 0; b2 < 4; b2++) for (let a = 0; a < 9; a++) { if (a >= 6 && b2 < 2) continue; cx.fillStyle = (a + b2) % 2 ? '#e8613f' : '#f0733f'; cx.fillRect(sx0 + a * sq, sy0 + b2 * sq, sq + 1, sq + 1); cx.strokeStyle = '#8a2f1c'; cx.lineWidth = 1.5; cx.strokeRect(sx0 + a * sq + .5, sy0 + b2 * sq + .5, sq, sq); cx.fillStyle = 'rgba(255,220,120,.5)'; circ(sx0 + a * sq + sq * .3, sy0 + b2 * sq + sq * .3, sq * .06); cx.fill(); }
+    drawAstro(w * .2, h * .74, sq * 1.5, false, 'right', 0); return; }
+  { const q = Math.max(w / 12, h / 8); patch(0, 0, w, h, q, XPAL); const bx = w * .4, by = h * .3, bw = w * .52, bh = h * .52, bq = bw / 10; for (let y = by, gy = 0; y < by + bh - 1; y += bq, gy++) for (let x = bx, gx = 0; x < bx + bw - 1; x += bq, gx++) { cx.fillStyle = (gx + gy) % 2 ? '#d9c29a' : '#d2ba90'; cx.fillRect(x, y, bq + 1, Math.min(bq, by + bh - y) + 1); }
+    cx.setLineDash([8, 6]); cx.strokeStyle = INK; cx.lineWidth = 2.5; [[.3, .5, 2.6, 2, 'Home'], [3.3, .5, 3, 3, 'Hospital'], [.3, 3.4, 3.6, 2.4, 'Food Store'], [6.8, .9, 2.9, 4.4, 'Solar Factory']].forEach(r => { cx.strokeRect(bx + r[0] * bq, by + r[1] * bq, r[2] * bq, r[3] * bq); }); cx.setLineDash([]);
+    [[.3, .5, 2.6, 2, 'Home'], [3.3, .5, 3, 3, 'Hospital'], [.3, 3.4, 3.6, 2.4, 'Food Store'], [6.8, .9, 2.9, 4.4, 'Solar Factory']].forEach(r => pill(r[4], bx + (r[0] + r[2] / 2) * bq, by + (r[1] + r[3] / 2) * bq)); cx.textAlign = 'left';
+    const ts2 = Math.min(w * .09, h * .13); [[.1, .52], [.19, .52]].forEach(t => { cx.fillStyle = '#c96f4a'; cx.beginPath(); cx.moveTo(w * t[0], h * t[1] + ts2); cx.lineTo(w * t[0] + ts2 * .5, h * t[1]); cx.lineTo(w * t[0] + ts2, h * t[1] + ts2); cx.closePath(); cx.fill(); ol(2); }); xPerson(w * .27, h * .72, ts2 * 1.1, '#f0a23b');
+    for (let k = 0; k < 4; k++) { const X = w * (.5 + k * .15) + Math.sin(tNow * .4 + k) * 10, Y = h * (.07 + (k % 2) * .05); cx.fillStyle = 'rgba(90,104,130,.92)'; [[0, 0, 1], [-.9, .25, .7], [.9, .25, .75], [0, .35, .9]].forEach(c2 => { circ(X + c2[0] * m * .05, Y + c2[1] * m * .05, c2[2] * m * .05); cx.fill(); });
+      cx.strokeStyle = 'rgba(150,200,255,.85)'; cx.lineWidth = 2; for (let d = 0; d < 4; d++) { const ph = (tNow * 1.6 + d * .25 + k * .3) % 1, rx = X - m * .05 + d * m * .035; cx.beginPath(); cx.moveTo(rx, Y + m * .07 + ph * m * .08); cx.lineTo(rx - m * .01, Y + m * .1 + ph * m * .08); cx.stroke(); } }
+    rocket(w * .12 + Math.sin(tNow * .5) * 5, h * .3, m * .11, .9, { flame: true }); rocket(w * .27 + Math.cos(tNow * .45) * 5, h * .22, m * .08, .9, { flame: true }); } }
 function leaveXylo(out) { closeToy(); XM.mark = null; S.mode = 'space'; S.at = 'metrica'; SP.to = null; SP.x = GAL.metrica.x + .06; SP.y = GAL.metrica.y + .04; save(); drawStatus(); beep(200, .4, 'sawtooth'); drawWords(); out('You lift off from Xylophora. Galaxy Metrica glows around you.'); }
 function goXylophora() { S.ended = true; S.beat = 0; tidy(); landXylo('Teacher shortcut. You land on Planet Xylophora. The ground is a patchwork of squares. Smoke rises from a camp to the east. Walk around.'); $('place').scrollIntoView({ block: 'nearest' }); }
 
@@ -3469,7 +3516,7 @@ function xDig() { const c = XY(); if (c.x !== XDIG[0] || c.y !== XDIG[1]) return
   c.finds.push('print'); S.log.push({ what: 'Xylophora: the leaf print', skill: 'A secret', result: 'found' }); save(); chime(); card(); return 'You dig in the sand between the cacti. Clink! A flat stone, with a print pressed into it: a square leaf, from long, long ago. You earn a card.'; }
 function xChief() { const c = XY(), v = xNums(c.seed), st = xStage(); c.told = xToldKey(); save();
   if (st === 'skin') return c.saw.skin ? 'The Site Chief says: "The giant’s old skin! Leathery. Rubbery. Strong. It could be our floors and our walls. The cutters need one number first. How many squares of skin are there? Set it on the survey post, by the skin."' : 'The Site Chief says: "Welcome, cadet. Earth is sending families. They need four buildings before the rains: a Home, a Hospital, a Food Store and a Solar Factory. We have tools. We have no building material. Nothing near the camp is strong enough."';
-  if (st === 'floors') return `The Site Chief says: "${v.S} squares of skin. Good work, Resource Manager. Now you are our Space Architect. The orders are on the board. Mark each floor on the building ground. The cutters will lay the skin."`;
+  if (st === 'floors') return `The Site Chief says: "${v.S} squares of skin. Good work, Resource Manager. Now you are our Space Architect. The cutters cut the skin in straight lines. So every floor is a rectangle. The orders are on the board. Mark each floor on the building ground."`;
   if (st === 'roofs') return !xLeavesLeft() && !c.bag && !xRoofsWhole() ? 'The Site Chief says: "No leaves left on the trees? Then some roof is using too many."' : xKnowsTrees() ? 'The Site Chief says: "Stiff leaves! They may just work, Resource Innovator. Cover every roof."' : 'The Site Chief says: "Skin sags. We need something stiff and flat. I have seen nothing like that near the camp."';
   if (st === 'homes') { xHomes(); return ''; } if (st === 'key') { xKey(); return ''; }
   return 'The Site Chief says: "A colony, where there was only grass. Thank you, Planetary Pioneer."'; }
@@ -3550,6 +3597,7 @@ function xHerder(Xp, Yp, s) { const fl = Math.sin(tNow * 2) * s * .04; cx.fillSt
   cx.fillStyle = '#fbf6e9'; cx.beginPath(); cx.moveTo(Xp + s * .1, Yp - s * .2); cx.lineTo(Xp + s * .55, Yp - s * .42 + fl); cx.lineTo(Xp + s * .3, Yp - s * .05); cx.closePath(); cx.fill(); ol(1.2); cx.fillStyle = INK; circ(Xp - s * .08, Yp - s * .2, s * .035); cx.fill(); circ(Xp + s * .08, Yp - s * .2, s * .035); cx.fill(); }
 function xLeaf(px, py, sz, old) { cx.fillStyle = old ? '#a8a05a' : '#58c26a'; rr(px + sz * .04, py + sz * .04, sz * .92, sz * .92, sz * .1); cx.fill(); ol(1.5); cx.strokeStyle = old ? '#7c7440' : '#2f8a45'; cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(px + sz * .5, py + sz * .1); cx.lineTo(px + sz * .5, py + sz * .9); cx.moveTo(px + sz * .1, py + sz * .5); cx.lineTo(px + sz * .9, py + sz * .5); cx.stroke(); }
 function drawXylo(dt) { const c = XY(), w = vw, h = vh, v = xNums(c.seed); if (c.seen.length !== XW * XH) xSee();
+  if (XM.intro != null) { if (widget && widget.kind === 'xintro') return xIntroPic(XM.intro, w, h); XM.intro = null; }
   if (XM.route.length) { const [tx, ty] = XM.route[0], dx = tx - XM.px, dy = ty - XM.py, d = Math.hypot(dx, dy), st = 5.6 * dt; XM.step += dt; if (Math.abs(dx) > Math.abs(dy)) XM.dir = dx > 0 ? 'right' : 'left'; else if (dy) XM.dir = dy > 0 ? 'down' : 'up';
     if (d <= st) { XM.px = tx; XM.py = ty; c.x = tx; c.y = ty; XM.route.shift(); xSee(); if (!XM.route.length) xArrive(); } else { XM.px += dx / d * st; XM.py += dy / d * st; } }
   const mr = XM.mark ? XR[XM.mark.b === 'fact' ? 'ledge' : 'ground'] : null, ts0 = Math.max(26, Math.min(50, Math.min(w / 16, h / 11))), ts = mr ? Math.min(ts0, w / (mr[2] + .6), h / (mr[3] + .6)) : ts0, cols = w / ts, rows = h / ts, fxc = mr ? mr[0] + mr[2] / 2 : XM.px + .5, fyc = mr ? mr[1] + mr[3] / 2 : XM.py + .5;
@@ -3945,7 +3993,7 @@ size(); cam.x = P.x - vw / ts / 2; cam.y = P.y - vh / ts / 2;
 drawStatus(); drawBag(); drawCards();
 S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.secrets.includes('stone') && !S.inv.includes('stone')) S.inv.push('stone'); if (S.ship && rude(S.ship, true)) S.ship = ''; if (S.botName && rude(S.botName, true)) S.botName = ''; drawStars();
 if (S.tut == null) S.tut = 3;
-if (S.xy) { XM.px = S.xy.x; XM.py = S.xy.y; XM.cx = -1; }
+if (S.xy) { XM.px = S.xy.x; XM.py = S.xy.y; XM.cx = -1; if (S.mode === 'xylo') setTimeout(() => { if (!widget && S.mode === 'xylo' && xIntroDue()) xIntro(0); }, 400); }      /* a cadet who reloads before the arrival screens are done sees them again */
 if (S.sd) { SM.px = S.sd.x; SM.py = S.sd.y; SM.snap = true; S.sd.at = 'map'; }
 say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'chrono' ? 'You are on Planet Chronosia.' : S.mode === 'xylo' ? 'You are on Planet Xylophora.' : S.mode === 'star' ? 'You are on the mission ship.' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
