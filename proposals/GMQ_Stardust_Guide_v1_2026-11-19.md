@@ -29,6 +29,10 @@ I had written in section 12 that "breaks its plate" might not be clear, and that
 
 The rest of this guide is updated to the new words.
 
+**What you said next, the same day:** "Oh. I see. It's Living. I didn't really read carefully. Each thermometer has a plate that tells it the ideal range. But breaks the plate is a weird phrasing."
+
+So row 1 is the fault you confirm. Rows 2 and 3 are my own changes. Row 2 is a plain mismatch between words and picture. Row 3 rests on my reading of "previous temperature", and you have since said you had not read carefully. It can go back to last trip's temperatures if you prefer. You also use the word "plate" yourself, so "sign" is my word, not yours.
+
 ---
 
 ## 1. The short version
