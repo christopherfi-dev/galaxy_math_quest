@@ -1,0 +1,64 @@
+/* Draws Chronosia from orbit for the printable map. Made from proposals/GMQ_Satellite_Map_Sample_v1_2026-11-20.html: same map, no clouds, no labels, a little lighter for paper. */
+
+(function () {
+const CMAP = ['^^^^^^TTTTTTTT^^^^^^', '^^..Q....TTTTT....^^', '^...:....T.G.T...F.^', '^...:....TT.TT.....^', 'T...::::::::.......^', 'T..K:......:..H....T', 'T...:......::::....T', 'T...:..............T', '~~~~=~~~~~~~~~~~~~~~', 'T...:.......^^.....T', 'T...::::S.....C..X.T', 'T..................T', 'TTTTTTTTTTTTTTTTTTTT'];
+const CW = 20, CH = 13, cv = document.getElementById('map'), g = cv.getContext('2d'), W = cv.width, H = cv.height, T = W / CW;
+const PLACES = [['Clock Tower', 3, 5, 'tower'], ['Quake Station', 4, 1, 'dome'], ['Council Hall', 14, 5, 'hall'], ['Cougar Rock', 14, 10, 'rock'], ['Your ship', 8, 10, 'ship']];
+const opt = { labels: false, grid: false, clouds: false, seed: 7 };
+function hash(x, y, s) { let h = (Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(s, 982451653)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
+function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  const a = hash(xi, yi, s), b = hash(xi + 1, yi, s), c = hash(xi, yi + 1, s), d = hash(xi + 1, yi + 1, s); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
+function fbm(x, y, s, oct) { let t = 0, amp = .5, f = 1; for (let i = 0; i < oct; i++) { t += amp * vnoise(x * f, y * f, s + i * 17); f *= 2.03; amp *= .5; } return t; }
+const tile = (x, y) => { const c = CMAP[Math.max(0, Math.min(CH - 1, y))][Math.max(0, Math.min(CW - 1, x))]; return c; };
+const cls = c => c === '~' || c === '=' ? 'w' : c === '^' ? 'm' : c === 'T' || c === 'G' || c === 'F' ? 'f' : c === ':' ? 'p' : 'g';
+/* a field for each kind of ground, smoothed between squares, so edges are not square */
+function field(k) { const f = new Float32Array((CW + 2) * (CH + 2)); for (let y = -1; y <= CH; y++) for (let x = -1; x <= CW; x++) f[(y + 1) * (CW + 2) + x + 1] = cls(tile(x, y)) === k ? 1 : 0; return f; }
+const F = { w: field('w'), m: field('m'), f: field('f'), p: field('p') };
+function samp(f, x, y) { x -= .5; y -= .5; const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf), at = (i, j) => f[(Math.max(-1, Math.min(CH, j)) + 1) * (CW + 2) + Math.max(-1, Math.min(CW, i)) + 1];
+  return at(xi, yi) * (1 - u) * (1 - v) + at(xi + 1, yi) * u * (1 - v) + at(xi, yi + 1) * (1 - u) * v + at(xi + 1, yi + 1) * u * v; }
+const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const hex = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const C = { grassA: hex('#3f8a6e'), grassB: hex('#7a8f4c'), moss: hex('#6d5c92'), forest: hex('#173f3a'), forestL: hex('#2c6b55'), rock: hex('#6e6886'), rockL: hex('#b4aec7'), snow: hex('#eef1f8'), path: hex('#cdb68a'), deep: hex('#123c5c'), shallow: hex('#2f8a94'), bank: hex('#8d7f5a') };
+const BANDS = [hex('#8f4fc0'), hex('#d95fa8'), hex('#ff8f6b'), hex('#ffc65e'), hex('#7fe0c8'), hex('#5b3fa8')];
+let base = null;
+function render() { const t0 = performance.now(), S = opt.seed, img = g.createImageData(W, H), d = img.data, hgt = new Float32Array(W * H), col = new Float32Array(W * H * 3), water = new Float32Array(W * H);
+  for (let py = 0; py < H; py++) for (let px = 0; px < W; px++) { const x = px / T, y = py / T, wx = x + (fbm(x * .6, y * .6, S + 3, 3) - .5) * .9, wy = y + (fbm(x * .6 + 9, y * .6, S + 5, 3) - .5) * .9;
+    const fw = samp(F.w, wx, wy), fm = samp(F.m, wx, wy), ff = samp(F.f, wx, wy), fp = samp(F.p, x + (fbm(x * 1.3, y * 1.3, S + 8, 2) - .5) * .35, y + (fbm(x * 1.3 + 4, y * 1.3, S + 9, 2) - .5) * .35);
+    const n1 = fbm(x * .45, y * .45, S, 5), n2 = fbm(x * 2.2, y * 2.2, S + 1, 4), n3 = fbm(x * 7, y * 7, S + 2, 3), i = py * W + px;
+    const isW = sm(.42, .58, fw), mount = sm(.25, .75, fm), forest = sm(.35, .6, ff) * (1 - mount), path = sm(.6, .82, fp) * (1 - isW);
+    const ridge = 1 - Math.abs(2 * fbm(x * 1.4, y * 1.4, S + 4, 5) - 1), n4 = fbm(x * 16, y * 16, S + 13, 2);
+    let h = .35 + .25 * n1 + .1 * n2 + mount * (.35 + .9 * ridge * ridge + .2 * n2) + forest * (.05 + .12 * sm(.45, .7, n3)) - isW * .45 + .03 * n4; hgt[i] = h; water[i] = isW;
+    let c = mix(C.grassA, C.grassB, sm(.35, .7, n1)); c = mix(c, [30, 70, 55], (n4 - .5) * .35 + .1); c = mix(c, C.moss, sm(.62, .78, fbm(x * .8, y * .8, S + 6, 4)) * .55);
+    c = mix(c, mix(C.forest, C.forestL, sm(.45, .62, n3 * .7 + n4 * .3)), forest * .92); c = mix(c, [120, 170, 120], forest * sm(.72, .85, n4) * .35);
+    const rk = mix(mix(C.rock, C.rockL, sm(.7, 1.2, h)), [96, 82, 70], sm(.5, .2, ridge) * .35); c = mix(c, rk, mount); c = mix(c, C.snow, sm(.7, .95, mount) * sm(1.22, 1.34, h + .06 * n3));
+    c = mix(c, mix(C.path, [190, 160, 110], n3 * .5), path * .9);
+    const bank = sm(.25, .45, fw) * (1 - isW); c = mix(c, C.bank, bank * .55);
+    if (isW > 0) { const depth = sm(.55, .95, fw); let wc = mix(C.shallow, C.deep, depth); const fast = sm(9, 6, x); wc = mix(wc, [230, 245, 250], fast * sm(.62, .8, fbm(x * 3, y * 9, S + 11, 3)) * .55 * depth); c = mix(c, wc, isW); }
+    const band = (y * .55 + x * .32 + fbm(x * .2, y * .2, S + 12, 3) * 3) / 2.1, bi = Math.floor(band), bf = band - bi, b1 = BANDS[((bi % 6) + 6) % 6], b2 = BANDS[(((bi + 1) % 6) + 6) % 6];
+    c = mix(c, mix(b1, b2, sm(.7, 1, bf)), .13 * (1 - isW * .5));
+    col[i * 3] = c[0]; col[i * 3 + 1] = c[1]; col[i * 3 + 2] = c[2]; }
+  for (let py = 0; py < H; py++) for (let px = 0; px < W; px++) { const i = py * W + px, l = hgt[Math.max(0, py - 3) * W + Math.max(0, px - 3)], r = hgt[Math.min(H - 1, py + 3) * W + Math.min(W - 1, px + 3)];
+    let shade = 1 + (l - r) * 11 * (1 - water[i] * .8); shade = Math.max(.55, Math.min(1.35, shade)); const k = i * 4;
+    d[k] = Math.min(255, col[i * 3] * shade * 1.12 + 14); d[k + 1] = Math.min(255, col[i * 3 + 1] * shade * 1.12 + 14); d[k + 2] = Math.min(255, col[i * 3 + 2] * shade * 1.12 + 14);      /* a little lighter, for paper */ d[k + 3] = 255; }
+  g.putImageData(img, 0, 0); base = g.getImageData(0, 0, W, H); dressAll(); window.MAPDONE = Math.round(performance.now() - t0); }
+/* things built by people, seen from above, with a shadow to the south-east */
+function shadow(x, y, w, h) { g.fillStyle = 'rgba(8,14,20,.38)'; g.beginPath(); g.ellipse(x + w * .35, y + h * .35, w * .62, h * .42, .5, 0, 7); g.fill(); }
+function draw(kind, cx, cy) { const s = T * .42;
+  if (kind === 'tower') { shadow(cx + 6, cy + 6, s * 1.4, s * 1.4); const gr = g.createRadialGradient(cx - s * .3, cy - s * .3, 2, cx, cy, s); gr.addColorStop(0, '#ffd2c2'); gr.addColorStop(1, '#b8573f'); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, s * .85, 0, 7); g.fill(); g.strokeStyle = 'rgba(60,20,20,.6)'; g.lineWidth = 1.5; for (let a = 0; a < 8; a++) { g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a * .785) * s * .85, cy + Math.sin(a * .785) * s * .85); g.stroke(); } }
+  else if (kind === 'dome') { shadow(cx + 5, cy + 5, s * 1.5, s * 1.3); const gr = g.createRadialGradient(cx - s * .4, cy - s * .4, 2, cx, cy, s * 1.1); gr.addColorStop(0, '#ffffff'); gr.addColorStop(.5, '#b9d7ea'); gr.addColorStop(1, '#5d7f99'); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, s, 0, 7); g.fill(); g.fillStyle = '#ff5a4d'; g.beginPath(); g.arc(cx + s * .5, cy - s * .5, 3, 0, 7); g.fill(); }
+  else if (kind === 'hall') { const w = s * 2.4, h = s * 1.5; shadow(cx + 8, cy + 8, w * .8, h * .8); g.fillStyle = '#e9e1cf'; g.fillRect(cx - w / 2, cy - h / 2, w, h); g.fillStyle = '#c9bfa8'; g.beginPath(); g.moveTo(cx - w / 2, cy - h / 2); g.lineTo(cx + w / 2, cy - h / 2); g.lineTo(cx + w * .38, cy); g.lineTo(cx - w * .38, cy); g.fill(); g.fillStyle = '#a79c86'; g.fillRect(cx - w / 2, cy - 1, w, 2); g.fillStyle = '#b9a3ff'; g.fillRect(cx - w / 2 - 3, cy + h / 2, w + 6, 4); }
+  else if (kind === 'rock') { shadow(cx + 6, cy + 6, s * 1.6, s * 1.1); g.fillStyle = '#8a8499'; g.beginPath(); g.ellipse(cx, cy, s * 1.3, s * .9, .3, 0, 7); g.fill(); g.fillStyle = '#b4aec7'; g.beginPath(); g.ellipse(cx - s * .3, cy - s * .2, s * .7, s * .45, .3, 0, 7); g.fill(); g.fillStyle = '#d49a45'; g.beginPath(); g.ellipse(cx + s * .2, cy - s * .1, s * .45, s * .22, -.2, 0, 7); g.fill(); g.beginPath(); g.arc(cx + s * .65, cy - s * .2, s * .2, 0, 7); g.fill(); }
+  else if (kind === 'ship') { shadow(cx + 6, cy + 6, s * .9, s * 1.4); g.save(); g.translate(cx, cy); g.rotate(-.5); g.fillStyle = '#e8ecf4'; g.beginPath(); g.moveTo(0, -s * 1.2); g.quadraticCurveTo(s * .45, -s * .2, s * .32, s * .9); g.lineTo(-s * .32, s * .9); g.quadraticCurveTo(-s * .45, -s * .2, 0, -s * 1.2); g.fill(); g.fillStyle = '#d8523a'; g.beginPath(); g.moveTo(-s * .3, s * .3); g.lineTo(-s * .85, s * 1.05); g.lineTo(-s * .3, s * .85); g.fill(); g.beginPath(); g.moveTo(s * .3, s * .3); g.lineTo(s * .85, s * 1.05); g.lineTo(s * .3, s * .85); g.fill(); g.fillStyle = '#3f8fd8'; g.beginPath(); g.arc(0, -s * .3, s * .17, 0, 7); g.fill(); g.restore(); } }
+function bridge() { const x = 4 * T, y = 8 * T; g.fillStyle = 'rgba(8,14,20,.35)'; g.fillRect(x + T * .28, y - T * .05, T * .5, T * 1.12); g.fillStyle = '#8a5a34'; g.fillRect(x + T * .22, y - T * .12, T * .52, T * 1.24); g.strokeStyle = '#5a3a20'; g.lineWidth = 2; for (let k = 1; k < 8; k++) { g.beginPath(); g.moveTo(x + T * .22, y - T * .12 + k * T * .155); g.lineTo(x + T * .74, y - T * .12 + k * T * .155); g.stroke(); } }
+function clouds() { const S = opt.seed, cw = W / 4, ch = H / 4, c2 = document.createElement('canvas'); c2.width = cw; c2.height = ch; const g2 = c2.getContext('2d'), im = g2.createImageData(cw, ch), sh = g2.createImageData(cw, ch);
+  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) { const v = fbm(x / 42, y / 42, S + 30, 5), a = sm(.63, .78, v), k = (y * cw + x) * 4; im.data[k] = im.data[k + 1] = im.data[k + 2] = 250; im.data[k + 3] = a * 200; sh.data[k + 3] = a * 90; }
+  g2.putImageData(sh, 0, 0); g.save(); g.imageSmoothingEnabled = true; g.drawImage(c2, 14, 22, W, H); g2.putImageData(im, 0, 0); g.drawImage(c2, 0, 0, W, H); g.restore(); }
+function pill(t, x, y) { g.font = '700 22px "Andika", Verdana, sans-serif'; const w = g.measureText(t).width + 20; g.fillStyle = 'rgba(6,9,18,.82)'; g.beginPath(); g.roundRect(x - w / 2, y, w, 32, 9); g.fill(); g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(t, x, y + 17); }
+function dressAll() { g.putImageData(base, 0, 0); bridge(); PLACES.forEach(p => draw(p[3], (p[1] + .5) * T, (p[2] + .5) * T));
+  if (opt.clouds) clouds();
+  if (opt.grid) { g.strokeStyle = 'rgba(255,255,255,.28)'; g.lineWidth = 1; for (let x = 1; x < CW; x++) { g.beginPath(); g.moveTo(x * T, 0); g.lineTo(x * T, H); g.stroke(); } for (let y = 1; y < CH; y++) { g.beginPath(); g.moveTo(0, y * T); g.lineTo(W, y * T); g.stroke(); } }
+  if (opt.labels) PLACES.forEach(p => pill(p[0], (p[1] + .5) * T, (p[2] + .5) * T + T * .55));
+}
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(render);
+})();

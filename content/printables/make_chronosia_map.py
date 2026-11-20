@@ -86,3 +86,21 @@ table {{ border-collapse: collapse; font-size: 10.5pt; }} td, th {{ border: .25m
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'GMQ_Chronosia_Old_Map_v1.html'); open(out, 'w').write(html)
 g = (PLACES['Council Hall'][0] - 3, PLACES['Council Hall'][1] + 3); assert g == pt(11, 2) and CMAP[2][11] == 'G'   # the grove is at pt(11, 2) = (12, 11): 3 across and 3 up from the Hall, so about 4 cm north-west
 print('points:', PLACES); print('ruler:', {a + ' to ' + b: (round(cm(a, b), 2), ANS[(a, b)]) for a, b in RULER}); print('walk ends at', walk, '| grove at', pt(11, 2), '| distance Hall to grove: %.2f cm' % math.hypot(3, 3)); print('wrote', out)
+
+# ---- THE SAME MAP, FROM ORBIT.  [Source: Marc, 2026-11-20: for the grid-and-ruler activity, "a very cool visual realistic map".]
+# The ground is drawn by orbit_map.js in the browser (the satellite sample, made lighter for paper). The grid, the points and the names sit on top,
+# at exactly the same places as the old map, so the field sheet and the key do not change.
+ov = []
+for x in range(1, W + 1): ov.append(f'<line x1="{X(x)}" y1="10" x2="{X(x)}" y2="{10+H*10}" stroke="#0b1322" stroke-opacity=".55" stroke-width=".55"/><line x1="{X(x)}" y1="10" x2="{X(x)}" y2="{10+H*10}" stroke="#fff" stroke-width=".22"/><text x="{X(x)}" y="{10+H*10+5}" font-size="3.6" text-anchor="middle" font-weight="700">{x}</text>')
+for y in range(1, H + 1): ov.append(f'<line x1="10" y1="{Y(y)}" x2="{10+W*10}" y2="{Y(y)}" stroke="#0b1322" stroke-opacity=".55" stroke-width=".55"/><line x1="10" y1="{Y(y)}" x2="{10+W*10}" y2="{Y(y)}" stroke="#fff" stroke-width=".22"/><text x="7" y="{Y(y)+1.3}" font-size="3.6" text-anchor="end" font-weight="700">{y}</text>')
+ov.append(f'<rect x="10" y="10" width="{W*10}" height="{H*10}" fill="none" stroke="#17203a" stroke-width=".5"/>')
+for name, (x, y) in PLACES.items():
+    w = len(name) * 1.85 + 3.2; lx = X(x) + (9 if name == 'Bridge' else 0); ly = Y(y) + (-6.2 if name == 'Bridge' else 2.4)
+    ov.append(f'<circle cx="{X(x)}" cy="{Y(y)}" r="1.25" fill="#ffd25e" stroke="#0b1322" stroke-width=".45"/><rect x="{lx-w/2}" y="{ly}" width="{w}" height="4.4" rx="1.2" fill="#0b1322" fill-opacity=".85"/><text x="{lx}" y="{ly+3.2}" font-size="3.1" text-anchor="middle" font-weight="700" fill="#fff">{name}</text>')
+OV = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150" style="position:absolute;left:0;top:0;width:220mm;height:150mm" font-family="Verdana, Arial, sans-serif" fill="#17203a">{"".join(ov)}</svg>'
+JS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'orbit_map.js')).read()
+ORBIT = f'<div style="position:relative;width:220mm;height:150mm"><canvas id="map" width="2000" height="1300" role="img" aria-label="Chronosia seen from orbit" style="position:absolute;left:10mm;top:10mm;width:200mm;height:130mm"></canvas>{OV}</div><script>{JS}</script>'
+o = html.replace(MAP, ORBIT).replace("<title>Sara's Old Map of Chronosia</title>", '<title>Chronosia From Orbit</title>').replace("<h1>Sara's Old Map of Chronosia</h1>", '<h1>Chronosia from Orbit</h1>')
+o = o.replace('Sara, the Senior Historian, drew this map long ago. Some places are not on it.', 'A satellite took this picture of Chronosia. Some places hide under the trees.').replace('Field sheet: read the old map', 'Field sheet: read the orbit map')
+assert o.count('<canvas') == 1 and 'Chronosia from Orbit' in o
+out2 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'GMQ_Chronosia_Orbit_Map_v1.html'); open(out2, 'w').write(o); print('wrote', out2)
