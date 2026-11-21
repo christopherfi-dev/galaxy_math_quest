@@ -310,7 +310,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 61</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 62</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -1658,21 +1658,46 @@ function olMsg(t, good) { const m = $('msg'); m.className = 'msg ' + (good ? 'go
 /* Shield Calibration: deal the tokens out, as at a table. The sections show dots, never numbers. [Source: SLIPS.calib] */
 function olCalib() { const N = S.tok, E = N / 5, put = [0, 0, 0, 0, 0]; let take = false;
   toy(`${olHead('calib')}<p class="story">The shield has 5 sections. Share ${N} power tokens equally over them. Tap a section to put a token on it.</p>
-    <svg id="olmat" viewBox="0 0 240 240" role="img" aria-label="A round shield mat in 5 sections" style="width:100%;max-width:290px;height:auto;aspect-ratio:1;flex:none;margin:0 auto;touch-action:manipulation;cursor:pointer"></svg>
-    <p class="q" id="olpile"></p><div class="field"><button class="word on" type="button" id="olput">Put a token</button><button class="word" type="button" id="oltake">Take one back</button></div>
+    <p class="note">Tap a section of the mat in the picture.</p><p class="q" id="olpile"></p><div class="field"><button class="word on" type="button" id="olput">Put a token</button><button class="word" type="button" id="oltake">Take one back</button></div>
     <div class="field"><label for="ans" class="note">Tokens on each section</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="2"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
-  const svg = $('olmat'), slots = []; for (let j = 0, r = 28; r <= 100; j++, r += 12) { const n = Math.floor(2 * Math.PI / 5 * r / 10); for (let k = 0; k < n; k++) slots.push([r, (k + .5) / n]); }
-  const draw = () => { let s = ''; for (let i = 0; i < 5; i++) { const a0 = -Math.PI / 2 + i * 2 * Math.PI / 5, a1 = a0 + 2 * Math.PI / 5, P = (r, a) => `${(120 + r * Math.cos(a)).toFixed(1)} ${(120 + r * Math.sin(a)).toFixed(1)}`;
-      s += `<path data-i="${i}" d="M120 120 L${P(112, a0)} A112 112 0 0 1 ${P(112, a1)} Z" fill="${i % 2 ? '#35606b' : '#2f5560'}" stroke="#9fe0d0" stroke-width="2"/>`;
-      for (let k = 0; k < Math.min(put[i], slots.length); k++) { const [r, f] = slots[k], a = a0 + (a1 - a0) * f; s += `<circle data-i="${i}" cx="${(120 + r * Math.cos(a)).toFixed(1)}" cy="${(120 + r * Math.sin(a)).toFixed(1)}" r="3.6" fill="#ffd25e" stroke="#0b1322" stroke-width="1"/>`; } }
-    svg.innerHTML = s; const left = N - put.reduce((a, b) => a + b, 0); $('olpile').textContent = left ? `Tokens left in the pile: ${left}` : 'The pile is empty.'; };
-  svg.onclick = e => { const el = e.target.closest('[data-i]'); if (!el) return; const i = +el.dataset.i, left = N - put.reduce((a, b) => a + b, 0); if (take) { if (put[i]) put[i]--; } else if (left) put[i]++; beep(take ? 380 : 620, .03); draw(); };
+  const slots = []; for (let j = 0, r = 28; r <= 100; j++, r += 12) { const n = Math.floor(2 * Math.PI / 5 * r / 10); for (let k = 0; k < n; k++) slots.push([r, (k + .5) / n]); } const W = widget; W.pic = { kind: 'mat', title: 'The token mat' }; W.put = put; W.slots = slots;
+  const draw = () => { const left = N - put.reduce((a, b) => a + b, 0); $('olpile').textContent = left ? `Tokens left in the pile: ${left}` : 'The pile is empty.'; };
+  W.tapMat = i => { const left = N - put.reduce((a, b) => a + b, 0); if (take) { if (put[i]) put[i]--; } else if (left) put[i]++; beep(take ? 380 : 620, .03); draw(); };
   $('olput').onclick = () => { take = false; $('olput').classList.add('on'); $('oltake').classList.remove('on'); }; $('oltake').onclick = () => { take = true; $('oltake').classList.add('on'); $('olput').classList.remove('on'); };
   $('leave').onclick = () => { closeToy(); say('You step back from the token mat.'); };
   $('try').onclick = () => { const v = $('ans').value; widget.tries++; if (put.reduce((a, b) => a + b, 0) < N) return olMsg('Some tokens are still in the pile.'); if (put.some(x => x !== put[0])) return olMsg('The sections are not equal yet. Count the tokens on each one.');
     if (v === '') return olMsg('Type how many tokens are on each section.'); if (+v !== E) return olMsg('Count the tokens on one section again.');
     olWin('calib', 'Sharing equally: division (AERO 3.OA.2)', `${N} tokens, ${E} on each of the 5 sections. The shield hums, even all round. You passed Shield Calibration!`); };
   $('ans').oninput = () => { $('ans').value = $('ans').value.replace(/[^0-9]/g, '').slice(0, 2); }; draw(); }
+/* THE PICTURE SHOWS WHAT THE CADET IS LOOKING AT.  [Source: Marc, 2026-11-21: "Look at the thermometer in the [mission ship]. When you look at it, it's a full
+   screen. Can you click on the star map, [it] should take the full screen... We should see what the character's looking at."] While the star map, the token
+   mat or the target wall is open, it fills the picture and is tapped there. The words and the buttons stay on the desk. */
+const olPicOn = () => S.mode === 'station' && widget && widget.kind === 'ol' && widget.pic;
+function olGeo(bw, bh) { const top = 58, s = Math.min((vw - 24) / bw, (vh - top - 12) / bh); return { s, ox: (vw - bw * s) / 2, oy: top + (vh - top - 12 - bh * s) / 2 }; }
+function olSpace() { const g = cx.createRadialGradient(vw / 2, vh * .45, 10, vw / 2, vh * .45, Math.max(vw, vh) * .7); g.addColorStop(0, '#1a2350'); g.addColorStop(1, '#05070f'); cx.fillStyle = g; cx.fillRect(0, 0, vw, vh);
+  for (let i = 0; i < 90; i++) { const x = ((i * 97) % 101) / 101 * vw, y = ((i * 53 + 7) % 89) / 89 * vh, a = .25 + .35 * Math.abs(Math.sin(tNow * .6 + i)); cx.fillStyle = `rgba(255,255,255,${a.toFixed(2)})`; cx.fillRect(x, y, 1.6, 1.6); } }
+function olStarCv(k, x, y, z) { if (k < 0) { cx.setLineDash([3, 3]); cx.strokeStyle = '#8fa3c8'; cx.lineWidth = 1.5; circ(x, y, z * .8); cx.fillStyle = '#2a3556'; cx.fill(); cx.stroke(); cx.setLineDash([]); return; }
+  const c = OLKIND[k][1], sh = OLKIND[k][2], gl = cx.createRadialGradient(x, y, 0, x, y, z * 2.4); gl.addColorStop(0, c + '99'); gl.addColorStop(1, c + '00'); cx.fillStyle = gl; circ(x, y, z * 2.4); cx.fill();
+  cx.fillStyle = c; cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.beginPath();
+  if (sh === 'c') cx.arc(x, y, z * .8, 0, 7); else if (sh === 'd') { cx.moveTo(x, y - z * 1.1); cx.lineTo(x + z * .85, y); cx.lineTo(x, y + z * 1.1); cx.lineTo(x - z * .85, y); cx.closePath(); }
+  else { const n = sh === 'x' ? 4 : 5; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, q = i % 2 ? z * .45 : z * 1.2, px = x + q * Math.cos(a), py = y + q * Math.sin(a); if (i) cx.lineTo(px, py); else cx.moveTo(px, py); } cx.closePath(); }
+  cx.fill(); cx.stroke(); }
+function olPic() { const W = widget, k = W.pic.kind; olSpace();
+  if (k === 'stars') { const sky = W.sky, sm = olSm(), g = olGeo(340, 220), X = p => g.ox + p[0] * g.s, Y = p => g.oy + p[1] * g.s, z = Math.max(7, g.s * 7);
+    cx.strokeStyle = 'rgba(143,163,200,.35)'; cx.lineWidth = 1; rr(g.ox, g.oy, 340 * g.s, 220 * g.s, 10); cx.stroke();
+    if (sm.path) { cx.strokeStyle = '#e8eef8'; cx.lineWidth = Math.max(2, g.s * 2); cx.setLineDash([g.s * 6, g.s * 4]); cx.beginPath(); sm.path.forEach((i, n) => n ? cx.lineTo(X(sky[i]), Y(sky[i])) : cx.moveTo(X(sky[i]), Y(sky[i]))); cx.stroke(); cx.setLineDash([]); }
+    sky.forEach((p, i) => olStarCv(sm.k[i], X(p), Y(p), z)); if (sm.path) sm.path.forEach(i => { cx.strokeStyle = '#ffb23e'; cx.lineWidth = Math.max(2, g.s * 1.8); circ(X(sky[i]), Y(sky[i]), z * 1.7); cx.stroke(); }); }
+  else if (k === 'mat') { const R = Math.min(vw - 30, vh - 80) / 2, ccx = vw / 2, ccy = 58 + (vh - 58) / 2, f = R / 112;
+    for (let i = 0; i < 5; i++) { const a0 = -Math.PI / 2 + i * 2 * Math.PI / 5, a1 = a0 + 2 * Math.PI / 5; cx.fillStyle = i % 2 ? '#35606b' : '#2f5560'; cx.beginPath(); cx.moveTo(ccx, ccy); cx.arc(ccx, ccy, R, a0, a1); cx.closePath(); cx.fill(); cx.strokeStyle = '#9fe0d0'; cx.lineWidth = 3; cx.stroke();
+      for (let n = 0; n < Math.min(W.put[i], W.slots.length); n++) { const [r, t] = W.slots[n], a = a0 + (a1 - a0) * t; cx.fillStyle = '#ffd25e'; circ(ccx + r * f * Math.cos(a), ccy + r * f * Math.sin(a), Math.max(4, 3.6 * f)); cx.fill(); ol(1.2); } } W.geo = { ccx, ccy, R }; }
+  else if (k === 'wall') { const c = Math.min((vw - 40) / 3, (vh - 90) / 3), ox = (vw - 3 * c) / 2, oy = 58 + (vh - 58 - 3 * c) / 2; W.geo = { c, ox, oy }; const cnt = {}; (W.hits || []).forEach(n => { cnt[n] = (cnt[n] || 0) + 1; });
+    OL9.forEach((row, j) => row.forEach((n, i) => { const X = ox + (i + .5) * c, Y = oy + (j + .5) * c, r = c * .42; ['#c0392b', '#fff7dc', '#c0392b', '#fff7dc'].forEach((col, q) => { cx.fillStyle = col; circ(X, Y, r * (1 - q * .24)); cx.fill(); }); ol(2);
+      cx.fillStyle = INK; cx.font = `700 ${Math.round(r * .62)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(n, X, Y + 2); cx.textAlign = 'left'; cx.textBaseline = 'alphabetic';
+      for (let m = 0; m < (cnt[n] || 0); m++) { const a = m * 2.4 + n, d = r * (.35 + .1 * (m % 3)); cx.fillStyle = '#1a2550'; circ(X + Math.cos(a) * d, Y + Math.sin(a) * d, Math.max(3, r * .07)); cx.fill(); cx.strokeStyle = '#fff'; cx.lineWidth = 1.5; cx.stroke(); } })); } }
+function olPicTap(e) { const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, W = widget, k = W.pic.kind;
+  if (k === 'stars' && !olSm().path) { const g = olGeo(340, 220), sx = (mx - g.ox) / g.s, sy = (my - g.oy) / g.s; let best = -1, bd = 18; W.sky.forEach((p, i) => { const d = Math.hypot(p[0] - sx, p[1] - sy); if (d < bd) { bd = d; best = i; } }); if (best >= 0) W.paint(best); }
+  else if (k === 'mat' && W.geo) { const g = W.geo, dx = mx - g.ccx, dy = my - g.ccy; if (Math.hypot(dx, dy) > g.R) return; let a = Math.atan2(dy, dx) + Math.PI / 2; if (a < 0) a += 2 * Math.PI; W.tapMat(Math.min(4, Math.floor(a / (2 * Math.PI / 5)))); }
+  else if (k === 'wall' && W.geo) { const g = W.geo, i = Math.floor((mx - g.ox) / g.c), j = Math.floor((my - g.oy) / g.c); if (i >= 0 && i < 3 && j >= 0 && j < 3) W.throwAt(OL9[j][i]); } }
 /* Star Map: paint the stars, then add up the radiation on your ship's path.
    [Source: Marc, 2026-11-21: "I wanted them to learn about the different kinds of stars. And then different colors were worth 1, 5, 10, 25 points. So they
     painted a bunch of stars... Then I told them the value of each color." "A random path through at least 10 stars is drawn for the kids. And then they need
@@ -1689,39 +1714,37 @@ function olKindSvg(k, x, y, z) { if (k < 0) return `<circle cx="${x}" cy="${y}" 
   const n = sh === 'x' ? 4 : 5, pts = []; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, q = i % 2 ? z * .45 : z * 1.2; pts.push([x + q * Math.cos(a), y + q * Math.sin(a)]); } return P(pts); }
 function olSm() { if (!S.sm) S.sm = { k: new Array(24).fill(-1), path: null }; return S.sm; }
 function olStars() { const sky = olSky(), sm = olSm(); return sm.path ? olStarSum(sky, sm) : olStarPaint(sky, sm); }
-function olStarPaint(sky, sm) { let cur = 0; const W = widget;
+function olStarPaint(sky, sm) { let cur = 0; const W = widget; W.sky = sky; W.pic = { kind: 'stars', title: 'The star map' };
   toy(`${olHead('starmap')}<p class="story">Your ship is about to leave the station. Out there, stars give off solar radiation. It hits your shield. How strong must your shield be? First, make a star map. Learn the kinds of star. Then paint every star.</p>
     <table class="tt fct" style="flex:none">${OLKIND.map((k, i) => `<tr><td><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">${olKindSvg(i, 10, 10, 7)}</svg></td><td><b>${k[0]}</b> ${k[4]}</td></tr>`).join('')}</table>
-    <svg id="olsky" viewBox="0 0 340 220" role="img" aria-label="A star map with 24 stars to paint" style="width:100%;max-width:420px;height:auto;aspect-ratio:340/220;flex:none;background:#0b1322;border-radius:10px;touch-action:manipulation;cursor:pointer"></svg>
-    <div class="field" id="olpots">${OLKIND.map((k, i) => `<button class="word${i ? '' : ' on'}" type="button" data-k="${i}" style="text-transform:none"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">${olKindSvg(i, 10, 10, 7)}</svg> ${k[0]}</button>`).join('')}</div>
+    <p class="note">Choose a colour. Then tap a star on the map in the picture.</p><div class="field" id="olpots">${OLKIND.map((k, i) => `<button class="word${i ? '' : ' on'}" type="button" data-k="${i}" style="text-transform:none"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">${olKindSvg(i, 10, 10, 7)}</svg> ${k[0]}</button>`).join('')}</div>
     <p class="note" id="olcount"></p><div class="field"><button class="btn" type="button" id="try">Done painting</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
-  const svg = $('olsky'), draw = () => { svg.innerHTML = sky.map((p, i) => olKindSvg(sm.k[i], +p[0].toFixed(1), +p[1].toFixed(1), 7)).join(''); $('olcount').textContent = `Painted ${sm.k.filter(k => k >= 0).length} of ${sky.length}. Use every kind, at least 3 of each.`; };
-  svg.onclick = e => { const q0 = svg.createSVGPoint(); q0.x = e.clientX; q0.y = e.clientY; const q = q0.matrixTransform(svg.getScreenCTM().inverse()); let best = -1, bd = 18; sky.forEach((p, i) => { const d = Math.hypot(p[0] - q.x, p[1] - q.y); if (d < bd) { bd = d; best = i; } });
-    if (best < 0) return; sm.k[best] = cur; save(); beep(500 + cur * 120, .03); draw(); };
+  const draw = () => { $('olcount').textContent = `Painted ${sm.k.filter(k => k >= 0).length} of ${sky.length}. Use every kind, at least 3 of each.`; };
+  W.paint = i => { sm.k[i] = cur; save(); beep(500 + cur * 120, .03); draw(); };
   document.querySelectorAll('#olpots button').forEach(b => b.onclick = () => { cur = +b.dataset.k; document.querySelectorAll('#olpots button').forEach(x => x.classList.toggle('on', x === b)); });
   $('leave').onclick = () => { closeToy(); say('You step back from the easel. Your painting is kept.'); };
   $('try').onclick = () => { if (sm.k.some(k => k < 0)) return olMsg('Some stars are not painted yet.'); if (OLKIND.some((k, i) => sm.k.filter(x => x === i).length < 3)) return olMsg('Use every kind of star, at least 3 of each.');
     sm.path = olPath(sky); save(); beep(880, .1); widget = W; olStarSum(sky, sm); }; draw(); }
-function olStarSum(sky, sm) { const P = sm.path, tot = P.reduce((a, i) => a + OLKIND[sm.k[i]][3], 0);
+function olStarSum(sky, sm) { const P = sm.path, tot = P.reduce((a, i) => a + OLKIND[sm.k[i]][3], 0); widget.sky = sky; widget.pic = { kind: 'stars', title: 'The star map' };
   toy(`${olHead('starmap')}<p class="story">Mission Control has drawn your ship's path. It flies past ${P.length} stars. Each one's radiation hits your shield. How strong must your shield be? Add up the radiation of every star on the path.</p>
     <p class="q">Radiation from each kind of star: ${OLKIND.map(k => `${k[0]} ${k[3]}`).join(' · ')}</p>
     <p class="note"><b>A way to add many numbers.</b> A trader counts gems: 25, 10, 25, 5, 25, 1, 25, 5. The 25s together make 100. The 5s make 10. 100 + 10 + 10 + 1 = 121 gems.</p>
-    <svg viewBox="0 0 340 220" role="img" aria-label="Your star map with the ship's path drawn through ${P.length} stars" style="width:100%;max-width:420px;height:auto;aspect-ratio:340/220;flex:none;background:#0b1322;border-radius:10px"><polyline points="${P.map(i => sky[i].map(v => v.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="#e8eef8" stroke-width="2.2" stroke-dasharray="6 4"/>${sky.map((p, i) => olKindSvg(sm.k[i], +p[0].toFixed(1), +p[1].toFixed(1), 7)).join('')}${P.map(i => `<circle cx="${sky[i][0].toFixed(1)}" cy="${sky[i][1].toFixed(1)}" r="11" fill="none" stroke="#ffb23e" stroke-width="2"/>`).join('')}</svg>
-    <p class="note">The stars on the path have an orange ring.</p><div class="field"><label for="ans" class="note">Shield strength</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="3"><button class="btn" type="button" id="try">Set the shield</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+    <p class="note">Look at the star map in the picture. The stars on the path have an orange ring.</p><div class="field"><label for="ans" class="note">Shield strength</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="3"><button class="btn" type="button" id="try">Set the shield</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
   $('ans').oninput = () => { $('ans').value = $('ans').value.replace(/[^0-9]/g, '').slice(0, 3); }; $('leave').onclick = () => { closeToy(); say('You step back from the easel. Your star map is kept.'); };
   $('try').onclick = () => { const v = $('ans').value; if (v === '') return olMsg('Type the shield strength.'); widget.tries++; if (+v < tot) return olMsg('Too weak. Some radiation would get through. Add again.'); if (+v > tot) return olMsg('Stronger than it needs to be. That wastes power. Add again.');
     olWin('starmap', 'Adding 10 or more numbers: 1s, 5s, 10s and 25s (AERO 3.NBT.2, 3.OA.8)', `Your shield is set to ${tot}. It can take every star on the path, and not a drop of power is wasted. You passed Star Map!`); }; }
 /* Target Practice: throw at a wall of 1 to 9, keep the running total yourself, stop on an even total from 32 to 40. [Source: SLIPS.target]
    A throw does not always land where you aim: sometimes it hits the next square. The total is never shown. */
 const OL9 = [[7, 8, 9], [4, 5, 6], [1, 2, 3]];
-function olTarget() { const W = widget; W.hits = W.hits || [];
-  toy(`${olHead('target')}<p class="story">Throw at the wall. Keep a running total on paper. Stop when your total is even, from 32 to 40. 32 and 40 count. Past 40, the round is lost.</p>
+function olTarget() { const W = widget; W.hits = W.hits || []; W.pic = { kind: 'wall', title: 'The target wall' };
+  toy(`${olHead('target')}<p class="story">Throw at the wall: tap a target in the picture, or a number below. Keep a running total on paper. Stop when your total is even, from 32 to 40. 32 and 40 count. Past 40, the round is lost.</p>
     <div id="ol9" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:240px;flex:none">${OL9.flat().map(n => `<button class="btn quiet" type="button" data-n="${n}" style="font-size:1.5rem;padding:12px 0">${n}</button>`).join('')}</div>
     <p class="q" id="olhits"></p><div class="field"><label for="ans" class="note">My total</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="2"><button class="btn" type="button" id="try">Stop and report</button><button class="btn quiet" type="button" id="olnew">New round</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
   const show = t => { $('olhits').textContent = W.hits.length ? `${t ? t + ' ' : ''}Your hits: ${W.hits.join(', ')}.` : 'No throws yet. Tap a number to throw.'; };
-  document.querySelectorAll('#ol9 button').forEach(b => b.onclick = () => { const n = +b.dataset.n; let y = 0, x = 0; OL9.forEach((row, j) => row.forEach((m, i) => { if (m === n) { y = j; x = i; } }));
+  W.throwAt = n => { let y = 0, x = 0; OL9.forEach((row, j) => row.forEach((m, i) => { if (m === n) { y = j; x = i; } }));
     let hit = n; if (Math.random() < .35) { const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(d => OL9[y + d[1]] && OL9[y + d[1]][x + d[0]]); const d = nb[Math.floor(Math.random() * nb.length)]; hit = OL9[y + d[1]][x + d[0]]; }
-    W.hits.push(hit); beep(300 + hit * 40, .05); $('msg').textContent = ''; show(hit === n ? `You aim at ${n}. Hit!` : `You aim at ${n}. It lands on ${hit}.`); });
+    W.hits.push(hit); beep(300 + hit * 40, .05); $('msg').textContent = ''; show(hit === n ? `You aim at ${n}. Hit!` : `You aim at ${n}. It lands on ${hit}.`); };
+  document.querySelectorAll('#ol9 button').forEach(b => b.onclick = () => W.throwAt(+b.dataset.n));
   $('olnew').onclick = () => { W.hits = []; $('ans').value = ''; $('msg').textContent = ''; show(); };
   $('leave').onclick = () => { closeToy(); say('You step back from the target wall.'); };
   $('ans').oninput = () => { $('ans').value = $('ans').value.replace(/[^0-9]/g, '').slice(0, 2); };
@@ -1888,7 +1911,7 @@ function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
-function setPlace() { const t = S.mode === 'intro' ? ['Earth, 2028', 'Earth, 2028', 'Earth, 2028', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'chrono' ? cPlaceName() : S.mode === 'xylo' ? xPlaceName() : S.mode === 'star' ? sPlaceName() : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : S.mode === 'chrono' ? (C().at === 'map' ? 'like: go north' : 'like: talk keeper') : S.mode === 'world' ? 'like: touch rock' : S.mode === 'xylo' ? 'like: look giant' : S.mode === 'star' ? 'like: look thermometer' : 'like: push crate'; } }
+function setPlace() { const t = olPicOn() ? widget.pic.title : S.mode === 'intro' ? ['Earth, 2028', 'Earth, 2028', 'Earth, 2028', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'chrono' ? cPlaceName() : S.mode === 'xylo' ? xPlaceName() : S.mode === 'star' ? sPlaceName() : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : S.mode === 'chrono' ? (C().at === 'map' ? 'like: go north' : 'like: talk keeper') : S.mode === 'world' ? 'like: touch rock' : S.mode === 'xylo' ? 'like: look giant' : S.mode === 'star' ? 'like: look thermometer' : 'like: push crate'; } }
 function tState(c) { if (c.t === 'void') return 0; if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
@@ -2134,6 +2157,7 @@ function frame1(now) {
   if (S.mode === 'chrono') { try { drawChrono(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (S.mode === 'xylo') { try { drawXylo(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (S.mode === 'star') { try { drawStar(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
+  if (olPicOn()) { try { olPic(); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 4.6 * dt; P.step += dt; P.idle = 0;
     if (Math.abs(dx) > Math.abs(dy)) P.dir = dx > 0 ? 'right' : 'left'; else if (dy) P.dir = dy > 0 ? 'down' : 'up';
     if (Math.random() < dt * 9) DUST.push({ x: P.x + .5 + (Math.random() - .5) * .2, y: P.y + .92, t: .5 });
@@ -4410,6 +4434,7 @@ cv.addEventListener('pointerdown', e => {
   if (S.mode === 'world') return tapWorld(e);
   if (S.mode === 'chrono') return tapChrono(e);
   if (S.mode === 'xylo') return xTap(e);
+  if (olPicOn()) return olPicTap(e);
   if (S.mode === 'star') return sTap(e);
   if (widget && widget.kind === 'cargo') { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y, on = [...widget.on];
     const k = on.findIndex((_, j) => { const p = slot(j); return fx >= p[0] && fx <= p[0] + .78 && fy >= p[1] && fy <= p[1] + .78; }); if (k >= 0) return cargoToggle(on[k]);
