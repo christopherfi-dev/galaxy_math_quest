@@ -59,7 +59,7 @@ const { chromium } = require('playwright'); const path = require('path');
     const first = await p.evaluate(() => widget.hits[0]); let sum = first; for (const n of [9, 9, 9]) { await thr(n); sum += n; } while (sum < 32 || sum % 2) { const n = sum + 9 <= 40 ? 9 : (40 - sum) % 2 === 0 ? 40 - sum : 1; await thr(n); sum += n; }
     await p.fill('#ans', String(sum)); await check(); ok(await done('target'), 'target practice passes with ' + sum); await p.evaluate(() => { Math.random = window._r; });
     // ---- Power Allocation  [Source: Marc's page 5-2]: four systems, and only the blocks on his table (2 thousands, 20 hundreds, 40 tens, 60 ones)
-    await open('alloc'); expect(await p.locator('#toy').innerText(), /The ship has 4,460 units of power\. Four systems need it\.[\s\S]*A finished example\. A trader needs small bags/, 'the task, told first, and an example about gems');
+    await open('alloc'); expect(await p.locator('#toy').innerText(), /After the storm, the ship has 4,460 units of power left\. Four systems need it\.[\s\S]*A finished example\. A trader needs small bags/, 'the task, told first, and an example about gems');
     ok(await p.evaluate(() => olPicOn() && widget.pic.kind === 'bench' && $('place').textContent === 'The power table'), 'the power table fills the picture');
     const fill = async rows => { for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) await p.fill(`#ol${i}${j}`, String(rows[i][j])); };
     expect(await check(), /^Fill every box/, 'empty boxes'); await fill([[1, 2, 3, 7], [1, 1, 9, 3], [1, 0, 9, 7], [0, 9, 3, 3]]); expect(await check(), /^The table has only 2 1000-blocks\. You used 3\.$/, 'the usual way needs 3 thousands');

@@ -10,7 +10,7 @@
 //   the order board; floors: too small, too many panels, touching, more panels, a smaller store, then right ones;
 //   the roof falls in; no leaves; find the Leafgrove; pick too many; pick; lay by tap and by word; lift a leaf;
 //   a thin Home runs the grove dry; the Chief's words; lay the Home again; every roof whole;
-//   more Homes: too many, too few, right; the map key: two the same refused; the gold card; the ending adds up;
+//   more Homes: too many, too few, right; the map key: two the same refused; the epic card; the ending adds up;
 //   the herder's field; the giant's hum; the leaf print; dead ends; the counts; the teacher's log; a reload; fly away; land again.
 // Along the way it checks what Marc asked of every big quest:
 //   - no wrong answer, and no hint, ever shows the right number
@@ -150,7 +150,7 @@ const CHECK = 2708402;      // the same number is in checks/xylophora_quest_chec
     await say('talk chief'); ok(await p.evaluate(() => widget && widget.kind === 'xkey' && $('try').disabled), 'the key should wait until four colours are chosen');
     for (const [bn, i] of [['home', 0], ['hosp', 1], ['store', 2], ['fact', 0]]) await p.click(`#toy p.chips[data-b="${bn}"] button[data-i="${i}"]`); await p.click('#try'); expect(await p.textContent('#msg'), /Two kinds have the same colour/, 'two kinds with one colour'); await p.click('#toy p.chips[data-b="fact"] button[data-i="3"]'); await shot('7_key'); await p.click('#try'); await p.waitForTimeout(300);
     { const t = await last(), laid = lv(v.h / 2, 2) + lv(hos[0], hos[1]) + lv(sto[0], sto[1]) + lv(3, v.k), pan = 2 * (v.h / 2 + 2) + 2 * (hos[0] + hos[1]) + 2 * (sto[0] + sto[1]) + 2 * (3 + v.k);
-      expect(t, new RegExp(`a Hospital, a Food Store, a Solar Factory and ${1 + more} Homes\\. Skin: ${S0} squares found, ${S0 - rem} used, ${rem} left over\\. Leaves: ${laid} laid, ${G - laid} to spare\\. Wall panels: ${pan}\\. The Site Chief names you a Planetary Pioneer\\. You earn a gold card`), 'the ending adds up'); }
+      expect(t, new RegExp(`a Hospital, a Food Store, a Solar Factory and ${1 + more} Homes\\. Skin: ${S0} squares found, ${S0 - rem} used, ${rem} left over\\. Leaves: ${laid} laid, ${G - laid} to spare\\. Wall panels: ${pan}\\. The Site Chief names you a Planetary Pioneer\\. You earn an epic card`), 'the ending adds up'); }
     ok(await p.evaluate(() => XY().done.key && XY().gold && S.cards[S.cards.length - 1].r === 'gold' && xStage() === 'end'), 'the gold card'); expect(await say('talk chief'), /Thank you, Planetary Pioneer/, 'the Chief at the end'); expect(await say('hint'), /Xylophora is built/, 'the hint at the end'); await shot('8_end');
     // the side job and the secrets
     await walk(33, 17); const fld = await p.evaluate(() => xNums(XY().seed).field), part = fld[0] * fld[1] / 4;

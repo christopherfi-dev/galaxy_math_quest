@@ -35,6 +35,7 @@
 #panels[data-open="mission"] > [data-m="mission"]:not([hidden]), #panels[data-open="ship"] > [data-m="ship"], #panels[data-open="cards"] > [data-m="cards"], #panels[data-open="teacher"] > [data-m="teacher"] { display: flex; }
 .clk8 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; } .clk8 button { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 2px; text-transform: none; } .clk8 button span { font-size: .7rem; color: var(--muted); } .clk8 button b { font-family: var(--display); font-size: 1.12rem; letter-spacing: .02em; } .clk8 button.on { background: var(--accent); color: var(--accent-ink); } .clk8 button.on span { color: var(--accent-ink); }
 .word.fold { border-style: dashed; font-weight: 700; } #menu .snd { margin-left: 0; }
+.btn.quiet.on { background: var(--accent); color: var(--accent-ink); }
 .mbtn { border-style: dotted; } #partsbox .vmsg, #partsbox .slog { margin: 6px 0 10px; } #partsbox .vmsg p { margin: 2px 0; } #partsbox .slog ul { margin: 4px 0 0; padding-left: 18px; } #partsbox .slog li { font-size: .9rem; } .mbtn.on { background: var(--accent); color: var(--accent-ink); border-style: solid; } .mbtn.new::after { content: ' ●'; color: #d9534f; }
 body.online #m_teacher { display: none; } body.online.teacher #m_teacher { display: revert; }
 /* PICTURE AND DESK. [Source: Marc, 2026-11-19: "We don't want the playing area to move up or down and move away from the screen. It keeps jumping around."
@@ -321,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 68</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 69</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -1948,10 +1949,64 @@ function startRacks() {
     taskWon('racks', 'Odd and even', w.tries, w.miss, 'Click. Every rack makes pairs. Your cannons will fire straight.'); };
 }
 /* 5-3 EMERGENCY POWER: read the base-ten blocks. One reading has no tens. */
-function startBlocks() { widget = { kind: 'blocks', hits: 0, need: 3, tries: 0, next: nextBlocks }; nextBlocks(); }
-function nextBlocks() { const w = widget, h = 1 + rnd(5), t = w.hits === 1 ? 0 : 1 + rnd(9), o = 1 + rnd(9); w.ans = h * 100 + t * 10 + o;
-  numberToy(`<p class="eyebrow">Power Module · task 3 of 3 · reading ${w.hits + 1} of 3</p><p class="mw"><b>Maths word: place value.</b> A big square is 1 hundred. A rod is 1 ten. A small cube is 1 one.</p><h3>Emergency Power</h3>
-    <div class="art">${drawPic({ t: 'blocks', hu: h, te: t, on: o })}</div>${w.hits ? '' : storyP('blocks')}<p class="q">What number do the power blocks show?</p>`, 'units'); }
+/* 5-3 EMERGENCY POWER: read the cells, then send an exact amount, breaking blocks to make it. Two rounds.
+   [Marc, 2026-11-21, agreed: Station Story v2, item 13] Round 1: life support needs an amount that can only be made by breaking a ten into ten ones.
+   Round 2: the child reads what is left (often in a new arrangement, such as 2 hundreds, 1 ten and 15 ones), then the air pumps need an amount
+   that can only be made by breaking a hundred into ten tens. This is the regrouping Voltara's power tower asks for (8 hundreds, 70 tens, 150 ones). [Source: Voltara]
+   Nothing on the screen adds the blocks up. The child counts and writes. [Marc, 2026-11-21: "We shouldn't show them the adding."]
+   Every number rule is checked on 10,000 cadets in checks/emergency_power_check.js. */
+const empVal = b => b.h * 100 + b.t * 10 + b.o;
+function empRound1() { const h = 2 + rnd(4), t = 1 + rnd(5), o = rnd(6), a = 1 + rnd(h - 1), b = rnd(t), c = o + 1 + rnd(9 - o);
+  return { r: 1, step: 'read', store: { h, t, o }, bin: { h: 0, t: 0, o: 0 }, need: a * 100 + b * 10 + c, start: { h, t, o } }; }
+/* round 2 is made from the blocks the child actually left, so it always fits them. It needs a hundred broken when that is possible. */
+function empRound2(st) { const { h, t, o } = st, v = empVal(st); let a, b, c;
+  if (h >= 1 && t <= 8) { a = rnd(h); b = t + 1 + rnd(9 - t); c = rnd(o + 1); }
+  else if (t >= 1 && o <= 8) { a = rnd(h + 1); b = rnd(t); c = o + 1 + rnd(9 - o); }
+  else { a = rnd(h + 1); b = rnd(t + 1); c = rnd(o + 1); }
+  let need = a * 100 + b * 10 + c; if (need < 10 || need > v) need = Math.min(v, Math.max(10, need));
+  return { r: 2, step: 'read', store: { ...st }, bin: { h: 0, t: 0, o: 0 }, need, start: { ...st } }; }
+function empZone(b, x0, y0, W, tag, live) { let s = '', x = x0, y = y0; const tap = k => live ? ` data-${tag}="${k}" style="cursor:pointer"` : '', Z = 58, R = 11, C = 15;      /* a hundred, a rod's width, a cube */
+  for (let i = 0; i < b.h; i++) { if (x + Z > x0 + W) { x = x0; y += Z + 8; } s += `<g${tap('h')}><rect x="${x}" y="${y}" width="${Z}" height="${Z}" fill="${PK.blue}" stroke="${PK.white}" stroke-width="1.5"/>${Array.from({ length: 9 }, (_, k) => `<line x1="${x + (k + 1) * Z / 10}" y1="${y}" x2="${x + (k + 1) * Z / 10}" y2="${y + Z}" stroke="${PK.deep}" stroke-width=".7"/><line x1="${x}" y1="${y + (k + 1) * Z / 10}" x2="${x + Z}" y2="${y + (k + 1) * Z / 10}" stroke="${PK.deep}" stroke-width=".7"/>`).join('')}</g>`; x += Z + 8; }
+  if (b.h) { x = x0; y += Z + 12; }
+  for (let i = 0; i < b.t; i++) { if (x + R > x0 + W) { x = x0; y += Z + 8; } s += `<g${tap('t')}><rect x="${x - 4}" y="${y - 3}" width="${R + 8}" height="${Z + 6}" fill="transparent"/><rect x="${x}" y="${y}" width="${R}" height="${Z}" fill="${PK.green}" stroke="${PK.white}" stroke-width="1.2"/>${Array.from({ length: 9 }, (_, k) => `<line x1="${x}" y1="${y + (k + 1) * Z / 10}" x2="${x + R}" y2="${y + (k + 1) * Z / 10}" stroke="${PK.deep}" stroke-width=".7"/>`).join('')}</g>`; x += R + 9; }
+  if (b.t) { x = x0; y += Z + 12; }
+  for (let i = 0; i < b.o; i++) { if (x + C > x0 + W) { x = x0; y += C + 6; } s += `<g${tap('o')}><rect x="${x - 3}" y="${y - 3}" width="${C + 6}" height="${C + 6}" fill="transparent"/><rect x="${x}" y="${y}" width="${C}" height="${C}" fill="${PK.amber}" stroke="${PK.deep}" stroke-width="1.2"/></g>`; x += C + 6; }
+  if (b.o) y += C + 6;
+  return { s, y }; }
+function empSvg(E, flash) { const who = E.r === 1 ? 'Life support' : 'Air pumps', mov = E.step === 'send', A = empZone(E.store, 16, 40, 608, 's', mov);
+  const top = Math.max(150, A.y + 20), B = empZone(E.bin, 30, top + 34, 580, 'b', mov), H = Math.max(top + 130, B.y + 20);
+  return `<svg class="picsvg" viewBox="0 0 640 ${H}" style="aspect-ratio:640/${H};touch-action:manipulation" role="img" aria-label="Power blocks in the cells, and a bin for ${who.toLowerCase()}"><rect width="640" height="${H}" rx="12" fill="#0b1322"/>
+    <text x="16" y="26" font-size="15" font-weight="700" style="fill:#e8eef8">The power cells</text>${A.s}
+    <rect x="12" y="${top}" width="616" height="${H - top - 10}" rx="10" fill="${flash ? 'rgba(111,208,138,.12)' : '#101a2c'}" stroke="${flash ? '#6fd08a' : '#5a6d90'}" stroke-width="${flash ? 4 : 2}" stroke-dasharray="${flash ? '' : '7 5'}"/>
+    <text x="28" y="${top + 24}" font-size="15" font-weight="700" style="fill:${flash ? '#6fd08a' : '#ffd25e'}">${who}</text>${B.s}</svg>`; }
+function startBlocks() { if (!S.emp) { S.emp = empRound1(); save(); } empShow(); }
+function empShow() { const E = S.emp, w = widget = { kind: 'emp', tries: S.emp.tries || 0, miss: S.emp.miss || 0, brk: false }, who = E.r === 1 ? 'life support' : 'the air pumps';
+  const q = E.step === 'read' ? (E.r === 1 ? 'How much power do the cells hold?' : 'How much power is left in the cells now?')
+    : `${E.r === 1 ? 'Life support' : 'The air pumps'} need${E.r === 1 ? 's' : ''} exactly ${E.need} units. Move blocks into the bin. Tap a block to move it. Tap it in the bin to take it back.`;
+  toy(`<p class="eyebrow">Power Module · task 3 of 3 · round ${E.r} of 2</p><p class="mw"><b>Maths word: regroup.</b> To regroup is to swap 1 ten for 10 ones, or 1 hundred for 10 tens. The amount stays the same.</p><h3>Emergency Power</h3>
+    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext">${E.r === 1 && E.step === 'read' ? storyP('blocks') : E.r === 2 && E.step === 'read' ? '<p class="story">Life support is on. Then a second alarm: the air pumps are failing too.</p>' : ''}
+    ${E.step === 'send' ? '<p class="note"><b>A finished example.</b> A baker has 2 trays of 10 rolls and 3 single rolls. A customer wants 7. The baker opens one tray: now 1 tray and 13 single rolls. She hands over 7. Left: 1 tray and 6 rolls, which is 16.</p>' : ''}
+    <p class="q">${q}</p>
+    ${E.step === 'read' ? `<div class="field"><input id="ans" inputmode="numeric" autocomplete="off" maxlength="4" aria-label="units"><span class="note">units</span></div>` : '<div class="field"><button class="btn quiet" type="button" id="brk" aria-pressed="false">Break a block</button><button class="btn quiet" type="button" id="empre">Start this round again</button></div>'}
+    <div class="field"><button class="btn" type="button" id="try">${E.step === 'read' ? 'Check' : `Send the power to ${who}`}</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
+  const m = $('msg'), no = t => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = t; }, draw = f => { $('pic').innerHTML = empSvg(E, f); }, keep = () => { E.tries = w.tries; E.miss = w.miss; save(); }; draw();
+  $('leave').onclick = leave;
+  if (E.step === 'read') { const a = $('ans'); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 4); }; a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } };
+    $('try').onclick = () => { if (a.value === '') return no('Count the blocks. Write how many units.'); w.tries++; keep();
+      if (+a.value !== empVal(E.store)) { w.miss++; keep(); return no('Count again. A big square is 1 hundred. A rod is 1 ten. A small cube is 1 one.'); }
+      E.step = 'send'; save(); chime(); empShow(); }; return; }
+  const brk = $('brk'); brk.onclick = () => { w.brk = !w.brk; brk.setAttribute('aria-pressed', w.brk ? 'true' : 'false'); brk.classList.toggle('on', w.brk); m.className = 'msg'; m.textContent = w.brk ? 'Tap a hundred or a ten in the cells to break it.' : ''; };
+  $('empre').onclick = () => { E.store = { ...E.start }; E.bin = { h: 0, t: 0, o: 0 }; save(); beep(300, .05); m.textContent = ''; draw(); };
+  $('pic').onclick = e => { const t = e.target.closest('[data-s],[data-b]'); if (!t) return; const k = t.dataset.s || t.dataset.b, from = t.dataset.s ? E.store : E.bin, to = t.dataset.s ? E.bin : E.store;
+    if (t.dataset.s && w.brk) { if (k === 'o') return no('A small cube is 1 one. It cannot break any smaller.'); E.store[k]--; E.store[k === 'h' ? 't' : 'o'] += 10; w.brk = false; brk.setAttribute('aria-pressed', 'false'); brk.classList.remove('on');
+      beep(240, .12, 'sawtooth'); m.className = 'msg'; m.textContent = k === 'h' ? '1 hundred became 10 tens.' : '1 ten became 10 ones.'; save(); return draw(); }
+    if (!from[k]) return; from[k]--; to[k]++; save(); beep(t.dataset.s ? 520 : 300, .05); m.textContent = ''; draw(); };
+  $('try').onclick = () => { const v = empVal(E.bin); if (!v) return no('The bin is empty. Move blocks into it.'); w.tries++; keep();
+    if (v !== E.need) { w.miss++; keep(); return no(v < E.need ? `Not enough. ${E.r === 1 ? 'Life support' : 'The air pumps'} would stay dark. Count the bin again.` : `Too much. The fuse would blow. Count the bin again, and take some back.`); }
+    chime(); draw(true); m.className = 'msg good';
+    if (E.r === 1) { m.textContent = 'Life support hums on.'; const left = { ...E.store }, t0 = w.tries, m0 = w.miss; setTimeout(() => { if (widget !== w) return; S.emp = empRound2(left); S.emp.tries = t0; S.emp.miss = m0; save(); empShow(); }, 1300); return; }
+    m.textContent = 'The air pumps breathe again.'; const t0 = w.tries, m0 = w.miss; delete S.emp; save();
+    setTimeout(() => { if (widget === w) taskWon('blocks', 'Place value: reading blocks, and regrouping a ten or a hundred to make an exact amount (AERO 3.NBT)', t0, m0, 'The emergency is over. Life support and the air pumps are running. Mission Control knows exactly what is left.'); }, 1300); }; }
 const loaded = () => S.cargoPick || [];      /* the room shows the crates on the scale only once the load has passed */
 const slot = k => [32.2 + (k % 3) * .78, 11.55 - Math.floor(k / 3) * .78];
 /* 2-3 CARGO LOAD: 7 crates, exactly 30 tons. The child adds the weights. Nothing on the screen adds them: no running total, no needle.

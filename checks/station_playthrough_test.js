@@ -86,10 +86,10 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
       if (round === 0) { await shot('5_drones'); const no = ds.find(d => !d.want); await p.touchscreen.tap(no.x, no.y); await p.waitForTimeout(80); expect(await p.textContent('#msg'), /will not fire/, 'tapping a wrong drone'); }
       for (const d of ds.filter(d => d.want)) { await p.touchscreen.tap(d.x, d.y); await p.waitForTimeout(90); }
     }
-    await p.waitForTimeout(150); expect(await last(), /cannon light turns green/, 'weapons coding');
+    await p.waitForTimeout(150); expect(await last(), /drill is passed\. The cannons know their targets/, 'weapons coding');
     await say('use racks'); const racks = await p.evaluate(() => { const svg = $('pic').innerHTML; return RACKC.map(c => (svg.match(new RegExp(`fill="${c[1]}"`, 'g')) || []).length); });   // count the counters as drawn
     await p.click('#try'); expect(await p.textContent('#msg'), /That is odd/, 'racks left odd');
-    for (let i = 0; i < 5; i++) if (racks[i] % 2) await pic(`[data-r="${i}"]`); await shot('6_racks'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Every rack is even/, 'ammo count');
+    for (let i = 0; i < 5; i++) if (racks[i] % 2) await pic(`[data-r="${i}"]`); await shot('6_racks'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Every rack makes pairs\. Your cannons will fire straight/, 'ammo count');
     await slip('use wall', 'target'); expect(await last(), /Weapons part is fitted/, 'weapons part');
     // ---- Navigation Bay: 2-1 Fuel Calculation, 2-2 Coordinate Plotting, 2-3 Cargo Load
     await say('go to navigation'); expect(await say('go to power'), /cargo pile/, 'power bay before the cargo');
@@ -131,8 +131,23 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
       for (const t of want) await p.locator('#toy .wire', { hasText: new RegExp('^' + t + 's?$') }).click(); await p.click('#try'); await p.waitForTimeout(150); }
     expect(await last(), /1 of 3 Power tasks/, 'circuit connection');
     await slip('use bench', 'alloc');
-    await say('use cells'); for (let i = 0; i < 3; i++) { const n = await p.evaluate(() => { const svg = document.querySelector('#stageview .art svg').innerHTML, c = re => (svg.match(re) || []).length; return c(/width="40" height="40"/g) * 100 + c(/width="5" height="40"/g) * 10 + c(/width="6" height="6"/g); });   // read the blocks as drawn
-      if (i === 1) { await shot('9_blocks'); if (Math.floor(n / 10) % 10 !== 0) bad.push(name + ': the second reading should have no tens'); } await type(n); }
+    // 5-3 Emergency Power: read the cells; life support needs an exact amount (a ten must be broken); read what is left; the air pumps (a hundred must be broken)
+    await say('use cells'); const emp = () => p.evaluate(() => S.emp), val = b => b.h * 100 + b.t * 10 + b.o, emsg = () => p.textContent('#msg'), blk = sel => p.locator('#pic ' + sel).first().tap();
+    let EP = await emp(); await p.click('#try'); expect(await emsg(), /Count the blocks/, 'emergency: nothing written');
+    await p.fill('#ans', String(val(EP.store) + 10)); await p.click('#try'); expect(await emsg(), /Count again/, 'emergency: a wrong reading');
+    await p.fill('#ans', String(val(EP.store))); await p.click('#try'); await p.waitForTimeout(200);
+    ok2(!/\b\d+ units? (in the bin|so far)/.test(await p.textContent('#toy')), name + ': emergency: no running total');
+    await p.click('#try'); expect(await emsg(), /bin is empty/, 'emergency: an empty bin');
+    await p.click('#brk'); await blk('[data-s="t"]'); expect(await emsg(), /1 ten became 10 ones/, 'emergency: a ten breaks');
+    await p.click('#brk'); await blk('[data-s="o"]'); expect(await emsg(), /cannot break any smaller/, 'emergency: a one cannot break'); await p.click('#brk');
+    const move = async (n, extra) => { const a = Math.floor(n / 100), b = Math.floor(n / 10) % 10, c = n % 10 + extra; for (let k = 0; k < a; k++) await blk('[data-s="h"]'); for (let k = 0; k < b; k++) await blk('[data-s="t"]'); for (let k = 0; k < c; k++) await blk('[data-s="o"]'); };
+    await move(EP.need, 1); await p.click('#try'); expect(await emsg(), /Too much/, 'emergency: one too many');
+    await blk('[data-b="o"]'); await blk('[data-b="o"]'); await p.click('#try'); expect(await emsg(), /Not enough/, 'emergency: one too few');
+    await p.click('#leave'); await say('use cells'); ok2(val((await emp()).bin) === EP.need - 1, name + ': emergency: the bin is kept after leaving');
+    await blk('[data-s="o"]'); await p.click('#try'); await p.waitForTimeout(1600);
+    EP = await emp(); ok2(EP && EP.r === 2 && EP.step === 'read', name + ': emergency: round 2 begins'); await p.fill('#ans', String(val(EP.store))); await p.click('#try'); await p.waitForTimeout(200);
+    await p.click('#brk'); await blk('[data-s="h"]'); expect(await emsg(), /1 hundred became 10 tens/, 'emergency: a hundred breaks'); await shot('9_blocks');
+    await move(EP.need, 0); await p.click('#try'); await p.waitForTimeout(1700);
     expect(await last(), /Power part is fitted.*all five parts/, 'emergency power and the whole ship');
     // ---- launch: needs a course
     await say('go to launch'); expect(await say('launch'), /No course/, 'launch without a course'); await say('use chart on console'); expect(await say('launch'), /Lift off/, 'launch'); await p.waitForTimeout(300);

@@ -16,6 +16,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `power_allocation_check.py` | Marc's Power Allocation (page 5-2): 680 ways to build the four numbers from only his blocks; every one uses every block; the usual way does not fit |
 | `coordinate_route_check.js` | Marc's Coordinate Plotting as his class did it (2-2): 10,000 cadets' routes walked again day by day (on the chart, no point twice, at least one day back and one day down, the end follows); the help for 1,000 wrong trails names the right day and never the star; the route and taps come back after closing the game. Needs Playwright |
 | `cargo_load_check.py` | Cargo Load (2-3): every one of the 330 ways to pick 7 of the 11 crates, read from the game. 33 make exactly 30; every crate is in a right load; from every wrong load one swap comes closer, so the help can always be followed |
+| `emergency_power_check.js` | Emergency Power (5-3), for 10,000 cadets: round 1 cannot be made without breaking a ten, and can be with one; round 2, after a plain round 1, always needs a hundred broken; after a strange round 1 (extra blocks broken) it still fits what is left. Needs Playwright |
 
 ## Play tests: a real browser plays the game
 
