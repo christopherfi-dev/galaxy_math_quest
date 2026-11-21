@@ -24,6 +24,16 @@ const { chromium } = require('playwright'); const path = require('path');
       const want = { 'Engine Core': ['Standard Reactor', 10, 10, 'Stellar Reactor', 30, 10], Navigation: ['Standard Navigator', 15, 5, 'Cosmic Navigator', 20, 15], Shield: ['Standard Shield', 20, 0, 'Nova Shield', 40, 10], Weapons: ['Standard Arsenal', 10, 15, 'Supernova Arsenal', 15, 30], Power: ['Standard Battery', 15, 10, 'Galaxy Battery', 30, 15] };
       Object.keys(want).forEach(k => { const v = d.v[k], x = want[k]; if (v[1][0] !== x[0] || v[1][1] !== x[1] || v[1][2] !== x[2] || v[3][0] !== x[3] || v[3][1] !== x[4] || v[3][2] !== x[5]) bad.push(`${k}: the middle and lucky versions should be Marc's own`); });
       console.log('Odds over 100,000 draws (red, green, blue, gold): ' + d.c.join(', ') + '.');
+      // [Source: Marc, 2026-11-21] four real levels; the bag changes with each child's luck. 20,000 children draw all five parts; 20,000 more sometimes take the sure part.
+      const k = await p.evaluate(() => { const keep = [S.pv, S.pvN, S.parts.slice()], res = { bad: [], lucky: [0, 0, 0, 0, 0, 0], streak: 0 }; S.parts = PARTS.slice();
+        Object.keys(PVER).forEach(q => { const v = PVER[q], t = v.map(x => x[1] + x[2]); if (!(t[0] < t[1] && t[1] < t[2] && t[2] < t[3])) res.bad.push(`${q}: the four do not rise: ${t}`); });
+        for (const mode of ['all', 'some']) for (let c = 0; c < 20000; c++) { S.pv = {}; S.pvN = 0; const order = PARTS.slice().sort(() => Math.random() - .5); let st = 0, top = 0;
+          order.forEach(q => { if (mode === 'some' && Math.random() < .3) { S.pvN++; S.pv[q] = { i: 1, how: 'safe', n: S.pvN }; return; } const B = pvBag(q); if (B.reduce((a, b) => a + b, 0) !== 10 || B.some(x => x < 0)) res.bad.push('a bag without 10 tokens: ' + B);
+            const i = pvPick(Math.random(), B); S.pvN++; S.pv[q] = { i, how: 'draw', n: S.pvN }; st = i === 0 ? st + 1 : 0; top = Math.max(top, st); });
+          const L = Object.keys(S.pv).filter(q => S.pv[q].i === 3).length; if (mode === 'all') res.lucky[L]++; if (L > 2) res.bad.push('a child with ' + L + ' lucky parts'); if (mode === 'all' && L < 1) res.bad.push('a child who entered every draw with no lucky part'); res.streak = Math.max(res.streak, top); }
+        [S.pv, S.pvN, S.parts] = keep; return res; });
+      if (k.bad.length) bad.push('the bag: ' + [...new Set(k.bad)].slice(0, 4).join(' | ')); if (k.streak > 2) bad.push('a child drew red ' + k.streak + ' times in a row');
+      console.log(`20,000 children who enter every draw: lucky parts 1: ${k.lucky[1]}, 2: ${k.lucky[2]}. Longest run of reds for anyone: ${k.streak}.`);
     }
     const finish = async part => { await p.evaluate(part => { const ts = TASKS.filter(t => t[1] === part); ts.slice(0, 2).forEach(t => { S.done[t[0]] = true; }); taskWon(ts[2][0], 'test', 1, 0, 'Done.'); }, part); await p.waitForTimeout(900); };
     const draw = async (x, part, safe) => { if (x != null) await p.evaluate(x => { Math.random = () => x; }, x); await p.click(safe ? '#pvsafe' : '#pvdraw'); };
@@ -32,7 +42,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await finish('Engine Core'); expect(await last(), /The Engine Core part is fitted to your ship! Now choose which Engine Core\./, 'the part is fitted');
     const toy = await p.locator('#toy').innerText(); expect(toy, /Your Engine Core is ready[\s\S]*Take the Standard Reactor for sure\. Or enter the LUCKY DRAW!/, 'the choice opens'); await shot('1_choice');
     ok(await p.evaluate(() => [...document.querySelectorAll('#toy p span')].filter(s => s.textContent === '●').length) === 10, 'the bag shows 10 tokens');
-    expect(toy, /5 green[\s\S]*Standard Reactor[\s\S]*2 red[\s\S]*Neutron Reactor[\s\S]*2 light blue[\s\S]*Quantum Reactor[\s\S]*1 gold[\s\S]*Stellar Reactor/, 'what each colour gives');
+    expect(toy, /2 gold tokens: you have no lucky part yet\.[\s\S]*4 green[\s\S]*Standard Reactor[\s\S]*2 red[\s\S]*Neutron Reactor[\s\S]*2 light blue[\s\S]*Quantum Reactor[\s\S]*2 gold[\s\S]*Stellar Reactor/, 'the first bag: one gold token more, and what each colour gives');
     await p.click('#leave'); expect(await last(), /Choose it from My ship/, 'not yet'); await p.evaluate(() => menuOpen('ship')); ok(await p.locator('#partsbox [data-pv="Engine Core"]').count() === 1, 'My ship offers the choice');
     await p.locator('#partsbox [data-pv="Engine Core"]').click(); await p.waitForTimeout(150); ok(await p.locator('#pvdraw').count() === 1, 'the choice opens again from My ship');
     await draw(.05, 'Engine Core'); ok(await p.evaluate(() => S.pv['Engine Core'].i === 3 && JSON.parse(localStorage.getItem(Object.keys(localStorage).find(k => /gmq-station/.test(k)) || '{}') || {}) !== null), 'the draw is kept at once');

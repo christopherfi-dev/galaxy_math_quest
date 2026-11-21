@@ -1,6 +1,6 @@
 # The lucky draw, and the station on screen
 
-**Date:** 20 November 2026. **For:** Marc. **Sketch version 59, preview link only.** The class link is still version 54.
+**Date:** 20–21 November 2026. **For:** Marc. **Sketch version 60, preview link only.** The class link is still version 54.
 
 ---
 
@@ -32,21 +32,43 @@
 - **The show covers the picture for a few seconds,** like the reading cards. That bends your rule that nothing covers the picture. I think a celebration earns it. Your call.
 - **Children with saved games** whose parts are already fitted see "Choose your Engine Core" in My ship. They get their draw too.
 
-**The versions, from your 2023 pages** [Source]. Which ordinary version is red and which is light blue is mine [Proposal]. Red is the more lopsided one: one of its numbers is 0, or close to it.
+**Your 2023 set-up, plainly** [Source: your five ship-part pages]
+- Every part had **four versions**: one Standard, two others, and one Lucky Draw. Not three.
+- But the numbers did not make four levels. In every part, the Standard added up to the **least** of the four, and the two others tied.
 
-| Part | Red (20%) | Green, the sure one (50%) | Light blue (20%) | Gold, lucky (10%) |
+**Four real levels now (version 60)** [Proposal, from your message of 21 November: "slightly tweak the numbers"]
+- The Standard and the Lucky Draw keep your 2023 numbers.
+- Only the red and light-blue versions changed, so that red adds up to less than the Standard and light blue to more.
+- Where your own words said which number should be high, I followed the words. For example, the Quantum Reactor gives "a significant boost in power output", so its AP is now the high one.
+
+| Part | Red (weaker) | Green, the Standard | Light blue (stronger) | Gold, Lucky Draw |
 |---|---|---|---|---|
-| Engine Core | Neutron Reactor 25 HP 0 AP | Standard Reactor 10 / 10 | Quantum Reactor 20 / 5 | Stellar Reactor 30 / 10 |
-| Navigation | Astrolabe Navigator 25 / 0 | Standard Navigator 15 / 5 | Celestial Cartographer 15 / 10 | Cosmic Navigator 20 / 15 |
-| Shield | Quantum Deflector 35 / 0 | Standard Shield 20 / 0 | Neutron Wall 30 / 5 | Nova Shield 40 / 10 |
-| Weapons | Pulsar Phaser 5 / 25 | Standard Arsenal 10 / 15 | Proton Launcher 15 / 15 | Supernova Arsenal 15 / 30 |
-| Power | Proton Generator 30 / 0 | Standard Battery 15 / 10 | Quantum Dynamo 25 / 5 | Galaxy Battery 30 / 15 |
+| Engine Core | Neutron Reactor 15 HP 0 AP (was 25 / 0) | Standard Reactor 10 / 10 | Quantum Reactor 5 / 20 (was 20 / 5) | Stellar Reactor 30 / 10 |
+| Navigation | Astrolabe Navigator 5 / 10 (was 25 / 0) | Standard Navigator 15 / 5 | Celestial Cartographer 25 / 0 (was 15 / 10) | Cosmic Navigator 20 / 15 |
+| Shield | Quantum Deflector 15 / 0 (was 35 / 0) | Standard Shield 20 / 0 | Neutron Wall 30 / 0 (was 30 / 5) | Nova Shield 40 / 10 |
+| Weapons | Pulsar Phaser 0 / 20 (was 5 / 25) | Standard Arsenal 10 / 15 | Proton Launcher 15 / 15 | Supernova Arsenal 15 / 30 |
+| Power | Proton Generator 20 / 0 (was 30 / 0) | Standard Battery 15 / 10 | Quantum Dynamo 20 / 15 (was 25 / 5) | Galaxy Battery 30 / 15 |
 
-**[Conflict] The gamble has no downside in these numbers.** In every part, the Standard version has the **smallest HP + AP** of the four. Engine Core: Standard 20, red 25, light blue 25, gold 40. So a red draw still adds up to more than the sure choice. Two ways to fix it, both yours:
-- Lower the red versions so they add up to less than the Standard.
-- Keep the numbers, and let red's cost be that it is lopsided: a Neutron Reactor has no attack at all. Whether that hurts depends on your battle rules.
+Totals now always rise, red to gold. Engine Core: 15, 20, 25, 40.
 
-Each version is one line in the game (`PVER`), so new numbers take minutes.
+**The bag changes with each child's luck** [Proposal, from your message of 21 November]. Your base bag stays 5 green, 2 red, 2 light blue, 1 gold. Then:
+
+| What has happened | The child's bag |
+|---|---|
+| No lucky part yet, first draw | 2 gold, a little better than usual, as you asked |
+| No lucky part yet, each later draw | one more gold token each time: 3, then 4, then 5 |
+| Entered the draw for all of the first four parts, still no gold | the fifth bag is **all gold** |
+| One lucky part | back to 1 gold |
+| Two lucky parts | no gold, and a third red token |
+| The last draw was red | one red token less |
+| Two reds in a row | no red tokens |
+
+Extra tokens come out of, or go into, the green ones. The child always sees their own bag and a short reason, such as "2 gold tokens: you have no lucky part yet." So the odds are never hidden, and a Grade 3 child can count them.
+
+**Checked on 40,000 pretend children:**
+- Of 20,000 who enter every draw, every one gets at least one lucky part: about 81% get one, 19% get two. None gets three.
+- Of 20,000 who sometimes take the sure part, none gets more than two.
+- Nobody draws red more than twice in a row.
 
 **Maths a child can do here** [Proposal]: "Out of 10 draws, how many give a part better than the Standard?" Or: "The sure part adds to 20. What do the four add to on average?" (27.5, so the draw wins on average.)
 
@@ -80,7 +102,7 @@ Each version is one line in the game (`PVER`), so new numbers take minutes.
 
 ## 4. Decisions for you
 
-1. The red versions: lower them, or keep them lopsided?
+1. The new red and light-blue numbers: keep them, or give me yours? (They are one line each.)
 2. May the lucky-draw show cover the picture for a few seconds?
 3. The Star Map numbers 2 to 6: keep them, or give me yours?
 4. "Between 18 and 24": change the signs, or the numbers, or neither?
