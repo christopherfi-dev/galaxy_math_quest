@@ -94,8 +94,16 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     // ---- Navigation Bay: 2-1 Fuel Calculation, 2-2 Coordinate Plotting, 2-3 Cargo Load
     await say('go to navigation'); expect(await say('go to power'), /cargo pile/, 'power bay before the cargo');
     await say('use card on drawer'); await say('push chair'); await say('take bolt');
-    await say('use gauge'); let fuel = null; for (let i = 0; i < 3; i++) { const f = (await q()).match(/have (\d+) units of fuel\. The leg to stop \w uses (\d+)/); if (fuel !== null && +f[1] !== fuel) bad.push(name + ': the fuel did not carry forward'); fuel = f[1] - f[2]; if (i === 1) await shot('7_fuel'); await type(fuel); }
-    expect(await last(), /fuel to spare/, 'fuel calculation');
+    // 2-1 Fuel Calculation: two ways to Voltara; the fuel after every leg; land with at least 10 units
+    await say('use gauge'); const F = await p.evaluate(() => S.fuelP), fbox = (k, i) => `#toy .fueldays input[data-k="${k}"][data-i="${i}"]`, fmsg = () => p.textContent('#msg');
+    await p.click('#try'); expect(await fmsg(), /fuel at the rock gate/, 'fuel: nothing written');
+    for (let i = 0; i < 2; i++) await p.fill(fbox('r', i), String(F.R1[i])); for (let i = 0; i < 4; i++) await p.fill(fbox('m', i), String(F.R2[i] + (i === 1 ? 10 : 0)));
+    await p.click('#try'); expect(await fmsg(), /Check after filling up: .*add the \d+ units from the moon/, 'fuel: a wrong refuel');
+    await p.fill(fbox('m', 1), String(F.R2[1])); await p.click('#try'); expect(await fmsg(), /choose your way/, 'fuel: no way chosen');
+    await p.click(F.best === 'rocks' ? '#wm' : '#wr'); await p.click('#try'); expect(await fmsg(), /The rule is at least 10/, 'fuel: the wrong way');
+    await p.click('#leave'); await say('use gauge'); ok2((await p.inputValue(fbox('m', 3))) === String(F.R2[3]), name + ': fuel: the boxes are kept after leaving');
+    await p.click(F.best === 'rocks' ? '#wr' : '#wm'); await shot('7_fuel'); await p.click('#try'); await p.waitForTimeout(1700);
+    expect(await last(), /flight plan: .*landing with \d+ units/, 'fuel calculation');
     // 2-2 Coordinate Plotting: right and left; a box for each day; the last tap marks the hidden star
     await say('use map'); const R = await p.evaluate(() => widget.r), msg = () => p.textContent('#msg'), dot = q => pic(`[data-t="c:${q[0]},${q[1]}"]`), E = R.end, n = R.days.length;
     const box = async (d, a, b) => { await p.fill(`#toy .hopdays input[data-d="${d}"][data-k="0"]`, String(a)); await p.fill(`#toy .hopdays input[data-d="${d}"][data-k="1"]`, String(b)); };

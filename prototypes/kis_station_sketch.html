@@ -185,7 +185,7 @@ table.fx { border-collapse: collapse; margin: 4px 0 8px; font-size: .95rem; } ta
 ul.report2 { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: .95rem; } ul.report2 .ok b { color: #6fd08a; } ul.report2 .no b { color: #ff9486; } .toy:has(.report2) { max-height: 80vh; max-height: 80dvh; }
 .toy table.fct th, .toy table.fct td { color: #e8eef8; vertical-align: middle; }
 @media (max-width: 480px) { .toy table.fct input { width: 2.2em !important; font-size: 1rem !important; } .toy table.fct td, .toy table.fct th { padding-right: 4px; } }
-.toy .hopdays li { margin: 4px 0; line-height: 2.2; } .toy .hopdays .hpt { white-space: nowrap; display: inline-block; } .toy .hopdays input { width: 2.6em; font: inherit; font-size: 1.1rem; font-weight: 700; text-align: center; padding: 3px 2px; margin: 0 2px; border: 2px solid var(--ink); border-radius: 8px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; }
+.toy .hopdays li, .toy .fueldays li { margin: 4px 0; line-height: 2.2; } .toy .hopdays .hpt { white-space: nowrap; display: inline-block; } .toy .fueldays li { display: flex; align-items: center; gap: 6px; } .toy .fueldays li > .note:first-child { min-width: 9.2em; } .toy .fueldays input { width: 3.2em; font: inherit; font-size: 1.1rem; font-weight: 700; text-align: center; padding: 3px 2px; margin: 0 2px; border: 2px solid var(--ink); border-radius: 8px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; } .toy .hopdays input { width: 2.6em; font: inherit; font-size: 1.1rem; font-weight: 700; text-align: center; padding: 3px 2px; margin: 0 2px; border: 2px solid var(--ink); border-radius: 8px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; }
 .toy table.fct input { width: 2.9em; font: inherit; font-size: 1.15rem; font-weight: 700; text-align: center; padding: 5px 2px; border: 2px solid var(--ink); border-radius: 8px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; } .toy table.fct td .note { color: #a9b9d0; }
 /* THE PICTURE SHOWS THE TASK [Source: Marc, 2026-11-21]. A task's pictures sit here, big, over the scene, while the task is open. */
 #stageview { position: absolute; inset: 0; z-index: 4; background: radial-gradient(circle at 50% 45%, #18224a, #070b18); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; padding: 58px 14px 14px; overflow: hidden; color: #e8eef8; }
@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 69</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 70</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -411,7 +411,7 @@ const DSLOT = [[3, 14], [5, 14], [7, 14], [9, 14], [3, 16], [5, 16], [8, 16], [1
 const STORY = {
   core: 'The storm shook the Engine Core loose. Its cage locked itself. It will not open until it knows how many artifacts spilled out, of each kind.',
   species: "Before Voltara's message broke up, its scanner sent pictures of the creatures near the landing place. Build a graph, so your crew knows who they will meet.",
-  fuel: 'The flight to Voltara has three legs: from the station (A) to B, to C, then to Voltara (D). There is no fuel between stops. If the tank runs dry, the ship drifts.',
+  fuel: "There are two ways to Voltara. The short way goes through the storm's rocks. The long way goes around, by a fuel moon where you can fill up. Mission Control's rule: land with at least 10 units, for the trip home.",
   battle: 'The storm left rocks drifting between here and Voltara. Before your shield can brace, it must know how many are coming.',
   grid: 'Storm rocks will hit your shield on the way to Voltara. Its energy grid must hold enough power for every section.',
   calib: 'A rock always hits the weakest part of a shield. If one section has fewer tokens, it breaks there first. Share the tokens equally, so no section is weak.',
@@ -427,7 +427,7 @@ const VMSG = ['"…KIS Station… this is Voltara… can anyone hear us…"', '"
 const SLOG = { battle: () => 'Shield: tested against the storm rocks.', grid: () => 'Shield grid: enough power for every section.', calib: () => 'Shield: tokens shared equally. No weak side.',
   core: () => 'Engine Core: out of its cage, and running.', species: () => "Voltara's creatures: counted and graphed.", starmap: () => 'Shield strength: set for every star on the path.',
   drones: () => 'Cannons: the drill is passed.', racks: () => 'Ammo: every rack makes pairs.', target: () => 'Twin cannons: charged, and shared equally.',
-  fuel: w => `Fuel: ${w && w.ans != null ? w.ans + ' units' : 'some'} left on reaching Voltara.`, hop: w => `Navigation key part: found${w && w.r ? ` at (${w.r.end.join(', ')})` : ''}.`,
+  fuel: w => w && w.route ? `Route: ${w.route === 'rocks' ? 'through the rocks' : 'by the fuel moon'}. ${w.land} units left on landing.` : 'Route: planned.', hop: w => `Navigation key part: found${w && w.r ? ` at (${w.r.end.join(', ')})` : ''}.`,
   cargo: () => `Cargo: ${(S.cargoPick || []).map(i => CARGO[i][0].toLowerCase()).join(', ')}. 30 tons.`, board: w => `Circuit board: wired for exactly ${w && w.n ? w.n : 'its number'}.`,
   alloc: () => 'Power: 4,460 units shared exactly among four systems.', blocks: () => 'Emergency power: read, and life support kept on.' };
 /* THE FIFTEEN STATION TASKS: three for each ship part. The names are Marc's own task names.  [id, ship part, name, real-life?, the thing you use, hint] */
@@ -1401,7 +1401,8 @@ function card(force) {
 /* The words a task says back (right, not yet, a pointer) must never sit below the edge of the task box.
    On an iPad mini held sideways the box is short, and a child who was wrong saw only a shake. */
 function msgSee() { const t = $('toy'), m = $('msg'); if (!t || t.hidden || !m || !m.textContent) return; const mr = m.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (mr.bottom > tr.bottom - 6) t.scrollTop += mr.bottom - tr.bottom + 10; }
-function toySee() { const t = $('toy'); if (!t || t.hidden) return; const more = t.scrollHeight - t.clientHeight; if (more > 2 && more <= 90 && t.scrollTop < 2 && !$('ans')) { t.scrollTop = more; return; }      /* a task that is only a little too tall skips its heading, so its buttons are in view */
+function toySee() { const t = $('toy'); if (!t || t.hidden || t.querySelector('[data-top]')) return;      /* a task with a column of boxes to fill from the top opens at its top, with its story in view */
+  const more = t.scrollHeight - t.clientHeight; if (more > 2 && more <= 90 && t.scrollTop < 2 && !$('ans')) { t.scrollTop = more; return; }      /* a task that is only a little too tall skips its heading, so its buttons are in view */
   const tr = t.getBoundingClientRect(); let low = 0; ['ans', 'try', 'msg'].forEach(id => { const e = $(id); if (e && t.contains(e)) low = Math.max(low, e.getBoundingClientRect().bottom); }); if (low > tr.bottom - 6) t.scrollTop += low - tr.bottom + 10; }      /* the answer box and Check are never below the edge of the task */
 try { new MutationObserver(ms => { const t = $('toy'), m = $('msg'); document.body.classList.toggle('task', !t.hidden); if (m && ms.some(x => x.target === m || x.target.parentNode === m)) msgSee(); }).observe($('toy'), { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['hidden'] }); } catch (e) {}
 
@@ -1519,12 +1520,54 @@ function startLocker() { widget = { kind: 'locker', hits: 0, need: 1, tries: 0, 
 function startBattle() { widget = { kind: 'battle', hits: 0, need: 4, tries: 0, next: nextRocks }; nextRocks(); }
 function nextRocks() { const easy = widget.hits < 2; widget.r = 2 + rnd(4); widget.c = easy ? pick([2, 5, 10]) : 3 + rnd(7); widget.ans = widget.r * widget.c;
   numberToy(`<p class="eyebrow">Mini battle · look out of the windows</p><h3>Asteroid Field</h3>${widget.hits ? '' : storyP('battle')}<p class="q">${widget.r} rows. ${widget.c} rocks in each row. How many rocks?</p>`, 'rocks'); }
-function startFuel() { widget = { kind: 'fuel', hits: 0, need: 3, tries: 0, next: nextFuel, left: 70 + rnd(26) }; nextFuel(); }
-function nextFuel() { const w = widget; if (w.hits) w.left = w.ans; const stop = 'BCD'[w.hits], use = w.hits < 2 ? 12 + rnd(14) : 11 + rnd(Math.max(1, Math.min(15, w.left - 15))); w.ans = w.left - use;
-  const dots = ['A', 'B', 'C', 'D'].map((n, i) => `<circle cx="${40 + i * 80}" cy="26" r="13" fill="${i <= w.hits ? '#ffb23e' : '#132035'}" stroke="#e8eef8" stroke-width="2"/><text x="${40 + i * 80}" y="31" font-size="14" text-anchor="middle" style="fill:${i <= w.hits ? '#2b1a00' : '#e8eef8'}">${n}</text>`).join('') + [0, 1, 2].map(i => `<line x1="${55 + i * 80}" y1="26" x2="${105 + i * 80}" y2="26" stroke="${i === w.hits ? '#ffb23e' : '#34496c'}" stroke-width="${i === w.hits ? 4 : 2}" stroke-dasharray="${i === w.hits ? '' : '4 4'}"/>`).join('');
-  numberToy(`<p class="eyebrow">Navigation System · task 1 of 3 · leg ${w.hits + 1} of 3</p><p class="mw"><b>Maths word: difference.</b> The difference is the answer when you subtract.</p><h3>Fuel Calculation</h3>${w.hits ? '' : storyP('fuel')}
-    <div class="art"><svg viewBox="0 0 320 96" role="img" aria-label="A trip from A, the station, to B, to C, to D, which is Voltara. The tank holds ${w.left}."><text x="40" y="56" text-anchor="middle" font-size="11" font-weight="700" style="fill:#9fe0d0">station</text><text x="280" y="56" text-anchor="middle" font-size="11" font-weight="700" style="fill:#ffd25e">Voltara</text><rect x="20" y="70" width="280" height="16" rx="5" fill="#132035" stroke="#e8eef8" stroke-width="1.5"/><rect x="22" y="72" width="${Math.round(276 * w.left / 100)}" height="12" rx="4" fill="#6fd08a"/>${dots}</svg></div>
-    <p class="q">You have ${w.left} units of fuel. The leg to stop ${stop} uses ${use}. How much fuel is left?</p>`, 'units'); }
+/* 2-1 FUEL CALCULATION: two ways to Voltara. Work out the fuel after every leg of both, then choose the one that lands with at least 10 units.
+   [Marc, 2026-11-21, agreed: Station Story v2, item 13] [Source: his 2023 page: "Plan a smart route and decide where to refuel."]
+   [Proposal] the rocks way (2 legs) and the moon way (3 legs, with a refuel at the moon); Mission Control's rule of 10 units for landing.
+   For every cadet exactly one way keeps the rule, the fuel never drops to 0 on the way, and every sum stays under 200.
+   Checked on 10,000 cadets in checks/fuel_route_check.js. Nothing on the screen works out the fuel: the child writes each amount. */
+function fuelPlan() { const want = rnd(2) ? 'rocks' : 'moon';      /* each way is right about half the time, so it cannot be guessed */
+  for (let g = 0; g < 4000; g++) { const T = 60 + rnd(36), a1 = 18 + rnd(30), a2 = 18 + rnd(30), b1 = 15 + rnd(25), r = 15 + rnd(30), b2 = 15 + rnd(25), b3 = 15 + rnd(25);
+    const R1 = [T - a1, T - a1 - a2], R2 = [T - b1, T - b1 + r, T - b1 + r - b2, T - b1 + r - b2 - b3], all = R1.concat(R2);
+    if (all.some(v => v < 1 || v > 199)) continue; const ok1 = R1[1] >= 10, ok2 = R2[3] >= 10; if (ok1 === ok2 || (ok1 ? 'rocks' : 'moon') !== want) continue;
+    if (Math.abs(R1[1] - 10) < 2 || Math.abs(R2[3] - 10) < 2) continue;      /* never 9, 10 or 11 at landing: the rule must not read two ways */
+    return { T, a1, a2, b1, r, b2, b3, R1, R2, best: ok1 ? 'rocks' : 'moon' }; }
+  return { T: 80, a1: 30, a2: 45, b1: 20, r: 30, b2: 25, b3: 30, R1: [50, 5], R2: [60, 90, 65, 35], best: 'moon' }; }
+function fuelSvg(F, pick) { const node = (x, y, lab, col) => `<circle cx="${x}" cy="${y}" r="16" fill="${col}" stroke="#0b1322" stroke-width="3"/><text x="${x}" y="${y + 34}" text-anchor="middle" font-size="14" font-weight="700" style="fill:#e8eef8">${lab}</text>`,
+    leg = (x1, y1, x2, y2, n, on, dy) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${on ? '#ffb23e' : '#5a6d90'}" stroke-width="${on ? 5 : 3}" stroke-dasharray="${on ? '' : '8 6'}"/><text x="${(x1 + x2) / 2}" y="${(y1 + y2) / 2 + dy}" text-anchor="middle" font-size="14" font-weight="700" style="fill:#ffd25e" stroke="#0b1322" stroke-width="4" paint-order="stroke">uses ${n}</text>`;
+  let rocks = ''; for (let i = 0; i < 14; i++) { const x = 250 + (i * 37) % 150, y = 112 + (i * 23) % 50; rocks += `<ellipse cx="${x}" cy="${y}" rx="${5 + i % 4}" ry="${4 + i % 3}" fill="#7d6a5a" stroke="#3a2f27"/>`; }
+  const R = pick === 'rocks', M = pick === 'moon';
+  return `<svg class="picsvg" viewBox="0 0 640 330" style="aspect-ratio:640/330" role="img" aria-label="Two ways from the station to Voltara: through the rocks, or around by a fuel moon"><rect width="640" height="330" rx="12" fill="#0b1322"/>${rocks}
+    ${leg(70, 165, 320, 120, F.a1, R, -14)}${leg(320, 120, 570, 165, F.a2, R, -14)}
+    ${leg(70, 165, 200, 270, F.b1, M, 26)}${leg(200, 270, 440, 270, F.b2, M, 24)}${leg(440, 270, 570, 165, F.b3, M, 26)}
+    ${node(70, 165, 'Station', '#9fe0d0')}${node(570, 165, 'Voltara', '#ffd25e')}<circle cx="320" cy="120" r="9" fill="#ff7a6b"/><text x="320" y="96" text-anchor="middle" font-size="13" font-weight="700" style="fill:#ff9486">the rock gate</text>
+    <circle cx="200" cy="270" r="17" fill="#c9d2df" stroke="#0b1322" stroke-width="3"/><text x="200" y="304" text-anchor="middle" font-size="13" font-weight="700" style="fill:#e8eef8">fuel moon: + ${F.r}</text>
+    <circle cx="440" cy="270" r="9" fill="#6db3ff"/><text x="440" y="304" text-anchor="middle" font-size="13" font-weight="700" style="fill:#9fc7ff">the bend</text>
+    <text x="320" y="30" text-anchor="middle" font-size="15" font-weight="700" style="fill:#e8eef8">The tank holds ${F.T} units at the station</text></svg>`; }
+function startFuel() { if (!S.fuelP) { S.fuelP = fuelPlan(); S.fuelP.b = { r: ['', ''], m: ['', '', '', ''] }; save(); } const F = S.fuelP, w = widget = { kind: 'fuel2', tries: 0, miss: 0, pick: null };
+  const box = (k, i, lab) => `<li><span class="note">${lab}</span> <input class="sm" data-k="${k}" data-i="${i}" inputmode="numeric" autocomplete="off" maxlength="3" aria-label="${lab}"> <span class="note">units</span></li>`;
+  toy(`<p class="eyebrow" data-top>Navigation System · task 1 of 3</p><p class="mw"><b>Maths word: difference.</b> The difference is the answer when you subtract.</p><h3>Fuel Calculation</h3>
+    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext">${storyP('fuel')}
+    <p class="note"><b>A finished example.</b> A hiker has 40 sips of water. The walk to the hut uses 15: 40 − 15 = 25 left. At the hut she fills up 20 more: 25 + 20 = 45. The walk home uses 30: 45 − 30 = 15 left.</p>
+    <p class="q">Work out the fuel left after every leg. Then choose your way.</p>
+    <p class="note"><b>Through the rocks</b></p><ul class="slip fueldays" style="list-style:none;padding-left:0">${box('r', 0, 'At the rock gate:')}${box('r', 1, 'Landing on Voltara:')}</ul>
+    <p class="note"><b>By the fuel moon</b></p><ul class="slip fueldays" style="list-style:none;padding-left:0">${box('m', 0, 'Reaching the moon:')}${box('m', 1, 'After filling up:')}${box('m', 2, 'At the bend:')}${box('m', 3, 'Landing on Voltara:')}</ul>
+    <div class="field"><button class="btn quiet" type="button" id="wr">Fly through the rocks</button><button class="btn quiet" type="button" id="wm">Fly by the fuel moon</button></div>
+    <div class="field"><button class="btn" type="button" id="try">Check my plan</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
+  const m = $('msg'), no = t => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = t; }, draw = () => { $('pic').innerHTML = fuelSvg(F, w.pick); }; draw();
+  document.querySelectorAll('#toy .fueldays input').forEach(a => { const k = a.dataset.k, i = +a.dataset.i; a.value = F.b[k][i]; a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 3); F.b[k][i] = a.value; save(); }; });
+  const pickW = p => { w.pick = p; $('wr').classList.toggle('on', p === 'rocks'); $('wm').classList.toggle('on', p === 'moon'); beep(440, .04); draw(); m.textContent = ''; };
+  $('wr').onclick = () => pickW('rocks'); $('wm').onclick = () => pickW('moon'); $('leave').onclick = leave;
+  const names = { r: ['the rock gate', 'landing, through the rocks'], m: ['the moon', 'after filling up', 'the bend', 'landing, by the moon'] };
+  $('try').onclick = () => { const gap = ['r', 'm'].map(k => F.b[k].findIndex(v => v === '')).map((i, j) => [j ? 'm' : 'r', i]).find(x => x[1] >= 0);
+    if (gap) return no(`Work out the fuel at ${names[gap[0]][gap[1]]}, and write it.`);
+    w.tries++; for (const [k, want] of [['r', F.R1], ['m', F.R2]]) { const i = F.b[k].findIndex((v, j) => +v !== want[j]); if (i >= 0) { w.miss++;
+        const from = i ? `${F.b[k][i - 1]}` : `${F.T}`, step = k === 'm' && i === 1 ? `add the ${F.r} units from the moon` : `take away the ${k === 'r' ? [F.a1, F.a2][i] : [F.b1, 0, F.b2, F.b3][i]} units that leg uses`;
+        return no(`Check ${names[k][i]}: start from ${i ? 'the amount before it' : `the ${F.T} units in the tank`}, and ${step}.`); } }
+    if (!w.pick) return no('Your fuel is all worked out. Now choose your way.');
+    const land = w.pick === 'rocks' ? F.R1[1] : F.R2[3];
+    if (w.pick !== F.best) { w.miss++; return no(`That way lands with ${land} units. The rule is at least 10, for the trip home. Look at the other way.`); }
+    chime(); m.className = 'msg good'; m.textContent = `You land on Voltara with ${land} units. Mission Control signs your plan.`; const t0 = w.tries, m0 = w.miss, pick = w.pick; w.land = land; w.route = pick; delete S.fuelP; save();
+    setTimeout(() => { if (widget === w) taskWon('fuel', 'Adding and subtracting, step by step, to compare two plans (AERO 3.NBT.2, 3.OA.8)', t0, m0, `Your flight plan: ${pick === 'rocks' ? 'through the rocks' : 'by the fuel moon'}, landing with ${land} units. The gauge turns green.`); }, 1300); }; }
 function check() {
   if (widget.kind === 'skill') return skillCheck();
   const v = $('ans').value.trim(), m = $('msg'); if (v === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; }
@@ -1903,7 +1946,7 @@ function hopSvg(w) { const X = x => 30 + x * 24, Y = y => 270 - y * 24; let s = 
    The help checks the boxes day by day. It names the day to look at and where that day starts, never the star. Boxes and taps are kept if the cadet leaves. */
 function startHop() { if (!S.hopR) { S.hopR = hopRoute(); save(); } const R = S.hopR, n = R.days.length; if (!R.b || R.b.length !== n) R.b = R.days.map(() => ['', '']);
   const w = widget = { kind: 'hop', tries: 0, miss: 0, trail: R.t || (R.t = []), r: R };
-  toy(`<p class="eyebrow">Navigation System · task 2 of 3</p><p class="mw"><b>Maths word: coordinates.</b> Two numbers for a point: along first, then up.</p><h3>Coordinate Plotting</h3>
+  toy(`<p class="eyebrow" data-top>Navigation System · task 2 of 3</p><p class="mw"><b>Maths word: coordinates.</b> Two numbers for a point: along first, then up.</p><h3>Coordinate Plotting</h3>
     <div class="picrow"><div class="pic" id="pic"></div><div class="pictext"><p class="story">Space Cadets, the storm blew our Navigation System's key part off the station. Mission Control tracked it, day by day, to a hidden star. Here is its route.</p>
     <p class="note"><b>A finished example.</b> A rover starts at (1, 1). Day 1: 2 right and 3 up. Now it is at (3, 4). Day 2: 1 left and 2 down. Now it is at (2, 2).</p>
     <p class="q">The station is at (${R.start[0]}, ${R.start[1]}).</p>
