@@ -214,4 +214,5 @@ These are Marc's words, tidied. They are not on the form above.
   - before saying done: looked at it on an iPad both ways and a phone, and fixed one fault found that way (a small-screen rule hid "My 7 crates weigh")
   - tests run and passed: cargo_load_check, station_playthrough, station_online
   - not done: on a phone the crate names are too small to read (the weights can be read), and what is packed still does not matter later
+- **Update the class link (Marc, 2026-11-21).** "Update class link." Done: the class link is now version 66, the same file as the preview. Before the copy, `checks/class_update_test.js` opened games saved in version 54 (station, a task open, parts and cards, Voltara, space, Chronosia) inside version 66 with nothing lost.
 
