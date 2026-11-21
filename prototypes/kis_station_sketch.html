@@ -310,7 +310,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 58</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 59</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -668,7 +668,8 @@ function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.xy ? `<span class="chip${xCount() ? ' on' : ''}">Xylophora ${xCount()} of 5</span>` : ''}${S.sd ? `<span class="chip${sCount() ? ' on' : ''}">Stardust ${sCount()} of 5</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. ${REALON.on ? 'Purple tasks are done in real life, with your teacher.' : 'Every task is played here.'}</p>` +
-    PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${isReal(t) ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}</div>`).join('');
+    PARTS.map(p => `<div class="const"><span class="cn">${p}${S.parts.includes(p) ? ' ✓' : ''}</span>${tasksOf(p).map(t => `<span class="star ${S.done[t[0]] ? 'lit' : 'off'}${isReal(t) ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${t[2]}</span>`).join('')}${pvLine(p)}</div>`).join('');
+  $('partsbox').querySelectorAll('[data-pv]').forEach(b => b.onclick = () => pvChoose(b.dataset.pv));
 }
 /* A TAPPED WORD GOES INTO THE BOX.
    [Source: Marc, 2026-11-19, feeding the Gumblefish: "I keep thinking I can just tap that word to add instead of typing. But it just talks about them. And then I can't easily tap the word into the blank."]
@@ -707,7 +708,8 @@ const tasksOf = part => TASKS.filter(t => t[1] === part), tasksDone = () => TASK
 function syncParts() { S.parts = PARTS.filter(p => tasksOf(p).every(t => S.done[t[0]])); }
 /* finishing a task: one card each. Three tasks fit the ship part. */
 function taskDone(id) { S.done[id] = true; const t = TASKS.find(t => t[0] === id); if (!t) return ''; const had = S.parts.includes(t[1]); syncParts(); const n = tasksOf(t[1]).filter(x => S.done[x[0]]).length;
-  return n === 3 && !had ? ` That is all three ${t[1]} tasks. The ${t[1]} part is fitted to your ship!` + (t[1] === 'Navigation' ? ' The Launch Bay door unlocks.' : '') + whole() : ` ${n} of 3 ${t[1]} tasks done.`; }
+  if (n === 3 && !had) pvSoon(t[1]);
+  return n === 3 && !had ? ` That is all three ${t[1]} tasks. The ${t[1]} part is fitted to your ship! Now choose which ${t[1]}.` + (t[1] === 'Navigation' ? ' The Launch Bay door unlocks.' : '') + whole() : ` ${n} of 3 ${t[1]} tasks done.`; }
 function taskWon(id, skill, tries, miss, text) { closeToy(); const tail = taskDone(id); S.log.push({ what: TASKS.find(t => t[0] === id)[2], skill, result: miss ? `${miss} to fix` : 'No mistakes ✓', tries, need: tries }); save(); drawStatus(); chime(); card(); say(text + ' You earn a card.' + tail); }
 const missing = () => PARTS.filter(p => !S.parts.includes(p));
 /* the next thing worth trying. A stuck child can always ask. */
@@ -1547,6 +1549,85 @@ function nextBoard() {
     beep(880, .1); if (w.round === 0) { w.round = 1; nextBoard(); $('msg').className = 'msg good'; $('msg').textContent = 'The first board hums. One more.'; return; }
     taskWon('board', 'Place value', w.tries, w.miss, 'The board glows. Power flows to your ship.'); };
 }
+/* =====================================================================
+   THE LUCKY DRAW: choosing a ship part.   PV-BEGIN
+   [Source: Marc's ship-part pages, 2023: each part has four starting versions, with his names, his words, HP and AP; one is the "lucky draw".]
+   [Source: Marc, 2026-11-20: "they can choose the middle version... or they can choose to enter the lucky draw." Lucky draw 10%, the middle one 50%,
+    the one below and the one above 20% each. Four cards spin like a tornado, one floats down and flips, colour bursts out like a sparkler:
+    red for the lowest, green for the middle, light blue for the high one, gold rainbow for the lucky draw. "LUCKY DRAW" fills the screen.
+    Then a picture of the new part, with its attack points and health points.]
+   [Proposal: which ordinary version is "below" (the one with the smallest single number) and which is "above". [Conflict]: in the 2023 numbers the
+    Standard version has the smallest HP + AP of the four, so even a red draw adds up to more than the sure choice. The numbers are one line each.]
+   The draw is decided and saved before the cards spin, so opening the game again cannot change it.
+   ===================================================================== */
+const PVER = {
+  'Engine Core': [['Neutron Reactor', 25, 0, 'The most resilient core, though lacking in offensive capability.'], ['Standard Reactor', 10, 10, 'The workhorse of the bunch. Reliable, sturdy, and balanced.'],
+    ['Quantum Reactor', 20, 5, 'Sacrifices durability for a significant boost in power output.'], ['Stellar Reactor', 30, 10, 'The dream draw. A rare jewel among Engine Cores.']],
+  'Navigation': [['Astrolabe Navigator', 25, 0, 'Designed for complex navigational calculations.'], ['Standard Navigator', 15, 5, 'The stalwart option for the practical captain.'],
+    ['Celestial Cartographer', 15, 10, 'Ideal for explorers venturing into dangerous territories.'], ['Cosmic Navigator', 20, 15, 'The best of both worlds.']],
+  'Shield': [['Quantum Deflector', 35, 0, 'Greater energy absorption, at the cost of slight durability.'], ['Standard Shield', 20, 0, 'A balanced shielding option. Simple and reliable.'],
+    ['Neutron Wall', 30, 5, 'A heavy-duty option, for resilience.'], ['Nova Shield', 40, 10, 'The best in both durability and absorption.']],
+  'Weapons': [['Pulsar Phaser', 5, 25, 'The best defense is a strong offense.'], ['Standard Arsenal', 10, 15, 'The balanced choice. Reliable and versatile.'],
+    ['Proton Launcher', 15, 15, 'The perfect balance between firepower and durability.'], ['Supernova Arsenal', 15, 30, 'Exceptional firepower and excellent durability.']],
+  'Power': [['Proton Generator', 30, 0, 'The top choice for durability over power output.'], ['Standard Battery', 15, 10, 'A reliable and balanced power source.'],
+    ['Quantum Dynamo', 25, 5, 'Cutting-edge power output and durability.'], ['Galaxy Battery', 30, 15, 'Exceptional durability and high power output.']] };
+const PTIER = [['red', '#ff5a4d', 20, 'Below the middle'], ['green', '#3fd06a', 50, 'The middle'], ['light blue', '#7fd3ff', 20, 'Above the middle'], ['gold', '#ffd25e', 10, 'The lucky draw']];
+const pvPick = x => x < .1 ? 3 : x < .3 ? 2 : x < .5 ? 0 : 1;      /* 10 gold, 20 blue, 20 red, 50 green, out of every 100 draws */
+const pvOf = p => (S.pv || {})[p];
+function pvSoon(p) { S.pvDue = p; if (window.GMQ_NO_PV) return; let n = 0;      /* GMQ_NO_PV: set only by tests that play the whole station; lucky_draw_test.js plays the choice */ const tm = setInterval(() => { if (++n > 200 || S.pvDue !== p || pvOf(p)) return clearInterval(tm); if (!READ.open && !widget && S.mode === 'station') { clearInterval(tm); pvChoose(p); } }, 400); }
+function pvLine(p) { if (!S.parts.includes(p)) return ''; const o = pvOf(p); if (!o) return `<button class="word" type="button" data-pv="${p}">Choose your ${p}</button>`; const v = PVER[p][o.i];
+  return `<span class="note" style="flex-basis:100%"><b style="color:${PTIER[o.i][1]}">${v[0]}${o.i === 3 ? ' ★' : ''}</b>: ${v[1]} HP, ${v[2]} AP</span>`; }
+/* the part, drawn: one picture for each kind of part, in its tier's colour */
+function pvArt(p, i, z) { const c = PTIER[i][1], g = i === 3 ? 'url(#pvgold)' : c, d = '#0b1322';
+  const defs = `<defs><linearGradient id="pvgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".35" stop-color="#ffd25e"/><stop offset=".6" stop-color="#ff9db0"/><stop offset=".8" stop-color="#9fd3ff"/><stop offset="1" stop-color="#ffd25e"/></linearGradient><radialGradient id="pvglow"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs>`;
+  const body = p === 'Engine Core' ? `<rect x="30" y="22" width="40" height="58" rx="8" fill="${g}" stroke="${d}" stroke-width="3"/><circle cx="50" cy="51" r="13" fill="url(#pvglow)"/><circle cx="50" cy="51" r="7" fill="#fff"/><rect x="24" y="18" width="52" height="8" rx="3" fill="#59657a" stroke="${d}" stroke-width="2"/><rect x="24" y="76" width="52" height="8" rx="3" fill="#59657a" stroke="${d}" stroke-width="2"/>`
+    : p === 'Navigation' ? `<circle cx="50" cy="50" r="32" fill="${g}" stroke="${d}" stroke-width="3"/><circle cx="50" cy="50" r="22" fill="#0b1322" opacity=".35"/><path d="M50 22 L56 50 L50 78 L44 50 Z" fill="#fff" stroke="${d}" stroke-width="2"/><path d="M22 50 L50 45 L78 50 L50 55 Z" fill="#c8d4e6" stroke="${d}" stroke-width="2"/><circle cx="50" cy="50" r="4" fill="${d}"/>`
+    : p === 'Shield' ? `<path d="M50 14 L80 26 C80 56 68 74 50 86 C32 74 20 56 20 26 Z" fill="${g}" stroke="${d}" stroke-width="3"/><path d="M50 26 L68 33 C68 54 60 66 50 74 C40 66 32 54 32 33 Z" fill="#fff" opacity=".35"/><circle cx="50" cy="48" r="8" fill="url(#pvglow)"/>`
+    : p === 'Weapons' ? `<rect x="18" y="52" width="44" height="22" rx="6" fill="#59657a" stroke="${d}" stroke-width="3"/><rect x="40" y="38" width="44" height="14" rx="5" fill="${g}" stroke="${d}" stroke-width="3" transform="rotate(-18 40 45)"/><circle cx="34" cy="63" r="6" fill="url(#pvglow)"/><path d="M86 22 l4 -6 l1 7 l7 1 l-6 4 l2 7 l-6 -4 l-6 4 l2 -7 l-6 -4 l7 -1 z" fill="#fff" opacity=".8"/>`
+    : `<rect x="28" y="22" width="44" height="62" rx="7" fill="${g}" stroke="${d}" stroke-width="3"/><rect x="40" y="14" width="20" height="9" rx="2" fill="#59657a" stroke="${d}" stroke-width="2"/><path d="M54 30 L40 54 L50 54 L45 76 L62 48 L52 48 Z" fill="#fff" stroke="${d}" stroke-width="2"/>`;
+  return `<svg viewBox="0 0 100 100" width="${z}" height="${z}" role="img" aria-label="${PVER[p][i][0]}">${defs}${body}</svg>`; }
+/* choosing: the sure part, or the bag of 10 */
+function pvChoose(p) { if (pvOf(p) || !S.parts.includes(p)) return; const V = PVER[p], bag = [1, 1, 1, 1, 1, 0, 0, 2, 2, 3]; widget = { kind: 'pv', p };
+  toy(`<p class="eyebrow">Your ship</p><h3>Your ${p} is ready</h3><p class="story">Take the ${V[1][0]} for sure. Or enter the LUCKY DRAW!</p>
+    <div class="field" style="align-items:center"><span>${pvArt(p, 1, 54)}</span><span><b>${V[1][0]}</b><br><span class="note">${V[1][1]} HP · ${V[1][2]} AP</span></span></div>
+    <p class="note"><b>The draw bag holds 10 tokens.</b> One is drawn.</p><p aria-label="5 green, 2 red, 2 light blue and 1 gold token" style="font-size:1.7rem;letter-spacing:3px;margin:0">${bag.map(i => `<span style="color:${PTIER[i][1]}">●</span>`).join('')}</p>
+    <table class="tt fct" style="flex:none">${[1, 0, 2, 3].map(i => `<tr><td style="color:${PTIER[i][1]}">${bag.filter(x => x === i).length} ${PTIER[i][0]}</td><td>${V[i][0]}</td><td>${V[i][1]} HP · ${V[i][2]} AP</td></tr>`).join('')}</table>
+    <div class="field"><button class="btn" type="button" id="pvsafe">Take the ${V[1][0]}</button><button class="btn" type="button" id="pvdraw" style="background:linear-gradient(90deg,#ffd25e,#ff9db0,#9fd3ff);color:#2b1a00">LUCKY DRAW!</button><button class="btn quiet" type="button" id="leave">Not yet</button></div>`);
+  $('leave').onclick = () => { closeToy(); say(`Your ${p} waits in the bay. Choose it from My ship, when you are ready.`); };
+  const go = (i, how) => { if (!S.pv) S.pv = {}; S.pv[p] = { i, how }; delete S.pvDue; S.log.push({ what: 'Ship part: ' + p, skill: 'A choice: the sure part, or a draw of 1 from 10', result: how === 'draw' ? `entered the lucky draw: ${V[i][0]} (${PTIER[i][0]})` : `took the ${V[i][0]}` }); save(); closeToy(); drawStatus(); pvShow(p, i, how); };
+  $('pvsafe').onclick = () => go(1, 'safe'); $('pvdraw').onclick = () => go(pvPick(Math.random()), 'draw'); }
+/* THE SHOW. Four cards spin like little tornadoes, one floats down and flips, and its colour bursts out. It sits over the picture for a few seconds,
+   like the reading cards, and goes when the part is fitted. With "reduce motion" on, the card is shown turned over, with no spin. */
+function pvShow(p, i, how) { const st = document.querySelector('.stage'); let fx = $('pvfx'); if (fx) fx.remove(); fx = document.createElement('div'); fx.id = 'pvfx'; st.appendChild(fx);
+  const calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, V = PVER[p][i], T = PTIER[i], W = st.clientWidth, H = st.clientHeight, cw = Math.max(70, Math.min(120, W * .14)), ch = cw * 1.4;
+  fx.setAttribute('role', 'dialog'); fx.setAttribute('aria-label', `Your new ${p}: ${V[0]}`);
+  fx.style.cssText = 'position:absolute;inset:0;z-index:8;overflow:hidden;background:radial-gradient(circle at 50% 45%,rgba(30,40,90,.92),rgba(4,6,16,.97));perspective:900px';
+  fx.innerHTML = `<canvas id="pvsp" width="${W}" height="${H}" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>` + [0, 1, 2, 3].map(k => `<div class="pvc" style="position:absolute;left:0;top:0;width:${cw}px;height:${ch}px;transform-style:preserve-3d;will-change:transform">
+      <div style="position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:repeating-linear-gradient(45deg,#1a2a5a 0 8px,#22367a 8px 16px);border:3px solid #ffd25e;display:grid;place-items:center;color:#ffd25e;font:700 ${cw * .38}px 'Chakra Petch',sans-serif">?</div>
+      <div style="position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);background:${i === 3 ? 'linear-gradient(135deg,#fff3b0,#ffd25e,#ff9db0,#9fd3ff,#ffd25e)' : T[1]};border:3px solid #fff;display:grid;place-items:center">${pvArt(p, i, cw * .8)}</div></div>`).join('') +
+    `<div id="pvbig" style="position:absolute;left:0;right:0;top:8%;text-align:center;font:700 ${Math.max(30, W * .085)}px 'Chakra Petch',sans-serif;color:#ffd25e;text-shadow:0 0 18px #ff9db0,0 0 34px #ffd25e;opacity:0;pointer-events:none">LUCKY DRAW!</div>
+    <div id="pvcard" style="position:absolute;left:50%;bottom:6%;transform:translateX(-50%);width:min(92%,460px);background:#0b1322;border:3px solid ${T[1]};border-radius:16px;padding:12px 14px;color:#e8eef8;display:none;gap:12px;align-items:center">
+      <span>${pvArt(p, i, 84)}</span><span style="flex:1;min-width:0"><span style="font:700 .78rem 'Chakra Petch',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:${T[1]}">Your new ${p} · ${T[3]}</span><br><b style="font:700 1.25rem 'Chakra Petch',sans-serif">${V[0]}</b><br><span style="font-size:.95rem;color:#c8d4e6">${V[3]}</span>
+      <br><span style="display:inline-block;margin-top:4px;font-weight:700">Health points (HP): ${V[1]} &nbsp; Attack points (AP): ${V[2]}</span></span><button class="btn" type="button" id="pvok" style="align-self:flex-end">Fit it</button></div>`;
+  const cards = [...fx.querySelectorAll('.pvc')], sp = $('pvsp').getContext('2d'), parts = [], t0 = performance.now(), spin = calm || how === 'safe' ? 0 : 2400, cx = W / 2 - cw / 2, cy = H * .42 - ch / 2;
+  const burst = (n, gold) => { for (let k = 0; k < n; k++) { const a = Math.random() * 6.283, v = 2 + Math.random() * 6; parts.push({ x: W / 2, y: H * .45, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 2, life: 1, hue: gold ? Math.random() * 360 : null }); } };
+  let flipped = false, shown = false, last = 0;
+  const end = () => { fx.remove(); const cards2 = `Your ${p} is fitted: the ${V[0]}. ${V[1]} health points, ${V[2]} attack points.`; say(i === 3 ? 'LUCKY DRAW! ' + cards2 : cards2); };
+  const frame = now => { if (!document.body.contains(fx)) return; const t = now - t0; sp.clearRect(0, 0, W, H);
+    cards.forEach((c, k) => { let x, y, ry, sc = 1, op = 1, sx = 1;
+      if (t < spin) { const u = t / spin, a = u * 9 + k * 1.571, R = W * (.18 + .06 * Math.sin(u * 6 + k)); x = cx + Math.cos(a) * R; y = cy + Math.sin(a) * R * .32 - Math.sin(u * 3.14) * H * .08 + Math.sin(u * 20 + k) * 6; ry = 0; sx = Math.max(.08, Math.abs(Math.cos(u * 25 + k * .8))); sc = .75 + .25 * (Math.sin(a) + 1) / 2;      /* spinning shows only the back: the card narrows and widens */
+        if (Math.floor(t / 120) !== last) { last = Math.floor(t / 120); beep(300 + (last % 8) * 60, .03); } }
+      else if (k !== 0) { const u = Math.min(1, (t - spin) / 500); x = cx + (k - 2) * W * .3 * (1 + u); y = cy - u * H * .6; ry = 0; op = 1 - u; }
+      else { const u = Math.min(1, (t - spin) / 700), f = Math.min(1, Math.max(0, (t - spin - 700) / 600)); x = cx; y = cy - H * .25 * (1 - u) * (spin ? 1 : 0); ry = calm ? 180 : f * 180; sc = 1 + .25 * f;
+        if (f >= .5 && !flipped) { flipped = true; burst(i === 3 ? 260 : 120, i === 3); if (i === 3) { chime(); setTimeout(chime, 260); setTimeout(chime, 520); } else chime(); if (i === 3) burst(200, true); } }
+      c.style.opacity = op; c.style.transform = `translate(${x}px,${y}px) scale(${sc}) scaleX(${sx}) rotateY(${ry}deg)`; c.lastElementChild.style.visibility = k === 0 && (calm || t >= spin + 700) ? 'visible' : 'hidden'; });
+    if (flipped && i === 3) { const b = $('pvbig'), u = Math.min(1, (t - spin - 1000) / 400); b.style.opacity = Math.max(0, u); b.style.transform = `scale(${1 + .15 * Math.sin(t / 140)})`; if (!calm && Math.random() < .25) burst(18, true); }
+    parts.forEach(q => { q.x += q.vx; q.y += q.vy; q.vy += .12; q.vx *= .985; q.life -= .012; if (q.life <= 0) return; sp.globalAlpha = q.life; sp.fillStyle = q.hue == null ? T[1] : `hsl(${(q.hue + t / 4) % 360},100%,65%)`; sp.beginPath(); sp.arc(q.x, q.y, 2.5 + 2 * q.life, 0, 7); sp.fill(); sp.globalAlpha = q.life * .4; sp.fillRect(q.x - q.vx * 2, q.y - q.vy * 2, 2, 2); });
+    sp.globalAlpha = 1; for (let k = parts.length - 1; k >= 0; k--) if (parts[k].life <= 0) parts.splice(k, 1);
+    if (flipped && !shown && t > spin + 1500) { shown = true; const pc = $('pvcard'); pc.style.display = 'flex'; $('pvok').onclick = end; $('pvok').focus({ preventScroll: true }); }
+    requestAnimationFrame(frame); };
+  if (calm) { flipped = true; } requestAnimationFrame(frame); }
+/* PV-END */
 /* THE FOUR REAL-LIFE TASKS, ON SCREEN.  [Source: Marc, 2026-11-20: "For the meantime, change all the station tasks so everything is online. They don't need to wait
    for me to figure out the code." And: the real-life tasks could be "set up as a backup... that can be a choice".] The teacher switch "real-life tasks" brings back
    the steps and the codes. Off (the start): the same four tasks are played on screen, with Marc's own maths and numbers. [Proposal: how each one is played on screen.] */
@@ -1586,7 +1667,7 @@ function olStarMap() { const r = OLR('starmap'), path = [[20, 40 + r() * 140]]; 
 function olStarSvg(k, x, y, z) { const c = OLSTAR[k][1], sh = OLSTAR[k][2], st = `fill="${c}" stroke="#0b1322" stroke-width="1.2"`, P = pts => `<path d="M${pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L')} Z" ${st}/>`;
   if (sh === 'c') return `<circle cx="${x}" cy="${y}" r="${z * .8}" ${st}/>`; if (sh === 'q') return `<rect x="${x - z * .7}" y="${y - z * .7}" width="${z * 1.4}" height="${z * 1.4}" ${st}/>`; if (sh === 'd') return P([[x, y - z], [x + z * .8, y], [x, y + z], [x - z * .8, y]]);
   const n = sh === 'x' ? 4 : 5, pts = []; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, rr2 = i % 2 ? z * .45 : z * 1.15; pts.push([x + rr2 * Math.cos(a), y + rr2 * Math.sin(a)]); } return P(pts); }
-function olStars() { const M = olStarMap();
+function olStars() { const M = olStarMap(); if (S.smOk) return olStars2(M);
   toy(`${olHead('starmap')}<p class="story">Your teacher drew a path across the star map. Count the stars on the path. How many of each kind?</p>
     <svg viewBox="0 0 340 220" role="img" aria-label="A star map with five kinds of star and a path drawn across it" style="width:100%;max-width:420px;height:auto;aspect-ratio:340/220;flex:none;background:#0b1322;border-radius:10px"><polyline points="${M.path.map(p => p.join(',')).join(' ')}" fill="none" stroke="#e8eef8" stroke-width="2.5" stroke-dasharray="7 5"/>${M.stars.map(s => olStarSvg(s[2], +s[0].toFixed(1), +s[1].toFixed(1), 6)).join('')}</svg>
     <div class="field codes">${OLSTAR.map((k, i) => `<label class="code"><svg viewBox="0 0 20 20" width="22" height="22" aria-hidden="true">${olStarSvg(i, 10, 10, 7)}</svg><span class="note">${k[0]}</span><input id="ol${i}" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="${k[0]} stars on the path"></label>`).join('')}</div>
@@ -1594,8 +1675,17 @@ function olStars() { const M = olStarMap();
   OLSTAR.forEach((k, i) => { const a = $('ol' + i); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); }; });
   $('leave').onclick = () => { closeToy(); say('You step back from the easel.'); };
   $('try').onclick = () => { const v = OLSTAR.map((k, i) => $('ol' + i).value); if (v.some(x => x === '')) return olMsg('Fill in all five. Write 0 for none.'); widget.tries++; const w = v.filter((x, i) => +x !== M.on[i]).length;
-    if (w) return olMsg(`${w} of your 5 counts ${w === 1 ? 'does' : 'do'} not match the path.`); const all = M.on.reduce((a, b) => a + b, 0);
-    olWin('starmap', 'Sorting and counting into a table (AERO 3.MD.3)', `${all} stars on the path, counted kind by kind. The star map is ready for the Engine Core. You passed Star Map!`); }; }
+    if (w) return olMsg(`${w} of your 5 counts ${w === 1 ? 'does' : 'do'} not match the path.`); S.smOk = 1; save(); olStars2(M); }; }
+/* [Source: Marc's Star Map page: "Each has a number for math later." "Multiply each star's count by its number. Add them up for your code."]
+   [Proposal: the numbers 2 to 6. His page does not give them.] */
+const OLNUM = [2, 3, 4, 5, 6];
+function olStars2(M) { const code = M.on.reduce((a, n, i) => a + n * OLNUM[i], 0);
+  toy(`${olHead('starmap')}<p class="story">Your counts are right. Now the code. Each kind of star has a number. Multiply each count by its number. Then add them up. Use paper.</p>
+    <table class="tt fct" style="flex:none"><tr><th>Kind</th><th>On the path</th><th>Its number</th></tr>${OLSTAR.map((k, i) => `<tr><td><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">${olStarSvg(i, 10, 10, 7)}</svg> ${k[0]}</td><td>${M.on[i]}</td><td>${OLNUM[i]}</td></tr>`).join('')}</table>
+    <div class="field"><label for="ans" class="note">The code</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="3"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  $('ans').oninput = () => { $('ans').value = $('ans').value.replace(/[^0-9]/g, '').slice(0, 3); }; $('leave').onclick = () => { closeToy(); say('You step back from the easel. Your counts are kept.'); };
+  $('try').onclick = () => { const v = $('ans').value; if (v === '') return olMsg('Type the code.'); widget.tries++; if (+v !== code) return olMsg('That is not the code. Check each multiplication, then the adding.');
+    olWin('starmap', 'Counting into a table; multiplying and adding (AERO 3.MD.3, 3.OA.7)', `The code is ${code}. The star chart for the Engine Core lights up. You passed Star Map!`); }; }
 /* Target Practice: throw at a wall of 1 to 9, keep the running total yourself, stop on an even total from 32 to 40. [Source: SLIPS.target]
    A throw does not always land where you aim: sometimes it hits the next square. The total is never shown. */
 const OL9 = [[7, 8, 9], [4, 5, 6], [1, 2, 3]];
@@ -4077,7 +4167,11 @@ const sMKey = () => { const d = SD().done; return (d.chart ? 'C' : '') + (d.mont
 
 /* QUEST 1, chart the ship [his Task 2, Level 1]. Read five thermometers. Build the bar chart. Find the room that is too hot or too cold for its sign. */
 function sTherm(k) { const c = SD(), rm = SRM[k]; c.at = 'th'; c.k = k;
-  sAsk({ where: rm.n, title: 'The thermometer', q: 'Read the thermometer. Write what it shows on your clipboard.', unit: 'degrees', label: 'It shows', go: 'Write it down', val: c.rec[k], bye: 'You step back from the thermometer.',
+  /* [Source: Marc, 2026-11-20: "it said write down the temperature in a notebook before I even [knew] why I'm supposed to do that... the quest started before
+     the quest was actually given to you."] Until Mission Control has asked for a chart, a thermometer only shows itself and its sign. */
+  if (!(c.heardM === undefined ? c.told != null : c.heardM)) { widget = { kind: 'sth' }; toy(`<p class="eyebrow">Operation Stardust · ${rm.n}</p><h3>The thermometer</h3><p class="q">A thermometer, with a sign above it. Nobody has asked you about it yet.</p><div class="field"><button class="btn quiet" type="button" id="leave">Step back</button></div>`);
+    $('leave').onclick = () => { closeToy(); c.at = 'map'; save(); drawMission(); say('You step back from the thermometer.'); }; return ''; }
+  sAsk({ where: rm.n, title: 'The thermometer', q: 'Mission Control wants to know how warm each room is. Read the thermometer. Write what it shows on your clipboard.', unit: 'degrees', label: 'It shows', go: 'Write it down', val: c.rec[k], bye: 'You step back from the thermometer.',
     on: n => { c.rec[k] = n; c.at = 'map'; save(); closeToy(); drawMission(); say(`You write on your clipboard: ${rm.n}, ${n} degrees.`); } }); return ''; }
 const sClip = () => { const c = SD(); return SRK.map(k => `${SRM[k].s} ${c.rec[k] == null ? '?' : c.rec[k]}`).join(' · '); };
 /* [Source: Marc, 2026-11-20, after another AI read two rooms as out of range: "2 small fixes".] When the child's own clipboard has two rooms out of range, or none,

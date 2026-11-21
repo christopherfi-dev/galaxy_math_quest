@@ -1,7 +1,8 @@
 // The station's four real-life tasks, played on screen.  [Source: Marc, 2026-11-20: "For the meantime, change all the station tasks so everything is online."]
 // Also the two small fixes of the same day: Xylophora names the survey post; the mission ship says when the child's own clipboard shows two rooms out of range.
 //   - Shield Calibration: deal tokens onto 5 sections (put and take back); a pile left, unequal sections, a wrong count, then the right one
-//   - Star Map: the stars on the path are counted again here from the drawing itself, kind by kind; every star is right on the path or well away from it, for 2,000 cadets
+//   - Star Map: the stars on the path are counted again here from the drawing itself, kind by kind; every star is right on the path or well away from it, for 2,000 cadets;
+//     then Marc's code: each count times its kind's number, added up
 //   - Target Practice: throws land where aimed, or next door; the total is never shown; a wrong sum, too few, odd, past 40, then an even total from 32 to 40
 //   - Power Allocation: Marc's four numbers; too many thousand-blocks, a number built wrong, then built right with only 2
 //   - the teacher switch brings back the real-life steps and codes, and the purple markers
@@ -37,7 +38,10 @@ const { chromium } = require('playwright'); const path = require('path');
     if (sm.bad.length) bad.push(name + ': star maps: ' + sm.bad.slice(0, 4).join(' | ')); if (sm.n < 1900) bad.push(name + ': only ' + sm.n + ' different star maps for 2,000 cadets');
     await open('starmap'); ok(await p.locator('#toy svg polyline').count() === 1, 'the path is drawn'); expect(await check(), /^Fill in all five/, 'empty boxes');
     for (let i = 0; i < 5; i++) await p.fill('#ol' + i, String(sm.on[i] + (i < 2 ? 1 : 0))); expect(await check(), /^2 of your 5 counts do not match the path\.$/, 'two wrong counts');
-    for (let i = 0; i < 5; i++) await p.fill('#ol' + i, String(sm.on[i])); await check(); ok(await done('starmap'), 'star map passes');
+    for (let i = 0; i < 5; i++) await p.fill('#ol' + i, String(sm.on[i])); await check(); expect(await p.locator('#toy').innerText(), /Now the code\. Each kind of star has a number/, 'the code step [Source: his page]');
+    const code = sm.on.reduce((a, n, i) => a + n * [2, 3, 4, 5, 6][i], 0); await p.click('#leave'); await open('starmap'); expect(await p.locator('#toy').innerText(), /Now the code/, 'the counts are kept');
+    await p.fill('#ans', String(code + 1)); expect(await check(), /^That is not the code\. Check each multiplication, then the adding\.$/, 'a wrong code'); await p.fill('#ans', String(code)); await check(); ok(await done('starmap'), 'star map passes');
+    expect(await last(), new RegExp(`The code is ${code}\.`), 'the code');
     // ---- Target Practice: throws land where aimed while Math.random is high
     await open('target'); await p.evaluate(() => { window._r = Math.random; Math.random = () => .9; }); const thr = async n => { await p.locator(`#ol9 button[data-n="${n}"]`).click(); await p.waitForTimeout(40); };
     expect(await check(), /^Throw first\.$/, 'no throws'); for (const n of [9, 9, 9]) await thr(n); ok(!/27/.test(await p.locator('#toy').innerText()), 'the total is never shown'); expect(await p.locator('#olhits').innerText(), /You aim at 9\. Hit! Your hits: 9, 9, 9\./, 'the hits');

@@ -94,7 +94,7 @@ const path = require('path');
     const settle = async () => { await p.waitForTimeout(200); for (let i = 0; i < 300; i++) { if (await p.evaluate(() => !SM.route.length && !SM.then)) break; await p.waitForTimeout(100); } await p.waitForTimeout(400); };      /* wait until the cadet has arrived, however long the walk takes */
     await p.evaluate(() => goStardust()); await p.waitForTimeout(600); verbs0 = (await look()).verbs; await step('on the mission ship');
     await p.evaluate(() => { SD().seen = Object.keys(SRM); sGo(4, 4); }); await settle(); verbs0 = (await look()).verbs; await step('walking on the mission ship');
-    await p.evaluate(() => { act('use thermometer'); }); await settle(); await step('a thermometer', { task: true, pad: true });
+    await p.evaluate(() => { SD().heardM = true; act('use thermometer'); }); await settle(); await step('a thermometer', { task: true, pad: true });      /* Mission Control has asked, so the thermometer has its box */
     await p.click('#leave'); await p.waitForTimeout(200); verbs0 = (await look()).verbs; await step('the thermometer left');
     await p.evaluate(() => { act('use chart'); }); await settle(); await step('last trip\'s chart on the wall', { task: true });
     await p.click('#try'); await step('a new wall chart', { task: true }); await p.click('#try'); await step('the wall chart, wrong', { task: true, msg: true });
