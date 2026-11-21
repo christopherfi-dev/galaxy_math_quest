@@ -17,6 +17,8 @@ These rules apply to every Claude Code session in this folder. **Start with `HAN
   - The AI keeps its full intelligence inside a defined reality.
   - Code holds memory and hard facts: numbers, answer checks and rewards.
   - Never redesign code-first, and never shrink the AI's role to scripted output.
+- **The picture shows the task.** While a child works on something (a map, a mat, a wall, a number line, a clock, a chart), it fills the picture area. The side panel holds only words, boxes and buttons. [Marc, 2026-11-21: "Every mini-game quest must be that way. Whatever you're doing takes up the full screen."]
+- **Learning and the child's experience come before speed of building.** Marc: "If you're trying to do things that are the fastest... you're not even concerned about the pedagogy or the user experience?" When a quicker build and a better one differ, build the better one, or say plainly which you chose and why.
 - **Don't make his decisions.** Lay out options with what each one costs, and mark them **Proposal**. The open decisions are listed in `design/GMQ_World_Handoff_2026-11-16_v8.md` §3, `design/GMQ_World_Map_v1_2026-11-16.md` §7 and `design/GMQ_Place_Template_v1_2026-11-16.md` §7.
 - **Reason from his goals.** Don't copy features from other games or apps because they're common. Every borrowed feature needs a reason that applies to Grade 3 students on iPads.
 - **The battle rules are his,** and they are out of scope here. Don't redesign them.

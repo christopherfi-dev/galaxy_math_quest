@@ -49,7 +49,7 @@ const { chromium } = require('playwright'); const path = require('path');
     expect(board, /Must stay on Chronosia all week[\s\S]*Cannot go to other dimensions[\s\S]*No risky trips without a chaperone[\s\S]*Cannot be away longer than 45 minutes/, 'the four rules'); await shot('2_board');
     await p.click('#try'); expect(await msg(), /^Fill every box with ✓ or ✗ first\.$/, 'an unfinished grid'); await p.click('#leave');
     // ---- the portal: the clocks and the dial
-    await say('use portal'); const portal = await p.locator('#toy').innerText(); ok(await p.locator('#toy svg').count() === 8, 'the log shows eight clocks');
+    await say('use portal'); const portal = await p.locator('#toy').innerText(); ok(await p.locator('#stageview svg svg').count() === 8, 'the log shows eight clocks, big, in the picture');
     expect(portal, new RegExp(`The dial still shows \\(${K.x}, ${K.y}\\)`), 'the dial'); ok(!new RegExp(`\\b${K.mins} minutes`).test(portal), 'the portal does not say the minutes'); await shot('3_portal');
     await p.click('#try'); expect(await msg(), /^Type the minutes first\.$/, 'no minutes typed'); await p.fill('#ans', String(K.mins)); await p.click('#try'); await p.waitForTimeout(200);
     expect(await last(), new RegExp(`^You write in your casebook: away for ${K.mins} minutes\\.$`), 'the minutes go in the casebook');
