@@ -55,6 +55,34 @@ So it was never "should not, ever". It was "not that program, and not yet".
 - **Help: its code, if we want it.** The MIT licence allows us to use some of it, with credit.
 - **No help: its city.** Atlantis is someone else's place. Your rule is that every place is original or yours, so GMQ would draw Voltara, Chronosia and Xylophora, never Atlantis.
 
+## 5b. How it was made, and what we can borrow even without 3D
+
+[Source: the author's own description, which Marc pasted, and `prompt.txt` in the repository, read as reference only]
+
+**The prompt is the useful part.** It is a brief in a clear shape:
+- **Ranked priorities** for when goals conflict: looks first, then smooth frames, then file size. You already rank yours: learning and the child's experience first.
+- **Hard limits:** no game engine, no image files, one HTML file. GMQ already works this way.
+- **A target machine, and a number to meet on it:** a frame time on the author's own PC. **For GMQ, the target is your class's iPads.** We do not know their models or iPadOS versions yet, which is why the test page comes first.
+- **Fixed review shots:** six camera positions, pictured every time, so changes can be compared. GMQ checks three screen sizes. Fixed shots of each planet would be a good addition.
+- **Depth before breadth:** get one building looking right before filling the city.
+- **A stop rule:** if a fault survives three real attempts to fix it, write it down as a known limit and move on.
+- **An independent critic.** A separate Claude sees only the art bible, the reference pictures and the screenshots. It never sees the code or the builder's reasoning, and it lists what is wrong.
+
+**The independent critic is the idea I would borrow first, for everything, not only 3D** [Proposal]:
+- You said you should not have to find the faults yourself. Today I check my own work. The builder checking itself misses what it expects to see.
+- **A GMQ critic would see only:**
+  - the CLAUDE.md checklist
+  - your rules and your words about the place
+  - screenshots at the three sizes
+  - It would never see the code or my reasoning.
+- It reports what a child would trip on: words that do not match the picture, something that gives the answer away, a question that can be read two ways.
+- **The cost** is more tokens on each check. Like the Atlantis prompt, it runs at milestones, not after every small edit.
+
+**What does not carry over:**
+- the look's source (accounts given under hypnosis)
+- the photoreal goal: GMQ is drawn, on purpose
+- the gaming-PC target
+
 ## 6. What could prove this wrong
 
 - **A free flight can swallow a lesson.** Children may fly instead of working. That is why D comes after a quest, and could have a time limit.
@@ -76,3 +104,4 @@ So it was never "should not, ever". It was "not that program, and not yet".
 
 1. Make the test page?
 2. If the iPads can run it: B, C or D, and when? Before or after Lengthar and the world web?
+3. Use an independent critic (section 5b) at each milestone, for all GMQ work?
