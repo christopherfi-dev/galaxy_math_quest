@@ -266,4 +266,9 @@ These are Marc's words, tidied. They are not on the form above.
   - [Proposal] Recommendation C, made wider: Patternox teaches "make a table, find the rule, use it"; other places then reuse the same blank table.
   - His examples placed by grade: prime numbers are Grade 4; angle sums by number of sides are Grades 7 to 8, so they belong to the older bands (his own Case 1 already uses 180 and 360).
 - **Push all the changes to the students (Marc, 2026-11-21).** "Can you push all the changes to the students. I just refreshed my daughter's thing and it looks like this. Where the star map is just a little thing on the right side." His photo shows the claude.ai artifact page (an old copy: Coordinate Plotting with sums, a small chart on the desk, "Land here"), not the class link. Done: the class link is now version 81, the same file as the preview. Before the copy, `checks/class_update_test.js` opened games saved in version 66 inside version 81 with nothing lost. The claude.ai artifact page (https://claude.ai/artifact/PrDvY1EZX9tYh1sDCHJ4Xe, shared with anyone with the link) was version 54; it was republished as version 81 the same day.
+- **Prerequisites across galaxies (Marc, 2026-11-21).** "So that thing is like some planets will have prerequisites in the pattern galaxy? So you cannot go to a world in numbers that is teaching you multiplication if you cannot skip count." Answered in `proposals/GMQ_Patternox_Options_v1_2026-11-21.md`, new section "prerequisites across galaxies".
+  - His 2023 site already had cross-galaxy locks. Their chain broke on unwritten quests, so hard locks are the warning.
+  - Four ways laid out: A, a hard lock; B, the key is at the door; C, help where it is needed; D, a suggested path, and the teacher decides.
+  - [Proposal] B and C, with D for the teacher: the prerequisite becomes a key used at the moment it matters, never a wall.
+  - Nothing was changed in the game.
 

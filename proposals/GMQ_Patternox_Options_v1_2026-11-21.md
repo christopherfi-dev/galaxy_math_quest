@@ -6,6 +6,35 @@
 
 ---
 
+## Added later: prerequisites across galaxies
+
+[Source: Marc, 2026-11-21] "Some planets will have prerequisites in the pattern galaxy? So you cannot go to a world in numbers that is teaching you multiplication if you cannot skip count."
+
+**You did this in 2023 too** [Source: `design/GMQ_World_Map_v1_2026-11-16.md` §7]:
+- Patternox opened only after Numbers Quest 2.
+- Data Quest 2 needed Patterns Quest 1.
+
+**What went wrong then is the warning:** a chain of hard locks breaks when one link is missing. Numbers Quest 2 was never written, so Patternox stayed shut, and Stardust's graphs sat behind it. A stuck child is a missing link too.
+
+**The idea is right.** Skip counting does come before multiplication: counting by 3s is how equal groups of 3 start. The question is how the game makes a child use it.
+
+| | Way | What a child meets | Cost to the child |
+|---|---|---|---|
+| A | **A hard lock** | Numerix's multiplication world is closed until a skip-counting check is passed in Patternox. | A child stuck on one skill is shut out of a whole world, and may sit idle while the class moves on. |
+| B | **The key is at the door** | The multiplication world is open, but its gate is a skip-counting lock: "the gate opens on the 4th jump of 6". The child uses the old skill at the moment it matters. | Little. A child who cannot do it yet gets help right there. |
+| C | **Help where it is needed** | Inside the world, a child who stumbles on 6 × 4 is offered a short skip-counting practice on the spot, not sent across the galaxy. | None. But it needs the game to notice the stumble. It already counts tries and nudges. |
+| D | **A suggested path, and the teacher decides** | The map shows "best after: skip counting" on a world. The teacher can open anything. | None. It follows your class's order, not the game's. |
+
+**My recommendation: B and C, with D for you.**
+- **The prerequisite becomes a key the child uses,** not a wall the child stares at. This is your own rule: a thing here opens something there.
+- **Help comes at the point of need,** and the teacher log shows who needed it. That is the evidence you want, without a dead end.
+- **Your class sets the order.** If you teach multiplication in week 12, the game must not lock it until week 14.
+- **Skip counting is Grade 2 work** (counting by 5s, 10s and 100s), so for most Grade 3 children the key works at once. It acts like a quiet check of what they already know.
+
+**What could prove this wrong:** if children skip the help and guess at the lock, B turns into guessing. The lock must use numbers big enough that counting on fingers is slow and skip counting is fast.
+
+---
+
 ## Added after your reply: patterns are bigger than one standard
 
 [Source: Marc, 2026-11-21] "Recognizing patterns does help with like making tables to solve word problems. It does help with recognizing skip counting and algebraic and geometric and arithmetic patterns. It is recognizing like prime number, sequences... Recognizing the number of degrees in a shape based on the number of sides that be made into a table can be seen as a pattern?"
