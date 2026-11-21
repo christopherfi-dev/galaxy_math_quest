@@ -81,7 +81,7 @@ Extra tokens come out of, or go into, the green ones. The child always sees thei
 | Task | On screen |
 |---|---|
 | Shield Calibration | Deal the tokens onto 5 sections, then say how many are on each. The sections show dots, not numbers. |
-| Star Map | Count each kind of star on the path. Then your own second step: "Multiply each star's count by its number. Add them up for your code." Your page does not give the numbers, so I chose 2, 3, 4, 5 and 6 [Proposal]. |
+| Star Map (version 61, your design of 21 November) | Told first: stars give off solar radiation; how strong must your shield be? Learn four kinds of star. Paint all 24 stars, at least 3 of each kind. Only then are the values shown: red dwarf 1, yellow star 5, white star 10, blue giant 25. Mission Control draws a path through 10 to 14 stars. Add up the radiation to set the shield. A finished example first, about gems, shows grouping: four 25s make 100. |
 | Target Practice | Tap the wall to throw. Some throws land next door. Keep the total on paper. Stop on an even total from 32 to 40. |
 | Power Allocation | Your four numbers, built in thousands, hundreds, tens and ones, with only 2 thousand-blocks. |
 
@@ -104,6 +104,6 @@ Extra tokens come out of, or go into, the green ones. The child always sees thei
 
 1. The new red and light-blue numbers: keep them, or give me yours? (They are one line each.)
 2. May the lucky-draw show cover the picture for a few seconds?
-3. The Star Map numbers 2 to 6: keep them, or give me yours?
+3. The Star Map: it is an Engine Core task, but its story is a shield. Keep it there, or move it? Four kinds of star, or your five with a brown dwarf worth 0?
 4. "Between 18 and 24": change the signs, or the numbers, or neither?
 5. Voltara's last step is still a real-life task with your code. Should it get an on-screen version too?
