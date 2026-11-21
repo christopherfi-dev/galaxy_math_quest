@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 82</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 83</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -4458,6 +4458,9 @@ function xTap(e) { const r = cv.getBoundingClientRect(), mx = e.clientX - r.left
   const tx = Math.floor((mx - XM.ox) / XM.ts + XM.cx), ty = Math.floor((my - XM.oy) / XM.ts + XM.cy); if (tx < 0 || ty < 0 || tx >= XW || ty >= XH) return; if (!xSeen(tx, ty)) { if (XM.mark) { XM.mark = null; say('You stop marking.'); } xGo(tx, ty); return; } strayed();
   if (XM.mark) return xMarkTap(tx, ty);
   if (XBK.some(b => c.fl[b] && xIn(c.fl[b], tx, ty)) && !/^(look|talk|push|use|build)$/.test(draft)) { const near = XBK.find(b => c.fl[b] && xIn(c.fl[b], tx, ty)), f = c.fl[near], d = Math.hypot(Math.max(f[0] - c.x, 0, c.x - (f[0] + f[2] - 1)), Math.max(f[1] - c.y, 0, c.y - (f[1] + f[3] - 1))); const go = () => xLayAt(tx, ty, draft === 'take'); if (draft === 'take') { $('cmd').value = ''; mark(); } if (d <= 2.5) return void go(); const sp = xSpot({ rect: f }); return void xGo(sp[0], sp[1], go); }
+  /* [Marc, 2026-11-21: "I can't actually walk to the soft middle of the cactus"] The ring's square covered its middle, so a tap there only looked at the cacti.
+     Now a tap on the soft sand walks there between the cacti, and a tap while standing on it digs. */
+  if (tx === XDIG[0] && ty === XDIG[1] && !/^(look|take|push|use|talk)$/.test(draft)) { if (c.x === tx && c.y === ty) return act('dig'); xGo(tx, ty); return say('You step carefully between the cacti, onto the soft sand.'); }
   const th = xThingAt(tx, ty); if (th) return act(`${/^(look|take|push|use|talk)$/.test(draft) ? draft : th.talk && th.who ? 'talk' : th.id === 'post' || th.id === 'board' ? 'use' : 'look'} ${th.words[0]}`);
   if (tx === c.x && ty === c.y && xTile(tx, ty) === 'o') return act('dig');
   if (!xGo(tx, ty) && !xOpen(tx, ty)) say(xTile(tx, ty) === 'r' ? 'Sharp rock. You cannot climb it.' : xTile(tx, ty) === 'c' ? 'A Circular Cactus. Perfectly round. Very sharp.' : xTile(tx, ty) === 'X' ? 'A Xylotree trunk.' : 'You cannot walk there.', null, 'xblock'); }

@@ -281,4 +281,5 @@ These are Marc's words, tidied. They are not on the form above.
   - a rule: a dead end must look like scenery, and anything whose words invite must pay off
   - a plan: the pond dive (fill the missing floor tiles: area, the colony's water); the cave as three chambers; the Clockwork Cougar as the time portal's guard, with its gear under the warm stones and the tin box's key as its winding key, joining the case
   - waiting on his go-ahead and order
+- **Can't walk to the soft middle of the cactus (Marc, 2026-11-21).** "I can't actually walk to the soft middle of the cactus." Reproduced by tapping: the ring of cacti counted as one thing that covered its middle square, so a tap on the soft sand only repeated "Circular Cacti... The sand in the middle is soft", and the cadet never moved. Fixed in version 83 (preview link): a tap on the sand walks between the cacti onto it, and a second tap digs up the leaf print. `checks/xylophora_test.js` now taps the sand to walk in and dig, on three screens, and passes.
 

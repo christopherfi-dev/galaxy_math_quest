@@ -26,6 +26,7 @@
   - The leaf print was always buried in the soft sand. But "dig sand" or "dig cactus" from beside the ring dug where the cadet stood and found "more ground".
   - Now those words walk the cadet between the cacti to the soft sand, and they dig up the leaf print.
   - I found it by playing it as you described.
+- **And tapping the sand (version 83).** You found that tapping the soft middle did not walk there: the ring counted as one thing over its own middle. Now a tap on the sand walks in, and a second tap digs.
 
 ## 3. The plan for the rest
 
