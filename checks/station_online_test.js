@@ -4,7 +4,7 @@
 //   - Star Map (Marc's design of 2026-11-21): the task told first; the kinds of star; paint all 24 by tapping; the values only after painting;
 //     a path through 10 to 14 stars; add up the radiation; 2,000 cadets' maps checked (stars far enough apart to tap)
 //   - Target Practice: throws land where aimed, or next door; the total is never shown; a wrong sum, too few, odd, past 40, then an even total from 32 to 40
-//   - Power Allocation: Marc's four numbers; too many thousand-blocks, a number built wrong, then built right with only 2
+//   - Power Allocation (Marc's page 5-2): only the blocks on his table; the usual way needs a third thousand; too many hundreds; one short; then every block used
 //   - the teacher switch brings back the real-life steps and codes, and the purple markers
 // Run: node checks/station_online_test.js
 const { chromium } = require('playwright'); const path = require('path');
@@ -58,11 +58,15 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.evaluate(() => { Math.random = () => .1; }); await thr(5); expect(await p.locator('#olhits').innerText(), /You aim at 5\. It lands on [2468]\./, 'a throw can land next door'); await p.evaluate(() => { Math.random = () => .9; });
     const first = await p.evaluate(() => widget.hits[0]); let sum = first; for (const n of [9, 9, 9]) { await thr(n); sum += n; } while (sum < 32 || sum % 2) { const n = sum + 9 <= 40 ? 9 : (40 - sum) % 2 === 0 ? 40 - sum : 1; await thr(n); sum += n; }
     await p.fill('#ans', String(sum)); await check(); ok(await done('target'), 'target practice passes with ' + sum); await p.evaluate(() => { Math.random = window._r; });
-    // ---- Power Allocation
-    await open('alloc'); const fill = async rows => { for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) await p.fill(`#ol${i}${j}`, String(rows[i][j])); };
-    expect(await check(), /^Fill every box/, 'empty boxes'); await fill([[1, 2, 3, 7], [1, 1, 9, 3], [1, 0, 9, 7], [0, 9, 3, 3]]); expect(await check(), /^You used 3 thousand-blocks\. You have only 2\.$/, 'three thousands');
-    await fill([[1, 2, 3, 7], [0, 11, 9, 3], [1, 0, 9, 7], [0, 9, 3, 2]]); expect(await check(), /^1 of the 4 numbers is not built right\.$/, 'one built wrong');
-    await fill([[1, 2, 3, 7], [0, 11, 9, 3], [1, 0, 9, 7], [0, 9, 3, 3]]); await check(); ok(await done('alloc'), 'power allocation passes');
+    // ---- Power Allocation  [Source: Marc's page 5-2]: four systems, and only the blocks on his table (2 thousands, 20 hundreds, 40 tens, 60 ones)
+    await open('alloc'); expect(await p.locator('#toy').innerText(), /The ship has 4,460 units of power\. Four systems need it\.[\s\S]*A finished example\. A trader needs small bags/, 'the task, told first, and an example about gems');
+    ok(await p.evaluate(() => olPicOn() && widget.pic.kind === 'bench' && $('place').textContent === 'The power table'), 'the power table fills the picture');
+    const fill = async rows => { for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) await p.fill(`#ol${i}${j}`, String(rows[i][j])); };
+    expect(await check(), /^Fill every box/, 'empty boxes'); await fill([[1, 2, 3, 7], [1, 1, 9, 3], [1, 0, 9, 7], [0, 9, 3, 3]]); expect(await check(), /^The table has only 2 1000-blocks\. You used 3\.$/, 'the usual way needs 3 thousands');
+    await fill([[0, 12, 3, 7], [1, 1, 9, 3], [1, 0, 9, 7], [0, 9, 3, 3]]); expect(await check(), /^The table has only 20 100-blocks\. You used 22\.$/, 'too many hundreds');
+    await fill([[0, 10, 19, 46], [1, 1, 9, 3], [1, 0, 9, 7], [0, 9, 3, 3]]); expect(await check(), /^1 of the 4 systems does not get exactly their units\.$/, 'one system one short');
+    ok(await p.evaluate(() => JSON.stringify(olAllocVals()) === JSON.stringify([[0, 10, 19, 46], [1, 1, 9, 3], [1, 0, 9, 7], [0, 9, 3, 3]])), 'the picture reads what the child wrote');
+    await p.click('#leave'); await open('alloc'); expect(await p.inputValue('#ol03'), /^46$/, 'the boxes are kept'); await p.fill('#ol03', '47'); await check(); ok(await done('alloc'), 'power allocation passes with every block used');
     // ---- the teacher switch
     await p.evaluate(() => { const c = $('realOn'); c.checked = true; c.onchange(); });      /* the switch sits in the teacher's closed notes */ ok(await p.evaluate(() => REALON.on && isReal(TASKS.find(t => t[0] === 'calib'))), 'the switch turns real-life tasks on');
     await p.evaluate(() => { delete S.done.calib; }); await open('calib'); expect(await p.locator('#toy').innerText(), /a real-life task[\s\S]*your teacher gives you a code/i, 'the real-life steps come back'); await p.click('#leave');

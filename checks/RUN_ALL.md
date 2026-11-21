@@ -9,6 +9,12 @@ for t in checks/*_test.js checks/picture_audit.js; do echo "$t: $(node $t | tail
 
 Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node and Playwright. The server tests also need PHP. All of them together take about 30 minutes.
 
+## Number checks added 21 November
+
+| File | What it checks |
+|---|---|
+| `power_allocation_check.py` | Marc's Power Allocation (page 5-2): 680 ways to build the four numbers from only his blocks; every one uses every block; the usual way does not fit |
+
 ## Play tests: a real browser plays the game
 
 | File | What it plays |

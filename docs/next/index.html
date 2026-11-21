@@ -181,7 +181,9 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 table.fx { border-collapse: collapse; margin: 4px 0 8px; font-size: .95rem; } table.fx th, table.fx td { text-align: left; padding: 4px 16px 4px 0; border-bottom: 1px solid rgba(255,255,255,.16); color: #eef2ff; background: none; } table.fx thead th { color: #aab6d6; font-weight: 500; } table.fx td:first-child { color: #ffb23e; font-weight: 700; }
 .needs { gap: 4px 10px; margin: 2px 0 0; font-size: .9rem; } .need.ok { color: #6fd08a; } .need.no { color: #ff9486; } .needs .cn { color: var(--muted); }
 ul.report2 { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: .95rem; } ul.report2 .ok b { color: #6fd08a; } ul.report2 .no b { color: #ff9486; } .toy:has(.report2) { max-height: 80vh; max-height: 80dvh; }
-.toy table.fct th, .toy table.fct td { color: #e8eef8; vertical-align: middle; } .toy table.fct td .note { color: #a9b9d0; }
+.toy table.fct th, .toy table.fct td { color: #e8eef8; vertical-align: middle; }
+@media (max-width: 480px) { .toy table.fct input { width: 2.2em !important; font-size: 1rem !important; } .toy table.fct td, .toy table.fct th { padding-right: 4px; } }
+.toy table.fct input { width: 2.9em; font: inherit; font-size: 1.15rem; font-weight: 700; text-align: center; padding: 5px 2px; border: 2px solid var(--ink); border-radius: 8px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; } .toy table.fct td .note { color: #a9b9d0; }
 /* THE PICTURE SHOWS THE TASK [Source: Marc, 2026-11-21]. A task's pictures sit here, big, over the scene, while the task is open. */
 #stageview { position: absolute; inset: 0; z-index: 4; background: radial-gradient(circle at 50% 45%, #18224a, #070b18); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; padding: 58px 14px 14px; overflow: hidden; color: #e8eef8; }
 #stageview[hidden] { display: none; } .hud { z-index: 5; }
@@ -317,7 +319,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 63</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 64</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -419,7 +421,7 @@ const SLIPS = {
   calib: { code: 479506, steps: s => [`Take the shield mat and ${s.tok} power tokens.`, 'The shield has 5 sections.', 'Share the tokens equally over the 5 sections.', 'Show your teacher. Say how many are on each section.'] },
   starmap: { code: 591289, steps: () => ['Your ship needs a shield against solar radiation. First, learn the kinds of star.', 'Paint a star map on dark paper. Use every kind of star.', 'Draw a path through at least 10 stars. Your teacher tells you what each colour is worth.', 'Add up the radiation on your path. Show your teacher.'] },      /* [Source: Marc, 2026-11-21, how he ran it in class] */
   target: { code: 516892, steps: () => ['Stand behind the line.', 'Throw at the wall of numbers, 1 to 9.', 'Write down each number you hit. Keep a running total.', 'Stop when your total is even, from 32 to 40. A total of 32 or 40 counts.'] },
-  alloc: { code: 636594, steps: () => ['Work with a partner. Use base-ten blocks.', 'Build these four numbers: Engine 1,237. Navigation 1,193. Shield 1,097. Weapons 933.', 'You have only 2 thousand-blocks. Swap for hundreds where you must.', 'Show your teacher.'] }
+  alloc: { code: 636594, steps: () => ['Work with a partner. The ship has 4,460 units of power for four systems.', 'Build each one from base-ten blocks: Engine Core 1,237. Navigation 1,193. Shield 1,097. Weapons 933.', 'Use only these blocks: two 1000s, twenty 100s, forty 10s and sixty 1s. No system gets more or less than it needs.', 'Show your teacher.'] }      /* [Source: Marc's page 5-2] */
 };
 const LEFT = [[29, 12], [30, 12], [31, 12], [30, 11]];   // the four crates left behind after the cargo is loaded
 
@@ -1698,6 +1700,7 @@ function olStarCv(k, x, y, z) { if (k < 0) { cx.setLineDash([3, 3]); cx.strokeSt
   else { const n = sh === 'x' ? 4 : 5; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, q = i % 2 ? z * .45 : z * 1.2, px = x + q * Math.cos(a), py = y + q * Math.sin(a); if (i) cx.lineTo(px, py); else cx.moveTo(px, py); } cx.closePath(); }
   cx.fill(); cx.stroke(); }
 function olPic() { const W = widget, k = W.pic.kind; olSpace();
+  if (k === 'bench') return olBench();
   if (k === 'stars') { const sky = W.sky, sm = olSm(), g = olGeo(340, 220), X = p => g.ox + p[0] * g.s, Y = p => g.oy + p[1] * g.s, z = Math.max(7, g.s * 7);
     cx.strokeStyle = 'rgba(143,163,200,.35)'; cx.lineWidth = 1; rr(g.ox, g.oy, 340 * g.s, 220 * g.s, 10); cx.stroke();
     if (sm.path) { cx.strokeStyle = '#e8eef8'; cx.lineWidth = Math.max(2, g.s * 2); cx.setLineDash([g.s * 6, g.s * 4]); cx.beginPath(); sm.path.forEach((i, n) => n ? cx.lineTo(X(sky[i]), Y(sky[i])) : cx.moveTo(X(sky[i]), Y(sky[i]))); cx.stroke(); cx.setLineDash([]); }
@@ -1766,18 +1769,43 @@ function olTarget() { const W = widget; W.hits = W.hits || []; W.pic = { kind: '
   $('try').onclick = () => { const v = $('ans').value, sum = W.hits.reduce((a, b) => a + b, 0); if (!W.hits.length) return olMsg('Throw first.'); if (v === '') return olMsg('Type your total.'); W.tries++;
     if (+v !== sum) return olMsg('Add your hits again.'); if (sum > 40) return olMsg('Your total is past 40. The round is lost. Tap New round.'); if (sum < 32) return olMsg('Keep throwing. Your total must reach 32.'); if (sum % 2) return olMsg('Your total is odd. Keep throwing, but do not pass 40.');
     olWin('target', 'Adding a running total; even and odd (AERO 3.OA.9, 3.NBT.2)', `${W.hits.length} throws. Your total is ${sum}: even, and from 32 to 40. You passed Target Practice!`); }; show(); }
-/* Power Allocation: build four numbers from base-ten blocks with only 2 thousand-blocks. [Source: SLIPS.alloc, Marc's own four numbers] */
-const OLALLOC = [['Engine', 1237], ['Navigation', 1193], ['Shield', 1097], ['Weapons', 933]];
-function olAlloc() { const col = ['thousands', 'hundreds', 'tens', 'ones'];
-  toy(`${olHead('alloc')}<p class="story">Build each number from base-ten blocks. You have only 2 thousand-blocks. Swap a thousand for 10 hundreds where you must.</p>
-    <table class="tt fct" style="flex:none"><tr><th></th>${col.map(c => `<th>${c[0].toUpperCase() + c.slice(1)}</th>`).join('')}</tr>${OLALLOC.map((p, i) => `<tr><td><b>${p[0]}</b><br><span class="note">${p[1].toLocaleString('en')}</span></td>${col.map((c, j) => `<td><input id="ol${i}${j}" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="${p[0]}, ${c}"></td>`).join('')}</tr>`).join('')}</table>
-    <div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
-  OLALLOC.forEach((p, i) => col.forEach((c, j) => { const a = $('ol' + i + j); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); }; }));
-  $('leave').onclick = () => { closeToy(); say('You step back from the block bench.'); };
-  $('try').onclick = () => { const v = OLALLOC.map((p, i) => col.map((c, j) => $('ol' + i + j).value)); if (v.some(r => r.some(x => x === ''))) return olMsg('Fill every box. Write 0 for none.'); widget.tries++;
-    const th = v.reduce((a, r) => a + +r[0], 0), w = OLALLOC.filter((p, i) => +v[i][0] * 1000 + +v[i][1] * 100 + +v[i][2] * 10 + +v[i][3] !== p[1]).length;
-    if (w) return olMsg(`${w} of the 4 numbers ${w === 1 ? 'is' : 'are'} not built right.`); if (th > 2) return olMsg(`You used ${th} thousand-blocks. You have only 2.`);
-    olWin('alloc', 'Place value and regrouping: a thousand is ten hundreds (AERO 3.NBT)', 'All four numbers are built, with only 2 thousand-blocks. Power flows to every part. You passed Power Allocation!'); }; }
+/* Power Allocation, as Marc wrote it.  [Source: Marc's page 5-2: "We have a total power capacity of 4460 units to distribute among... the Engine Core, Navigation
+   System, Shield Generator, and Weapon System." Engine Core 1237, Navigation System 1193, Shield Generator 1097, Weapon System 933. "You need to ensure that no
+   system gets more or less than its required units." Available: two 1000 blocks, twenty 100 blocks, forty 10 blocks, sixty 1 blocks.]
+   The table holds exactly 4,460, so every block is used. The usual way (fewest blocks) needs 3 thousands, so children must break blocks into smaller ones.
+   checks/power_allocation_check.py finds 680 ways, and every one uses every block. [Proposal: the gem example, the picture of the table and the four bins.]
+   The picture shows the blocks on the table and in each bin, as piles. It never shows how much a bin adds up to: that is the child's work. */
+const OLALLOC = [['Engine Core', 1237], ['Navigation System', 1193], ['Shield Generator', 1097], ['Weapon System', 933]], OLHAVE = [2, 20, 40, 60], OLKV = [1000, 100, 10, 1];
+const olAllocVals = () => OLALLOC.map((p, i) => [0, 1, 2, 3].map(j => { const a = $('ol' + i + j); return a ? +a.value || 0 : 0; }));
+function olAlloc() { const col = ['1000s', '100s', '10s', '1s'], W = widget; W.pic = { kind: 'bench', title: 'The power table' };
+  toy(`${olHead('alloc')}<p class="story">Power Engineers! The ship has 4,460 units of power. Four systems need it. Each must get exactly its units, no more and no less. Use only the blocks on the table.</p>
+    <p class="note"><b>A finished example.</b> A trader needs small bags, but has one 1000-gem bag. She swaps it for ten 100-gem bags. A 100 bag can be swapped for ten 10s, and a 10 for ten 1s.</p>
+    <p class="note">Write how many of each block go to each system. The picture shows your blocks.</p>
+    <table class="tt fct" style="flex:none"><tr><th></th>${col.map(c => `<th>${c}</th>`).join('')}</tr>${OLALLOC.map((p, i) => `<tr><td><b>${p[0]}</b><br><span class="note">${p[1].toLocaleString('en')} units</span></td>${col.map((c, j) => `<td><input id="ol${i}${j}" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="${p[0]}, ${c}"></td>`).join('')}</tr>`).join('')}</table>
+    <div class="field"><button class="btn" type="button" id="try">Send the power</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+  if (S.olAlloc) S.olAlloc.forEach((r, i) => r.forEach((v, j) => { const a = $('ol' + i + j); if (a && v !== '') a.value = v; }));
+  OLALLOC.forEach((p, i) => [0, 1, 2, 3].forEach(j => { const a = $('ol' + i + j); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); S.olAlloc = OLALLOC.map((q, r) => [0, 1, 2, 3].map(k => $('ol' + r + k).value)); save(); }; }));
+  $('leave').onclick = () => { closeToy(); say('You step back from the power table. Your blocks stay where you put them.'); };
+  $('try').onclick = () => { const raw = OLALLOC.map((p, i) => [0, 1, 2, 3].map(j => $('ol' + i + j).value)); if (raw.some(r => r.some(x => x === ''))) return olMsg('Fill every box. Write 0 for none.'); widget.tries++;
+    const v = raw.map(r => r.map(Number)), over = [0, 1, 2, 3].find(k => v.reduce((a, r) => a + r[k], 0) > OLHAVE[k]);
+    if (over != null) { const used = v.reduce((a, r) => a + r[over], 0); return olMsg(`The table has only ${OLHAVE[over]} ${OLKV[over]}-blocks. You used ${used}.`); }
+    const w = OLALLOC.filter((p, i) => v[i].reduce((a, n, k) => a + n * OLKV[k], 0) !== p[1]).length;
+    if (w) return olMsg(`${w} of the 4 systems ${w === 1 ? 'does' : 'do'} not get exactly their units.`);
+    olWin('alloc', 'Place value: building numbers with thousands, hundreds, tens and ones, and breaking blocks into smaller ones (AERO 3.NBT)', 'Every system gets exactly its units, and every block on the table is used. Power flows through the whole ship. You passed Power Allocation!'); }; }
+/* the blocks, drawn as real piles: a thousand is a cube, a hundred a flat plate, a ten a rod, a one a small cube */
+function olPile(k, n, x, y, w, h, ghost) { if (n <= 0) return; const col = ['#ffb23e', '#6db3ff', '#6fd08a', '#ff9db0'][k], line = ghost ? '#ff5a4d' : INK; cx.save(); if (ghost) cx.globalAlpha = .45;
+  if (k === 0) { const c = Math.min(w * .7, h * .42); for (let i = 0; i < Math.min(n, 4); i++) { const X = x + (w - c) / 2 + i * 4, Y = y + h - c - i * (c * .55); cx.fillStyle = col; cx.fillRect(X, Y, c, c); cx.strokeStyle = line; cx.lineWidth = 1.5; cx.strokeRect(X, Y, c, c);
+    cx.fillStyle = 'rgba(255,255,255,.35)'; cx.beginPath(); cx.moveTo(X, Y); cx.lineTo(X + c * .25, Y - c * .25); cx.lineTo(X + c * 1.25, Y - c * .25); cx.lineTo(X + c, Y); cx.closePath(); cx.fill(); cx.stroke(); cx.strokeStyle = 'rgba(11,19,34,.35)'; cx.lineWidth = 1; for (let q = 1; q < 4; q++) { cx.beginPath(); cx.moveTo(X + c * q / 4, Y); cx.lineTo(X + c * q / 4, Y + c); cx.moveTo(X, Y + c * q / 4); cx.lineTo(X + c, Y + c * q / 4); cx.stroke(); } } }
+  else if (k === 3) { const per = Math.max(4, Math.floor(w / 7)), s = Math.min(6, w / per - 1); for (let i = 0; i < n; i++) { const X = x + (i % per) * (s + 1), Y = y + h - (Math.floor(i / per) + 1) * (s + 1); if (Y < y) break; cx.fillStyle = col; cx.fillRect(X, Y, s, s); cx.strokeStyle = line; cx.lineWidth = .8; cx.strokeRect(X, Y, s, s); } }
+  else { const th = k === 1 ? 4 : 3, cols = Math.max(1, Math.ceil(n * (th + 1) / h)), cw = w / cols - 3; for (let i = 0; i < n; i++) { const c = Math.floor(i / Math.ceil(n / cols)), r = i % Math.ceil(n / cols), X = x + c * (cw + 3), Y = y + h - (r + 1) * (th + 1);
+    cx.fillStyle = col; cx.fillRect(X, Y, cw, th); cx.strokeStyle = line; cx.lineWidth = .8; cx.strokeRect(X, Y, cw, th); if (k === 2) { cx.strokeStyle = 'rgba(11,19,34,.4)'; for (let q = 1; q < 10; q++) { cx.beginPath(); cx.moveTo(X + cw * q / 10, Y); cx.lineTo(X + cw * q / 10, Y + th); cx.stroke(); } } } }
+  cx.restore(); }
+function olBench() { const v = olAllocVals(), used = [0, 1, 2, 3].map(k => v.reduce((a, r) => a + r[k], 0)), top = 60, pad = 10, W = vw - 2 * pad, Htab = (vh - top) * .3, Hbin = vh - top - Htab - 20, f = Math.max(11, Math.min(15, vw * .02));
+  const box = (x, y, w, h, t) => { cx.fillStyle = 'rgba(20,32,60,.85)'; rr(x, y, w, h, 10); cx.fill(); cx.strokeStyle = '#33476a'; cx.lineWidth = 1.5; cx.stroke(); cx.fillStyle = '#e8eef8'; cx.font = `700 ${f}px "Chakra Petch", sans-serif`; cx.textAlign = 'left'; cx.fillText(t, x + 8, y + f + 4); };
+  const cols = (x, y, w, h, counts, label) => { const cw = w / 4; counts.forEach((n, k) => { olPile(k, Math.max(0, n), x + k * cw + 4, y, cw - 8, h - 16, false); cx.fillStyle = n < 0 ? '#ff7a6b' : '#a9b9d0'; cx.font = `${f - 2}px "Andika", sans-serif`; cx.textAlign = 'center'; cx.fillText(label(k, n), x + k * cw + cw / 2, y + h - 2); cx.textAlign = 'left'; }); };
+  box(pad, top, W, Htab, 'On the table'); cols(pad + 6, top + f + 10, W - 12, Htab - f - 12, OLHAVE.map((h, k) => h - used[k]), (k, n) => n < 0 ? `${OLKV[k]}s: only ${OLHAVE[k]}!` : `${OLKV[k]}s left: ${n}`);
+  const bw = (W - 3 * 8) / 4; OLALLOC.forEach((p, i) => { const x = pad + i * (bw + 8), y = top + Htab + 12; box(x, y, bw, Hbin, bw < 150 ? p[0].split(' ')[0] : p[0]); cx.fillStyle = '#ffd25e'; cx.font = `700 ${f}px "Chakra Petch", sans-serif`; cx.fillText(`needs ${p[1].toLocaleString('en')}`, x + 8, y + 2 * f + 8);
+    cols(x + 2, y + 2 * f + 16, bw - 4, Hbin - 2 * f - 18, v[i], (k, n) => n ? String(n) : ''); }); }
 /* A REAL-LIFE TASK. The student does it away from the screen. The teacher watches, then gives a code. */
 const scramble = n => (n * 7919 + 104729) % 1000003;
 function slipFor(id) { const t = TASKS.find(t => t[0] === id); if (S.done[id]) return `You passed ${t[2]} already.`; if (!REALON.on) { olStart(id); return `${t[2]}. Read the task.`; } startSlip(id); return 'A real-life task. Read the steps.'; }
