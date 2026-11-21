@@ -4658,7 +4658,7 @@ const RHOME = { voltara: { name: 'Planet Voltara', done: () => !!(S.v && V().fin
   chrono: { name: 'Planet Chronosia', done: () => !!(S.c && cAllDone()), facts: () => ['The sky is in stripes, and time is broken.', 'Quakes shake the ground, but they come in a pattern.', 'The Council keeps the clocks, and is kind.'] },
   xylo: { name: 'Planet Xylophora', done: () => !!(S.xy && XY().done.key), facts: () => ['The ground is a patchwork of squares.', 'A gentle giant sleeps in the north.', 'A colony stands now, built from the giant\'s skin.'] } };
 /* the report is asked for when the cadet leaves a finished planet: "before the trip goes on" */
-const reportHomeSoon = p => setTimeout(() => { if (!widget && RHOME[p].done() && !(S.home || {})[p]) reportHome(p); }, 900);
+const reportHomeSoon = p => setTimeout(() => { if (S.mode === 'space' && !widget && RHOME[p].done() && !(S.home || {})[p]) reportHome(p); }, 900);      /* only while still in space: landing again first leaves it waiting in My ship */
 function reportHome(p) { const R = RHOME[p], F = R.facts(), w = widget = { kind: 'home', v: null, f: null };
   toy(`<p class="eyebrow">Project Second Home · a report from ${R.name}</p><h3>Report home</h3><p class="story">Earth is looking for a new home. Before you go on, send a short report. Here is what you saw.</p><ul>${F.map(f => `<li>${f}</li>`).join('')}</ul>
     <p class="q">Could people from Earth live here?</p><div class="field">${['Yes', 'Maybe, with work', 'No'].map((v, i) => `<button class="btn quiet" type="button" data-v="${i}">${v}</button>`).join('')}</div>

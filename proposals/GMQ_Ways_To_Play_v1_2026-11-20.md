@@ -105,6 +105,8 @@ Each line names the maths (AERO Grade 3 unless it says otherwise), where it coul
 
 **Not before you say how the case went.** [Source: your rule, "do not react too fast"]
 
+**Built 21 November (decisions 16 and 19, Marc agreed):** number 1 as **stone paths on Xylophora** (version 80: a side job after the colony; grass 3 stones, mud 5; the child writes the total, then builds) and number 5 as **Judge a planet** (version 81: from My ship once a report home is sent; the probe's three planets, nine marks, one choice, a rounded day). "Write the number first, then the screen checks it" is used in both.
+
 ---
 
 ## 5. What could prove this wrong

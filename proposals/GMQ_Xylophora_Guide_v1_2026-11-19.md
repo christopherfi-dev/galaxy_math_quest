@@ -9,6 +9,12 @@ You said: "You choose. You have the standards now." This is what I chose, why, a
 
 ---
 
+## Changed 21 November (versions 76 to 80, preview link)
+
+- **A Mission panel** lists the five jobs and names the next one.
+- **Stone paths** (your job C, decision 16): after the colony stands, the Site Chief asks for paths joining the Home, the Hospital and the Food Store before the rains. Grass squares need 3 stones, mud squares 5. The child counts and writes the total before building. The stones carried are always enough for a good network and never for stones everywhere (`checks/stone_paths_check.js`, 3,000 layouts). If the child's floors wall a building off, the job is not offered.
+- **A report home** when leaving the finished planet.
+
 ## Changed 20 November (version 54, preview link): arriving, and short readings. A trial.
 
 You wrote: "The planet wasn't described to me. The dead skin wasn't really described. I didn't know what I was doing or why." And you asked for an intro screen on arriving, with a better view of the planet, two or three short readings, and Continue after 4 to 5 seconds. And for speech in three or four short pieces, with OK between.
