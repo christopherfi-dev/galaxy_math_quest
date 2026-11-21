@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 74</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 75</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -1487,7 +1487,8 @@ function padKey(k) { const t = PAD.target; if (!t || !document.body.contains(t))
   if (k === 'next') { const ins = padBoxes(), n = ins[(ins.indexOf(t) + 1) % ins.length]; if (n) n.focus({ preventScroll: true }); return; }
   const max = +t.getAttribute('maxlength') || 12; let v = t.value; if (k === 'del') v = v.slice(0, -1); else if (max === 1) v = k; else if (v.length < max) v += k; t.value = v; beep(k === 'del' ? 300 : 620, .03);
   try { t.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {} if (document.activeElement !== t && document.body.contains(t)) t.focus({ preventScroll: true }); }
-document.addEventListener('focusin', e => { const t = e.target; if (!t || t.tagName !== 'INPUT') return; if (padBoxes().indexOf(t) >= 0) padShow(t); else padHide(); });
+document.addEventListener('focusin', e => { const t = e.target; if (!t) return; if (t.tagName === 'TEXTAREA') return padHide();      /* words to write: the number pad steps away */
+  if (t.tagName !== 'INPUT') return; if (padBoxes().indexOf(t) >= 0) padShow(t); else padHide(); });
 $('padkeys').addEventListener('pointerdown', e => { e.preventDefault(); });                 /* a tap on the pad must not take the cursor out of the box */
 $('padkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b && !b.disabled) padKey(b.dataset.k); });
 $('padkb').addEventListener('pointerdown', e => { e.stopPropagation(); });
@@ -3187,8 +3188,30 @@ function housesStep() { const w = widget, Q = [['Look at the tiny houses on the 
   $('try').onclick = () => { const m = $('msg'); if (a.value === '') { m.className = 'msg bad'; m.textContent = 'Type a number first.'; return; } w.tries++; if (+a.value !== 30) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'Not yet. ' + Q[1]; return; }
     beep(880, .1); w.step++; if (w.step < 2) return housesStep(); S.log.push({ what: 'The hidden town', skill: 'Rows of equal groups', result: w.miss ? `${w.miss} to fix` : 'No mistakes ✓' });
     vWin('houses', '30 houses. 30 energy an hour. That is the missing energy! The elder says: a cosmic storm stranded us here. We only wanted a little light. Go and tell the Council. You earn a card.'); }; }
-/* the last step is done in real life, with blocks and words. The teacher gives the code. */
-function startChoice() { widget = { kind: 'choice', tries: 0 };
+/* THE COUNCIL'S CHOICE. [Marc, 2026-11-21, agreed: decision 29] On screen by default; in real life, with blocks and the teacher's code, when the link ends ?real.
+   [Proposal] On screen: what is left for the city if 240 goes to the Nomads (tonight's real tower), the choice, and the reason in the child's own words.
+   The reason is kept in the Teacher's log and the mission report, so the teacher still reads the "why". */
+function startChoice() { if (REALON.on) return startChoiceReal(); const v = V(), T = v.supply, w = widget = { kind: 'choice2', tries: 0, miss: 0 };
+  const pic = share => `<svg class="picsvg" viewBox="0 0 640 300" style="aspect-ratio:640/300" role="img" aria-label="The power tower, and the dark town of the Number Nomads"><rect width="640" height="300" rx="12" fill="#151a33"/>
+    <rect x="120" y="40" width="80" height="220" rx="8" fill="#2a3358" stroke="#ffd25e" stroke-width="3"/><rect x="128" y="${share === undefined ? 70 : 110}" width="64" height="${share === undefined ? 182 : 142}" rx="5" fill="#ffd25e"/><text x="160" y="284" text-anchor="middle" font-size="15" font-weight="700" style="fill:#e8eef8">The tower: ${num(T)}</text>
+    <path d="M330 230 h220 v-50 l-30 -25 -30 25 -30 -25 -30 25 -30 -25 -30 25 -40 0 z" fill="#232a48" stroke="#5a6d90" stroke-width="2"/>${[350, 390, 430, 470, 510].map(x => `<rect x="${x}" y="200" width="12" height="12" fill="${share ? '#ffd25e' : '#0b1322'}"/>`).join('')}
+    <text x="440" y="262" text-anchor="middle" font-size="15" font-weight="700" style="fill:#e8eef8">Nomad Hollow: 240 a night</text>${share ? '<path d="M200 120 C 260 120, 300 190, 330 200" stroke="#ffd25e" stroke-width="4" fill="none" stroke-dasharray="8 6"/>' : ''}</svg>`;
+  toy(`<p class="eyebrow">Mission Voltara · the last step</p><h3>The Council's choice</h3><div class="picrow"><div class="pic" id="pic"></div><div class="pictext">
+    <p class="story">The Council has heard about the Number Nomads. "They are tiny, and they only wanted a little light. But our tower is weak. Commander, you choose."</p>
+    <p class="q">The tower holds ${num(T)} tonight. If 240 goes to Nomad Hollow, how much is left for the city?</p><div class="field"><input id="ans" inputmode="numeric" autocomplete="off" maxlength="5" aria-label="left for the city"><button class="btn" type="button" id="try">Check</button></div>
+    <div id="chs"></div><div class="field"><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
+  const m = $('msg'), no = t => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = t; }, a = $('ans'); $('pic').innerHTML = pic();
+  a.oninput = () => a.value = a.value.replace(/[^0-9]/g, '').slice(0, 5); a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } }; $('leave').onclick = () => { closeToy(); say('You go to think it over. The Council will wait.'); };
+  $('try').onclick = () => { if (w.left) return; if (a.value === '') return no('Work it out, and write it.'); w.tries++; if (+a.value !== T - 240) { w.miss++; return no(`Not yet. Start from ${num(T)}, and take away 240.`); }
+    w.left = true; beep(880, .1); m.className = 'msg good'; m.textContent = `Yes: ${num(T - 240)} for the city.`;
+    $('chs').innerHTML = `<p class="q">Will you share with the Nomads?</p><div class="field"><button class="btn quiet" type="button" data-sh="1">Share 240 with Nomad Hollow</button><button class="btn quiet" type="button" data-sh="0">Keep it all for the city</button></div><div id="whybox"></div>`;
+    $('chs').querySelectorAll('[data-sh]').forEach(b => b.onclick = () => { w.share = b.dataset.sh === '1'; $('chs').querySelectorAll('[data-sh]').forEach(x => x.classList.toggle('on', x === b)); $('pic').innerHTML = pic(w.share); beep(520, .05);
+      $('whybox').innerHTML = `<p class="q">Tell the Council why, in 2 or 3 sentences.</p><textarea id="why" rows="3" maxlength="300" style="width:100%;font:inherit;font-size:1rem;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);border:2px solid var(--ink)" aria-label="Why"></textarea><div class="field"><button class="btn" type="button" id="tell">Tell the Council</button></div>`;
+      $('tell').onclick = () => { const t = $('why').value.replace(/\s+/g, ' ').trim(); if (t.split(' ').length < 8) return no('Say a little more: 2 or 3 sentences. Why is this the right choice?'); if (rude(t)) return no('Kind words only. Tell the Council why.');
+        S.log.push({ what: "The Council's choice", skill: 'Subtract, choose, and give a reason', result: `${w.share ? 'Shared 240 with the Nomads' : 'Kept it for the city'}. Why: "${t}"` }); v.shared = w.share;
+        vWin('final', w.share ? 'The Council bows. "We will share, Commander." You earn an EPIC card. Nomad Hollow is on the plan table now. What you do next decides how you leave Voltara.' : 'The Council nods. "Then the city keeps it, Commander." You earn an EPIC card. Nomad Hollow is on the plan table now, if you change your mind. What you do next decides how you leave Voltara.', true); }; }); }; }
+/* the last step done in real life, with blocks and words. The teacher gives the code. */
+function startChoiceReal() { widget = { kind: 'choice', tries: 0 };
   toy(`<p class="eyebrow real">Mission Voltara · the last step · a real-life task</p><h3>The Council's choice</h3><ol class="slip"><li>Build your energy plan with base-ten blocks. You have 8 hundreds, 70 tens and 150 ones.</li><li>The Number Nomads need 240 energy each night.</li>
     <li>Decide. Will you share with them? If yes, what will you switch off?</li><li>After this, Nomad Hollow is on your plan table. Light it and they are your neighbours. Leave it dark and their town goes dark.</li><li>Tell your teacher your choice, and why, in 2 or 3 sentences.</li></ol><p class="q">Your teacher is the Commander. When you pass, type the Commander's code.</p>
     <div class="field"><label for="ans" class="note">Commander's code</label><input id="ans" inputmode="numeric" autocomplete="off"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);

@@ -137,8 +137,15 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     const cardsB = await p.evaluate(() => S.cards.length); pl = await switchOn(quick); expect(await morning(quick, pl), /240 went missing again/, 'the second morning'); if (supply !== 1320 || smoke !== 50) bad.push(name + `: after day 2 expected tower 1,320 and smoke 50, got ${supply} and ${smoke}`);
     if ((await p.evaluate(() => S.cards.length)) !== cardsB) bad.push(name + ': later days should not give cards');
     // ---- the Council's choice: a real-life step with the teacher's code
-    await say('talk council'); expect(await p.textContent('#toy .eyebrow'), /real-life task/, 'the last step is a real-life task'); await shot('14_choice');
-    await fill([111]); expect(await msg(), /not the code/, 'a wrong code'); await fill([CHOICE_CODE]); expect(await last(), /EPIC card.*Nomad Hollow is on the plan table/, 'the epic card'); kin = true;
+    // with ?real it is the real-life step and the teacher's code; on screen (the default) it is a subtraction, a choice and a reason
+    await p.evaluate(() => { REALON.on = true; }); await say('talk council'); expect(await p.textContent('#toy .eyebrow'), /real-life task/, 'with ?real the last step is a real-life task');
+    await fill([111]); expect(await msg(), /not the code/, 'a wrong code'); await p.click('#leave'); await p.evaluate(() => { REALON.on = false; });
+    await say('talk council'); expect(await p.textContent('#toy .eyebrow'), /the last step$/, 'the last step on screen'); const T = await p.evaluate(() => V().supply);
+    await p.fill('#ans', String(T - 200)); await p.click('#try'); expect(await msg(), /take away 240/, 'choice: a wrong subtraction'); await p.fill('#ans', String(T - 240)); await p.click('#try');
+    await p.click('[data-sh="1"]'); await p.fill('#why', 'They are kind.'); await p.click('#tell'); expect(await msg(), /Say a little more/, 'choice: a reason too short');
+    await p.fill('#why', 'The Nomads are tiny and only need a little light. We can switch off the pool at night to share with them.'); await shot('14_choice'); await p.click('#tell');
+    expect(await last(), /We will share.*EPIC card.*Nomad Hollow is on the plan table/, 'the epic card');
+    expect(await p.evaluate(() => JSON.stringify(S.log.filter(l => /Council/.test(l.what)).pop())), /Shared 240 with the Nomads.*switch off the pool/, 'the reason is kept for the teacher'); kin = true;
     { const dark = await p.evaluate(() => [VDO.houses.look(), VDO.elder.talk(), V().final && !powered(21)]); if (!/lights are out/.test(dark[0]) || !/very dark/.test(dark[1]) || !dark[2]) bad.push(name + ': the hollow should be dark until it is in a plan: ' + dark.join(' | ')); }
     // DAY 3: both power places, and the Factory for a second day. The tower fills to its limit. The sky is brown. POWER, BUT NOT HAPPY.
     expect(await say('use table'), /Nomad Hollow is among them/, 'Nomad Hollow joins the table'); if ((await p.locator('#toy .wire').count()) !== 22) bad.push(name + ': the table should show 22 places after the choice');
