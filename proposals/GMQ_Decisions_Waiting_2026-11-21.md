@@ -4,6 +4,14 @@
 
 [Source: Marc, 2026-11-21] "List all of the things you're waiting for my decision on and your recommendation for each."
 
+**Status, 21 November, later.** [Source: Marc] "I agree with your recommendations. Do them. One by one."
+- **Built (versions 67 to 79, on the preview link):** 3 (signs), 4 and 5 (Coordinate Plotting), 7 (kept), 9 (brown dwarf fact), 10 to 13 (the station story and all six deeper tasks), 15 (a report home when leaving a finished planet), 21 (asleep, already so), 22 (mission panels), 23 (three new finds: 19 on Chronosia), 26 (the case's lasting help), 29 (the Council's choice on screen), 36 (epic), 38 (the bag folds; Sound under More).
+- **Already true, nothing to build:** 24 (the mountain already has its candle-and-snail example).
+- **Made for you to use or choose from:** 18 (three radio endings, `GMQ_Radio_Endings_v1_2026-11-21.md`), 28 (Frame 5 redrawn, `content/printables/Case1_Frame5_angle_c_110.png`), 35 (the rules sheet, `GMQ_Card_Battle_Rules_Sheet_v1_2026-11-21.md`).
+- **Keep, later or wait, as recommended:** 1, 2, 6, 8, 14, 17 (waits on your class), 20, 25, 27, 30, 31, 32, 33, 34, 39.
+- **Built later the same day (versions 80 and 81):** 16 and 19 (stone paths on Xylophora, a side job after the colony; Judge a planet, from My ship once a report home is sent).
+- **Still to build:** 37 (Planet Lengthar, a whole planet).
+
 **Order:** first, what your class meets now on version 66. Then the big directions, places and quests, looks, and what you parked.
 
 ---

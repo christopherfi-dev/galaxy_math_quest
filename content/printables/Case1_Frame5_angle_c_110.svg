@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 551 319" width="551" height="319">
+<!-- Case 1, Frame 5, redrawn so that angle c is 110 degrees: clearly obtuse, even against a paper corner. Angle b and the pentagon are unchanged. -->
+<rect x="0" y="0" width="551" height="319" fill="#b8893a"/><rect x="18" y="16" width="515" height="287" fill="#f7f1df"/><rect x="24" y="22" width="503" height="275" fill="#e2f1e5"/>
+<polygon points="57.0,260.0 101.0,194.0 232.0,194.0 188.0,260.0" fill="#6f9a72" stroke="#1d1d1d" stroke-width="5" stroke-linejoin="round"/>
+<path d="M163,260 A25,25 0 0 1 199,243" fill="none" stroke="#1d1d1d" stroke-width="4"/>
+<circle cx="166" cy="215" r="17" fill="#fff" stroke="#1d1d1d" stroke-width="3"/><text x="166" y="223" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#1d1d1d">b</text>
+<polygon points="447.0,47.0 500.3,85.7 479.9,148.3 414.1,148.3 393.7,85.7" fill="#f2c04c" stroke="#1d1d1d" stroke-width="5" stroke-linejoin="round"/>
+<polygon points="279.9,185.8 470.0,210.0 347.0,260.0" fill="#8b6bc6" stroke="#1d1d1d" stroke-width="5" stroke-linejoin="round"/>
+<path d="M369.2,251.0 A24,24 0 0 0 330.9,242.2" fill="none" stroke="#1d1d1d" stroke-width="4"/>
+<circle cx="357.7" cy="213.2" r="17" fill="#fff" stroke="#1d1d1d" stroke-width="3"/><text x="357.7" y="221.2" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#1d1d1d">c</text>
+</svg>

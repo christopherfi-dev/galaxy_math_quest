@@ -19,6 +19,8 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `emergency_power_check.js` | Emergency Power (5-3), for 10,000 cadets: round 1 cannot be made without breaking a ten, and can be with one; round 2, after a plain round 1, always needs a hundred broken; after a strange round 1 (extra blocks broken) it still fits what is left. Needs Playwright |
 | `fuel_route_check.js` | Fuel Calculation (2-1), for 10,000 cadets: exactly one of the two ways lands with at least 10 units; every amount from 1 to 199; no landing at 9, 10 or 11; each way is right about half the time. Needs Playwright |
 | `weapons_code_check.js` | Weapons Coding (4-1), for 10,000 cadets: 36 different numbers from 1 to 999; the V is all odd; exactly 4 odd numbers outside it, so the shape alone is not enough; one-, two- and three-digit numbers on every screen. Needs Playwright |
+| `stone_paths_check.js` | Stone paths on Xylophora: 3,000 random floor layouts; the stones carried always allow a good network (three cheapest paths to one meeting square, rebuilt and checked as joined) and never allow stones on every square. Needs Playwright |
+| `judge_planet_check.js` | Judge a planet (Project Second Home): 10,000 cadets; exactly one planet fits all three needs; no fact on a limit; no temperature below zero; the day to round is never halfway. Needs Playwright |
 
 ## Play tests: a real browser plays the game
 

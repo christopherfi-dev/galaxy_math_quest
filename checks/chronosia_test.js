@@ -137,6 +137,9 @@ const { chromium } = require('playwright'); const path = require('path');
     // the record is kept; fly away; land again
     await p.waitForTimeout(300); await p.reload(); await p.waitForTimeout(500); ok(await p.evaluate(() => S.mode === 'chrono' && Object.keys(CQ).every(q => C().done[q]) && C().finds.length === 2 && C().gold === true), 'everything should be kept after a reload');
     expect(await say('fly'), /You walk to your ship|You lift off/, 'fly from anywhere'); for (let i = 0; i < 150; i++) { if (await p.evaluate(() => S.mode === 'space')) break; await p.waitForTimeout(100); } ok(await p.evaluate(() => S.mode === 'space' && S.at === 'metrica'), 'flying leaves you at Galaxy Metrica');
+    // leaving a finished planet asks for a report home [decision 15]: answer it, and it is kept
+    await p.waitForTimeout(1200); expect(await p.evaluate(() => widget && widget.kind), /^home$/, 'the report home opens on leaving'); await p.click('[data-v="2"]'); await p.click('[data-f="0"]'); await p.click('#try'); await p.waitForTimeout(200);
+    ok(await p.evaluate(() => !widget && S.home && S.home.chrono && S.home.chrono.v === 'No'), 'the report home is kept');
     expect(await say('land'), /You land on Planet Chronosia/, 'land again'); expect(await say('hint'), /Every job on Chronosia is done/, 'the hint when all is done'); expect(await say('go to hall'), /The Council Hall\. A hall of tall pillars/, 'found places stay found');
     } catch (e) { bad.push(`${name}: the test stopped: ${String(e.message).split('\n')[0]} (last words: "${await last().catch(() => '?')}")`); }
     await ctx.close();

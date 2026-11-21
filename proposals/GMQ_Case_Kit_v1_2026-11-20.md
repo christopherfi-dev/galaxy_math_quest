@@ -22,6 +22,8 @@ Every answer was worked out again. Your answers are right, except for one angle 
 | 8 Prove it | Yes. | |
 | The case | **Gigi the Guide** took **Night Kite**. | Each of the other three differs from Gigi in exactly one clue. |
 
+**Done 21 November (decision 28): angle c redrawn at 110°.** `content/printables/Case1_Frame5_angle_c_110.svg` and `.png` are Frame 5 with the purple triangle moved so that c is clearly obtuse; angle b and the pentagon are unchanged. Paste it over Frame 5. The answers become: acute a and f; right e; obtuse b, c and d. The case's own answer does not change: it uses questions 1, 6 and 7 only.
+
 **[Conflict] Angle c.** The marked angle of the purple triangle in Frame 5 measures about **92°**. The sheet tells children to check with a paper corner. With a paper corner, 92° looks like a right angle. So c can be read as right or as obtuse. Redrawing that triangle with c at about 110° would fix it. (I measured from the PDF at 160 dots per inch, so my number could be a degree or two out. It is still too close to 90.)
 
 **The check at the bottom works well.** The likely mistakes lead to nobody with three ✓:
