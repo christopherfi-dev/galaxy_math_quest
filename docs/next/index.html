@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 81</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 82</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -4436,6 +4436,9 @@ function xAct(text, out) { if (widget) return out('Finish this first. Or tap Lea
   const dir = CDIR[tk[verb === 'go' ? 1 : 0]];
   if (dir && (!verb || verb === 'go')) { let x = c.x, y = c.y, n = 0; while (n < 3 && xOpen(x + dir[0], y + dir[1])) { x += dir[0]; y += dir[1]; n++; } if (!n) return out('You cannot go that way.'); xGo(x, y); return out(`You walk ${Object.keys(CDIR).find(k => CDIR[k][0] === dir[0] && CDIR[k][1] === dir[1])}.`); }
   if (verb === 'fly' || (verb === 'use' && rest.some(r => r === 'ship' || r === 'rocket'))) { if (Math.abs(c.x - XSTART[0]) + Math.abs(c.y - XSTART[1]) <= 1) return leaveXylo(out); xGo(XSTART[0], XSTART[1], () => leaveXylo(say)); return out('You walk to your ship.'); }
+  /* [Marc, 2026-11-21: "the cactus with the sand spot in the middle... We can't dig it?"] The ring says its sand is soft, so "dig sand" or "dig cactus" from nearby
+     now walks into the middle and digs there. Before, it dug wherever the cadet stood and found only more ground. */
+  if (verb === 'dig' && rest.some(r => ['sand', 'cactus', 'cacti', 'ring', 'middle', 'soft'].includes(r)) && (c.x !== XDIG[0] || c.y !== XDIG[1])) { xGo(XDIG[0], XDIG[1], () => say(xDig())); return out('You step carefully between the cacti, to the soft sand.'); }
   if (verb === 'dig') return out(xDig());
   if (verb === 'leave') return out('You are out in the open already. To leave Xylophora, walk to your ship and type: fly.');
   const bk = XBK.find(b => XT.find(t => t.id === b).words.some(w => rest.indexOf(w) >= 0));

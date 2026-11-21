@@ -271,4 +271,14 @@ These are Marc's words, tidied. They are not on the form above.
   - Four ways laid out: A, a hard lock; B, the key is at the door; C, help where it is needed; D, a suggested path, and the teacher decides.
   - [Proposal] B and C, with D for the teacher: the prerequisite becomes a key used at the moment it matters, never a wall.
   - Nothing was changed in the game.
+- **Things that invite, but do nothing (Marc, 2026-11-21).** "On chronosia. The caves and the cougar statue... And the warm stones by the cougar statue. There's not really any point to these things? It'd be cool to go into the case [cave], right? The cougar statues doesn't really do anything that serves no point to the story. On the planet with a giant animal and the skin, what is the point of the cactus with the sand spot in the middle? We can't dig it? He can't do anything with the pond that we should be able to? We should be able to dive into the pond? Find something in there do some sort of math in there? There's all these [things] that we have to do stuff like to interact with the world, but we're not doing then why?"
+
+  Played as he described:
+  - "dig sand" and "dig cactus" from beside the ring found only "more ground". The leaf print was buried there, but only standing on the exact middle square worked. Fixed in version 82: those words walk the cadet into the ring and dig.
+  - "dive pond" gave "Start with a doing word".
+
+  Answered in `proposals/GMQ_Invitations_v1_2026-11-21.md`:
+  - a rule: a dead end must look like scenery, and anything whose words invite must pay off
+  - a plan: the pond dive (fill the missing floor tiles: area, the colony's water); the cave as three chambers; the Clockwork Cougar as the time portal's guard, with its gear under the warm stones and the tin box's key as its winding key, joining the case
+  - waiting on his go-ahead and order
 
