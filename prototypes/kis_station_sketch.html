@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 83</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 84</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -571,7 +571,13 @@ function makeGems() {       // each student gets their own counts: four differen
 const objOn = o => !o.when || o.when(S);
 /* A DARK SECTION. [Source: Marc, 2026-11-20: "The lights that we turn on in the space station and there's a humming from far away. Does that matter for anything? It should. There should be a section that's dark unless you turn on the lights."]
    The switch behind the poster in the Shield Bay lights the Crawl Tunnel and the Old Store. Until it is on, nothing in there can be seen or used. */
+const SEC_ROOM = { wrench: 'dock', locker: 'dock', gap: 'dock', vent: 'dock', keycard: 'shield', bot: 'shield', poster: 'shield', drawer: 'nav', bolt: 'nav', course: 'launch', valve: 'engine', toolbox: 'engine', junk: 'weapons', ammo: 'weapons', fusebox: 'power', plate: 'power', chest: 'store', store: 'store' };
+const stationLeft = () => Object.keys(SEC_ROOM).filter(k => !S.secrets.includes(k)).length;
 const roomDark = () => S.mode === 'station' && (S.room === 'tunnel' || S.room === 'store') && !S.poster;
+/* [Marc, 2026-11-21: "We should not be able to see anything in the secret passage or whatever or go more than 1 step inside. Until the lights are turned on by another secret."]
+   While the switch is off, only the gap itself can be entered. Every square past it is black and cannot be walked on. */
+const darkDeep = (x, y) => !S.poster && !!(G[y] && G[y][x]) && (G[y][x].room === 'store' || (G[y][x].room === 'tunnel' && !(x === 15 && y === 14)));
+const DARK_SAY = 'It is pitch dark past the gap. You cannot see where the tunnel goes, so you stay where you are. Some lights on this station are switched off.';
 const objTiles = (id) => id === 'crate' && S.crate ? [[16, 13]] : id === 'chair' && S.chair ? [[28, 10]] : id === 'gems' ? (S.gems || []) : id === 'drones' ? DSLOT : OBJ[id].tiles;
 const PILE = [[26, 12], [27, 12], [28, 12], [29, 12], [30, 12], [31, 12], [26, 11], [27, 11], [28, 11], [29, 11], [30, 11]];
 function blocked(x, y) { if ((S.done.cargo ? LEFT : PILE).some(t => t[0] === x && t[1] === y)) return true; for (const id in OBJ) { const o = OBJ[id]; if (o.block && objOn(o) && objTiles(id).some(t => t[0] === x && t[1] === y)) return true; } return false; }
@@ -580,6 +586,7 @@ function walkable(x, y) {
   if (c.t === 'door') return !(x === 30 && y === 5 && !S.parts.includes('Navigation'));
   if (c.t !== 'floor') return false;
   if (x === 15 && y === 14 && !S.gap) return false;
+  if (darkDeep(x, y)) return false;
   return !blocked(x, y);
 }
 function path(sx, sy, goal) {      // breadth-first search; goal(x, y) -> true
@@ -755,7 +762,7 @@ function syncParts() { S.parts = PARTS.filter(p => tasksOf(p).every(t => S.done[
 /* finishing a task: one card each. Three tasks fit the ship part. */
 function taskDone(id, w) { S.done[id] = true; const t = TASKS.find(t => t[0] === id); if (!t) return ''; S.slog = S.slog || {}; if (SLOG[id]) S.slog[id] = SLOG[id](w); const had = S.parts.includes(t[1]); syncParts(); const n = tasksOf(t[1]).filter(x => S.done[x[0]]).length;
   if (n === 3 && !had) pvSoon(t[1]);
-  return n === 3 && !had ? ` That is all three ${t[1]} tasks. The ${t[1]} part is fitted to your ship! Now choose which ${t[1]}.` + (t[1] === 'Navigation' ? ' The Launch Bay door unlocks.' : '') + ` The radio crackles. A little more of Voltara's message comes through: ${VMSG[Math.min(4, S.parts.length - 1)]}` + whole() : ` ${n} of 3 ${t[1]} tasks done.`; }
+  return n === 3 && !had ? ` That is all three ${t[1]} tasks. The ${t[1]} part is fitted to your ship! Now choose which ${t[1]}.` + (t[1] === 'Navigation' ? ' The Launch Bay door unlocks, and your route to Voltara is loaded into the launch console.' : '') + ` The radio crackles. A little more of Voltara's message comes through: ${VMSG[Math.min(4, S.parts.length - 1)]}` + whole() : ` ${n} of 3 ${t[1]} tasks done.`; }
 function taskWon(id, skill, tries, miss, text) { const w0 = widget; closeToy(); const tail = taskDone(id, w0); S.log.push({ what: TASKS.find(t => t[0] === id)[2], skill, result: miss ? `${miss} to fix` : 'No mistakes ✓', tries, need: tries }); save(); drawStatus(); chime(); card(); say(text + ' You earn a card.' + tail); }
 const missing = () => PARTS.filter(p => !S.parts.includes(p));
 /* the next thing worth trying. A stuck child can always ask. */
@@ -764,14 +771,10 @@ function hint() {
   const who = S.bot ? `${cap(S.botName || 'the robot')} beeps: ` : 'A wall screen blinks: ', sec = id => S.secrets.includes(id);
   if (roomDark()) return (S.bot ? who : '') + 'It is dark in here. The lights are off. A switch must be somewhere else on the station.';
   const t = !sec('wrench') ? 'Look at your ship. Open the hatch under its wing.'
-    : !S.locker ? 'Read the sign in the dock. Count the stacked crates. Then open the grey locker on the east wall.'
     : !S.done.battle ? 'Go west to the Shield Bay. Use the shield panel.'
     : !S.bot ? 'A broken robot sits in the Shield Bay. Use your wrench on it.'
     : TASKS.some(t => !S.done[t[0]]) ? TASKS.find(t => !S.done[t[0]])[5] + ` (${tasksDone()} of 15 tasks done.)`
-    : !S.grate ? 'Your magnet can reach under the grate in the Shield Bay.'
-    : !S.drawer ? 'The key card fits the drawer in the Navigation Bay.'
-    : !S.course ? 'Use the star chart on the launch console.'
-    : 'Your ship is ready. Go to the Launch Bay. Type: launch.';
+    : 'Your ship is ready. Go to the Launch Bay. Type: launch.' + (stationLeft() ? (n => ` If you like, ${n === 1 ? 'one secret is' : n + ' secrets are'} still hidden on the station. You do not need ${n === 1 ? 'it' : 'them'} to fly.`)(stationLeft()) : '');
   return who + t;
 }
 /* KIND WORDS ONLY.  [Source: Marc, 2026-11-17: "our children cannot write curse words, for the ship name or anywhere"]
@@ -814,7 +817,7 @@ const DO = {
   crate: { look: () => S.crate ? 'The loose crate. You moved it.' : 'One crate sits alone by the wall. Cold air comes from behind it.',
     push: () => { if (S.crate) return 'It will not go any further.'; S.crate = true; S.gap = true; save(); beep(160, .25, 'sawtooth'); secret('gap', 'The crate slides. There is a gap in the wall!'); },
     take: 'Too heavy to carry. Maybe you can push it.', open: 'It is nailed shut.' },
-  gap: { look: 'A dark gap in the wall. You could crawl in.', go: () => { walkTo((x, y) => x === 15 && y === 16); return S.poster ? 'You crawl in. The lights are on in here. They hum.' : 'You crawl into the dark.'; }, use: () => DO.gap.go() },
+  gap: { look: 'A dark gap in the wall. You could crawl in.', go: () => { if (!S.poster) { walkTo((x, y) => x === 15 && y === 14); return 'You crawl one step into the gap. It is pitch dark. You cannot see a thing, so you go no further.'; } walkTo((x, y) => x === 15 && y === 16); return 'You crawl in. The lights are on in here. They hum.'; }, use: () => DO.gap.go() },
   sign: { look: () => S.locker ? 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. You did that.' : 'The sign says: LOCKER CODE. COUNT THE STACKED CRATES. An arrow points to a grey locker in the east corner. Go there and type: open locker.', take: 'It is fixed to the wall.' },
   vent: { look: () => S.vent ? 'The vent is open. It is empty now.' : 'A vent in the wall. Four screws hold it shut. Something shines inside.',
     open: () => S.vent ? 'It is open.' : has('wrench') ? 'The screws are tight. Try: use wrench on vent.' : 'The screws are tight. You need a tool.',
@@ -839,9 +842,12 @@ const DO = {
     use: it => { if (S.drawer) return 'It is open.'; if (!it) return 'It needs a card.'; if (it !== 'keycard') return 'That does not fit the slot.'; S.drawer = true; give('chart'); secret('drawer', 'Click. The drawer opens. A star chart is inside!'); } },
   chair: { look: 'A chair on wheels.', push: () => { if (S.chair) return 'It rolls a little and stops.'; S.chair = true; save(); beep(200, .15); return 'The chair rolls away. A bolt was under it.'; }, take: 'You do not need a chair.', use: 'You sit. You spin. Whee.' },
   bolt: { look: 'A shiny bolt on the floor.', take: () => { S.bolt = true; save(); secret('bolt', 'You take the lost bolt. The station gives you a card for it.'); card(); } },
-  console: { look: () => S.course ? 'The launch console. A course is set for Galaxy Numerix.' : 'The launch console. One big button. A slot for a chart.',
-    use: it => { if (it === 'chart') { if (S.course) return 'The course is set.'; S.course = true; save(); secret('course', 'The chart slides in. A course is set for Galaxy Numerix!'); return; } if (it) return 'That does not fit.';
-      if (missing().length) return `The ship cannot fly yet. It still needs: ${missing().join(', ')}.`; if (!S.course) return 'No course is set. The console has a slot for a star chart.'; S.ended = true; if (!S.v) S.vFirst = true; S.mode = 'space'; S.at = 'station'; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return S.vFirst ? 'Three. Two. One. Lift off! You are in space. Voltara is in Galaxy Numerix. Tap it to fly there.' : 'Three. Two. One. Lift off! You are in space. Tap a galaxy to fly there.'; },
+  /* [Marc, 2026-11-21: "a secret in the space station should not be mandatory or anything you must find to pass the major quests"]
+     The course to Voltara comes from the cadet's own Navigation tasks (the route, the fuel, the cargo). The old captain's star chart is no longer needed to fly.
+     It is a helper for curious cadets: in the console's slot it shows where things are still hidden, as stars on the station map. [Proposal] */
+  console: { look: () => (S.parts.includes('Navigation') ? 'The launch console. Your navigation work set the course: Voltara, in Galaxy Numerix.' : 'The launch console. One big button. The course comes from the ship\'s Navigation part.') + (S.course ? ' The old chart glows in its slot.' : ' There is a thin slot on its side.'),
+    use: it => { if (it === 'chart') { if (S.course) return 'The chart is already in the slot. Look at your map: the small stars show where things are still hidden.'; S.course = true; save(); const n = Object.keys(SEC_ROOM).filter(k => k !== 'course' && !S.secrets.includes(k)).length; secret('course', n ? `The chart slides into the slot. The screen shows the whole station. ${n === 1 ? 'One small gold star glows' : 'Small gold stars glow'} on it: ${n === 1 ? 'a place' : 'places'} where something is still hidden. Your map shows them now.` : 'The chart slides into the slot. The screen shows the whole station. No stars glow on it. You have found every hidden thing here already.'); return; } if (it) return 'That does not fit.';
+      if (missing().length) return `The ship cannot fly yet. It still needs: ${missing().join(', ')}.`; S.ended = true; if (!S.v) S.vFirst = true; S.mode = 'space'; S.at = 'station'; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return S.vFirst ? 'Three. Two. One. Lift off! You are in space. Voltara is in Galaxy Numerix. Tap it to fly there.' : 'Three. Two. One. Lift off! You are in space. Tap a galaxy to fly there.'; },
     push: () => DO.console.use(), open: 'It has no door.' },
   chest: { look: () => S.chest ? 'The old chest is open and empty.' : 'An old chest. Dust covers it.', open: () => { if (S.chest) return 'It is open.'; S.chest = true; give('badge'); secret('chest', 'The lid creaks. A captain’s badge! You pin it on.'); card(); },
     push: 'It is too heavy.', take: 'It is too heavy.' },
@@ -877,7 +883,7 @@ const DO = {
   cells: { look: () => S.done.blocks ? 'The power cells glow a steady green.' : 'Emergency power cells. Their blocks flicker. Type: use cells.', use: () => { if (S.done.blocks) return 'The power is steady.'; startBlocks(); return 'The cells show their blocks.'; }, open: () => DO.cells.use(), push: () => DO.cells.use(), take: 'They are part of the wall.' }
 };
 const NOPE = { look: 'You see nothing special.', take: 'You cannot take that.', open: 'It does not open.', push: 'It does not move.', use: 'Nothing happens.', talk: 'It does not answer.' };
-const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'A star chart. It shows the way to Galaxy Numerix.', badge: 'A captain’s badge. You are wearing it.', oil: 'A small oil can. Good for rusty things.', fuse: 'A spare fuse. It fits a fuse box.', burst: 'A FlavorBurst. It changes flavour with every bite. Someone may want it.', stone: 'A glow stone. It lights up dark places.', ckey: 'A crystal key from the Energy Council. It opens the tower.' };
+const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'The old captain\'s star chart. On its back is a map of this station. It has a strip that would fit a thin slot.', badge: 'A captain’s badge. You are wearing it.', oil: 'A small oil can. Good for rusty things.', fuse: 'A spare fuse. It fits a fuse box.', burst: 'A FlavorBurst. It changes flavour with every bite. Someone may want it.', stone: 'A glow stone. It lights up dark places.', ckey: 'A crystal key from the Energy Council. It opens the tower.' };
 
 /* =====================================================================
    THE PARSER. Two to four words: VERB THING, or USE THING ON THING.
@@ -928,7 +934,7 @@ function act(raw) { CHIPN = '';
   if (S.bot && ['talk', 'use'].includes(verb) && tk[0] !== 'fix' && (rest.length === 0 && verb === 'talk' || rest.some(t => OBJ.robot.words.includes(t) || t === 'zip' || (S.botName && t === S.botName.toLowerCase())))) return out(zipTalk());
   if (S.bot && verb === 'look' && rest.some(t => OBJ.robot.words.includes(t) || (S.botName && t === S.botName.toLowerCase()))) return out('Your repair robot. It follows you. Talk to it and it tells you what to try next.');
   if (verb === 'hint') return out(hint());
-  if (roomDark()) { if (verb === 'look' && !rest.length) return out('It is dark. You can see only a step or two. The lights are off in this part of the station.'); if (Object.keys(OBJ).some(i => OBJ[i].room === S.room && i !== 'gap' && rest.some(t => OBJ[i].words.includes(t)))) return out('It is too dark to see that. The lights are off in here.'); }
+  if (roomDark()) { if (verb === 'look' && !rest.length) return out('It is pitch dark. You cannot see anything past the gap. The lights are off in this part of the station.'); if (Object.keys(OBJ).some(i => OBJ[i].room === S.room && i !== 'gap' && rest.some(t => OBJ[i].words.includes(t)))) return out('It is too dark to see that. The lights are off in here.'); }
   if (verb === 'help') return out('Type a doing word and a thing. Like: look ship. push crate. use wrench on vent. Or: go north.');
   if (verb === 'bag') return out(S.inv.length ? 'In your bag: ' + S.inv.map(i => ITEMS[i]).join(', ') + '.' : 'Your bag is empty.');
   if (verb === 'dig') return out('You dig at the floor. Clang! It is metal. Planets have ground you can dig.');
@@ -945,7 +951,7 @@ function act(raw) { CHIPN = '';
   if (verb === 'go') {
     const d = DIRS[rest[0]];
     if (d) { let x = Math.round(P.x), y = Math.round(P.y), n = 0; while (walkable(x + d[0], y + d[1]) && n < 14) { x += d[0]; y += d[1]; n++; if (G[y][x].t === 'door' ) { if (walkable(x + d[0], y + d[1])) { x += d[0]; y += d[1]; } break; } }
-      if (!n) return out(x === 30 && y === 6 && d[1] === -1 ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : 'You cannot go that way.');
+      if (!n) return out(darkDeep(x + d[0], y + d[1]) ? DARK_SAY : x === 30 && y === 6 && d[1] === -1 ? 'The Launch Bay door is locked. The ship needs its Navigation part.' : 'You cannot go that way.');
       strayed(); walkTo((a, b) => a === x && b === y); return out(`You walk ${Object.keys(DIRS).find(k => DIRS[k][0] === d[0] && DIRS[k][1] === d[1] && k.length > 3)}.`); }
     const rid = Object.keys(ROOMS).find(r => rest.some(t => t.length > 2 && !['bay', 'the', 'old'].includes(t) && ROOMS[r].name.toLowerCase().split(' ').some(w => w.startsWith(t))));
     if (rid) { if (ROOMS[rid].secret && !S.seen.includes(rid)) return out('You do not know that place.');
@@ -1594,7 +1600,7 @@ function win() {
   say({ battle: 'The rocks are gone. The shield knows what is coming, and glows green. You earn a card.', fuel: 'You reach Voltara with fuel to spare. The gauge turns green. You earn a card.', shells: 'The Gumblefish has all its shells. It spins with joy. You earn a card.',
     grid: 'The grid hums. Every section is full. The shield will stay up. You earn a card.', blocks: 'Mission Control knows what is left. Life support stays on. You earn a card.' }[w.kind] + tail);
 }
-const whole = () => missing().length ? '' : ' Your ship has all five parts! Set a course in the Launch Bay.';
+const whole = () => missing().length ? '' : ' Your ship has all five parts! Go to the Launch Bay and launch.';
 /* ENGINE CORE: count what you find. From Marc's 1-1 Alien Artifacts: four colours make a four-number code, and the lock has a temper. */
 const gemIcon = (i, z) => { const c = GEMC[i][1], k = GEMC[i][2]; return `<svg viewBox="0 0 20 20" width="${z}" height="${z}" aria-hidden="true"><${k === 'round' ? 'circle cx="10" cy="10" r="7"' : k === 'square' ? 'rect x="3.5" y="3.5" width="13" height="13" rx="2"' : `polygon points="${k === 'diamond' ? '10,1 17,10 10,19 3,10' : '10,2 18,17 2,17'}"`} fill="${c}" stroke="#0e1626" stroke-width="1.5"/></svg>`; };
 function startCore() {
@@ -2187,7 +2193,7 @@ function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Ma
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
 function setPlace() { const sv = $('stageview'), t = sv && !sv.hidden && sv.dataset.title ? sv.dataset.title : olPicOn() ? widget.pic.title : S.mode === 'intro' ? ['Earth, 2028', 'Earth, 2028', 'Earth, 2028', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'chrono' ? cPlaceName() : S.mode === 'xylo' ? xPlaceName() : S.mode === 'star' ? sPlaceName() : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : S.mode === 'chrono' ? (C().at === 'map' ? 'like: go north' : 'like: talk keeper') : S.mode === 'world' ? 'like: touch rock' : S.mode === 'xylo' ? 'like: look giant' : S.mode === 'star' ? 'like: look thermometer' : 'like: push crate'; } }
-function tState(c) { if (c.t === 'void') return 0; if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
+function tState(c) { if (c.t === 'void') return 0; if (!S.poster && c.rooms.length && c.rooms.every(r => ROOMS[r].secret) && c !== G[14][15]) return 0;   /* the dark passage is not drawn at all, so its shape gives nothing away */ if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
   const c = G[y][x], st = tState(c); if (!st) return; const X = sx(x), Y = sy(y), s = ts;
@@ -2300,7 +2306,7 @@ function drawObj(id) {
   else if (id === 'panel' || id === 'console') { const wd = id === 'console' ? 2 : 1.3, x0 = X + s * .5 - s * wd / 2; shadow(wd * .46, .14); f('#394660'); rr(x0, Y + s * .14, s * wd, s * .76, 7); cx.fill(); ol(2);
     const on = id === 'panel' ? S.done.battle : true; f(on ? '#123b2c' : '#111a2a'); rr(x0 + s * .1, Y + s * .2, s * (wd - .2), s * .36, 4); cx.fill(); ol(1.5);
     cx.strokeStyle = on ? '#6fd08a' : (alarm > 0 && Math.sin(tNow * 12) > 0 ? '#ff5a4d' : '#59657a'); cx.lineWidth = 2.5; if (id === 'panel') { cx.beginPath(); cx.moveTo(X + s * .5, Y + s * .25); cx.lineTo(X + s * .68, Y + s * .31); cx.lineTo(X + s * .64, Y + s * .46); cx.lineTo(X + s * .5, Y + s * .52); cx.lineTo(X + s * .36, Y + s * .46); cx.lineTo(X + s * .32, Y + s * .31); cx.closePath(); cx.stroke(); }
-    else { f('#d2553a'); circ(X + s * .5, Y + s * .38, s * .16); cx.fill(); ol(2); f('rgba(255,255,255,.4)'); circ(X + s * .45, Y + s * .33, s * .05); cx.fill(); f(S.course ? '#6fd08a' : '#f0c23b'); rr(x0 + s * .16, Y + s * .28, s * .34, s * .12, 2); cx.fill(); }
+    else { f('#d2553a'); circ(X + s * .5, Y + s * .38, s * .16); cx.fill(); ol(2); f('rgba(255,255,255,.4)'); circ(X + s * .45, Y + s * .33, s * .05); cx.fill(); f(S.parts.includes('Navigation') ? '#6fd08a' : '#f0c23b'); rr(x0 + s * .16, Y + s * .28, s * .34, s * .12, 2); cx.fill(); }
     for (let i = 0; i < 4; i++) { f(Math.sin(tNow * 3 + i * 2) > 0 ? '#ffb23e' : '#6db3ff'); cx.fillRect(x0 + s * (.14 + i * (wd - .3) / 4), Y + s * .68, s * .12, s * .1); } }
   else if (id === 'grate') { f('#141d2b'); rr(X + s * .1, Y + s * .1, s * .8, s * .8, 5); cx.fill(); ol(2); cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; for (let i = 1; i < 5; i++) { cx.beginPath(); cx.moveTo(X + s * (.1 + i * .16), Y + s * .14); cx.lineTo(X + s * (.1 + i * .16), Y + s * .86); cx.stroke(); } if (!S.grate) { f(`rgba(255,220,110,${.55 + .45 * Math.sin(tNow * 3)})`); rr(X + s * .4, Y + s * .44, s * .2, s * .13, 2); cx.fill(); } }
   else if (id === 'robot') botDraw(X + s / 2, Y + s / 2, false);
@@ -2408,12 +2414,14 @@ function drawField() {        // the mini battle, staged outside the Shield Bay 
     for (let j = 0; j < c; j++) rockAt(sx(x0 + (j + .5) * cell), sy(y0 + (i + .5) * cell) + Math.cos(tNow * 1.3 + i * 2 + j) * 2, cell * ts * .41, i * 13 + j * 7 + widget.hits * 31); }
   if (zap > 0) { cx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 5; i++) { cx.strokeStyle = `rgba(120,255,220,${zap * 1.6})`; cx.lineWidth = 4; cx.beginPath(); cx.moveTo(sx(1.5), sy(7.5 + i)); cx.lineTo(sx(x0 + Math.random() * c * cell), sy(y0 + Math.random() * r * cell)); cx.stroke(); } cx.fillStyle = `rgba(255,255,255,${zap * .7})`; cx.fillRect(sx(x0 - .3), sy(y0 - .3), (c * cell + .6) * ts, (r * cell + .6) * ts); cx.globalCompositeOperation = 'source-over'; }
 }
+function star5(x, y, r) { cx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? r * .45 : r; cx.lineTo(x + Math.cos(a) * q, y + Math.sin(a) * q); } cx.closePath(); }
 function minimap() {
   const k = Math.max(2.4, Math.min(3.6, vw * .0045)), mw = W * k, mh = H * k, X = vw - mw - 10, Y = 10; if (vw < 300) return;
   cx.fillStyle = 'rgba(6,9,18,.78)'; rr(X - 5, Y - 5, mw + 10, mh + 18, 7); cx.fill();
-  for (const [id, r] of Object.entries(ROOMS)) { const seen = S.seen.includes(id); if (r.secret && !seen) continue; cx.fillStyle = id === S.room ? '#ffb23e' : seen ? '#6d8fc0' : '#27344d';
-    if (r.tiles) r.tiles.forEach(t => cx.fillRect(X + t[0] * k, Y + t[1] * k, k, k)); else cx.fillRect(X + r.x * k, Y + r.y * k, r.w * k, r.h * k); }
+  for (const [id, r] of Object.entries(ROOMS)) { const seen = S.seen.includes(id); if (r.secret && (!seen || (!S.poster && id === 'store'))) continue; cx.fillStyle = id === S.room ? '#ffb23e' : seen ? '#6d8fc0' : '#27344d';
+    if (r.tiles) r.tiles.filter(t => S.poster || !darkDeep(t[0], t[1])).forEach(t => cx.fillRect(X + t[0] * k, Y + t[1] * k, k, k)); else cx.fillRect(X + r.x * k, Y + r.y * k, r.w * k, r.h * k); }
   cx.fillStyle = '#f0c23b'; for (const [x, y] of DOORS) cx.fillRect(X + x * k - 1, Y + y * k - 1, k + 2, k + 2);
+  if (S.course) for (const [id, r] of Object.entries(ROOMS)) { if (r.tiles) continue; const n = Object.keys(SEC_ROOM).filter(q => SEC_ROOM[q] === id && !S.secrets.includes(q)).length; for (let i = 0; i < n; i++) { const cx0 = X + (r.x + r.w / 2) * k + (i - (n - 1) / 2) * k * 2.4, cy0 = Y + (r.y + r.h / 2) * k; cx.fillStyle = '#ffd34d'; star5(cx0, cy0, k * 1.25); cx.fill(); cx.strokeStyle = '#3a2a00'; cx.lineWidth = 1; cx.stroke(); } }   /* the chart's stars */
   cx.fillStyle = `rgba(255,255,255,${.35 + .3 * Math.sin(tNow * 5)})`; circ(X + (P.x + .5) * k, Y + (P.y + .5) * k, k * 2.2); cx.fill(); cx.fillStyle = '#fff'; circ(X + (P.x + .5) * k, Y + (P.y + .5) * k, Math.max(2.4, k * 1.1)); cx.fill();
   cx.fillStyle = '#a9b9d0'; cx.font = '700 10px "Chakra Petch", sans-serif'; cx.textAlign = 'left'; cx.fillText('MAP  N ↑', X, Y + mh + 9);
 }
@@ -2456,6 +2464,7 @@ function frame1(now) {
   decals();
   ['gap', 'grate', 'bolt', 'plate', 'mat'].forEach(drawObj); drawGems();
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) drawWall(x, y);
+  if (!S.poster && S.gap) { const X = sx(15) + ts / 2, Y = sy(14.6) + ts / 2, R = ts * 4.2, g = cx.createRadialGradient(X, Y, ts * .3, X, Y, R); g.addColorStop(0, 'rgba(1,2,5,1)'); g.addColorStop(.55, 'rgba(1,2,5,.92)'); g.addColorStop(1, 'rgba(1,2,5,0)'); cx.fillStyle = g; cx.fillRect(X - R, sy(14) + ts * .55, R * 2, R + ts); }   // darkness spills from the gap, softly, so no shape shows
   ['sign', 'vent', 'poster', 'gauge', 'valve', 'wall9', 'board', 'fusebox', 'scanner', 'grid', 'rack', 'cells'].forEach(drawObj);
   for (const d of DUST) { d.t -= dt; cx.fillStyle = `rgba(200,210,225,${Math.max(0, d.t) * .6})`; circ(sx(d.x), sy(d.y) - (.5 - d.t) * ts * .2, ts * (.05 + (.5 - d.t) * .12)); cx.fill(); } while (DUST.length && DUST[0].t <= 0) DUST.shift();
   // things and people, sorted so nearer ones overlap further ones
@@ -2467,7 +2476,7 @@ function frame1(now) {
   if (S.room === 'power' && !S.fuse) { cx.fillStyle = 'rgba(2,4,10,.5)'; cx.fillRect(-4, 0, vw + 8, vh); }
   if (alarm > 0 || battle) { cx.globalCompositeOperation = 'lighter'; for (const [bx, by, ph] of [[2.4, 6.3, 0], [10.6, 6.3, 2], [2.4, 12.6, 4], [10.6, 12.6, 1]]) { const pu = .5 + .5 * Math.sin(tNow * 9 + ph), g = cx.createRadialGradient(sx(bx), sy(by), 0, sx(bx), sy(by), ts * 1.5); g.addColorStop(0, `rgba(255,70,50,${.55 * pu})`); g.addColorStop(1, 'rgba(255,70,50,0)'); cx.fillStyle = g; circ(sx(bx), sy(by), ts * 1.5); cx.fill(); } cx.globalCompositeOperation = 'source-over';
     for (const [bx, by] of [[2.4, 6.3], [10.6, 6.3], [2.4, 12.6], [10.6, 12.6]]) { cx.fillStyle = '#ff5a4d'; circ(sx(bx), sy(by), ts * .13); cx.fill(); ol(1.5); } }
-  if ((S.room === 'tunnel' || S.room === 'store') && !S.poster) { const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, g = cx.createRadialGradient(X, Y, ts * .55, X, Y, ts * 2); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,4,8,.98)');      /* really dark: a step or two, no more */ cx.fillStyle = g; cx.fillRect(-4, 0, vw + 8, vh); }
+  if ((S.room === 'tunnel' || S.room === 'store') && !S.poster) { const X = sx(P.x) + ts / 2, Y = sy(P.y) + ts / 2, g = cx.createRadialGradient(X, Y, ts * .55, X, Y, ts * 2); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,4,8,.6)');      /* the dock behind you dims; the passage itself is drawn black */ cx.fillStyle = g; cx.fillRect(-4, 0, vw + 8, vh); }
   if (!widget) for (const t of TASKS) { const o = OBJ[t[4]]; if (o.room !== S.room) continue; const tl = objTiles(t[4]), X = sx(tl.reduce((a, p) => a + p[0], 0) / tl.length) + ts / 2, Y = sy(Math.min(...tl.map(p => p[1]))) - ts * .08 + (S.done[t[0]] ? 0 : Math.sin(tNow * 4) * ts * .05), r = Math.max(8, ts * .17);   // a marker over every task: ! to do, a tick when done, purple for real life
     cx.fillStyle = S.done[t[0]] ? '#1c7c3a' : isReal(t) ? '#8a63e6' : '#ffb23e'; circ(X, Y, r); cx.fill(); ol(2); cx.fillStyle = S.done[t[0]] || isReal(t) ? '#fff' : '#2b1a00'; cx.font = `700 ${r * 1.35}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(S.done[t[0]] ? '✓' : '!', X, Y + r * .08); cx.textBaseline = 'alphabetic'; }
   if (!widget) for (const id in OBJ) label(id);
@@ -4895,13 +4904,13 @@ cv.addEventListener('pointerdown', e => {
   if (widget) return say('Finish this first. Or tap Leave.');
   if (!walkable(x, y) && !(G[y] && G[y][x] && G[y][x].t === 'floor')) return;
   strayed();
-  if (!walkTo((a, b) => a === x && b === y)) { if (x === 30 && y <= 5 && !S.parts.includes('Navigation')) say('The Launch Bay door is locked. The ship needs its Navigation part.'); }
+  if (!walkTo((a, b) => a === x && b === y)) { if (darkDeep(x, y)) say(DARK_SAY); else if (x === 30 && y <= 5 && !S.parts.includes('Navigation')) say('The Launch Bay door is locked. The ship needs its Navigation part.'); }
 });
 
 /* =====================================================================
    START
    ===================================================================== */
-S = load(); build(); P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y; }
+S = load(); build(); if (S.mode === 'station' && darkDeep(S.x, S.y)) { S.x = 15; S.y = 13; S.room = 'dock'; save(); } P.x = S.x; P.y = S.y; if (S.bot) { BOT.x = S.x; BOT.y = S.y; }
 function sayGo() { let v = $('cmd').value; if (CHIPN && v.replace(/\s+/g, ' ').trim().toLowerCase() === CHIPN) v = 'look ' + v; act(v); if (KB.touch && !KB.big && !$('kb').hidden) { $('cmd').blur(); kbHide(); } }
 $('say').addEventListener('submit', e => { e.preventDefault(); sayGo(); });
 /* A SMALL KEYBOARD for the command box, so the iPad's own big one stays away.

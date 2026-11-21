@@ -21,7 +21,8 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `weapons_code_check.js` | Weapons Coding (4-1), for 10,000 cadets: 36 different numbers from 1 to 999; the V is all odd; exactly 4 odd numbers outside it, so the shape alone is not enough; one-, two- and three-digit numbers on every screen. Needs Playwright |
 | `stone_paths_check.js` | Stone paths on Xylophora: 3,000 random floor layouts; the stones carried always allow a good network (three cheapest paths to one meeting square, rebuilt and checked as joined) and never allow stones on every square. Needs Playwright |
 | `judge_planet_check.js` | Judge a planet (Project Second Home): 10,000 cadets; exactly one planet fits all three needs; no fact on a limit; no temperature below zero; the day to round is never halfway. Needs Playwright |
-| `world_web_check.py` | The world web plan (`proposals/GMQ_World_Web_v1_2026-11-21.csv`): every need exists and can be met from the start, no loops, nothing new needs a place not built, no built thing needs something new, no planet's own job waits on another planet, every new thing has a use. Reports the finds that lead nowhere. Python only |
+| `world_web_check.py` | The world web plan (`proposals/GMQ_World_Web_v1_2026-11-21.csv`): every need exists and can be met from the start, no loops, nothing new needs a place not built, no built thing needs something new, no planet's own job waits on another planet, every new thing has a use, no job or landing needs a secret (rule 8; Voltara's two cases are listed as waiting on Marc). Reports the finds that lead nowhere. Python only |
+| `no_secret_needed_test.js` | No secret is needed to finish the station: a new cadet with an empty bag and no secrets reaches all 15 tasks and launches. Also: no square past the gap can be walked on until the poster switch is on. Fails on version 83, passes on 84. Needs Playwright |
 
 ## Play tests: a real browser plays the game
 

@@ -10,6 +10,8 @@ Faults (the check fails):
   4. a built row needs something new (the web would silently change what exists)
   5. law 7: a planet's own job waits on another planet (the station and landings are allowed)
   6. law 1: a new item, tool, need, find or place that nothing uses, and is not marked an end
+  8. a secret is needed for a planet's own job or for leaving a place (Marc, 2026-11-21: "secrets should not be
+     mandatory things that must be found"). Known cases waiting on Marc's decision are listed, not failed.
 Reports (no failure):
   - built finds and items that lead nowhere yet: the gap Marc named
   - the planets each strand touches (law 2)
@@ -75,11 +77,22 @@ for i, r in by.items():
             and not used[i] and r['keep'] not in ('keepsake', 'end'):
         faults.append(f'6. {i} is new, but nothing uses it')
 
+# 8. no job and no landing may need a secret
+WAITING = {'glow_stone': 'Voltara: the tunnel to the Nomads needs the glow stone (GMQ_Secrets_Balance_v1, decision 2)',
+           'hollow': 'Voltara: reaching Nomad Hollow is counted as a secret, but it is the main quest (GMQ_Secrets_Balance_v1, decision 2)'}
+waiting_seen = set()
+for i, r in by.items():
+    if r['planet_job'] != 'yes' and r['kind'] != 'land': continue
+    for n in all_needs(i):
+        if by[n].get('secret') == 'yes':
+            if n in WAITING: waiting_seen.add(n)
+            else: faults.append(f'8. {r["name"]} needs the secret "{by[n]["name"]}"')
+
 # reports
 def leads_nowhere(i, r, only_built):
     users = [u for u in used[i] if not only_built or by[u]['status'] == 'built']
     return r['status'] == 'built' and r['kind'] in ('item', 'find') and not users \
-        and r['keep'] not in ('keepsake', 'scenery', 'end', 'pointer')
+        and r['keep'] not in ('keepsake', 'scenery', 'end', 'pointer', 'helper')
 gap_now = [r['name'] for i, r in by.items() if leads_nowhere(i, r, True)]
 gap_after = [r['name'] for i, r in by.items() if leads_nowhere(i, r, False)]
 strands = defaultdict(set)
@@ -104,6 +117,9 @@ for s in sorted(strands):
 print('\nPeople, by role:')
 for (st, w), n in sorted(roles.items()):
     print(f'  {st:8} {w}: {n}')
+secrets = [r for r in rows if r.get('secret') == 'yes']
+print(f'\nSecrets in the table: {len(secrets)}. Needed by a job or a landing, waiting on Marc ({len(waiting_seen)}):')
+for n in sorted(waiting_seen): print('  ' + WAITING[n])
 print()
 if faults:
     print(f'FAULTS ({len(faults)}):')

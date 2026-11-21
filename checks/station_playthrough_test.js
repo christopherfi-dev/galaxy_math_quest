@@ -44,8 +44,12 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     expect(await say(String(code)), /magnet/i, 'locker code typed alone'); if (!(await onScreen('locker'))) bad.push(name + ': the locker is off the screen when you stand at it');
     await shot('1_locker');
     // the hidden section is dark until the switch behind the poster is found (Marc: the lights should matter)
-    await say('push crate'); await say('use wrench on vent'); expect(await say('go gap'), /You crawl into the dark/, 'crawling into the dark'); await say('east');
-    ok2(await p.evaluate(() => S.room === 'store' && roomDark() && !hereWords().length), name + ': in the dark Old Store nothing should be listed'); expect(await say('look'), /It is dark\. You can see only a step or two\. The lights are off/, 'look, in the dark'); expect(await say('open chest'), /It is too dark to see that\. The lights are off in here/, 'the chest in the dark'); expect(await say('hint'), /It is dark in here\. The lights are off\. A switch must be somewhere else/, 'the hint in the dark');
+    // [Marc, 2026-11-21] in the dark, nothing can be seen and the cadet goes no more than one step in
+    await say('push crate'); await say('use wrench on vent'); expect(await say('go gap'), /one step into the gap\. It is pitch dark/, 'one step into the dark gap');
+    expect(await say('south'), /pitch dark past the gap/, 'no second step in the dark'); expect(await say('east'), /cannot go that way|pitch dark/, 'no way east in the dark');
+    ok2(await p.evaluate(() => S.room === 'tunnel' && Math.round(P.x) === 15 && Math.round(P.y) === 14 && roomDark() && !hereWords().length && !S.seen.includes('store')), name + ': one step only, nothing listed, the Old Store not reached in the dark');
+    ok2(await p.evaluate(() => { return !walkTo((x, y) => x === 15 && y === 16) && !walkTo((x, y) => G[y][x].room === 'store'); }), name + ': no path into the dark');
+    expect(await say('look'), /It is pitch dark\. You cannot see anything past the gap/, 'look, in the dark'); await say('open chest'); expect(await say('hint'), /It is dark in here\. The lights are off\. A switch must be somewhere else/, 'the hint in the dark');
     ok2(await p.evaluate(() => !S.chest && !S.inv.includes('badge')), name + ': the chest must not open in the dark'); await say('go to dock');
     expect(await say('launch'), /Launch Bay/, 'launch from the dock');
     // ---- Shield Bay: 3-1 Asteroid Field, 3-2 Energy Grid, 3-3 Shield Calibration (real life)
@@ -166,8 +170,9 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await p.click('#brk'); await blk('[data-s="h"]'); expect(await emsg(), /1 hundred became 10 tens/, 'emergency: a hundred breaks'); await shot('9_blocks');
     await move(EP.need, 0); await p.click('#try'); await p.waitForTimeout(1700);
     expect(await last(), /Power part is fitted.*all five parts/, 'emergency power and the whole ship');
-    // ---- launch: needs a course
-    await say('go to launch'); expect(await say('launch'), /No course/, 'launch without a course'); await say('use chart on console'); expect(await say('launch'), /Lift off/, 'launch'); await p.waitForTimeout(300);
+    // ---- launch: the course comes from the Navigation part; the star chart is a helper, never needed (no_secret_needed_test.js launches with no secrets at all)
+    await say('go to launch'); expect(await say('look console'), /Your navigation work set the course/, 'the course comes from the Navigation part'); expect(await say('hint'), /Type: launch\. If you like, one secret is still hidden on the station\. You do not need it to fly\.$/, 'hint: ready to launch; the last secret is offered, not pushed');
+    expect(await say('use chart on console'), /No stars glow on it\. You have found every hidden thing/, 'the chart, with every other secret found'); expect(await say('launch'), /Lift off/, 'launch'); await p.waitForTimeout(300);
     const st = await p.evaluate(() => ({ parts: S.parts.length, tasks: tasksDone(), cards: S.cards.length, secrets: S.secrets.length, mode: S.mode, rooms: S.seen.length, side: document.documentElement.scrollWidth > innerWidth + 1, box: $('partsbox').innerText.includes('5 of 5 parts') }));
     if (st.parts !== 5 || st.tasks !== 15 || st.cards < 15 || st.secrets !== 18 || st.mode !== 'space' || st.rooms !== 9 || st.side || !st.box) bad.push(name + ': end state ' + JSON.stringify(st));
     console.log(`${name}: ${st.tasks} of 15 tasks, ${st.parts} of 5 parts, ${st.cards} cards (15 from tasks, ${st.cards - 15} from secrets), ${st.secrets} of 18 station secrets, launched: ${st.mode === 'space'}`);

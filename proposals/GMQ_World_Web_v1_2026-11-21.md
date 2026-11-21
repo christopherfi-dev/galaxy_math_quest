@@ -13,6 +13,7 @@
 
 I checked every item and person in the game's code (version 83).
 
+- **Since version 84 (later the same night):** no secret is needed to launch. See `GMQ_Secrets_Balance_v1_2026-11-21.md`.
 - **Items:** the bag has 10 kinds of item. **Each one is used only on the planet where it is found.** The wrench, magnet, key card, star chart, oil can and fuse stay on the station. The FlavorBurst, glow stone and crystal key stay on Voltara.
 - **Chronosia, Xylophora and the mission ship give no items at all.** Every find there ends in a card.
 - **Some loose ends already invite.** They are the best places to tie the web, because the words are already there:
@@ -174,8 +175,8 @@ Your example: the fish in the pond.
 ### What still leads nowhere, and some seeds for later
 
 The check counts it:
-- **Today, 23 built finds and items lead nowhere** but a card.
-- **After the three strands, 17 still do.** Most are small station secrets (star chips, the bolt, the rusty drone) and Chronosia's number puzzles (the carved stone, the hollow tree, the arch).
+- **Today, 21 built finds and items lead nowhere** but a card. (23 before version 84: the dark gap and the poster switch now lead to the Old Store.)
+- **After the three strands, 15 still do.** Most are small station secrets (star chips, the bolt, the rusty drone) and Chronosia's number puzzles (the carved stone, the hollow tree, the arch).
 - That is not a fault in itself. A few small secrets that only give a card are fine. The table makes the count visible, so each new strand can bring it down on purpose.
 
 **Seeds for later strands** [Proposal, not yet checked in detail]:
