@@ -25,6 +25,27 @@ These rules apply to every Claude Code session in this folder. **Start with `HAN
 - **Bring independent insight.** Say what to check that could prove a claim wrong, not only what supports it.
 - **Deliverables:** .md files in plain English, with short sentences, plus a zip of what you deliver. When a list helps, use one.
 
+## Before you build, and before you say it is done
+
+[Marc, 2026-11-21: "Focusing on speed over quality and depth breaks everything, cuz I need to find these issues later and then we spend more time fixing."]
+Every item below was missed at least once. Find the faults yourself; Marc should not have to.
+
+**Before you build**
+- What is the story reason for this task, and is the child told it before the maths starts?
+- What does the child look at? It fills the picture. The desk holds only words, boxes and buttons.
+- What does the child make or decide? Does it take time, as Marc's offline tasks did?
+- Is there a finished example first, about a different quantity?
+- Is anything copied from one of Marc's samples, instead of inspired by it?
+- Is any part of this Marc's decision? Then lay out options before building.
+
+**Before you say it is done**
+- Look at it yourself, as pictures, at iPad sideways (1180×745), iPad upright (820×1180) and a phone. Check every word against the picture.
+- Play it as a child would: wrong answers, leaving and coming back, closing the game and opening it again.
+- Does anything give the answer away? A label, a running total, a dashboard that does the adding, a card face that shows too early.
+- Can any question be read two ways? (For example: "between 18 and 24", or an angle of 92°.)
+- Check every number rule on thousands of seeds.
+- Update the tests. Say which ran, which did not, and any shortcut you took.
+
 ## Facts and checking
 
 - **Recompute every number.** Many GMQ docs were drafted with AI (mostly ChatGPT), and their answer keys contain errors. Known errors are in handoff §8 and world map §6.
