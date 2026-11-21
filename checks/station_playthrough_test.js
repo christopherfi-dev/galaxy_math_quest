@@ -96,18 +96,18 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await say('use card on drawer'); await say('push chair'); await say('take bolt');
     await say('use gauge'); let fuel = null; for (let i = 0; i < 3; i++) { const f = (await q()).match(/have (\d+) units of fuel\. The leg to stop \w uses (\d+)/); if (fuel !== null && +f[1] !== fuel) bad.push(name + ': the fuel did not carry forward'); fuel = f[1] - f[2]; if (i === 1) await shot('7_fuel'); await type(fuel); }
     expect(await last(), /fuel to spare/, 'fuel calculation');
-    // 2-2 Coordinate Plotting: follow the route day by day; the last tap marks the hidden star, then its two numbers
-    await say('use map'); const R = await p.evaluate(() => widget.r), msg = () => p.textContent('#msg'), dot = q => pic(`[data-t="c:${q[0]},${q[1]}"]`), E = R.end;
+    // 2-2 Coordinate Plotting: right and left; a box for each day; the last tap marks the hidden star
+    await say('use map'); const R = await p.evaluate(() => widget.r), msg = () => p.textContent('#msg'), dot = q => pic(`[data-t="c:${q[0]},${q[1]}"]`), E = R.end, n = R.days.length;
+    const box = async (d, a, b) => { await p.fill(`#toy .hopdays input[data-d="${d}"][data-k="0"]`, String(a)); await p.fill(`#toy .hopdays input[data-d="${d}"][data-k="1"]`, String(b)); };
     expect(await q(), new RegExp(`station is at \\(${R.start[0]}, ${R.start[1]}\\)`), 'the station is named');
-    await p.click('#try'); expect(await msg(), /Tap the chart/, 'no taps yet');
-    await dot(R.pts[1]); await dot([0, 0]); /* never on a route: every point is 1 to 9 */
-    await p.fill('#ans', '0'); await p.fill('#ans2', '0'); await p.click('#try'); expect(await msg(), /Empty space\. Day 1 is right\. Check Day 2/, 'a wrong day is named');
-    await p.click('#leave'); await say('use map'); ok2(await p.evaluate(() => widget.trail.length) === 2, name + ': the trail is kept after leaving');
-    await p.click('#hopundo'); for (const pt of R.pts.slice(2)) await dot(pt);
-    await p.fill('#ans', String(E[1])); await p.fill('#ans2', String(E[0])); if (E[0] === E[1]) await p.fill('#ans2', String(E[0] + 1));
-    await p.click('#try'); expect(await msg(), /mark is on the star.*read its two numbers again/, 'right mark, wrong numbers');
-    await dot([0, 0]); await p.fill('#ans', String(E[0])); await p.fill('#ans2', String(E[1]));
-    await p.click('#try'); expect(await msg(), /two numbers are right.*last tap is somewhere else/, 'right numbers, wrong mark');
+    ok2(!/\b(over|back)\b/.test(await p.textContent('#toy .hopdays')), name + ': the days say right and left');
+    await p.click('#try'); expect(await msg(), /Start at the station/, 'nothing done yet');
+    await box(0, ...R.pts[1]); await p.click('#try'); expect(await msg(), /after Day 2/, 'a day left empty');
+    const P2 = R.pts[2], swap = P2[0] !== P2[1]; await box(1, ...(swap ? [P2[1], P2[0]] : [0, 0])); for (let d = 2; d < n; d++) await box(d, ...R.pts[d + 1]);
+    await p.click('#try'); expect(await msg(), /Now tap the chart/, 'numbers but no tap');
+    await dot(R.pts[1]); await dot(E); await p.click('#try'); expect(await msg(), swap ? /Day 2: you wrote .*along first, then up/ : /Day 1 is right\. Check Day 2/, 'a wrong day 2');
+    await p.click('#leave'); await say('use map'); ok2(await p.evaluate(() => widget.trail.length === 2 && document.querySelector('#toy .hopdays input[data-d="1"][data-k="0"]').value !== ''), name + ': the taps and boxes are kept after leaving');
+    await box(1, ...P2); await dot([0, 0]); await p.click('#try'); expect(await msg(), /numbers are all right.*last tap is somewhere else/, 'right numbers, wrong mark');
     await p.click('#hopundo'); await shot('8_hop'); await p.click('#try'); await p.waitForTimeout(1700);
     expect(await last(), /key part/, 'coordinate plotting');
     // 2-3 Cargo Load: tap crates in the picture; nothing adds them for the child; the child writes the sum, then checks

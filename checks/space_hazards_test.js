@@ -77,7 +77,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await say('practice 4'); ok(await p.evaluate(() => widget && widget.lvl === 2), '"practice 4" must not skip ahead'); await p.tap('#leave'); await p.waitForTimeout(150);
 
     // ---- levels 2, 3 and 4: the last one earns gold, and then flights are clear
-    for (const [lvl, dest, re] of [[2, 'metrica', /space worms.*rare card.*solar wind/i], [3, 'databa', /solar wind.*rare card.*wormhole pull/i], [4, 'geometrica', /wormhole pull.*gold card.*every hazard/i]]) {
+    for (const [lvl, dest, re] of [[2, 'metrica', /space worms.*rare card.*solar wind/i], [3, 'databa', /solar wind.*rare card.*wormhole pull/i], [4, 'geometrica', /wormhole pull.*epic card.*every hazard/i]]) {
       await say('fly to ' + dest); ok(await p.evaluate(l => widget && widget.lvl === l, lvl), `flight should meet level ${lvl}`); if (lvl >= 3) expect(await p.textContent('#toy'), /Tens first\. Then ones\. Then add\./, `level ${lvl} shows tens first`);
       if (out && lvl === 4) await p.screenshot({ path: path.join(out, `hazard_${name}_3_wormhole.png`) });
       await playAll(); expect(await last(), re, `passing level ${lvl}`); await arrive(); }

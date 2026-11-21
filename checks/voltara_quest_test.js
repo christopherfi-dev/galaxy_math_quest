@@ -138,7 +138,7 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     if ((await p.evaluate(() => S.cards.length)) !== cardsB) bad.push(name + ': later days should not give cards');
     // ---- the Council's choice: a real-life step with the teacher's code
     await say('talk council'); expect(await p.textContent('#toy .eyebrow'), /real-life task/, 'the last step is a real-life task'); await shot('14_choice');
-    await fill([111]); expect(await msg(), /not the code/, 'a wrong code'); await fill([CHOICE_CODE]); expect(await last(), /GOLD card.*Nomad Hollow is on the plan table/, 'the gold card'); kin = true;
+    await fill([111]); expect(await msg(), /not the code/, 'a wrong code'); await fill([CHOICE_CODE]); expect(await last(), /EPIC card.*Nomad Hollow is on the plan table/, 'the epic card'); kin = true;
     { const dark = await p.evaluate(() => [VDO.houses.look(), VDO.elder.talk(), V().final && !powered(21)]); if (!/lights are out/.test(dark[0]) || !/very dark/.test(dark[1]) || !dark[2]) bad.push(name + ': the hollow should be dark until it is in a plan: ' + dark.join(' | ')); }
     // DAY 3: both power places, and the Factory for a second day. The tower fills to its limit. The sky is brown. POWER, BUT NOT HAPPY.
     expect(await say('use table'), /Nomad Hollow is among them/, 'Nomad Hollow joins the table'); if ((await p.locator('#toy .wire').count()) !== 22) bad.push(name + ': the table should show 22 places after the choice');

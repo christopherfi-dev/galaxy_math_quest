@@ -41,7 +41,7 @@ You wrote: "The planet wasn't described to me. The dead skin wasn't really descr
 | Questions with answers to choose from, when a character speaks | a day for the first one. It changes how every speech is written. |
 | Stone paths between the buildings: fetch stones, lay them down | your idea. An evening or two. It could carry length or perimeter. |
 
-**One thing only you can settle [Conflict].** Your page says the giant rests "in eternal slumber". Your plan calls the skin "the dried skin of a giant alien creature". You called it "the dead skin" today. The game says the giant is asleep and shed its skin long ago. Tell me which it is.
+**Settled 21 November: asleep.** Marc agreed: the giant sleeps, and the skin it shed is the dead skin. The game already says this everywhere. The question as it was asked: **[Conflict]** Your page says the giant rests "in eternal slumber". Your plan calls the skin "the dried skin of a giant alien creature". You called it "the dead skin" today. The game says the giant is asleep and shed its skin long ago. Tell me which it is.
 
 **What could prove this wrong:** three screens of reading before a child can move is a wait. Your daughter did not like waiting. Watch whether children read them or just watch the button.
 

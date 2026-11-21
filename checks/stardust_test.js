@@ -14,7 +14,7 @@
 //   the fuel log: the gravity month, the long run and a clear month are all refused, then the solar wind;
 //   the pump before Mission Control says so; three gauges; one tank short, one right, one over; then all full;
 //   the locker: food that goes bad (one kind, two kinds), 11 packs, too little, too much, an empty locker, numbers kept, then exactly enough;
-//   what the crew ate: wrong kind, too few units, too many, right; cleared for launch and the gold card;
+//   what the crew ate: wrong kind, too few units, too many, right; cleared for launch and the epic card;
 //   dead ends; tapping a thing, a wall and a far square; the right thermometer when two are in view;
 //   the counts; the teacher's log; a reload; fly away; dock again;
 //   the Mission button: on the ship it shows Operation Stardust, never Voltara's list; it lists only what the cadet has been asked so far;
@@ -216,7 +216,7 @@ const CHECK = 26692101;      // the same number is in checks/stardust_quest_chec
     // ---- lift-off
     expect(await say('go control room'), /You walk to the Control Room/, 'go, with a room\'s name'); ok(await p.evaluate(() => sRoomAt(SD().x, SD().y) === 'control'), 'should stand in the Control Room');
     const gold0 = await p.evaluate(() => S.cards.filter(c => c.r === 'gold').length);
-    expect(await say('talk mission'), /Rooms, fuel, food\. All clear! Operation Stardust is go\..*You earn a gold card/, 'cleared for launch'); ok(await p.evaluate(g => SD().done.launch && S.cards.filter(c => c.r === 'gold').length === g + 1, gold0), 'a gold card for the launch');
+    expect(await say('talk mission'), /Rooms, fuel, food\. All clear! Operation Stardust is go\..*You earn an epic card/, 'cleared for launch'); ok(await p.evaluate(g => SD().done.launch && S.cards.filter(c => c.r === 'gold').length === g + 1, gold0), 'a gold card for the launch');
     expect(await say('talk mission'), /The ship is on its way/, 'Mission Control afterwards'); expect(await say('hint'), /The mission ship is on its way\. You can still look around/, 'the nudge at the end');
     const end = await p.evaluate(() => ({ count: sCount(), cards: S.cards.length, chip: Array.from(document.querySelectorAll('.chip')).map(c => c.textContent).filter(t => /Stardust/.test(t)).join(), log: S.log.filter(l => /^Stardust/.test(l.what)).map(l => l.what + ' | ' + l.skill + ' | ' + l.result) }));
     ok(end.count === 5 && /Stardust 5 of 5/.test(end.chip), `the count should be 5 of 5: ${end.count}, chip "${end.chip}"`); ok(end.cards - cards0 === 7, `cards earned: ${end.cards - cards0}, should be 7 (four quests, the water, the signal, the gold card)`);

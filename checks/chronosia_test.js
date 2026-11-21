@@ -7,7 +7,7 @@
 //     - the Tortoise and Cougar questions, which differ for each cadet, on 20,000 seeds each
 //     - the map: every place can be walked to from the ship; the grove is hidden behind one gap
 //   PLAY: land, explore the mist, find the hidden grove, do all six quests with the number pad boxes, read the Council's book,
-//     dig up the sundial, taste the fruit, earn the gold card, reload, fly away, land again from space.
+//     dig up the sundial, taste the fruit, earn the epic card, reload, fly away, land again from space.
 // Run: node checks/chronosia_test.js [folder for screenshots]
 const { chromium } = require('playwright'); const path = require('path');
 (async () => {
@@ -130,7 +130,7 @@ const { chromium } = require('playwright'); const path = require('path');
     // Cougar Rock, the fruit and the sundial
     expect(await say('go to rock'), /not found that place yet/, 'Cougar Rock is still in the mist'); await tapTile(4, 9); await tapTile(11, 10); await say('go to rock'); ok(await p.evaluate(() => C().at === 'ridge'), 'walk to Cougar Rock'); await say('use cougar'); await p.waitForTimeout(200);
     if (out && name !== 'phone' && await p.$('#try')) { await p.tap('#try'); await p.waitForTimeout(150); await p.screenshot({ path: path.join(out, `chronosia_${name}_5_cougar.png`) }); } const before = await p.evaluate(() => S.cards.map(c => c.r));
-    await play('cougar'); await p.waitForTimeout(250); expect(await last(), /last job on Chronosia.*Timekeeper Cadet.*gold card/, 'all six done: the gold card'); const after = await p.evaluate(() => S.cards.map(c => c.r)); ok(after.length === before.length + 2 && after[after.length - 1] === 'gold', 'the last quest gives a card and a gold card');
+    await play('cougar'); await p.waitForTimeout(250); expect(await last(), /last job on Chronosia.*Timekeeper Cadet.*epic card/, 'all six done: the epic card'); const after = await p.evaluate(() => S.cards.map(c => c.r)); ok(after.length === before.length + 2 && after[after.length - 1] === 'gold', 'the last quest gives a card and a gold card');
     expect(await p.textContent('#status'), /Chronosia 6 of 6/, 'the status row'); await say('leave'); await tapTile(17, 10); expect(await last(), /ground sounds hollow/, 'the stone ring hints'); expect(await say('dig'), /old sundial.*You earn a card/, 'dig up the sundial'); expect(await say('dig'), /dug here before/, 'dig twice');
     await tapTile(4, 9); await tapTile(4, 7); await tapTile(16, 4); expect(await say('taste fruit'), /walk to the TimeTweak tree|TimeTweak fruit/, 'fruit'); await idle(); await p.waitForTimeout(300); expect(await last(), /everything runs backward/, 'tasting the fruit');
     if (out) await p.screenshot({ path: path.join(out, `chronosia_${name}_6_map.png`) });
