@@ -259,4 +259,10 @@ These are Marc's words, tidied. They are not on the form above.
   On coding: no code.org-style block clone. Instead, the game's own command words become code: tap command chips into a list, with "repeat" as multiplication. Comets [Source: "study comets"] could carry it later as space events.
 
   His decisions: A to E; before or after Lengthar; where coding goes. Nothing was changed in the game.
+- **Patterns help everywhere (Marc, 2026-11-21).** "But the other hand, recognizing patterns does help with like making tables to solve word problems. It does help with recognizing skip counting and algebraic and geometric and arithmetic patterns. It is recognizing like prime number, sequences, and other things. Recognizing the number of degrees in a shape based on the number of sides that be made into a table can be seen as a pattern?" (His "Mike counting" read as "skip counting".)
+
+  Answered in the same note, `proposals/GMQ_Patternox_Options_v1_2026-11-21.md` (new section at the top):
+  - He is right. Patterns are also in AERO as Mathematical Practices 7 and 8 (structure; regularity in repeated reasoning), not only as 3.OA.9.
+  - [Proposal] Recommendation C, made wider: Patternox teaches "make a table, find the rule, use it"; other places then reuse the same blank table.
+  - His examples placed by grade: prime numbers are Grade 4; angle sums by number of sides are Grades 7 to 8, so they belong to the older bands (his own Case 1 already uses 180 and 360).
 

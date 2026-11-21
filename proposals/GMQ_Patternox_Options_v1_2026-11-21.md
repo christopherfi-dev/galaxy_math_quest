@@ -6,6 +6,39 @@
 
 ---
 
+## Added after your reply: patterns are bigger than one standard
+
+[Source: Marc, 2026-11-21] "Recognizing patterns does help with like making tables to solve word problems. It does help with recognizing skip counting and algebraic and geometric and arithmetic patterns. It is recognizing like prime number, sequences... Recognizing the number of degrees in a shape based on the number of sides that be made into a table can be seen as a pattern?"
+
+**You are right, and your AERO document backs you.**
+- **The practices:** besides the 25 standards, it has the eight Mathematical Practices [Source: its last six pages]. In the Common Core, which AERO follows, two of them are your point exactly:
+  - **Practice 7:** look for and make use of structure.
+  - **Practice 8:** look for and express regularity in repeated reasoning.
+  - Confirm the exact wording in your AERO document. The PDF is not in this folder.
+- **So patterns have two homes:** one content standard (3.OA.9), and a way of thinking that runs through every domain. Your school's "Patterns" domain was probably pointing at the second.
+
+**What it changes in the recommendation (still C, made wider):**
+- **Patternox teaches the move.** "Make a table, find the rule, use it" is learned there first, with machines and doors.
+- **Then the move travels.** Other places reuse it, and many already ask for it without naming it:
+  - the Backward Mountain's table [built]
+  - the quakes that grow 5 minutes each time [built]
+  - the radio signal [built]
+  - the fuel after every leg [built]
+  - The fix: give them the same blank table on the desk when a problem repeats. The child fills the rows; the game never fills them.
+- **Where your examples sit, by grade:**
+
+| Your example | Grade | Where it could live |
+|---|---|---|
+| Skip counting | 2 to 3 | Patternox, first quest; already in Ammo Count and Target Practice |
+| A table to solve a word problem | 3 to 4 (3.OA.8, 3.OA.9, 4.OA.5) | Patternox, and every place that reuses the table |
+| Arithmetic and growing shape patterns (1, 3, 6, 10...) | 4 to 5 (4.OA.5, 5.OA.3) | Patternox, the next ring out |
+| Prime numbers | 4 (4.OA.4) | Patternox, band 4 |
+| Angle sums by number of sides: 180, 360, 540... | 7 to 8, past Grade 5 | an outer ring, or your algebra class. Your own Case 1 already uses 180 and 360 [Source], so a child who saw those could later find the table: 3 sides 180, 4 sides 360, 5 sides 540, each new side adds 180. |
+
+**One caution:** the angle table is lovely, but it is three or four grades above Grade 3. It belongs in the older bands, not the Grade 3 galaxy.
+
+---
+
 ## 1. The facts
 
 - **You are right: Patterns is not an AERO domain.** Your AERO document has 25 Grade 3 standards in 5 domains: Operations and Algebraic Thinking, Base Ten, Fractions, Measurement and Data, and Geometry. Patterns is one standard, 3.OA.9, inside the first. [Source: `proposals/GMQ_AERO_Grade3_Map_v1_2026-11-19.md`, from your AERO document]
