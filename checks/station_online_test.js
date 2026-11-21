@@ -21,7 +21,10 @@ const { chromium } = require('playwright'); const path = require('path');
     // ---- no purple, and the ship panel says so
     ok(await p.evaluate(() => !REALON.on && TASKS.every(t => !isReal(t))), 'the four start on screen'); await p.evaluate(() => menuOpen('ship')); expect(await p.locator('#partsbox').innerText(), /Every task is played here\./, 'the ship panel');
     // ---- Shield Calibration
-    await open('calib'); expect(await p.locator('#toy').innerText(), /Shield · task 3 of 3[\s\S]*Share \d+ power tokens equally/i, 'calibration opens on screen'); ok(!/code/i.test(await p.locator('#toy').innerText()), 'no teacher code');
+    // first the shuttle that flew in the storm: a strong section is not where the rocks broke through; a thin one is
+    await open('calib'); expect(await p.locator('#toy').innerText(), /This shuttle flew through the storm[\s\S]*Where did the rocks break through/, 'the shuttle comes first');
+    await p.locator('#pic [data-sec="0"]').tap(); expect(await p.textContent('#msg'), /no dents there/, 'a strong section'); await p.locator('#pic [data-sec="3"]').tap(); expect(await p.textContent('#msg'), /The rocks found the weak side/, 'the thin section');
+    await p.click('#calgo'); await p.waitForTimeout(150); expect(await p.locator('#toy').innerText(), /Shield · task 3 of 3[\s\S]*Share \d+ power tokens equally/i, 'calibration opens on screen'); ok(!/code/i.test(await p.locator('#toy').innerText()), 'no teacher code');
     const N = await p.evaluate(() => S.tok), E = N / 5, picTap = async (x, y) => { const r = await p.evaluate(() => { window.scrollTo(0, 0); const b = cv.getBoundingClientRect(); return [b.left, b.top]; }); await p.touchscreen.tap(r[0] + x, r[1] + y); await p.waitForTimeout(25); };
     await p.waitForTimeout(200); expect(await p.evaluate(() => $('place').textContent), /^The token mat$/, 'the mat fills the picture');
     const tap = async i => { const pt = await p.evaluate(i => { const g = widget.geo, a = -Math.PI / 2 + (i + .5) * 2 * Math.PI / 5; return [g.ccx + Math.cos(a) * g.R * .6, g.ccy + Math.sin(a) * g.R * .6]; }, i); await picTap(pt[0], pt[1]); };

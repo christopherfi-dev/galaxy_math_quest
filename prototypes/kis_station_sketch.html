@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 70</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 71</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -414,7 +414,7 @@ const STORY = {
   fuel: "There are two ways to Voltara. The short way goes through the storm's rocks. The long way goes around, by a fuel moon where you can fill up. Mission Control's rule: land with at least 10 units, for the trip home.",
   battle: 'The storm left rocks drifting between here and Voltara. Before your shield can brace, it must know how many are coming.',
   grid: 'Storm rocks will hit your shield on the way to Voltara. Its energy grid must hold enough power for every section.',
-  calib: 'A rock always hits the weakest part of a shield. If one section has fewer tokens, it breaks there first. Share the tokens equally, so no section is weak.',
+  calib: 'A rock always finds the weakest part of a shield, as it did on the shuttle. Share your tokens equally, so your shield has no weak side.',
   drones: 'Before the flight, the cannons practise on drones. The drill computer picks which drones play the storm rocks.',
   racks: 'Your ship has twin cannons, one on each side. They fire in pairs. An odd number in a rack leaves one shot with no partner, and a shot fired alone pushes the ship sideways.',
   target: 'Each hit charges the twin cannons. They need a charge from 32 to 40, shared equally between the two. Past 40, they overheat.',
@@ -1749,10 +1749,31 @@ function pvShow(p, i, how) { const st = document.querySelector('.stage'); let fx
    the steps and the codes. Off (the start): the same four tasks are played on screen, with Marc's own maths and numbers. [Proposal: how each one is played on screen.] */
 const OLR = id => { if (!S.olseed) { S.olseed = 1 + Math.floor(Math.random() * 99990); save(); } return wrng(S.olseed * 131 + id.charCodeAt(0) * 977 + id.length); };      /* each cadet's own star map */
 function olHead(id) { const t = TASKS.find(t => t[0] === id), n = tasksOf(t[1]).indexOf(t) + 1; return `<p class="eyebrow">${t[1]} · task ${n} of 3</p><h3>${t[2]}</h3>`; }
-function olStart(id) { widget = { kind: 'ol', id, tries: 0 }; if (id === 'calib') olCalib(); else if (id === 'starmap') olStars(); else if (id === 'target') olTarget(); else olAlloc(); }
+function olStart(id) { widget = { kind: 'ol', id, tries: 0 }; if (id === 'calib') (S.calibSaw ? olCalib() : calibShuttle()); else if (id === 'starmap') olStars(); else if (id === 'target') olTarget(); else olAlloc(); }
 const olWin = (id, skill, text) => taskWon(id, skill, widget.tries, Math.max(0, widget.tries - 1), text);
 function olMsg(t, good) { const m = $('msg'); m.className = 'msg ' + (good ? 'good' : 'bad'); m.textContent = t; if (!good) beep(140, .2, 'square'); }
 /* Shield Calibration: deal the tokens out, as at a table. The sections show dots, never numbers. [Source: SLIPS.calib] */
+/* 3-3 first: a shuttle that flew in the storm. [Marc, 2026-11-21, agreed: Station Story v2, item 13] The child finds the reason for sharing equally:
+   its shield had as many tokens as theirs, but not equally shared, and every dent is where the shield was thin. Tap where the rocks broke through. */
+const calibLog = () => { const E = S.tok / 5; return [E + 3, E + 3, E + 2, E - 4, E - 4]; };
+function calibSvg(hit) { const L = calibLog(), cx0 = 320, cy0 = 178, R0 = 92, R1 = 150, A = i => -Math.PI / 2 + i * 2 * Math.PI / 5; let g = '';
+  for (let i = 0; i < 5; i++) { const a0 = A(i) + .03, a1 = A(i + 1) - .03, p = (r, a) => `${(cx0 + r * Math.cos(a)).toFixed(1)} ${(cy0 + r * Math.sin(a)).toFixed(1)}`, weak = L[i] < S.tok / 5;
+    g += `<path data-sec="${i}" d="M${p(R0, a0)} A${R0} ${R0} 0 0 1 ${p(R0, a1)} L${p(R1, a1)} A${R1} ${R1} 0 0 0 ${p(R1, a0)} Z" fill="${hit === i ? (weak ? 'rgba(111,208,138,.25)' : 'rgba(255,122,107,.2)') : 'rgba(109,179,255,.12)'}" stroke="#6db3ff" stroke-width="2" style="cursor:pointer"/>`;
+    for (let k = 0; k < L[i]; k++) { const t = (k + .5) / L[i], a = a0 + (a1 - a0) * t, r = R0 + 18 + (k % 3) * 18; g += `<circle cx="${(cx0 + r * Math.cos(a)).toFixed(1)}" cy="${(cy0 + r * Math.sin(a)).toFixed(1)}" r="6" fill="#ffd25e" stroke="#0b1322" stroke-width="1.5" pointer-events="none"/>`; } }
+  const dents = [[306, 200], [309, 222], [307, 180], [312, 232], [304, 212]]      /* on the left of the hull, beside the two thin sections */.map(([x, y], i) => `<ellipse cx="${x}" cy="${y}" rx="${7 - i % 2 * 2}" ry="${5 - i % 2}" fill="#3a2f27" stroke="#1d1712" stroke-width="1.5" pointer-events="none"/>`).join('');
+  const cracks = [[3, .5], [4, .3], [4, .7], [3, .2]].map(([i, t]) => { const a = A(i) + (A(i + 1) - A(i)) * t; return `<path d="M${(cx0 + R1 * Math.cos(a)).toFixed(1)} ${(cy0 + R1 * Math.sin(a)).toFixed(1)} l${(14 * Math.cos(a + .6)).toFixed(1)} ${(14 * Math.sin(a + .6)).toFixed(1)} l${(10 * Math.cos(a - .5)).toFixed(1)} ${(10 * Math.sin(a - .5)).toFixed(1)}" stroke="#ff7a6b" stroke-width="3" fill="none" pointer-events="none"/>`; }).join('');
+  return `<svg class="picsvg" viewBox="0 0 640 360" style="aspect-ratio:640/360;touch-action:manipulation" role="img" aria-label="A shuttle after the storm, dented on one side, inside a shield of five sections with tokens on each"><rect width="640" height="360" rx="12" fill="#0b1322"/>${g}
+    <path d="M320 112 C 338 140, 344 190, 340 236 L 300 236 C 296 190, 302 140, 320 112 Z" fill="#dfe6f0" stroke="#0b1322" stroke-width="3" pointer-events="none"/><circle cx="320" cy="160" r="11" fill="#6db3ff" stroke="#0b1322" stroke-width="2" pointer-events="none"/>
+    <path d="M300 214 L 282 248 L 302 240 Z M340 214 L 358 248 L 338 240 Z" fill="#ff8f6b" stroke="#0b1322" stroke-width="2" pointer-events="none"/>${dents}${cracks}
+    <text x="320" y="352" text-anchor="middle" font-size="14" font-weight="700" style="fill:#e8eef8">The shuttle's shield: ${S.tok} tokens in 5 sections</text></svg>`; }
+function calibShuttle() { const W = widget, L = calibLog();
+  toy(`${olHead('calib')}<div class="picrow"><div class="pic" id="pic"></div><div class="pictext"><p class="story">This shuttle flew through the storm last night. Look at its dents. Look at its shield. It had ${S.tok} tokens, like yours, in 5 sections.</p>
+    <p class="q">Where did the rocks break through? Tap that part of its shield.</p><div class="field" id="calnext"></div><div class="field"><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
+  $('pic').innerHTML = calibSvg(-1); $('leave').onclick = () => { closeToy(); say('You step back from the shuttle.'); };
+  $('pic').onclick = e => { const t = e.target.closest('[data-sec]'); if (!t) return; const i = +t.dataset.sec; $('pic').innerHTML = calibSvg(i); W.tries++;
+    if (L[i] >= S.tok / 5) return olMsg(`That part had ${L[i]} tokens. There are no dents there. Look for the dents.`);
+    olMsg(`Yes. Only ${L[i]} tokens there. The rocks found the weak side.`, true); S.calibSaw = true; save();
+    $('calnext').innerHTML = '<button class="btn" type="button" id="calgo">Now calibrate your shield</button>'; $('calgo').onclick = () => { W.tries = 0; olCalib(); }; }; }
 function olCalib() { const N = S.tok, E = N / 5, put = [0, 0, 0, 0, 0]; let take = false;
   toy(`${olHead('calib')}${storyP('calib')}<p class="q">The shield has 5 sections. Share ${N} power tokens equally over them. Tap a section to put a token on it.</p>
     <p class="note">Tap a section of the mat in the picture.</p><p class="q" id="olpile"></p><div class="field"><button class="word on" type="button" id="olput">Put a token</button><button class="word" type="button" id="oltake">Take one back</button></div>
