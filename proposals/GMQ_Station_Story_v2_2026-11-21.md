@@ -4,6 +4,8 @@
 
 [Source: Marc, 2026-11-21] "My 2023 is the floor. It can be improved. You do not/must not need to copy all of them. We can make things more creative. Better."
 
+**Marc's answer, 21 November:** the worry about a call for help was taken out. [Source: "Elementary students know this isn't real."] Cargo Load's running total is gone (version 66).
+
 **What changed from version 1:** version 1 mostly put your 2023 reasons back. This version starts from what a child should feel at the station. It keeps a 2023 idea only where it is still the best one. The task list in version 1 (`GMQ_Station_Story_Review_v1_2026-11-21.md`, section 3) is still right. It shows what each task says today.
 
 ---
@@ -48,8 +50,6 @@ Draft lines:
 4. "…some of our people are missing… we hear a hum under the streets…"
 5. "…please come. We will wait for you at the Landing Meadow."
 
-The tone is hopeful. Nobody is hurt. The city is dark, and it is waiting for help.
-
 ### The ship's log
 - Each task writes one line in the child's own log, with their own numbers and choices. For example:
   - "Route: by the fuel moon. 14 units left at Voltara."
@@ -87,7 +87,7 @@ The skill for each part stays yours. [Source]
 |---|---|---|
 | 4. Fuel Calculation | **Deeper** | The picture is the route to Voltara, and there are two ways to go. One goes straight through the storm's rocks: short, but risky. The other goes around, by a fuel moon: longer, with a stop to refuel. The child works out the fuel left after each leg, for both ways, and then chooses. A way that runs dry is not allowed. This is real multi-step adding and taking away, with a decision at the end. |
 | 5. Coordinate Plotting | **Words** | "The storm blew the Navigation key part off the station. Mission Control tracked it, day by day." Everything else stays as in version 65. |
-| 6. Cargo Load | **Deeper** | One piece of the message is a list: what Voltara needs most. The ship can lift 30 tons, and one ton more means it cannot take off. The child packs 7 crates, and Voltara's needs must be among them. They add the weights themselves: they write the total, and then the scale checks it. Many loads are right, and the log keeps the one the child chose. **This also fixes two faults:** today the scale adds for the child, and any 7 crates that make 30 tons pass. |
+| 6. Cargo Load | **Deeper** | One piece of the message is a list: what Voltara needs most. The ship can lift 30 tons, and one ton more means it cannot take off. The child packs 7 crates, and Voltara's needs must be among them. They add the weights themselves: they write the total, and then the scale checks it. Many loads are right, and the log keeps the one the child chose. **One fault is already fixed** (version 66): nothing adds for the child now. The other remains: any 7 crates that make 30 tons pass, so what is packed does not matter yet. |
 
 ### Shield Generator: multiplying and dividing
 
@@ -165,7 +165,6 @@ Spine 2 can be added to spine 1: the ship's log already is the ship's papers.
 ## 8. What could prove this wrong
 
 - **Your students already loved the station with little story.** They wanted to keep playing through break. So the message is one line per part, read aloud. Ask them after a task: "Why did you do that?"
-- **A call for help may worry some children.** Keep it hopeful. Nobody is hurt.
 - **Children who finished the station on the class link will not hear the message.** Voltara must still make sense without it. It does today.
 - **The storm is my link between your pieces.** Your Voltara material may give the crisis another cause. If it does, the storm clashes with it, so check this first.
 - **The hidden sign in Weapons Coding can be guessed** once part of it shows. Before it is built, check whether the sign should appear only after "Check".
@@ -180,4 +179,4 @@ Spine 2 can be added to spine 1: the ship's log already is the ship's papers.
 3. **After the launch:** Voltara first, or free choice?
 4. **The six Deeper tasks:** which ones, and in what order? Or the words only, for now?
 5. **Effects on Voltara:** now, later, or never?
-6. **Cargo Load's running total:** fix it now? It breaks your checklist today, whatever you choose above.
+6. ~~Cargo Load's running total~~ **Done in version 66.** [Marc, 2026-11-21: "students should have to click check. We shouldn't show them the adding for them."] The crates fill the picture; nothing adds them; the child writes the sum, then checks. The rest of the Cargo idea in section 3 (Voltara's list of needs) still waits for the spine.

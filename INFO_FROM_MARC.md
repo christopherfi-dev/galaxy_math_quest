@@ -203,4 +203,15 @@ These are Marc's words, tidied. They are not on the form above.
   - [Conflict] His home page says the parts are hidden; his station page says they are earned.
   - [Proposal] Make "get ready for the first trip, to Planet Voltara" the station's story goal. Options A, B and C are in the note, with costs and decisions.
 - **2023 is the floor, not a template (Marc, 2026-11-21).** "My 2023 is the floor. It can be improved. You do not/must not need to copy all of them. We can make things more creative. Better. Etc." Said after the station story review (version 1), which mostly put his 2023 reasons back. Standing rule: improve on his 2023 tasks and reasons; keep one only where it is still the best idea. Answered in `proposals/GMQ_Station_Story_v2_2026-11-21.md`: one cosmic storm causes the station's mess, the drifting rocks and parts, and Voltara's dark city; Voltara's call for help breaks up and comes back one piece for each part fitted; a ship's log; 2 tasks kept, 7 with new words, 6 deeper. The game was not changed.
+- **Children know it is a story; the child does the adding (Marc, 2026-11-21).** "This is dumb 'A call for help could also worry some children, so the tone stays hopeful and nobody is hurt.' Elementary students know This isn't real. Number 5. I think students should have to click check. We shouldn't show them the adding for them. They should do that on their own." Standing rules: do not soften stories for fear of worrying children; never show a running total or do the adding for the child. The worry lines were taken out of the version 2 note.
+- **Version 66 is on the preview link (Claude, 2026-11-21).** Cargo Load rebuilt:
+  - the crates now fill the picture (it was drawn on the room map, against the full-screen rule), each with its name and weight
+  - no running total anywhere: the desk's "of 30 tons" and bar are gone, and the room's scale stays at 0 until the load passes
+  - [Proposal] the child writes their sum ("My 7 crates weigh __ tons") and presses Check, so the check can tell a wrong sum ("The scale does not agree with your total. Add the 7 weights again.") from a right sum on a wrong load ("Your adding is right: 31 tons... Swap a crate for a lighter one."); the sum is never shown before the child writes it
+  - it gained its task line, a maths word (sum), a reason before the maths that fits any story (the lift engines are set for exactly 30 tons), and a finished example about a trader's bags
+  - the crates in the hold are kept after leaving or closing the game
+  - checked first by `checks/cargo_load_check.py`: 33 of the 330 loads make 30, every crate is in a right load, and from every wrong load one swap comes closer
+  - before saying done: looked at it on an iPad both ways and a phone, and fixed one fault found that way (a small-screen rule hid "My 7 crates weigh")
+  - tests run and passed: cargo_load_check, station_playthrough, station_online
+  - not done: on a phone the crate names are too small to read (the weights can be read), and what is packed still does not matter later
 

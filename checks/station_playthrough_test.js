@@ -110,7 +110,17 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await p.click('#try'); expect(await msg(), /two numbers are right.*last tap is somewhere else/, 'right numbers, wrong mark');
     await p.click('#hopundo'); await shot('8_hop'); await p.click('#try'); await p.waitForTimeout(1700);
     expect(await last(), /key part/, 'coordinate plotting');
-    await say('use scale'); for (const i of [1, 3, 2, 4, 0, 9, 6]) await p.evaluate(i => cargoToggle(i), i); await p.click('#try'); await p.waitForTimeout(200); expect(await last(), /Navigation part is fitted.*Launch Bay door/, 'cargo and the navigation part');
+    // 2-3 Cargo Load: tap crates in the picture; nothing adds them for the child; the child writes the sum, then checks
+    await say('use scale'); const crate = i => pic(`[data-c="${i}"]`), unload = i => pic(`[data-h="${i}"]`), cmsg = () => p.textContent('#msg');
+    ok2(!/of 30 tons|\d+ t\b.*of 30/.test(await p.textContent('#toy')), name + ': the desk shows no running total');
+    for (const i of [1, 3, 2, 4, 0, 9]) await crate(i); await p.click('#try'); expect(await cmsg(), /You loaded 6\. Fill all 7/, 'cargo: six crates');
+    await crate(10); await p.click('#try'); expect(await cmsg(), /Write the total/, 'cargo: no sum written');
+    await p.fill('#ans', '30'); await p.click('#try'); expect(await cmsg(), /does not agree with your total/, 'cargo: a wrong sum');      /* 7+6+5+4+3+3+3 = 31 */
+    await crate(6); expect(await cmsg(), /hold is full/, 'cargo: an eighth crate');
+    await p.fill('#ans', '31'); await p.click('#try'); expect(await cmsg(), /adding is right: 31 tons.*lighter/, 'cargo: a right sum, too heavy');
+    await p.click('#leave'); await say('use scale'); ok2(await p.evaluate(() => widget.on.size) === 7, name + ': the hold is kept after leaving');
+    await unload(10); await crate(6); await shot('9_cargo'); await p.fill('#ans', '30'); await p.click('#try'); await p.waitForTimeout(1500);
+    expect(await last(), /30 tons exactly.*door was hiding.*Navigation part is fitted.*Launch Bay door/, 'cargo and the navigation part');
     // ---- Power Bay: 5-1 Circuit Connection, 5-2 Power Allocation (real life), 5-3 Emergency Power
     expect(await say('go to power'), /Power Bay/, 'power bay after the cargo'); await p.waitForTimeout(200);
     expect(await say('use fuse on fusebox'), /lights come on/, 'fuse box'); expect(await say('open plate'), /star chip/, 'loose plate');

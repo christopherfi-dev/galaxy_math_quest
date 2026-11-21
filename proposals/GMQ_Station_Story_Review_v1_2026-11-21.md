@@ -75,9 +75,9 @@ What the child sees before the maths starts. The game words are copied exactly.
 
 These break your rules, whatever story you choose. I have not fixed them; I am waiting for your go-ahead.
 
-1. **Cargo Load adds for the child.** The desk shows "0 of 30 tons", and the number goes up with every crate tapped. A child can tap until it says 30 without adding anything. [Your checklist: "a running total, a dashboard that does the adding".]
+1. **[Fixed in version 66]** **Cargo Load adds for the child.** The desk shows "0 of 30 tons", and the number goes up with every crate tapped. A child can tap until it says 30 without adding anything. [Your checklist: "a running total, a dashboard that does the adding".]
 2. **Cargo Load: the choice means nothing.** Your 2023 page said "fill cargo wisely". In the game, any 7 crates that make 30 tons pass. What is packed never matters.
-3. **Cargo Load has no task line and no maths word.** Every other task says "Navigation System · task 3 of 3" and gives a maths word. This one does not.
+3. **[Fixed in version 66]** **Cargo Load has no task line and no maths word.** Every other task says "Navigation System · task 3 of 3" and gives a maths word. This one does not.
 4. **Fuel Calculation names its stops A, B, D and F.** C and E are missing. A child may wonder where they went.
 5. **Asteroid Field: two of your 2023 versions** [Conflict]:
    - The task page says to count the rocks on each path and pick the path with fewer.

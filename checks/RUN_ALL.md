@@ -15,12 +15,13 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 |---|---|
 | `power_allocation_check.py` | Marc's Power Allocation (page 5-2): 680 ways to build the four numbers from only his blocks; every one uses every block; the usual way does not fit |
 | `coordinate_route_check.js` | Marc's Coordinate Plotting as his class did it (2-2): 10,000 cadets' routes walked again day by day (on the chart, no point twice, at least one day back and one day down, the end follows); the help for 1,000 wrong trails names the right day and never the star; the route and taps come back after closing the game. Needs Playwright |
+| `cargo_load_check.py` | Cargo Load (2-3): every one of the 330 ways to pick 7 of the 11 crates, read from the game. 33 make exactly 30; every crate is in a right load; from every wrong load one swap comes closer, so the help can always be followed |
 
 ## Play tests: a real browser plays the game
 
 | File | What it plays |
 |---|---|
-| `station_playthrough_test.js` | The whole station: 15 tasks, 5 parts, 18 secrets, launch. On Coordinate Plotting it presses with no taps, names a wrong day, leaves and comes back to the same trail, then tries a right mark with wrong numbers and right numbers with a wrong mark. On the Energy Grid it also types the two other numbers a child could mean, and checks the words that come back are on the screen |
+| `station_playthrough_test.js` | The whole station: 15 tasks, 5 parts, 18 secrets, launch. On Cargo Load it checks there is no running total, then tries six crates, no sum, a wrong sum, an eighth crate, a right sum that is too heavy, leaving and coming back, and a right load. On Coordinate Plotting it presses with no taps, names a wrong day, leaves and comes back to the same trail, then tries a right mark with wrong numbers and right numbers with a wrong mark. On the Energy Grid it also types the two other numbers a child could mean, and checks the words that come back are on the screen |
 | `voltara_quest_test.js` | Mission Voltara: 9 steps, 7 secrets, five days, all four endings |
 | `galactic_trade_test.js` | A whole trading season in space |
 | `small_worlds_test.js` | All 20 small worlds from the kit, one played through, and the tap-the-words row |

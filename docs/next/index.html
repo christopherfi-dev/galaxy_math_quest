@@ -319,7 +319,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 65</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 66</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -1910,30 +1910,40 @@ function startBlocks() { widget = { kind: 'blocks', hits: 0, need: 3, tries: 0, 
 function nextBlocks() { const w = widget, h = 1 + rnd(5), t = w.hits === 1 ? 0 : 1 + rnd(9), o = 1 + rnd(9); w.ans = h * 100 + t * 10 + o;
   numberToy(`<p class="eyebrow">Power Module · task 3 of 3 · reading ${w.hits + 1} of 3</p><p class="mw"><b>Maths word: place value.</b> A big square is 1 hundred. A rod is 1 ten. A small cube is 1 one.</p><h3>Emergency Power</h3>
     <div class="art">${drawPic({ t: 'blocks', hu: h, te: t, on: o })}</div><p>An asteroid hit the station. The lights flicker.</p><p class="q">What number do the power blocks show?</p>`, 'units'); }
-const loaded = () => widget && widget.kind === 'cargo' ? [...widget.on] : (S.cargoPick || []);
+const loaded = () => S.cargoPick || [];      /* the room shows the crates on the scale only once the load has passed */
 const slot = k => [32.2 + (k % 3) * .78, 11.55 - Math.floor(k / 3) * .78];
-function cargoToggle(i) {
-  if (!widget || widget.kind !== 'cargo') return; widget.on.has(i) ? widget.on.delete(i) : widget.on.add(i); beep(widget.on.has(i) ? 520 : 300, .06);
-  const t = [...widget.on].reduce((a, k) => a + CARGO[k][1], 0);
-  $('cnt').textContent = `${widget.on.size} of 7 things`; $('tons').textContent = `${t} of 30 tons`; $('bar').classList.toggle('over', t > 30); $('bar').firstElementChild.style.width = Math.min(100, t / 30 * 100) + '%'; $('msg').textContent = '';
-  $('onlist').textContent = widget.on.size ? 'On the scale: ' + [...widget.on].map(k => `${CARGO[k][0]} ${CARGO[k][1]} t`).join(', ') + '.' : 'Nothing is on the scale yet.';
-}
-function startCargo() {
-  widget = { kind: 'cargo', on: new Set(), tries: 0 };
-  toy(`<h3>Cargo Load</h3><p class="q">Tap crates to load them. Load 7. Make 30 tons.</p>
-    <div class="scale"><span id="cnt">0 of 7 things</span><span id="tons">0 of 30 tons</span></div><div class="bar" id="bar"><span></span></div>
-    <p class="note" id="onlist">Nothing is on the scale yet.</p>
-    <div class="field"><button class="btn" type="button" id="try">Check the load</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
-  $('leave').onclick = leave;
-  $('try').onclick = () => {
-    const n = widget.on.size, t = [...widget.on].reduce((a, k) => a + CARGO[k][1], 0), m = $('msg'); widget.tries++;
-    const why = n < 7 ? 'You need more things. Load 7.' : n > 7 ? 'Too many things. Load only 7.' : t < 30 ? 'Too light. You need 30 tons.' : t > 30 ? 'Too heavy. You need 30 tons.' : '';
-    if (why) { m.className = 'msg bad'; m.textContent = why; beep(140, .2, 'square'); return; }
-    const tries = widget.tries; S.cargoPick = [...widget.on]; closeToy(); const tail = taskDone('cargo');
-    S.log.push({ what: 'Cargo Load', skill: 'Add to make 30', tries, need: 1 }); save(); drawStatus(); chime(); card();
-    say('The scale beeps. 7 things, 30 tons. You earn a card. And look: a door was hiding behind the pile!' + tail);
-  };
-}
+/* 2-3 CARGO LOAD: 7 crates, exactly 30 tons. The child adds the weights. Nothing on the screen adds them: no running total, no needle.
+   [Source: Marc, 2026-11-21: "students should have to click check. We shouldn't show them the adding for them. They should do that on their own."]
+   [Proposal] the child writes the sum before the check, so the adding is theirs and the check can tell a wrong sum from a wrong load.
+   33 of the 330 ways to pick 7 of the 11 crates make 30 (checks/cargo_load_check.py). */
+function cargoSvg(w) { const on = [...w.on], crate = (x, y, cw, i, at, small) => { const [nm, t] = CARGO[i]; return `<g data-${at} style="cursor:pointer"><rect x="${x}" y="${y}" width="${cw}" height="78" rx="8" fill="${['#cf9a55', '#b98042', '#a8743a', '#c08a48'][i % 4]}" stroke="#2b1a00" stroke-width="2"/><rect x="${x + 5}" y="${y + 27}" width="${cw - 10}" height="45" rx="5" fill="rgba(6,9,18,.86)"/><text x="${x + cw / 2}" y="${y + 19}" text-anchor="middle" font-size="${small ? 10.5 : 12}" font-weight="700" style="fill:#2b1a00">${nm}</text><text x="${x + cw / 2}" y="${y + 59}" text-anchor="middle" font-size="25" font-weight="700" style="fill:#fff">${t} t</text></g>`; };
+  let s = `<svg class="picsvg" viewBox="0 0 640 352" style="aspect-ratio:640/352;touch-action:manipulation" role="img" aria-label="Eleven crates in a pile, each marked with its weight in tons, and a ship's hold with 7 places"><rect width="640" height="352" rx="12" fill="#0b1322"/><text x="16" y="24" font-size="15" font-weight="700" style="fill:#e8eef8">The cargo pile</text>`;
+  for (let i = 0; i < 11; i++) { const r = i < 6 ? 0 : 1, x = (r ? 64 : 12) + (r ? i - 6 : i) * 104, y = 34 + r * 88;
+    s += w.on.has(i) ? `<rect x="${x}" y="${y}" width="96" height="78" rx="8" fill="none" stroke="#34496c" stroke-width="2" stroke-dasharray="6 5"/>` : crate(x, y, 96, i, `c="${i}"`); }
+  s += `<text x="16" y="238" font-size="15" font-weight="700" style="fill:${w.done ? '#6fd08a' : '#e8eef8'}">Your ship's hold: 7 places</text>`;
+  for (let k = 0; k < 7; k++) { const x = 16 + k * 88; s += on[k] !== undefined ? crate(x, 250, 80, on[k], `h="${on[k]}"`, 1) : `<rect x="${x}" y="250" width="80" height="78" rx="8" fill="#101a2c" stroke="#5a6d90" stroke-width="2" stroke-dasharray="6 5"/>`; }
+  if (w.done) s += `<rect x="10" y="244" width="620" height="90" rx="10" fill="none" stroke="#6fd08a" stroke-width="4"/>`;
+  return s + '</svg>'; }
+function cargoToggle(i) { const w = widget; if (!w || w.kind !== 'cargo' || w.done) return; const m = $('msg');
+  if (w.on.has(i)) w.on.delete(i); else { if (w.on.size >= 7) { m.className = 'msg bad'; m.textContent = 'The hold is full. Tap a crate in the hold to take it out.'; beep(140, .2, 'square'); return; } w.on.add(i); }
+  S.cargoTry = [...w.on]; save(); beep(w.on.has(i) ? 520 : 300, .06); m.textContent = ''; $('pic').innerHTML = cargoSvg(w); }
+function startCargo() { const w = widget = { kind: 'cargo', on: new Set(S.cargoTry || []), tries: 0, miss: 0 };      /* the crates in the hold are kept if the cadet leaves */
+  toy(`<p class="eyebrow">Navigation System · task 3 of 3</p><p class="mw"><b>Maths word: sum.</b> The sum is the answer when you add.</p><h3>Cargo Load</h3>
+    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext"><p class="story">Your ship's hold has 7 places. Its lift engines are set for exactly 30 tons. Heavier, and the ship cannot take off. Lighter, and it spins off course.</p>
+    <p class="note"><b>A finished example.</b> A trader must pack 3 bags that weigh exactly 10 kilograms. She tries 4, 2 and 3. That is 9: too light. She swaps the 3 for a 4. 4 + 2 + 4 = 10. Exactly 10.</p>
+    <p class="q">Load 7 crates that weigh exactly 30 tons together.</p><p class="note">Tap a crate to load it. Tap it in the hold to take it out. Add the weights yourself.</p>
+    <div class="field"><span class="note">My 7 crates weigh</span><input id="ans" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="My 7 crates weigh how many tons"><span class="note">tons.</span></div>
+    <div class="field"><button class="btn" type="button" id="try">Check the load</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
+  $('pic').innerHTML = cargoSvg(w); $('leave').onclick = leave; const a = $('ans'), m = $('msg'), no = t => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = t; };
+  a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); };
+  $('pic').onclick = e => { const t = e.target.closest('[data-c],[data-h]'); if (t) cargoToggle(+(t.dataset.c ?? t.dataset.h)); };
+  $('try').onclick = () => { if (w.done) return; const n = w.on.size; if (n < 7) return no(`The hold has 7 places. ${n ? `You loaded ${n}.` : 'It is empty.'} Fill all 7.`);
+    if (a.value === '') return no('Add the weights of your 7 crates. Write the total in the box.');
+    w.tries++; const t = [...w.on].reduce((x, k) => x + CARGO[k][1], 0);
+    if (+a.value !== t) { w.miss++; return no('The scale does not agree with your total. Add the 7 weights again.'); }
+    if (t !== 30) { w.miss++; return no(`Your adding is right: ${t} tons. The engines need exactly 30. Swap a crate for a ${t < 30 ? 'heavier' : 'lighter'} one.`); }
+    w.done = true; S.cargoPick = [...w.on]; delete S.cargoTry; $('pic').innerHTML = cargoSvg(w); chime(); m.className = 'msg good'; m.textContent = '30 tons exactly. The lift engines are ready.';
+    setTimeout(() => { if (widget === w) taskWon('cargo', 'Adding weights to make exactly 30', w.tries, w.miss, 'The crates go aboard: 30 tons exactly. And look: a door was hiding behind the pile!'); }, 1200); }; }
 function cargoCrate(X, Y, z, i) {
   crateBox(X, Y, z, ['#cf9a55', '#b98042', '#a8743a', '#c08a48'][i % 4]); cx.fillStyle = 'rgba(6,9,18,.86)'; rr(X + z * .16, Y + z * .3, z * .68, z * .4, 4); cx.fill();
   cx.fillStyle = '#fff'; cx.font = `700 ${z * .3}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(CARGO[i][1] + ' t', X + z * .5, Y + z * .51); cx.textBaseline = 'alphabetic';
