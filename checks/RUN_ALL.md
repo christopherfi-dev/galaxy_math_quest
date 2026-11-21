@@ -24,6 +24,12 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `world_web_check.py` | The world web plan (`proposals/GMQ_World_Web_v1_2026-11-21.csv`): every need exists and can be met from the start, no loops, nothing new needs a place not built, no built thing needs something new, no planet's own job waits on another planet, every new thing has a use, no job or landing needs a secret (rule 8; Voltara's two cases are listed as waiting on Marc). Reports the finds that lead nowhere. Python only |
 | `no_secret_needed_test.js` | No secret is needed to finish the station: a new cadet with an empty bag and no secrets reaches all 15 tasks and launches. Also: no square past the gap can be walked on until the poster switch is on. Fails on version 83, passes on 84. Needs Playwright |
 
+## The Voltara fly-in (its own pages, not the game)
+
+| File | What it checks |
+|---|---|
+| `flyin_testpage_test.js` | The iPad test page (`docs/flyin/test.html`): on three screens it starts, ends by itself with a number on each line, fits the screen and asks the network for nothing; it copes with no WebGL 2, the words a real iPad sends, an iPad turned in the middle, and Test again. It does not check speed: this machine draws WebGL in software. Needs Playwright. About 1 minute |
+
 ## Play tests: a real browser plays the game
 
 | File | What it plays |
