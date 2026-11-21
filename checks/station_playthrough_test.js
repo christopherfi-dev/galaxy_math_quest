@@ -127,7 +127,9 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await crate(6); expect(await cmsg(), /hold is full/, 'cargo: an eighth crate');
     await p.fill('#ans', '31'); await p.click('#try'); expect(await cmsg(), /adding is right: 31 tons.*lighter/, 'cargo: a right sum, too heavy');
     await p.click('#leave'); await say('use scale'); ok2(await p.evaluate(() => widget.on.size) === 7, name + ': the hold is kept after leaving');
-    await unload(10); await crate(6); await shot('9_cargo'); await p.fill('#ans', '30'); await p.click('#try'); await p.waitForTimeout(1500);
+    await unload(10); await crate(6); await p.fill('#ans', '30'); await p.click('#try'); expect(await cmsg(), /Voltara's list asks for energy cells and spare parts/, 'cargo: 30 tons without the list');      /* 7+6+5+4+3+3+2 */
+    await unload(4); await crate(7); await p.click('#try'); expect(await cmsg(), /asks for spare parts\. Swap crates so it comes too/, 'cargo: one of the list missing');
+    await unload(0); await unload(9); await crate(5); await crate(8); await shot('9_cargo'); await p.click('#try'); await p.waitForTimeout(1500);      /* 7+6+5+4+2+4+2 = 30, with both */
     expect(await last(), /30 tons exactly.*door was hiding.*Navigation part is fitted.*Launch Bay door/, 'cargo and the navigation part');
     // ---- Power Bay: 5-1 Circuit Connection, 5-2 Power Allocation (real life), 5-3 Emergency Power
     expect(await say('go to power'), /Power Bay/, 'power bay after the cargo'); await p.waitForTimeout(200);

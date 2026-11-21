@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 71</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 72</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -2077,7 +2077,10 @@ const slot = k => [32.2 + (k % 3) * .78, 11.55 - Math.floor(k / 3) * .78];
    [Source: Marc, 2026-11-21: "students should have to click check. We shouldn't show them the adding for them. They should do that on their own."]
    [Proposal] the child writes the sum before the check, so the adding is theirs and the check can tell a wrong sum from a wrong load.
    33 of the 330 ways to pick 7 of the 11 crates make 30 (checks/cargo_load_check.py). */
-function cargoSvg(w) { const on = [...w.on], crate = (x, y, cw, i, at, small) => { const [nm, t] = CARGO[i]; return `<g data-${at} style="cursor:pointer"><rect x="${x}" y="${y}" width="${cw}" height="78" rx="8" fill="${['#cf9a55', '#b98042', '#a8743a', '#c08a48'][i % 4]}" stroke="#2b1a00" stroke-width="2"/><rect x="${x + 5}" y="${y + 27}" width="${cw - 10}" height="45" rx="5" fill="rgba(6,9,18,.86)"/><text x="${x + cw / 2}" y="${y + 19}" text-anchor="middle" font-size="${small ? 10.5 : 12}" font-weight="700" style="fill:#2b1a00">${nm}</text><text x="${x + cw / 2}" y="${y + 59}" text-anchor="middle" font-size="25" font-weight="700" style="fill:#fff">${t} t</text></g>`; };
+/* [Marc, 2026-11-21, agreed: Station Story v2, item 13] Voltara's supply list: energy cells and spare parts, for its power tower. They must be in the hold.
+   11 of the 33 right loads have both, so there is still a real choice (checks/cargo_load_check.py). */
+const CARGO_NEED = [7, 5];
+function cargoSvg(w) { const on = [...w.on], crate = (x, y, cw, i, at, small) => { const [nm, t] = CARGO[i]; return `<g data-${at} style="cursor:pointer"><rect x="${x}" y="${y}" width="${cw}" height="78" rx="8" fill="${['#cf9a55', '#b98042', '#a8743a', '#c08a48'][i % 4]}" stroke="#2b1a00" stroke-width="2"/><rect x="${x + 5}" y="${y + 27}" width="${cw - 10}" height="45" rx="5" fill="rgba(6,9,18,.86)"/><text x="${x + cw / 2}" y="${y + 19}" text-anchor="middle" font-size="${small ? 10.5 : 12}" font-weight="700" style="fill:#2b1a00">${nm}</text><text x="${x + cw / 2}" y="${y + 59}" text-anchor="middle" font-size="25" font-weight="700" style="fill:#fff">${t} t</text>${CARGO_NEED.includes(i) ? `<path d="M${x + cw - 7} ${y - 12} l3 6 6 1 -4.5 4 1 6.5 -5.5 -3 -5.5 3 1 -6.5 -4.5 -4 6 -1 z" fill="#ffd25e" stroke="#0b1322" stroke-width="1.5"/>` : ''}</g>`; };
   let s = `<svg class="picsvg" viewBox="0 0 640 352" style="aspect-ratio:640/352;touch-action:manipulation" role="img" aria-label="Eleven crates in a pile, each marked with its weight in tons, and a ship's hold with 7 places"><rect width="640" height="352" rx="12" fill="#0b1322"/><text x="16" y="24" font-size="15" font-weight="700" style="fill:#e8eef8">The cargo pile</text>`;
   for (let i = 0; i < 11; i++) { const r = i < 6 ? 0 : 1, x = (r ? 64 : 12) + (r ? i - 6 : i) * 104, y = 34 + r * 88;
     s += w.on.has(i) ? `<rect x="${x}" y="${y}" width="96" height="78" rx="8" fill="none" stroke="#34496c" stroke-width="2" stroke-dasharray="6 5"/>` : crate(x, y, 96, i, `c="${i}"`); }
@@ -2090,9 +2093,9 @@ function cargoToggle(i) { const w = widget; if (!w || w.kind !== 'cargo' || w.do
   S.cargoTry = [...w.on]; save(); beep(w.on.has(i) ? 520 : 300, .06); m.textContent = ''; $('pic').innerHTML = cargoSvg(w); }
 function startCargo() { const w = widget = { kind: 'cargo', on: new Set(S.cargoTry || []), tries: 0, miss: 0 };      /* the crates in the hold are kept if the cadet leaves */
   toy(`<p class="eyebrow">Navigation System · task 3 of 3</p><p class="mw"><b>Maths word: sum.</b> The sum is the answer when you add.</p><h3>Cargo Load</h3>
-    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext"><p class="story">Pack your ship for the flight to Voltara. Its hold has 7 places. Its lift engines are set for exactly 30 tons. Heavier, and the ship cannot take off. Lighter, and it spins off course.</p>
+    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext"><p class="story">Pack your ship for the flight to Voltara. Before the message broke, Voltara sent a supply list for its power tower: <b>energy cells</b> and <b>spare parts</b>. They have a star in the picture.</p><p class="story">Your hold has 7 places. The lift engines are set for exactly 30 tons. Heavier, and the ship cannot take off. Lighter, and it spins off course.</p>
     <p class="note"><b>A finished example.</b> A trader must pack 3 bags that weigh exactly 10 kilograms. She tries 4, 2 and 3. That is 9: too light. She swaps the 3 for a 4. 4 + 2 + 4 = 10. Exactly 10.</p>
-    <p class="q">Load 7 crates that weigh exactly 30 tons together.</p><p class="note">Tap a crate to load it. Tap it in the hold to take it out. Add the weights yourself.</p>
+    <p class="q">Load 7 crates that weigh exactly 30 tons together. Voltara's two must be among them.</p><p class="note">Tap a crate to load it. Tap it in the hold to take it out. Add the weights yourself.</p>
     <div class="field"><span class="note">My 7 crates weigh</span><input id="ans" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="My 7 crates weigh how many tons"><span class="note">tons.</span></div>
     <div class="field"><button class="btn" type="button" id="try">Check the load</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
   $('pic').innerHTML = cargoSvg(w); $('leave').onclick = leave; const a = $('ans'), m = $('msg'), no = t => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = t; };
@@ -2103,6 +2106,7 @@ function startCargo() { const w = widget = { kind: 'cargo', on: new Set(S.cargoT
     w.tries++; const t = [...w.on].reduce((x, k) => x + CARGO[k][1], 0);
     if (+a.value !== t) { w.miss++; return no('The scale does not agree with your total. Add the 7 weights again.'); }
     if (t !== 30) { w.miss++; return no(`Your adding is right: ${t} tons. The engines need exactly 30. Swap a crate for a ${t < 30 ? 'heavier' : 'lighter'} one.`); }
+    const miss = CARGO_NEED.filter(i => !w.on.has(i)).map(i => CARGO[i][0].toLowerCase()); if (miss.length) { w.miss++; return no(`30 tons exactly. But Voltara's list asks for ${miss.join(' and ')}. Swap crates so ${miss.length > 1 ? 'they come' : 'it comes'} too, and keep the load at 30.`); }
     w.done = true; S.cargoPick = [...w.on]; delete S.cargoTry; $('pic').innerHTML = cargoSvg(w); chime(); m.className = 'msg good'; m.textContent = '30 tons exactly. The lift engines are ready.';
     setTimeout(() => { if (widget === w) taskWon('cargo', 'Adding weights to make exactly 30', w.tries, w.miss, 'The crates go aboard: 30 tons exactly. And look: a door was hiding behind the pile!'); }, 1200); }; }
 function cargoCrate(X, Y, z, i) {
