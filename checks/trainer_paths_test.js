@@ -19,7 +19,7 @@ const path = require('path');
   await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); S.bot = true; S.botName = 'Zip'; save(); });
   // answer the question on screen, right or wrong, through the panel's own controls
   const answer = right => p.evaluate(right => {
-    const w = widget, k = w.akind, g = w.cur, hit = sel => document.querySelector('#toy ' + sel).dispatchEvent(new MouseEvent('click', { bubbles: true })), type = (id, v) => { $(id).value = String(v); $(id).oninput(); };
+    const w = widget, k = w.akind, g = w.cur, hit = sel => (document.querySelector('#toy ' + sel) || document.querySelector('#stageview ' + sel)).dispatchEvent(new MouseEvent('click', { bubbles: true })), type = (id, v) => { $(id).value = String(v); $(id).oninput(); };
     if (k === 'num') { type('ans', right ? w.ans : w.ans + 1); return $('try').click(); }
     if (k === 'time') { type('ans', right ? w.ans : (w.ans % 100 === 59 ? w.ans - 1 : w.ans + 1)); return $('try').click(); }
     if (k === 'money') { type('ans', String(right ? w.ans : w.ans + 5).padStart(3, '0')); return $('try').click(); }

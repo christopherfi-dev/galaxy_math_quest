@@ -58,9 +58,9 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     t = await q(); g = t.match(/it held (\d+) cells\. Now it holds (\d+) cells/); await shot('2_grid');
     // step 3 must ask about ONE section. A child could also think of the cells that moved (Marc typed 8), or of the whole grid (0 more). Both get kind words, and neither is marked right.
     if (!g || !/^Look at one section\./.test(t) || !/than before\?$/.test(t)) bad.push(name + ': grid step 3 does not ask about one section: "' + t + '"');
-    if (!(await p.$('#toy .art svg[aria-label^="One section before: ' + g[1] + ' dots. One section now: ' + g[2] + ' dots"]'))) bad.push(name + ': grid step 3 has no before-and-now picture');
+    if (!(await p.$('#stageview .art svg[aria-label^="One section before: ' + g[1] + ' dots. One section now: ' + g[2] + ' dots"]'))) bad.push(name + ': grid step 3 has no before-and-now picture');
     await type(g[1]); expect(await p.textContent('#msg'), new RegExp('one section only\\. How many more is ' + g[2] + ' than ' + g[1] + '\\?'), 'grid: the cells that moved');
-    { const see = await p.evaluate(() => { const m = document.getElementById('msg').getBoundingClientRect(), t = document.getElementById('toy').getBoundingClientRect(), a = document.querySelector('#toy .art').getBoundingClientRect(), y = document.getElementById('try').getBoundingClientRect(); return { msg: m.bottom <= Math.min(t.bottom, innerHeight) + 1 && m.top >= t.top - 1, pic: a.top >= t.top - 1, btn: y.bottom <= Math.min(t.bottom, innerHeight) + 1 }; });
+    { const see = await p.evaluate(() => { const m = document.getElementById('msg').getBoundingClientRect(), t = document.getElementById('toy').getBoundingClientRect(), a = document.querySelector('#stageview .art').getBoundingClientRect(), sv = document.getElementById('stageview').getBoundingClientRect(), y = document.getElementById('try').getBoundingClientRect(); return { msg: m.bottom <= Math.min(t.bottom, innerHeight) + 1 && m.top >= t.top - 1, pic: !document.getElementById('stageview').hidden && a.height > 40 && a.top >= sv.top - 1 && a.bottom <= sv.bottom + 1,      /* [Marc, 2026-11-21] the picture fills the picture area, not the desk */ btn: y.bottom <= Math.min(t.bottom, innerHeight) + 1 }; });
       if (!see.msg) bad.push(name + ': grid: the words after a wrong answer are out of sight'); if (!see.pic) bad.push(name + ': grid: the picture is cut off when the words show'); if (!see.btn) bad.push(name + ': grid: the Check button is out of sight when the words show'); }
     await type(0); expect(await p.textContent('#msg'), /grid still has \d+ cells\. But one section holds more/, 'grid: 0 more');
     await type(g[2] - g[1]); expect(await last(), /2 of 3 Shield tasks/, 'energy grid');
@@ -73,7 +73,7 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     for (let i = 0; i < 4; i++) await p.fill('#g' + i, String(i === 2 ? (counts[i] % 9) + 1 : counts[i])); await p.click('#try'); expect(await p.textContent('#msg'), /3 of 4/, 'wrong artifact count');
     await p.click('#leave'); await say('open cage'); if ((await p.inputValue('#g0')) !== String(counts[0])) bad.push(name + ': the dials forgot the numbers');
     await p.fill('#g2', String(counts[2])); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Engine Core hums/, 'alien artifacts');
-    await say('use scanner'); const kinds = await p.evaluate(() => { const svg = document.querySelector('#pic svg').innerHTML; return COLS.slice(0, 4).map(c => (svg.match(new RegExp(`fill="${c}" stroke="#0e1626"`, 'g')) || []).length); });   // count the aliens as drawn
+    await say('use scanner'); const kinds = await p.evaluate(() => { const svg = (document.querySelector('#stageview .picsvg') || document.querySelector('#pic svg')).innerHTML;      /* the aliens are drawn big, in the picture area */ return COLS.slice(0, 4).map(c => (svg.match(new RegExp(`fill="${c}" stroke="#0e1626"`, 'g')) || []).length); });   // count the aliens as drawn
     await pic(`[data-t="b:0,${kinds[0]}"]`); await p.click('#try'); expect(await p.textContent('#msg'), /1 of 4 bars/, 'graph with one bar');
     for (let i = 1; i < 4; i++) await pic(`[data-t="b:${i},${kinds[i]}"]`); await shot('4_species'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /saves your graph/, 'alien species');
     await slip('use easel', 'starmap'); expect(await last(), /Engine Core part is fitted/, 'engine core part');
@@ -111,7 +111,7 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
       for (const t of want) await p.locator('#toy .wire', { hasText: new RegExp('^' + t + 's?$') }).click(); await p.click('#try'); await p.waitForTimeout(150); }
     expect(await last(), /1 of 3 Power tasks/, 'circuit connection');
     await slip('use bench', 'alloc');
-    await say('use cells'); for (let i = 0; i < 3; i++) { const n = await p.evaluate(() => { const svg = document.querySelector('#toy .art svg').innerHTML, c = re => (svg.match(re) || []).length; return c(/width="40" height="40"/g) * 100 + c(/width="5" height="40"/g) * 10 + c(/width="6" height="6"/g); });   // read the blocks as drawn
+    await say('use cells'); for (let i = 0; i < 3; i++) { const n = await p.evaluate(() => { const svg = document.querySelector('#stageview .art svg').innerHTML, c = re => (svg.match(re) || []).length; return c(/width="40" height="40"/g) * 100 + c(/width="5" height="40"/g) * 10 + c(/width="6" height="6"/g); });   // read the blocks as drawn
       if (i === 1) { await shot('9_blocks'); if (Math.floor(n / 10) % 10 !== 0) bad.push(name + ': the second reading should have no tens'); } await type(n); }
     expect(await last(), /Power part is fitted.*all five parts/, 'emergency power and the whole ship');
     // ---- launch: needs a course
