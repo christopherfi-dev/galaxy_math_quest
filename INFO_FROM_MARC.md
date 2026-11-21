@@ -247,4 +247,16 @@ These are Marc's words, tidied. They are not on the form above.
   - other teachers and the server are needed first
 
   Recommended now: only small, cheap steps that keep the door open (tag strands and standards, give number rules a band setting, cards for first completions only). Build nothing until his class has played Grade 3. Nothing in the game was changed.
+- **Do we keep Patterns? Coding Comets? (Marc, 2026-11-21).** "Do we get rid of patterns? Like that's not a real domain in the AERO or common core? For some reason my school had that as one of our five domains and the scope and sequence... But I also know I'm teaching like algebra students now and they have to do patterns there as well like patterns and figure out the algebra equation... Do we keep the patterns one? Other idea was... a coding comets one as well? Or then go there and learn how to code and solve problems similar like code.org with the blocks. Put something that was actually meaningful and actually mattered."
+
+  Answered in `proposals/GMQ_Patternox_Options_v1_2026-11-21.md`:
+  - Patterns is not an AERO domain; it is 3.OA.9 inside Operations and Algebraic Thinking (his AERO document).
+  - It is the doorway to algebra.
+  - 3.OA.4 (unknowns) and 3.OA.5 (properties of ×) show nothing in the game yet.
+
+  [Proposal] Keep Patternox, but make it "the galaxy of rules": number machines, missing parts, split and swap. The broken wormhole repair is the way in. It grows into algebra in later bands.
+
+  On coding: no code.org-style block clone. Instead, the game's own command words become code: tap command chips into a list, with "repeat" as multiplication. Comets [Source: "study comets"] could carry it later as space events.
+
+  His decisions: A to E; before or after Lengthar; where coding goes. Nothing was changed in the game.
 
