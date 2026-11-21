@@ -2,6 +2,8 @@
 
 **Date:** 21 November 2026. **For:** Marc. **Nothing in this note is built.** The game is unchanged.
 
+**Read version 2 first:** `GMQ_Station_Story_v2_2026-11-21.md`. Marc said the 2023 reasons are the floor, not a template. Sections 1 to 4 here still hold (what each task says today, and the faults). Sections 5 and 6 are replaced by version 2.
+
 [Source: Marc, 2026-11-21] "So go through the space station tasks. Do the students know why they're doing each one? How they could relate to their journey in space. Should that be the story goal for this space station? Cohesive?"
 
 **How I checked:** I opened all 15 tasks in the game (version 65) and copied the words a child sees before the maths starts. I compared them with your 2023 station pages.
