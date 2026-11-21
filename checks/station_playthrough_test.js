@@ -85,14 +85,15 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await slip('use easel', 'starmap'); expect(await last(), /Engine Core part is fitted/, 'engine core part');
     // ---- Weapons Bay: 4-1 Weapons Coding (drones), 4-2 Ammo Count, 4-3 Target Practice (real life)
     await say('go to weapons'); await p.waitForTimeout(200); expect(await say('open ammo'), /fuse/i, 'ammo box'); expect(await say('use oil on rusty drone'), /lifts off/, 'rusty drone');
-    await say('use cannon'); await p.waitForTimeout(1500);
-    for (let round = 0; round < 2; round++) {
-      const ds = await p.evaluate(() => { const r = cv.getBoundingClientRect(); return widget.d.map((d, i) => ({ n: d.n, want: (d.n % 2 === 1) === (widget.want === 'odd'), x: r.left + sx(DSLOT[i][0]) + ts / 2, y: r.top + sy(DSLOT[i][1]) + ts * .42 })); });
-      if (ds.some(d => d.x < 2 || d.x > w - 2)) bad.push(name + ': a drone is off the screen');
-      if (round === 0) { await shot('5_drones'); const no = ds.find(d => !d.want); await p.touchscreen.tap(no.x, no.y); await p.waitForTimeout(80); expect(await p.textContent('#msg'), /will not fire/, 'tapping a wrong drone'); }
-      for (const d of ds.filter(d => d.want)) { await p.touchscreen.tap(d.x, d.y); await p.waitForTimeout(90); }
-    }
-    await p.waitForTimeout(150); expect(await last(), /drill is passed\. The cannons know their targets/, 'weapons coding');
+    // 4-1 Weapons Coding: light every odd number on the cannons' lock; a V appears. Four odd numbers sit outside the V, so the shape alone is not enough.
+    await say('use cannon'); await p.waitForTimeout(300); const WC = await p.evaluate(() => ({ nums: S.wcode.nums, v: WCV })), cell = i => pic(`[data-c="${i}"]`), wmsg = () => p.textContent('#msg');
+    await p.click('#try'); expect(await wmsg(), /Light the odd numbers first/, 'weapons coding: nothing lit');
+    for (const i of WC.v) await cell(i); await p.click('#try'); expect(await wmsg(), /4 odd numbers are still dark/, 'weapons coding: only the V');
+    const ev = WC.nums.findIndex(n => n % 2 === 0); await cell(ev); for (let i = 0; i < 36; i++) if (WC.nums[i] % 2 === 1 && !WC.v.includes(i)) await cell(i);
+    await p.click('#try'); expect(await wmsg(), /1 lit number is even/, 'weapons coding: an even number lit');
+    await p.click('#leave'); await say('use cannon'); ok2(await p.evaluate(() => S.wcode.lit.length) === 17, name + ': weapons coding: the lit numbers are kept after leaving');
+    await cell(ev); await shot('5_drones'); await p.click('#try'); expect(await wmsg(), /V, for Voltara/, 'weapons coding: the sign'); await p.waitForTimeout(1700);
+    expect(await last(), /lock opens\. Your twin cannons are ready/, 'weapons coding');
     await say('use racks'); const racks = await p.evaluate(() => { const svg = $('pic').innerHTML; return RACKC.map(c => (svg.match(new RegExp(`fill="${c[1]}"`, 'g')) || []).length); });   // count the counters as drawn
     await p.click('#try'); expect(await p.textContent('#msg'), /That is odd/, 'racks left odd');
     for (let i = 0; i < 5; i++) if (racks[i] % 2) await pic(`[data-r="${i}"]`); await shot('6_racks'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Every rack makes pairs\. Your cannons will fire straight/, 'ammo count');

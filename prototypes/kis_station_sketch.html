@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 73</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 74</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -415,7 +415,7 @@ const STORY = {
   battle: 'The storm left rocks drifting between here and Voltara. Before your shield can brace, it must know how many are coming.',
   grid: 'Storm rocks will hit your shield on the way to Voltara. Its energy grid must hold enough power for every section.',
   calib: 'A rock always finds the weakest part of a shield, as it did on the shuttle. Share your tokens equally, so your shield has no weak side.',
-  drones: 'Before the flight, the cannons practise on drones. The drill computer picks which drones play the storm rocks.',
+  drones: "The storm scrambled the cannons' lock. Its screen is a grid of numbers. Light every odd number, and the unlock sign appears.",
   racks: 'Your ship has twin cannons, one on each side. They fire in pairs. An odd number in a rack leaves one shot with no partner, and a shot fired alone pushes the ship sideways.',
   target: 'Each hit charges the twin cannons. They need a charge from 32 to 40, shared equally between the two. Past 40, they overheat.',
   board: 'The storm burned out the old wires. Each new wire carries hundreds, tens or ones. The board needs exactly its number. Too much burns it out again. Too little, and the ship stays dark.',
@@ -426,7 +426,7 @@ const VMSG = ['"…KIS Station… this is Voltara… can anyone hear us…"', '"
 /* each task's line in the ship's log: what it did for the flight. w is the task, captured before it closes. */
 const SLOG = { battle: () => 'Shield: tested against the storm rocks.', grid: () => 'Shield grid: enough power for every section.', calib: () => 'Shield: tokens shared equally. No weak side.',
   core: () => 'Engine Core: out of its cage, and running.', species: () => "Voltara's creatures: counted and graphed.", starmap: () => 'Shield strength: set for every star on the path.',
-  drones: () => 'Cannons: the drill is passed.', racks: () => 'Ammo: every rack makes pairs.', target: () => 'Twin cannons: charged, and shared equally.',
+  drones: () => "Cannons' lock: open. Its sign was a V, for Voltara.", racks: () => 'Ammo: every rack makes pairs.', target: () => 'Twin cannons: charged, and shared equally.',
   fuel: w => w && w.route ? `Route: ${w.route === 'rocks' ? 'through the rocks' : 'by the fuel moon'}. ${w.land} units left on landing.` : 'Route: planned.', hop: w => `Navigation key part: found${w && w.r ? ` at (${w.r.end.join(', ')})` : ''}.`,
   cargo: () => `Cargo: ${(S.cargoPick || []).map(i => CARGO[i][0].toLowerCase()).join(', ')}. 30 tons.`, board: w => `Circuit board: wired for exactly ${w && w.n ? w.n : 'its number'}.`,
   alloc: () => 'Power: 4,460 units shared exactly among four systems.', blocks: () => 'Emergency power: read, and life support kept on.' };
@@ -854,7 +854,7 @@ const DO = {
   toolbox: { look: () => S.toolbox ? 'The toolbox is open and empty.' : 'A red toolbox. The lid is shut.', open: () => { if (S.toolbox) return 'It is open.'; S.toolbox = true; give('oil'); secret('toolbox', 'The lid flips up. An oil can! Good for rusty things.'); },
     take: 'It is too heavy. Open it.', push: 'It scrapes a little.', use: () => DO.toolbox.open() },
   cannon: { look: () => S.done.drones ? 'The practice cannon. Its light is green.' : 'A practice cannon. It points at the drones.',
-    use: () => { if (S.done.drones) return 'Target practice is done. Good shooting.'; startDrones(); return 'The cannon powers up. The drones show their numbers.'; }, push: () => DO.cannon.use(), open: 'It has no door.', take: 'It is bolted to the floor.' },
+    use: () => { if (S.done.drones) return "The cannons' lock is open."; startDrones(); return "The cannons' lock lights up. It is full of numbers."; }, push: () => DO.cannon.use(), open: 'It has no door.', take: 'It is bolted to the floor.' },
   junk: { look: 'A rusty old drone on the floor. Its rotor is stuck fast.', push: 'It squeaks. The rotor is stuck.', take: 'It is too heavy.', open: 'It is rusted shut.',
     use: it => { if (!it) return 'The rotor is stuck. It needs oil.'; if (it !== 'oil') return it === 'wrench' ? 'The wrench slips. The rust is too thick. Try oil.' : 'That does not help.'; S.junk = true; save(); secret('junk', 'A drop of oil. Whirr! The old drone lifts off and loops the room. It drops a card for you.'); card(); } },
   drones: { look: 'Practice drones. Each one can show a number. Use the cannon to start.', take: 'It floats out of reach.', push: 'It bobs away and comes back.', use: it => it === 'oil' && !S.junk ? DO.junk.use('oil') : DO.cannon.use() },
@@ -1612,15 +1612,31 @@ function startCore() {
 }
 /* WEAPON SYSTEM: odd and even. From Marc's 4-3 Target Practice: "drones marked with different numbers". */
 let zapD = null;
-function startDrones() { widget = { kind: 'drones', round: 0, tries: 0, miss: 0 }; nextDrones(); }
-function nextDrones() {
-  const w = widget, odd = w.round === 0, lo = odd ? 1 : 21, hi = odd ? 20 : 99, want = 3 + rnd(3), ns = [], isT = n => (n % 2 === 1) === odd;
-  while (ns.length < 8) { const n = lo + rnd(hi - lo + 1), have = ns.filter(isT).length; if (ns.includes(n)) continue; if (isT(n) ? have < want : ns.length - have < 8 - want) ns.push(n); }
-  w.want = odd ? 'odd' : 'even'; w.d = ns.map(n => ({ n, hit: false }));
-  toy(`<p class="eyebrow">Weapon System · task 1 of 3 · round ${w.round + 1} of 2</p><p class="mw"><b>Maths word: odd and even.</b> Even numbers end in 0, 2, 4, 6 or 8. Odd numbers end in 1, 3, 5, 7 or 9.</p><h3>Weapons Coding</h3>
-    ${w.round ? '' : storyP('drones')}<p class="q">In this round, drones with ${w.want} numbers play the rocks. Tap every drone with an ${w.want} number.</p><div class="meter" id="dleft"></div><div class="field"><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
-  $('leave').onclick = leave; droneMeter();
-}
+/* 4-1 WEAPONS CODING: the storm scrambled the cannons' lock. Light every odd number on its screen, and the unlock sign appears: a V, for Voltara.
+   [Marc, 2026-11-21, agreed: Station Story v2, item 13] [Source: his 2023 page: "Identify sequences of odd and even numbers to code the weapon system."]
+   [Proposal] a 6 by 6 screen; the V is 12 odd numbers; 4 more odd numbers sit outside it, so guessing the shape is not enough: every number must be judged.
+   Numbers go up to 999, so the child must look at the last digit. Checked on 10,000 cadets in checks/weapons_code_check.js. */
+const WCV = [0, 5, 6, 11, 13, 16, 19, 22, 26, 27, 32, 33];      /* the V on a 6 by 6 grid, cell = row * 6 + column */
+function wcodeMake() { const nums = [], used = new Set(), out = []; for (let i = 0; i < 36; i++) if (!WCV.includes(i)) out.push(i);
+  for (let i = out.length - 1; i > 0; i--) { const j = rnd(i + 1); [out[i], out[j]] = [out[j], out[i]]; } const decoy = out.slice(0, 4);
+  for (let i = 0; i < 36; i++) { const odd = WCV.includes(i) || decoy.includes(i); let n; do { const big = rnd(3); n = big === 0 ? 10 + rnd(90) : big === 1 ? 100 + rnd(900) : 1 + rnd(9); n += (n % 2 === 1) === odd ? 0 : 1; } while (used.has(n) || n > 999); used.add(n); nums.push(n); }
+  return { nums, lit: [] }; }
+function wcodeSvg(C, done) { let s = ''; for (let i = 0; i < 36; i++) { const r = Math.floor(i / 6), c = i % 6, x = 14 + c * 102, y = 34 + r * 52, on = C.lit.includes(i), v = done && WCV.includes(i);
+    s += `<g data-c="${i}" style="cursor:pointer"><rect x="${x}" y="${y}" width="94" height="44" rx="8" fill="${v ? '#ffd25e' : on ? (done ? '#33476a' : '#6db3ff') : '#101a2c'}" stroke="${v ? '#fff' : '#5a6d90'}" stroke-width="${v ? 3 : 1.5}"/><text x="${x + 47}" y="${y + 30}" text-anchor="middle" font-size="22" font-weight="700" style="fill:${v || on ? '#0b1322' : '#e8eef8'}">${C.nums[i]}</text></g>`; }
+  return `<svg class="picsvg" viewBox="0 0 640 352" style="aspect-ratio:640/352;touch-action:manipulation" role="img" aria-label="The cannons' lock: a screen of 36 numbers"><rect width="640" height="352" rx="12" fill="#0b1322"/><text x="320" y="24" text-anchor="middle" font-size="14" font-weight="700" style="fill:#9fc7ff">THE CANNONS' LOCK</text>${s}</svg>`; }
+function startDrones() { if (!S.wcode) { S.wcode = wcodeMake(); save(); } const C = S.wcode, w = widget = { kind: 'wcode', tries: 0, miss: 0 };
+  toy(`<p class="eyebrow">Weapon System · task 1 of 3</p><p class="mw"><b>Maths word: odd and even.</b> Even numbers end in 0, 2, 4, 6 or 8. Odd numbers end in 1, 3, 5, 7 or 9.</p><h3>Weapons Coding</h3>
+    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext">${storyP('drones')}
+    <p class="note"><b>A finished example.</b> Look only at the last digit. 58 ends in 8, so it is even. 203 ends in 3, so it is odd. 470 ends in 0, so it is even.</p>
+    <p class="q">Light every odd number on the lock. Tap a number to light it. Tap it again to turn it off.</p>
+    <div class="field"><button class="btn" type="button" id="try">Try the lock</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
+  const m = $('msg'), draw = d => { $('pic').innerHTML = wcodeSvg(C, d); }; draw(); $('leave').onclick = leave;
+  $('pic').onclick = e => { if (w.done) return; const t = e.target.closest('[data-c]'); if (!t) return; const i = +t.dataset.c, k = C.lit.indexOf(i); if (k >= 0) C.lit.splice(k, 1); else C.lit.push(i); save(); beep(k >= 0 ? 300 : 560, .04); m.textContent = ''; draw(); };
+  $('try').onclick = () => { if (w.done) return; if (!C.lit.length) { m.className = 'msg bad'; m.textContent = 'Light the odd numbers first.'; return; } w.tries++;
+    const evenLit = C.lit.filter(i => C.nums[i] % 2 === 0).length, oddDark = C.nums.filter((n, i) => n % 2 === 1 && !C.lit.includes(i)).length;
+    if (evenLit || oddDark) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `The lock buzzes. ${evenLit ? `${evenLit} lit number${evenLit > 1 ? 's are' : ' is'} even. ` : ''}${oddDark ? `${oddDark} odd number${oddDark > 1 ? 's are' : ' is'} still dark. ` : ''}Look at the last digit of each.`; return; }
+    w.done = true; draw(true); chime(); m.className = 'msg good'; m.textContent = 'The odd numbers glow. A sign appears: V, for Voltara. The lock clicks open.'; const t0 = w.tries, m0 = w.miss; delete S.wcode; save();
+    setTimeout(() => { if (widget === w) taskWon('drones', 'Odd and even, up to 999: the last digit (AERO 3.OA.9)', t0, m0, 'The cannons\' lock opens. Your twin cannons are ready.'); }, 1500); }; }
 const dronesLeft = () => widget.d.filter(d => !d.hit && (d.n % 2 === 1) === (widget.want === 'odd')).length;
 function droneMeter() { const all = widget.d.filter(d => (d.n % 2 === 1) === (widget.want === 'odd')).length, left = dronesLeft(); $('dleft').innerHTML = Array.from({ length: all }, (_, i) => `<span class="pip${i < all - left ? ' on' : ''}"></span>`).join('') + `<span>${all - left} of ${all} ${widget.want} drones</span>`; }
 function droneTap(i) {
