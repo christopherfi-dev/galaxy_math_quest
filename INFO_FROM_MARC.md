@@ -302,3 +302,7 @@ These are Marc's words, tidied. They are not on the form above.
     - the hint no longer pushes the chart chain; at the end it offers the secrets left, "You do not need them to fly"
   - New check `checks/no_secret_needed_test.js` (fails on version 83, passes on 84); world web check rule 8; `station_playthrough_test.js` updated.
   - Answered in `proposals/GMQ_Secrets_Balance_v1_2026-11-21.md`: what a secret can give, help for questions (pushback: maths help for the main tasks stays open to all), balance rules, Voltara's glow stone options V1 to V3. Waiting on his decisions.
+- **Flying into the planets, again; Atlantis (Marc, 2026-11-21).** He sent https://github.com/Noniv/atlantis : "I still think it'd be interesting. Would you do something like this for like flying into the actual planets. But the other thread said no we should not. Or could not? Analysis?"
+  - The earlier note (Exolune) said "could not" only of Exolune itself (a Windows PC program), "could" of a small cousin, and "not yet" because he had said "not now".
+  - Atlantis (read, not run): one 96 KB browser file, code-made, touch controls, MIT licence, built with Claude Code. It needs WebGPU, which an iPad has only from iPadOS 26; no fallback.
+  - Answered in `proposals/GMQ_Planet_Flyin_Atlantis_v1_2026-11-21.md`: choices B (living planets), C (3D arrival), D (a flight over the planet you saved, showing your own work; recommended); a test page for the class iPads offered first. Waiting on his decisions.
