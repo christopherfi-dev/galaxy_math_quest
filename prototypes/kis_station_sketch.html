@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 72</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 73</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -1937,18 +1937,31 @@ function startSpecies() {
   toy(`<p class="eyebrow">Engine Core · task 2 of 3</p><p class="mw"><b>Maths word: bar graph.</b> A bar graph uses bars to show how many.</p><h3>Alien Species</h3>
     <div class="picrow"><div class="pic"><svg class="picsvg" viewBox="0 0 280 138" style="aspect-ratio:280/138" role="img" aria-label="Aliens of four kinds, mixed up"><rect width="280" height="138" rx="8" fill="#0e1a2e"/>${art}</svg>
     <p class="note">${ALIENS.map((a, i) => `<svg viewBox="0 0 26 26" width="20" height="20" style="vertical-align:middle" aria-hidden="true">${alienSvg(i, 13, 13, 9, COLS[i])}</svg> ${a[0]}`).join(' &nbsp; ')}</p></div>
-    <div class="pictext">${storyP('species')}<p class="q">Count each kind. Then tap the graph to build each bar.</p><div id="pic"></div>
+    <div class="pictext">${storyP('species')}<p class="note"><b>A finished example.</b> A farmer counts 5 hens and 3 goats. The hens' bar goes up to 5. The goats' bar goes up to 3. The hens' bar is 2 taller, so there are 2 more hens than goats.</p><p class="q" id="spq">Count each kind. Then tap the graph to build each bar.</p><div id="pic"></div><div id="spask"></div>
     <div class="field"><button class="btn" type="button" id="try">Save the graph</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
   draw(); $('leave').onclick = leave;
-  $('pic').onclick = e => { const t = e.target.closest('[data-t]'); if (!t) return; const [i, v] = t.dataset.t.slice(2).split(',').map(Number); w.st.h[i] = w.st.h[i] === v ? v - 1 : v; beep(520, .04); draw(); };
+  $('pic').onclick = e => { if (w.phase === 2) return; const t = e.target.closest('[data-t]'); if (!t) return; const [i, v] = t.dataset.t.slice(2).split(',').map(Number); w.st.h[i] = w.st.h[i] === v ? v - 1 : v; beep(520, .04); draw(); };
   $('try').onclick = () => { const m = $('msg'); if (w.st.h.every(h => !h)) { m.className = 'msg bad'; m.textContent = 'Tap the graph to build the bars.'; return; } w.tries++; const ok = w.st.h.filter((h, i) => h === cnt[i]).length;
-    if (ok < 4) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `${ok} of 4 bars are right. Count each kind again.`; return; } taskWon('species', 'Count and graph', w.tries, w.miss, 'The scanner saves your graph. Your crew knows who they will meet on Voltara.'); };
+    if (ok < 4) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `${ok} of 4 bars are right. Count each kind again.`; return; }
+    /* [Marc, 2026-11-21, agreed: Station Story v2, item 13] the graph now answers the crew's questions: which kind is most, and how many more (AERO 3.MD.3) */
+    w.phase = 2; chime(); m.className = 'msg good'; m.textContent = 'The scanner saves your graph. Now it can answer the crew.'; $('try').hidden = true;
+    const most = cnt.indexOf(Math.max(...cnt)), pairs = []; for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) if (cnt[a] > cnt[b]) pairs.push([a, b]); const [pa, pb] = pairs[rnd(pairs.length)];
+    $('spq').textContent = 'Your graph is right. Use it to answer the crew.';
+    $('spask').innerHTML = `<p class="q">Which creature will the crew meet most?</p><div class="field">${ALIENS.map((a, i) => `<button class="word" type="button" data-q1="${i}" style="text-transform:none">${a[0]}</button>`).join('')}</div><div id="spq2"></div>`;
+    $('spask').querySelectorAll('[data-q1]').forEach(b => b.onclick = () => { if (w.q1) return; w.tries++; if (+b.dataset.q1 !== most) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `Not the ${a0(b.dataset.q1)}. Look for the tallest bar.`; return; }
+      w.q1 = true; b.classList.add('on'); beep(620, .06); m.className = 'msg good'; m.textContent = `Yes: the ${ALIENS[most][0]}.`;
+      $('spq2').innerHTML = `<p class="q">How many more ${ALIENS[pa][0]} than ${ALIENS[pb][0]}?</p><div class="field"><input id="ans" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="how many more"><button class="btn" type="button" id="sptry">Check</button></div>`;
+      const an = $('ans'); an.oninput = () => { an.value = an.value.replace(/[^0-9]/g, '').slice(0, 1); }; an.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('sptry').click(); } };
+      $('sptry').onclick = () => { if (an.value === '') { m.className = 'msg bad'; m.textContent = 'Write how many more.'; return; } w.tries++;
+        if (+an.value !== cnt[pa] - cnt[pb]) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `Find the ${ALIENS[pa][0]} bar and the ${ALIENS[pb][0]} bar. How much taller is one than the other?`; return; }
+        taskWon('species', 'Count and graph, then read it: most, and how many more (AERO 3.MD.3)', w.tries, w.miss, `${cnt[pa] - cnt[pb]} more ${ALIENS[pa][0]} than ${ALIENS[pb][0]}. Your crew knows who they will meet most on Voltara: the ${ALIENS[most][0]}.`); }; }); };
+  const a0 = i => ALIENS[+i][0];
 }
 /* 2-2 COORDINATE PLOTTING: follow the route, day by day, and mark the hidden star.
    [Source: Marc's page 2-2: "Space Cadets, our Navigation System's key part is lost. Retrieve it through a star map." His page wrote each point as sums, like (2+3, 5-2).]
    [Source: Marc, 2026-11-21, how he ran it in class: "You start here... go over this much and up this much. A different day you go over and down... over an opposite
     amount... we found a hidden star on there somewhere. The goal is for them to mark down where the hidden star is on the coordinate plane."] [Conflict: the two
-    ways are listed in the station guide; this builds the way he ran it.] [Proposal: the rover example, a 0 to 10 grid, 4 or 5 days, the words "over" and "back".]
+    ways are listed in the station guide; this builds the way he ran it.] [Proposal: the rover example, a 0 to 10 grid, 4 or 5 days. Marc agreed on 21 November: the words "right" and "left", and a box for each day.]
    The plane fills the picture. The child taps to trace each day's move; the last tap marks the star. Then they write the star's two numbers. Nothing says where a day ends. */
 function hopRoute() { for (let g = 0; g < 500; g++) { const n = 4 + rnd(2), s = [1 + rnd(4), 1 + rnd(4)], pts = [s], days = [];
     for (let d = 0; d < n; d++) { const [x, y] = pts[pts.length - 1], dx = (rnd(2) ? 1 : -1) * (1 + rnd(4)), dy = (rnd(2) ? 1 : -1) * (1 + rnd(4)), p = [x + dx, y + dy]; if (p[0] < 1 || p[0] > 9 || p[1] < 1 || p[1] > 9) { d--; if (++g > 499) break; continue; } pts.push(p); days.push([dx, dy]); }

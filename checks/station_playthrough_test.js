@@ -75,7 +75,13 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await p.fill('#g2', String(counts[2])); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /Engine Core hums/, 'alien artifacts');
     await say('use scanner'); const kinds = await p.evaluate(() => { const svg = (document.querySelector('#stageview .picsvg') || document.querySelector('#pic svg')).innerHTML;      /* the aliens are drawn big, in the picture area */ return COLS.slice(0, 4).map(c => (svg.match(new RegExp(`fill="${c}" stroke="#0e1626"`, 'g')) || []).length); });   // count the aliens as drawn
     await pic(`[data-t="b:0,${kinds[0]}"]`); await p.click('#try'); expect(await p.textContent('#msg'), /1 of 4 bars/, 'graph with one bar');
-    for (let i = 1; i < 4; i++) await pic(`[data-t="b:${i},${kinds[i]}"]`); await shot('4_species'); await p.click('#try'); await p.waitForTimeout(150); expect(await last(), /saves your graph/, 'alien species');
+    for (let i = 1; i < 4; i++) await pic(`[data-t="b:${i},${kinds[i]}"]`); await shot('4_species'); await p.click('#try'); await p.waitForTimeout(150); expect(await p.textContent('#msg'), /saves your graph\. Now it can answer the crew/, 'the graph is right');
+    // then the graph answers the crew: which kind is most, and how many more (AERO 3.MD.3)
+    const most = kinds.indexOf(Math.max(...kinds)), wrongK = (most + 1) % 4; await p.click(`[data-q1="${wrongK}"]`); expect(await p.textContent('#msg'), /Look for the tallest bar/, 'species: not the most');
+    await p.click(`[data-q1="${most}"]`); const pair = await p.evaluate(() => $('spq2').textContent.match(/How many more (\w+) than (\w+)\?/).slice(1));
+    const names = await p.evaluate(() => ALIENS.map(a => a[0])), diff = kinds[names.indexOf(pair[0])] - kinds[names.indexOf(pair[1])];
+    await p.fill('#ans', String(diff + 1)); await p.click('#sptry'); expect(await p.textContent('#msg'), /How much taller is one than the other/, 'species: a wrong difference');
+    await p.fill('#ans', String(diff)); await p.click('#sptry'); await p.waitForTimeout(150); expect(await last(), new RegExp(`${diff} more ${pair[0]} than ${pair[1]}.*meet most on Voltara`), 'alien species');
     await slip('use easel', 'starmap'); expect(await last(), /Engine Core part is fitted/, 'engine core part');
     // ---- Weapons Bay: 4-1 Weapons Coding (drones), 4-2 Ammo Count, 4-3 Target Practice (real life)
     await say('go to weapons'); await p.waitForTimeout(200); expect(await say('open ammo'), /fuse/i, 'ammo box'); expect(await say('use oil on rusty drone'), /lifts off/, 'rusty drone');
