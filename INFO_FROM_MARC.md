@@ -215,4 +215,5 @@ These are Marc's words, tidied. They are not on the form above.
   - tests run and passed: cargo_load_check, station_playthrough, station_online
   - not done: on a phone the crate names are too small to read (the weights can be read), and what is packed still does not matter later
 - **Update the class link (Marc, 2026-11-21).** "Update class link." Done: the class link is now version 66, the same file as the preview. Before the copy, `checks/class_update_test.js` opened games saved in version 54 (station, a task open, parts and cards, Voltara, space, Chronosia) inside version 66 with nothing lost.
+- **List every open decision with a recommendation (Marc, 2026-11-21).** "Okay. List all of the things you're waiting for my decision on and your recommendation for each." Done: `proposals/GMQ_Decisions_Waiting_2026-11-21.md`, 39 items in five groups (what the class meets now on version 66, the big directions, places and quests, looks, parked by Marc), each with a recommendation marked Proposal and the note that holds the full choice.
 
