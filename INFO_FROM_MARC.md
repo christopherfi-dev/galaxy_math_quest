@@ -228,4 +228,23 @@ These are Marc's words, tidied. They are not on the form above.
   - 81: Judge a planet, from My ship (the probe's three planets; nine marks; choose one; round its day).
   - Also made: the card battle rules sheet (`proposals/GMQ_Card_Battle_Rules_Sheet_v1_2026-11-21.md`), and Case 1's Frame 5 with angle c at 110° (`content/printables/Case1_Frame5_angle_c_110.png`).
   - Every new number rule has a check on thousands of cadets (see `checks/RUN_ALL.md`). Every changed task was looked at on an iPad both ways and a phone. The tests for each changed place were run and pass. The full test suite was not run.
+- **Grades 3 to 6 in one galaxy, for later (Marc, 2026-11-21).** "An idea or suggestion for us to worry about later? Analysis of this? Do you have any pushback or feedback?" He shared a summary of his multi-grade idea:
+  - one persistent galaxy for Grades 3 to 5, maybe 6, with standards as layers on the same topics
+  - everyone starts with the Grade 3 tasks; progression is by mastery, not by school grade, and a Grade 5 child can show adequacy and jump ahead
+  - children can go back to easier bands for cards and discoveries
+  - the galaxy grows and never resets; coordinates can be shared, and the right maths is needed to reach them
+  - AI-made small worlds can fill in, within the standards
+  - a teacher dashboard tracks standards cleared and optional activity
+
+  Answered in `proposals/GMQ_Multi_Grade_Analysis_v1_2026-11-21.md`. The main pushback:
+  - "everyone starts with Grade 3 tasks" works against "the same topics in layers"; layer the station tasks instead
+  - one band per strand, since the galaxies already are the strands
+  - a story-told band check, rather than counting finished quests
+  - shared places whose lock adapts to each reader, so friends are not locked out
+  - easy cards limited by rules, not only by the dashboard
+  - Grade 6 is a different audience (reading level and art)
+  - each band multiplies the work, and AI must never set the numbers
+  - other teachers and the server are needed first
+
+  Recommended now: only small, cheap steps that keep the door open (tag strands and standards, give number rules a band setting, cards for first completions only). Build nothing until his class has played Grade 3. Nothing in the game was changed.
 
