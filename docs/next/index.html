@@ -319,7 +319,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 64</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><span class="note" id="t_ver">Sketch version 65</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -1841,20 +1841,47 @@ function startSpecies() {
   $('try').onclick = () => { const m = $('msg'); if (w.st.h.every(h => !h)) { m.className = 'msg bad'; m.textContent = 'Tap the graph to build the bars.'; return; } w.tries++; const ok = w.st.h.filter((h, i) => h === cnt[i]).length;
     if (ok < 4) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = `${ok} of 4 bars are right. Count each kind again.`; return; } taskWon('species', 'Count and graph', w.tries, w.miss, 'The scanner saves your graph.'); };
 }
-/* 2-2 COORDINATE PLOTTING: small sums tell you where to hop. The lost key part is at the last hop. */
-function startHop() { widget = { kind: 'hop', hop: 0, tries: 0, miss: 0, trail: [] }; nextHop(); }
-function nextHop() {
-  const w = widget; let x, y; do { x = 1 + rnd(6); y = 1 + rnd(6); } while (x === y || w.trail.some(p => p.x === x && p.y === y)); const a = x > 1 ? 1 + rnd(x - 1) : 1, d = 1 + rnd(4);
-  w.tx = x; w.ty = y; w.st = { x: -1, y: -1 }; const draw = () => $('pic').innerHTML = drawPic({ t: 'plane', n: 6, pts: w.trail }, w.st);
-  toy(`<p class="eyebrow">Navigation System · task 2 of 3 · hop ${w.hop + 1} of 3</p><p class="mw"><b>Maths word: coordinates.</b> Two numbers for a point: along first, then up.</p><h3>Coordinate Plotting</h3>
-    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext"><p>A key part is lost in the stars. Each sum tells you where to hop.</p><p class="q">Go along ${a} + ${x - a}. Then go up ${y + d} − ${d}. Tap that point.</p>
-    <div class="field"><button class="btn" type="button" id="try">Land here</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
-  draw(); $('leave').onclick = leave; $('pic').onclick = e => { const t = e.target.closest('[data-t]'); if (!t) return; [w.st.x, w.st.y] = t.dataset.t.slice(2).split(',').map(Number); beep(520, .04); draw(); };
-  $('try').onclick = () => { const m = $('msg'); if (w.st.x < 0) { m.className = 'msg bad'; m.textContent = 'Tap a point on the map first.'; return; } w.tries++;
-    if (w.st.x !== w.tx || w.st.y !== w.ty) { w.miss++; beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = 'There is nothing here! Work out each sum again. Along first, then up.'; return; }
-    beep(880, .1); w.trail.push({ x: w.tx, y: w.ty }); w.hop++; if (w.hop < 3) { nextHop(); $('msg').className = 'msg good'; $('msg').textContent = 'A star! Hop again.'; return; }
-    taskWon('hop', 'Add, subtract and plot', w.tries, w.miss, 'You have found the Navigation System key part!'); };
-}
+/* 2-2 COORDINATE PLOTTING: follow the route, day by day, and mark the hidden star.
+   [Source: Marc's page 2-2: "Space Cadets, our Navigation System's key part is lost. Retrieve it through a star map." His page wrote each point as sums, like (2+3, 5-2).]
+   [Source: Marc, 2026-11-21, how he ran it in class: "You start here... go over this much and up this much. A different day you go over and down... over an opposite
+    amount... we found a hidden star on there somewhere. The goal is for them to mark down where the hidden star is on the coordinate plane."] [Conflict: the two
+    ways are listed in the station guide; this builds the way he ran it.] [Proposal: the rover example, a 0 to 10 grid, 4 or 5 days, the words "over" and "back".]
+   The plane fills the picture. The child taps to trace each day's move; the last tap marks the star. Then they write the star's two numbers. Nothing says where a day ends. */
+function hopRoute() { for (let g = 0; g < 500; g++) { const n = 4 + rnd(2), s = [1 + rnd(4), 1 + rnd(4)], pts = [s], days = [];
+    for (let d = 0; d < n; d++) { const [x, y] = pts[pts.length - 1], dx = (rnd(2) ? 1 : -1) * (1 + rnd(4)), dy = (rnd(2) ? 1 : -1) * (1 + rnd(4)), p = [x + dx, y + dy]; if (p[0] < 1 || p[0] > 9 || p[1] < 1 || p[1] > 9) { d--; if (++g > 499) break; continue; } pts.push(p); days.push([dx, dy]); }
+    const keys = pts.map(p => p.join()); if (days.length === n && new Set(keys).size === keys.length && days.some(d => d[0] < 0) && days.some(d => d[1] < 0)) return { start: s, days, end: pts[pts.length - 1], pts }; }
+  return { start: [2, 2], days: [[3, 2], [2, -1], [-1, 4], [3, -2]], end: [9, 5], pts: [[2, 2], [5, 4], [7, 3], [6, 7], [9, 5]] }; }
+const hopWords = d => `${Math.abs(d[0])} ${d[0] > 0 ? 'over' : 'back'} and ${Math.abs(d[1])} ${d[1] > 0 ? 'up' : 'down'}`;
+function hopSvg(w) { const X = x => 30 + x * 24, Y = y => 270 - y * 24; let s = `<svg viewBox="0 0 300 300" role="img" aria-label="A star chart: a grid from 0 to 10 across and 0 to 10 up, with the station marked" style="touch-action:manipulation;cursor:pointer"><rect width="300" height="300" rx="10" fill="#0b1322"/>`;
+  for (let i = 0; i <= 10; i++) s += `<line x1="${X(i)}" y1="${Y(0)}" x2="${X(i)}" y2="${Y(10)}" stroke="${i ? '#33476a' : '#a9b9d0'}" stroke-width="${i ? 1 : 2}"/><line x1="${X(0)}" y1="${Y(i)}" x2="${X(10)}" y2="${Y(i)}" stroke="${i ? '#33476a' : '#a9b9d0'}" stroke-width="${i ? 1 : 2}"/><text x="${X(i)}" y="${Y(0) + 17}" text-anchor="middle" font-size="12" font-weight="700" style="fill:#e8eef8">${i}</text><text x="${X(0) - 11}" y="${Y(i) + 4}" text-anchor="middle" font-size="12" font-weight="700" style="fill:#e8eef8">${i}</text>`;
+  const st = w.r.start, tr = [st].concat(w.trail); if (w.trail.length) s += `<polyline points="${tr.map(p => X(p[0]) + ',' + Y(p[1])).join(' ')}" fill="none" stroke="#ffb23e" stroke-width="3" stroke-linejoin="round"/>` + w.trail.map((p, i) => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${i === w.trail.length - 1 ? 7 : 4.5}" fill="${i === w.trail.length - 1 ? 'none' : '#ffb23e'}" stroke="#ffb23e" stroke-width="3"/>`).join('');
+  /* the station is drawn over the trail. Its name is in a key above the chart, where no tap can land on it. */
+  s += `<rect x="${X(st[0]) - 8}" y="${Y(st[1]) - 8}" width="16" height="16" rx="3" fill="#9fe0d0" stroke="#0b1322" stroke-width="2"/><rect x="${X(7)}" y="7" width="13" height="13" rx="3" fill="#9fe0d0"/><text x="${X(7) + 19}" y="18" font-size="12" font-weight="700" style="fill:#9fe0d0">= the station</text>`;
+  if (w.found) { const [x, y] = w.r.end, P = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? 6 : 15; P.push((X(x) + q * Math.cos(a)).toFixed(1) + ' ' + (Y(y) + q * Math.sin(a)).toFixed(1)); } s += `<path d="M${P.join(' L')} Z" fill="#ffd25e" stroke="#fff" stroke-width="2"/>`; }
+  for (let x = 0; x <= 10; x++) for (let y = 0; y <= 10; y++) s += `<circle data-t="c:${x},${y}" cx="${X(x)}" cy="${Y(y)}" r="11" fill="transparent"/>`;
+  return s + '</svg>'; }
+function startHop() { if (!S.hopR) { S.hopR = hopRoute(); save(); } const R = S.hopR, w = widget = { kind: 'hop', tries: 0, miss: 0, trail: R.t || (R.t = []), r: R }; /* the taps are kept, so a cadet who leaves comes back to the same trail */
+  toy(`<p class="eyebrow">Navigation System · task 2 of 3</p><p class="mw"><b>Maths word: coordinates.</b> Two numbers for a point: along first, then up.</p><h3>Coordinate Plotting</h3>
+    <div class="picrow"><div class="pic" id="pic"></div><div class="pictext"><p class="story">Space Cadets, our Navigation System's key part is lost. Mission Control tracked it. It drifted from the station to a hidden star. Here is its route, day by day.</p>
+    <p class="note"><b>A finished example.</b> A rover starts at (1, 1). Day 1: 2 over and 3 up. Now it is at (3, 4). Day 2: 1 back and 2 down. Now it is at (2, 2). Over is to the right. Back is to the left.</p>
+    <p class="q">The station is at (${R.start[0]}, ${R.start[1]}).</p><ul class="slip" style="list-style:none;padding-left:0">${R.days.map((d, i) => `<li><b>Day ${i + 1}:</b> ${hopWords(d)}.</li>`).join('')}</ul>
+    <p class="note">Tap the chart to follow each day. Your last tap marks the star. Then write where the star is.</p>
+    <div class="field"><span class="note">The star is at (</span><input id="ans" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="along"><span class="sep">,</span><input id="ans2" class="sm" inputmode="numeric" autocomplete="off" maxlength="2" aria-label="up"><span class="note">)</span></div>
+    <div class="field"><button class="btn" type="button" id="try">Mark the star</button><button class="btn quiet" type="button" id="hopundo">Undo a tap</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
+  const draw = () => { $('pic').innerHTML = hopSvg(w); }, m = $('msg'), no = t => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = t; }; draw();
+  ['ans', 'ans2'].forEach(id => { const a = $(id); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); }; });
+  $('leave').onclick = leave; $('hopundo').onclick = () => { w.trail.pop(); save(); beep(380, .03); draw(); };
+  $('pic').onclick = e => { const t = e.target.closest('[data-t]'); if (!t || w.found) return; const p = t.dataset.t.slice(2).split(',').map(Number), l = w.trail[w.trail.length - 1]; if ((l && l[0] === p[0] && l[1] === p[1]) || w.trail.length >= 12) return; w.trail.push(p); save(); beep(520, .04); draw(); };
+  $('try').onclick = () => { if (!w.trail.length) return no('Tap the chart to follow the route. Your last tap marks the star.'); const a = $('ans').value, b = $('ans2').value; if (a === '' || b === '') return no("Write the star's two numbers.");
+    w.tries++; const mk = w.trail[w.trail.length - 1], E = R.end, onMark = mk[0] === E[0] && mk[1] === E[1], onNums = +a === E[0] && +b === E[1];
+    /* [Proposal] Which day went wrong: the trail is checked day by day, so the help points to a day, never to the star. */
+    const tr = w.trail.filter((p, i) => !(i === 0 && p[0] === R.start[0] && p[1] === R.start[1])), same = (a, b) => a[0] === b[0] && a[1] === b[1]; let k = 0; while (k < tr.length && k < R.days.length && same(tr[k], R.pts[k + 1])) k++;
+    const dayHelp = () => k === R.days.length ? `You followed all ${R.days.length} days. Then you tapped more. Undo the extra taps.` : `${k === 1 ? 'Day 1 is right. ' : k === 2 ? 'Days 1 and 2 are right. ' : k ? `Days 1 to ${k} are right. ` : ''}Check Day ${k + 1}: from ${k ? `(${R.pts[k].join(', ')})` : 'the station'}, go ${hopWords(R.days[k])}.`;
+    if (!onMark && !onNums) { w.miss++; return no(tr.length > 1 ? 'Mission Control looks there. Empty space. ' + dayHelp() : 'Mission Control looks there. Empty space. Follow the route again, day by day. Tap where you are after each day.'); }
+    if (onMark && !onNums) { w.miss++; return no('Your mark is on the star! Now read its two numbers again: along first, then up.'); }
+    if (!onMark) { w.miss++; return no('Those two numbers are right. But your last tap is somewhere else. Tap the star\'s point.'); }
+    w.found = true; draw(); chime(); m.className = 'msg good'; m.textContent = `A star at (${E[0]}, ${E[1]})! The key part glints beside it.`; delete S.hopR;
+    setTimeout(() => { if (widget === w) taskWon('hop', 'Following a route of moves on a grid: adding and taking away along and up', w.tries, w.miss, `The hidden star is at (${E[0]}, ${E[1]}). You have found the Navigation System key part!`); }, 1400); }; }
 /* 3-2 ENERGY GRID: equal groups, then share them again. Each answer feeds the next question. */
 const GRIDS = [[3, 2], [3, 4], [3, 6], [4, 3], [4, 6], [5, 4], [5, 8], [6, 5]];
 function startGrid() { const [g, e] = pick(GRIDS); widget = { kind: 'grid', hits: 0, need: 3, tries: 0, g, e, next: nextGrid }; nextGrid(); }

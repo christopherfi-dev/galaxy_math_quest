@@ -96,9 +96,19 @@ const CODES = { calib: 805, starmap: 314, target: 936, alloc: 446 };   // the te
     await say('use card on drawer'); await say('push chair'); await say('take bolt');
     await say('use gauge'); let fuel = null; for (let i = 0; i < 3; i++) { const f = (await q()).match(/have (\d+) units of fuel\. The leg to stop \w uses (\d+)/); if (fuel !== null && +f[1] !== fuel) bad.push(name + ': the fuel did not carry forward'); fuel = f[1] - f[2]; if (i === 1) await shot('7_fuel'); await type(fuel); }
     expect(await last(), /fuel to spare/, 'fuel calculation');
-    await say('use map'); for (let i = 0; i < 3; i++) { const c = (await q()).match(/along (\d+) \+ (\d+)\. Then go up (\d+) − (\d+)/), x = +c[1] + +c[2], y = c[3] - c[4];
-      if (i === 0) { await pic(`[data-t="c:${y},${x}"]`); await p.click('#try'); expect(await p.textContent('#msg'), /nothing here/, 'a wrong hop'); }
-      await pic(`[data-t="c:${x},${y}"]`); if (i === 2) await shot('8_hop'); await p.click('#try'); await p.waitForTimeout(150); }
+    // 2-2 Coordinate Plotting: follow the route day by day; the last tap marks the hidden star, then its two numbers
+    await say('use map'); const R = await p.evaluate(() => widget.r), msg = () => p.textContent('#msg'), dot = q => pic(`[data-t="c:${q[0]},${q[1]}"]`), E = R.end;
+    expect(await q(), new RegExp(`station is at \\(${R.start[0]}, ${R.start[1]}\\)`), 'the station is named');
+    await p.click('#try'); expect(await msg(), /Tap the chart/, 'no taps yet');
+    await dot(R.pts[1]); await dot([0, 0]); /* never on a route: every point is 1 to 9 */
+    await p.fill('#ans', '0'); await p.fill('#ans2', '0'); await p.click('#try'); expect(await msg(), /Empty space\. Day 1 is right\. Check Day 2/, 'a wrong day is named');
+    await p.click('#leave'); await say('use map'); ok2(await p.evaluate(() => widget.trail.length) === 2, name + ': the trail is kept after leaving');
+    await p.click('#hopundo'); for (const pt of R.pts.slice(2)) await dot(pt);
+    await p.fill('#ans', String(E[1])); await p.fill('#ans2', String(E[0])); if (E[0] === E[1]) await p.fill('#ans2', String(E[0] + 1));
+    await p.click('#try'); expect(await msg(), /mark is on the star.*read its two numbers again/, 'right mark, wrong numbers');
+    await dot([0, 0]); await p.fill('#ans', String(E[0])); await p.fill('#ans2', String(E[1]));
+    await p.click('#try'); expect(await msg(), /two numbers are right.*last tap is somewhere else/, 'right numbers, wrong mark');
+    await p.click('#hopundo'); await shot('8_hop'); await p.click('#try'); await p.waitForTimeout(1700);
     expect(await last(), /key part/, 'coordinate plotting');
     await say('use scale'); for (const i of [1, 3, 2, 4, 0, 9, 6]) await p.evaluate(i => cargoToggle(i), i); await p.click('#try'); await p.waitForTimeout(200); expect(await last(), /Navigation part is fitted.*Launch Bay door/, 'cargo and the navigation part');
     // ---- Power Bay: 5-1 Circuit Connection, 5-2 Power Allocation (real life), 5-3 Emergency Power
