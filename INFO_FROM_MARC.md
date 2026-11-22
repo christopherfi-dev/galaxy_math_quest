@@ -326,3 +326,7 @@ These are Marc's words, tidied. They are not on the form above.
   - Read from the photos, beyond that note: the older iPad's window held sideways in Chrome is 1080 × 690 (the test's sizes were 1080 × 690 and 2160 × 1380 dots); upright it is 810 × 960. The iPad Pro's window sideways is 1366 × 892.
   - The photos were of the first version of the page: "Test again" is cut off sideways, as he said. The fix (the button beside the title) is on the fly-in thread's branch, not yet on the site.
   - On his iPhone the page said "Chrome 158 for iPad". Fixed on the branch: it now says "Chrome 158".
+- **Phase 1 of the fly-in, built (the fly-in thread, 2026-11-22; no new message from Marc).** For the record of what was done on his word "Go on to Phase 1":
+  - Built `prototypes/voltara_flyin.html` (copied to `docs/flyin/index.html`), its test `checks/flyin_test.js`, and the note `proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md`. The game file is not touched. All of it is on the fly-in thread's branch, `claude/adoring-gates-3yg1yc`; not on the site.
+  - An independent critic reviewed pictures twice: six findings above minor in round 1, all taken; "nothing above minor remains" in round 2.
+  - Waiting on Marc: the line of permission to publish (or a merge by the main thread), the fly-in's numbers from the older iPad held sideways, and the five decisions in section 8 of the note.
