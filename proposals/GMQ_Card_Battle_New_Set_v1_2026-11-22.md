@@ -9,7 +9,7 @@ So this is a new set, not a sorting of the old one. **Every card is a [Proposal]
 
 ---
 
-> **Changed on 22 November, after you played the battle.** Your rule: a shield card played on a broken Main Shield puts a new shield up, as strong as the card's number, and the enemy's whole attack goes into it. The words on 15 cards now say so (ten block cards, Hit and Hide, and the five cards that add to the Main Shield). No card says "if it is still up" any more. Where this note still says that only Shield Reborn rebuilds a broken shield, your rule has replaced it. The list of cards (`.csv`) and the page are up to date.
+> **Changed on 22 November, after you played the battle.** Your rule: a shield card played on a broken Main Shield puts a new shield up, as strong as the card's number, and the enemy's whole attack goes into it. The words on 15 cards now say so (ten block cards, Hit and Hide, and the five cards that add to the Main Shield). No card says "if it is still up" any more. Where this note still says that only Shield Reborn rebuilds a broken shield, your rule has replaced it. Shield Reborn, the epic one, now puts the Main Shield back to full, 100 (your ruling of the same day; it was "+50"). The list of cards (`.csv`) and the page are up to date.
 
 ## 1. What is on the page
 

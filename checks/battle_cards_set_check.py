@@ -57,7 +57,7 @@ STEPS = {  # (op, rarity): allowed numbers
     ('atk_add', 'common'): range(5, 11), ('atk_add', 'rare'): (15, 20),
     ('block', 'common'): range(8, 16), ('block', 'rare'): (20, 25),
     ('repair_one', 'common'): range(6, 13),
-    ('shield_add', 'common'): range(10, 16), ('shield_add', 'rare'): (25,), ('shield_rebuild', 'epic'): (50,),
+    ('shield_add', 'common'): range(10, 16), ('shield_add', 'rare'): (25,), ('shield_rebuild', 'epic'): (100,),
 }
 out = []
 for c in cards:
@@ -98,7 +98,7 @@ for c in cards + ups:
             if word not in c['text']: out.append(c['id'] + ' Spy part count missing')
     o = c['ops'][0]
     exp = {'atk_add': lambda: '+%d' % o['n'], 'block': lambda: '−%d' % o['n'], 'repair_one': lambda: '+%d' % o['n'], 'shield_add': lambda: '+%d' % o['n'],
-           'repair_all': lambda: '+%d' % o['n'], 'atk_double': lambda: '×2', 'atk_round100': lambda: '100s', 'shield_rebuild': lambda: '+%d' % o['n'], 'revive': lambda: '+%d' % o['n'], 'repair_share': lambda: '+%d' % o['n']}.get(o['op'])
+           'repair_all': lambda: '+%d' % o['n'], 'atk_double': lambda: '×2', 'atk_round100': lambda: '100s', 'shield_rebuild': lambda: '%d' % o['n'], 'revive': lambda: '+%d' % o['n'], 'repair_share': lambda: '+%d' % o['n']}.get(o['op'])
     if exp and c['type'] != 'guard' and c['badge'] != exp(): out.append('%s badge %s, expected %s' % (c['id'], c['badge'], exp()))
     if c['id'] == 'A03' and o['n'] % 2 == 0: out.append('Odd Rocket is not odd')
     if c['id'] == 'A04' and o['n'] % 2 == 1: out.append('Even Beam is not even')
@@ -171,8 +171,12 @@ def apply(c, ship, hand, enemy, incoming):
         elif op == 'atk_per_part': bonus += o['n'] * sum(1 for p in ship['parts'] if p['hp'] > 0)
         elif op == 'atk_double': bonus += ap
         elif op == 'atk_round100': bonus += (-ap) % 100
-        elif op == 'block': blocked += min(o['n'], incoming)
-        elif op == 'block_per_card': blocked += min(o['n'] * hand, incoming)
+        # Marc, 22 November: on a broken shield a block card puts up a shield of its own number instead
+        elif op in ('block', 'block_per_card'):
+            n = o['n'] * (hand if op == 'block_per_card' else 1)
+            if ship['shield'] == 0:
+                if n > 0: ship['shield'] = min(100, n)
+            else: blocked += min(n, incoming)
         elif op == 'block_all': blocked += incoming
         elif op == 'repair_one':
             live = [p for p in ship['parts'] if p['hp'] > 0]
@@ -198,11 +202,9 @@ def apply(c, ship, hand, enemy, incoming):
         elif op == 'revive':
             dead = [p for p in ship['parts'] if p['hp'] == 0]
             if dead: dead[0]['hp'] = min(o['n'], dead[0]['max'])
-        elif op == 'shield_add':
-            if ship['shield'] > 0: ship['shield'] = min(100, ship['shield'] + o['n'])
-        elif op == 'shield_per_card':
-            if ship['shield'] > 0: ship['shield'] = min(100, ship['shield'] + o['n'] * hand)
-        elif op == 'shield_rebuild': ship['shield'] = min(100, ship['shield'] + o['n'])
+        elif op == 'shield_add': ship['shield'] = min(100, ship['shield'] + o['n'])
+        elif op == 'shield_per_card': ship['shield'] = min(100, ship['shield'] + o['n'] * hand)
+        elif op == 'shield_rebuild': ship['shield'] = max(ship['shield'], o['n'])   # Shield Reborn: back to full
         elif op == 'spy':
             live = [p for p in enemy['parts'] if p['hp'] > 0]
             for p in random.sample(live, min(o['parts'], len(live))): p['hp'] = max(0, p['hp'] - o['n'])
@@ -225,7 +227,9 @@ for i in range(N):
         if not 0 <= me['shield'] <= 100: fails[c['id'] + ' shield out of range'] += 1
         if bonus < 0 or blocked < 0 or blocked > incoming: fails[c['id'] + ' bad bonus or block'] += 1
         if c['type'] in ('repair',) and sum(p['hp'] for p in me['parts']) < total_before: fails[c['id'] + ' a repair lowered HP'] += 1
-        if shield_before == 0 and me['shield'] > 0 and c['id'] != 'R15': fails[c['id'] + ' rebuilt a broken shield'] += 1
+        if shield_before == 0 and me['shield'] > 0 and not any(o['op'] in ('block', 'block_per_card', 'shield_add', 'shield_per_card', 'shield_rebuild') for o in c['ops']): fails[c['id'] + ' has no shield on it, and rebuilt a broken shield'] += 1
+        if shield_before == 0 and me['shield'] == 0 and any(o['op'] in ('block', 'shield_add', 'shield_rebuild') for o in c['ops']): fails[c['id'] + ' is a shield card, and did not bring a broken shield back'] += 1
+        if c['id'] == 'R15' and me['shield'] != 100: fails['R15 did not put the shield back to full'] += 1
         if c['id'] != 'R13' and any(b[0] == 0 and p['hp'] > 0 for b, p in zip(before, me['parts'])): fails[c['id'] + ' brought back a lost part'] += 1
         if c['id'] == 'R11' and sum(p['hp'] for p in me['parts']) != total_before: fails['R11 moved HP changed the total'] += 1
         if c['id'] == 'R13' and any(b[0] > 0 and p['hp'] != b[0] for b, p in zip(before, me['parts'])): fails['R13 touched a working part'] += 1

@@ -248,7 +248,7 @@ button{font-family:inherit}
  {"id":"R12","type":"repair","rarity":"rare","name":"Quarter Dome","badge":"+25","text":"Add 25 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_add","n":25}],"maths":"shield + 25","from":"Nebula Armor (25)"},
  {"id":"R13","type":"repair","rarity":"epic","name":"Stellar Revival","badge":"+5","text":"Bring back one lost part. It returns with 5 HP.","ops":[{"op":"revive","n":5}],"maths":"none: the part's HP becomes 5","from":"Stellar Revival (your name); your rules sheet, section 5"},
  {"id":"R14","type":"repair","rarity":"epic","name":"Repair Bay","badge":"full","text":"Repair every working part to full HP.","ops":[{"op":"repair_full"}],"maths":"none: each part goes back to its starting HP","from":"Replicant Drones, Nebula Nova"},
- {"id":"R15","type":"repair","rarity":"epic","name":"Shield Reborn","badge":"+50","text":"Add 50 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_rebuild","n":50}],"maths":"shield + 50","from":"Cosmic Barrier (40); the only card that rebuilds a broken shield"},
+ {"id":"R15","type":"repair","rarity":"epic","name":"Shield Reborn","badge":"100","text":"Your Main Shield goes back to full: 100 HP. A broken shield comes back.","ops":[{"op":"shield_rebuild","n":100}],"maths":"shield = 100","from":"Cosmic Barrier (40); Marc, 22 November: the epic one goes back to full"},
  {"id":"S01","type":"spy","rarity":"common","name":"Probe Drone","badge":"3","text":"Spy! 3 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":3,"parts":1}],"maths":"their part HP - 3","from":"Quantum Missile (5 to one part)"},
  {"id":"S02","type":"spy","rarity":"common","name":"Sneak Circuit","badge":"4","text":"Spy! 4 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":4,"parts":1}],"maths":"their part HP - 4","from":"Quantum Missile (5 to one part)"},
  {"id":"S03","type":"spy","rarity":"common","name":"Twin Probes","badge":"2+2","text":"Spy! 2 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":2,"parts":2}],"maths":"two parts, each HP - 2","from":"Micro Missiles (3 to two parts)"},
@@ -474,6 +474,8 @@ function run0(S,st,ch){
   else if(/^shield_/.test(o.op)){
    var n=o.op==='shield_per_card'?o.n*otherCards(S,st.a):o.n;before=me.shield;
    if(me.shield<=0&&o.op!=='shield_rebuild'&&S.opts.shieldRebuild==='reborn'){R.lines.push((st.a?'The enemy\'s':'Your')+' Main Shield is broken: '+c.name+' does nothing.');}
+   /* Marc, 22 November: Shield Reborn, the epic one, puts the shield back to full. It sets the shield; the other cards add to it. */
+   else if(o.op==='shield_rebuild'){me.shield=Math.max(me.shield,n);R.lines.push((st.a?'The enemy\'s':'Your')+' Main Shield: '+before+' to '+me.shield+'.');sum(st.a,'shield','Main Shield',before,me.shield-before,me.shield,'shield');}
    else{me.shield=S.opts.shieldCap?Math.min(100,me.shield+n):me.shield+n;R.lines.push((st.a?'The enemy\'s':'Your')+' Main Shield: '+before+' to '+me.shield+'.');sum(st.a,'shield','Main Shield',before,n,me.shield,o.op==='shield_per_card'?'percard':'shield');}
   }
   else if(o.op==='upgrade'){p=part(me,c.part);if(p.hp>0&&p.lvl<2){p.lvl=2;p.max+=o.hp;p.hp+=o.hp;p.ap+=o.ap;R.lines.push((st.a?'The enemy\'s ':'Your ')+SHORT[p.part]+' is now Level 2: HP '+p.hp+', AP '+p.ap+'.');}else{R.lines.push(c.name+' does nothing: '+(p.hp>0?'that part is already Level 2.':'that part is lost.'));}}
@@ -564,7 +566,7 @@ function cpuPick(S,i,seen){
    else if(o.op==='move_hp'){var w2=part(me,'Weapons System');v=(w2.hp>0&&w2.hp<w2.max)?10:1;}
    else if(o.op==='revive'){var dead=me.parts.filter(function(p){return p.hp<=0;});v=dead.length?40+(has(me,'Weapons System')?0:40):0;}
    else if(o.op==='shield_add'||o.op==='shield_per_card'){var n=o.op==='shield_add'?o.n:o.n*otherCards(S,i);v=me.shield>0?5+Math.min(n,S.opts.shieldCap?100-me.shield:n)*0.8:(S.opts.shieldRebuild!=='reborn'?(foeAP?10+foeAP*0.7:5):0);}
-   else if(o.op==='shield_rebuild')v=5+Math.min(o.n,S.opts.shieldCap?100-me.shield:o.n)*(me.shield>0?0.5:1.2);
+   else if(o.op==='shield_rebuild')v=5+Math.max(0,o.n-me.shield)*(me.shield>0?0.5:1.2);
    else if(o.op==='upgrade'){var up=part(me,c.part);v=(up.hp>0&&up.lvl<2)?16:0;}
    else if(o.op==='guard')v=(seen&&isSpy(seen)&&!guardTooLow(S,id,seen))?200:(S.opts.guard==='blind'?7:0.5);
    s+=v;

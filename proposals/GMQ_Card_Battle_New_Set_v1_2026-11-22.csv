@@ -55,7 +55,7 @@ battle card,R11,Galactic Drift,repair,rare,,,Move up to 10 HP from one working p
 battle card,R12,Quarter Dome,repair,rare,,,Add 25 HP to your Main Shield. A broken shield comes back.,shield + 25,Nebula Armor (25),section 5: healing HP,
 battle card,R13,Stellar Revival,repair,epic,,,Bring back one lost part. It returns with 5 HP.,none: the part's HP becomes 5,"Stellar Revival (your name); your rules sheet, section 5",section 5: revival,
 battle card,R14,Repair Bay,repair,epic,,,Repair every working part to full HP.,none: each part goes back to its starting HP,"Replicant Drones, Nebula Nova",section 5: healing HP,
-battle card,R15,Shield Reborn,repair,epic,,,Add 50 HP to your Main Shield. A broken shield comes back.,shield + 50,Cosmic Barrier (40); the only card that rebuilds a broken shield,section 5: healing HP,
+battle card,R15,Shield Reborn,repair,epic,,,Your Main Shield goes back to full: 100 HP. A broken shield comes back.,shield = 100,"Cosmic Barrier (40); Marc, 22 November: the epic one goes back to full",section 5: healing HP,
 battle card,S01,Probe Drone,spy,common,,,Spy! 3 damage to one enemy part. You choose it.,their part HP - 3,Quantum Missile (5 to one part),section 6: Spy,
 battle card,S02,Sneak Circuit,spy,common,,,Spy! 4 damage to one enemy part. You choose it.,their part HP - 4,Quantum Missile (5 to one part),section 6: Spy,
 battle card,S03,Twin Probes,spy,common,,,Spy! 2 damage to each of two enemy parts. You choose them.,"two parts, each HP - 2",Micro Missiles (3 to two parts),section 6: Spy,

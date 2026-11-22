@@ -119,7 +119,7 @@ Below is what I measured before I made it the start.
 
 **Two things your rule changes that you may not expect**
 
-1. **Shield Reborn is no longer special.** It was the one epic card that could bring a shield back. Now 15 cards can. It still gives the biggest shield, 50, and a shield of 50 can last more than one hit. Say if it should do something new.
+1. **Shield Reborn puts the Main Shield back to full: 100.** [Your ruling, 22 November: "Shield Reborn should go back to full shield if it's an epic."] It was the one epic card that could bring a shield back; with your rule 15 cards can, so it needed something of its own. It sets the shield to 100 whether it was broken or only low. A full shield usually takes two hits to break. I measured it: battles stay at 11 rounds with random play and 14 with clever play.
 2. **A clever player now beats a random one 81 times in 100.** Before your rule it was 69. Knowing when to play a shield card matters. That fits what you called "a logic response game".
 
 **To compare the old ways:** press **Rules**, find "A broken Main Shield is put back up by", choose, then "New battle with these rules".
@@ -286,7 +286,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 ### Still for you to rule on
 
 1. **The split** (section 4, point 2).
-2. **Shield Reborn,** now that 15 cards bring a shield back (section 1c).
+2. **Should cards that add to the Main Shield show a shield, not a heart?** (section 1c)
 3. **My three readings of your turn-order ruling** (section 1b).
 
 ---
@@ -300,7 +300,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,373 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,484 checks, all pass. It checks:
   - placing a hit: the view moves in and the parts are large; a tapped part's own HP changes; the words keep count; a tap that would destroy a part places nothing and asks for a second tap; the button names every part that will be lost;
   - the sound button: off, remembered, on again; at real speed a laser, a Spy, a block, a burst and a win each ask for their sound, with no error; with the sound off, nothing is asked for;
   - your shield rule: with a broken shield, a block card and a card that adds to the shield are marked "shield back", the opened card says the shield will come back and soak the hit, and it does; with either narrower switch on, it does not, and the card says why;
@@ -319,7 +319,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 73,728 combinations of switches, then 44,000 more battles. 113 million checks, all pass. It measures your shield rule against the two narrower rules and tests it by hand. New in it: a strike is held back only when the ship that fired it has lost its last part, and only for the ship that went first; in turn order the two ships are never beaten together; six cases worked by hand.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 73,728 combinations of switches, then 44,000 more battles. 114 million checks, all pass. It measures your shield rule against the two narrower rules and tests it by hand. New in it: a strike is held back only when the ship that fired it has lost its last part, and only for the ship that went first; in turn order the two ships are never beaten together; six cases worked by hand.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.
