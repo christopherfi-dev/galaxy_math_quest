@@ -67,15 +67,26 @@ Here is how I read the problem.
 
 ---
 
-## 1c. Your idea: a shield card puts the shield back up
+## 1c. Your rule: a shield card puts the shield back up
 
-You said: *"anytime you play a shield card, it puts your ship's shield back up... which then blocks you from the enemy's attack for that one time."* You asked me to run it first.
+You said: *"anytime you play a shield card, it puts your ship's shield back up... which then blocks you from the enemy's attack for that one time."* You asked me to run it first. Then you played, and asked: *"Do I need to change any settings?... their entire attack of 70 or whatever is going to go into my four shield, which will protect my ship again."*
+
+**You no longer need a setting. It is how the battle starts now.** [Your ruling, said three times on 22 November. I took the wide reading, B below, because you named block cards: "block four for each card that I have".]
+
+- **Any block card, and any card that adds to the Main Shield,** played when your shield is broken, puts up a new shield. It is as strong as the number on the card. Card Wall with four other cards in your hand puts up a shield of 16.
+- **The enemy's whole attack goes into it.** The shield breaks and your parts are not touched.
+- **When your shield is broken, those cards are marked "shield back" in your hand.** The opened card says: "This card puts your Main Shield back up: 16. It will break, and soak up the whole hit."
+- **The words on 15 cards changed** to say so. "Block 8 of the attack on you. Or bring back a broken shield with 8 HP." No card says "if it is still up" any more.
+- **Your saved settings were cleared once,** so that your iPad starts on the new rule too.
+- The two narrower rules are still on the switch, if you want to compare.
+
+Below is what I measured before I made it the start.
 
 **Why it works as you hoped.** Your rule is "nothing carries over". So a shield of any size soaks one whole hit. A card that puts up a shield of 8 saves the ship from a hit of 60, once.
 
 **Two ways to read "shield card".** In my set, the cards with a shield on them are the block cards. The cards that add to the Main Shield have a heart. So I tried both.
 
-| | The page today | **A.** Any card that adds to the Main Shield | **B.** Those, and any block card |
+| | Before | **A.** Only cards that add to the Main Shield | **B. Your rule, the page now:** those, and any block card |
 |---|---|---|---|
 | **Cards in a deck of 45 that can do it** | 1 | 5 | 15 |
 | **Random play: a battle lasts** | 9 rounds | 9 rounds | 11 rounds |
@@ -102,13 +113,18 @@ You said: *"anytime you play a shield card, it puts your ship's shield back up..
 2. **Once the shield is down, the number on a shield card stops mattering.** A shield of 8 and a shield of 25 both soak one whole hit. So a common card does the work of a rare one.
 3. **Some cards' words would be wrong.** "Add 10 HP to your Main Shield, if it is still up." I have not changed any card. If you rule for this, I rewrite them.
 
-**If you choose B, one more thing** [Proposal]: the cards that add to the Main Shield should then carry a shield, not a heart. Then the rule a child sees is simple: "a card with a shield on it puts my shield up."
+**One more thing** [Proposal]: the cards that add to the Main Shield should now carry a shield, not a heart. Then the rule a child sees is simple: "a card with a shield on it puts my shield up."
 
 **What could prove this wrong:** the computer plays a shield card when it has one. A child may save them all for the end and make a battle very long. Only play will show.
 
-**Try it yourself:** press **Rules**, find "A broken Main Shield can be put back up by", choose, then "New battle with these rules". Nothing changes for anyone until you choose. The page still starts on "Shield Reborn only".
+**Two things your rule changes that you may not expect**
 
-Your block rule still holds under B: a common block card does nothing against a rare attack card, shield or no shield.
+1. **Shield Reborn is no longer special.** It was the one epic card that could bring a shield back. Now 15 cards can. It still gives the biggest shield, 50, and a shield of 50 can last more than one hit. Say if it should do something new.
+2. **A clever player now beats a random one 81 times in 100.** Before your rule it was 69. Knowing when to play a shield card matters. That fits what you called "a logic response game".
+
+**To compare the old ways:** press **Rules**, find "A broken Main Shield is put back up by", choose, then "New battle with these rules".
+
+Your block rule still holds: a common block card does nothing against a rare attack card, shield or no shield.
 
 ---
 
@@ -229,7 +245,7 @@ Open **Rules** on the page. A change starts with the next battle.
 | **"Cannot defend"** (Shield Generator lost) | defence cards stop; defence cards and the Main Shield stop | rules sheet 5 |
 | **A repair may lift a part above its full HP** | no; yes | my guess |
 | **The Main Shield may pass 100** | no; yes | my guess |
-| **A broken Main Shield can be put back up by** | Shield Reborn only; any card that adds to the Main Shield; those and any block card | the first is my guess; the others are **your idea of 22 November**, to try (section 1c) |
+| **A broken Main Shield is put back up by** | any block card and any card that adds to the Main Shield; only a card that adds to the Main Shield; Shield Reborn only | **you, 22 November** (section 1c) |
 | **Cards that add to the Main Shield count as** | repair; defence | my guess |
 | **Level 2 upgrade cards are in the decks** | yes; no | my guess |
 | **A battle ends with no winner after** | 60 rounds; 30 rounds | my guess |
@@ -257,19 +273,20 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 | | Two gentle players | Two clever players |
 |---|---|---|
-| **Length** | 9 rounds in the middle; from 5 to 13 | 9 rounds in the middle; from 4 to 13 |
+| **Length** | 11 rounds in the middle; from 4 to 19 | 14 rounds in the middle; from 6 to 23 |
 | **A ship wins** | 100 in 100 | 100 in 100 |
 | **Nobody wins** | 0 | 0 |
-| **The ship that led the last round wins** | 60 in 100 | 61 in 100 |
-| **A ship has no Weapons by round 8** | 1 in 100 | 1 in 100 |
+| **The ship that led the last round wins** | 54 in 100 | 53 in 100 |
+| **A shield comes back, in one battle** | 5 times | 10 times |
 
-- **A clever player beats a gentle one** in 69 battles in 100.
+- **Battles are longer than before your shield rule:** 11 to 14 rounds, where it was 9.
+- **A clever player beats a gentle one** in 81 battles in 100.
 - **Your ruling on the Spy fixed the biggest problem.** With seven Spy cards in a deck, a clever player took the other ship's Weapons early in 32 battles in 100. With one, it is 1 in 100.
 
 ### Still for you to rule on
 
 1. **The split** (section 4, point 2).
-2. **Your shield idea** (section 1c): leave it off, A, or B.
+2. **Shield Reborn,** now that 15 cards bring a shield back (section 1c).
 3. **My three readings of your turn-order ruling** (section 1b).
 
 ---
@@ -283,10 +300,10 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,138 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,373 checks, all pass. It checks:
   - placing a hit: the view moves in and the parts are large; a tapped part's own HP changes; the words keep count; a tap that would destroy a part places nothing and asks for a second tap; the button names every part that will be lost;
   - the sound button: off, remembered, on again; at real speed a laser, a Spy, a block, a burst and a win each ask for their sound, with no error; with the sound off, nothing is asked for;
-  - your shield idea, with the switch on: the opened card says the shield will come back and soak the hit, and it does;
+  - your shield rule: with a broken shield, a block card and a card that adds to the shield are marked "shield back", the opened card says the shield will come back and soak the hit, and it does; with either narrower switch on, it does not, and the card says why;
   - "epic" on every card and in every message, never "gold";
   - the ship that hits first is marked;
   - two ships, five parts on each, none over another;

@@ -13,7 +13,7 @@ const SHOTS = process.argv[2] || null;
 // name, width, height, smallest hand card, smallest HP number, smallest "if lost" words (all in screen points)
 const SIZES = [['ipad_sideways', 1180, 745, 150, 20, 10, 1.8, 140], ['ipad_upright', 820, 1180, 140, 20, 10, 1.25, 100], ['phone', 390, 760, 60, 10, 5, 1.0, 44]];
 const BOARD = { 'Weapons': 'cannot attack', 'Engine': 'lose 1 card', 'Navigation': 'lose 1 card', 'Shield Gen': 'cannot defend', 'Power': 'cannot heal' };   // Marc's battle board
-const KEY = 'gmq_battle_v3';
+const KEY = 'gmq_battle_v4';
 const bad = [];
 let passed = 0, LAST = 'starting';
 function pass(label, ok, extra) { if (ok) { passed++; } else { console.log('FAIL ' + label + (extra ? ': ' + extra : '')); if (bad.indexOf(label) < 0) bad.push(label); } return ok; }
@@ -40,7 +40,7 @@ async function state(page) {
       lastLog: S && S.log.length ? { round: S.log[S.log.length - 1].round, atk: S.log[S.log.length - 1].atk, through: S.log[S.log.length - 1].through } : null, hint: q('ahint') ? q('ahint').textContent : '',
       hand: S ? S.P[0].hand.slice() : [], hp: S ? S.P.map(p => p.parts.map(x => x.hp)) : [], ap: S ? S.P.map(p => p.parts.map(x => x.ap)) : [], shield: S ? S.P.map(p => p.shield) : [],
       names: S ? S.P[0].parts.map(x => B.SHORT[x.part]) : [], shieldOn: S ? S.P.map(p => B.shieldWorks(S, p)) : [],
-      cards: all('.hc.mine').map(e => Object.assign(r(e), { id: e.getAttribute('data-id'), tag: e.querySelector('.tag') ? e.querySelector('.tag').textContent : '' })),
+      cards: all('.hc.mine').map(e => Object.assign(r(e), { id: e.getAttribute('data-id'), tag: e.querySelector('.tag:not(.good)') ? e.querySelector('.tag:not(.good)').textContent : '', plus: e.querySelector('.tag.good') ? e.querySelector('.tag.good').textContent : '' })),
       foecard: q('foecard') ? Object.assign(r(q('foecard')), { id: q('foecard').getAttribute('data-id') }) : null,
       order: [0, 1].map(i => q('order' + i) ? q('order' + i).getAttribute('data-id') : null), eLead: S && U.cpuLead >= 0 ? S.P[1].hand[U.cpuLead] : null,
       pods: [pods(0), pods(1)], bub: [!!q('bub0'), !!q('bub1')], shl: [txt(q('shl0'), '.sht'), txt(q('shl1'), '.sht')], shlBox: [r(q('shl0')), r(q('shl1'))],
@@ -327,8 +327,8 @@ async function act(page, name, flags, size) {
       await idle(page);
       await page.locator('#bnew').tap();
 
-      // ---- Marc's idea of 22 November, as a switch: a shield card puts a broken Main Shield back up
-      for (const [idx, cardId, upN, what] of [[1, 'R05', 10, 'a card that adds to the Main Shield'], [2, 'D01', 8, 'a block card']]) {
+      // ---- Marc's rule of 22 November: a shield card puts a broken Main Shield back up. It is how the page starts; the two narrower rules are switches.
+      for (const [idx, cardId, upN, works, what] of [[0, 'R05', 10, true, 'as the page starts, a card that adds to the Main Shield'], [0, 'D01', 8, true, 'as the page starts, a block card'], [1, 'D01', 8, false, 'with the switch on "only a card that adds to the Main Shield", a block card'], [2, 'R05', 10, false, 'with the switch on "Shield Reborn only", Shield Spark']]) {
         await page.locator('#srules').tap();
         await page.locator('#switches button[data-key="shieldRebuild"][data-i="' + idx + '"]').tap();
         await page.locator('#rnew').tap();
@@ -337,14 +337,17 @@ async function act(page, name, flags, size) {
         await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;S.P[0].shield=0;put(S.P[1],"A01",0);put(S.P[0],"' + cardId + '",0);U.cpuLead=0;})()');
         await page.evaluate(() => window.dispatchEvent(new Event('resize')));
         const b4 = await state(page);
+        pass(name + ': ' + what + (works ? ' is marked "shield back" in the hand when your shield is broken' : ' is not marked "shield back"'), (b4.cards[0].plus === 'shield back') === works, b4.cards[0].id + ' ' + b4.cards[0].plus);
         await page.locator('.hc.mine').nth(0).tap();
         st = await state(page);
-        pass(name + ': with the switch on, ' + what + ' says it will put the broken shield back up, and that the hit will be soaked', st.fore.indexOf('This card puts your Main Shield back up: ' + upN + '.') >= 0 && /It will break, and soak up the whole hit/.test(st.fore), st.fore);
-        await shot(page, name + '_9b_shield_back_up_' + idx);
+        if (works) pass(name + ': ' + what + ' says it will put the broken shield back up, and that the hit will be soaked', st.fore.indexOf('This card puts your Main Shield back up: ' + upN + '.') >= 0 && /It will break, and soak up the whole hit/.test(st.fore), st.fore);
+        else pass(name + ': ' + what + ' does not say the shield comes back, and says why', st.fore.indexOf('back up') < 0 && /A rule you switched on/.test(st.note), st.fore + ' | ' + st.note);
+        if (works) await shot(page, name + '_9b_shield_back_up_' + cardId);
         await page.locator('#playit').tap();
         let g3 = 0; while (g3++ < 60) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
         const up = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { was: l.snap.shield[0], hit: l.through[0] }; });
-        pass(name + ': played, it puts up a shield of ' + upN + ', which soaks the whole hit and breaks; no part is touched', up.was === upN && up.hit > upN && st.shield[0] === 0 && JSON.stringify(st.hp[0]) === JSON.stringify(b4.hp[0]), JSON.stringify([up, st.shield[0], st.hp[0]]));
+        if (works) pass(name + ': played, it puts up a shield of ' + upN + ', the whole hit goes into it, and no part is touched', up.was === upN && up.hit > upN && st.shield[0] === 0 && JSON.stringify(st.hp[0]) === JSON.stringify(b4.hp[0]), JSON.stringify([up, st.shield[0], st.hp[0]]));
+        else pass(name + ': played, no shield goes up and the hit lands on the parts', up.was === 0 && JSON.stringify(st.hp[0]) !== JSON.stringify(b4.hp[0]), JSON.stringify([up, st.hp[0]]));
         await idle(page);
         await page.locator('#bnew').tap();
       }

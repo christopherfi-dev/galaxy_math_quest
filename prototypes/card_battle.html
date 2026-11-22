@@ -33,6 +33,8 @@ button{font-family:inherit}
 #tray .gap{flex:0 0 18px}
 .foebox{flex:0 0 auto;padding:12px 10px 6px;border-radius:14px;background:rgba(127,29,29,.35);border:2px dashed #f87171}
 .hc .tag{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-10deg);background:#7f1d1d;color:#fff;font-weight:900;font-size:12px;border-radius:8px;padding:2px 8px;white-space:nowrap;border:2px solid #fca5a5}
+/* a card that can bring your broken shield back */
+.hc .tag.good{background:#166534;border-color:#86efac;top:38%;transform:translate(-50%,-50%) rotate(-6deg)}
 .traymsg{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:100%}
 .traymsg .hint{font-size:16px;font-weight:700;color:#c3cbe0;text-align:center}
 .cells{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
@@ -162,6 +164,7 @@ button{font-family:inherit}
     <li>Both ships attack. Your attack is the AP of all your working parts, plus your card. The page adds it up.</li>
     <li>The attack of the player who went first lands first. A ship that loses its last part does not strike back.</li>
     <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
+    <li><b>A broken shield can come back.</b> Play a shield card: a new shield goes up, as strong as the number on the card. Even a small one soaks up one whole attack. In your hand, such a card is marked "shield back".</li>
     <li>With no shield, <b>you choose which of your parts take the hit</b>. The view moves in on your ship. The hit comes as blocks of ten, five and one. Tap a part to send it the lit block: its HP goes down as you tap. Tap another block to light it. "Break a block" makes the lit block into smaller ones. If a tap would destroy a part, the page asks first: tap again to give that part up.</li>
   </ol>
   <h3>A lost part</h3>
@@ -218,34 +221,34 @@ button{font-family:inherit}
  {"id":"A07","pic":"bolt","type":"attack","rarity":"rare","name":"Voltara Bolt","badge":"+15","text":"Add 15 to your attack this round.","ops":[{"op":"atk_add","n":15}],"maths":"AP + 15","from":"Comet Strike (+15); named for Planet Voltara"},
  {"id":"A08","pic":"torpedo2","type":"attack","rarity":"rare","name":"Twin Tens","badge":"+20","text":"Add 20 to your attack this round.","ops":[{"op":"atk_add","n":20}],"maths":"AP + 20","from":"Supernova Strike (+20)"},
  {"id":"A09","type":"attack","rarity":"rare","name":"All Hands Fire","badge":"5×","text":"Count your working parts. Add 5 for each one.","ops":[{"op":"atk_per_part","n":5}],"maths":"5 x your working parts, then AP + that","from":"new: it uses the five times table"},
- {"id":"A10","pic":"torpedo","type":"attack","rarity":"rare","name":"Hit and Hide","badge":"+10","text":"Add 10 to your attack. Block 10 of the attack on you.","ops":[{"op":"atk_add","n":10},{"op":"block","n":10}],"maths":"AP + 10, and their attack - 10","from":"EMP Wave (attack and defence on one card)","needs":"Needs Weapons and Shield Generator"},
+ {"id":"A10","pic":"torpedo","type":"attack","rarity":"rare","name":"Hit and Hide","badge":"+10","text":"Add 10 to your attack. Block 10, or bring back a broken shield with 10 HP.","ops":[{"op":"atk_add","n":10},{"op":"block","n":10}],"maths":"AP + 10, and their attack - 10","from":"EMP Wave (attack and defence on one card)","needs":"Needs Weapons and Shield Generator"},
  {"id":"A11","type":"attack","rarity":"epic","name":"Doubling Drive","badge":"×2","text":"Double your ship's AP for this attack.","ops":[{"op":"atk_double"}],"maths":"AP + AP","from":"Multiplication Munition"},
  {"id":"A12","type":"attack","rarity":"epic","name":"Hundred Cannon","badge":"100s","text":"Round your ship's AP up to the next hundred for this attack.","ops":[{"op":"atk_round100"}],"maths":"round up to the next hundred (always up)","from":"new: Rounding Rover's idea, for attack"},
- {"id":"D01","pic":"dust","type":"defence","rarity":"common","name":"Dust Screen","badge":"−8","text":"Block 8 of the attack on you this round.","ops":[{"op":"block","n":8}],"maths":"their attack - 8","from":"Anti-Laser Coating, with a number that matters"},
- {"id":"D02","pic":"tiles","type":"defence","rarity":"common","name":"Ten-Tile Wall","badge":"−10","text":"Block 10 of the attack on you this round.","ops":[{"op":"block","n":10}],"maths":"their attack - 10","from":"Subtraction Shield (10)"},
- {"id":"D03","pic":"gems","type":"defence","rarity":"common","name":"Dozen Deflector","badge":"−12","text":"Block 12 of the attack on you this round.","ops":[{"op":"block","n":12}],"maths":"their attack - 12","from":"new"},
- {"id":"D04","pic":"bricks","type":"defence","rarity":"common","name":"Double-Seven Wall","badge":"−14","text":"Block 14 of the attack on you this round.","ops":[{"op":"block","n":14}],"maths":"their attack - 14 (7 and 7)","from":"new"},
- {"id":"D05","pic":"minus","type":"defence","rarity":"common","name":"Subtraction Shield","badge":"−15","text":"Block 15 of the attack on you this round.","ops":[{"op":"block","n":15}],"maths":"their attack - 15","from":"Subtraction Shield (your name)"},
- {"id":"D06","pic":"net","type":"defence","rarity":"rare","name":"Meteor Net","badge":"−20","text":"Block 20 of the attack on you this round.","ops":[{"op":"block","n":20}],"maths":"their attack - 20","from":"Deflection Field (30)"},
- {"id":"D07","pic":"quarter","type":"defence","rarity":"rare","name":"Quarter Wall","badge":"−25","text":"Block 25 of the attack on you this round.","ops":[{"op":"block","n":25}],"maths":"their attack - 25","from":"new"},
- {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Block","badge":"−15","text":"Block 15 of the attack on you. Repair 5 HP on one working part.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card","needs":"Needs Shield Generator and Power Module"},
- {"id":"D10","pic":"cards","type":"defence","rarity":"rare","name":"Card Wall","badge":"4×","text":"Count the other cards in your hand. Block 4 for each one.","ops":[{"op":"block_per_card","n":4}],"maths":"4 x the cards left in your hand, then their attack - that","from":"new: the four times table, to match Nano Shield"},
+ {"id":"D01","pic":"dust","type":"defence","rarity":"common","name":"Dust Screen","badge":"−8","text":"Block 8 of the attack on you. Or bring back a broken shield with 8 HP.","ops":[{"op":"block","n":8}],"maths":"their attack - 8","from":"Anti-Laser Coating, with a number that matters"},
+ {"id":"D02","pic":"tiles","type":"defence","rarity":"common","name":"Ten-Tile Wall","badge":"−10","text":"Block 10 of the attack on you. Or bring back a broken shield with 10 HP.","ops":[{"op":"block","n":10}],"maths":"their attack - 10","from":"Subtraction Shield (10)"},
+ {"id":"D03","pic":"gems","type":"defence","rarity":"common","name":"Dozen Deflector","badge":"−12","text":"Block 12 of the attack on you. Or bring back a broken shield with 12 HP.","ops":[{"op":"block","n":12}],"maths":"their attack - 12","from":"new"},
+ {"id":"D04","pic":"bricks","type":"defence","rarity":"common","name":"Double-Seven Wall","badge":"−14","text":"Block 14 of the attack on you. Or bring back a broken shield with 14 HP.","ops":[{"op":"block","n":14}],"maths":"their attack - 14 (7 and 7)","from":"new"},
+ {"id":"D05","pic":"minus","type":"defence","rarity":"common","name":"Subtraction Shield","badge":"−15","text":"Block 15 of the attack on you. Or bring back a broken shield with 15 HP.","ops":[{"op":"block","n":15}],"maths":"their attack - 15","from":"Subtraction Shield (your name)"},
+ {"id":"D06","pic":"net","type":"defence","rarity":"rare","name":"Meteor Net","badge":"−20","text":"Block 20 of the attack on you. Or bring back a broken shield with 20 HP.","ops":[{"op":"block","n":20}],"maths":"their attack - 20","from":"Deflection Field (30)"},
+ {"id":"D07","pic":"quarter","type":"defence","rarity":"rare","name":"Quarter Wall","badge":"−25","text":"Block 25 of the attack on you. Or bring back a broken shield with 25 HP.","ops":[{"op":"block","n":25}],"maths":"their attack - 25","from":"new"},
+ {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Block","badge":"−15","text":"Block 15, or bring back a broken shield with 15 HP. Repair 5 HP on one working part.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card","needs":"Needs Shield Generator and Power Module"},
+ {"id":"D10","pic":"cards","type":"defence","rarity":"rare","name":"Card Wall","badge":"4×","text":"Count the other cards in your hand. Block 4 for each, or bring back a broken shield.","ops":[{"op":"block_per_card","n":4}],"maths":"4 x the cards left in your hand, then their attack - that","from":"new: the four times table, to match Nano Shield"},
  {"id":"D09","type":"defence","rarity":"epic","name":"Vanishing Act","badge":"0","text":"No attack hits you this round. A Spy still can.","ops":[{"op":"block_all"}],"maths":"none: the attack on you is 0","from":"Cloaking Device, Wormhole, Teleport and nine more"},
  {"id":"R01","pic":"patch","type":"repair","rarity":"common","name":"Quick Patch","badge":"+6","text":"Repair 6 HP on one of your working parts.","ops":[{"op":"repair_one","n":6}],"maths":"part HP + 6","from":"Emergency Repairs (6)"},
  {"id":"R02","pic":"tape","type":"repair","rarity":"common","name":"Hull Tape","badge":"+8","text":"Repair 8 HP on one of your working parts.","ops":[{"op":"repair_one","n":8}],"maths":"part HP + 8","from":"Armor Patch (7)"},
  {"id":"R03","pic":"bot","type":"repair","rarity":"common","name":"Repair Bot","badge":"+10","text":"Repair 10 HP on one of your working parts.","ops":[{"op":"repair_one","n":10}],"maths":"part HP + 10","from":"Repair Drone (10)"},
  {"id":"R04","pic":"bolts","type":"repair","rarity":"common","name":"Dozen Bolts","badge":"+12","text":"Repair 12 HP on one of your working parts.","ops":[{"op":"repair_one","n":12}],"maths":"part HP + 12","from":"Proton Repair (12)"},
- {"id":"R05","type":"repair","rarity":"common","name":"Shield Spark","badge":"+10","text":"Add 10 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":10}],"maths":"shield + 10","from":"Defense Matrix (10)"},
- {"id":"R06","type":"repair","rarity":"common","name":"Nano Shield","badge":"3×","text":"Count the other cards in your hand. Add 3 shield HP for each, if your shield is still up.","ops":[{"op":"shield_per_card","n":3}],"maths":"3 x the cards left in your hand, then shield + that","from":"Nano Shield (your card)"},
- {"id":"R07","type":"repair","rarity":"common","name":"Dome Top-Up","badge":"+15","text":"Add 15 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":15}],"maths":"shield + 15","from":"Quantum Shield (15)"},
+ {"id":"R05","type":"repair","rarity":"common","name":"Shield Spark","badge":"+10","text":"Add 10 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_add","n":10}],"maths":"shield + 10","from":"Defense Matrix (10)"},
+ {"id":"R06","type":"repair","rarity":"common","name":"Nano Shield","badge":"3×","text":"Count the other cards in your hand. Add 3 shield HP for each. A broken shield comes back.","ops":[{"op":"shield_per_card","n":3}],"maths":"3 x the cards left in your hand, then shield + that","from":"Nano Shield (your card)"},
+ {"id":"R07","type":"repair","rarity":"common","name":"Dome Top-Up","badge":"+15","text":"Add 15 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_add","n":15}],"maths":"shield + 15","from":"Quantum Shield (15)"},
  {"id":"R08","type":"repair","rarity":"rare","name":"Meteor Mend","badge":"+20","text":"Share 20 HP between your working parts, any way you like.","ops":[{"op":"repair_share","n":20}],"maths":"split 20 into parts, then add each","from":"Meteor Mend (never printed)"},
  {"id":"R09","type":"repair","rarity":"rare","name":"Fix-It Fleet","badge":"+5","text":"Repair 5 HP on every one of your working parts.","ops":[{"op":"repair_all","n":5}],"maths":"each part HP + 5","from":"Repair Drones (5 each)"},
  {"id":"R10","type":"repair","rarity":"rare","name":"Rounding Rover","badge":"10s","text":"Round each damaged part up to the next ten. Never past full HP.","ops":[{"op":"round_up10"}],"maths":"round each part up to the next ten","from":"Rounding Rover (your card)"},
  {"id":"R11","type":"repair","rarity":"rare","name":"Galactic Drift","badge":"10","text":"Move up to 10 HP from one working part to another.","ops":[{"op":"move_hp","n":10}],"maths":"one part - n, another part + n","from":"Galactic Drift (never printed)"},
- {"id":"R12","type":"repair","rarity":"rare","name":"Quarter Dome","badge":"+25","text":"Add 25 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":25}],"maths":"shield + 25","from":"Nebula Armor (25)"},
+ {"id":"R12","type":"repair","rarity":"rare","name":"Quarter Dome","badge":"+25","text":"Add 25 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_add","n":25}],"maths":"shield + 25","from":"Nebula Armor (25)"},
  {"id":"R13","type":"repair","rarity":"epic","name":"Stellar Revival","badge":"+5","text":"Bring back one lost part. It returns with 5 HP.","ops":[{"op":"revive","n":5}],"maths":"none: the part's HP becomes 5","from":"Stellar Revival (your name); your rules sheet, section 5"},
  {"id":"R14","type":"repair","rarity":"epic","name":"Repair Bay","badge":"full","text":"Repair every working part to full HP.","ops":[{"op":"repair_full"}],"maths":"none: each part goes back to its starting HP","from":"Replicant Drones, Nebula Nova"},
- {"id":"R15","type":"repair","rarity":"epic","name":"Shield Reborn","badge":"+50","text":"Add 50 HP to your Main Shield. It works even on a broken shield.","ops":[{"op":"shield_rebuild","n":50}],"maths":"shield + 50","from":"Cosmic Barrier (40); the only card that rebuilds a broken shield"},
+ {"id":"R15","type":"repair","rarity":"epic","name":"Shield Reborn","badge":"+50","text":"Add 50 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_rebuild","n":50}],"maths":"shield + 50","from":"Cosmic Barrier (40); the only card that rebuilds a broken shield"},
  {"id":"S01","type":"spy","rarity":"common","name":"Probe Drone","badge":"3","text":"Spy! 3 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":3,"parts":1}],"maths":"their part HP - 3","from":"Quantum Missile (5 to one part)"},
  {"id":"S02","type":"spy","rarity":"common","name":"Sneak Circuit","badge":"4","text":"Spy! 4 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":4,"parts":1}],"maths":"their part HP - 4","from":"Quantum Missile (5 to one part)"},
  {"id":"S03","type":"spy","rarity":"common","name":"Twin Probes","badge":"2+2","text":"Spy! 2 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":2,"parts":2}],"maths":"two parts, each HP - 2","from":"Micro Missiles (3 to two parts)"},
@@ -290,7 +293,7 @@ var SWITCHES=[
  {key:'cannotDefend',label:'Shield Generator lost: "cannot defend"',from:'rules sheet 5',values:[['cards','Defence cards stop working'],['cardsAndShield','Defence cards and the Main Shield stop']]},
  {key:'repairCap',label:'A repair may lift a part above its full HP',from:'a guess',values:[[true,'No'],[false,'Yes']]},
  {key:'shieldCap',label:'The Main Shield may pass 100',from:'a guess',values:[[true,'No'],[false,'Yes']]},
- {key:'shieldRebuild',label:'A broken Main Shield can be put back up by',from:'the first is a guess; the others are Marc\'s idea of 22 November, to try',values:[['reborn','Shield Reborn only'],['any','any card that adds to the Main Shield'],['blocks','any card that adds to the Main Shield, and any block card (it puts up a shield of its own number)']]},
+ {key:'shieldRebuild',label:'A broken Main Shield is put back up by',from:'Marc, 22 November: a shield card puts the shield back up, and the whole attack goes into it',values:[['blocks','any block card, and any card that adds to the Main Shield (the shield has the card\'s own number)'],['any','only a card that adds to the Main Shield'],['reborn','Shield Reborn only']]},
  {key:'shieldIsHealing',label:'Cards that add to the Main Shield count as',from:'a guess',values:[[true,'repair (need the Power Module)'],[false,'defence (need the Shield Generator)']]},
  {key:'upgrades',label:'Level 2 upgrade cards are in the decks',from:'a guess',values:[[true,'Yes'],[false,'No']]},
  {key:'roundLimit',label:'A battle ends with no winner after',from:'a guess',values:[[60,'60 rounds'],[30,'30 rounds']]},
@@ -732,7 +735,7 @@ function partSVG(p,uid){
    A card is an order to the ship. The page does every sum. The player's one job: send an incoming hit to the parts they choose. */
 var B=GMQBattle;B.load(DATA);
 var el=function(id){return document.getElementById(id);};
-var KEY='gmq_battle_v3',FAST=/[?&]fast/.test(location.search);
+var KEY='gmq_battle_v4',FAST=/[?&]fast/.test(location.search);
 var KINDKEYS=['standard','guardian','striker','lucky'];
 var U={S:null,opts:B.defaults(),phase:'setup',sel:-1,cpuLead:-1,kinds:['standard','standard','standard','standard','standard'],foeMode:'same',anim:false,finale:false,pick:null,req:null,alloc:null,seed:0,L:null,tray:null};
 var RULE={'Weapons System':'cannot attack','Engine Core':'lose 1 card','Navigation':'lose 1 card','Shield Generator':'cannot defend','Power Module':'cannot heal'};
@@ -991,15 +994,18 @@ function handNote(h){
   if(seen&&B.outranked(S,c.id,seen)){note='The enemy\'s order is '+B.KINDWORD[B.card(seen).rarity]+'. A '+B.KINDWORD[c.rarity]+' card cannot block it.';tag='cannot block';}
   else if(S.opts.kindBlock&&!seen&&c.rarity!=='epic'&&!note)note='A '+B.KINDWORD[c.rarity]+' card cannot block '+(c.rarity==='common'?'a rare or an epic':'an epic')+' attack card.';
  }
- if(!note&&S.P[0].shield<=0&&S.opts.shieldRebuild!=='reborn'&&upBy(c.id)&&c.ops[0].op!=='shield_rebuild')note='A rule you switched on: this card also puts a broken Main Shield back up.';
- return {note:note,tag:tag};
+ /* your shield is broken and this card can put one up: say so on the card in your hand */
+ var plus=(S.P[0].shield<=0&&!tag&&upBy(c.id)>0)?'shield back':'';
+ if(!note&&S.P[0].shield<=0&&S.opts.shieldRebuild==='reborn'&&c.ops.some(function(o){return o.op==='shield_add'||o.op==='shield_per_card';}))note='A rule you switched on: only Shield Reborn brings a broken shield back. This card does nothing now.';
+ if(!note&&S.P[0].shield<=0&&S.opts.shieldRebuild!=='blocks'&&c.ops.some(function(o){return o.op==='block'||o.op==='block_per_card';}))note='A rule you switched on: this card only blocks. It does not bring a broken shield back.';
+ return {note:note,tag:tag,plus:plus};
 }
 function drawTray(){
  var S=U.S,t=el('tray'),h='',i;t.style.height='';
  if(U.phase==='alloc'){t.style.height='auto';drawAlloc();drawStage();return;}
  if(U.tray){t.innerHTML='<div class="traymsg">'+U.tray.html+'</div>';if(U.tray.bind)U.tray.bind();return;}
  var pick=U.phase==='pick',land=isLand(),foe=(pick&&land&&U.cpuLead>=0)?S.P[1].hand[U.cpuLead]:null;
- S.P[0].hand.forEach(function(id,k){var n=handNote(k),off=!pick;h+='<button type="button" class="hc mine'+(off?' dim':'')+(n.tag==='no effect'||n.tag==='cannot block'||n.tag==='no Spy'?' no':'')+'" data-h="'+k+'" data-id="'+id+'">'+cardSVG(B.card(id),'H'+k)+(n.tag&&!off?'<span class="tag">'+n.tag+'</span>':'')+'</button>';});
+ S.P[0].hand.forEach(function(id,k){var n=handNote(k),off=!pick;h+='<button type="button" class="hc mine'+(off?' dim':'')+(n.tag==='no effect'||n.tag==='cannot block'||n.tag==='no Spy'?' no':'')+'" data-h="'+k+'" data-id="'+id+'">'+cardSVG(B.card(id),'H'+k)+(n.tag&&!off?'<span class="tag">'+n.tag+'</span>':'')+(n.plus&&!off?'<span class="tag good">'+n.plus+'</span>':'')+'</button>';});
  if(foe)h+='<span class="gap"></span><span class="foebox"><button type="button" class="hc foecard" id="foecard" data-id="'+foe+'">'+cardSVG(B.card(foe),'HF')+'<span class="who">THE ENEMY\'S ORDER</span></button></span>';
  t.innerHTML=h;
  var all=t.querySelectorAll('.hc'),n=S.P[0].hand.length||1,tw=t.clientWidth,cw;

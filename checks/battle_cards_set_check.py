@@ -105,7 +105,10 @@ for c in cards + ups:
 want('words, badges and numbers disagree', out, [])
 want('no card says "Add +"', [c['id'] for c in cards + ideas if 'Add +' in c['text']], [])
 want('every repair of parts says working, lost or damaged', [c['id'] for c in cards if any(o['op'] in ('repair_one', 'repair_share', 'repair_all', 'repair_full', 'move_hp', 'round_up10', 'revive') for o in c['ops']) and not re.search(r'working|lost|damaged', c['text'])], [])
-want('every plain shield card says "still up"', [c['id'] for c in cards if any(o['op'] in ('shield_add', 'shield_per_card') for o in c['ops']) and 'still up' not in c['text']], [])
+# Marc, 22 November: a shield card puts a broken Main Shield back up. Every such card says so.
+want('every card that adds to the Main Shield says a broken shield comes back', [c['id'] for c in cards if any(o['op'] in ('shield_add', 'shield_per_card', 'shield_rebuild') for o in c['ops']) and 'A broken shield comes back' not in c['text']], [])
+want('every block card says it can bring back a broken shield', [c['id'] for c in cards if any(o['op'] in ('block', 'block_per_card') for o in c['ops']) and 'bring back a broken shield' not in c['text']], [])
+want('no card still says "if it is still up"', [c['id'] for c in cards if 'still up' in c['text']], [])
 want('a card with two effects names both parts it needs', [c['id'] for c in cards if len(c['ops']) > 1 and ' and ' not in c.get('needs', '')], [])
 want('longest card text (letters)', max(len(c['text']) for c in cards + ups + ideas) <= 90, True)
 
