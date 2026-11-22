@@ -3,7 +3,9 @@
 // It checks, on three screens (iPad sideways, iPad upright, a phone):
 //   - the page starts, says YES or NO for WebGL 2 and WebGPU, and shows the screen, the pixel ratio, the browser and the system
 //   - the planet test ends by itself, with a number on each of its three lines, and then shows the photo line
-//   - the photo line, the three results and the button are on the screen without scrolling; nothing spills sideways
+//   - the photo line, the three results and the button are on the screen without scrolling; nothing spills sideways.
+//     This is also checked on an older iPad held sideways with a browser's bars taking room (1080 wide, 700, 620 and 560 tall):
+//     on Marc's older iPad in Chrome the button was half off the bottom [proposals/GMQ_Flyin_iPad_Results_2026-11-22.md]
 //   - the page asks the network for nothing at all (only its own file is loaded)
 //   - with WebGL 2 taken away it says NO, says why there is no planet, and still ends at once
 //   - an iPad's Safari is named as Safari on an iPad, from the words an iPad really sends
@@ -26,7 +28,7 @@ const read = p => p.evaluate(() => { const t = id => document.getElementById(id)
     if (init) await p.addInitScript(init); await p.goto(URL); return p; };
 
   // 1. the three screens
-  for (const [w, h] of [[1180, 745], [820, 1180], [390, 760]]) { const tag = `${w}x${h}`, p = await open(w, h);
+  for (const [w, h] of [[1180, 745], [820, 1180], [390, 760], [1080, 700], [1080, 620], [1080, 560]]) { const tag = `${w}x${h}`, p = await open(w, h);
     await p.waitForTimeout(1500); const mid = await read(p);
     say(mid.photo.startsWith('Please wait'), `${tag}: no "please wait" while the test runs`);
     say(/^\d+$/.test(mid.count), `${tag}: no countdown on the picture while the test runs ("${mid.count}")`);
@@ -53,7 +55,7 @@ const read = p => p.evaluate(() => { const t = id => document.getElementById(id)
 
   // 3. the words real iPads send
   for (const [ua, touch, brw, sys] of [
-    ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15', 5, 'Safari 17.5', 'iPad (it hides its iPadOS number)'],
+    ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15', 5, 'Safari 17.5', 'iPad, iPadOS 17.5 (Safari has the same number)'],
     ['Mozilla/5.0 (iPad; CPU OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Mobile/15E148 Safari/604.1', 5, 'Safari 15.6', 'iPad, iPadOS 15.8'],
     ['Mozilla/5.0 (iPad; CPU OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.54 Mobile/15E148 Safari/604.1', 5, 'Chrome 126 for iPad', 'iPad, iPadOS 17.5'],
     ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15', 0, 'Safari 26.0', 'Mac']]) {
