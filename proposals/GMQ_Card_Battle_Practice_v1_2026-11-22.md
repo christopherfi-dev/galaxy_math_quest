@@ -125,6 +125,24 @@ You said: *"Sound or haptics good."*
 
 ---
 
+## 1e. Placing a hit: big, and the HP changes as you tap
+
+You said: *"it should be very big and obvious, and the hit points of that ship part should change visibly as we are clicking each one... I was kind of losing track as I was tapping and I actually blew up a couple without meaning to."*
+
+| Before | Now |
+|---|---|
+| The parts stayed the size they are in the battle. | **The view moves in on your ship.** On an iPad held sideways each part is about twice as wide as before. |
+| A small label over the part said "−15, leaves 5". The part still showed 20. | **The part's own HP changes with every tap:** 20, then 10, then 5, in orange. Over the part is the sum: "20 − 15". A "−10" floats up and the part shakes. |
+| A part went to 0 with no warning. | **A tap that would destroy a part places nothing.** The part turns red and asks: "GIVE IT UP? tap again". The words at the top say which part. A second tap gives it up. Any other tap cancels. |
+| | **A part that will be lost is red, shows 0, and says "WILL BE LOST".** |
+| The words at the top did not change. | **They keep count:** "Incoming hit: 55. Still to place: 40." At the end: "All 55 placed. No part is lost." or "You will lose your Weapons." |
+| The button always said "Take the hit". | **If a part will be lost, the button is red and names it:** "Take the hit: lose Weapons". |
+
+- **Giving a part up on purpose still works.** It is often the best play. It now takes one more tap, once for each part.
+- **What could prove this wrong:** I have not held it. The second tap may feel slow to a child who knows what they want. If so, it can become a switch.
+
+---
+
 ## 2. What is on the screen
 
 | | |
@@ -154,9 +172,11 @@ You said: *"Sound or haptics good."*
 8. **A hit meets the bubble first.** If the hit is bigger than the shield, the shield breaks and soaks up all of it.
 9. **With no shield, you choose which parts take the hit.**
    - The blocks are in a row. One is lit.
-   - Tap a part: it takes the lit block. Over the part you see "−20" and "leaves 5", or "it will be lost".
+   - The view moves in on your ship.
+   - Tap a part: it takes the lit block. The part's HP goes down as you tap. Over the part you see the sum: "20 − 15".
+   - A tap that would destroy a part asks first: "GIVE IT UP? tap again".
    - "Break a block", "Undo" and "Take all back" are there.
-   - "Take the hit" lights up when every block is placed. Then the lasers fire at the parts you chose.
+   - "Take the hit" lights up when every block is placed. If a part will be lost, the button is red and names it. Then the lasers fire at the parts you chose.
 10. **"Next round."**
 
 **The deck:** each player has their own cards, shuffled, and holds 5. A played card goes to the bottom of its deck.
@@ -263,7 +283,8 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,070 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,138 checks, all pass. It checks:
+  - placing a hit: the view moves in and the parts are large; a tapped part's own HP changes; the words keep count; a tap that would destroy a part places nothing and asks for a second tap; the button names every part that will be lost;
   - the sound button: off, remembered, on again; at real speed a laser, a Spy, a block, a burst and a win each ask for their sound, with no error; with the sound off, nothing is asked for;
   - your shield idea, with the switch on: the opened card says the shield will come back and soak the hit, and it does;
   - "epic" on every card and in every message, never "gold";
@@ -281,7 +302,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 49,152 combinations of switches (one more switch than before), then 32,000 more battles. 65 million checks, all pass. New in it: a strike is held back only when the ship that fired it has lost its last part, and only for the ship that went first; in turn order the two ships are never beaten together; six cases worked by hand.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 73,728 combinations of switches, then 44,000 more battles. 111 million checks, all pass. It measures your shield idea in both readings and tests it by hand. New in it: a strike is held back only when the ship that fired it has lost its last part, and only for the ship that went first; in turn order the two ships are never beaten together; six cases worked by hand.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.

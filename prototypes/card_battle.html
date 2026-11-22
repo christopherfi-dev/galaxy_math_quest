@@ -41,6 +41,7 @@ button{font-family:inherit}
 .cell.next{box-shadow:0 0 0 4px #ffd84a;transform:translateY(-3px)}
 .btn{font-size:18px;font-weight:900;border-radius:12px;border:2px solid #4a5a90;background:#1c2748;color:#fff;padding:9px 18px;cursor:pointer;min-height:46px}
 .btn.go{background:#16a34a;border-color:#4ade80}
+.btn.danger{background:#b91c1c;border-color:#fca5a5}
 .btn.small{font-size:14px;padding:6px 10px;min-height:36px;border-width:1px}
 .btn:disabled{opacity:.4}
 .row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;justify-content:center}
@@ -55,6 +56,9 @@ button{font-family:inherit}
 .pod.can{cursor:pointer}
 .pod.can .fr{stroke:#ffd84a;stroke-width:7;animation:pulse 1s infinite}
 .pod.sel .fr{stroke:#4ade80;stroke-width:8;animation:none}
+.pod.doom .fr{stroke:#f87171;stroke-width:8;fill:#3b0d0d;animation:none}
+.pod.arm .fr{stroke:#fff;stroke-width:8;animation:pulse .5s infinite}
+.armbox{animation:pulse .7s infinite}
 .flame{animation:flick .18s infinite alternate}
 .bub{animation:breathe 3s infinite ease-in-out}
 .drift{animation:drift 140s linear infinite}
@@ -158,7 +162,7 @@ button{font-family:inherit}
     <li>Both ships attack. Your attack is the AP of all your working parts, plus your card. The page adds it up.</li>
     <li>The attack of the player who went first lands first. A ship that loses its last part does not strike back.</li>
     <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
-    <li>With no shield, <b>you choose which of your parts take the hit</b>. The hit comes as blocks of ten, five and one. Tap a part to send it the lit block. Tap another block to light it. "Break a block" makes the lit block into smaller ones.</li>
+    <li>With no shield, <b>you choose which of your parts take the hit</b>. The view moves in on your ship. The hit comes as blocks of ten, five and one. Tap a part to send it the lit block: its HP goes down as you tap. Tap another block to light it. "Break a block" makes the lit block into smaller ones. If a tap would destroy a part, the page asks first: tap again to give that part up.</li>
   </ol>
   <h3>A lost part</h3>
   <ul>
@@ -861,6 +865,9 @@ function pod(side,ix){
  var S=U.S,p=S.P[side].parts[ix],k=KIND[p.kind],lost=p.hp<=0,c=podXY(side,ix),x=c.x-52,y=c.y-59,cls='pod';
  if(U.pick&&U.pick.side===side&&U.pick.among.indexOf(ix)>=0){cls+=' can';if(U.pick.chosen.indexOf(ix)>=0)cls+=' sel';}
  if(U.alloc&&side===0&&U.alloc.among.indexOf(ix)>=0)cls+=' can';
+ /* while a hit is being placed: what this part has been sent, and what that leaves */
+ var pv=null,armed=false;
+ if(U.alloc&&side===0&&!lost){var an=allocSum(ix);armed=U.alloc.arm===ix;if(an>0){pv={n:an,heal:U.alloc.limit,left:U.alloc.limit?Math.min(p.max,p.hp+an):Math.max(0,p.hp-an)};if(!pv.heal&&pv.left===0)cls+=' doom';}if(armed)cls+=' arm';}
  var o='<g class="'+cls+'" id="pod'+side+ix+'" data-side="'+side+'" data-ix="'+ix+'" transform="translate('+x.toFixed(0)+','+y.toFixed(0)+')">';
  if(lost){
   o+='<rect class="fr" width="104" height="118" rx="12" fill="#0b0f1f" stroke="#4b5563" stroke-width="4"/>';
@@ -872,11 +879,15 @@ function pod(side,ix){
   o+=partIcon(PARTCODE[p.part],30,30,0.6,k.colour);
   o+='<text x="98" y="23" text-anchor="end" font-size="12" font-weight="800" fill="#f59e0b">AP</text><text x="98" y="44" text-anchor="end" font-size="20" font-weight="900" fill="#ffd84a" class="ap">'+p.ap+'</text>';
   o+='<text x="52" y="68" text-anchor="middle" font-size="14.5" font-weight="800" fill="#e8ecf5">'+esc(B.SHORT[p.part])+'</text>';
-  o+='<path d="M22,88 c-7,-9 -19,1 -8,11 l8,8 l8,-8 c11,-10 -1,-20 -8,-11 Z" fill="#ff4d6d"/><text x="96" y="108" text-anchor="end" font-size="32" font-weight="900" fill="#fff" class="hp">'+p.hp+'</text>';
+  o+='<path d="M22,88 c-7,-9 -19,1 -8,11 l8,8 l8,-8 c11,-10 -1,-20 -8,-11 Z" fill="#ff4d6d"/><text x="96" y="108" text-anchor="end" font-size="'+(pv?38:32)+'" font-weight="900" fill="'+(pv?(pv.heal?'#86efac':(pv.left===0?'#f87171':'#fdba74')):'#fff')+'" class="hp">'+(pv?pv.left:p.hp)+'</text>';
   if(p.lvl>1)o+='<rect x="-8" y="-11" width="66" height="20" rx="7" fill="#ffd23f"/><text x="25" y="4" text-anchor="middle" font-size="13" font-weight="900" fill="#10162c">LEVEL 2</text>';
   if(side===0)o+='<rect x="-3" y="121" width="110" height="42" rx="9" fill="#0b1020" stroke="#33415f" stroke-width="2"/><text x="52" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#8f9bbd">if lost:</text><text x="52" y="155" text-anchor="middle" font-size="15" font-weight="800" fill="#e2e8f0" class="rule">'+RULE[p.part]+'</text>';
  }
- if(U.alloc&&side===0){var n=allocSum(ix);if(n>0){var heal=U.alloc.limit,left=heal?Math.min(p.max,p.hp+n):Math.max(0,p.hp-n);o+='<rect x="2" y="-44" width="100" height="38" rx="10" fill="'+(heal?'#166534':'#7f1d1d')+'" stroke="'+(heal?'#86efac':'#fca5a5')+'" stroke-width="3"/><text x="52" y="-17" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" class="al">'+(heal?'+':'−')+n+'</text><rect x="0" y="-64" width="104" height="18" rx="7" fill="#0b1020" fill-opacity=".9"/><text x="52" y="-50" text-anchor="middle" font-size="13" font-weight="800" fill="'+(left===0?'#fca5a5':'#c3cbe0')+'">'+(left===0?'it will be lost':'leaves '+left)+'</text>';}}
+ if(pv){
+  o+='<rect x="-4" y="-46" width="112" height="40" rx="10" fill="'+(pv.heal?'#166534':'#7f1d1d')+'" stroke="'+(pv.heal?'#86efac':'#fca5a5')+'" stroke-width="3"/><text x="52" y="-18" text-anchor="middle" font-size="23" font-weight="900" fill="#fff" class="al">'+p.hp+' '+(pv.heal?'+':'\u2212')+' '+pv.n+'</text>';
+  if(!pv.heal&&pv.left===0)o+='<rect x="-10" y="-72" width="124" height="22" rx="8" fill="#b91c1c" stroke="#fff" stroke-width="2"/><text x="52" y="-56" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" class="doomed">WILL BE LOST</text>';
+ }
+ if(armed)o+='<g class="armbox"><rect x="-12" y="18" width="128" height="74" rx="12" fill="#b91c1c" stroke="#fff" stroke-width="4"/><text x="52" y="48" text-anchor="middle" font-size="19" font-weight="900" fill="#fff">GIVE IT UP?</text><text x="52" y="76" text-anchor="middle" font-size="18" font-weight="800" fill="#fee2e2">tap again</text></g>';
  return o+'</g>';
 }
 function shipSVG(side){
@@ -906,7 +917,7 @@ function shipSVG(side){
   if(mid)o+='<path d="M'+(cx-232)+','+(cy-128)+' l18,22 l-16,10 l20,22 M'+(cx+226)+','+(cy+131)+' l-12,-16 l16,-6" fill="none" stroke="#e0f2fe" stroke-width="3"/>';
   if(weak)o+='<path d="M'+(cx+214)+','+(cy-136)+' l-10,24 l20,8 l-12,22 M'+(cx-240)+','+(cy+126)+' l14,-14 l-18,-4" fill="none" stroke="#e0f2fe" stroke-width="3"/>';
   o+='</g>';}
- o+='<g id="shl'+side+'" pointer-events="none"><rect x="'+(cx-132)+'" y="'+(cy-191)+'" width="264" height="38" rx="19" fill="'+(on?'#0c4a6e':'#1f2937')+'" stroke="'+(on?'#7dd3fc':'#4b5563')+'" stroke-width="3"/><text x="'+cx+'" y="'+(cy-164)+'" text-anchor="middle" font-size="22" font-weight="900" fill="'+(on?'#fff':'#9ca3af')+'" class="sht">'+(pl.shield>0?(on?'MAIN SHIELD '+pl.shield:'SHIELD OFF ('+pl.shield+')'):'SHIELD BROKEN')+'</text></g>';
+ if(!(U.phase==='alloc'&&side===0&&!on))o+='<g id="shl'+side+'" pointer-events="none"><rect x="'+(cx-132)+'" y="'+(cy-191)+'" width="264" height="38" rx="19" fill="'+(on?'#0c4a6e':'#1f2937')+'" stroke="'+(on?'#7dd3fc':'#4b5563')+'" stroke-width="3"/><text x="'+cx+'" y="'+(cy-164)+'" text-anchor="middle" font-size="22" font-weight="900" fill="'+(on?'#fff':'#9ca3af')+'" class="sht">'+(pl.shield>0?(on?'MAIN SHIELD '+pl.shield:'SHIELD OFF ('+pl.shield+')'):'SHIELD BROKEN')+'</text></g>';
  var hf=B.turnOrder(S)&&S.leader===side&&U.phase!=='roundend'&&U.phase!=='over';
  o+='<text x="'+(cx+d*-338)+'" y="'+((side&&!U.L.land)?s.cy-176:s.cy+196)+'" text-anchor="'+(side?'end':'start')+'" font-size="20" font-weight="900" fill="'+trim+'" opacity=".9">'+(side?'THE ENEMY':'YOUR SHIP')+((hf&&!(side&&!U.L.land))?(side?'  \u2022  HITS FIRST':'  \u2022  YOU HIT FIRST'):'')+'</text>';
  if(hf&&side&&!U.L.land)o+='<text x="'+(cx+d*-338)+'" y="'+(s.cy-153)+'" text-anchor="end" font-size="18" font-weight="900" fill="'+trim+'" opacity=".9">HITS FIRST</text>';
@@ -935,7 +946,14 @@ function drawStage(){
  if(U.phase==='over'&&S.over&&!U.finale){var bw=S.over.winner,bt=bw===0?'YOU WIN!':(bw===1?'THE ENEMY WINS':'NOBODY WINS'),bx=L.W/2,by=L.land?Math.max(70,L.ship[0].cy-262):Math.round((L.ship[1].cy+176+L.ship[0].cy-187)/2)+4;
   o+='<g id="banner" pointer-events="none"><rect x="'+(bx-250)+'" y="'+(by-50)+'" width="500" height="92" rx="24" fill="#0b1020" fill-opacity=".94" stroke="'+(bw===0?'#ffd84a':(bw===1?'#f87171':'#93c5fd'))+'" stroke-width="5"/><text x="'+bx+'" y="'+(by+16)+'" text-anchor="middle" font-size="50" font-weight="900" fill="'+(bw===0?'#ffd84a':'#fff')+'">'+bt+'</text></g>';}
  o+='<g id="fxg" pointer-events="none"></g>';
- var st=el('stage');st.setAttribute('viewBox','0 0 '+L.W+' '+L.H);st.innerHTML=o;
+ var st=el('stage'),full=[0,0,L.W,L.H],vb=full;
+ if(U.phase==='alloc'&&U.alloc){
+  var sw=el('stagewrap').clientWidth||1000,sh=el('stagewrap').clientHeight||600,sp=L.ship[0],on=B.shieldWorks(S,S.P[0]),vh=on?410:320,vw=Math.max(on?770:750,vh*sw/sh);vh=vw*sh/sw;
+  vb=[sp.cx-vw/2,sp.cy+(on?-8:-14)-vh/2,vw,vh];
+  if(!U.alloc.zoomed&&!FAST){U.alloc.zoomed=true;var to=vb;tween(380,function(t){var e=1-(1-t)*(1-t);st.setAttribute('viewBox',[0,1,2,3].map(function(k){return (full[k]+(to[k]-full[k])*e).toFixed(1);}).join(' '));});vb=full;}
+  U.alloc.zoomed=true;
+ }
+ st.setAttribute('viewBox',vb.map(function(v){return (+v).toFixed(1);}).join(' '));st.innerHTML=o;
 }
 function drawSky(){
  var L=U.L,k=L.W+'x'+L.H,sk=el('sky');if(sk.getAttribute('data-k')===k)return;
@@ -1165,7 +1183,7 @@ function askChoice(st,req,done){
   render();return;
  }
  if(req.type==='amounts'){
-  U.phase='alloc';U.alloc={req:req,among:req.among,total:req.total,limit:!!req.limit,cells:cellsOf(req.total),placed:{},order:[],done:done};
+  U.phase='alloc';U.alloc={req:req,among:req.among,total:req.total,limit:!!req.limit,cells:cellsOf(req.total),placed:{},order:[],arm:-1,zoomed:false,done:done};
   say(req.limit?c.name+': share '+req.total+' HP between your parts.':'Incoming hit: '+req.total+'. Your shield is down. You choose which parts take it.');
   render();return;
  }
@@ -1182,16 +1200,20 @@ function askChoice(st,req,done){
   render();return;
  }
 }
+function allocLost(){var A=U.alloc,out=[];if(A.limit)return out;A.among.forEach(function(ix){var n=allocSum(ix);if(n>0&&n>=U.S.P[0].parts[ix].hp)out.push(partName(0,ix));});return out;}
 function drawAlloc(){
  var A=U.alloc,t=el('tray');if(A.sel===undefined||A.sel>=A.cells.length)A.sel=0;
- var h='<div class="traymsg"><div class="hint" id="ahint">'+esc(A.err||(A.cells.length?'Tap a part to send it the lit block. Tap another block to light it.':'All placed. Press '+(A.limit?'Repair':'Take the hit')+', or Undo.'))+'</div><div class="cells" id="cells">';
+ var left=0,lost=allocLost();A.cells.forEach(function(v){left+=v;});
+ if(A.arm>=0)say('That would destroy your '+partName(0,A.arm)+'. Tap it again to give it up. Or tap another part.');
+ else if(A.order.length)say(left?(A.limit?'Still to share: '+left+' HP.':'Incoming hit: '+A.total+'. Still to place: '+left+'.'):(A.limit?'All shared.':(lost.length?'All '+A.total+' placed. You will lose your '+lost.join(' and your ')+'.':'All '+A.total+' placed. No part is lost.')));
+ var h='<div class="traymsg"><div class="hint" id="ahint">'+esc(A.err||(A.cells.length?'Tap a part to send it the lit block. Tap another block to light it.':'Press the button, or Undo.'))+'</div><div class="cells" id="cells">';
  A.cells.forEach(function(v,i){h+='<button type="button" class="cell'+(v===1?' one':'')+(i===A.sel?' next':'')+'" data-i="'+i+'">'+v+'</button>';});
- h+='</div><div class="row"><button class="btn small" id="brk" type="button"'+(A.cells.length&&A.cells[A.sel]>1?'':' disabled')+'>Break a block</button><button class="btn small" id="undo" type="button"'+(A.order.length?'':' disabled')+'>Undo</button><button class="btn small" id="reset" type="button">Take all back</button><button class="btn go" id="fire" type="button"'+(A.cells.length?' disabled':'')+'>'+(A.limit?'Repair':'Take the hit')+'</button></div></div>';
+ h+='</div><div class="row"><button class="btn small" id="brk" type="button"'+(A.cells.length&&A.cells[A.sel]>1?'':' disabled')+'>Break a block</button><button class="btn small" id="undo" type="button"'+(A.order.length?'':' disabled')+'>Undo</button><button class="btn small" id="reset" type="button">Take all back</button><button class="btn '+(lost.length?'danger':'go')+'" id="fire" type="button"'+(A.cells.length?' disabled':'')+'>'+(A.limit?'Repair':(lost.length?'Take the hit: lose '+lost.join(' and '):'Take the hit'))+'</button></div></div>';
  t.innerHTML=h;
- var cs=t.querySelectorAll('.cell');for(var i=0;i<cs.length;i++){cs[i].addEventListener('click',function(){A.sel=+this.getAttribute('data-i');A.err='';drawAlloc();});}
- el('brk').addEventListener('click',function(){var v=A.cells[A.sel];if(v===10){A.cells.splice(A.sel,1,5,5);}else if(v===5){A.cells.splice(A.sel,1,1,1,1,1,1);}else{return;}A.cells.sort(function(a,b){return b-a;});A.sel=A.cells.indexOf(v===10?5:1);A.err='';drawAlloc();});
- el('undo').addEventListener('click',function(){var last=A.order.pop();if(last===undefined)return;var v=A.placed[last].pop();A.cells.push(v);A.cells.sort(function(a,b){return b-a;});A.sel=0;A.err='';drawStage();drawAlloc();});
- el('reset').addEventListener('click',function(){A.cells=cellsOf(A.total);A.placed={};A.order=[];A.sel=0;A.err='';drawStage();drawAlloc();});
+ var cs=t.querySelectorAll('.cell');for(var i=0;i<cs.length;i++){cs[i].addEventListener('click',function(){A.sel=+this.getAttribute('data-i');A.err='';if(A.arm>=0){A.arm=-1;drawStage();}drawAlloc();});}
+ el('brk').addEventListener('click',function(){var v=A.cells[A.sel];if(v===10){A.cells.splice(A.sel,1,5,5);}else if(v===5){A.cells.splice(A.sel,1,1,1,1,1,1);}else{return;}A.cells.sort(function(a,b){return b-a;});A.sel=A.cells.indexOf(v===10?5:1);A.err='';A.arm=-1;snd('tick');drawStage();drawAlloc();});
+ el('undo').addEventListener('click',function(){var last=A.order.pop();if(last===undefined)return;var v=A.placed[last].pop();A.cells.push(v);A.cells.sort(function(a,b){return b-a;});A.sel=0;A.err='';A.arm=-1;drawStage();drawAlloc();if(!A.order.length)say(A.limit?'Share '+A.total+' HP between your parts.':'Incoming hit: '+A.total+'. You choose which parts take it.');});
+ el('reset').addEventListener('click',function(){A.cells=cellsOf(A.total);A.placed={};A.order=[];A.sel=0;A.err='';A.arm=-1;drawStage();drawAlloc();say(A.limit?'Share '+A.total+' HP between your parts.':'Incoming hit: '+A.total+'. You choose which parts take it.');});
  el('fire').addEventListener('click',function(){var ch=[0,0,0,0,0];A.among.forEach(function(ix){ch[ix]=allocSum(ix);});var e=B.validate(U.S,A.req,ch);if(e){A.err=e;drawAlloc();return;}var d=A.done;d(ch);});
 }
 function onPod(side,ix){
@@ -1200,7 +1222,10 @@ function onPod(side,ix){
   if(A.among.indexOf(ix)<0||!A.cells.length)return;
   var k=A.sel||0,v=A.cells[k],p=U.S.P[0].parts[ix];
   if(A.limit&&allocSum(ix)+v>B.roomOf(U.S,p)){A.err=partName(0,ix)+' cannot take '+v+' more. Break the block, or choose another part.';drawAlloc();return;}
-  A.cells.splice(k,1);(A.placed[ix]=A.placed[ix]||[]).push(v);A.order.push(ix);A.sel=0;A.err='';snd('tick');drawStage();drawAlloc();return;
+  /* a tap that would take this part to 0 asks first: tap again to give the part up */
+  if(!A.limit&&allocSum(ix)<p.hp&&allocSum(ix)+v>=p.hp&&A.arm!==ix){A.arm=ix;A.err='';snd('tap');drawStage();drawAlloc();return;}
+  A.arm=-1;A.cells.splice(k,1);(A.placed[ix]=A.placed[ix]||[]).push(v);A.order.push(ix);A.sel=0;A.err='';snd('tick');drawStage();drawAlloc();
+  var at=podXY(0,ix);floatText({x:at.x,y:at.y-78},(A.limit?'+':'\u2212')+v,A.limit?'#86efac':'#fecaca',40);shake(0,ix);return;
  }
  if(!P||P.side!==side||P.among.indexOf(ix)<0)return;
  var at=P.chosen.indexOf(ix);

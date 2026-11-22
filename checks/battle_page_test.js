@@ -11,7 +11,7 @@ const PAGE = 'file://' + path.resolve(__dirname, '..', 'prototypes', 'card_battl
 const FILE = PAGE + '?fast';
 const SHOTS = process.argv[2] || null;
 // name, width, height, smallest hand card, smallest HP number, smallest "if lost" words (all in screen points)
-const SIZES = [['ipad_sideways', 1180, 745, 150, 20, 10], ['ipad_upright', 820, 1180, 140, 20, 10], ['phone', 390, 760, 60, 10, 5]];
+const SIZES = [['ipad_sideways', 1180, 745, 150, 20, 10, 1.8, 140], ['ipad_upright', 820, 1180, 140, 20, 10, 1.25, 100], ['phone', 390, 760, 60, 10, 5, 1.0, 44]];
 const BOARD = { 'Weapons': 'cannot attack', 'Engine': 'lose 1 card', 'Navigation': 'lose 1 card', 'Shield Gen': 'cannot defend', 'Power': 'cannot heal' };   // Marc's battle board
 const KEY = 'gmq_battle_v3';
 const bad = [];
@@ -27,14 +27,14 @@ async function state(page) {
     const r = e => { if (!e) return null; const b = e.getBoundingClientRect(); return { l: b.left, t: b.top, r: b.right, b: b.bottom, w: b.width, h: b.height }; };
     const all = s => Array.from(document.querySelectorAll(s));
     const txt = (e, s) => { const x = e && e.querySelector(s); return x ? x.textContent : null; };
-    const pods = side => [0, 1, 2, 3, 4].map(ix => { const e = q('pod' + side + ix); return e ? { ix: ix, box: r(e.querySelector('.fr')), hp: txt(e, '.hp'), ap: txt(e, '.ap'), rule: txt(e, '.rule'), hpBox: r(e.querySelector('.hp')), ruleBox: r(e.querySelector('.rule')), al: txt(e, '.al'), can: /\bcan\b/.test(e.getAttribute('class')), lost: /LOST/.test(e.textContent), text: e.textContent } : null; });
+    const pods = side => [0, 1, 2, 3, 4].map(ix => { const e = q('pod' + side + ix); return e ? { ix: ix, box: r(e.querySelector('.fr')), hp: txt(e, '.hp'), ap: txt(e, '.ap'), rule: txt(e, '.rule'), hpBox: r(e.querySelector('.hp')), ruleBox: r(e.querySelector('.rule')), al: txt(e, '.al'), doomed: !!e.querySelector('.doomed'), armed: !!e.querySelector('.armbox'), can: /\bcan\b/.test(e.getAttribute('class')), lost: /LOST/.test(e.textContent), text: e.textContent } : null; });
     const A = U.alloc;
     return {
       phase: U.phase, round: S ? S.round : 0, over: S && S.over ? S.over : null, anim: U.anim, leader: S ? S.leader : -1,
       pick: U.pick ? { side: U.pick.side, among: U.pick.among, n: U.pick.n, chosen: U.pick.chosen.slice(), two: !!U.pick.done } : null,
-      alloc: A ? { among: A.among.slice(), total: A.total, limit: A.limit, cells: A.cells.slice(), sel: A.sel || 0, placed: A.among.map(ix => (A.placed[ix] || []).reduce((a, b) => a + b, 0)), err: A.err || '' } : null,
+      alloc: A ? { among: A.among.slice(), total: A.total, limit: A.limit, cells: A.cells.slice(), sel: A.sel || 0, arm: A.arm, placed: A.among.map(ix => (A.placed[ix] || []).reduce((a, b) => a + b, 0)), err: A.err || '' } : null,
       swap: !!q('swy'), nextr: !!q('nextr'), again: !!q('again'), cgo: q('cgo') ? !q('cgo').disabled : null, mno: !!q('mno'), mv: all('.mv').length, play: r(q('playit')), bigCard: r(document.querySelector('#pop.open .big svg')),
-      fire: q('fire') ? { box: r(q('fire')), off: q('fire').disabled } : null, cells: all('.cell').map(e => Object.assign(r(e), { v: +e.textContent, lit: /\bnext\b/.test(e.className) })),
+      fire: q('fire') ? { box: r(q('fire')), off: q('fire').disabled, text: q('fire').textContent } : null, cells: all('.cell').map(e => Object.assign(r(e), { v: +e.textContent, lit: /\bnext\b/.test(e.className) })),
       msg: q('msg').textContent, note: q('note') ? q('note').textContent : '', fore: q('fore') ? Array.from(q('fore').children).map(x => x.textContent).join(' ') : '',
       apNow: S ? S.P.map(p => B.has(p, 'Weapons System') ? B.shipAP(p) : 0) : [], eFore: S && U.phase === 'pick' && S.opts.guard === 'lead' && S.leader === 1 && U.cpuLead >= 0 ? window.GMQB.plain(1, S.P[1].hand[U.cpuLead]) : null,
       lastLog: S && S.log.length ? { round: S.log[S.log.length - 1].round, atk: S.log[S.log.length - 1].atk, through: S.log[S.log.length - 1].through } : null, hint: q('ahint') ? q('ahint').textContent : '',
@@ -71,6 +71,13 @@ async function placeBlocks(page, name, want) {
     if (k <= -2) { await page.locator('.cell').nth(-2 - k).tap(); await page.locator('#brk').tap(); continue; }
     if (k !== A.sel) await page.locator('.cell').nth(k).tap();
     await page.locator(podSel(0, ix)).tap();
+    const after = await state(page);
+    if (after.alloc && after.alloc.arm === ix) {
+      pass(name + ': a tap that would destroy a part places nothing, and asks for a second tap', after.alloc.cells.length === A.cells.length && after.pods[0][ix].armed && /Tap it again to give it up/.test(after.msg), after.msg);
+      await page.locator(podSel(0, ix)).tap();
+      const done = await state(page);
+      pass(name + ': the second tap gives the part up: its HP shows 0 and it says WILL BE LOST', done.alloc.arm === -1 && done.pods[0][ix].hp === '0' && done.pods[0][ix].doomed && done.alloc.cells.length === A.cells.length - 1, JSON.stringify(done.pods[0][ix]));
+    }
   }
 }
 
@@ -85,6 +92,7 @@ async function act(page, name, flags, size) {
   pass(name + ': every HP on your ship is the HP in the rules engine', st.pods[0].every((p, ix) => p && (p.lost ? st.hp[0][ix] === 0 : +p.hp === st.hp[0][ix] && +p.ap === st.ap[0][ix])), JSON.stringify([st.pods[0].map(p => p.hp), st.hp[0]]));
   pass(name + ': the bubble is there exactly when the shield works, with its number', st.bub[0] === st.shieldOn[0] && (!st.shieldOn[0] || st.shl[0] === 'MAIN SHIELD ' + st.shield[0]), st.shl[0]);
   if (st.phase === 'pick') {
+    flags.podW = st.pods[0][0].box.w;
     pass(name + ': the hand is on the screen', st.cards.length >= 3 && st.cards.length <= 5, String(st.cards.length));
     pass(name + ': every card of the hand is large and inside the screen', st.cards.every(c => c.w >= size.card && inScreen(c, st)), JSON.stringify(st.cards.map(c => Math.round(c.w))));
     pass(name + ': the cards lie below the ships and do not cover them', st.cards.every(c => c.t >= st.stage.b - 1));
@@ -132,34 +140,39 @@ async function act(page, name, flags, size) {
     pass(name + ': the button is off until every block is placed', st.fire.off === (A.cells.length > 0));
     pass(name + ': every part you may choose is lit and on the screen', A.among.every(ix => st.pods[0][ix].can && inScreen(st.pods[0][ix].box, st)));
     pass(name + ': the ships hold still while you tap them', st.still[0] === true && st.still[1] === true);
+    if (flags.podW) pass(name + ': while you place a hit, the view moves in on your ship and its parts are large', st.pods[0][0].box.w >= flags.podW * size.zoom && st.pods[0][0].box.w >= size.pod, Math.round(st.pods[0][0].box.w) + ' against ' + Math.round(flags.podW));
     if (!A.limit) {
       flags.splits = (flags.splits || 0) + 1;
       if (!flags.shotAlloc) { flags.shotAlloc = true; await shot(page, name + '_5_incoming_hit'); }
-      if (!flags.blockPlay && A.cells[0] === 10 && A.among.length >= 2) {
+      if (!flags.blockPlay && A.cells[0] === 10 && A.among.length >= 2 && A.among.some(x => st.hp[0][x] > 10)) {
         flags.blockPlay = true;
-        const ix = A.among[0];
+        const ix = A.among.filter(x => st.hp[0][x] > 10)[0], other = A.among.filter(x => x !== ix)[0];
         await page.locator(podSel(0, ix)).tap();
         let a = await state(page);
-        const left = Math.max(0, st.hp[0][ix] - 10);
-        pass(name + ': a tapped part takes the lit block, and the page says what it leaves', a.pods[0][ix].al === '−10' && new RegExp(left === 0 ? 'it will be lost' : 'leaves ' + left).test(a.pods[0][ix].text) && a.alloc.cells.length === A.cells.length - 1, a.pods[0][ix].text);
-        pass(name + ': placing a block changes no HP yet', JSON.stringify(a.hp) === JSON.stringify(st.hp));
+        const left = st.hp[0][ix] - 10;
+        pass(name + ': a tapped part takes the lit block, and its own HP changes on the part', a.pods[0][ix].hp === String(left) && a.pods[0][ix].al === st.hp[0][ix] + ' \u2212 10' && !a.pods[0][ix].doomed && a.alloc.cells.length === A.cells.length - 1, JSON.stringify(a.pods[0][ix]));
+        pass(name + ': the words above keep count of what is still to place', a.msg === 'Incoming hit: ' + A.total + '. Still to place: ' + (A.total - 10) + '.', a.msg);
+        pass(name + ': placing a block changes no HP in the rules yet', JSON.stringify(a.hp) === JSON.stringify(st.hp));
         await page.locator('#undo').tap();
         a = await state(page);
-        pass(name + ': Undo gives the block back', JSON.stringify(a.alloc.cells) === JSON.stringify(A.cells) && a.pods[0][ix].al === null);
+        pass(name + ': Undo gives the block back, and the part shows its HP again', JSON.stringify(a.alloc.cells) === JSON.stringify(A.cells) && a.pods[0][ix].al === null && a.pods[0][ix].hp === String(st.hp[0][ix]));
         await page.locator('#brk').tap();
         a = await state(page);
         pass(name + ': Break makes a ten into two fives, and the total stays', a.alloc.cells.length === A.cells.length + 1 && sum(a.alloc.cells) === A.total && a.alloc.cells.filter(v => v === 5).length === A.cells.filter(v => v === 5).length + 2, JSON.stringify(a.alloc.cells));
-        await page.locator(podSel(0, A.among[1])).tap();
+        await page.locator(podSel(0, ix)).tap();
+        await page.locator('.cell').nth(0).tap();
+        await page.locator(podSel(0, other)).tap();
         await shot(page, name + '_6_blocks_placed');
         await page.locator('#reset').tap();
         a = await state(page);
-        pass(name + ': Take all back gives every block back', JSON.stringify(a.alloc.cells) === JSON.stringify(A.cells) && sum(a.alloc.placed) === 0);
+        pass(name + ': Take all back gives every block back', JSON.stringify(a.alloc.cells) === JSON.stringify(A.cells) && sum(a.alloc.placed) === 0 && a.alloc.arm === -1);
       }
     }
     const want = await page.evaluate(() => window.GMQB.B.cpuChoose(window.GMQB.U.S, window.GMQB.U.alloc.req));
     await placeBlocks(page, name, want);
     const b = await state(page);
     pass(name + ': with every block placed, the button is on', b.fire && !b.fire.off && b.alloc.cells.length === 0, JSON.stringify(b.alloc));
+    if (!A.limit) { const gone = A.among.filter(ix => want[ix] > 0 && want[ix] >= st.hp[0][ix]).map(ix => st.names[ix]); pass(name + ': the button names every part that will be lost, and is red; with none lost it says only "Take the hit"', gone.length ? b.fire.text === 'Take the hit: lose ' + gone.join(' and ') : b.fire.text === 'Take the hit', b.fire.text + ' | ' + gone.join(',')); if (gone.length) flags.named = true; }
     await page.locator('#fire').tap();
     await idle(page);
     const c = await state(page);
@@ -178,8 +191,8 @@ async function act(page, name, flags, size) {
 
 (async () => {
   const browser = await chromium.launch();
-  for (const [name, w, h, card, hpPx, rulePx] of SIZES) {
-    const size = { w: w, h: h, card: card };
+  for (const [name, w, h, card, hpPx, rulePx, zoom, podPx] of SIZES) {
+    const size = { w: w, h: h, card: card, zoom: zoom, pod: podPx };
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true });
     const page = await ctx.newPage();
     const errors = [];
@@ -251,6 +264,7 @@ async function act(page, name, flags, size) {
     st = await state(page);
     pass(name + ': the player sent a hit to their parts', (flags.splits || 0) >= 1, String(flags.splits));
     pass(name + ': Undo, Break a block and Take all back were tried', !!flags.blockPlay);
+    pass(name + ': a part was given up on purpose at least once, and the button named it', !!flags.named);
     pass(name + ': opened cards said what they would do', (flags.fores || 0) >= 3, String(flags.fores));
     pass(name + ': the lead passed from one player to the other', !!flags.enemyLed && !!flags.youLed);
     pass(name + ': the battle reaches an end', !!st.over, 'round ' + st.round);
@@ -361,7 +375,7 @@ async function act(page, name, flags, size) {
     async function watch(until) {
       const t0 = Date.now(); let n = 0;
       while (Date.now() - t0 < 45000) {
-        const s2 = await p2.evaluate(() => { const U = window.GMQB.U, f = document.getElementById('fxg'), q = s => !!(f && f.querySelector(s)); return { phase: U.phase, fly: q('.fly'), beam: q('.beam'), pop: q('.pop'), wall: q('circle[r="74"]'), banner: !!document.getElementById('banner'), booms: f ? f.childNodes.length : 0, pick: U.pick ? { side: U.pick.side, among: U.pick.among, n: U.pick.n, chosen: U.pick.chosen.length } : null, cgo: document.getElementById('cgo') ? !document.getElementById('cgo').disabled : null, alloc: U.alloc ? { cells: U.alloc.cells.length, among: U.alloc.among } : null, fire: document.getElementById('fire') ? !document.getElementById('fire').disabled : false }; });
+        const s2 = await p2.evaluate(() => { const U = window.GMQB.U, f = document.getElementById('fxg'), q = s => !!(f && f.querySelector(s)); return { phase: U.phase, fly: q('.fly'), beam: q('.beam'), pop: q('.pop'), wall: q('circle[r="74"]'), banner: !!document.getElementById('banner'), booms: f ? f.childNodes.length : 0, pick: U.pick ? { side: U.pick.side, among: U.pick.among, n: U.pick.n, chosen: U.pick.chosen.length } : null, cgo: document.getElementById('cgo') ? !document.getElementById('cgo').disabled : null, alloc: U.alloc ? { cells: U.alloc.cells.length, among: U.alloc.among, arm: U.alloc.arm } : null, fire: document.getElementById('fire') ? !document.getElementById('fire').disabled : false }; });
         if (s2.fly) { if (!seen.shotSpy) { seen.shotSpy = true; await shot(p2, name + '_10_spy_flies'); } seen.fly = true; }
         if (s2.wall) { if (!seen.shotWall) { seen.shotWall = true; await shot(p2, name + '_11_block'); } seen.wall = true; }
         if (s2.beam) { if (!seen.shotBeam) { seen.shotBeam = true; await shot(p2, name + '_12_laser'); } seen.beam = true; }
@@ -369,7 +383,7 @@ async function act(page, name, flags, size) {
         if (until(s2)) return s2;
         if (s2.pick && s2.pick.chosen < s2.pick.n) await p2.locator(podSel(s2.pick.side, s2.pick.among[0])).tap();
         else if (s2.cgo) await p2.locator('#cgo').tap();
-        else if (s2.alloc && s2.alloc.cells) await p2.locator(podSel(0, s2.alloc.among[(n++) % s2.alloc.among.length])).tap();
+        else if (s2.alloc && s2.alloc.cells) await p2.locator(podSel(0, s2.alloc.arm >= 0 ? s2.alloc.arm : s2.alloc.among[(n++) % s2.alloc.among.length])).tap();
         else if (s2.fire) await p2.locator('#fire').tap();
         else await p2.waitForTimeout(50);
       }
