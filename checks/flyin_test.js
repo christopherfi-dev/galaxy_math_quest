@@ -2,19 +2,19 @@
 //
 // It checks:
 //   1. on three screens (iPad sideways, iPad upright, a phone) and on the older iPad sideways: the page starts, plays, and ends by itself
-//      within 10.5 seconds; the last picture is the meadow (sky above, river in the middle, grass below, the ship standing at the left)
+//      on time (within 10.5 seconds at the 10-second speed, and within 15.5 at the usual 15-second speed); the last picture is the meadow (sky above, river in the middle, grass below, the ship standing at the left)
 //   2. a tap skips it at every second of the scene, at once, and the meadow picture is then shown
 //   3. with WebGL 2 taken away it ends at once and says the game goes straight to the landing
 //   4. a set-up that takes more than one second ends at once in the same way ("it never blocks the game")
 //   5. the short one ends within 3 seconds; the other view (the ship seen from outside) still plays to its end
 //   6. turning the iPad in the middle: it goes on, ends on time, and the picture has the new shape
 //   7. a hidden page and a lost picture both end it
-//   8. Watch again works, during the scene and after it
+//   8. Watch again works, during the scene and after it; Slower and Faster change the speed and cannot go below the 10-second one
 //   9. the two copies of the page are the same file; the page asks the network for nothing; no errors
 //  10. the piece the game would use (between the two marked lines) is under 60 KB
 // The speed is NOT checked: this machine draws WebGL in software. Speed comes only from real iPads.
 //
-// Run:  node checks/flyin_test.js     Needs Node with Playwright and Chromium. About 3 minutes.
+// Run:  node checks/flyin_test.js     Needs Node with Playwright and Chromium. About 4 minutes.
 const { chromium } = require('playwright');
 const path = require('path'), fs = require('fs');
 const FILE = path.resolve(__dirname, '..', 'prototypes', 'voltara_flyin.html'), COPY = path.resolve(__dirname, '..', 'docs', 'flyin', 'index.html'), URL = 'file://' + FILE;
@@ -32,7 +32,7 @@ const FILE = path.resolve(__dirname, '..', 'prototypes', 'voltara_flyin.html'), 
     say(m.grass[1] > m.grass[0] + 15 && m.grass[1] > m.grass[2] - 5 && m.grass[1] < 140, `${tag}: no dark grass at the bottom of the last picture (${m.grass})`); say(Math.min(...m.ship) > 190, `${tag}: the ship is not standing at the left (${m.ship})`); say(m.all > 60, `${tag}: the last picture is nearly empty`); };
 
   // 1. it plays and ends by itself, on four screens
-  for (const [w, h] of [[1180, 745], [820, 1180], [390, 760], [1080, 700]]) { const tag = `${w}x${h}`, p = await open(w, h);
+  for (const [w, h] of [[1180, 745], [820, 1180], [390, 760], [1080, 700]]) { const tag = `${w}x${h}`, p = await open(w, h, '?pace=1');
     await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => bad.push(`${tag}: it did not start`)); const t0 = Date.now(); const s0 = await state(p);
     say(s0.hint !== 'none', `${tag}: no "Tap to skip" while it plays`);
     const ok = await done(p, 12000), s = await state(p), took = s.took;
@@ -41,8 +41,12 @@ const FILE = path.resolve(__dirname, '..', 'prototypes', 'voltara_flyin.html'), 
     say(Math.abs(s.cw / s.ch - s.bw / s.bh) < .02, `${tag}: the picture is stretched (${s.cw}x${s.ch} dots in a ${s.bw}x${s.bh} box)`);
     meadow(await look(p), tag); say(p.reqs.length === 1, `${tag}: the page asked for ${p.reqs.length} things`); say(!p.errs.length, `${tag}: errors: ${p.errs.slice(0, 3).join(' | ')}`); await p.close(); }
 
+  // 1b. the usual speed: 15 seconds, and it still ends by itself; a tap skips it early and late
+  { const p = await open(1080, 700); const ok = await done(p, 18000), s = await state(p); say(ok && s.why === 'end' && s.took >= 14.4 && s.took <= 15.5, `the usual speed: ${s.why} after ${s.took} s (15 expected)`); say(/15-second speed/.test(s.say), `the usual speed: it says "${s.say}"`); meadow(await look(p), 'the usual speed'); await p.close(); }
+  for (const at of [1, 12.5]) { const p = await open(748, 640); await p.waitForTimeout(at * 1000); await p.mouse.click(300, 250); const ok = await done(p, 1000), s = await state(p); say(ok && s.why === 'skip', `the usual speed, tap at ${at} s: ${s.state}, ${s.why}`); meadow(await look(p), `the usual speed, tap at ${at} s`); await p.close(); }
+
   // 2. a tap skips it, at every second
-  for (const at of [.15, 1, 2, 3, 4, 5, 5.5, 6, 7, 8, 9]) { const p = await open(748, 640); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {});
+  for (const at of [.15, 1, 2, 3, 4, 5, 5.5, 6, 7, 8, 9]) { const p = await open(748, 640, '?pace=1'); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {});
     await p.waitForTimeout(at * 1000); const t0 = Date.now(); await p.mouse.click(300, 250); const ok = await done(p, 1000), s = await state(p);
     say(ok && s.why === 'skip' && Date.now() - t0 < 600, `tap at ${at} s: it did not skip at once (${s.state}, ${s.why}, ${Date.now() - t0} ms)`); say(/^Skipped/.test(s.say), `tap at ${at} s: it says "${s.say}"`);
     meadow(await look(p), `tap at ${at} s`); say(!p.errs.length, `tap at ${at} s: errors: ${p.errs.slice(0, 2).join(' | ')}`); await p.close(); }
@@ -54,14 +58,14 @@ const FILE = path.resolve(__dirname, '..', 'prototypes', 'voltara_flyin.html'), 
     const ok = await done(p, 3000), s = await state(p); say(ok && s.why === 'slowstart', `slow set-up: it did not give way to the landing (${s.state}, ${s.why})`); say(/straight to the landing/.test(s.say), `slow set-up: it says "${s.say}"`); await p.close(); }
 
   // 5. the short one
-  { const p = await open(1180, 745, '?short=1'); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {}); const ok = await done(p, 5000), s = await state(p), took = s.took;
+  { const p = await open(1180, 745, '?short=1&pace=1'); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {}); const ok = await done(p, 5000), s = await state(p), took = s.took;
     say(ok && s.why === 'end' && took <= 3 && took >= 2.4, `the short one: ${s.why} after ${took.toFixed(1)} s`); meadow(await look(p), 'the short one'); await p.close(); }
 
   // 5b. the other view (the ship seen from outside all the way) still plays to its end
-  { const p = await open(1180, 745, '?view=outside'); const ok = await done(p, 14000), s = await state(p); say(ok && s.why === 'end' && s.took <= 10.5, `the outside view: ${s.why} after ${s.took} s`); meadow(await look(p), 'the outside view'); say(!p.errs.length, `the outside view: errors: ${p.errs.slice(0, 2).join(' | ')}`); await p.close(); }
+  { const p = await open(1180, 745, '?view=outside&pace=1'); const ok = await done(p, 14000), s = await state(p); say(ok && s.why === 'end' && s.took <= 10.5, `the outside view: ${s.why} after ${s.took} s`); meadow(await look(p), 'the outside view'); say(!p.errs.length, `the outside view: errors: ${p.errs.slice(0, 2).join(' | ')}`); await p.close(); }
 
   // 6. turned in the middle
-  { const p = await open(1180, 745); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {}); const t0 = Date.now();
+  { const p = await open(1180, 745, '?pace=1'); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {}); const t0 = Date.now();
     await p.waitForTimeout(3000); await p.setViewportSize({ width: 745, height: 1180 }); await p.waitForTimeout(3500); const mid = await state(p); say(mid.state === 'playing', `turned: it stopped (${mid.state}, ${mid.why})`);
     await p.setViewportSize({ width: 1180, height: 745 }); await p.waitForTimeout(600); await p.setViewportSize({ width: 745, height: 1180 });
     const ok = await done(p, 9000), s = await state(p), took = s.took; say(ok && s.why === 'end' && took <= 10.5, `turned: ${s.why} after ${took.toFixed(1)} s`);
@@ -75,9 +79,11 @@ const FILE = path.resolve(__dirname, '..', 'prototypes', 'voltara_flyin.html'), 
     say(ok && s.why === 'lost', `lost picture: ${s.state}, ${s.why}`); say(/straight to the landing/.test(s.say), `lost picture: it says "${s.say}"`); say(!p.errs.length, `lost picture: errors: ${p.errs.slice(0, 2).join(' | ')}`); await p.close(); }
 
   // 8. Watch again
-  { const p = await open(1180, 745); await p.waitForTimeout(2000); await p.click('#again'); await p.waitForTimeout(400); let s = await state(p); say(s.state === 'playing', `Watch again in the middle: ${s.state}, ${s.why}`);
+  { const p = await open(1180, 745, '?pace=1'); await p.waitForTimeout(2000); await p.click('#again'); await p.waitForTimeout(400); let s = await state(p); say(s.state === 'playing', `Watch again in the middle: ${s.state}, ${s.why}`);
     let ok = await done(p, 12000); s = await state(p); say(ok && s.why === 'end' && s.took > 9.4 && s.took <= 10.5, `Watch again in the middle: ${s.why} after ${s.took} s`);
     await p.click('#short'); await p.waitForTimeout(300); s = await state(p); say(s.state === 'playing', `The short one after the end: ${s.state}`); ok = await done(p, 4000); s = await state(p); say(ok && s.why === 'end', `The short one after the end: ${s.why}`); meadow(await look(p), 'after Watch again');
+    await p.click('#slower'); await p.waitForTimeout(300); let pc = await p.evaluate(() => document.body.dataset.pace + '|' + document.body.dataset.state + '|' + document.getElementById('say').textContent); say(/^1.25\|playing\|.*13 seconds/.test(pc), `Slower: ${pc}`);
+    await p.click('#faster'); await p.click('#faster'); await p.waitForTimeout(300); pc = await p.evaluate(() => document.body.dataset.pace + '|' + document.body.dataset.state); say(pc === '1|playing', `Faster twice (it cannot go below the 10-second speed): ${pc}`);
     say(!p.errs.length, `Watch again: errors: ${p.errs.slice(0, 2).join(' | ')}`); await p.close(); }
 
   // 9. the copy for the iPads is the same file      10. the size of the piece for the game

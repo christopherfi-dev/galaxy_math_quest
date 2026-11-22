@@ -11,7 +11,8 @@
   The game file is not touched. The piece the game would use is GMQFlyin, between the two marked lines below.
   Shot list and notes: proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md.   Checked by checks/flyin_test.js.
   Address words for testing:  ?t=7 holds the picture at 7 seconds   ?q=0..3 fixes the picture size (0 is the sharpest)
-                              ?short=1 plays the two-second one     ?bare=1 hides the bar under the picture
+                              ?short=1 plays the short one          ?bare=1 hides the bar under the picture
+                              ?pace=1 plays it in 10 seconds (1.5, the usual, takes 15; 2 takes 20)   ?view=outside shows the ship from outside
 -->
 <style>
 html, body { margin: 0; height: 100%; background: #04060e; color: #e8eef8; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; -webkit-text-size-adjust: 100%; }
@@ -29,7 +30,7 @@ button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; b
 <body>
 <div id="stage">
   <div id="pic"><canvas id="cv"></canvas><div id="hint">Tap to skip</div></div>
-  <div id="bar"><span id="say">Arriving at Planet Voltara…</span><button id="again" type="button">Watch again</button><button id="short" type="button">The short one</button><span id="stat"></span></div>
+  <div id="bar"><span id="say">Arriving at Planet Voltara…</span><button id="again" type="button">Watch again</button><button id="slower" type="button">Slower</button><button id="faster" type="button">Faster</button><button id="short" type="button">The short one</button><span id="stat"></span></div>
 </div>
 
 <script>
@@ -37,7 +38,8 @@ button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; b
    The arrival at Planet Voltara. One entry point:  GMQFlyin.play(canvas, opts, done)
      canvas  a canvas of its own, laid over the game's picture (the game's own canvas is 2D and cannot be shared)
      opts    { view: 'outside'  the ship is seen from outside all the way. Left out: first person, from the cockpit, and the ship is seen only once it has landed
-               short: true      the two-second one, for later landings
+               pace: 1.5        how slowly it plays: 1 is the 10-second scene, 1.5 (the usual) takes 15 seconds, 2 takes 20
+               short: true      the two-second one, for later landings (it is slowed by pace too)
                fade: true       in the last half second the canvas fades out, to show what lies under it (the game's meadow)
                hold: true       keep the last picture alive after the end (this page uses it; the game would not)
                clock: seconds   the game's own clock (tNow), so clouds, moons and sparkles carry on from where the game has them
@@ -269,7 +271,7 @@ var GMQFlyin = (function () {
     var gl = g.gl, SP = g.SP, V = g.V, nq = 0, O = [], nInf = 0, cw = 0, ch = 0, asp = 1, W = 1, H = 1, m = 1;
     var cy = EYE, cz = 0, cxs = 0, sth = 0, cth = 1, srl = 0, crl = 1, px = 0, py = 0, pz = 0, first = opts.view !== 'outside';
     var auto = opts.q == null && opts.t == null && !g.cap, stuck = 0, base = 0, baseQ = 0, q = opts.q != null ? opts.q : g.q, late = false, ring = new Float32Array(16), rn = 0, quiet = 8, last = -1, nf = 0, sum = 0, worst = 0, drops = 0;
-    var KK = 0, begin = opts.short ? LEN - SHORT : 0, clock = opts.clock || 0, spx = opts.sp ? opts.sp[0] : .27, spy = opts.sp ? opts.sp[1] : .42, shipO = null, legsO = null, flameO = null, tmp = [0, 0, 0, 0];
+    var KK = 0, pace = Math.max(.5, Math.min(4, +opts.pace || 1.5)), begin = opts.short ? LEN - SHORT : 0, clock = opts.clock || 0, spx = opts.sp ? opts.sp[0] : .27, spy = opts.sp ? opts.sp[1] : .42, shipO = null, legsO = null, flameO = null, tmp = [0, 0, 0, 0];
     g.onlost = function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('lost'); };
 
     function vtx(i, x, y, w, u, v, c) { V[i] = x; V[i + 1] = y; V[i + 2] = w; V[i + 3] = u; V[i + 4] = v; V[i + 5] = c[0]; V[i + 6] = c[1]; V[i + 7] = c[2]; V[i + 8] = c[3]; }
@@ -337,7 +339,7 @@ var GMQFlyin = (function () {
       // more trees to the sides, which only the high view sees
       for (i = 0; i < (first ? 10 : 18); i++) { var ez = [-30, -22, -15, -9, -3, 2, 6, 9, 12, 14, 48, 56, 66, 80, 95, 115, 140, 170][i], side = i % 2 ? 1 : -1, hw = Math.max(ez, 0) * asp / (2 * F), ex = side * (hw * 1.12 + 4 + ((i * 7.31) % 1) * (ez > 40 ? 60 : 16)), eth = (ez > 40 ? 4.2 : 3) + (i % 3) * .7, es = SP[['tree1', 'tree2', 'tree4'][i % 3]], ek = eth / (es[7] - 5) * 1.16;
         O.push({ sp: SP.glow, z: ez, c: [.16, .34, .28, 0], x0: ex - eth * .62, x1: ex + eth * .62, y0: eth * .82 - eth * .62, y1: eth * .82 + eth * .62 }); O.push({ sp: es, z: ez, c: WHITE, x0: ex - es[6] * ek, x1: ex + (es[4] - es[6]) * ek, y0: -(es[5] - es[7]) * ek, y1: es[7] * ek }); }
-      if (first) for (i = 0; i < 112; i++) { var fz = -4 - 156 * fr(i * .618 + .1), fx = (fr(i * .377 + .2) - .5) * 110, fth = 3.2 + 3.4 * fr(i * .23), fs = SP[['tree1', 'tree2', 'tree4'][i % 3]], fk = fth / (fs[7] - 5) * 1.16; if (fz > -45 && Math.abs(fx) < 13) fx = (fx < 0 ? -1 : 1) * (13 + Math.abs(fx));      // a clear lane for the landing
+      if (first) for (i = 0; i < 96; i++) { var fz = -4 - 122 * fr(i * .618 + .1), fx = (fr(i * .377 + .2) - .5) * 110, fth = 3.2 + 3.4 * fr(i * .23), fs = SP[['tree1', 'tree2', 'tree4'][i % 3]], fk = fth / (fs[7] - 5) * 1.16; if (fz > -45 && Math.abs(fx) < 13) fx = (fx < 0 ? -1 : 1) * (13 + Math.abs(fx));      // a clear lane for the landing
         O.push({ sp: SP.glow, z: fz, c: [.16, .34, .28, 0], x0: fx - fth * .62, x1: fx + fth * .62, y0: fth * .82 - fth * .62, y1: fth * .82 + fth * .62 }); O.push({ sp: fs, z: fz, c: WHITE, x0: fx - fs[6] * fk, x1: fx + (fs[4] - fs[6]) * fk, y0: -(fs[5] - fs[7]) * fk, y1: fs[7] * fk }); }
       // the ship: its legs, its flame and its body. They come down together and stand where the game stands the ship.
       var sL = Math.max(54, h * .15), sx = w * .07, zs = depth(gy), kS = sL / Math.max(sL, m * .2);
@@ -386,7 +388,7 @@ var GMQFlyin = (function () {
         // ---- the sky of Voltara: down over the Sparkling River to the Landing Meadow ----
         var p = clamp((T - TS) / (LEN - (first ? .6 : 0) - TS)), kk = 1 - p, th, rl = 0, sv, td = T - (LEN - .6);      // in first person we are down at 8.9 s
         if (first) {      // first person: out of the clouds, low and fast over the glowing woods, banking left then right, slowing to the meadow
-          th = -.5 * Math.pow(kk, 1.15); cy = EYE + 30 * Math.pow(kk, 1.5); cz = -150 * Math.pow(kk, 1.9); cxs = 8 * Math.sin(kk * 4.4) * Math.pow(kk, 1.2); rl = .2 * Math.sin(kk * 4.4 + .9) * kk;
+          th = -.5 * Math.pow(kk, 1.15); cy = EYE + 30 * Math.pow(kk, 1.5); cz = -115 * Math.pow(kk, 1.8); cxs = 6 * Math.sin(kk * 4.4) * Math.pow(kk, 1.2); rl = .13 * Math.sin(kk * 4.4 + .9) * kk;
           if (td > 0) cy -= .16 * Math.exp(-7 * td) * Math.sin(td * 24) * (1 - ss(.35, .6, td));                                        // touchdown: the ship dips on its legs and settles
           sv = ss(LEN - .38, LEN - .05, T); [legsO, flameO, shipO].forEach(function (o) { o.c[0] = o.c[1] = o.c[2] = o.c[3] = o === flameO ? 0 : sv; });      // the ship is seen only once we have landed and the cockpit opens
         } else {          // the ship seen from outside: ahead of the camera and below it, coming down onto its own spot as the camera settles
@@ -428,10 +430,10 @@ var GMQFlyin = (function () {
 
     function frame(now) {
       if (!run) return; raf = requestAnimationFrame(frame);
-      if (T0 < 0) T0 = now; var t = ended ? LEN + FADE : (now - T0) / 1000 + begin, dt = last < 0 ? 16.7 : now - last; last = now;
+      if (T0 < 0) T0 = now; var real = (now - T0) / 1000, t = ended ? LEN + FADE : real / pace + begin, dt = last < 0 ? 16.7 : now - last; last = now;
       fit();
       if (!ended) {
-        if (t >= LEN + FADE) { if (opts.fade) cv.style.opacity = 0; draw(LEN, clock + t - begin); finish('end'); return; }
+        if (t >= LEN + FADE) { if (opts.fade) cv.style.opacity = 0; draw(LEN, clock + real); finish('end'); return; }
         if (!late && t > LEN - .7) { late = true; auto = false; size(); }                               // the last, still moments are cheap to draw: draw them as sharp as the screen, so the hand-over to the game's picture is clean
         else if (++nf > 3 && !late) { sum += dt; if (dt > worst) worst = dt; ring[rn++ & 15] = dt;       // slow frames: draw the next ones with fewer dots
           if (auto && --quiet < 0 && rn >= 16) { var avg = 0; for (var i = 0; i < 16; i++) avg += ring[i]; avg /= 16; var nx = q + 1; while (nx < SCALES.length && SCALES[nx] >= (window.devicePixelRatio || 1)) nx++;
@@ -440,18 +442,18 @@ var GMQFlyin = (function () {
             else if (avg > 22 && nx < SCALES.length) { if (!stuck) { base = avg; baseQ = q; } stuck++; q = g.q = nx; drops++; size(); quiet = 14; rn = 0; } } }
         if (opts.fade && t > LEN) cv.style.opacity = String(1 - (t - LEN) / FADE);
       }
-      draw(Math.min(t, LEN), clock + (ended ? (performance.now() - tHold) / 1000 + LEN + FADE : t) - begin);
+      draw(Math.min(t, LEN), clock + (ended ? (performance.now() - tHold) / 1000 + (LEN + FADE - begin) * pace : real));
     }
 
     if (opts.fade) cv.style.opacity = 1;
     if (opts.t != null) late = opts.t > LEN - .7;
     fit();
-    if (opts.t != null) { draw(Math.min(opts.t, LEN), clock + opts.t - begin); return { skip: none, stop: none, redraw: function () { fit(); draw(Math.min(opts.t, LEN), clock + opts.t - begin); }, stats: function () { return { setup: g.ms, level: q, sheet: g.sheet, D: g.D }; } }; }
+    if (opts.t != null) { draw(Math.min(opts.t, LEN), clock + (opts.t - begin) * pace); return { skip: none, stop: none, redraw: function () { fit(); draw(Math.min(opts.t, LEN), clock + (opts.t - begin) * pace); }, stats: function () { return { setup: g.ms, level: q, sheet: g.sheet, D: g.D }; } }; }
     run = true; cv.addEventListener('pointerdown', onTap); document.addEventListener('visibilitychange', onHide);
-    timer = setTimeout(function () { finish('end'); }, ((opts.short ? SHORT : LEN) + FADE) * 1000 + 450);      // the scene ends on time even if the browser stops drawing
+    timer = setTimeout(function () { finish('end'); }, ((opts.short ? SHORT : LEN) + FADE) * pace * 1000 + 450);      // the scene ends on time even if the browser stops drawing
     raf = requestAnimationFrame(frame);
     return { skip: function () { finish('skip'); }, stop: function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('skip'); },
-      stats: function () { return { setup: g.ms, sheet: g.sheet, D: g.D, level: q, scale: Math.min(window.devicePixelRatio || 1, SCALES[q]), drops: drops, cap: !!g.cap, fps: nf > 4 && sum ? 1000 * (nf - 3) / sum : 0, worst: worst, frames: nf }; } };
+      stats: function () { return { setup: g.ms, sheet: g.sheet, D: g.D, pace: pace, level: q, scale: Math.min(window.devicePixelRatio || 1, SCALES[q]), drops: drops, cap: !!g.cap, fps: nf > 4 && sum ? 1000 * (nf - 3) / sum : 0, worst: worst, frames: nf }; } };
   }
   return { play: play, prepare: function (cv) { try { return !!prepare(cv); } catch (e) { ERR = String(e && e.message || e); return false; } }, error: function () { return ERR; }, LEN: LEN + FADE };
 })();
@@ -460,21 +462,23 @@ var GMQFlyin = (function () {
 /* ---------- this page: it plays the fly-in, then says what the game would do next ---------- */
 (function () {
   'use strict';
-  var $ = function (id) { return document.getElementById(id); }, Q = new URLSearchParams(location.search), cv = $('cv'), ctl = null;
+  var $ = function (id) { return document.getElementById(id); }, Q = new URLSearchParams(location.search), cv = $('cv'), ctl = null, PACES = [1, 1.25, 1.5, 1.75, 2, 2.5, 3], pace = +Q.get('pace') || 1.5;
   if (Q.has('bare')) document.body.className = 'bare';
   var WHY = { end: 'The game starts here: the Landing Meadow.', skip: 'Skipped. The game starts here: the Landing Meadow.', hidden: 'The page was hidden, so the fly-in stopped. The game starts here.',
     nowebgl: 'No fly-in on this device (no WebGL 2). The game goes straight to the landing.', slowstart: 'The fly-in took too long to get ready. The game goes straight to the landing.', lost: 'The picture stopped. The game goes straight to the landing.' };
   function go(short) {
     if (ctl) ctl.stop();
-    document.body.dataset.state = 'playing'; document.body.dataset.why = ''; $('say').textContent = 'Arriving at Planet Voltara…'; $('stat').textContent = ''; $('hint').style.display = '';
-    var o = { hold: true, short: !!short }; if (Q.has('view')) o.view = Q.get('view'); if (Q.has('q')) o.q = Math.max(0, Math.min(3, +Q.get('q') | 0)); if (Q.has('t')) o.t = +Q.get('t'); if (Q.has('lit')) { o.lit = { R: 1, C: 1, I: 1 }; o.tower = true; }
+    document.body.dataset.state = 'playing'; document.body.dataset.why = ''; document.body.dataset.pace = pace; $('say').textContent = 'Arriving at Planet Voltara… (' + Math.round(pace * 10) + ' seconds)'; $('stat').textContent = ''; $('hint').style.display = '';
+    var o = { hold: true, short: !!short, pace: pace }; if (Q.has('view')) o.view = Q.get('view'); if (Q.has('q')) o.q = Math.max(0, Math.min(3, +Q.get('q') | 0)); if (Q.has('t')) o.t = +Q.get('t'); if (Q.has('lit')) { o.lit = { R: 1, C: 1, I: 1 }; o.tower = true; }
     var began = performance.now(), mine = ctl = GMQFlyin.play(cv, o, function (why) {
-      document.body.dataset.took = ((performance.now() - began) / 1000).toFixed(2); $('hint').style.display = 'none'; $('say').textContent = WHY[why] || why; document.body.dataset.state = 'done'; document.body.dataset.why = why;
-      setTimeout(function () { if (mine !== ctl) return; var s = mine.stats(); if (!s) { $('stat').textContent = GMQFlyin.error().slice(0, 200); return; } $('stat').textContent = (s.fps ? 'Speed: ' + Math.round(s.fps) + ' frames a second. Slowest frame ' + Math.round(s.worst) + ' ms. ' : '') + (s.scale ? 'Picture size ' + s.scale + ' (it dropped ' + s.drops + ' time' + (s.drops === 1 ? '' : 's') + (s.cap ? '; the browser is holding the speed, perhaps Low Power Mode' : '') + '). ' : '') + 'Set-up took ' + Math.round(s.setup) + ' ms.'; }, 0);
+      document.body.dataset.took = ((performance.now() - began) / 1000).toFixed(2); $('hint').style.display = 'none'; $('say').textContent = (WHY[why] || why) + (why === 'end' || why === 'skip' ? ' This was the ' + Math.round(pace * 10) + '-second speed.' : ''); document.body.dataset.state = 'done'; document.body.dataset.why = why;
+      setTimeout(function () { if (mine !== ctl) return; var s = mine.stats(); if (!s) { $('stat').textContent = GMQFlyin.error().slice(0, 200); return; } $('stat').textContent = (s.fps ? 'Drawing: ' + Math.round(s.fps) + ' frames a second. Slowest frame ' + Math.round(s.worst) + ' ms. ' : '') + (s.scale ? 'Picture size ' + s.scale + ' (it dropped ' + s.drops + ' time' + (s.drops === 1 ? '' : 's') + (s.cap ? '; the browser is holding the speed, perhaps Low Power Mode' : '') + '). ' : '') + 'Set-up took ' + Math.round(s.setup) + ' ms.'; }, 0);
     });
     if (o.t != null) { document.body.dataset.state = 'held'; $('hint').style.display = 'none'; $('say').textContent = 'Held at ' + o.t + ' seconds.'; }
   }
   $('again').addEventListener('click', function () { go(false); }); $('short').addEventListener('click', function () { go(true); });
+  function step(d) { var i = 0, k; for (k = 0; k < PACES.length; k++) if (Math.abs(PACES[k] - pace) < Math.abs(PACES[i] - pace)) i = k; pace = PACES[Math.max(0, Math.min(PACES.length - 1, i + d))]; go(false); }
+  $('slower').addEventListener('click', function () { step(1); }); $('faster').addEventListener('click', function () { step(-1); });
   window.addEventListener('resize', function () { if (ctl && ctl.redraw) ctl.redraw(); });
   go(Q.has('short'));
 })();
