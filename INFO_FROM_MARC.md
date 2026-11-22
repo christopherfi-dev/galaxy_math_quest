@@ -349,3 +349,4 @@ These are Marc's words, tidied. They are not on the form above.
   - Read as: he agrees to the recommendations (full scene on the first landing and the short one after; one soft landing beep if Sound is on; no caption; the main thread wires it in), and he gives the fly-in thread leave to push its own files to the main branch.
   - Changed by him: the view. Not the ship seen from outside: a first-person view, so the child feels they are flying in.
   - No full free flight over the planet. Whether the child gets a little control is still open; the thread will lay out options.
+- **Built for his decisions of 22 November (no new message; a record of the work).** Version 86 on the preview link: Voltara's glow stone made a helper (V2), and Planet Lengthar in centimetres and metres (`proposals/GMQ_Lengthar_Design_v2_2026-11-22.md`, which also lists the independent review and what was fixed). Class link unchanged (81).
