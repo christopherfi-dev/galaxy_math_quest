@@ -321,3 +321,14 @@ These are Marc's words, tidied. They are not on the form above.
   - Two small suggestions for it: say that Safari's number on an iPad is the iPadOS number; and say that the numbers are a first guide, because the test draws a flat picture, not a 3D scene.
 - **Push and merge the test page (Marc, 2026-11-22).** "I'm just gonna run on my two own kids iPads right now. One is an iPad Pro one is an older iPad model. Can you just push and merge? And give me the link to try this?" The main thread merged the fly-in branch (`claude/adoring-gates-3yg1yc`) into the main branch, so the test page is on the site: https://christopherfi-dev.github.io/galaxy_math_quest/flyin/test.html . This is his permission for the test page to be published. The fly-in thread must merge the main branch before its next push.
 - **First iPad test results (Marc, 2026-11-22).** He sent photos of the test page on three devices: "My iPhone. [A family member]'s old iPad that we bought used from the school, which is an older model than what they use now. And my daughter's iPad, which is an iPad Pro from like six years ago." (A family name is left out of this public file.) WebGL 2 on all three; WebGPU only on the iPad Pro (iPadOS 26.7); the older iPad (iPadOS 17.6) ran the sharp picture at 45–51 and the hard test at 31–36 frames a second. Written up for the fly-in thread in `proposals/GMQ_Flyin_iPad_Results_2026-11-22.md`. The photos are not kept in the repository.
+- **"I agree with your recommendations. We learn the metric system." (Marc, 2026-11-22).** Agreed, from the list of what is next:
+  - keep the version 84 station changes (on the preview; the class link stays on 81 until he says)
+  - Voltara's glow stone: V2. The tunnel can be crossed slowly in the dark; the glow stone becomes a helper.
+  - the world web: strand A, the lantern, first
+  - Lengthar next (decision 37), made to need one thing from another planet or give one; then the lantern strand
+  - **3.MD.4 is metric in his class:** "We learn the metric system." Lengthar's ruler changes from inches to centimetres.
+  - the radio ending: 3, the map in the beeps
+  - Patternox: C, the galaxy of rules, with coding inside it later
+  - an independent reviewer at milestones: yes
+  - the fly-in: the full scene on the first landing, a short one after
+  - Still open: how the children address him (for the fly-in test page); the ship seen from outside or the cockpit; sound.
