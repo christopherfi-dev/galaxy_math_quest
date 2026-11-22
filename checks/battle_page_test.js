@@ -17,7 +17,7 @@ const KEY = 'gmq_battle_v4';
 const bad = [];
 let passed = 0, LAST = 'starting';
 function pass(label, ok, extra) { if (ok) { passed++; } else { console.log('FAIL ' + label + (extra ? ': ' + extra : '')); if (bad.indexOf(label) < 0) bad.push(label); } return ok; }
-const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 5 minutes. Last seen: ' + LAST); process.exit(2); }, 300000);
+const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 8 minutes. Last seen: ' + LAST); process.exit(2); }, 480000);
 const PUT = 'function put(pl,id,at){var h=pl.hand.indexOf(id);if(h>=0&&h!==at){var t=pl.hand[at];pl.hand[at]=id;pl.hand[h]=t;}else if(h<0){var d=pl.deck.indexOf(id);pl.deck.splice(d,1);pl.deck.push(pl.hand[at]);pl.hand[at]=id;}}';
 
 async function shot(page, name) { if (SHOTS) { fs.mkdirSync(SHOTS, { recursive: true }); await page.screenshot({ path: path.join(SHOTS, name + '.png') }); } }
@@ -455,6 +455,42 @@ async function act(page, name, flags, size) {
     pass(name + ': no script errors at real speed', errors2.length === 0, errors2.slice(0, 3).join(' | '));
     await p2.close();
 
+    pass(name + ': no script errors', errors.length === 0, errors.slice(0, 3).join(' | '));
+    await ctx.close();
+  }
+  // ---- the opened card on real phones and tablets (Marc, 22 November: on his phone the two buttons were off the screen, upright and sideways)
+  // The sizes are what the browser really shows, with its own bars taken off. The case is the one with the most words.
+  for (const [name, w, h] of [['iphone_upright', 390, 664], ['iphone_small', 375, 553], ['iphone_sideways', 750, 340], ['small_phone_sideways', 568, 270], ['ipad_upright', 820, 1180], ['ipad_sideways', 1180, 745]]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true });
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on('pageerror', e => errors.push(String(e)));
+    page.on('dialog', d => d.accept());
+    await page.goto(FILE);
+    await page.evaluate(() => window.GMQB.setSeed(5));
+    await page.locator('#sgo').tap();
+    await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;S.P[0].shield=0;put(S.P[1],"A08",0);put(S.P[0],"D01",0);put(S.P[0],"D10",1);put(S.P[0],"R09",2);U.cpuLead=0;})()');
+    await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+    let allFit = true, detail = '';
+    for (let k = 0; k < 5; k++) {
+      await page.locator('.hc.mine').nth(k).tap();
+      const m = await page.evaluate(() => {
+        const r = e => { const b = e.getBoundingClientRect(); return { l: b.left, t: b.top, r: b.right, b: b.bottom, w: b.width, h: b.height }; };
+        const q = id => document.getElementById(id), wd = q('words'), top = document.elementFromPoint((r(q('playit')).l + r(q('playit')).r) / 2, (r(q('playit')).t + r(q('playit')).b) / 2);
+        return { play: r(q('playit')), back: r(q('popx')), card: r(document.querySelector('#pop .big svg')), words: r(wd), need: wd.scrollHeight, has: wd.clientHeight, scrolls: getComputedStyle(wd).overflowY, onTop: top === q('playit'), vw: innerWidth, vh: innerHeight, docW: document.documentElement.scrollWidth, docH: document.documentElement.scrollHeight, name: document.querySelector('.hc.mine:nth-of-type(' + 1 + ')') ? '' : '' };
+      });
+      const inside = b => b.l >= -1 && b.t >= -1 && b.r <= m.vw + 1 && b.b <= m.vh + 1;
+      const ok = inside(m.play) && inside(m.back) && inside(m.card) && m.play.h >= 36 && m.back.h >= 36 && m.onTop && m.docW <= m.vw + 1 && m.docH <= m.vh + 1 && (m.need <= m.has + 1 || m.scrolls === 'auto') && m.words.b <= m.play.t + 1 && m.card.w >= 120;
+      if (!ok) { allFit = false; detail += ' card ' + k + ': ' + JSON.stringify(m); }
+      if (k === 0) await shot(page, name + '_opened_card');
+      await page.locator('#popx').tap();
+      if (await page.locator('#pop.open').count() !== 0) { allFit = false; detail += ' card ' + k + ': Back did not close it'; }
+    }
+    pass(name + ': every opened card shows its picture, "Give this order" and "Back" inside the screen, with the words above the buttons and able to scroll if they are long', allFit, detail.slice(0, 600));
+    await page.locator('.hc.mine').nth(0).tap();
+    await page.locator('#playit').tap();
+    const moved = await page.evaluate(() => window.GMQB.U.phase);
+    pass(name + ': "Give this order" can be tapped and plays the card', moved !== 'pick', moved);
     pass(name + ': no script errors', errors.length === 0, errors.slice(0, 3).join(' | '));
     await ctx.close();
   }
