@@ -18,22 +18,27 @@ No words are shown in the scene. The pictures carry it. (A caption is an open qu
 
 ## 2. The shot list, as built
 
+**The view is first person** [Source: Marc, 2026-11-22: "I think it'll be cool if they feel like they're flying… They actually see the planet arriving from like a first person perspective"]. The child sits in the cockpit. The ship is seen from outside only at the very start and once it has landed.
+
 The scene is 9.5 seconds. Then a half-second fade hands over to the game: 10 seconds in all. **A tap anywhere skips it, at any moment.**
 
-| Time | What the camera sees |
+| Time | What the child sees |
 |---|---|
-| 0 – 1.5 s | Space, as the game draws it: the same stars, the same Voltara in the same place, the trade beacon, the ship at the game's angle. The ship flies at the planet. |
-| 1.5 – 3 s | The dive. The planet grows past the edges of the picture. The camera heads for the night side, to the spot where the game shows the city's small lights. The trade beacon is left behind. |
-| 3 – 4.5 s | Over the night side. **The city is the same skyline the child will see from the meadow:** twelve dark towers, with the three streets' colours on their roofs (Home Street, Market Street, Factory Row). Its windows are lit. They flicker and go out, one by one. By 4.5 s none is left. The Sparkling River runs in front. Glowing trees dot the dark land. |
-| 4.4 – 6.4 s | Down through cotton-candy clouds: pink, blue and white, the game's own cloud shape. At 5.5 s the picture is all cloud; behind it the scene changes from space to sky. |
-| 6.4 – 9 s | Out over the Sparkling River, looking down. The ship comes down ahead and to the left, on its flame. Glowing trees below; the dark city far across the river. The camera comes down and tips up to the horizon. |
-| 9 – 9.5 s | The ship stands on the Landing Meadow. The picture is now the game's own meadow picture. |
+| 0 – 0.6 s | Space, exactly as the game draws it. The cockpit closes round the picture: two struts, a top rim and a dashboard, in the ship's own white, red and dark blue. The ship seen from outside fades away: we are in it now. |
+| 0.6 – 2.8 s | Through the windscreen: Voltara ahead, growing. The dive. The planet grows past the edges. We head for the night side, to the spot where the game shows the city's small lights. The trade beacon is left behind. |
+| 2.8 – 4.2 s | Over the night side. **The city is the same skyline the child will see from the meadow:** twelve dark towers, with the three streets' colours on their roofs (Home Street, Market Street, Factory Row). Its windows are lit. They flicker and go out, one by one. The Sparkling River runs in front. Glowing trees dot the dark land. |
+| 4.1 – 6 s | Down through cotton-candy clouds: pink, blue and white, the game's own cloud shape. At 5.2 s the windscreen is all cloud; behind it the scene changes from space to sky. |
+| 6 – 9 s | **The flight.** Out of the clouds, low and fast over woods of glowing trees, banking left and then right. The Sparkling River is ahead, and the dark city beyond it. We slow, straighten and come down. |
+| 9 – 9.5 s | We are down on the Landing Meadow. The cockpit opens (it slides away), and the ship is there, standing where the game stands it. The picture is now the game's own meadow picture. |
 | 9.5 – 10 s | The hand-over: the fly-in fades out over the game's meadow. |
 
+**The other view is kept as one setting** (`view: 'outside'`): the ship seen from outside all the way, as in the first draft.
+
 **Changed from the handoff's table, and why:**
-- The handoff gave the clouds 5–7 s and the descent 7–10 s. I moved the clouds a little earlier (4.4–6.4 s). The descent must end softly on the game's picture, and it needed the extra half second.
+- The clouds come a little earlier (the handoff gave them 5–7 s). The flight is what gives the feeling of flying, and it must end softly on the game's picture, so it gets 4.3 seconds.
 - The handoff said "where the city should be there is a dark patch". I show the city itself, lit, and then going dark. The critic's first review found that a patch (and my first try, a grid of houses) did not read as the city across the river. A child now sees the same skyline twice: going dark from the air, then dark from the meadow.
 - **The meadow is at dusk, not night** [Source: the game's `vSky`: indigo at the top, through pink and orange to pale green at the horizon, with stars only at the top]. So the story is: we cross the night side, where the city has gone dark, and land at the edge of night.
+- **The woods we fly over are new.** They lie behind the spot the game's meadow picture is drawn from, so they are never in that picture. They are the game's own trees.
 
 **The short one** (for later landings, if you want it): the last 2 seconds only, from a cloud-white start. It is one setting.
 
@@ -44,7 +49,7 @@ The scene is 9.5 seconds. Then a half-second fade hands over to the game: 10 sec
 - **Everything else is the game's own drawing.** I copied the shapes and colours of `spaceBack`'s stars, `rocket`, the trade beacon, `farCity`, `towerDraw`, `vSky`, `vFar`, `drawMeadow`, `alienTree`, `fluff` and `frontMeadow` into the page. Each thing is painted once as a flat card, **at this picture's own size and with the game's own line weights**.
 - **For the landing the cards stand in 3D, like a paper theatre,** at the distances the game's picture implies. The camera flies down to the exact view the game draws. **That is why the last frame matches: it is the same picture, seen from the same place.**
 - **It looks drawn because it is the game's drawing**, not a 3D model of it.
-- **Size:** the piece the game would use is 52.5 KB (the target was under 60 KB). The whole page is 59 KB.
+- **Size:** the piece the game would use is 56.7 KB (the target was under 60 KB). The whole page is 64 KB.
 - **Nothing is made anew in a frame.** One texture, one buffer, three small programs. The cards are painted again only if the picture changes size (an iPad turned).
 
 ## 4. For the older iPad
@@ -55,7 +60,7 @@ The scene is 9.5 seconds. Then a half-second fade hands over to the game: 10 sec
 - **It steps down by itself.** If the last 16 frames average slower than about 45 a second, it steps down: 1.5, then 1.25, then 1, then 0.75. It does not step back up while things move, so the picture does not flicker between sizes.
 - **It does not shrink for nothing.** If two steps down bring no gain, the browser is holding the speed (Low Power Mode holds 30 frames a second). Then it steps back up and stays.
 - **The last 0.7 seconds are drawn as sharp as the screen,** unless the iPad was already struggling. By then almost nothing moves and the picture is cheap to draw. This makes the hand-over to the game's sharp picture clean.
-- **The heavy part is short.** The planet program fills the screen only from about 2 to 5.5 seconds. The landing is cheap: flat cards.
+- **The heavy part is short.** The planet program fills the screen only from about 2 to 5.2 seconds. The flight is cheap: flat cards, about ninety trees.
 - **In the game it will be lighter than on this page.** The game's picture on that iPad is about 674 × 553 points, about half the page's full window.
 - **The numbers under the picture after the scene** show the real speed: frames a second, the slowest frame, the picture size it ended on, and how long set-up took. **Those are what I need from the older iPad, held sideways.**
 
@@ -128,18 +133,35 @@ A separate reviewer saw only the art rules, the done-list, the game's own pictur
 
 Its minors, and what happened to each:
 - **Taken:** the glowing-tree dots were brighter than the windows (now fewer and dimmer, and none in front of the city); the tower's legs were too thin (now the game's widths); the top of each trunk lacked the game's soft light (added); the ship sat on a building at 2.6 s (it is gone into the planet before the city shows); far lights showed as blocks at 2.2 s (they fade sooner); the pale path on the grass showed as an oval from above (it shows only at the very end); the city was lit only briefly (the windows now stay lit about a quarter second longer).
-- **Left, written down as limits:** the river stays lit; from high up the far bank is a wide green plain and the buildings lean outward (true perspective on flat art; it called both taste); the ship looks small beside the trees while high and bigger once landed.
-- **I checked these last fixes myself, as pictures.** The critic has not seen them.
+- **Left, written down as limits:** the river stays lit; the buildings lean outward when seen from high up (true perspective on flat art; it called that taste).
 
-## 8. Decisions for you
+**Round 3** (the first-person version): see the end of this section, added when its report came.
 
-1. **Every landing on Voltara, or the full scene on the first landing and the two-second one after?** Both are built. It is one setting (`short`).
-   - Full every time: 10 seconds on each landing. A child who lands five times in a lesson waits 50 seconds, or learns to tap.
-   - **Recommended:** full on the first landing, the short one after. A tap skips either.
-2. **Is the ship seen from outside, or from its cockpit window?** I built **outside**: the game's own ship, flying in and landing. A cockpit would be a window frame drawn over the same scene, and the child would not see their ship land. Outside is recommended. Changing it later is small.
-3. **Music or sound, or silent?** It is silent now. The game's `beep` could mark the landing if Sound is on. Recommended: one soft landing beep, nothing else, until you want more.
-4. **A caption?** For example "The city lights are going out…" for two seconds. It would help a child notice the story. It would also ask a Grade 3 reader to read during two seconds of fast pictures. Recommended: no caption; the game's own words after landing already say "the city across the river is dark".
-5. **Phase 2: who wires it into the game, the main thread or this one?** See section 9. Recommended: the main thread, since it owns the game file. This thread hands over the piece and the note.
+## 8. Decisions
+
+**Decided by Marc** [Source: 2026-11-22, to this thread and to the main thread]:
+- **The view: first person.** Built.
+- **Every landing or once:** the full scene on the first landing, the two-second one after. Both are built; it is one setting (`short`).
+- **Sound:** one soft landing beep, if the game's Sound is on. For Phase 2: the piece is silent, and the game's own `beep` plays it.
+- **A caption:** none.
+- **Phase 2:** the main thread wires it in.
+- **Publishing:** this thread may push its own files to the main branch.
+
+**Still open:**
+
+1. **Should the child have a little control?** [Source: Marc: "we probably should not give them complete control to fly over the entire planet".] Nothing is built for this. Three ways:
+
+   | | What the child does | What it costs |
+   |---|---|---|
+   | **A. None** (as built) | Watches. A tap skips. | Nothing. Every child sees the lights go out. |
+   | **B. Lean** | During the flight after the clouds, dragging left or right leans the ship a little: the view slides and banks. It still lands in the same place. | A drag must not count as a tap, or children skip by accident. About a day of work and a new test. Children watching the lights are not disturbed: the control only works after the clouds. |
+   | **C. A longer flight** | The flight lasts 20 to 30 seconds, with rings or lights to steer through. | This is a small game of its own. It needs its own story reason, it is no longer under 10 seconds, and it is Phase 3's ground. |
+
+   **Recommended: A now, B after you have seen it move on an iPad.** If first person already gives the feeling you wanted, B may not be needed. If it feels like a film, B is the smallest step from watching to flying. C belongs with Phase 3, the flight over the planet the child has saved.
+
+   **What could prove this wrong:** children who try to steer with their fingers the first time they see it. Watch two or three of them.
+
+2. **How do the children address you?** The test page still says "send it to your teacher".
 
 ## 9. Phase 2, when you say so: how it would fit in (read only; nothing is done)
 
