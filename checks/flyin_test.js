@@ -6,7 +6,7 @@
 //   2. a tap skips it at every second of the scene, at once, and the meadow picture is then shown
 //   3. with WebGL 2 taken away it ends at once and says the game goes straight to the landing
 //   4. a set-up that takes more than one second ends at once in the same way ("it never blocks the game")
-//   5. the short one ends within 3 seconds
+//   5. the short one ends within 3 seconds; the other view (the ship seen from outside) still plays to its end
 //   6. turning the iPad in the middle: it goes on, ends on time, and the picture has the new shape
 //   7. a hidden page and a lost picture both end it
 //   8. Watch again works, during the scene and after it
@@ -56,6 +56,9 @@ const FILE = path.resolve(__dirname, '..', 'prototypes', 'voltara_flyin.html'), 
   // 5. the short one
   { const p = await open(1180, 745, '?short=1'); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {}); const ok = await done(p, 5000), s = await state(p), took = s.took;
     say(ok && s.why === 'end' && took <= 3 && took >= 2.4, `the short one: ${s.why} after ${took.toFixed(1)} s`); meadow(await look(p), 'the short one'); await p.close(); }
+
+  // 5b. the other view (the ship seen from outside all the way) still plays to its end
+  { const p = await open(1180, 745, '?view=outside'); const ok = await done(p, 14000), s = await state(p); say(ok && s.why === 'end' && s.took <= 10.5, `the outside view: ${s.why} after ${s.took} s`); meadow(await look(p), 'the outside view'); say(!p.errs.length, `the outside view: errors: ${p.errs.slice(0, 2).join(' | ')}`); await p.close(); }
 
   // 6. turned in the middle
   { const p = await open(1180, 745); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {}); const t0 = Date.now();

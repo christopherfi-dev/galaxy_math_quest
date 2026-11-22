@@ -36,7 +36,8 @@ button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; b
 /* ===== GMQ FLY-IN: start =====
    The arrival at Planet Voltara. One entry point:  GMQFlyin.play(canvas, opts, done)
      canvas  a canvas of its own, laid over the game's picture (the game's own canvas is 2D and cannot be shared)
-     opts    { short: true      the two-second one, for later landings
+     opts    { view: 'outside'  the ship is seen from outside all the way. Left out: first person, from the cockpit, and the ship is seen only once it has landed
+               short: true      the two-second one, for later landings
                fade: true       in the last half second the canvas fades out, to show what lies under it (the game's meadow)
                hold: true       keep the last picture alive after the end (this page uses it; the game would not)
                clock: seconds   the game's own clock (tNow), so clouds, moons and sparkles carry on from where the game has them
@@ -55,7 +56,7 @@ button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; b
    so the last frame is the game's meadow picture. */
 var GMQFlyin = (function () {
   'use strict';
-  var LEN = 9.5, FADE = .5, TS = 5.5, SHORT = 2;           // seconds: the scene; the hand-over fade; when the clouds hide the change from space to sky; the short one
+  var LEN = 9.5, FADE = .5, TS = 5.2, SHORT = 2;           // seconds: the scene; the hand-over fade; when the clouds hide the change from space to sky; the short one
   var HZ = .56, GY = .86, F = 1, EYE = 3, PAR = -.37;      // the meadow as the game draws it: horizon and ground rows, the lens, eye height, and the cadet standing at .13
   var INK = '#0e1626', SCALES = [1.5, 1.25, 1, .75], MAXQ = 700, AW = 2048, AHMAX = 2048;
   var CITYP = [.44, -.44];                                  // where the city is on the ball from orbit, in the night
@@ -211,6 +212,13 @@ var GMQFlyin = (function () {
     var bz = Math.max(9, h * .026); S('fly', bz * 2.8 + 4, bz * 2.2 + 4, bz * 1.4 + 2, bz + 2, function () { c.fillStyle = '#fff'; [-1, 1].forEach(function (sg) { ell(sg * bz * .55, -bz * .25, bz * .6, bz * .5, sg * .5); c.fill(); ol(1.2); ell(sg * bz * .4, bz * .3, bz * .4, bz * .34, -sg * .5); c.fill(); ol(1.2); }); c.fillStyle = INK; rr(-1.5, -bz * .5, 3, bz, 1.5); c.fill(); });
     // the trade beacon of the space view (its lamp is a card of its own, so it can blink)
     var tz = m * .05; S('beacon', tz * 3.6, tz * 1.4, tz * 1.8, tz * .7, function () { c.fillStyle = '#5f7aa8'; c.fillRect(-tz * 1.7, -tz * .22, tz * 1.1, tz * .44); c.fillRect(tz * .6, -tz * .22, tz * 1.1, tz * .44); c.fillStyle = '#c4cfdf'; rr(-tz * .5, -tz * .5, tz, tz, tz * .2); c.fill(); ol(2); });
+    var dh = h * .2, cwd = Math.min(w * .36, dh * 2.6);
+    S('dash', w, dh + 2, 0, 0, function () { var edge = function (o) { c.beginPath(); c.moveTo(-4, dh * .12 + o); c.quadraticCurveTo(w * .5, dh * .88 + o, w + 4, dh * .12 + o); };
+      edge(0); c.lineTo(w + 4, dh + 6); c.lineTo(-4, dh + 6); c.closePath(); c.fillStyle = '#eef2f7'; c.fill(); ol(3);
+      edge(9); c.lineTo(w + 4, dh + 6); c.lineTo(-4, dh + 6); c.closePath(); c.fillStyle = '#1c2c46'; c.fill(); ol(2); edge(4.5); c.strokeStyle = '#d2553a'; c.lineWidth = 3; c.stroke();
+      c.fillStyle = '#132035'; rr(w * .5 - cwd / 2, dh * .4, cwd, dh, 12); c.fill(); ol(2);
+      c.fillStyle = '#0b1422'; circ(w / 2, dh * .72, dh * .2); c.fill(); c.strokeStyle = '#6db3ff'; c.lineWidth = 2; c.stroke(); c.strokeStyle = 'rgba(109,179,255,.5)'; c.lineWidth = 1; circ(w / 2, dh * .72, dh * .11); c.stroke();
+      [-1, 1].forEach(function (sg) { for (var i = 0; i < 3; i++) { c.fillStyle = sg < 0 ? ['#6fd08a', '#ffb23e', '#6db3ff'][i] : ['#ff9486', '#6fd08a', '#ffb23e'][i]; circ(w / 2 + sg * (dh * .3 + i * dh * .12), dh * .72, dh * .035); c.fill(); ol(1.5); } }); }, .7);
     S('disc', 52, 52, 26, 26, function () { c.fillStyle = '#fff'; circ(0, 0, 24); c.fill(); });
     S('glow', 48, 48, 24, 24, function () { var gd = c.createRadialGradient(0, 0, 0, 0, 0, 24); gd.addColorStop(0, 'rgba(255,255,255,1)'); gd.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = gd; c.fillRect(-24, -24, 48, 48); });
     S('white', 6, 6, 3, 3, function () { c.fillStyle = '#fff'; c.fillRect(-3, -3, 6, 6); });
@@ -257,13 +265,13 @@ var GMQFlyin = (function () {
     if (g.ms > 1000 && opts.t == null && !g.played) { g.played = true; finish('slowstart'); return { skip: none, stop: none, stats: function () { return { setup: g.ms }; } }; }
     g.played = true;
     var gl = g.gl, SP = g.SP, V = g.V, nq = 0, O = [], nInf = 0, cw = 0, ch = 0, asp = 1, W = 1, H = 1, m = 1;
-    var cy = EYE, cz = 0, sth = 0, cth = 1, px = 0, py = 0, pz = 0;
+    var cy = EYE, cz = 0, cxs = 0, sth = 0, cth = 1, srl = 0, crl = 1, px = 0, py = 0, pz = 0, first = opts.view !== 'outside';
     var auto = opts.q == null && opts.t == null && !g.cap, stuck = 0, base = 0, baseQ = 0, q = opts.q != null ? opts.q : g.q, late = false, ring = new Float32Array(16), rn = 0, quiet = 8, last = -1, nf = 0, sum = 0, worst = 0, drops = 0;
     var begin = opts.short ? LEN - SHORT : 0, clock = opts.clock || 0, spx = opts.sp ? opts.sp[0] : .27, spy = opts.sp ? opts.sp[1] : .42, shipO = null, legsO = null, flameO = null, tmp = [0, 0, 0, 0];
     g.onlost = function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('lost'); };
 
     function vtx(i, x, y, w, u, v, c) { V[i] = x; V[i + 1] = y; V[i + 2] = w; V[i + 3] = u; V[i + 4] = v; V[i + 5] = c[0]; V[i + 6] = c[1]; V[i + 7] = c[2]; V[i + 8] = c[3]; }
-    function proj(X, Y, Z, inf) { var dy = Y - (inf ? EYE : cy), dz = Z - (inf ? 0 : cz), yc = dy * cth - dz * sth; pz = dy * sth + dz * cth; px = 2 * F * X / asp; py = (1 - 2 * HZ) * pz + 2 * F * yc; }
+    function proj(X, Y, Z, inf) { var dx = X - (inf ? 0 : cxs), dy = Y - (inf ? EYE : cy), dz = Z - (inf ? 0 : cz), yc = dy * cth - dz * sth; pz = dy * sth + dz * cth; px = 2 * F * (dx * crl - yc * srl) / asp; py = (1 - 2 * HZ) * pz + 2 * F * (dx * srl + yc * crl); }
     function wq(o) {                                                    // a card standing in the world (o.p: four corners, for a slanted line)
       if (nq >= MAXQ) return; var s = o.sp, i = nq * 36, c = o.c, p = o.p, z1;
       if (p) { proj(p[0], p[1], o.z, o.inf); z1 = pz; vtx(i, px, py, pz, s[0], s[1], c); proj(p[2], p[3], o.z, o.inf); vtx(i + 9, px, py, pz, s[2], s[1], c); proj(p[4], p[5], o.z, o.inf); vtx(i + 18, px, py, pz, s[2], s[3], c); proj(p[6], p[7], o.z, o.inf); vtx(i + 27, px, py, pz, s[0], s[3], c); }
@@ -275,6 +283,7 @@ var GMQFlyin = (function () {
       for (k = 0; k < 4; k++) { var dx = (k === 0 || k === 3 ? -hw : hw), dy = (k < 2 ? -hh : hh); vtx(i + k * 9, 2 * (x + dx * co - dy * si) / W - 1, 1 - 2 * (y + dx * si + dy * co) / H, 1, k === 0 || k === 3 ? s[0] : s[2], k < 2 ? s[1] : s[3], c); }
       nq++;
     }
+    function ln(x1, y1, x2, y2, wd, c) { var dx = x2 - x1, dy = y2 - y1; sq(SP.bar, (x1 + x2) / 2, (y1 + y2) / 2, Math.sqrt(dx * dx + dy * dy) / 2, wd, Math.atan2(dy, dx), c); }      // a line on the screen, wd points wide
     function sa(s, x, y, k, rot, c) { var mx = (s[4] / 2 - s[6]) * k, my = (s[5] / 2 - s[7]) * k, co = rot ? Math.cos(rot) : 1, si = rot ? Math.sin(rot) : 0; sq(s, x + mx * co - my * si, y + mx * si + my * co, s[4] * k / 2, s[5] * k / 2, rot, c); }      // the same, by the card's own "here" point and a scale
     function col4(c, r, gg, b, a) { c[0] = r * a; c[1] = gg * a; c[2] = b * a; c[3] = a; return c; }
     function hue(c, hdeg) { var k = function (n) { var t = (n + hdeg / 30) % 12; return .62 - .361 * Math.max(-1, Math.min(t - 3, 9 - t, 1)); }; c[0] = k(0); c[1] = k(8); c[2] = k(4); c[3] = 1; }      // hsl(h 95% 62%), the FlavorBursts' colours
@@ -326,9 +335,11 @@ var GMQFlyin = (function () {
       // more trees to the sides, which only the high view sees
       for (i = 0; i < 18; i++) { var ez = [-30, -22, -15, -9, -3, 2, 6, 9, 12, 14, 48, 56, 66, 80, 95, 115, 140, 170][i], side = i % 2 ? 1 : -1, hw = Math.max(ez, 0) * asp / (2 * F), ex = side * (hw * 1.12 + 4 + ((i * 7.31) % 1) * (ez > 40 ? 60 : 16)), eth = (ez > 40 ? 4.2 : 3) + (i % 3) * .7, es = SP[['tree1', 'tree2', 'tree4'][i % 3]], ek = eth / (es[7] - 5) * 1.16;
         O.push({ sp: SP.glow, z: ez, c: [.16, .34, .28, 0], x0: ex - eth * .62, x1: ex + eth * .62, y0: eth * .82 - eth * .62, y1: eth * .82 + eth * .62 }); O.push({ sp: es, z: ez, c: WHITE, x0: ex - es[6] * ek, x1: ex + (es[4] - es[6]) * ek, y0: -(es[5] - es[7]) * ek, y1: es[7] * ek }); }
+      if (first) for (i = 0; i < 80; i++) { var fz = -4 - 156 * fr(i * .618 + .1), fx = (fr(i * .377 + .2) - .5) * 110, fth = 3.2 + 3.4 * fr(i * .23), fs = SP[['tree1', 'tree2', 'tree4'][i % 3]], fk = fth / (fs[7] - 5) * 1.16; if (fz > -45 && Math.abs(fx) < 13) fx = (fx < 0 ? -1 : 1) * (13 + Math.abs(fx));      // a clear lane for the landing
+        O.push({ sp: SP.glow, z: fz, c: [.16, .34, .28, 0], x0: fx - fth * .62, x1: fx + fth * .62, y0: fth * .82 - fth * .62, y1: fth * .82 + fth * .62 }); O.push({ sp: fs, z: fz, c: WHITE, x0: fx - fs[6] * fk, x1: fx + (fs[4] - fs[6]) * fk, y0: -(fs[5] - fs[7]) * fk, y1: fs[7] * fk }); }
       // the ship: its legs, its flame and its body. They come down together and stand where the game stands the ship.
       var sL = Math.max(54, h * .15), sx = w * .07, zs = depth(gy), kS = sL / Math.max(sL, m * .2);
-      legsO = A('legs', sx, gy, zs); flameO = A('flame', sx, gy - .06 * sL, zs, [1, 1, 1, 1], null, 0, kS); shipO = A('ship', sx, gy - .56 * sL, zs, null, null, 0, kS);
+      legsO = A('legs', sx, gy, zs, [1, 1, 1, 1]); flameO = A('flame', sx, gy - .06 * sL, zs, [1, 1, 1, 1], null, 0, kS); shipO = A('ship', sx, gy - .56 * sL, zs, [1, 1, 1, 1], null, 0, kS);
       [legsO, flameO, shipO].forEach(function (o) { o.b0 = o.y0; o.b1 = o.y1; o.a0 = o.x0; o.a1 = o.x1; o.zf = zs; o.key = 5.5; }); flameO.len = flameO.b1 - flameO.b0;
       A('rock', .91 * w, gy - Math.max(18, h * .045) * .55, zs);
       [[.47, 0, '#4f8dff'], [.3, 2.2, '#ff8fd0']].forEach(function (B) { var o = A('fly', 0, 0, zs, tint(B[2]), function (o, t) { var fl = .25 + .75 * Math.abs(Math.sin(t * 11 + B[1])), bx = w * (B[0] + .03 * Math.sin(t * 1.3 + B[1])), by = h * (.67 + .04 * Math.sin(t * 2.1 + B[1])) + (B[1] ? -h * .08 : 0); at(o, bx, by); var mid = (o.x0 + o.x1) / 2, hw2 = (o.x1 - o.x0) / 2 * fl; o.x0 = mid - hw2; o.x1 = mid + hw2; }); o.key = 5.4; });
@@ -348,10 +359,10 @@ var GMQFlyin = (function () {
       var veil = Math.max(1 - Math.abs(T - TS) / .62, opts.short ? 1 - (T - begin) / .45 : 0);   // the white inside of a cloud: it hides the change from space to sky
       if (T < TS) {
         // ---- space: Voltara ahead, growing, and the camera dives at its night side ----
-        var R0 = m * .33, e = .1 * ss(0, 1.6, T) + .68 * ss(1.4, 3.2, T) + .22 * ss(3, TS, T), Rr = R0 * Math.exp(Math.log(15) * e), ec = ss(1.4, 3.1, T), zoom = Rr / R0, uz = ss(.7, 1.9, Rr / m);
+        var R0 = m * .33, e = .1 * ss(0, 1.3, T) + .68 * ss(1.1, 2.9, T) + .22 * ss(2.7, TS, T), Rr = R0 * Math.exp(Math.log(15) * e), ec = ss(1.1, 2.8, T), zoom = Rr / R0, uz = ss(.7, 1.9, Rr / m);
         var bx = (-.06 * W / R0) * (1 - ec) + CITYP[0] * ec, by = CITYP[1] * ec, k = pw / W, pcx = W / 2 - bx * Rr, pcy = H / 2 + by * Rr, R2 = Rr * Rr;
         // the game's stars: a faint band, then 170 that twinkle, some with a little cross. They drift outwards as we dive; the planet hides those behind it.
-        var sc0 = 1 + (zoom - 1) * .05, behind = function (x, y) { return (x - pcx) * (x - pcx) + (y - pcy) * (y - pcy) < R2; }, X, Y, z;
+        var sc0 = 1 + (zoom - 1) * (first ? .1 : .05), behind = function (x, y) { return (x - pcx) * (x - pcx) + (y - pcy) * (y - pcy) < R2; }, X, Y, z;
         for (i = 0; i < 170; i++) { s = ST[i]; X = W / 2 + (s.x * W - W / 2) * sc0 + 1; Y = H / 2 + ((.16 + s.x * .66 + (s.y - .5) * .2) * H - H / 2) * sc0 + 1; if (!behind(X, Y)) sq(SP.white, X, Y, 1, 1, 0, col4(c, .745, .824, 1, .16)); }
         for (i = 0; i < 170; i++) { s = ST[i]; z = s.s * .8 * s.z * .7; a = Math.max(0, .35 + .5 * Math.sin(t * 1.5 + s.p)); X = W / 2 + (fr(s.x - spx * .03 * s.z) * W - W / 2) * sc0 + z / 2; Y = H / 2 + (fr(s.y - spy * .03 * s.z) * H - H / 2) * sc0 + z / 2; if (behind(X, Y)) continue;
           col4(c, 1, .94, .86, a); c[3] = 0; sq(SP.white, X, Y, z / 2, z / 2, 0, c); if (s.p % 17 < 1.7) { sq(SP.white, X + .5 - z / 2, Y + .5 - z / 2, 3.5, .5, 0, c); sq(SP.white, X + .5 - z / 2, Y + .5 - z / 2, .5, 3.5, 0, c); } }
@@ -361,35 +372,48 @@ var GMQFlyin = (function () {
         // the lights of the city on the night side, as the game shows them from far
         for (i = 0; i < 26; i++) { var an = .2 + fr(i * .37) * 1.1, lr = Rr * (.62 + fr(i * .61) * .3), lz = 1.1 * Math.sqrt(zoom); a = (.5 + .4 * Math.sin(t * 2 + i)) * (1 - ss(.5, 1, Rr / m)); if (a > .01) sq(SP.white, pcx + Math.cos(an) * lr + 1.1, pcy + Math.sin(an) * lr + 1.1, lz, lz, 0, col4(c, 1, .882, .549, a)); }
         // close up: the city itself, the same skyline the meadow shows, and its windows going out one by one
-        var cu = uz * (1 - ss(4.7, 5.35, T)); if (cu > 0) { var cs = SP.city, ck = Math.min(.3 * Rr, W * (.92 + Math.max(0, T - 4.4) * .7)) / cs[4], cx0 = pcx + CITYP[0] * Rr - cs[4] * ck / 2, cy0 = pcy - CITYP[1] * Rr, wn = g.win, wv;
+        var cu = uz * (1 - ss(4.4, 5.05, T)); if (cu > 0) { var cs = SP.city, ck = Math.min(.3 * Rr, W * (.86 + Math.max(0, T - 4.1) * .7)) / cs[4], cx0 = pcx + CITYP[0] * Rr - cs[4] * ck / 2, cy0 = pcy - CITYP[1] * Rr, wn = g.win, wv;
           sq(SP.glow, cx0 + cs[4] * ck / 2, cy0, cs[4] * ck * .66, cs[4] * ck * .09, 0, col4(c, .02, .01, .09, .7 * cu)); sa(cs, cx0, cy0, ck, 0, col4(c, 1, 1, 1, cu));
-          for (i = 0; i < wn.length; i++) { wv = wn[i]; var off = 3.25 + 1.0 * fr(wv[4] * .618 + .13) + .2 * fr(i * .37), on = T < off && (T < off - .45 || fr(T * 9 + i * .31) > .45); if (on) sq(SP.white, cx0 + (wv[0] + wv[2] / 2) * ck, cy0 + (wv[1] + wv[3] / 2) * ck, wv[2] * ck / 2, wv[3] * ck / 2, 0, col4(c, 1, .941, .659, cu)); } }
+          for (i = 0; i < wn.length; i++) { wv = wn[i]; var off = 2.95 + 1.0 * fr(wv[4] * .618 + .13) + .2 * fr(i * .37), on = T < off && (T < off - .45 || fr(T * 9 + i * .31) > .45); if (on) sq(SP.white, cx0 + (wv[0] + wv[2] / 2) * ck, cy0 + (wv[1] + wv[3] / 2) * ck, wv[2] * ck / 2, wv[3] * ck / 2, 0, col4(c, 1, .941, .659, cu)); } }
         // the ship flies ahead of us, into the planet
-        var es = ss(.2, 2.5, T), tx = W / 2 + W * .04 + R0 * .2, ty = H / 2 + R0 * .25, sx0 = W * .17, sy0 = H * .76, sxx = sx0 + (tx - sx0) * es, syy = sy0 + (ty - sy0) * es, Ls = m * .2 * (1 - .78 * es), al = 1 - ss(2.0, 2.4, T), sk = Ls / Math.max(Math.max(54, H * .15), m * .2);
+        var es = ss(.2, 2.2, T), tx = W / 2 + W * .04 + R0 * .2, ty = H / 2 + R0 * .25, sx0 = W * .17, sy0 = H * .76, sxx = sx0 + (tx - sx0) * es, syy = sy0 + (ty - sy0) * es, Ls = m * .2 * (1 - .78 * es), al = first ? 1 - ss(0, .5, T) : 1 - ss(1.7, 2.1, T), sk = Ls / Math.max(Math.max(54, H * .15), m * .2);
         var rot = (-.5 + (Math.atan2(ty - sy0, tx - sx0) + .5) * ss(0, .9, T)) + Math.PI / 2, fl = 1 + Math.sin(t * 40) * .2;
         if (al > 0) { col4(c, 1, 1, 1, al); s = SP.flame; sq(s, sxx - Math.sin(rot) * (Ls * .5 + s[5] * sk * fl / 2), syy + Math.cos(rot) * (Ls * .5 + s[5] * sk * fl / 2), s[4] * sk / 2, s[5] * sk * fl / 2, rot, c); sa(SP.ship, sxx, syy, sk, rot, c); }
         n0 = nq;
       } else {
         // ---- the sky of Voltara: down over the Sparkling River to the Landing Meadow ----
-        var p = clamp((T - TS) / (LEN - TS)), kk = 1 - p, th = -.85 * Math.pow(kk, 1.3);
-        cy = EYE + 52 * Math.pow(kk, 2.3); cz = -30 * kk * kk; sth = Math.sin(th); cth = Math.cos(th);
-        var alt = (cy - EYE) * .9, sz = cz + shipO.zf * (1 + .9 * kk), kx = (1 - .5 * kk * kk) * (sz - cz) / shipO.zf;      // the ship: ahead of the camera and below it, coming down onto its own spot as the camera settles
-        [legsO, flameO, shipO].forEach(function (o) { var mid = (o.a0 + o.a1) / 2 * kx, hw = (o.a1 - o.a0) / 2; o.z = sz; o.x0 = mid - hw; o.x1 = mid + hw; o.y0 = o.b0 + alt; o.y1 = o.b1 + alt; });
-        a = alt > .04 ? 1 : 0; flameO.c[0] = flameO.c[1] = flameO.c[2] = flameO.c[3] = a; flameO.y0 = flameO.y1 - flameO.len * (1 + Math.sin(t * 40) * .2) * Math.min(1, .4 + alt * .25);
+        var p = clamp((T - TS) / (LEN - TS)), kk = 1 - p, th, rl = 0, sv;
+        if (first) {      // first person: out of the clouds, low and fast over the glowing woods, banking left then right, slowing to the meadow
+          th = -.5 * Math.pow(kk, 1.15); cy = EYE + 30 * Math.pow(kk, 1.5); cz = -150 * Math.pow(kk, 1.9); cxs = 8 * Math.sin(kk * 4.4) * Math.pow(kk, 1.2); rl = .2 * Math.sin(kk * 4.4 + .9) * kk;
+          sv = ss(LEN - .5, LEN - .05, T); [legsO, flameO, shipO].forEach(function (o) { o.c[0] = o.c[1] = o.c[2] = o.c[3] = o === flameO ? 0 : sv; });      // the ship is seen only once we have landed and the cockpit opens
+        } else {          // the ship seen from outside: ahead of the camera and below it, coming down onto its own spot as the camera settles
+          th = -.85 * Math.pow(kk, 1.3); cy = EYE + 52 * Math.pow(kk, 2.3); cz = -30 * kk * kk; cxs = 0;
+          var alt = (cy - EYE) * .9, sz = cz + shipO.zf * (1 + .9 * kk), kx = (1 - .5 * kk * kk) * (sz - cz) / shipO.zf;
+          [legsO, flameO, shipO].forEach(function (o) { var mid = (o.a0 + o.a1) / 2 * kx, hw = (o.a1 - o.a0) / 2; o.z = sz; o.x0 = mid - hw; o.x1 = mid + hw; o.y0 = o.b0 + alt; o.y1 = o.b1 + alt; });
+          a = alt > .04 ? 1 : 0; flameO.c[0] = flameO.c[1] = flameO.c[2] = flameO.c[3] = a; flameO.y0 = flameO.y1 - flameO.len * (1 + Math.sin(t * 40) * .2) * Math.min(1, .4 + alt * .25);
+        }
+        sth = Math.sin(th); cth = Math.cos(th); srl = Math.sin(rl); crl = Math.cos(rl);
         // card 1: the ground, a great flat sheet
         var gi = nq * 36, gc = [[-9000, -600], [9000, -600], [9000, 12000], [-9000, 12000]]; for (i = 0; i < 4; i++) { proj(gc[i][0], 0, gc[i][1], 0); vtx(gi + i * 9, px, py, pz, gc[i][0], gc[i][1], WHITE); } nq++;
         for (i = 0; i < O.length; i++) { if (i === nInf) n1 = nq; var o = O[i]; if (o.fn) o.fn(o, t); wq(o); }
         n0 = nq;
       }
       // cotton-candy clouds to fly through
-      for (i = 0; i < 14; i++) { var st = 4.4 + i * .115, pp = (T - st) / 1.15; if (pp <= 0 || pp >= 1) continue; var ang = i * 2.4, dist = m * (.13 + 1.0 * Math.pow(pp, 2.2)), r = m * (.05 + .62 * pp * pp), av = ss(0, .14, pp) * (1 - ss(.72, 1, pp));
+      for (i = 0; i < 14; i++) { var st = TS - 1.1 + i * .115, pp = (T - st) / 1.15; if (pp <= 0 || pp >= 1) continue; var ang = i * 2.4, dist = m * (.13 + 1.0 * Math.pow(pp, 2.2)), r = m * (.05 + .62 * pp * pp), av = ss(0, .14, pp) * (1 - ss(.72, 1, pp));
         sa(SP[['puff', 'pink', 'blue'][i % 3]], W / 2 + Math.cos(ang) * dist * Math.max(1, asp), H / 2 + Math.sin(ang) * dist * Math.max(1, 1 / asp), r / (H * .058), 0, col4(c, 1, 1, 1, av)); }
       if (veil > 0) { a = Math.min(1, veil * 1.25); c[0] = a; c[1] = .87 * a; c[2] = .94 * a; c[3] = a; sq(SP.white, W / 2, H / 2, W / 2, H / 2, 0, c); }
+      if (first) { var ko = Math.max(opts.short ? 0 : 1 - ss(0, .6, T), ss(LEN - .5, LEN - .05, T)); if (ko < 1) {       // it closes round us at the start, and opens when we have landed
+        var dH = H * .2, sw = Math.max(8, W * .022), ox = ko * W * .2, tk = Math.max(8, H * .024), wht = hex('#eef2f7').concat(1), inkc = tint(INK), red = hex('#d2553a').concat(1), sg;
+        for (sg = -1; sg <= 1; sg += 2) { var xa = W / 2 + sg * (W * .47 + ox), xb = W / 2 + sg * (W * .39 + ox); ln(xa, H - dH * .7, xb, -12, sw + 5, inkc); ln(xa, H - dH * .7, xb, -12, sw, wht); ln(xa - sg * sw * .3, H - dH * .7, xb - sg * sw * .3, -12, 3, red); }
+        ln(-10, tk * .4 - ko * tk * 3, W + 10, tk * .4 - ko * tk * 3, tk + 5, inkc); ln(-10, tk * .4 - ko * tk * 3, W + 10, tk * .4 - ko * tk * 3, tk, wht);
+        sa(SP.dash, 0, H - dH + ko * dH * 1.4, 1, 0, WHITE);
+        s = hex('#ff8fb8'); sq(SP.disc, W / 2 + dH * .06, H - dH + ko * dH * 1.4 + dH * .68, 3.2, 3.2, 0, col4(c, s[0], s[1], s[2], 1));                       // Voltara, a pink dot on the scope
+        if (Math.sin(t * 6) > 0) { col4(c, 1, 1, .8, .5); c[3] = 0; sq(SP.glow, W / 2 - dH * .3, H - dH + ko * dH * 1.4 + dH * .72, dH * .09, dH * .09, 0, c); } } }
       n2 = nq;
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, V, 0, nq * 36);
       if (T < TS) {
         gl.disable(gl.BLEND); gl.useProgram(g.planet.p); var u = g.planet.u;
-        gl.uniform2f(u.uRes, pw, ph); gl.uniform2f(u.uC, pcx * k, (H - pcy) * k); gl.uniform1f(u.uR, Rr * k); gl.uniform1f(u.uT, t); gl.uniform1f(u.uZ, uz); gl.uniform1f(u.uH, .62 * ss(4.5, TS, T));
+        gl.uniform2f(u.uRes, pw, ph); gl.uniform2f(u.uC, pcx * k, (H - pcy) * k); gl.uniform1f(u.uR, Rr * k); gl.uniform1f(u.uT, t); gl.uniform1f(u.uZ, uz); gl.uniform1f(u.uH, .62 * ss(TS - 1, TS, T));
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
         gl.enable(gl.BLEND); gl.useProgram(g.card.p); gl.drawElements(gl.TRIANGLES, (n2 - 1) * 6, gl.UNSIGNED_SHORT, 12);
       } else {
@@ -441,7 +465,7 @@ var GMQFlyin = (function () {
   function go(short) {
     if (ctl) ctl.stop();
     document.body.dataset.state = 'playing'; document.body.dataset.why = ''; $('say').textContent = 'Arriving at Planet Voltara…'; $('stat').textContent = ''; $('hint').style.display = '';
-    var o = { hold: true, short: !!short }; if (Q.has('q')) o.q = Math.max(0, Math.min(3, +Q.get('q') | 0)); if (Q.has('t')) o.t = +Q.get('t'); if (Q.has('lit')) { o.lit = { R: 1, C: 1, I: 1 }; o.tower = true; }
+    var o = { hold: true, short: !!short }; if (Q.has('view')) o.view = Q.get('view'); if (Q.has('q')) o.q = Math.max(0, Math.min(3, +Q.get('q') | 0)); if (Q.has('t')) o.t = +Q.get('t'); if (Q.has('lit')) { o.lit = { R: 1, C: 1, I: 1 }; o.tower = true; }
     var began = performance.now(), mine = ctl = GMQFlyin.play(cv, o, function (why) {
       document.body.dataset.took = ((performance.now() - began) / 1000).toFixed(2); $('hint').style.display = 'none'; $('say').textContent = WHY[why] || why; document.body.dataset.state = 'done'; document.body.dataset.why = why;
       setTimeout(function () { if (mine !== ctl) return; var s = mine.stats(); if (!s) { $('stat').textContent = GMQFlyin.error().slice(0, 200); return; } $('stat').textContent = (s.fps ? 'Speed: ' + Math.round(s.fps) + ' frames a second. Slowest frame ' + Math.round(s.worst) + ' ms. ' : '') + (s.scale ? 'Picture size ' + s.scale + ' (it dropped ' + s.drops + ' time' + (s.drops === 1 ? '' : 's') + (s.cap ? '; the browser is holding the speed, perhaps Low Power Mode' : '') + '). ' : '') + 'Set-up took ' + Math.round(s.setup) + ' ms.'; }, 0);
