@@ -13,7 +13,7 @@ const SHOTS = process.argv[2] || null;
 // name, width, height, smallest hand card, smallest HP number, smallest "if lost" words (all in screen points)
 const SIZES = [['ipad_sideways', 1180, 745, 150, 20, 10, 1.8, 140], ['ipad_upright', 820, 1180, 140, 20, 10, 1.25, 100], ['phone', 390, 760, 60, 10, 5, 1.0, 44]];
 const BOARD = { 'Weapons': 'cannot attack', 'Engine': 'lose 1 card', 'Navigation': 'lose 1 card', 'Shield Gen': 'cannot defend', 'Power': 'cannot heal' };   // Marc's battle board
-const KEY = 'gmq_battle_v4';
+const KEY = 'gmq_battle_v5';
 const bad = [];
 let passed = 0, LAST = 'starting';
 function pass(label, ok, extra) { if (ok) { passed++; } else { console.log('FAIL ' + label + (extra ? ': ' + extra : '')); if (bad.indexOf(label) < 0) bad.push(label); } return ok; }
@@ -90,6 +90,8 @@ async function act(page, name, flags, size) {
   if (st.over || st.again) return 'over';
   pass(name + ': no sum is ever asked: there is no box to type a number in', st.inputs === 0);
   pass(name + ': the top kind is called "epic" on every card and in every message, never "gold"', st.goldSeen.length === 0, st.goldSeen.slice(0, 3).join(' | '));
+  pass(name + ': no card in the hand is marked "cannot block"', st.cards.every(c => c.tag !== 'cannot block'), st.cards.map(c => c.tag).join(','));
+  if (!st.turn) pass(name + ': no ship is marked as hitting first: both attacks land together', !/HIT/.test(st.shipText.join(' ')), st.shipText.join(' | '));
   pass(name + ': every HP on your ship is the HP in the rules engine', st.pods[0].every((p, ix) => p && (p.lost ? st.hp[0][ix] === 0 : +p.hp === st.hp[0][ix] && +p.ap === st.ap[0][ix])), JSON.stringify([st.pods[0].map(p => p.hp), st.hp[0]]));
   pass(name + ': the bubble is there exactly when the shield works, with its number', st.bub[0] === st.shieldOn[0] && (!st.shieldOn[0] || st.shl[0] === (st.skind[0] >= 0 ? ['COMMON', 'RARE', 'EPIC'][st.skind[0]] : 'MAIN') + ' SHIELD ' + st.shield[0]), st.shl[0]);
   pass(name + ': a shield that a card put up wears the colour of its kind', [0, 1].every(i => !st.bub[i] || (st.skind[i] >= 0 ? st.bubColour[i] === ['#7ed957', '#b388ff', '#ffd23f'][st.skind[i]] && st.bubKind[i] === String(st.skind[i]) : st.bubColour[i] === '#38bdf8')), JSON.stringify([st.skind, st.bubColour]));
@@ -283,6 +285,7 @@ async function act(page, name, flags, size) {
     pass(name + ': the log lists every round', lg >= st.round - 1, lg + ' for ' + (st.round - 1));
     await page.locator('#lclose').tap();
     await page.locator('#bhelp').tap();
+    pass(name + ': "How" says both attacks land together, and that a lower shield card still stops the ship\'s own attack', /Both attacks land together/.test(await page.locator('#hturn').textContent()) && /still stops the other ship's own attack/.test(await page.locator('#help').textContent()));
     pass(name + ': "How" shows the six symbols and the lost-part rules', await page.locator('#keyrow svg').count() === 6 && /cannot attack/.test(await page.locator('#help').textContent()));
     await shot(page, name + '_8_how');
     await page.locator('#hclose').tap();
@@ -307,7 +310,7 @@ async function act(page, name, flags, size) {
         await idle(page);
         await page.locator('#bnew').tap();
       }
-      // ---- Marc's rule: a common card cannot block a rare attack card
+      // ---- Marc, 22 November (evening): a lower shield card still stops the ship's regular AP. The page must not warn that it "cannot block".
       await page.locator('#srules').tap();
       await page.locator('#switches button[data-key="guard"][data-i="0"]').tap();
       await page.locator('#rnew').tap();
@@ -316,18 +319,31 @@ async function act(page, name, flags, size) {
       await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;put(S.P[1],"A08",0);put(S.P[0],"D02",0);put(S.P[0],"D06",1);U.cpuLead=0;})()');
       await page.evaluate(() => window.dispatchEvent(new Event('resize')));
       st = await state(page);
-      pass(name + ': a common block card is marked "cannot block" against the rare order on the table', st.cards[0].id === 'D02' && st.cards[0].tag === 'cannot block', st.cards[0].id + ' ' + st.cards[0].tag);
+      pass(name + ': against a rare order, a common block card is NOT marked "cannot block"', st.cards[0].id === 'D02' && st.cards[0].tag === '', st.cards[0].id + ' ' + st.cards[0].tag);
       pass(name + ': a rare block card is not marked', st.cards[1].tag === '');
       await shot(page, name + '_9_block_rule');
       await page.locator('.hc.mine').nth(0).tap();
       st = await state(page);
-      pass(name + ': the opened card says why it cannot block', /enemy's order is rare\. A common card cannot block it/.test(st.note), st.note);
+      pass(name + ': the opened card carries no warning, and says it blocks 10 of the 75: 65 gets through', !/cannot block/i.test(st.note + st.fore) && st.fore.indexOf('The enemy\'s hit is 75. This card blocks 10: 65 gets through.') >= 0, st.note + ' | ' + st.fore);
       await page.locator('#playit').tap();
       let g2 = 0; while (g2++ < 60) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
       const L = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { atk: l.atk, block: l.block, through: l.through, lines: l.lines.join(' ') }; });
-      pass(name + ': played anyway, the common card blocks nothing and the log says why', L.block[0] === 0 && L.through[0] === L.atk[1] && /is common\. It cannot block a rare attack card/.test(L.lines), JSON.stringify(L).slice(0, 200));
+      pass(name + ': played, the common card blocks its 10 of the ship\'s own attack', L.block[0] === 10 && L.through[0] === L.atk[1] - 10 && L.atk[1] === 75, JSON.stringify(L).slice(0, 200));
       await idle(page);
       await page.locator('#bnew').tap();
+
+      // ---- attacks in turn order: kept on a switch. With it on, the ship that hits first is marked.
+      await page.locator('#srules').tap();
+      await page.locator('#switches button[data-key="bothFall"][data-i="1"]').tap();
+      await page.locator('#rnew').tap();
+      await page.evaluate(() => window.GMQB.setSeed(5));
+      await page.locator('#sgo').tap();
+      st = await state(page);
+      pass(name + ': with the switch "attacks land in turn order" on, the ship of the player who went first is marked', st.turn && (st.leader === 0 ? /YOU HIT FIRST/.test(st.shipText[0]) : /HITS FIRST/.test(st.shipText[1])), JSON.stringify(st.shipText));
+      await page.locator('#bnew').tap();
+      await page.locator('#srules').tap();
+      await page.locator('#switches button[data-key="bothFall"][data-i="0"]').tap();
+      await page.locator('#rnew').tap();
 
       // ---- Marc's rule of 22 November: the part a higher attack card adds goes through a lower shield; the ship's own AP is stopped
       await page.evaluate(() => window.GMQB.setSeed(5));
@@ -353,6 +369,37 @@ async function act(page, name, flags, size) {
       pass(name + ': a rare shield is purple and says RARE SHIELD; an epic one is gold and says EPIC SHIELD', st.shl[0] === 'RARE SHIELD 20' && st.bubColour[0] === '#b388ff' && st.shl[1] === 'EPIC SHIELD 100' && st.bubColour[1] === '#ffd23f', JSON.stringify([st.shl, st.bubColour]));
       await shot(page, name + '_9c_shield_colours');
       await idle(page);
+      await page.locator('#bnew').tap();
+
+      // ---- "Unless the gold card is multiplying the normal AP attack": then the whole attack gets past a lower shield
+      await page.evaluate(() => window.GMQB.setSeed(5));
+      await page.locator('#sgo').tap();
+      await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;S.P[0].shield=0;put(S.P[1],"A11",0);put(S.P[0],"D06",0);U.cpuLead=0;})()');
+      await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+      await page.locator('.hc.mine').nth(0).tap();
+      st = await state(page);
+      pass(name + ': against Doubling Drive (epic), a rare shield card says the whole 110 will go through', st.fore.indexOf('This card puts your Main Shield back up: 20.') >= 0 && st.fore.indexOf('Your shield is rare. The enemy\'s card is epic and works on its whole attack: all 110 goes through to your parts.') >= 0, st.fore);
+      await shot(page, name + '_9d_multiplier_card');
+      await page.locator('#playit').tap();
+      await page.waitForFunction(() => window.GMQB.U.phase === 'alloc', null, { timeout: 8000 });
+      st = await state(page);
+      pass(name + ': you are asked to place all 110, and the purple shield stays up', st.alloc.total === 110 && st.shl[0] === 'RARE SHIELD 20' && st.bubColour[0] === '#b388ff', st.alloc.total + ' | ' + st.shl[0]);
+      let g5 = 0; while (g5++ < 80) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
+      const mul = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { pierce: l.pierce[0], special: l.special[1], atk: l.atk[1], lines: l.lines.join(' ') }; });
+      pass(name + ': played: all 110 goes through, and the shield of 20 is not touched', mul.pierce === 110 && mul.special === 110 && st.shield[0] === 20 && /all 110 goes through/.test(mul.lines), JSON.stringify([mul.pierce, st.shield[0]]));
+      await idle(page);
+      await page.locator('#bnew').tap();
+      // the same card against a shield that is still up, with a lower block card
+      await page.evaluate(() => window.GMQB.setSeed(5));
+      await page.locator('#sgo').tap();
+      await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;put(S.P[1],"A12",0);put(S.P[0],"D02",0);U.cpuLead=0;})()');
+      await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+      st = await state(page);
+      const tagM = st.cards[0].tag;
+      await page.locator('.hc.mine').nth(0).tap();
+      st = await state(page);
+      pass(name + ': against Hundred Cannon (epic), a common block card is not stamped "cannot block", and the opened card says plainly that it stops none of the 100', tagM === '' && st.fore.indexOf('The enemy\'s hit is 100. Its epic card works on the whole attack, so this card stops none of it.') >= 0, tagM + ' | ' + st.fore);
+      await page.locator('#popx').tap();
       await page.locator('#bnew').tap();
 
       // ---- Marc's rule of 22 November: a shield card puts a broken Main Shield back up. It is how the page starts; the two narrower rules are switches.

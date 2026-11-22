@@ -33,7 +33,35 @@ Here is how I read the problem.
 
 ---
 
+## 1g. Two rulings of the evening: no turn order, and a lower shield still stops the AP
+
+**1. "Strikes do not arrive in turn order. The turn just gives the second person a chance to be strategic."** [Your words, 22 November]
+
+- **Both attacks land together again.** Nobody "hits first". The mark "YOU HIT FIRST" is gone.
+- **Going second gives you one thing:** you have seen the other card before you choose yours.
+- **If both ships lose their last part in the same round, nobody wins.** With today's shield rules that is 7 or 8 battles in 100. (It was 20 in 100 this morning, before shields could come back.)
+- **[Conflict]** Earlier the same day the main thread passed on a ruling in your name: "attacks land in turn order... that ship does not strike back." I followed your own words. The old way is still on a switch ("Do attacks land in turn order?"). The rules sheet needs the same change; it is the main thread's file.
+- **Still yours to rule:** is "nobody wins" right for those 7 or 8 battles in 100? Other choices: the ship with more HP left at the start of that round; one more round.
+
+**2. "Even if someone was playing a gold card, the shield should still stop the regular AP attack... it looks like the system is always warning, saying your shield will not stop anything."**
+
+- **You were right, and the page was wrong in two ways.** A block card played against a higher attack card did nothing at all. And every common or rare block card carried a warning, even when no higher card was in play.
+- **Now a lower shield card always stops the ship's regular AP.** Only the part that the higher card adds gets past it. This is the same law as section 1f, now for every shield card:
+  - **Your shield is broken:** the card puts up a shield of its own kind. The ship's AP goes into it. The higher card's part goes through.
+  - **Your shield is still up:** the card takes its number off the ship's AP. Ten-Tile Wall (common) against Twin Tens (rare, 75 = 55 + 20): 10 is blocked, 65 goes on.
+- **The warnings are gone.** No card is marked "cannot block". The opened card says what it will do, in numbers.
+- **The exception, in your words: "Unless the gold card is multiplying the normal AP attack."** A card that works on the AP itself leaves no regular AP for a lower shield to stop. The whole attack is the card's, and all of it gets past.
+  - Doubling Drive (110) against a rare shield of 20 that a card put up: all 110 goes through to the parts. The shield is not touched.
+  - Hundred Cannon (100) against Ten-Tile Wall with your shield still up: the wall stops none of it. The opened card says so: "Its epic card works on the whole attack, so this card stops none of it."
+  - **My reading, for you to confirm:** both epic attack cards count, because both work on the AP itself. Doubling Drive doubles it. Hundred Cannon rounds it up to the next hundred. Cards that add a number (+5 to +20, and All Hands Fire) do not count: only the number they add gets past.
+  - The shield you start with, an epic shield (Shield Reborn) and Vanishing Act still stop these two cards.
+- **Your saved settings were cleared once more,** so that your phone and iPad start on these rules.
+
+---
+
 ## 1b. Your rulings of 22 November, and what I did
+
+> **Changed the same evening.** The third row below (turn order) and the table under it are replaced by section 1g: you ruled that strikes do not arrive in turn order. I have left this section as it was written, as the record.
 
 | You ruled | Done |
 |---|---|
@@ -156,7 +184,7 @@ You said: *"the epic attack, like the add 40 to your attack... The +40 gets thro
 |---|---|---|
 | **A battle lasts (random play / clever play)** | 11 / 14 rounds | 11 / 14 rounds |
 | **An attack goes through a shield** | never | about once every one or two battles |
-| **How much goes through, each time** | | about 32 points |
+| **How much goes through, each time** | | about 50 points (it was about 32 before the exception for multiplying cards) |
 | **Battles that got stuck** | 0 | 0 |
 
 **Five readings I had to make** [each is yours to change]
@@ -164,7 +192,7 @@ You said: *"the epic attack, like the add 40 to your attack... The +40 gets thro
 1. **The shield you start with has no kind.** It stops everything. Only a shield that a card put up can be gone through.
 2. **Shield Reborn makes an epic shield.** Nothing goes through it.
 3. **Adding to a shield that is still up** leaves its kind as it was.
-4. **A block card played while your shield is still up** is unchanged: against a higher attack card it blocks nothing. [Your rule of 22 November.]
+4. **A block card played while your shield is still up** takes its number off the ship's own AP, whatever card the other player used. [Changed the same evening by your ruling: section 1g.]
 5. **A block card played on a broken shield** now always puts its shield up, even against a higher attack card. Before, it did nothing. Its kind then decides what goes through.
 
 **It is a switch:** "A shield that a card puts back up has the kind of that card". Off gives the page as it was this morning.
@@ -231,7 +259,7 @@ You said: *"it should be very big and obvious, and the hit points of that ship p
 4. **A policeman stops a Spy.**
 5. **A Spy that is not stopped acts first.** If it is yours, you tap the enemy part to hit.
 6. **Hearts repair.**
-7. **Both ships attack.** The page adds up the AP and the card. The attack of the player who went first lands first. A ship that loses its last part does not strike back.
+7. **Both ships attack.** The page adds up the AP and the card. Both attacks land together.
 8. **A hit meets the bubble first.** If the hit is bigger than the shield, the shield breaks and soaks up all of it.
 9. **With no shield, you choose which parts take the hit.**
    - The blocks are in a row. One is lit.
@@ -283,11 +311,11 @@ Open **Rules** on the page. A change starts with the next battle.
 | Switch | Choices (the first is the default) | Where it comes from |
 |---|---|---|
 | **Who puts a card down first** | one leads and the other answers; both together, policeman swapped in; both together, policeman as a guess | **you, 22 November** |
-| **Whose attack lands first** | the player who went first, and a ship that loses its last part does not strike back; both together, and nobody wins if both ships fall | **you, 22 November** |
+| **Do attacks land in turn order?** | no: both land together, and nobody wins if both ships fall; yes: the first player's attack lands first, and a ship that loses its last part does not strike back | **you, 22 November** (section 1g) |
 | **Spy cards in each deck** | 1, drawn at random; all 7 | **you, 22 November** |
 | **Policemen in each deck** | 2; 1 | **you, 22 November** (2 is my reading of "more") |
 | **A block card stops an attack card only of its own kind, or lower** | yes; no | **you, 22 November** |
-| **A shield that a card puts back up has the kind of that card** | yes: a higher attack card's own part goes through it; no: any shield stops any attack | **you, 22 November** (section 1f) |
+| **Against a higher attack card, a lower shield card** | still stops the ship's own AP, and only the higher card's part gets past it; does nothing at all | **you, 22 November** (sections 1f and 1g) |
 | **The same for a policeman against a Spy card** | no: any Guard stops any Spy; yes | **you, 22 November** |
 | **"Lose 1 card"** (Engine or Navigation lost) | one card thrown away, once; the hand is one card smaller | rules sheet 5 |
 | **"Cannot defend"** (Shield Generator lost) | defence cards stop; defence cards and the Main Shield stop | rules sheet 5 |
@@ -303,14 +331,14 @@ Open **Rules** on the page. A change starts with the next battle.
 
 ## 6. Things I had to settle to make it run [Proposal: each is yours to change]
 
-1. **A ship that loses its Weapons to the first hit, but not its last part, still strikes back that round.**
+1. **Both ships lose their last part in the same round: nobody wins.** [You have not ruled on this since you ruled out turn order.]
 2. **A hit may only be put on working parts.**
 3. **A block comes off the attack before it reaches the shield.**
-4. **Inside a round the order is:** the policeman, then Spies (the leader's first), then repairs, then the leader's attack, then the other's. Both attacks are added up before either lands.
+4. **Inside a round the order is:** the policeman, then Spies, then shield and repair cards, then both attacks at once.
 5. **"Lose 1 card" throws away a card at random,** at the moment the part is lost.
 6. **An upgrade card played in a battle** makes that part Level 2 until the battle ends.
 7. **A Spy played second cannot be stopped.** The first player has already given an order. That follows from your rule.
-8. **Both ships attack every round,** whoever went first. Only a ship with no part left does not strike back.
+8. **Both ships attack every round,** whoever went first.
 9. **The block rule compares the two cards on the table.** If the other player played no attack card, any block card works against the ship's plain attack.
 
 ---
@@ -321,21 +349,23 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 | | Two gentle players | Two clever players |
 |---|---|---|
-| **Length** | 11 rounds in the middle; from 4 to 19 | 14 rounds in the middle; from 6 to 23 |
-| **A ship wins** | 100 in 100 | 100 in 100 |
-| **Nobody wins** | 0 | 0 |
-| **The ship that led the last round wins** | 54 in 100 | 53 in 100 |
-| **A shield comes back, in one battle** | 5 times | 10 times |
+| **Length** | 11 rounds in the middle; 9 in 10 are over by round 14 | 14 rounds in the middle; 9 in 10 are over by round 17 |
+| **A ship wins** | 92 in 100 | 93 in 100 |
+| **Nobody wins** (both fall in the same round) | 8 in 100 | 7 in 100 |
+| **The player who led the last round wins / the one who answered** | 46 / 46 | 45 / 48 |
+| **A shield comes back, in one battle** | about 5 times | about 10 times |
+| **An attack card's part goes through a shield** | about once in two battles | about once a battle |
 
-- **Battles are longer than before your shield rule:** 11 to 14 rounds, where it was 9.
-- **A clever player beats a gentle one** in 81 battles in 100.
-- **Your ruling on the Spy fixed the biggest problem.** With seven Spy cards in a deck, a clever player took the other ship's Weapons early in 32 battles in 100. With one, it is 1 in 100.
+- **Leading and answering are even.** Neither gives an edge.
+- **A clever player beats a gentle one** in 80 battles in 100.
 
 ### Still for you to rule on
 
-1. **The split** (section 4, point 2).
-2. **Shield cards now need the Shield Generator** (section 1c). Is that right?
-3. **My three readings of your turn-order ruling** (section 1b).
+1. **Both ships fall in the same round** (7 or 8 battles in 100): nobody wins, or something else? (section 1g)
+2. **The split** (section 4, point 2).
+3. **Shield cards need the Shield Generator** (section 1c). Is that right?
+4. **The sounds:** right or wrong, and on or off at the start?
+5. **Dodge cards** at common and rare: do you want them?
 
 ---
 
@@ -348,7 +378,9 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,760 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,010 checks, all pass. It checks:
+  - the exception for a card that multiplies the AP: the opened card says the whole attack goes through, you are asked to place all of it, and the lower shield is not touched;
+  - no card is ever marked "cannot block"; no ship is marked as hitting first; "How" says both attacks land together;
   - the opened card at six real screen sizes, with the browser's own bars taken off (two iPhones upright, two phones sideways, iPad both ways): the picture, "Give this order" and "Back" are inside the screen for every card in the hand, and the button works;
   - a shield with a kind: the bubble wears its colour and name; the opened card says what will go through; you are asked to place exactly that; the shield soaks the ship's own attack;
   - placing a hit: the view moves in and the parts are large; a tapped part's own HP changes; the words keep count; a tap that would destroy a part places nothing and asks for a second tap; the button names every part that will be lost;
@@ -369,7 +401,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 122 million checks, all pass. It tests each of your rulings of 22 November by hand: the block rule, turn order, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 135 million checks, all pass. It tests each of your rulings of 22 November by hand: both attacks landing together (and turn order with its switch on), a lower block card still stopping the ship's own AP, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.

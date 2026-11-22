@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<!-- Nothing leaves the iPad: this rule stops the page from loading or sending anything at all. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<title>GMQ big world size test</title>
+<!--
+  Galaxy Math Quest: the size test for the big world (Phase 0 of HANDOFF_Big_World_2026-11-22.md).
+  Question: how big a map can an iPad scroll smoothly?
+  It makes a plain map of 100 x 100, 200 x 200 or 300 x 300 squares. The astronaut walks by itself and the map scrolls.
+  It draws the way the real page draws: only the squares on screen, with outlines, water that moves, and mist.
+  It shows how long each frame takes. It sends nothing anywhere. Marc reads the screen.
+  One file. No library, no pictures, no network. Checked by checks/bigworld_size_test.js.
+-->
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #060912; color: #e8eef8; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-text-size-adjust: 100%; touch-action: manipulation; }
+#app { position: fixed; inset: 0; display: flex; flex-direction: column; }
+#stage { position: relative; flex: 1 1 auto; min-height: 0; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#bar { flex: 0 0 auto; background: #0b1322; border-top: 2px solid #33476a; padding: 8px max(10px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); display: flex; flex-direction: column; gap: 6px; }
+#btns { display: flex; flex-wrap: wrap; gap: 6px; }
+button { font: inherit; font-weight: 700; font-size: 16px; color: #e8eef8; background: #1c2c46; border: 2px solid #33476a; border-radius: 10px; padding: 8px 12px; }
+button.on { background: #6db3ff; color: #08121f; border-color: #6db3ff; }
+#res { font-size: 17px; font-weight: 700; line-height: 1.35; }
+#res .good { color: #6fd08a; } #res .mid { color: #ffcf5a; } #res .bad { color: #ff9486; }
+#small { font-size: 13px; color: #a9b9d0; overflow-wrap: anywhere; }
+#tbl { font-size: 14px; color: #e8eef8; border-collapse: collapse; }
+#tbl td, #tbl th { padding: 1px 10px 1px 0; text-align: left; }
+#tbl th { color: #a9b9d0; font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage"><canvas id="cv"></canvas></div>
+  <div id="bar">
+    <div id="btns">
+      <button data-n="100">100 × 100</button><button data-n="200">200 × 200</button><button data-n="300">300 × 300</button>
+      <button id="auto" class="on">Walks by itself: on</button><button id="runall">Test all three (45 seconds)</button>
+    </div>
+    <div id="res">Starting…</div>
+    <table id="tbl"></table>
+    <div id="small"></div>
+  </div>
+</div>
+<script>
+'use strict';
+const $ = id => document.getElementById(id), cv = $('cv'), cx = cv.getContext('2d'), INK = '#0e1626';
+let vw = 0, vh = 0, dpr = 1, N = 100, map = null, seen = null, tNow = 0, auto = true;
+const P = { x: 5, y: 5, px: 5, py: 5, route: [], dir: 'down', step: 0 }, cam = { x: 0, y: 0 };
+const frames = [], draws = [], RES = {};
+let runAll = null;
+
+function size() { dpr = Math.min(2, window.devicePixelRatio || 1); vw = cv.clientWidth; vh = cv.clientHeight; cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+function rng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+/* a plain made-up land: smooth hills of numbers decide water, sand, grass, trees and rock */
+function build(n) { N = n; const r = rng(n * 7919 + 13), G = 12, gw = Math.ceil(n / G) + 2, lat = new Float32Array(gw * gw), lat2 = new Float32Array(gw * gw); for (let i = 0; i < lat.length; i++) { lat[i] = r(); lat2[i] = r(); }
+  const sm = t => t * t * (3 - 2 * t), at = (L, x, y) => { const gx = x / G, gy = y / G, x0 = Math.floor(gx), y0 = Math.floor(gy), fx = sm(gx - x0), fy = sm(gy - y0), a = L[y0 * gw + x0], b = L[y0 * gw + x0 + 1], c = L[(y0 + 1) * gw + x0], d = L[(y0 + 1) * gw + x0 + 1]; return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy; };
+  map = new Uint8Array(n * n); seen = new Uint8Array(n * n);
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const h = at(lat, x, y), f = at(lat2, x, y), q = r(); map[y * n + x] = h < .3 ? 1 : h < .36 ? 2 : h > .78 ? 5 : f > .62 && q < .55 ? 4 : q < .06 ? 3 : 0; }
+  P.x = P.px = Math.floor(n / 2); P.y = P.py = Math.floor(n / 2); for (let d = 0; d < n; d++) { if (walk(P.x + d, P.y)) { P.x = P.px = P.x + d; break; } } P.route = []; frames.length = 0; draws.length = 0; see(); cam.x = P.px; cam.y = P.py;
+  document.querySelectorAll('[data-n]').forEach(b => b.classList.toggle('on', +b.dataset.n === n)); }
+const tile = (x, y) => x < 0 || y < 0 || x >= N || y >= N ? 5 : map[y * N + x];
+const walk = (x, y) => { const t = tile(x, y); return t === 0 || t === 2 || t === 3; };
+function see() { const R = 5; for (let y = P.y - R; y <= P.y + R; y++) for (let x = P.x - R; x <= P.x + R; x++) if (x >= 0 && y >= 0 && x < N && y < N && Math.hypot(x - P.x, y - P.y) <= R + .5) seen[y * N + x] = 1; }
+/* the same path finder the real page uses: breadth first, over the whole map */
+function path(tx, ty) { const from = new Int32Array(N * N).fill(-2), q = new Int32Array(N * N); let h = 0, t = 0; const s = P.y * N + P.x; from[s] = -1; q[t++] = s; let best = s, bd = 1e9;
+  while (h < t) { const k = q[h++], x = k % N, y = (k - x) / N, d = Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = k; } if (d === 0) break; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + dx, ny = y + dy; if (!walk(nx, ny)) continue; const nk = ny * N + nx; if (from[nk] !== -2) continue; from[nk] = k; q[t++] = nk; } }
+  const out = []; for (let k = best; k !== s && k >= 0; k = from[k]) out.unshift([k % N, Math.floor(k / N)]); return out; }
+let pathMs = 0;
+function newTarget() { const r = Math.random, t0 = performance.now(); P.route = path(Math.floor(r() * N), Math.floor(r() * N)); pathMs = performance.now() - t0; }
+
+function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect ? cx.roundRect(x, y, w, h, r) : cx.rect(x, y, w, h); }
+const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
+const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
+function astro(X, Y, s, moving, step) { const sw = moving ? Math.sin(step * 10) : 0, bob = moving ? Math.abs(sw) * s * .09 : 0;
+  cx.fillStyle = 'rgba(0,0,0,.32)'; cx.beginPath(); cx.ellipse(X, Y + s * .37, s * .26, s * .09, 0, 0, 7); cx.fill();
+  for (const i of [-1, 1]) { cx.fillStyle = '#c9d2df'; rr(X + i * s * .1 - s * .075, Y + s * .26 - Math.max(0, i * sw) * s * .14, s * .15, s * .12, 4); cx.fill(); ol(1.5); }
+  cx.fillStyle = '#f4f7fb'; rr(X - s * .19, Y - s * .12 - bob, s * .38, s * .4, s * .12); cx.fill(); ol(2); cx.fillStyle = '#f08a2c'; cx.fillRect(X - s * .18, Y + s * .1 - bob, s * .36, s * .06);
+  cx.fillStyle = '#f4f7fb'; circ(X, Y - s * .26 - bob, s * .22); cx.fill(); ol(2); cx.fillStyle = '#16264a'; rr(X - s * .15, Y - s * .36 - bob, s * .3, s * .2, s * .09); cx.fill(); }
+let drawn = 0;
+function draw(dt) { const ts = Math.max(34, Math.min(64, Math.min(vw, vh) / 11)), cols = vw / ts, rows = vh / ts;
+  if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.px, dy = ty - P.py, d = Math.hypot(dx, dy), st = 5.2 * dt; P.step += dt; if (d <= st) { P.px = tx; P.py = ty; P.x = tx; P.y = ty; P.route.shift(); see(); } else { P.px += dx / d * st; P.py += dy / d * st; } } else if (auto) newTarget();
+  cam.x += (P.px + .5 - cam.x) * Math.min(1, dt * 6); cam.y += (P.py + .5 - cam.y) * Math.min(1, dt * 6);
+  const ox = Math.max(0, Math.min(N - cols, cam.x - cols / 2)), oy = Math.max(0, Math.min(N - rows, cam.y - rows / 2)), x0 = Math.floor(ox), y0 = Math.floor(oy), x1 = Math.min(N - 1, Math.ceil(ox + cols)), y1 = Math.min(N - 1, Math.ceil(oy + rows));
+  cx.fillStyle = '#1a2046'; cx.fillRect(0, 0, vw, vh); drawn = 0;
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { const px = Math.round((x - ox) * ts), py = Math.round((y - oy) * ts); drawn++;
+    if (!seen[y * N + x]) { cx.fillStyle = '#1a2046'; cx.fillRect(px, py, ts + 1, ts + 1); if ((x + y) % 2 === 0) { cx.fillStyle = 'rgba(190,200,255,.07)'; cx.beginPath(); cx.ellipse(px + ts * (.6 + .3 * Math.sin(tNow * .3 + x * 1.7 + y)), py + ts * .5, ts * .8, ts * .3, 0, 0, 7); cx.fill(); } continue; }
+    const t = map[y * N + x]; cx.fillStyle = t === 1 ? '#2f6fd0' : t === 2 ? '#e2cf9a' : (x + y) % 2 ? '#5fae5a' : '#58a554'; cx.fillRect(px, py, ts + 1, ts + 1);
+    if (t === 1) { cx.strokeStyle = 'rgba(255,255,255,.55)'; cx.lineWidth = 2; for (let k = 0; k < 2; k++) { const o = ((tNow * .6 + k * .5 + y * .3) % 1) * ts; cx.beginPath(); cx.moveTo(px + o, py + ts * (.3 + k * .4)); cx.lineTo(px + Math.min(ts, o + ts * .3), py + ts * (.3 + k * .4)); cx.stroke(); } }
+    else if (t === 3) { cx.fillStyle = '#ffd25e'; circ(px + ts * .3, py + ts * .4, ts * .07); cx.fill(); cx.fillStyle = '#ff8fb0'; circ(px + ts * .65, py + ts * .6, ts * .07); cx.fill(); }
+    else if (t === 4) { cx.fillStyle = 'rgba(0,0,0,.2)'; cx.beginPath(); cx.ellipse(px + ts * .62, py + ts * .86, ts * .34, ts * .1, 0, 0, 7); cx.fill(); cx.fillStyle = '#6b4a22'; cx.fillRect(px + ts * .43, py + ts * .55, ts * .14, ts * .36); cx.fillStyle = (x * 7 + y * 3) % 3 ? '#2f7f4f' : '#3f8f6a'; circ(px + ts * .5, py + ts * .4, ts * .38); cx.fill(); ol(1.5); }
+    else if (t === 5) { cx.fillStyle = '#8f8aa8'; cx.beginPath(); cx.moveTo(px + ts * .05, py + ts * .95); cx.lineTo(px + ts * .4, py + ts * .1); cx.lineTo(px + ts * .62, py + ts * .5); cx.lineTo(px + ts * .78, py + ts * .28); cx.lineTo(px + ts * .97, py + ts * .95); cx.closePath(); cx.fill(); ol(1.5); } }
+  astro((P.px - ox) * ts + ts / 2, (P.py - oy) * ts + ts / 2 - ts * .1, ts * 1.3, P.route.length > 0, P.step); }
+
+function stats() { if (frames.length < 20) return null; const f = frames.slice().sort((a, b) => a - b), d = draws.slice().sort((a, b) => a - b), avg = a => a.reduce((s, v) => s + v, 0) / a.length; return { n: f.length, fps: 1000 / avg(f), avg: avg(d), p95: d[Math.floor(d.length * .95)], worst: d[d.length - 1], slow: f.filter(v => v > 34).length }; }
+function show() { const s = stats(); if (!s) return; const cls = s.fps >= 50 && s.p95 < 10 ? 'good' : s.fps >= 30 ? 'mid' : 'bad', word = cls === 'good' ? 'Smooth' : cls === 'mid' ? 'Usable, a little slow' : 'Too slow';
+  $('res').innerHTML = `Map ${N} × ${N}: <span class="${cls}">${word}</span> · ${s.fps.toFixed(0)} frames a second · drawing takes ${s.avg.toFixed(1)} ms (slowest ${s.worst.toFixed(1)} ms)`;
+  $('small').textContent = `Squares in the map: ${(N * N).toLocaleString()}. Squares drawn each frame: ${drawn}. Finding a path across the map: ${pathMs.toFixed(1)} ms. Screen: ${vw} × ${vh}, sharpness ${dpr}. Frames slower than 34 ms: ${s.slow} of ${s.n}.` + (runAll ? ` Testing all three: ${Math.ceil(runAll.left)} s left.` : '');
+  window.__bwSize = { N, drawn, pathMs, vw, vh, dpr, ...s, res: RES }; }
+function table() { const k = Object.keys(RES); if (!k.length) { $('tbl').innerHTML = ''; return; } $('tbl').innerHTML = '<tr><th>Map</th><th>Frames a second</th><th>Drawing, usual</th><th>Drawing, slowest</th><th>Path</th></tr>' + k.map(n => `<tr><td>${n} × ${n}</td><td>${RES[n].fps.toFixed(0)}</td><td>${RES[n].avg.toFixed(1)} ms</td><td>${RES[n].worst.toFixed(1)} ms</td><td>${RES[n].pathMs.toFixed(1)} ms</td></tr>`).join(''); }
+
+let last = 0, shown = 0;
+function loop(ts) { const dtMs = last ? ts - last : 16; last = ts; const dt = Math.min(.05, dtMs / 1000); tNow += dt;
+  const t0 = performance.now(); draw(dt); const d = performance.now() - t0; frames.push(dtMs); draws.push(d); if (frames.length > 600) { frames.shift(); draws.shift(); }
+  if (runAll) { runAll.left -= dtMs / 1000; if (runAll.left <= runAll.next) { const s = stats(); if (s) RES[N] = { ...s, pathMs }; table(); const i = [100, 200, 300].indexOf(N); if (i < 2) { build([100, 200, 300][i + 1]); runAll.next -= 15; } else { runAll = null; $('runall').classList.remove('on'); $('runall').textContent = 'Test all three (45 seconds)'; window.__bwDone = true; } } }
+  if (ts - shown > 500) { shown = ts; show(); }
+  requestAnimationFrame(loop); }
+
+document.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { runAll = null; build(+b.dataset.n); });
+$('auto').onclick = () => { auto = !auto; $('auto').classList.toggle('on', auto); $('auto').textContent = 'Walks by itself: ' + (auto ? 'on' : 'off'); };
+$('runall').onclick = () => { for (const k of Object.keys(RES)) delete RES[k]; table(); auto = true; $('auto').classList.add('on'); $('auto').textContent = 'Walks by itself: on'; build(100); runAll = { left: 45, next: 30 }; $('runall').classList.add('on'); $('runall').textContent = 'Testing…'; window.__bwDone = false; };
+cv.addEventListener('pointerdown', e => { const r = cv.getBoundingClientRect(), ts = Math.max(34, Math.min(64, Math.min(vw, vh) / 11)), cols = vw / ts, rows = vh / ts, ox = Math.max(0, Math.min(N - cols, cam.x - cols / 2)), oy = Math.max(0, Math.min(N - rows, cam.y - rows / 2)); const t0 = performance.now(); P.route = path(Math.floor(ox + (e.clientX - r.left) / ts), Math.floor(oy + (e.clientY - r.top) / ts)); pathMs = performance.now() - t0; });
+window.addEventListener('resize', size);
+size(); build(100); requestAnimationFrame(loop);
+</script>
+</body>
+</html>
