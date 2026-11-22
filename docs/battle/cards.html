@@ -91,13 +91,13 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 <p class="small">A ship of five Standard parts has <b id="stdhp"></b> HP and <b id="stdap"></b> AP. The names and the Standard numbers are yours. 13 of the 15 Standard, Guardian and Striker numbers are the ones in the table from your 2023 chats. The two moved onto the rule: Neutron Wall (33 and 2 there) and Quantum Deflector (28 and 7 there). The Lucky Draw numbers are new, except the Cosmic Navigator.</p>
 
 <h2>3. The battle cards: <span id="nplay"></span> to choose from</h2>
-<p class="lead">The <b>colour of the card</b> is what it does. The <b>gems and the frame</b> are the kind: one bronze gem for common, two silver for rare, three gold for epic. The <b>Guard</b> is your Policeman under a new name; change it back if you prefer.</p>
+<p class="lead">The <b>big symbol</b> is what the card does: a laser gun attacks, a shield blocks, a heart repairs, a spy sneaks past the shield, a policeman stops a spy. The <b>thick rim</b> is the kind: green for common, purple for rare, gold for gold. Those are the colours of your 2023 cards. The <b>Guard</b> is your Policeman under a new name; change it back if you prefer.</p>
 <p class="lead"><b>In a battle</b> each deck has one Spy card, drawn at random from the seven here, and two Guards. [Marc, 22 November: one Spy card each, and at least as many Policemen.]</p>
 <div class="chips" id="chips"></div>
 <div id="play" class="grid"></div>
 
 <h2>4. Level 2 upgrades</h2>
-<p class="lead">The numbers are yours: HP +4 and AP +3. In 2023 an upgrade was earned on quests. In the practice battle it is one of the 50 cards: playing it makes that part Level 2 for that battle. That is a guess, and a switch.</p>
+<p class="lead">The numbers are yours: HP +4 and AP +3. In 2023 an upgrade was earned on quests. In the practice battle it is one of the cards in each deck: playing it makes that part Level 2 for that battle. That is a guess, and a switch.</p>
 <div id="ups" class="grid"></div>
 
 <h2>5. Ideas that need a rule from you first</h2>
@@ -216,11 +216,11 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
  {"id":"G01","type":"guard","rarity":"common","name":"Station Guard","badge":"stop","text":"Stops a Spy. The Spy card does nothing.","ops":[{"op":"guard"}],"maths":"none","from":"SECURITY (your Policeman, under a new name)"}
 ],
 "upgrades": [
- {"id":"U-EC","type":"upgrade","rarity":"","part":"Engine Core","name":"Booster Upgrade","badge":"L2","text":"Level 2. Your Engine Core gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
- {"id":"U-NS","type":"upgrade","rarity":"","part":"Navigation","name":"Inertial Dampener","badge":"L2","text":"Level 2. Your Navigation gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
- {"id":"U-SG","type":"upgrade","rarity":"","part":"Shield Generator","name":"Magnetic Field Amplifier","badge":"L2","text":"Level 2. Your Shield Generator gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
- {"id":"U-WS","type":"upgrade","rarity":"","part":"Weapons System","name":"Laser Sight Enhancer","badge":"L2","text":"Level 2. Your Weapons System gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
- {"id":"U-PM","type":"upgrade","rarity":"","part":"Power Module","name":"Battery Optimizer","badge":"L2","text":"Level 2. Your Power Module gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"}
+ {"id":"U-EC","type":"upgrade","rarity":"","part":"Engine Core","name":"Booster Upgrade","badge":"L2","text":"Level 2. Your Engine Core gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-NS","type":"upgrade","rarity":"","part":"Navigation","name":"Inertial Dampener","badge":"L2","text":"Level 2. Your Navigation gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-SG","type":"upgrade","rarity":"","part":"Shield Generator","name":"Magnetic Field Amplifier","badge":"L2","text":"Level 2. Your Shield Generator gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-WS","type":"upgrade","rarity":"","part":"Weapons System","name":"Laser Sight Enhancer","badge":"L2","text":"Level 2. Your Weapons System gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-PM","type":"upgrade","rarity":"","part":"Power Module","name":"Battery Optimizer","badge":"L2","text":"Level 2. Your Power Module gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"}
 ],
 "ideas": [
  {"id":"X01","pic":"quarter","type":"defence","rarity":"rare","name":"Fraction Field","badge":"½","text":"Block half of the attack on you this round.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Division Defender, Fraction Frigate","ask":"What is half of 55? The card needs a rule for odd numbers: the bigger half, or the smaller."},
@@ -241,14 +241,14 @@ var DATA=JSON.parse(document.getElementById('carddata').textContent);
 /* DRAW-BEGIN: the same block is in card_battle.html; checks/battle_cards_set_check.py compares them */
 var NS='http://www.w3.org/2000/svg';
 var TYPE={
- attack:{name:'ATTACK',c:'#e5484d',d:'#3a1114',needs:'Needs your Weapons System'},
- defence:{name:'DEFENCE',c:'#3b82f6',d:'#0f2147',needs:'Needs your Shield Generator'},
- repair:{name:'REPAIR',c:'#22a565',d:'#0c3320',needs:'Needs your Power Module'},
- spy:{name:'SPY',c:'#8b5cf6',d:'#241446',needs:'Gets past the Main Shield'},
- guard:{name:'GUARD',c:'#14b8a6',d:'#083733',needs:'Answers a Spy card'},
- upgrade:{name:'UPGRADE',c:'#f97316',d:'#3d1c06',needs:'Makes one part Level 2'}
+ attack:{name:'ATTACK',c:'#ff8a3d',d:'#2a1a12',needs:'Needs your Weapons System'},
+ defence:{name:'DEFENCE',c:'#4f9dff',d:'#111f3d',needs:'Needs your Shield Generator'},
+ repair:{name:'REPAIR',c:'#ff4d6d',d:'#2b1320',needs:'Needs your Power Module'},
+ spy:{name:'SPY',c:'#a78bfa',d:'#1d1838',needs:'Gets past the Main Shield'},
+ guard:{name:'POLICE',c:'#5b8cff',d:'#101c40',needs:'Stops a Spy card'},
+ upgrade:{name:'UPGRADE',c:'#ffd23f',d:'#2a2210',needs:'Makes one part Level 2'}
 };
-var RAR={common:{name:'COMMON',c:'#b08d57',n:1},rare:{name:'RARE',c:'#cfd6e2',n:2},epic:{name:'EPIC',c:'#f5c518',n:3}};
+var RAR={common:{name:'COMMON',c:'#7ed957',n:1},rare:{name:'RARE',c:'#b388ff',n:2},epic:{name:'GOLD',c:'#ffd23f',n:3}};
 var KIND={};DATA.kinds.forEach(function(k){KIND[k.key]=k;});
 var PARTCODE={'Engine Core':'engine','Navigation':'nav','Shield Generator':'gen','Weapons System':'weapons','Power Module':'power'};
 
@@ -258,55 +258,46 @@ function hash(str){var h=7;for(var i=0;i<str.length;i++){h=(h*31+str.charCodeAt(
 function wrap(text,max){var words=text.split(' '),lines=[],cur='';for(var i=0;i<words.length;i++){var t=cur?cur+' '+words[i]:words[i];if(t.length>max&&cur){lines.push(cur);cur=words[i];}else{cur=t;}}if(cur)lines.push(cur);return lines;}
 function stars(id,x,y,w,h,n){var r=rnd(hash(id)),o='';for(var i=0;i<n;i++){var cx=x+r()*w,cy=y+r()*h,rr=0.5+r()*1.3;o+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rr.toFixed(1)+'" fill="#fff" opacity="'+(0.35+r()*0.6).toFixed(2)+'"/>';}return o;}
 
-/* ---------- small drawings ---------- */
-function craft(x,y,s,c){return '<g transform="translate('+x+','+y+') scale('+s+')"><path d="M0,-16 L11,10 L4,7 L0,14 L-4,7 L-11,10 Z" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.5"/><path d="M0,-6 L3.5,3 L-3.5,3 Z" fill="'+c+'"/><path d="M-3,13 L0,22 L3,13 Z" fill="#ffb347"/></g>';}
-function beam(x1,y1,x2,y2,c,w){w=w||5;return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+(w+6)+'" stroke-linecap="round" opacity=".28"/><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#fff" stroke-width="'+w*0.5+'" stroke-linecap="round"/>';}
-function burst(x,y,r,c){var o='<g transform="translate('+x+','+y+')">';for(var i=0;i<8;i++){var a=i*Math.PI/4,rr=(i%2?r*0.55:r);o+='<line x1="0" y1="0" x2="'+(Math.cos(a)*rr).toFixed(1)+'" y2="'+(Math.sin(a)*rr).toFixed(1)+'" stroke="'+c+'" stroke-width="3" stroke-linecap="round"/>';}return o+'<circle r="'+(r*0.3).toFixed(1)+'" fill="#fff"/></g>';}
-function dome(cx,cy,r,c){return '<path d="M'+(cx-r)+','+cy+' A'+r+','+r+' 0 0 1 '+(cx+r)+','+cy+'" fill="'+c+'" fill-opacity=".18" stroke="'+c+'" stroke-width="3"/><path d="M'+(cx-r*0.62)+','+cy+' A'+r*0.62+','+r*0.62+' 0 0 1 '+(cx+r*0.62)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.5" opacity=".7"/><line x1="'+(cx-r-6)+'" y1="'+cy+'" x2="'+(cx+r+6)+'" y2="'+cy+'" stroke="'+c+'" stroke-width="3" stroke-linecap="round"/>';}
-function plus(x,y,s,c){return '<g transform="translate('+x+','+y+')"><rect x="'+(-s)+'" y="'+(-s/3)+'" width="'+2*s+'" height="'+2*s/3+'" rx="2" fill="'+c+'"/><rect x="'+(-s/3)+'" y="'+(-s)+'" width="'+2*s/3+'" height="'+2*s+'" rx="2" fill="'+c+'"/></g>';}
-function wrench(x,y,s,c){return '<g transform="translate('+x+','+y+') rotate(-40) scale('+s+')"><rect x="-4" y="-4" width="8" height="34" rx="3" fill="'+c+'"/><path d="M-11,-16 A12,12 0 1 0 11,-16 L5,-10 L5,-4 L-5,-4 L-5,-10 Z" fill="'+c+'"/></g>';}
-function target(x,y,r,c){return '<g transform="translate('+x+','+y+')" fill="none" stroke="'+c+'" stroke-width="2.2"><circle r="'+r+'"/><circle r="'+(r*0.45).toFixed(1)+'"/><line x1="'+(-r-4)+'" y1="0" x2="'+(r+4)+'" y2="0"/><line x1="0" y1="'+(-r-4)+'" x2="0" y2="'+(r+4)+'"/></g>';}
-function drone(x,y,s,c){return '<g transform="translate('+x+','+y+') scale('+s+')"><line x1="0" y1="-12" x2="0" y2="-24" stroke="#dfe6f5" stroke-width="2"/><circle cx="0" cy="-26" r="3" fill="'+c+'"/><ellipse cx="0" cy="0" rx="22" ry="11" fill="#2b2f45" stroke="#dfe6f5" stroke-width="2"/><ellipse cx="0" cy="-5" rx="11" ry="8" fill="#3a4062" stroke="#dfe6f5" stroke-width="1.5"/><circle cx="0" cy="1" r="5.5" fill="'+c+'"/><circle cx="1.5" cy="-0.5" r="2" fill="#fff"/><path d="M-18,8 L-24,16 M18,8 L24,16" stroke="#dfe6f5" stroke-width="2" stroke-linecap="round"/></g>';}
-function badgeStar(x,y,s,c){var p='';for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,r=(i%2?9:21);p+=(i?'L':'M')+(Math.cos(a)*r).toFixed(1)+','+(Math.sin(a)*r).toFixed(1)+' ';}return '<g transform="translate('+x+','+y+') scale('+s+')"><path d="M0,-34 L28,-22 L24,14 Q14,32 0,38 Q-14,32 -24,14 L-28,-22 Z" fill="#10243a" stroke="'+c+'" stroke-width="4"/><path d="'+p+'Z" fill="'+c+'"/></g>';}
-function chevrons(x,y,c){var o='';for(var i=0;i<3;i++){o+='<path d="M'+(x-20)+','+(y+i*18)+' L'+x+','+(y-18+i*18)+' L'+(x+20)+','+(y+i*18)+'" fill="none" stroke="'+c+'" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="'+(1-i*0.28)+'"/>';}return o;}
-function minicard(x,y,rot,c){return '<g transform="translate('+x+','+y+') rotate('+rot+')"><rect x="-11" y="-16" width="22" height="32" rx="3" fill="#f3f5fb" stroke="'+c+'" stroke-width="2"/><rect x="-7" y="-11" width="14" height="9" fill="'+c+'" opacity=".6"/></g>';}
-
-function star4(x,y,r,c){return '<path d="M'+x+','+(y-r)+' L'+(x+r*0.28)+','+(y-r*0.28)+' L'+(x+r)+','+y+' L'+(x+r*0.28)+','+(y+r*0.28)+' L'+x+','+(y+r)+' L'+(x-r*0.28)+','+(y+r*0.28)+' L'+(x-r)+','+y+' L'+(x-r*0.28)+','+(y-r*0.28)+' Z" fill="'+c+'"/>';}
-function capsule(x,y,c){return '<g transform="translate('+x+','+y+') rotate(-23)"><path d="M-30,0 L-20,-5 L-20,5 Z" fill="#ffb347"/><rect x="-20" y="-7" width="34" height="14" rx="3" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><path d="M14,-7 Q27,0 14,7 Z" fill="'+c+'" stroke="#0b1020" stroke-width="1.2"/><rect x="-10" y="-7" width="5" height="14" fill="'+c+'"/><rect x="0" y="-7" width="5" height="14" fill="'+c+'"/></g>';}
-function trail(c){return '<line x1="62" y1="128" x2="150" y2="92" stroke="'+c+'" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round"/>';}
-function shot(pic,c){
- var o='',i;
- if(pic==='spark'){o+=trail(c)+'<path d="M146,98 L160,84 L164,94 L178,76 L180,88 L196,70" fill="none" stroke="#ffd84a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>'+burst(198,68,9,c);}
- else if(pic==='comet'){o+='<g transform="translate(182,80) rotate(-23)"><path d="M0,-10 Q-70,-5 -112,0 Q-70,5 0,10 Z" fill="'+c+'" opacity=".55"/><path d="M0,-6 Q-40,-2 -70,0 Q-40,2 0,6 Z" fill="#fff" opacity=".8"/><circle r="11" fill="#fff"/><circle r="6" fill="#ffe9a8"/></g>';}
- else if(pic==='rocket'){o+=trail(c)+'<g transform="translate(176,82) rotate(-23)"><path d="M-34,0 L-22,-6 L-22,6 Z" fill="#ffb347"/><path d="M-22,-9 L-30,-17 L-12,-9 Z M-22,9 L-30,17 L-12,9 Z" fill="'+c+'"/><rect x="-22" y="-9" width="34" height="18" rx="3" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><path d="M12,-9 Q32,0 12,9 Z" fill="'+c+'" stroke="#0b1020" stroke-width="1.2"/><circle cx="-2" cy="0" r="4.5" fill="#10162c"/></g>';}
- else if(pic==='beam2'){o+=beam(58,124,188,70,c,4)+beam(66,136,196,82,c,4)+'<circle cx="188" cy="70" r="5" fill="#fff"/><circle cx="196" cy="82" r="5" fill="#fff"/>';}
- else if(pic==='stars9'){o+=trail(c);for(i=0;i<9;i++){o+=star4(152+(i%3)*24+(Math.floor(i/3)%2)*8,66+Math.floor(i/3)*22,7.5,i%2?'#fff':'#ffd84a');}}
- else if(pic==='torpedo'){o+=trail(c)+capsule(178,82,c);}
- else if(pic==='torpedo2'){o+=trail(c)+capsule(170,74,c)+capsule(188,98,c);}
- else if(pic==='bolt'){o+='<path d="M92,56 L150,58 L128,92 L170,92 L96,160 L116,112 L84,112 Z" fill="#ffd84a" stroke="#fff" stroke-width="2" stroke-linejoin="round" transform="translate(52,-2) scale(.92)"/>';}
- return o;
-}
-function arcSpots(n,cx,cy,r){var a=[],i;for(i=0;i<n;i++){var t=Math.PI+(i+0.5)*Math.PI/n;a.push([cx+Math.cos(t)*r,cy+Math.sin(t)*r,t]);}return a;}
-function wall(pic,c){
- var o='',i,sp,cx=104,cy=162;
- if(pic==='dust'){var r=rnd(77);for(i=0;i<46;i++){var t=Math.PI+r()*Math.PI,rr=44+r()*18;o+='<circle cx="'+(cx+Math.cos(t)*rr).toFixed(1)+'" cy="'+(cy+Math.sin(t)*rr).toFixed(1)+'" r="'+(1.5+r()*3).toFixed(1)+'" fill="'+c+'" opacity="'+(0.45+r()*0.5).toFixed(2)+'"/>';}}
- else if(pic==='tiles'){sp=arcSpots(10,cx,cy,54);for(i=0;i<10;i++){o+='<rect x="-7" y="-9" width="14" height="18" rx="2" fill="'+c+'" stroke="#dfe6f5" stroke-width="1.5" transform="translate('+sp[i][0].toFixed(1)+','+sp[i][1].toFixed(1)+') rotate('+(sp[i][2]*180/Math.PI+90).toFixed(0)+')"/>';}}
- else if(pic==='gems'){sp=arcSpots(12,cx,cy,56);for(i=0;i<12;i++){o+='<path d="M0,-9 L6,0 L0,9 L-6,0 Z" fill="'+(i%2?c:'#dfe6f5')+'" stroke="#0b1020" stroke-width="1" transform="translate('+sp[i][0].toFixed(1)+','+sp[i][1].toFixed(1)+') rotate('+(sp[i][2]*180/Math.PI+90).toFixed(0)+')"/>';}}
- else if(pic==='bricks'){for(i=0;i<14;i++){var row=Math.floor(i/7),col=i%7;o+='<rect x="'+(42+col*18)+'" y="'+(88+row*15)+'" width="16" height="12" rx="2" fill="'+(row?c:'#7fb0ff')+'" stroke="#0b1020" stroke-width="1"/>';}}
- else if(pic==='minus'){o+=dome(cx,cy,52,c)+'<rect x="82" y="92" width="44" height="12" rx="4" fill="#fff"/>';}
- else if(pic==='net'){o+=dome(cx,cy,56,c);for(i=1;i<6;i++){var a=Math.PI+i*Math.PI/6;o+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+Math.cos(a)*56).toFixed(1)+'" y2="'+(cy+Math.sin(a)*56).toFixed(1)+'" stroke="'+c+'" stroke-width="1.6"/>';}o+='<path d="M'+(cx-40)+','+cy+' A40,40 0 0 1 '+(cx+40)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.6"/><path d="M'+(cx-22)+','+cy+' A22,22 0 0 1 '+(cx+22)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.6"/>';}
- else if(pic==='quarter'){o+=dome(cx,cy,58,c)+'<path d="M'+cx+','+cy+' L'+cx+','+(cy-58)+' A58,58 0 0 0 '+(cx-58)+','+cy+' Z" fill="'+c+'" opacity=".75"/>';}
- else if(pic==='cards'){o+=dome(cx,cy,50,c)+minicard(60,96,-20,c)+minicard(84,86,-7,c)+minicard(110,84,6,c)+minicard(134,92,19,c);}
- return o;
-}
-function fixit(pic,c){
- var o='',i;
- if(pic==='patch'){o+='<g transform="translate(96,116) rotate(-8)"><rect x="-30" y="-24" width="60" height="48" rx="6" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.5"/><rect x="-24" y="-18" width="48" height="36" rx="3" fill="none" stroke="'+c+'" stroke-width="2.5" stroke-dasharray="5 4"/><path d="M-9,-9 L9,9 M9,-9 L-9,9" stroke="'+c+'" stroke-width="4" stroke-linecap="round"/></g>';}
- else if(pic==='tape'){o+='<g transform="translate(96,116) rotate(-24)"><rect x="-52" y="-13" width="104" height="26" fill="#cfd6e2" stroke="#0b1020" stroke-width="1.5"/><path d="M-52,-13 l-6,6 l6,7 l-6,6 l6,7 M52,-13 l6,6 l-6,7 l6,6 l-6,7" fill="none" stroke="#cfd6e2" stroke-width="3"/>';for(i=0;i<5;i++){o+='<line x1="'+(-40+i*20)+'" y1="-13" x2="'+(-48+i*20)+'" y2="13" stroke="'+c+'" stroke-width="3"/>';}o+='</g>';}
- else if(pic==='bot'){o+='<g transform="translate(94,118)"><line x1="0" y1="-34" x2="0" y2="-24" stroke="#dfe6f5" stroke-width="3"/><circle cx="0" cy="-37" r="4" fill="'+c+'"/><rect x="-22" y="-24" width="44" height="30" rx="7" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.5"/><circle cx="-9" cy="-10" r="5" fill="#10162c"/><circle cx="9" cy="-10" r="5" fill="#10162c"/><circle cx="-8" cy="-11" r="1.8" fill="#fff"/><circle cx="10" cy="-11" r="1.8" fill="#fff"/><rect x="-16" y="8" width="32" height="24" rx="5" fill="'+c+'" stroke="#0b1020" stroke-width="1.5"/><path d="M-16,14 L-30,24 M16,14 L32,6" stroke="#dfe6f5" stroke-width="5" stroke-linecap="round"/><circle cx="34" cy="4" r="5" fill="none" stroke="#dfe6f5" stroke-width="3"/></g>';}
- else if(pic==='bolts'){for(i=0;i<12;i++){var x=56+(i%4)*24,y=88+Math.floor(i/4)*26;o+='<path d="M'+x+','+(y-9)+' l8,4.5 l0,9 l-8,4.5 l-8,-4.5 l0,-9 Z" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><circle cx="'+x+'" cy="'+y+'" r="3.5" fill="'+c+'"/>';}}
- return o;
-}
+/* ---------- the symbols: one for each thing a card can do, as on Marc's 2023 cards. All drawn here; none is copied. ---------- */
+function symGun(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M-52,-20 L18,-20 Q30,-20 30,-8 L30,2 L-10,2 L-18,34 Q-20,42 -30,42 L-40,42 Q-48,42 -46,32 L-38,2 L-52,2 Q-60,2 -60,-9 Q-60,-20 -52,-20 Z" fill="#e9eefb" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<rect x="30" y="-15" width="26" height="12" rx="3" fill="#ff8a3d" stroke="#10162c" stroke-width="4"/>'
+ +'<circle cx="62" cy="-9" r="7" fill="#ffd84a" stroke="#10162c" stroke-width="4"/>'
+ +'<rect x="-44" y="-13" width="12" height="8" rx="2" fill="#ff8a3d"/><rect x="-26" y="-13" width="12" height="8" rx="2" fill="#ff8a3d"/><rect x="-8" y="-13" width="12" height="8" rx="2" fill="#ff8a3d"/>'
+ +'<path d="M-22,2 Q-14,20 2,12 L4,2" fill="none" stroke="#10162c" stroke-width="4" stroke-linecap="round"/>'
+ +'<path d="M76,-9 L98,-9 M74,-22 L90,-34 M74,4 L90,16" stroke="#ffd84a" stroke-width="5" stroke-linecap="round"/></g>';}
+function symShield(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M0,-58 L46,-42 L46,2 Q46,40 0,60 Q-46,40 -46,2 L-46,-42 Z" fill="#4f9dff" stroke="#10162c" stroke-width="5" stroke-linejoin="round"/>'
+ +'<path d="M0,-58 L46,-42 L46,2 Q46,40 0,60 Z" fill="#2f6fd6"/>'
+ +'<path d="M0,-58 L46,-42 L46,2 Q46,40 0,60 Q-46,40 -46,2 L-46,-42 Z" fill="none" stroke="#10162c" stroke-width="5" stroke-linejoin="round"/>'
+ +'<path d="M0,-36 L26,-27 L26,0 Q26,22 0,36 Q-26,22 -26,0 L-26,-27 Z" fill="none" stroke="#e9eefb" stroke-width="5" stroke-linejoin="round"/></g>';}
+function symHeart(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M0,52 C-70,6 -62,-52 -26,-52 C-10,-52 -2,-42 0,-32 C2,-42 10,-52 26,-52 C62,-52 70,6 0,52 Z" fill="#ff4d6d" stroke="#10162c" stroke-width="5" stroke-linejoin="round"/>'
+ +'<path d="M-34,-30 Q-40,-12 -28,0" fill="none" stroke="#ffd0d8" stroke-width="7" stroke-linecap="round"/>'
+ +'<rect x="-6" y="-22" width="12" height="40" rx="3" fill="#fff"/><rect x="-20" y="-8" width="40" height="12" rx="3" fill="#fff"/></g>';}
+function symPolice(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M-70,58 Q-70,24 -38,18 L-10,18 Q20,24 20,58 Z" fill="#2f55c7" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<circle cx="-24" cy="-6" r="24" fill="#f1d3b3" stroke="#10162c" stroke-width="4"/>'
+ +'<path d="M-52,-18 Q-24,-50 4,-18 L4,-12 L-52,-12 Z" fill="#2f55c7" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<rect x="-56" y="-14" width="66" height="8" rx="3" fill="#10162c"/>'
+ +'<path d="M-24,-36 l4,7 l8,1 l-6,5 l2,8 l-8,-4 l-8,4 l2,-8 l-6,-5 l8,-1 Z" fill="#ffd84a"/>'
+ +'<circle cx="-32" cy="-2" r="3" fill="#10162c"/><circle cx="-16" cy="-2" r="3" fill="#10162c"/><path d="M-32,9 Q-24,14 -16,9" fill="none" stroke="#10162c" stroke-width="3" stroke-linecap="round"/>'
+ +'<path d="M-30,36 l6,6 l6,-6" fill="none" stroke="#ffd84a" stroke-width="4"/>'
+ +'<path d="M30,-52 L56,-52 L74,-34 L74,-8 L56,10 L30,10 L12,-8 L12,-34 Z" fill="#e5484d" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>'
+ +'<text x="43" y="-13" text-anchor="middle" font-size="21" font-weight="900" fill="#fff">STOP</text>'
+ +'<rect x="38" y="10" width="10" height="46" fill="#cfd6e2" stroke="#10162c" stroke-width="3"/></g>';}
+function symSpy(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M-56,60 Q-56,22 -22,14 L22,14 Q56,22 56,60 Z" fill="#6b7089" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<path d="M-22,14 L0,44 L22,14 L30,34 L0,60 L-30,34 Z" fill="#4a4f6a" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<circle cx="0" cy="-8" r="26" fill="#f1d3b3" stroke="#10162c" stroke-width="4"/>'
+ +'<path d="M-28,-26 L28,-26 L22,-58 Q0,-66 -22,-58 Z" fill="#2b2f45" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<rect x="-28" y="-34" width="56" height="9" fill="#8b5cf6"/>'
+ +'<ellipse cx="0" cy="-24" rx="50" ry="9" fill="#2b2f45" stroke="#10162c" stroke-width="4"/>'
+ +'<rect x="-24" y="-12" width="20" height="13" rx="5" fill="#10162c"/><rect x="4" y="-12" width="20" height="13" rx="5" fill="#10162c"/><rect x="-6" y="-9" width="12" height="4" fill="#10162c"/>'
+ +'<path d="M-8,10 Q0,14 8,10" fill="none" stroke="#10162c" stroke-width="3" stroke-linecap="round"/></g>';}
+function symUp(x,y,s){var o='<g transform="translate('+x+','+y+') scale('+s+')">';for(var i=0;i<3;i++){o+='<path d="M-44,'+(-12+i*30)+' L0,'+(-52+i*30)+' L44,'+(-12+i*30)+'" fill="none" stroke="#10162c" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M-44,'+(-12+i*30)+' L0,'+(-52+i*30)+' L44,'+(-12+i*30)+'" fill="none" stroke="'+(i===0?'#ffd84a':(i===1?'#ffb347':'#ff8a3d'))+'" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>';}return o+'</g>';}
+var SYMBOL={attack:symGun,defence:symShield,repair:symHeart,guard:symPolice,spy:symSpy,upgrade:symUp};
+function symbol(type,x,y,s){return SYMBOL[type](x,y,s);}
 function partIcon(code,x,y,s,c){
  var g='<g transform="translate('+x+','+y+') scale('+s+')">';
  if(code==='engine'){g+='<circle r="26" fill="#141a30" stroke="'+c+'" stroke-width="4"/><circle r="15" fill="none" stroke="#dfe6f5" stroke-width="2" stroke-dasharray="6 5"/><circle r="8" fill="#ffb347"/><circle r="4" fill="#fff"/><path d="M-36,0 L-27,0 M27,0 L36,0 M0,-36 L0,-27 M0,27 L0,36" stroke="'+c+'" stroke-width="5" stroke-linecap="round"/>';}
@@ -317,94 +308,49 @@ function partIcon(code,x,y,s,c){
  return g+'</g>';
 }
 
-/* ---------- the picture on a battle card ---------- */
-function art(card){
- var t=TYPE[card.type],c=t.c,o='',op=card.ops[0].op,n=card.ops[0].n||0,i;
- var X=12,Y=52,W=226,H=128;
- o+=stars(card.id,X,Y,W,H,22);
- if(card.type==='attack'){
-  o+=craft(52,150,1.35,c);
-  if(op==='atk_double'){o+=beam(60,128,178,78,c,6)+beam(72,140,190,92,c,6)+burst(180,76,15,c)+burst(193,91,15,c);}
-  else if(op==='atk_per_part'){for(i=0;i<5;i++){o+=beam(60,130,150+i*18,66+i*4,c,3);o+='<circle cx="'+(150+i*18)+'" cy="'+(66+i*4)+'" r="4" fill="#fff"/>';}}
-  else if(op==='atk_round100'){o+=beam(60,130,172,84,c,7)+'<circle cx="182" cy="80" r="26" fill="none" stroke="'+c+'" stroke-width="4"/><circle cx="182" cy="80" r="17" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>';}
-  else if(card.pic){o+=shot(card.pic,c);}
-  else{o+=beam(60,130,176,82,c,3+n/4)+burst(180,80,10+n*0.7,c);}
-  if(card.ops.length>1){o+=dome(128,172,22,TYPE.defence.c);}
- }else if(card.type==='defence'){
-  if(op==='block_all'){o+='<g opacity=".35" stroke-dasharray="5 5">'+craft(125,118,2.1,c)+'</g>'+beam(30,70,96,104,TYPE.attack.c,4)+'<path d="M150,130 L214,162" stroke="'+TYPE.attack.c+'" stroke-width="3" stroke-dasharray="3 7" opacity=".6"/>';}
-  else{o+=craft(104,152,1.15,c)+wall(card.pic,c)+beam(16,58,62,102,TYPE.attack.c,4)+burst(64,104,10,'#fff');}
-  if(card.ops.length>1){o+=plus(196,82,11,TYPE.repair.c);}
-  if(op==='block_per_card'){o+='';}
- }else if(card.type==='repair'){
-  if(op==='shield_add'||op==='shield_rebuild'){o+=dome(118,160,46+n*0.5,TYPE.defence.c)+plus(118,112,14+n*0.12,c)+craft(118,152,1,c);}
-  else if(op==='shield_per_card'){o+=dome(150,160,44,TYPE.defence.c)+minicard(44,120,-18,c)+minicard(64,114,-4,c)+minicard(84,116,10,c)+plus(150,118,13,c);}
-  else if(op==='repair_share'){o+='<g transform="translate(50,78) rotate(24)"><path d="M0,-9 Q-34,-26 -58,-40 Q-30,-14 0,9 Z" fill="#ffb347" opacity=".7"/><circle r="11" fill="#8a6f5a" stroke="#dfe6f5" stroke-width="1.5"/><circle cx="-3" cy="-2" r="3" fill="#5d4a3c"/></g>'+wrench(78,140,1.2,'#dfe6f5');for(i=0;i<4;i++){o+=plus(128+i*26,96+(i%2)*34,9+i%2*3,c);}}
-  else if(op==='repair_all'||op==='repair_full'){o+=wrench(58,132,1.4,'#dfe6f5');for(i=0;i<5;i++){o+=plus(112+i*24,(op==='repair_full'?108:120)+(i%2)*14,op==='repair_full'?11:8,c);}if(op==='repair_full'){o+='<rect x="96" y="150" width="124" height="8" rx="4" fill="'+c+'"/>';}}
-  else if(op==='round_up10'){for(i=0;i<3;i++){o+='<rect x="'+(70+i*42)+'" y="'+(140-i*22)+'" width="34" height="'+(30+i*22)+'" rx="3" fill="'+c+'" opacity="'+(0.45+i*0.25)+'"/>';}o+='<path d="M62,128 L196,74" stroke="#fff" stroke-width="3" stroke-dasharray="6 5"/><path d="M196,74 l-14,1 l8,11 Z" fill="#fff"/><g transform="translate(40,150)"><rect x="-18" y="-16" width="36" height="14" rx="4" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><rect x="-4" y="-26" width="12" height="10" rx="2" fill="'+c+'"/><circle cx="-11" cy="2" r="6" fill="#10162c" stroke="#dfe6f5" stroke-width="2"/><circle cx="11" cy="2" r="6" fill="#10162c" stroke="#dfe6f5" stroke-width="2"/></g>';}
-  else if(op==='move_hp'){o+=partIcon('power',70,118,0.8,c)+partIcon('engine',182,118,0.72,c)+'<path d="M100,100 Q126,74 152,100" fill="none" stroke="#fff" stroke-width="3"/><path d="M152,100 l-12,-2 l5,-11 Z" fill="#fff"/>';}
-  else if(op==='revive'){o+='<g opacity=".4">'+partIcon('weapons',125,128,1.05,'#8892ad')+'</g>';for(i=0;i<7;i++){var a=Math.PI+(i+0.5)*Math.PI/7;o+='<line x1="'+(125+Math.cos(a)*46).toFixed(1)+'" y1="'+(150+Math.sin(a)*46).toFixed(1)+'" x2="'+(125+Math.cos(a)*64).toFixed(1)+'" y2="'+(150+Math.sin(a)*64).toFixed(1)+'" stroke="#ffd84a" stroke-width="4" stroke-linecap="round"/>';}o+=plus(182,84,12,c);}
-  else{o+=fixit(card.pic,c)+plus(card.pic==='bolts'?178:172,92,13,c);}
- }else if(card.type==='spy'){
-  var k=card.ops[0].parts||1;
-  o+='<path d="M20,170 Q70,150 78,104" fill="none" stroke="'+c+'" stroke-width="2" stroke-dasharray="3 6"/>'+drone(80,98,1.25,c);
-  var pos=[[168,104]];if(k===2)pos=[[148,84],[198,112]];if(k===3)pos=[[142,78],[194,84],[156,128]];if(k>=5)pos=[[130,72],[168,68],[208,82],[138,112],[178,116]];
-  for(i=0;i<n;i++){var sa=-Math.PI*0.5+(i-(n-1)/2)*0.34;o+='<circle cx="'+(80+Math.cos(sa)*46).toFixed(1)+'" cy="'+(104+Math.sin(sa)*46).toFixed(1)+'" r="3.2" fill="#ffd84a"/>';}
-  for(i=0;i<pos.length;i++){o+=target(pos[i][0],pos[i][1],k>=3?12:15,'#ff8080');}
- }else if(card.type==='guard'){
-  o+=badgeStar(125,116,1.25,c);
-  o+='<g opacity=".55">'+drone(48,84,0.7,TYPE.spy.c)+'</g><line x1="30" y1="66" x2="66" y2="102" stroke="#ff6b6b" stroke-width="5" stroke-linecap="round"/><line x1="66" y1="66" x2="30" y2="102" stroke="#ff6b6b" stroke-width="5" stroke-linecap="round"/>';
-  if(card.ask){o+=dome(150,166,20,TYPE.defence.c)+plus(150,140,8,TYPE.repair.c);}
- }else{
-  o+=partIcon(PARTCODE[card.part],92,120,1.15,c)+chevrons(184,112,'#ffd84a');
- }
- return o;
-}
-
-/* ---------- a whole card as SVG ---------- */
+/* ---------- a whole card as SVG: a thick rim in the colour of its kind, one big symbol, one big number ---------- */
 function gems(r,x,y){var o='';for(var i=0;i<r.n;i++){o+='<path d="M'+(x+i*17)+','+(y-8)+' l7,8 l-7,8 l-7,-8 Z" fill="'+r.c+'" stroke="#0b1020" stroke-width="1"/>';}return o;}
-function nameSize(s){var n=s.length;return n<=13?18:(n<=16?16:(n<=19?14:(n<=22?12.5:11.5)));}
-function frame(id,edge,body,epic){
- var o='<defs><linearGradient id="g'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+body+'"/><stop offset="1" stop-color="#0c1124"/></linearGradient><clipPath id="c'+id+'"><rect x="12" y="52" width="226" height="128" rx="8"/></clipPath></defs>';
- o+='<rect x="3" y="3" width="244" height="344" rx="16" fill="'+edge+'"/>';
- if(epic){o+='<rect x="6.5" y="6.5" width="237" height="337" rx="13" fill="none" stroke="#fff6c9" stroke-width="1.6"/>';}
- o+='<rect x="9" y="9" width="232" height="332" rx="11" fill="url(#g'+id+')"/>';
+function nameSize(s){var n=s.length;return n<=12?21:(n<=15?18.5:(n<=18?16:(n<=21?14:12.5)));}
+function frame(id,edge,body){
+ var o='<defs><clipPath id="c'+id+'"><rect x="14" y="56" width="222" height="140" rx="6"/></clipPath></defs>';
+ o+='<rect x="2" y="2" width="246" height="346" rx="18" fill="#0b1020"/>';
+ o+='<rect x="4" y="4" width="242" height="342" rx="16" fill="'+edge+'"/>';
+ o+='<rect x="15" y="15" width="220" height="320" rx="8" fill="'+body+'"/>';
  return o;
 }
 function cardSVG(card,uid){
  var t=TYPE[card.type],r=RAR[card.rarity],id=uid||card.id.replace(/[^A-Za-z0-9]/g,'');
- var edge=r?r.c:t.c,o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(card.name+'. '+card.text)+'">';
- o+=frame(id,edge,t.d,card.rarity==='epic');
- o+='<rect x="12" y="13" width="226" height="33" rx="8" fill="'+t.c+'"/>';
- o+='<text x="125" y="'+(29.5+nameSize(card.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(card.name)+'" font-weight="800" fill="#fff" class="nm">'+esc(card.name)+'</text>';
- o+='<rect x="12" y="52" width="226" height="128" rx="8" fill="#0a0f22"/><g clip-path="url(#c'+id+')">'+art(card)+'</g><rect x="12" y="52" width="226" height="128" rx="8" fill="none" stroke="'+t.c+'" stroke-width="2"/>';
- var bl=card.badge.length,bf=bl<=2?30:(bl===3?25:(bl===4?20:16));
- o+='<circle cx="200" cy="181" r="31" fill="#fff" stroke="'+t.c+'" stroke-width="5"/><text x="200" y="'+(181+bf*0.35)+'" text-anchor="middle" font-size="'+bf+'" font-weight="900" fill="#10162c" class="bd">'+esc(card.badge)+'</text>';
- o+='<text x="16" y="202" font-size="13" font-weight="800" fill="'+t.c+'" letter-spacing="1.5">'+t.name+'</text>';
- var lines=wrap(card.text,26),fs=lines.length>4?13.5:15.5,lh=lines.length>4?17:19.5,y0=234+(4-Math.min(lines.length,4))*lh/2-(lines.length>4?8:0);
- for(var i=0;i<lines.length;i++){o+='<text x="125" y="'+(y0+i*lh).toFixed(1)+'" text-anchor="middle" font-size="'+fs+'" font-weight="600" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
- o+='<text x="125" y="313" text-anchor="middle" font-size="10.5" fill="#aeb8d4" class="nd">'+esc(card.ask?'Needs a new rule first':(card.needs||t.needs))+'</text>';
- o+='<line x1="16" y1="320" x2="234" y2="320" stroke="#33406a" stroke-width="1"/>';
- if(r){o+=gems(r,24,331)+'<text x="'+(24+r.n*17)+'" y="335" font-size="11.5" font-weight="800" fill="'+r.c+'" letter-spacing="1">'+r.name+'</text>';}
- else{o+='<text x="18" y="335" font-size="11.5" font-weight="800" fill="'+t.c+'" letter-spacing="1">'+esc(card.part.toUpperCase())+'</text>';}
- o+='<text x="232" y="335" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(card.id)+'</text>';
+ var edge=r?r.c:'#dbe3f0',o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(card.name+'. '+t.name.toLowerCase()+(card.rarity?', '+card.rarity:'')+'. '+card.text)+'">';
+ o+=frame(id,edge,'#141b33');
+ o+='<rect x="15" y="15" width="220" height="38" rx="8" fill="'+edge+'"/><rect x="15" y="40" width="220" height="13" fill="'+edge+'"/>';
+ o+='<text x="125" y="'+(34+nameSize(card.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(card.name)+'" font-weight="900" fill="#10162c" class="nm">'+esc(card.name)+'</text>';
+ o+='<rect x="15" y="53" width="220" height="146" fill="'+t.d+'"/><circle cx="108" cy="126" r="66" fill="'+t.c+'" opacity=".22"/>';
+ o+=symbol(card.type,card.type==='guard'?112:106,128,card.type==='upgrade'?0.9:1.0);
+ var bl=card.badge.length,bf=bl<=2?32:(bl===3?27:(bl===4?21:17));
+ o+='<circle cx="197" cy="186" r="34" fill="#fff" stroke="#10162c" stroke-width="5"/><text x="197" y="'+(186+bf*0.35)+'" text-anchor="middle" font-size="'+bf+'" font-weight="900" fill="#10162c" class="bd">'+esc(card.badge)+'</text>';
+ o+='<text x="24" y="218" font-size="14" font-weight="900" fill="'+t.c+'" letter-spacing="1.5" class="ty">'+t.name+'</text>';
+ var lines=wrap(card.text,25),n=lines.length,fs=n>4?14:16.5,lh=n>4?17.5:20.5,y0=246+(4-Math.min(n,4))*lh/2-(n>4?6:0);
+ for(var i=0;i<n;i++){o+='<text x="125" y="'+(y0+i*lh).toFixed(1)+'" text-anchor="middle" font-size="'+fs+'" font-weight="700" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
+ if(r){o+=gems(r,28,326)+'<text x="'+(28+r.n*17)+'" y="330" font-size="12" font-weight="900" fill="'+r.c+'" letter-spacing="1">'+r.name+'</text>';}
+ else{o+='<text x="24" y="330" font-size="12" font-weight="900" fill="'+t.c+'" letter-spacing="1">'+esc(card.part.toUpperCase())+'</text>';}
+ o+='<text x="226" y="330" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(card.id)+'</text>';
  return o+'</svg>';
 }
 function partSVG(p,uid){
  var k=KIND[p.kind],id=uid||p.id.replace(/[^A-Za-z0-9]/g,''),o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(p.name+', '+k.name+' '+p.part+'. HP '+p.hp+', AP '+p.ap)+'">';
- o+=frame(id,k.colour,'#1a2240',p.kind==='lucky');
- o+='<rect x="12" y="13" width="226" height="33" rx="8" fill="#eef1f8"/>';
- o+='<text x="125" y="'+(29.5+nameSize(p.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(p.name)+'" font-weight="800" fill="#10162c" class="nm">'+esc(p.name)+'</text>';
- o+='<rect x="12" y="52" width="226" height="104" rx="8" fill="#0a0f22"/><g clip-path="url(#c'+id+')">'+stars(p.id,12,52,226,104,18)+partIcon(PARTCODE[p.part],125,104,1.25,k.colour)+'</g><rect x="12" y="52" width="226" height="104" rx="8" fill="none" stroke="'+k.colour+'" stroke-width="2"/>';
- o+='<rect x="12" y="162" width="226" height="22" rx="6" fill="'+k.colour+'"/><text x="125" y="178" text-anchor="middle" font-size="13" font-weight="900" fill="#10162c" letter-spacing="2">'+esc(k.name.toUpperCase())+'</text>';
- o+='<rect x="12" y="190" width="110" height="58" rx="8" fill="#fff"/><rect x="128" y="190" width="110" height="58" rx="8" fill="#fff"/>';
- o+='<path d="M30,212 c-7,-9 -19,1 -8,11 l8,8 l8,-8 c11,-10 -1,-20 -8,-11 Z" fill="#e5484d"/><text x="52" y="213" font-size="12" font-weight="800" fill="#5b6482">HP</text><text x="112" y="238" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="hp">'+p.hp+'</text>';
- o+='<path d="M148,203 l-9,16 l7,0 l-3,13 l11,-17 l-7,0 Z" fill="#f59e0b"/><text x="168" y="213" font-size="12" font-weight="800" fill="#5b6482">AP</text><text x="228" y="238" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="ap">'+p.ap+'</text>';
- var lines=wrap(p.text,28);
- for(var i=0;i<lines.length;i++){o+='<text x="125" y="'+(272+(3-lines.length)*8+i*18)+'" text-anchor="middle" font-size="14" font-weight="600" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
- o+='<line x1="16" y1="320" x2="234" y2="320" stroke="#33406a" stroke-width="1"/><text x="18" y="335" font-size="11.5" font-weight="800" fill="#c9d2ea" letter-spacing="1">'+esc(p.part.toUpperCase())+'</text><text x="232" y="335" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(p.id)+'</text>';
+ o+=frame(id,k.colour,'#141b33');
+ o+='<rect x="15" y="15" width="220" height="38" rx="8" fill="#eef1f8"/><rect x="15" y="40" width="220" height="13" fill="#eef1f8"/>';
+ o+='<text x="125" y="'+(34+nameSize(p.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(p.name)+'" font-weight="900" fill="#10162c" class="nm">'+esc(p.name)+'</text>';
+ o+='<rect x="15" y="53" width="220" height="104" fill="#0a0f22"/><g clip-path="url(#c'+id+')">'+stars(p.id,15,53,220,104,16)+partIcon(PARTCODE[p.part],125,105,1.25,k.colour)+'</g>';
+ o+='<rect x="15" y="157" width="220" height="24" fill="'+k.colour+'"/><text x="125" y="174" text-anchor="middle" font-size="13.5" font-weight="900" fill="#10162c" letter-spacing="2">'+esc(k.name.toUpperCase())+'</text>';
+ o+='<rect x="22" y="188" width="100" height="58" rx="8" fill="#fff"/><rect x="128" y="188" width="100" height="58" rx="8" fill="#fff"/>';
+ o+='<path d="M38,210 c-7,-9 -19,1 -8,11 l8,8 l8,-8 c11,-10 -1,-20 -8,-11 Z" fill="#e5484d"/><text x="58" y="211" font-size="12" font-weight="800" fill="#5b6482">HP</text><text x="114" y="236" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="hp">'+p.hp+'</text>';
+ o+='<path d="M146,201 l-9,16 l7,0 l-3,13 l11,-17 l-7,0 Z" fill="#f59e0b"/><text x="164" y="211" font-size="12" font-weight="800" fill="#5b6482">AP</text><text x="220" y="236" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="ap">'+p.ap+'</text>';
+ var lines=wrap(p.text,27);
+ for(var i=0;i<lines.length;i++){o+='<text x="125" y="'+(270+(3-lines.length)*8+i*18)+'" text-anchor="middle" font-size="14" font-weight="600" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
+ o+='<text x="24" y="330" font-size="11.5" font-weight="800" fill="#c9d2ea" letter-spacing="1">'+esc(p.part.toUpperCase())+'</text><text x="226" y="330" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(p.id)+'</text>';
  return o+'</svg>';
 }
-
 /* DRAW-END */
 
 /* ---------- picks, kept on this device only ---------- */
@@ -451,7 +397,7 @@ var el=function(id){return document.getElementById(id);};
   var host=e.kind==='part'?'parts':(e.idea?'ideas':(e.d.type==='upgrade'?'ups':'play'));
   el(host).appendChild(tile(i));
  });
- var chips=[['all','All'],['attack','Attack'],['defence','Defence'],['repair','Repair'],['spy','Spy'],['guard','Guard'],['common','Common'],['rare','Rare'],['epic','Epic']],cur='all';
+ var chips=[['all','All'],['attack','Attack'],['defence','Defence'],['repair','Repair'],['spy','Spy'],['guard','Police'],['common','Common'],['rare','Rare'],['epic','Gold']],cur='all';
  chips.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='chip'+(c[0]==='all'?' on':'');b.textContent=c[1]+(c[0]==='all'?'':' ('+DATA.cards.filter(function(x){return x.type===c[0]||x.rarity===c[0];}).length+')');b.setAttribute('data-f',c[0]);
   b.addEventListener('click',function(){cur=c[0];var bs=el('chips').children;for(var i=0;i<bs.length;i++){bs[i].className='chip'+(bs[i].getAttribute('data-f')===cur?' on':'');}
    var ts=el('play').children;for(var j=0;j<ts.length;j++){var d=ALL[+ts[j].getAttribute('data-i')].d;ts[j].style.display=(cur==='all'||d.type===cur||d.rarity===cur)?'':'none';}});

@@ -27,14 +27,17 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
       document.querySelectorAll('.tile svg').forEach(svg => {
         const id = svg.parentNode.getAttribute('data-id');
         svg.querySelectorAll('text').forEach(t => {
+          if (t.parentNode !== svg) return;   // a word inside a drawing (the STOP sign) is measured in the drawing's own space
           const b = t.getBBox();
-          if (b.x < 11 || b.x + b.width > 239 || b.y < 9 || b.y + b.height > 343) out.push(id + ' "' + t.textContent + '" x ' + b.x.toFixed(0) + ' to ' + (b.x + b.width).toFixed(0));
+          if (b.x < 16 || b.x + b.width > 234 || b.y < 15 || b.y + b.height > 336) out.push(id + ' "' + t.textContent + '" x ' + b.x.toFixed(0) + ' to ' + (b.x + b.width).toFixed(0));
         });
         // the badge text must fit inside its circle (radius 31, less the ring)
         const bd = svg.querySelector('.bd');
-        if (bd) { const b = bd.getBBox(); if (b.width > 54) out.push(id + ' badge "' + bd.textContent + '" is ' + b.width.toFixed(0) + ' wide'); }
+        if (bd) { const b = bd.getBBox(); if (b.width > 60) out.push(id + ' badge "' + bd.textContent + '" is ' + b.width.toFixed(0) + ' wide'); }
         // effect text must stay above the "needs" line and below the type label
-        svg.querySelectorAll('.tx').forEach(t => { const b = t.getBBox(); if (svg.querySelector('.nd') && (b.y + b.height > 303 || b.y < 205)) out.push(id + ' text line at y ' + b.y.toFixed(0)); });
+        svg.querySelectorAll('.tx').forEach(t => { const b = t.getBBox(); if (svg.querySelector('.ty') && (b.y + b.height > 314 || b.y < 222)) out.push(id + ' text line at y ' + b.y.toFixed(0)); });
+        // the symbol must not be covered by the number badge: the badge sits to the right of it
+        const ty = svg.querySelector('.ty'); if (ty) { const b = ty.getBBox(); if (b.x + b.width > 160) out.push(id + ' type word runs under the badge'); }
         // on a part card, the description must stay between the number boxes and the footer
         if (svg.querySelector('.hp')) svg.querySelectorAll('.tx').forEach(t => { const b = t.getBBox(); if (b.y < 250 || b.y + b.height > 318) out.push(id + ' part text at y ' + b.y.toFixed(0)); });
       });

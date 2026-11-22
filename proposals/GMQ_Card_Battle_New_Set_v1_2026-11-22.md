@@ -47,17 +47,22 @@ Your picks stay on your own device. Nothing is sent anywhere.
 
 ---
 
-## 3. The look
+## 3. The look (redrawn on 22 November, after you saw the first one)
 
-- **The colour of the card is what it does.** Red attack, blue defence, green repair, violet Spy, teal Guard, orange upgrade.
-- **The frame and the gems are the kind.** One bronze gem is common. Two silver gems are rare. Three gold gems, with a gold frame, are epic.
-- **One big number** in a white circle on every card.
-- **One line at the bottom says which part the card leans on:** "Needs your Weapons System". That is your board's rule for a lost part.
-- **Every picture is drawn by code.** Nothing is copied from the old cards. The idea of a title bar, a picture and a few words below is yours, from 2023.
-- **The Spy is a small probe drone.** The old Spy picture was a character from a comic strip.
-- **The Policeman is now the "Station Guard".** Change the name back if you prefer. It has one job, as your rules sheet says.
+You said: "You could tell right away if something is a shield or attack or the policeman or a spy because of the symbol... And the color of the card should be around the rim."
 
----
+- **One big symbol says what the card does,** as on your 2023 cards:
+  - a laser gun: attack
+  - a shield: block
+  - a heart: repair (parts, and the Main Shield, as in 2023)
+  - a spy in a hat and dark glasses
+  - a policeman holding a STOP sign
+  - three arrows up: upgrade
+- **A thick rim says the kind:** green for common, purple for rare, gold for gold. Those are your 2023 colours.
+- **One big number** in a white circle.
+- **Every symbol is a new drawing.** The five ideas are yours; nothing is copied. Your 2023 Spy was a character from a comic strip, so the new one is our own.
+- **The first drawings are gone.** Each card had its own small picture (a comet, a rocket, a net). They were pretty, and you could not tell the cards apart.
+- **The words on the card say "gold",** as you do. The files still say "epic" inside.
 
 ## 4. The ship parts
 

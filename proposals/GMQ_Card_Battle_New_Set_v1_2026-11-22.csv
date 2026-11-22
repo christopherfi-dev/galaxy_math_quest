@@ -64,11 +64,11 @@ battle card,S05,Double Agent,spy,rare,,,Spy! 4 damage to each of two enemy parts
 battle card,S06,Triple Tap,spy,rare,,,Spy! 3 damage to each of three enemy parts. You choose them.,"three parts, each HP - 3",Rocket Barrage (4 to three parts),section 6: Spy,
 battle card,S07,Five-Part Swarm,spy,epic,,,Spy! 4 damage to every enemy part.,every part HP - 4,"Pulsar Pulse (5 to all parts), made smaller",section 6: Spy,
 battle card,G01,Station Guard,guard,common,,,Stops a Spy. The Spy card does nothing.,none,"SECURITY (your Policeman, under a new name)",section 6: Policeman,
-upgrade,U-EC,Booster Upgrade,Engine Core,Level 2,4,3,"Level 2. Your Engine Core gains HP +4 and AP +3, for good.","HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
-upgrade,U-NS,Inertial Dampener,Navigation,Level 2,4,3,"Level 2. Your Navigation gains HP +4 and AP +3, for good.","HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
-upgrade,U-SG,Magnetic Field Amplifier,Shield Generator,Level 2,4,3,"Level 2. Your Shield Generator gains HP +4 and AP +3, for good.","HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
-upgrade,U-WS,Laser Sight Enhancer,Weapons System,Level 2,4,3,"Level 2. Your Weapons System gains HP +4 and AP +3, for good.","HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
-upgrade,U-PM,Battery Optimizer,Power Module,Level 2,4,3,"Level 2. Your Power Module gains HP +4 and AP +3, for good.","HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
+upgrade,U-EC,Booster Upgrade,Engine Core,Level 2,4,3,Level 2. Your Engine Core gets HP +4 and AP +3.,"HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
+upgrade,U-NS,Inertial Dampener,Navigation,Level 2,4,3,Level 2. Your Navigation gets HP +4 and AP +3.,"HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
+upgrade,U-SG,Magnetic Field Amplifier,Shield Generator,Level 2,4,3,Level 2. Your Shield Generator gets HP +4 and AP +3.,"HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
+upgrade,U-WS,Laser Sight Enhancer,Weapons System,Level 2,4,3,Level 2. Your Weapons System gets HP +4 and AP +3.,"HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
+upgrade,U-PM,Battery Optimizer,Power Module,Level 2,4,3,Level 2. Your Power Module gets HP +4 and AP +3.,"HP + 4, AP + 3",your Level 2 card,section 9: upgrades,
 "idea, not in the set",X01,Fraction Field,defence,rare,,,Block half of the attack on you this round.,half of their attack,"Division Defender, Fraction Frigate",no rule yet,"What is half of 55? The card needs a rule for odd numbers: the bigger half, or the smaller."
 "idea, not in the set",X02,Patternox Pulse,attack,rare,,,"Add 2 this round, +4 next round and +6 the round after.",a pattern: count on in twos,"Pattern Power, Infinity Invader",no rule yet,"A rule for cards that last more than one round, and a way to keep track of them."
 "idea, not in the set",X03,Signal Jammer,guard,epic,,,The other player's card does nothing this round.,none,"Energy Shield, EMP Pulse, Time Dilation",no rule yet,"A rule that one card may stop another. It would also stop a Spy, so it could replace the Policeman."
