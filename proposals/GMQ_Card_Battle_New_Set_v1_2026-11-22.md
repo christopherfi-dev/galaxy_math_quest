@@ -16,7 +16,7 @@ So this is a new set, not a sorting of the old one. **Every card is a [Proposal]
 | **Battle cards** | 45 |
 | **Ship parts** (5 parts, 4 kinds each) | 20 |
 | **Level 2 upgrades** | 5 |
-| Ideas that need a rule from you first (not in the set) | 6 |
+| Ideas that need a rule from you first (not in the set) | 7 |
 
 **How to use the page**
 1. Tap a card. It opens large.
@@ -33,12 +33,12 @@ Your picks stay on your own device. Nothing is sent anywhere.
 
 | | Common | Rare | Epic |
 |---|---|---|---|
-| **Attack:** add to your attack | +5 to +10 | +15, +20, or two things | double it; round it up to the next hundred |
-| **Defence:** block an attack | 8 to 15 | 20, 25, or two things | the whole attack |
-| **Repair** one part | 6 to 12 | share 20; 5 on every part; round up | bring a part back; every part to full |
-| **Repair** the Main Shield | +10 to +15 | +25 | +50 |
-| **Spy:** damage past the shield | 4 to 6 in all | 8 to 12 in all | 25 in all |
-| **Guard:** stop a Spy | stop it | stop it, and +10 shield | |
+| **Attack:** add to your attack | 5 to 10 | 15, 20, 5 a part, or two things | double it; round it up to the next hundred |
+| **Defence:** block an attack | 8 to 15 | 20, 25, 4 a card, or two things | the whole attack |
+| **Repair** parts | 6 to 12 on one part | share 20; 5 on every part; round up; move 10 | bring a part back; every part to full |
+| **Repair** the Main Shield | 10 to 15 | 25 | 50, even on a broken shield |
+| **Spy:** damage past the shield | 3 or 4 in all | 6 to 9 in all | 20 in all |
+| **Guard:** stop a Spy | stop it | | |
 
 - **No two cards do the same thing.** Each plain card has its own number.
 - **Every rare beats every common** of its type. No card is weaker than a card below it.
@@ -55,7 +55,7 @@ Your picks stay on your own device. Nothing is sent anywhere.
 - **One line at the bottom says which part the card leans on:** "Needs your Weapons System". That is your board's rule for a lost part.
 - **Every picture is drawn by code.** Nothing is copied from the old cards. The idea of a title bar, a picture and a few words below is yours, from 2023.
 - **The Spy is a small probe drone.** The old Spy picture was a character from a comic strip.
-- **The Policeman is now the "Station Guard".** Change the name back if you prefer.
+- **The Policeman is now the "Station Guard".** Change the name back if you prefer. It has one job, as your rules sheet says.
 
 ---
 
@@ -92,20 +92,21 @@ Your picks stay on your own device. Nothing is sent anywhere.
 
 ## 5. Where the maths is
 
-A battle card that only says "+10" is still a sum: the child adds it to the ship's AP. Twelve cards ask for more.
+A battle card that only says "+10" is still a sum: the child adds it to the ship's AP. Thirteen cards ask for more.
 
 | Card | What the child does |
 |---|---|
 | **All Hands Fire** | counts working parts, then the 5 times table |
 | **Doubling Drive** | doubles the ship's AP |
-| **Century Cannon** | rounds the ship's AP up to the next hundred |
-| **Nano Shield** (yours) | 3 times the cards in hand |
+| **Hundred Cannon** | rounds the ship's AP up to the next hundred |
+| **Card Wall** | 4 times the cards left in hand |
+| **Nano Shield** (yours) | 3 times the cards left in hand |
 | **Rounding Rover** (yours) | rounds each damaged part up to the next ten |
 | **Meteor Mend** | shares 20 between parts, any way |
 | **Galactic Drift** | takes from one part, adds to another |
 | **Fix-It Fleet** | adds 5 to each part |
 | **Odd Rocket, Even Beam** | an odd and an even number, named as such |
-| **Hit and Hide, Patch and Parry** | two sums on one card |
+| **Hit and Hide, Patch and Block** | two sums on one card |
 
 The numbers are small on purpose. The biggest attack a child ever works out is 160 (a full Lucky Draw ship with Doubling Drive).
 
@@ -120,10 +121,11 @@ I did not wait for your answers to the review. I used my pick each time and mark
 | 1 | **Ship numbers follow the chat table,** with one rule for the kinds. | The words fit, and the rules sheet's 100 and 55 hold. | I redraw the 20 parts with your numbers. |
 | 2 | **Four kinds of each part,** as you printed in 2023. | You wrote "Standard, Lucky, etc." | Six kinds are possible: your table has names for them. |
 | 3 | **The kinds are called Guardian and Striker.** | One word that works on every part. | Any two words. |
-| 4 | **A repair never lifts a part above its starting HP.** | Otherwise repairs stack without end. | One line changes. It will be a switch in the practice battle. |
-| 5 | **The Main Shield never passes 100, and can be rebuilt after it breaks.** | The old deck had 11 cards that add to it. | A switch in the practice battle. |
+| 4 | **A repair is for a working part, and never lifts it above its starting HP.** Only Stellar Revival brings a lost part back. | Otherwise repairs stack without end. | One line changes. It will be a switch in the practice battle. |
+| 5 | **The Main Shield never passes 100. Once broken, only the epic Shield Reborn brings it back.** | See 7.2. | A switch in the practice battle. |
+| 5b | **A block comes off the attack first,** before it reaches the shield or the parts. | It is the plain reading of "block". | A switch in the practice battle. |
 | 6 | **Adding to the Main Shield is a repair.** So it needs the Power Module. | The 2023 cards used the heart picture for it. | It becomes a defence card. |
-| 7 | **The Spy and the Guard both stay.** | See below. | Seven Spy cards and two Guards leave the set. |
+| 7 | **The Spy and the Guard both stay.** | See below. | Seven Spy cards and the Guard leave the set. |
 | 8 | **Upgrades are not played in a battle.** | In 2023 they were earned on quests. | They become battle cards. |
 
 ---
@@ -134,21 +136,28 @@ I did not wait for your answers to the review. I used my pick each time and mark
 - **Your board:** a ship with Weapons at 0 cannot attack.
 - **Your split rule:** the defender chooses where an attack lands. So a defender never gives up Weapons.
 - **So only a Spy can reach Weapons.** That makes Spy numbers the most important numbers in the set.
-- **What I did:** no single Spy card destroys a full Standard Arsenal (10 HP). The biggest hit on one part is 8.
-- **The Striker weapon is fragile on purpose.** The Pulsar Phaser has 5 HP (your number, in all your sources). Four of the seven Spy cards destroy it in one go. That is the price of 25 AP. Say so if it is too harsh.
-- **Stellar Revival** (epic) brings a lost part back with 10 HP. Your rules sheet names such a card.
+- **What I did:** Spy numbers are small. No single Spy card destroys a full Standard Arsenal (10 HP), and no two common ones together. The biggest hit on one part is 6.
+- **It is still the fastest way to win.** Three Spy cards on Weapons silence a Standard ship. Decks have no limit in your rules, so a deck of Spy cards is possible. Step C will show how often that wins. A limit on Spy cards in a deck would be your rule to make.
+- **The Striker weapon is fragile on purpose.** The Pulsar Phaser has 5 HP (your number, in all your sources). One rare Spy card (Databa Hacker, 6) destroys it. That is the price of 25 AP. Say so if it is too harsh.
+- **Stellar Revival** (epic) brings a lost part back with 5 HP. Your rules sheet names such a card.
 
-### 7.2 How the Guard is played
+### 7.2 One point of shield stops a whole attack
+- **Your rule:** nothing carries over. If an attack is bigger than what is left of the shield, the shield breaks and soaks up all of it.
+- **So a shield with 1 HP left stops a whole attack.** A card that adds 10 to the shield is worth either nothing, or one whole attack.
+- **What I did:** a plain shield card only works while the shield is still up. Only the epic Shield Reborn rebuilds a broken one.
+- **Without that limit,** a common "+10 shield" on a broken shield would block a whole attack every time. That is as strong as the epic Vanishing Act.
+
+### 7.3 How the Guard is played
 The card says "Stops a Spy." **When** it may be played is your rule, not mine. The practice battle will have a switch:
 - **Swapped in:** when a Spy is turned over, the other player may take their card back and put down a Guard.
 - **Blind:** the Guard is put down as a guess, with the other cards.
 
-### 7.3 One name
-**"Pulsar Phaser"** uses a word from a famous television series. It is your name from 2023, so I kept it. "Pulsar Lance" would be free of it. No new name in the set uses such a word. A check tests that.
+### 7.4 Two names
+**"Pulsar Phaser"** and **"Inertial Dampener"** use words from a famous television series. They are your names from 2023, so I kept them. "Pulsar Lance" and "Steady Drive" would be free of it. No new name in the set uses such a word. A check tests that.
 
 ---
 
-## 8. The six ideas that are not in the set
+## 8. The seven ideas that are not in the set
 
 Each needs a rule your rules sheet does not have. They are at the bottom of the page.
 
@@ -160,6 +169,7 @@ Each needs a rule your rules sheet does not have. They are at the bottom of the 
 | **Power Cut:** a part counts as lost for one round | A rule for a part that is switched off. |
 | **Card Grab:** +10, and they lose a card | Your ruling on "lose 1 card in hand". |
 | **Mirror Moon:** half the attack turns round | A rule for an attack that turns round. |
+| **Guard Captain:** stops a Spy, and +10 shield | Your rules sheet says a Policeman has one job. May one do a second thing, so it is never a wasted card? |
 
 ---
 
@@ -167,9 +177,11 @@ Each needs a rule your rules sheet does not have. They are at the bottom of the 
 
 - **The numbers are untested in play.** Step C plays thousands of battles between two computer players. If Spy cards or Doubling Drive win too often, the numbers move.
 - **The mix follows your 2023 target.** If children should see epics more often, or less, the counts change.
-- **"Fits the rules sheet" is my reading.** Century Cannon and Doubling Drive count as "a bonus from the card it played". If a bonus must be a plain number, they move to the ideas.
+- **"Fits the rules sheet" is my reading.** Hundred Cannon and Doubling Drive count as "a bonus from the card it played". If a bonus must be a plain number, they move to the ideas.
 - **Names are taste.** I aimed for short, original and readable by a child learning English. Rename freely.
 - **I used four place names from your world:** Voltara, Databa, Patternox, and the Station. Check that each suits its card.
+- **Seventeen commons differ only by a small number** (5, 6, 7, 8, 9, 10...). That is on purpose: each is a different sum. If it feels thin in play, some become other kinds of card.
+- **Hundred Cannon grows as a ship weakens.** With 20 AP left it still makes 100. It is a comeback card. Under your split rule a big attack costs the defender one part at most, so it is not a game-ender. If AP is ever exactly a hundred, it stays.
 
 ---
 
@@ -186,12 +198,28 @@ Then step C: the practice battle against the computer, with the cards you keep.
 
 ## 11. Checks
 
-- **Ran:** `python3 checks/battle_cards_set_check.py`. It reads the cards from the page itself. It checks the counts, the number rule, every badge against its words, every part against its kind and its description, and each card's number rule on 20,000 random ships. All pass.
-- **Ran:** `node checks/battle_cards_page_test.js`. It opens the page at iPad sideways, iPad upright and phone size. It checks that no text leaves a card, opens a card, marks it, closes the page and opens it again, and reads the copied text. All pass.
+- **Ran:** `python3 checks/battle_cards_set_check.py`. It reads the cards from the page itself. 46 checks: the counts, the number rule, every badge against its words, every part against its kind and its description, the Spy numbers against the Weapons System, and each card's number rule on 20,000 random ships. All pass.
+- **Ran:** `node checks/battle_cards_page_test.js`. It opens the page at iPad sideways, iPad upright and phone size. It checks that no text leaves a card, opens a card, marks it, closes the page and opens it again, and reads the copied text. All 42 checks pass.
+  - **One failure in about 46 runs:** once, the picks were gone after reopening the page. 40 repeats of only that step lost nothing. I think it was the test browser, not the page. If your picks ever vanish, tell me.
 - **Looked at:** every card as a picture, at all three sizes.
-- **An independent reviewer** saw only the pictures and your rules sheet. Its findings and my fixes are in section 12.
 - **Did not run:** the game's play tests. Nothing in the game was touched.
 
 ## 12. The independent review
 
-(Filled in when the review comes back.)
+A reviewer saw only the pictures and your rules sheet. It checked all 76 cards at three sizes and recounted the ship numbers.
+
+**Found, and fixed:**
+- **Shield cards on a broken shield** were as strong as an epic (7.2). Now only Shield Reborn rebuilds a shield.
+- **Spy numbers were too big for the Weapons System.** Two commons destroyed a Standard Arsenal. All seven Spy cards are smaller now.
+- **Repair cards did not say "working part".** Stellar Revival returned a part with 10 HP when one part's full HP is 5. Now it is 5.
+- **Guard Captain did two jobs.** Your rules sheet says one. It moved to the ideas.
+- **"Add +5"** had two signs. Now "Add 5".
+- **Hundred Cannon's badge gave the answer away** ("100"). Now it says "100s".
+- **Hard words for a child learning English:** Century, Parry and Dry Dock were replaced.
+- **Pictures:** the number badge covered part of seven pictures; three Spy cards looked the same; two part descriptions ("hits back") read like a different rule. All redrawn or reworded.
+- **The page** now says what "working part", "block" and "repair" mean, and which two part numbers I moved.
+
+**Found, and left for you:**
+- **Spy cards are still the fastest way to win** (7.1). That comes from your rules, not from a card.
+- **29 of the 45 cards add or take away one fixed number.** Variety comes from the other 16.
+- **The small lines at the bottom of a card** cannot be read until the card is opened large.

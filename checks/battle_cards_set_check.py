@@ -25,7 +25,7 @@ want('battle cards', len(cards), 45)
 want('ship part cards', len(parts), 20)
 want('upgrade cards', len(ups), 5)
 want('cards in all, without the ideas', len(cards) + len(parts) + len(ups), 70)
-want('by type', dict(Counter(c['type'] for c in cards)), {'attack': 12, 'defence': 9, 'repair': 15, 'spy': 7, 'guard': 2})
+want('by type', dict(Counter(c['type'] for c in cards)), {'attack': 12, 'defence': 10, 'repair': 15, 'spy': 7, 'guard': 1})
 mix = Counter(c['rarity'] for c in cards)
 want('common, rare, epic', [mix['common'], mix['rare'], mix['epic']], [22, 16, 7])
 print('     that is', [round(100.0 * mix[k] / len(cards)) for k in ('common', 'rare', 'epic')], 'in a hundred; the 2023 target was 50, 35, 15')
@@ -46,8 +46,9 @@ RULES = {  # op: where the rules sheet carries it
     'atk_round100': 'section 3: a bonus from the card', 'block': 'section 5: defence cards', 'block_all': 'section 5: defence cards',
     'repair_one': 'section 5: healing HP', 'repair_share': 'section 5: healing HP', 'repair_all': 'section 5: healing HP', 'repair_full': 'section 5: healing HP',
     'round_up10': 'section 5: healing HP', 'move_hp': 'section 5: healing HP', 'revive': 'section 5: revival', 'shield_add': 'section 5: healing HP',
-    'shield_per_card': 'section 5: healing HP', 'spy': 'section 6: Spy', 'guard': 'section 6: Policeman', 'upgrade': 'section 9: upgrades'}
+    'shield_per_card': 'section 5: healing HP', 'shield_rebuild': 'section 5: healing HP', 'block_per_card': 'section 5: defence cards', 'spy': 'section 6: Spy', 'guard': 'section 6: Policeman', 'upgrade': 'section 9: upgrades'}
 want('ops outside the rules sheet (set)', sorted({o['op'] for c in cards + ups for o in c['ops']} - set(RULES)), [])
+want('a Guard has one job (rules sheet, section 6)', [c['id'] for c in cards if c['type'] == 'guard' and c['ops'] != [{'op': 'guard'}]], [])
 want('idea cards are kept out of the set', all(c['ops'] == [{'op': 'x'}] and c.get('ask') for c in ideas), True)
 
 # ---------- 3. the number rule: every card sits in its step ----------
@@ -56,7 +57,7 @@ STEPS = {  # (op, rarity): allowed numbers
     ('atk_add', 'common'): range(5, 11), ('atk_add', 'rare'): (15, 20),
     ('block', 'common'): range(8, 16), ('block', 'rare'): (20, 25),
     ('repair_one', 'common'): range(6, 13),
-    ('shield_add', 'common'): range(10, 16), ('shield_add', 'rare'): (25,), ('shield_add', 'epic'): (50,),
+    ('shield_add', 'common'): range(10, 16), ('shield_add', 'rare'): (25,), ('shield_rebuild', 'epic'): (50,),
 }
 out = []
 for c in cards:
@@ -69,11 +70,11 @@ for c in cards:
     if key in STEPS:
         if o['n'] not in STEPS[key]: out.append('%s %s %s is outside its step' % (c['id'], o['op'], o['n']))
     elif o['op'] == 'spy':
-        t = spy_total(o); lo, hi = {'common': (4, 6), 'rare': (8, 12), 'epic': (25, 25)}[c['rarity']]
+        t = spy_total(o); lo, hi = {'common': (3, 4), 'rare': (6, 9), 'epic': (20, 20)}[c['rarity']]
         if not lo <= t <= hi: out.append('%s Spy total %d is outside its step' % (c['id'], t))
     elif o['op'] in ('atk_add', 'block', 'repair_one', 'shield_add'): out.append(c['id'] + ' has no step for its kind')
     elif o['op'] in ('atk_double', 'atk_round100', 'block_all', 'revive', 'repair_full') and c['rarity'] != 'epic': out.append(c['id'] + ' should be epic')
-    elif o['op'] in ('repair_share', 'repair_all', 'round_up10', 'move_hp', 'atk_per_part') and c['rarity'] != 'rare': out.append(c['id'] + ' should be rare')
+    elif o['op'] in ('repair_share', 'repair_all', 'round_up10', 'move_hp', 'atk_per_part', 'block_per_card') and c['rarity'] != 'rare': out.append(c['id'] + ' should be rare')
 want('cards outside the number rule', out, [])
 for op in ('atk_add', 'block', 'repair_one', 'shield_add'):
     nums = sorted(c['ops'][0]['n'] for c in cards if len(c['ops']) == 1 and c['ops'][0]['op'] == op)
@@ -97,12 +98,16 @@ for c in cards + ups:
             if word not in c['text']: out.append(c['id'] + ' Spy part count missing')
     o = c['ops'][0]
     exp = {'atk_add': lambda: '+%d' % o['n'], 'block': lambda: '−%d' % o['n'], 'repair_one': lambda: '+%d' % o['n'], 'shield_add': lambda: '+%d' % o['n'],
-           'repair_all': lambda: '+%d' % o['n'], 'atk_double': lambda: '×2', 'atk_round100': lambda: '100'}.get(o['op'])
+           'repair_all': lambda: '+%d' % o['n'], 'atk_double': lambda: '×2', 'atk_round100': lambda: '100s', 'shield_rebuild': lambda: '+%d' % o['n'], 'revive': lambda: '+%d' % o['n'], 'repair_share': lambda: '+%d' % o['n']}.get(o['op'])
     if exp and c['type'] != 'guard' and c['badge'] != exp(): out.append('%s badge %s, expected %s' % (c['id'], c['badge'], exp()))
     if c['id'] == 'A03' and o['n'] % 2 == 0: out.append('Odd Rocket is not odd')
     if c['id'] == 'A04' and o['n'] % 2 == 1: out.append('Even Beam is not even')
 want('words, badges and numbers disagree', out, [])
-want('longest card text (letters)', max(len(c['text']) for c in cards + ups + ideas) <= 72, True)
+want('no card says "Add +"', [c['id'] for c in cards + ideas if 'Add +' in c['text']], [])
+want('every repair of parts says working, lost or damaged', [c['id'] for c in cards if any(o['op'] in ('repair_one', 'repair_share', 'repair_all', 'repair_full', 'move_hp', 'round_up10', 'revive') for o in c['ops']) and not re.search(r'working|lost|damaged', c['text'])], [])
+want('every plain shield card says "still up"', [c['id'] for c in cards if any(o['op'] in ('shield_add', 'shield_per_card') for o in c['ops']) and 'still up' not in c['text']], [])
+want('a card with two effects names both parts it needs', [c['id'] for c in cards if len(c['ops']) > 1 and ' and ' not in c.get('needs', '')], [])
+want('longest card text (letters)', max(len(c['text']) for c in cards + ups + ideas) <= 90, True)
 
 # ---------- 5. the ship parts ----------
 K = {k['key']: k for k in D['kinds']}
@@ -131,7 +136,7 @@ for part, v in by.items():
         if 'nothing to your attack' in t and p['ap'] != 0: out.append(p['name'])
         if p['ap'] == 0 and 'nothing to your attack' not in t: out.append(p['name'] + ' has AP 0 and does not say so')
         if 'balanced' in t and p['hp'] != p['ap']: out.append(p['name'] + ' says balanced')
-        if ('toughest' in t or 'heavy' in t or 'built to last' in t or 'more armour' in t) and not p['hp'] > s['hp']: out.append(p['name'] + ' is not tougher than the Standard')
+        if ('toughest' in t or 'a tough core' in t or 'heavy' in t or 'built to last' in t or 'more armour' in t) and not p['hp'] > s['hp']: out.append(p['name'] + ' is not tougher than the Standard')
         if ('less armour' in t or 'thin walls' in t or 'lighter' in t or 'very little armour' in t) and not (p['hp'] < s['hp'] and p['ap'] > s['ap']): out.append(p['name'] + ' is not a Striker in numbers')
         if 'toughest' in t and p['hp'] < max(q['hp'] for q in v.values()): out.append(p['name'] + ' is not the toughest')
     if (l['hp'], l['ap']) != (g['hp'], k['ap']): out.append(l['name'] + ' is not the Guardian\'s HP with the Striker\'s AP')
@@ -164,6 +169,7 @@ def apply(c, ship, hand, enemy, incoming):
         elif op == 'atk_double': bonus += ap
         elif op == 'atk_round100': bonus += (-ap) % 100
         elif op == 'block': blocked += min(o['n'], incoming)
+        elif op == 'block_per_card': blocked += min(o['n'] * hand, incoming)
         elif op == 'block_all': blocked += incoming
         elif op == 'repair_one':
             live = [p for p in ship['parts'] if p['hp'] > 0]
@@ -189,8 +195,11 @@ def apply(c, ship, hand, enemy, incoming):
         elif op == 'revive':
             dead = [p for p in ship['parts'] if p['hp'] == 0]
             if dead: dead[0]['hp'] = min(o['n'], dead[0]['max'])
-        elif op == 'shield_add': ship['shield'] = min(100, ship['shield'] + o['n'])
-        elif op == 'shield_per_card': ship['shield'] = min(100, ship['shield'] + o['n'] * hand)
+        elif op == 'shield_add':
+            if ship['shield'] > 0: ship['shield'] = min(100, ship['shield'] + o['n'])
+        elif op == 'shield_per_card':
+            if ship['shield'] > 0: ship['shield'] = min(100, ship['shield'] + o['n'] * hand)
+        elif op == 'shield_rebuild': ship['shield'] = min(100, ship['shield'] + o['n'])
         elif op == 'spy':
             live = [p for p in enemy['parts'] if p['hp'] > 0]
             for p in random.sample(live, min(o['parts'], len(live))): p['hp'] = max(0, p['hp'] - o['n'])
@@ -207,12 +216,14 @@ N = 20000
 for i in range(N):
     for c in cards:
         me, foe = make(), make(); hand = random.randint(0, 7); incoming = random.randint(0, 110)
-        before = [(p['hp'], p['max']) for p in me['parts']]; total_before = sum(p['hp'] for p in me['parts'])
+        before = [(p['hp'], p['max']) for p in me['parts']]; total_before = sum(p['hp'] for p in me['parts']); shield_before = me['shield']
         bonus, blocked, ap = apply(c, me, hand, foe, incoming)
         if any(p['hp'] < 0 or p['hp'] > p['max'] for p in me['parts'] + foe['parts']): fails[c['id'] + ' HP out of range'] += 1
         if not 0 <= me['shield'] <= 100: fails[c['id'] + ' shield out of range'] += 1
         if bonus < 0 or blocked < 0 or blocked > incoming: fails[c['id'] + ' bad bonus or block'] += 1
         if c['type'] in ('repair',) and sum(p['hp'] for p in me['parts']) < total_before: fails[c['id'] + ' a repair lowered HP'] += 1
+        if shield_before == 0 and me['shield'] > 0 and c['id'] != 'R15': fails[c['id'] + ' rebuilt a broken shield'] += 1
+        if c['id'] != 'R13' and any(b[0] == 0 and p['hp'] > 0 for b, p in zip(before, me['parts'])): fails[c['id'] + ' brought back a lost part'] += 1
         if c['id'] == 'R11' and sum(p['hp'] for p in me['parts']) != total_before: fails['R11 moved HP changed the total'] += 1
         if c['id'] == 'R13' and any(b[0] > 0 and p['hp'] != b[0] for b, p in zip(before, me['parts'])): fails['R13 touched a working part'] += 1
         if c['id'] == 'A12' and ap > 0 and ((ap + bonus) % 100 or bonus < 0 or bonus >= 100): fails['A12 is not the next hundred'] += 1
@@ -234,6 +245,9 @@ for kind in ('standard', 'guardian', 'striker', 'lucky'):
     w = by['Weapons System'][kind]
     killers = [c['name'] for c in cards if c['type'] == 'spy' and c['ops'][0]['n'] >= w['hp']]
     print('       %-10s %-18s HP %2d: destroyed by %s' % (K[kind]['name'], w['name'], w['hp'], killers or 'no single Spy card'))
+commons = sorted((c['ops'][0]['n'] for c in cards if c['type'] == 'spy' and c['rarity'] == 'common'), reverse=True)
+want('no two common Spy cards together destroy a full-HP Standard Arsenal', commons[0] + commons[1] < by['Weapons System']['standard']['hp'], True)
+want('the lost-part card never returns a part above its full HP', all(o['n'] <= min(p['hp'] for p in parts) for c in cards for o in c['ops'] if o['op'] == 'revive'), True)
 want('no single Spy card destroys a full-HP Standard Arsenal', [c['name'] for c in cards if c['type'] == 'spy' and c['ops'][0]['n'] >= by['Weapons System']['standard']['hp']], [])
 
 # ---------- 8. the page on the site is the same file ----------

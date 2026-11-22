@@ -37,7 +37,7 @@ th{background:#151d36;color:#c9d2ea}
 #bar .count{font-size:13px;color:#c3cbe0;flex:1;min-width:0}
 .btn{font-size:15px;font-weight:700;border-radius:10px;border:1px solid #4a5a90;background:#1c2748;color:#fff;padding:10px 14px;cursor:pointer}
 .btn.primary{background:#3b82f6;border-color:#3b82f6}
-#zoom{position:fixed;inset:0;background:rgba(5,8,18,.94);z-index:10;display:none;align-items:center;justify-content:center;padding:10px}
+#zoom{position:fixed;inset:0;background:#070b18;z-index:10;display:none;align-items:center;justify-content:center;padding:10px 10px calc(14px + env(safe-area-inset-bottom))}
 #zoom.open{display:flex}
 #zoombox{display:flex;gap:16px;align-items:center;justify-content:center;width:100%;max-width:980px;max-height:100%}
 #zoomcard{flex:0 1 auto;height:min(86vh,640px);aspect-ratio:250/350;max-width:56vw}
@@ -74,15 +74,22 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 <p class="lead">A child can say it: <b>Common: one small number. Rare: about double, or two things at once. Epic: it does something no other card does.</b></p>
 <div class="scroll"><table id="ladder"></table></div>
 <p class="small">An attack card and a block card of the same size cancel each other. Every number is one a Grade 3 child can add or take away in their head, or on paper.</p>
+<h3>Words the cards use (working guesses, yours to change)</h3>
+<ul>
+<li><b>A working part</b> has HP left. A lost part is at 0.</li>
+<li><b>Block</b> comes off the attack first, before it reaches your shield or your parts.</li>
+<li><b>A repair</b> is for a working part, and never lifts it above the HP it started with. Only Stellar Revival brings a lost part back.</li>
+<li><b>The Main Shield</b> never passes 100. Once it is broken, only Shield Reborn brings it back.</li>
+</ul>
 
 <h2>2. The ship parts: five parts, four kinds</h2>
 <p class="lead">The <b>colour of the border</b> is the kind. Each kind means the same thing on every part.</p>
 <div class="scroll"><table id="kindtable"></table></div>
 <div id="parts" class="partgrid"></div>
-<p class="small">A ship of five Standard parts has <b id="stdhp"></b> HP and <b id="stdap"></b> AP. The names and the Standard numbers are yours. 13 of the 15 Standard, Guardian and Striker numbers are the ones in the table from your 2023 chats.</p>
+<p class="small">A ship of five Standard parts has <b id="stdhp"></b> HP and <b id="stdap"></b> AP. The names and the Standard numbers are yours. 13 of the 15 Standard, Guardian and Striker numbers are the ones in the table from your 2023 chats. The two moved onto the rule: Neutron Wall (33 and 2 there) and Quantum Deflector (28 and 7 there). The Lucky Draw numbers are new, except the Cosmic Navigator.</p>
 
 <h2>3. The battle cards: <span id="nplay"></span> to choose from</h2>
-<p class="lead">The <b>colour of the card</b> is what it does. The <b>gems and the frame</b> are the kind: one bronze gem for common, two silver for rare, three gold for epic.</p>
+<p class="lead">The <b>colour of the card</b> is what it does. The <b>gems and the frame</b> are the kind: one bronze gem for common, two silver for rare, three gold for epic. The <b>Guard</b> is your Policeman under a new name; change it back if you prefer.</p>
 <div class="chips" id="chips"></div>
 <div id="play" class="grid"></div>
 
@@ -128,7 +135,7 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 
 <script id="carddata" type="application/json">
 {
-"version": "new set v1, 2026-11-22",
+"version": "new set v1.1, 2026-11-22",
 "standard_ship": {"hp": 100, "ap": 55},
 "kinds": [
  {"key":"standard","name":"Standard","colour":"#9aa6b8","rule":"The middle. A fair share of HP and of AP.","hp":0,"ap":0},
@@ -138,7 +145,7 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 ],
 "parts": [
  {"id":"EC-1","part":"Engine Core","kind":"standard","name":"Standard Reactor","hp":20,"ap":5,"text":"The workhorse. Steady and sturdy."},
- {"id":"EC-2","part":"Engine Core","kind":"guardian","name":"Neutron Reactor","hp":25,"ap":0,"text":"The toughest core. It adds nothing to your attack."},
+ {"id":"EC-2","part":"Engine Core","kind":"guardian","name":"Neutron Reactor","hp":25,"ap":0,"text":"A tough core. It adds nothing to your attack."},
  {"id":"EC-3","part":"Engine Core","kind":"striker","name":"Quantum Reactor","hp":15,"ap":10,"text":"Less armour, more power."},
  {"id":"EC-4","part":"Engine Core","kind":"lucky","name":"Stellar Reactor","hp":25,"ap":10,"text":"As tough as the Neutron. As strong as the Quantum."},
  {"id":"NS-1","part":"Navigation","kind":"standard","name":"Standard Navigator","hp":15,"ap":10,"text":"A steady hand on a steady course."},
@@ -147,67 +154,63 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
  {"id":"NS-4","part":"Navigation","kind":"lucky","name":"Cosmic Navigator","hp":20,"ap":15,"text":"Tough and clever: the best of both."},
  {"id":"SG-1","part":"Shield Generator","kind":"standard","name":"Standard Shield","hp":30,"ap":5,"text":"Simple and reliable."},
  {"id":"SG-2","part":"Shield Generator","kind":"guardian","name":"Neutron Wall","hp":35,"ap":0,"text":"A heavy wall. It adds nothing to your attack."},
- {"id":"SG-3","part":"Shield Generator","kind":"striker","name":"Quantum Deflector","hp":25,"ap":10,"text":"A lighter wall that hits back."},
- {"id":"SG-4","part":"Shield Generator","kind":"lucky","name":"Nova Shield","hp":35,"ap":10,"text":"A heavy wall that hits back."},
+ {"id":"SG-3","part":"Shield Generator","kind":"striker","name":"Quantum Deflector","hp":25,"ap":10,"text":"A lighter wall with more firepower."},
+ {"id":"SG-4","part":"Shield Generator","kind":"lucky","name":"Nova Shield","hp":35,"ap":10,"text":"A heavy wall with firepower too."},
  {"id":"WS-1","part":"Weapons System","kind":"standard","name":"Standard Arsenal","hp":10,"ap":20,"text":"Reliable firepower."},
  {"id":"WS-2","part":"Weapons System","kind":"guardian","name":"Proton Launcher","hp":15,"ap":15,"text":"Balanced: as much armour as firepower."},
  {"id":"WS-3","part":"Weapons System","kind":"striker","name":"Pulsar Phaser","hp":5,"ap":25,"text":"All attack and very little armour."},
  {"id":"WS-4","part":"Weapons System","kind":"lucky","name":"Supernova Arsenal","hp":15,"ap":25,"text":"The Launcher's armour and the Phaser's fire."},
  {"id":"PM-1","part":"Power Module","kind":"standard","name":"Standard Battery","hp":25,"ap":15,"text":"Steady power for a steady captain."},
  {"id":"PM-2","part":"Power Module","kind":"guardian","name":"Proton Generator","hp":30,"ap":10,"text":"More armour, less power."},
- {"id":"PM-3","part":"Power Module","kind":"striker","name":"Quantum Dynamo","hp":20,"ap":20,"text":"Balanced: as much power as armour."},
+ {"id":"PM-3","part":"Power Module","kind":"striker","name":"Quantum Dynamo","hp":20,"ap":20,"text":"Less armour, more power."},
  {"id":"PM-4","part":"Power Module","kind":"lucky","name":"Galaxy Battery","hp":30,"ap":20,"text":"The Generator's armour and the Dynamo's power."}
 ],
 "cards": [
- {"id":"A01","pic":"spark","type":"attack","rarity":"common","name":"Spark Shot","badge":"+5","text":"Add +5 to your attack this round.","ops":[{"op":"atk_add","n":5}],"maths":"AP + 5","from":"Laser Cannon (+5)"},
- {"id":"A02","pic":"comet","type":"attack","rarity":"common","name":"Comet Jab","badge":"+6","text":"Add +6 to your attack this round.","ops":[{"op":"atk_add","n":6}],"maths":"AP + 6","from":"Plasma Blast (+6)"},
- {"id":"A03","pic":"rocket","type":"attack","rarity":"common","name":"Odd Rocket","badge":"+7","text":"Add +7 to your attack this round.","ops":[{"op":"atk_add","n":7}],"maths":"AP + 7, an odd number","from":"Odd Offense, with an odd number again"},
- {"id":"A04","pic":"beam2","type":"attack","rarity":"common","name":"Even Beam","badge":"+8","text":"Add +8 to your attack this round.","ops":[{"op":"atk_add","n":8}],"maths":"AP + 8, an even number","from":"Gamma Rays (+8)"},
- {"id":"A05","pic":"stars9","type":"attack","rarity":"common","name":"Nine-Star Burst","badge":"+9","text":"Add +9 to your attack this round.","ops":[{"op":"atk_add","n":9}],"maths":"AP + 9 (add 10, take away 1)","from":"the +9 card of 2023"},
- {"id":"A06","pic":"torpedo","type":"attack","rarity":"common","name":"Tens Torpedo","badge":"+10","text":"Add +10 to your attack this round.","ops":[{"op":"atk_add","n":10}],"maths":"AP + 10","from":"Addition Armament (+10)"},
- {"id":"A07","pic":"bolt","type":"attack","rarity":"rare","name":"Voltara Bolt","badge":"+15","text":"Add +15 to your attack this round.","ops":[{"op":"atk_add","n":15}],"maths":"AP + 15","from":"Comet Strike (+15); named for Planet Voltara"},
- {"id":"A08","pic":"torpedo2","type":"attack","rarity":"rare","name":"Twin Tens","badge":"+20","text":"Add +20 to your attack this round.","ops":[{"op":"atk_add","n":20}],"maths":"AP + 20","from":"Supernova Strike (+20)"},
- {"id":"A09","type":"attack","rarity":"rare","name":"All Hands Fire","badge":"5×","text":"Count your working parts. Add +5 for each one.","ops":[{"op":"atk_per_part","n":5}],"maths":"5 x your working parts, then AP + that","from":"new: it uses the five times table"},
- {"id":"A10","pic":"torpedo","type":"attack","rarity":"rare","name":"Hit and Hide","badge":"+10","text":"Add +10 to your attack. Block 10 of the attack on you.","ops":[{"op":"atk_add","n":10},{"op":"block","n":10}],"maths":"AP + 10, and their attack - 10","from":"EMP Wave (attack and defence on one card)"},
+ {"id":"A01","pic":"spark","type":"attack","rarity":"common","name":"Spark Shot","badge":"+5","text":"Add 5 to your attack this round.","ops":[{"op":"atk_add","n":5}],"maths":"AP + 5","from":"Laser Cannon (+5)"},
+ {"id":"A02","pic":"comet","type":"attack","rarity":"common","name":"Comet Jab","badge":"+6","text":"Add 6 to your attack this round.","ops":[{"op":"atk_add","n":6}],"maths":"AP + 6","from":"Plasma Blast (+6)"},
+ {"id":"A03","pic":"rocket","type":"attack","rarity":"common","name":"Odd Rocket","badge":"+7","text":"Add 7 to your attack this round.","ops":[{"op":"atk_add","n":7}],"maths":"AP + 7, an odd number","from":"Odd Offense, with an odd number again"},
+ {"id":"A04","pic":"beam2","type":"attack","rarity":"common","name":"Even Beam","badge":"+8","text":"Add 8 to your attack this round.","ops":[{"op":"atk_add","n":8}],"maths":"AP + 8, an even number","from":"Gamma Rays (+8)"},
+ {"id":"A05","pic":"stars9","type":"attack","rarity":"common","name":"Nine-Star Burst","badge":"+9","text":"Add 9 to your attack this round.","ops":[{"op":"atk_add","n":9}],"maths":"AP + 9 (add 10, take away 1)","from":"the +9 card of 2023"},
+ {"id":"A06","pic":"torpedo","type":"attack","rarity":"common","name":"Tens Torpedo","badge":"+10","text":"Add 10 to your attack this round.","ops":[{"op":"atk_add","n":10}],"maths":"AP + 10","from":"Addition Armament (+10)"},
+ {"id":"A07","pic":"bolt","type":"attack","rarity":"rare","name":"Voltara Bolt","badge":"+15","text":"Add 15 to your attack this round.","ops":[{"op":"atk_add","n":15}],"maths":"AP + 15","from":"Comet Strike (+15); named for Planet Voltara"},
+ {"id":"A08","pic":"torpedo2","type":"attack","rarity":"rare","name":"Twin Tens","badge":"+20","text":"Add 20 to your attack this round.","ops":[{"op":"atk_add","n":20}],"maths":"AP + 20","from":"Supernova Strike (+20)"},
+ {"id":"A09","type":"attack","rarity":"rare","name":"All Hands Fire","badge":"5×","text":"Count your working parts. Add 5 for each one.","ops":[{"op":"atk_per_part","n":5}],"maths":"5 x your working parts, then AP + that","from":"new: it uses the five times table"},
+ {"id":"A10","pic":"torpedo","type":"attack","rarity":"rare","name":"Hit and Hide","badge":"+10","text":"Add 10 to your attack. Block 10 of the attack on you.","ops":[{"op":"atk_add","n":10},{"op":"block","n":10}],"maths":"AP + 10, and their attack - 10","from":"EMP Wave (attack and defence on one card)","needs":"Needs Weapons and Shield Generator"},
  {"id":"A11","type":"attack","rarity":"epic","name":"Doubling Drive","badge":"×2","text":"Double your ship's AP for this attack.","ops":[{"op":"atk_double"}],"maths":"AP + AP","from":"Multiplication Munition"},
- {"id":"A12","type":"attack","rarity":"epic","name":"Century Cannon","badge":"100","text":"Round your ship's AP up to the next hundred for this attack.","ops":[{"op":"atk_round100"}],"maths":"round up to the next hundred","from":"new: Rounding Rover's idea, for attack"},
-
+ {"id":"A12","type":"attack","rarity":"epic","name":"Hundred Cannon","badge":"100s","text":"Round your ship's AP up to the next hundred for this attack.","ops":[{"op":"atk_round100"}],"maths":"round up to the next hundred (always up)","from":"new: Rounding Rover's idea, for attack"},
  {"id":"D01","pic":"dust","type":"defence","rarity":"common","name":"Dust Screen","badge":"−8","text":"Block 8 of the attack on you this round.","ops":[{"op":"block","n":8}],"maths":"their attack - 8","from":"Anti-Laser Coating, with a number that matters"},
  {"id":"D02","pic":"tiles","type":"defence","rarity":"common","name":"Ten-Tile Wall","badge":"−10","text":"Block 10 of the attack on you this round.","ops":[{"op":"block","n":10}],"maths":"their attack - 10","from":"Subtraction Shield (10)"},
  {"id":"D03","pic":"gems","type":"defence","rarity":"common","name":"Dozen Deflector","badge":"−12","text":"Block 12 of the attack on you this round.","ops":[{"op":"block","n":12}],"maths":"their attack - 12","from":"new"},
  {"id":"D04","pic":"bricks","type":"defence","rarity":"common","name":"Double-Seven Wall","badge":"−14","text":"Block 14 of the attack on you this round.","ops":[{"op":"block","n":14}],"maths":"their attack - 14 (7 and 7)","from":"new"},
  {"id":"D05","pic":"minus","type":"defence","rarity":"common","name":"Subtraction Shield","badge":"−15","text":"Block 15 of the attack on you this round.","ops":[{"op":"block","n":15}],"maths":"their attack - 15","from":"Subtraction Shield (your name)"},
  {"id":"D06","pic":"net","type":"defence","rarity":"rare","name":"Meteor Net","badge":"−20","text":"Block 20 of the attack on you this round.","ops":[{"op":"block","n":20}],"maths":"their attack - 20","from":"Deflection Field (30)"},
- {"id":"D07","pic":"quarter","type":"defence","rarity":"rare","name":"Quarter Guard","badge":"−25","text":"Block 25 of the attack on you this round.","ops":[{"op":"block","n":25}],"maths":"their attack - 25","from":"new"},
- {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Parry","badge":"−15","text":"Block 15 of the attack on you. Repair 5 HP on one of your parts.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card"},
+ {"id":"D07","pic":"quarter","type":"defence","rarity":"rare","name":"Quarter Wall","badge":"−25","text":"Block 25 of the attack on you this round.","ops":[{"op":"block","n":25}],"maths":"their attack - 25","from":"new"},
+ {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Block","badge":"−15","text":"Block 15 of the attack on you. Repair 5 HP on one working part.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card","needs":"Needs Shield Generator and Power Module"},
+ {"id":"D10","pic":"cards","type":"defence","rarity":"rare","name":"Card Wall","badge":"4×","text":"Count the other cards in your hand. Block 4 for each one.","ops":[{"op":"block_per_card","n":4}],"maths":"4 x the cards left in your hand, then their attack - that","from":"new: the four times table, to match Nano Shield"},
  {"id":"D09","type":"defence","rarity":"epic","name":"Vanishing Act","badge":"0","text":"No attack hits you this round. A Spy still can.","ops":[{"op":"block_all"}],"maths":"none: the attack on you is 0","from":"Cloaking Device, Wormhole, Teleport and nine more"},
-
- {"id":"R01","pic":"patch","type":"repair","rarity":"common","name":"Quick Patch","badge":"+6","text":"Repair 6 HP on one of your parts.","ops":[{"op":"repair_one","n":6}],"maths":"part HP + 6","from":"Emergency Repairs (6)"},
- {"id":"R02","pic":"tape","type":"repair","rarity":"common","name":"Hull Tape","badge":"+8","text":"Repair 8 HP on one of your parts.","ops":[{"op":"repair_one","n":8}],"maths":"part HP + 8","from":"Armor Patch (7)"},
- {"id":"R03","pic":"bot","type":"repair","rarity":"common","name":"Repair Bot","badge":"+10","text":"Repair 10 HP on one of your parts.","ops":[{"op":"repair_one","n":10}],"maths":"part HP + 10","from":"Repair Drone (10)"},
- {"id":"R04","pic":"bolts","type":"repair","rarity":"common","name":"Dozen Bolts","badge":"+12","text":"Repair 12 HP on one of your parts.","ops":[{"op":"repair_one","n":12}],"maths":"part HP + 12","from":"Proton Repair (12)"},
- {"id":"R05","type":"repair","rarity":"common","name":"Shield Spark","badge":"+10","text":"Add 10 HP to your Main Shield.","ops":[{"op":"shield_add","n":10}],"maths":"shield + 10","from":"Defense Matrix (10)"},
- {"id":"R06","type":"repair","rarity":"common","name":"Nano Shield","badge":"3×","text":"Count the cards in your hand. Add 3 shield HP for each one.","ops":[{"op":"shield_per_card","n":3}],"maths":"3 x the cards in your hand, then shield + that","from":"Nano Shield (your card, unchanged)"},
- {"id":"R07","type":"repair","rarity":"common","name":"Dome Top-Up","badge":"+15","text":"Add 15 HP to your Main Shield.","ops":[{"op":"shield_add","n":15}],"maths":"shield + 15","from":"Quantum Shield (15)"},
- {"id":"R08","type":"repair","rarity":"rare","name":"Meteor Mend","badge":"20","text":"Share 20 HP between your parts, any way you like.","ops":[{"op":"repair_share","n":20}],"maths":"split 20 into parts, then add each","from":"Meteor Mend (never printed)"},
+ {"id":"R01","pic":"patch","type":"repair","rarity":"common","name":"Quick Patch","badge":"+6","text":"Repair 6 HP on one of your working parts.","ops":[{"op":"repair_one","n":6}],"maths":"part HP + 6","from":"Emergency Repairs (6)"},
+ {"id":"R02","pic":"tape","type":"repair","rarity":"common","name":"Hull Tape","badge":"+8","text":"Repair 8 HP on one of your working parts.","ops":[{"op":"repair_one","n":8}],"maths":"part HP + 8","from":"Armor Patch (7)"},
+ {"id":"R03","pic":"bot","type":"repair","rarity":"common","name":"Repair Bot","badge":"+10","text":"Repair 10 HP on one of your working parts.","ops":[{"op":"repair_one","n":10}],"maths":"part HP + 10","from":"Repair Drone (10)"},
+ {"id":"R04","pic":"bolts","type":"repair","rarity":"common","name":"Dozen Bolts","badge":"+12","text":"Repair 12 HP on one of your working parts.","ops":[{"op":"repair_one","n":12}],"maths":"part HP + 12","from":"Proton Repair (12)"},
+ {"id":"R05","type":"repair","rarity":"common","name":"Shield Spark","badge":"+10","text":"Add 10 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":10}],"maths":"shield + 10","from":"Defense Matrix (10)"},
+ {"id":"R06","type":"repair","rarity":"common","name":"Nano Shield","badge":"3×","text":"Count the other cards in your hand. Add 3 shield HP for each, if your shield is still up.","ops":[{"op":"shield_per_card","n":3}],"maths":"3 x the cards left in your hand, then shield + that","from":"Nano Shield (your card)"},
+ {"id":"R07","type":"repair","rarity":"common","name":"Dome Top-Up","badge":"+15","text":"Add 15 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":15}],"maths":"shield + 15","from":"Quantum Shield (15)"},
+ {"id":"R08","type":"repair","rarity":"rare","name":"Meteor Mend","badge":"+20","text":"Share 20 HP between your working parts, any way you like.","ops":[{"op":"repair_share","n":20}],"maths":"split 20 into parts, then add each","from":"Meteor Mend (never printed)"},
  {"id":"R09","type":"repair","rarity":"rare","name":"Fix-It Fleet","badge":"+5","text":"Repair 5 HP on every one of your working parts.","ops":[{"op":"repair_all","n":5}],"maths":"each part HP + 5","from":"Repair Drones (5 each)"},
- {"id":"R10","type":"repair","rarity":"rare","name":"Rounding Rover","badge":"10s","text":"Round the HP of each damaged part up to the next ten.","ops":[{"op":"round_up10"}],"maths":"round each part up to the next ten","from":"Rounding Rover (your card)"},
- {"id":"R11","type":"repair","rarity":"rare","name":"Galactic Drift","badge":"10","text":"Move up to 10 HP from one of your parts to another.","ops":[{"op":"move_hp","n":10}],"maths":"one part - n, another part + n","from":"Galactic Drift (never printed)"},
- {"id":"R12","type":"repair","rarity":"rare","name":"Quarter Dome","badge":"+25","text":"Add 25 HP to your Main Shield.","ops":[{"op":"shield_add","n":25}],"maths":"shield + 25","from":"Nebula Armor (25)"},
- {"id":"R13","type":"repair","rarity":"epic","name":"Stellar Revival","badge":"10","text":"Bring back one lost part. It returns with 10 HP.","ops":[{"op":"revive","n":10}],"maths":"none: the part's HP becomes 10","from":"Stellar Revival (your name); your rules sheet, section 5"},
- {"id":"R14","type":"repair","rarity":"epic","name":"Dry Dock","badge":"full","text":"Repair every working part to full HP.","ops":[{"op":"repair_full"}],"maths":"none: each part goes back to its starting HP","from":"Replicant Drones, Nebula Nova"},
- {"id":"R15","type":"repair","rarity":"epic","name":"Shield Reborn","badge":"+50","text":"Add 50 HP to your Main Shield.","ops":[{"op":"shield_add","n":50}],"maths":"shield + 50","from":"Cosmic Barrier (40)"},
-
- {"id":"S01","type":"spy","rarity":"common","name":"Probe Drone","badge":"4","text":"Spy! 4 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":4,"parts":1}],"maths":"their part HP - 4","from":"Quantum Missile (5 to one part)"},
- {"id":"S02","type":"spy","rarity":"common","name":"Sneak Circuit","badge":"5","text":"Spy! 5 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":5,"parts":1}],"maths":"their part HP - 5","from":"Quantum Missile (5 to one part)"},
- {"id":"S03","type":"spy","rarity":"common","name":"Twin Bugs","badge":"3+3","text":"Spy! 3 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":3,"parts":2}],"maths":"two parts, each HP - 3","from":"Micro Missiles (3 to two parts)"},
- {"id":"S04","type":"spy","rarity":"rare","name":"Databa Hacker","badge":"8","text":"Spy! 8 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":8,"parts":1}],"maths":"their part HP - 8","from":"new; named for Galaxy Databa"},
- {"id":"S05","type":"spy","rarity":"rare","name":"Double Agent","badge":"5+5","text":"Spy! 5 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":5,"parts":2}],"maths":"two parts, each HP - 5","from":"Quantum Torpedo (8 to two parts), made smaller"},
- {"id":"S06","type":"spy","rarity":"rare","name":"Triple Tap","badge":"4×3","text":"Spy! 4 damage to each of three enemy parts. You choose them.","ops":[{"op":"spy","n":4,"parts":3}],"maths":"three parts, each HP - 4","from":"Rocket Barrage (4 to three parts)"},
- {"id":"S07","type":"spy","rarity":"epic","name":"Swarm of Fives","badge":"5×5","text":"Spy! 5 damage to every enemy part.","ops":[{"op":"spy","n":5,"parts":5}],"maths":"every part HP - 5","from":"Pulsar Pulse (5 to all parts)"},
-
- {"id":"G01","type":"guard","rarity":"common","name":"Station Guard","badge":"stop","text":"Stops a Spy. The Spy card does nothing.","ops":[{"op":"guard"}],"maths":"none","from":"SECURITY (the Policeman)"},
- {"id":"G02","type":"guard","rarity":"rare","name":"Guard Captain","badge":"+10","text":"Stops a Spy. Then add 10 HP to your Main Shield.","ops":[{"op":"guard"},{"op":"shield_add","n":10}],"maths":"shield + 10","from":"new: a Policeman that is never a wasted card"}
+ {"id":"R10","type":"repair","rarity":"rare","name":"Rounding Rover","badge":"10s","text":"Round each damaged part up to the next ten. Never past full HP.","ops":[{"op":"round_up10"}],"maths":"round each part up to the next ten","from":"Rounding Rover (your card)"},
+ {"id":"R11","type":"repair","rarity":"rare","name":"Galactic Drift","badge":"10","text":"Move up to 10 HP from one working part to another.","ops":[{"op":"move_hp","n":10}],"maths":"one part - n, another part + n","from":"Galactic Drift (never printed)"},
+ {"id":"R12","type":"repair","rarity":"rare","name":"Quarter Dome","badge":"+25","text":"Add 25 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":25}],"maths":"shield + 25","from":"Nebula Armor (25)"},
+ {"id":"R13","type":"repair","rarity":"epic","name":"Stellar Revival","badge":"+5","text":"Bring back one lost part. It returns with 5 HP.","ops":[{"op":"revive","n":5}],"maths":"none: the part's HP becomes 5","from":"Stellar Revival (your name); your rules sheet, section 5"},
+ {"id":"R14","type":"repair","rarity":"epic","name":"Repair Bay","badge":"full","text":"Repair every working part to full HP.","ops":[{"op":"repair_full"}],"maths":"none: each part goes back to its starting HP","from":"Replicant Drones, Nebula Nova"},
+ {"id":"R15","type":"repair","rarity":"epic","name":"Shield Reborn","badge":"+50","text":"Add 50 HP to your Main Shield. It works even on a broken shield.","ops":[{"op":"shield_rebuild","n":50}],"maths":"shield + 50","from":"Cosmic Barrier (40); the only card that rebuilds a broken shield"},
+ {"id":"S01","type":"spy","rarity":"common","name":"Probe Drone","badge":"3","text":"Spy! 3 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":3,"parts":1}],"maths":"their part HP - 3","from":"Quantum Missile (5 to one part)"},
+ {"id":"S02","type":"spy","rarity":"common","name":"Sneak Circuit","badge":"4","text":"Spy! 4 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":4,"parts":1}],"maths":"their part HP - 4","from":"Quantum Missile (5 to one part)"},
+ {"id":"S03","type":"spy","rarity":"common","name":"Twin Probes","badge":"2+2","text":"Spy! 2 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":2,"parts":2}],"maths":"two parts, each HP - 2","from":"Micro Missiles (3 to two parts)"},
+ {"id":"S04","type":"spy","rarity":"rare","name":"Databa Hacker","badge":"6","text":"Spy! 6 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":6,"parts":1}],"maths":"their part HP - 6","from":"new; named for Galaxy Databa"},
+ {"id":"S05","type":"spy","rarity":"rare","name":"Double Agent","badge":"4+4","text":"Spy! 4 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":4,"parts":2}],"maths":"two parts, each HP - 4","from":"Quantum Torpedo (8 to two parts), made smaller"},
+ {"id":"S06","type":"spy","rarity":"rare","name":"Triple Tap","badge":"3×3","text":"Spy! 3 damage to each of three enemy parts. You choose them.","ops":[{"op":"spy","n":3,"parts":3}],"maths":"three parts, each HP - 3","from":"Rocket Barrage (4 to three parts)"},
+ {"id":"S07","type":"spy","rarity":"epic","name":"Five-Part Swarm","badge":"4×5","text":"Spy! 4 damage to every enemy part.","ops":[{"op":"spy","n":4,"parts":5}],"maths":"every part HP - 4","from":"Pulsar Pulse (5 to all parts), made smaller"},
+ {"id":"G01","type":"guard","rarity":"common","name":"Station Guard","badge":"stop","text":"Stops a Spy. The Spy card does nothing.","ops":[{"op":"guard"}],"maths":"none","from":"SECURITY (your Policeman, under a new name)"}
 ],
 "upgrades": [
  {"id":"U-EC","type":"upgrade","rarity":"","part":"Engine Core","name":"Booster Upgrade","badge":"L2","text":"Level 2. Your Engine Core gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
@@ -218,11 +221,12 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 ],
 "ideas": [
  {"id":"X01","pic":"quarter","type":"defence","rarity":"rare","name":"Fraction Field","badge":"½","text":"Block half of the attack on you this round.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Division Defender, Fraction Frigate","ask":"What is half of 55? The card needs a rule for odd numbers: the bigger half, or the smaller."},
- {"id":"X02","type":"attack","rarity":"rare","name":"Patternox Pulse","badge":"2,4,6","text":"Add +2 this round, +4 next round and +6 the round after.","ops":[{"op":"x"}],"maths":"a pattern: count on in twos","from":"Pattern Power, Infinity Invader","ask":"A rule for cards that last more than one round, and a way to keep track of them."},
+ {"id":"X02","type":"attack","rarity":"rare","name":"Patternox Pulse","badge":"2,4,6","text":"Add 2 this round, +4 next round and +6 the round after.","ops":[{"op":"x"}],"maths":"a pattern: count on in twos","from":"Pattern Power, Infinity Invader","ask":"A rule for cards that last more than one round, and a way to keep track of them."},
  {"id":"X03","type":"guard","rarity":"epic","name":"Signal Jammer","badge":"stop","text":"The other player's card does nothing this round.","ops":[{"op":"x"}],"maths":"none","from":"Energy Shield, EMP Pulse, Time Dilation","ask":"A rule that one card may stop another. It would also stop a Spy, so it could replace the Policeman."},
  {"id":"X04","type":"spy","rarity":"epic","name":"Power Cut","badge":"off","text":"Choose one enemy part. For one round it counts as lost.","ops":[{"op":"x"}],"maths":"their AP without that part","from":"Sabotage, Gravity Well, Stasis Field","ask":"A rule for a part that is switched off but not at 0 HP."},
- {"id":"X05","type":"attack","rarity":"epic","name":"Card Grab","badge":"−1","text":"Add +10 to your attack. The other player loses one card from their hand.","ops":[{"op":"x"}],"maths":"AP + 10","from":"Black Hole Bomb","ask":"Your ruling on \"lose 1 card\": once, or a smaller hand for the rest of the battle?"},
- {"id":"X06","pic":"net","type":"defence","rarity":"epic","name":"Mirror Moon","badge":"back","text":"Half of the attack on you turns round and hits the attacker.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Deflector Field, Quantum Reflection","ask":"A rule for an attack that turns round, and the rule for half of an odd number."}
+ {"id":"X05","type":"attack","rarity":"epic","name":"Card Grab","badge":"−1","text":"Add 10 to your attack. The other player loses one card from their hand.","ops":[{"op":"x"}],"maths":"AP + 10","from":"Black Hole Bomb","ask":"Your ruling on \"lose 1 card\": once, or a smaller hand for the rest of the battle?"},
+ {"id":"X06","pic":"net","type":"defence","rarity":"epic","name":"Mirror Moon","badge":"back","text":"Half of the attack on you turns round and hits the attacker.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Deflector Field, Quantum Reflection","ask":"A rule for an attack that turns round, and the rule for half of an odd number."},
+ {"id":"X07","type":"guard","rarity":"rare","name":"Guard Captain","badge":"+10","text":"Stops a Spy. Then add 10 HP to your Main Shield.","ops":[{"op":"x"}],"maths":"shield + 10","from":"new: a Guard that is never a wasted card","ask":"Your rules sheet says a Policeman has one job. May one do a second thing?"}
 ]
 }
 </script>
@@ -280,14 +284,15 @@ function shot(pic,c){
 }
 function arcSpots(n,cx,cy,r){var a=[],i;for(i=0;i<n;i++){var t=Math.PI+(i+0.5)*Math.PI/n;a.push([cx+Math.cos(t)*r,cy+Math.sin(t)*r,t]);}return a;}
 function wall(pic,c){
- var o='',i,sp,cx=125,cy=162;
+ var o='',i,sp,cx=104,cy=162;
  if(pic==='dust'){var r=rnd(77);for(i=0;i<46;i++){var t=Math.PI+r()*Math.PI,rr=44+r()*18;o+='<circle cx="'+(cx+Math.cos(t)*rr).toFixed(1)+'" cy="'+(cy+Math.sin(t)*rr).toFixed(1)+'" r="'+(1.5+r()*3).toFixed(1)+'" fill="'+c+'" opacity="'+(0.45+r()*0.5).toFixed(2)+'"/>';}}
  else if(pic==='tiles'){sp=arcSpots(10,cx,cy,54);for(i=0;i<10;i++){o+='<rect x="-7" y="-9" width="14" height="18" rx="2" fill="'+c+'" stroke="#dfe6f5" stroke-width="1.5" transform="translate('+sp[i][0].toFixed(1)+','+sp[i][1].toFixed(1)+') rotate('+(sp[i][2]*180/Math.PI+90).toFixed(0)+')"/>';}}
  else if(pic==='gems'){sp=arcSpots(12,cx,cy,56);for(i=0;i<12;i++){o+='<path d="M0,-9 L6,0 L0,9 L-6,0 Z" fill="'+(i%2?c:'#dfe6f5')+'" stroke="#0b1020" stroke-width="1" transform="translate('+sp[i][0].toFixed(1)+','+sp[i][1].toFixed(1)+') rotate('+(sp[i][2]*180/Math.PI+90).toFixed(0)+')"/>';}}
- else if(pic==='bricks'){for(i=0;i<14;i++){var row=Math.floor(i/7),col=i%7;o+='<rect x="'+(62+col*18+row*0)+'" y="'+(88+row*15)+'" width="16" height="12" rx="2" fill="'+(row?c:'#7fb0ff')+'" stroke="#0b1020" stroke-width="1"/>';}}
- else if(pic==='minus'){o+=dome(cx,cy,52,c)+'<rect x="103" y="92" width="44" height="12" rx="4" fill="#fff"/>';}
+ else if(pic==='bricks'){for(i=0;i<14;i++){var row=Math.floor(i/7),col=i%7;o+='<rect x="'+(42+col*18)+'" y="'+(88+row*15)+'" width="16" height="12" rx="2" fill="'+(row?c:'#7fb0ff')+'" stroke="#0b1020" stroke-width="1"/>';}}
+ else if(pic==='minus'){o+=dome(cx,cy,52,c)+'<rect x="82" y="92" width="44" height="12" rx="4" fill="#fff"/>';}
  else if(pic==='net'){o+=dome(cx,cy,56,c);for(i=1;i<6;i++){var a=Math.PI+i*Math.PI/6;o+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+Math.cos(a)*56).toFixed(1)+'" y2="'+(cy+Math.sin(a)*56).toFixed(1)+'" stroke="'+c+'" stroke-width="1.6"/>';}o+='<path d="M'+(cx-40)+','+cy+' A40,40 0 0 1 '+(cx+40)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.6"/><path d="M'+(cx-22)+','+cy+' A22,22 0 0 1 '+(cx+22)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.6"/>';}
  else if(pic==='quarter'){o+=dome(cx,cy,58,c)+'<path d="M'+cx+','+cy+' L'+cx+','+(cy-58)+' A58,58 0 0 0 '+(cx-58)+','+cy+' Z" fill="'+c+'" opacity=".75"/>';}
+ else if(pic==='cards'){o+=dome(cx,cy,50,c)+minicard(60,96,-20,c)+minicard(84,86,-7,c)+minicard(110,84,6,c)+minicard(134,92,19,c);}
  return o;
 }
 function fixit(pic,c){
@@ -320,29 +325,31 @@ function art(card){
   else if(op==='atk_round100'){o+=beam(60,130,172,84,c,7)+'<circle cx="182" cy="80" r="26" fill="none" stroke="'+c+'" stroke-width="4"/><circle cx="182" cy="80" r="17" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>';}
   else if(card.pic){o+=shot(card.pic,c);}
   else{o+=beam(60,130,176,82,c,3+n/4)+burst(180,80,10+n*0.7,c);}
-  if(card.ops.length>1){o+=dome(190,168,24,TYPE.defence.c);}
+  if(card.ops.length>1){o+=dome(128,172,22,TYPE.defence.c);}
  }else if(card.type==='defence'){
   if(op==='block_all'){o+='<g opacity=".35" stroke-dasharray="5 5">'+craft(125,118,2.1,c)+'</g>'+beam(30,70,96,104,TYPE.attack.c,4)+'<path d="M150,130 L214,162" stroke="'+TYPE.attack.c+'" stroke-width="3" stroke-dasharray="3 7" opacity=".6"/>';}
-  else{o+=craft(125,152,1.15,c)+wall(card.pic,c)+beam(30,58,82,104,TYPE.attack.c,4)+burst(84,106,10,'#fff');}
+  else{o+=craft(104,152,1.15,c)+wall(card.pic,c)+beam(16,58,62,102,TYPE.attack.c,4)+burst(64,104,10,'#fff');}
   if(card.ops.length>1){o+=plus(196,82,11,TYPE.repair.c);}
+  if(op==='block_per_card'){o+='';}
  }else if(card.type==='repair'){
-  if(op==='shield_add'){o+=dome(118,160,46+n*0.5,TYPE.defence.c)+plus(118,112,14+n*0.12,c)+craft(118,152,1,c);}
+  if(op==='shield_add'||op==='shield_rebuild'){o+=dome(118,160,46+n*0.5,TYPE.defence.c)+plus(118,112,14+n*0.12,c)+craft(118,152,1,c);}
   else if(op==='shield_per_card'){o+=dome(150,160,44,TYPE.defence.c)+minicard(44,120,-18,c)+minicard(64,114,-4,c)+minicard(84,116,10,c)+plus(150,118,13,c);}
-  else if(op==='repair_share'){o+=wrench(70,132,1.5,'#dfe6f5');for(i=0;i<4;i++){o+=plus(128+i*26,96+(i%2)*34,9+i%2*3,c);}}
+  else if(op==='repair_share'){o+='<g transform="translate(50,78) rotate(24)"><path d="M0,-9 Q-34,-26 -58,-40 Q-30,-14 0,9 Z" fill="#ffb347" opacity=".7"/><circle r="11" fill="#8a6f5a" stroke="#dfe6f5" stroke-width="1.5"/><circle cx="-3" cy="-2" r="3" fill="#5d4a3c"/></g>'+wrench(78,140,1.2,'#dfe6f5');for(i=0;i<4;i++){o+=plus(128+i*26,96+(i%2)*34,9+i%2*3,c);}}
   else if(op==='repair_all'||op==='repair_full'){o+=wrench(58,132,1.4,'#dfe6f5');for(i=0;i<5;i++){o+=plus(112+i*24,(op==='repair_full'?108:120)+(i%2)*14,op==='repair_full'?11:8,c);}if(op==='repair_full'){o+='<rect x="96" y="150" width="124" height="8" rx="4" fill="'+c+'"/>';}}
-  else if(op==='round_up10'){for(i=0;i<3;i++){o+='<rect x="'+(70+i*42)+'" y="'+(140-i*22)+'" width="34" height="'+(30+i*22)+'" rx="3" fill="'+c+'" opacity="'+(0.45+i*0.25)+'"/>';}o+='<path d="M52,150 L196,74" stroke="#fff" stroke-width="3" stroke-dasharray="6 5"/><path d="M196,74 l-14,1 l8,11 Z" fill="#fff"/>';}
+  else if(op==='round_up10'){for(i=0;i<3;i++){o+='<rect x="'+(70+i*42)+'" y="'+(140-i*22)+'" width="34" height="'+(30+i*22)+'" rx="3" fill="'+c+'" opacity="'+(0.45+i*0.25)+'"/>';}o+='<path d="M62,128 L196,74" stroke="#fff" stroke-width="3" stroke-dasharray="6 5"/><path d="M196,74 l-14,1 l8,11 Z" fill="#fff"/><g transform="translate(40,150)"><rect x="-18" y="-16" width="36" height="14" rx="4" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><rect x="-4" y="-26" width="12" height="10" rx="2" fill="'+c+'"/><circle cx="-11" cy="2" r="6" fill="#10162c" stroke="#dfe6f5" stroke-width="2"/><circle cx="11" cy="2" r="6" fill="#10162c" stroke="#dfe6f5" stroke-width="2"/></g>';}
   else if(op==='move_hp'){o+=partIcon('power',70,118,0.8,c)+partIcon('engine',182,118,0.72,c)+'<path d="M100,100 Q126,74 152,100" fill="none" stroke="#fff" stroke-width="3"/><path d="M152,100 l-12,-2 l5,-11 Z" fill="#fff"/>';}
   else if(op==='revive'){o+='<g opacity=".4">'+partIcon('weapons',125,128,1.05,'#8892ad')+'</g>';for(i=0;i<7;i++){var a=Math.PI+(i+0.5)*Math.PI/7;o+='<line x1="'+(125+Math.cos(a)*46).toFixed(1)+'" y1="'+(150+Math.sin(a)*46).toFixed(1)+'" x2="'+(125+Math.cos(a)*64).toFixed(1)+'" y2="'+(150+Math.sin(a)*64).toFixed(1)+'" stroke="#ffd84a" stroke-width="4" stroke-linecap="round"/>';}o+=plus(182,84,12,c);}
   else{o+=fixit(card.pic,c)+plus(card.pic==='bolts'?178:172,92,13,c);}
  }else if(card.type==='spy'){
   var k=card.ops[0].parts||1;
   o+='<path d="M20,170 Q70,150 78,104" fill="none" stroke="'+c+'" stroke-width="2" stroke-dasharray="3 6"/>'+drone(80,98,1.25,c);
-  var pos=[[176,112]];if(k===2)pos=[[160,92],[196,140]];if(k===3)pos=[[150,84],[196,104],[164,146]];if(k>=5)pos=[[136,78],[176,72],[212,96],[150,124],[194,144]];
+  var pos=[[168,104]];if(k===2)pos=[[148,84],[198,112]];if(k===3)pos=[[142,78],[194,84],[156,128]];if(k>=5)pos=[[130,72],[168,68],[208,82],[138,112],[178,116]];
+  for(i=0;i<n;i++){var sa=-Math.PI*0.5+(i-(n-1)/2)*0.34;o+='<circle cx="'+(80+Math.cos(sa)*46).toFixed(1)+'" cy="'+(104+Math.sin(sa)*46).toFixed(1)+'" r="3.2" fill="#ffd84a"/>';}
   for(i=0;i<pos.length;i++){o+=target(pos[i][0],pos[i][1],k>=3?12:15,'#ff8080');}
  }else if(card.type==='guard'){
   o+=badgeStar(125,116,1.25,c);
   o+='<g opacity=".55">'+drone(48,84,0.7,TYPE.spy.c)+'</g><line x1="30" y1="66" x2="66" y2="102" stroke="#ff6b6b" stroke-width="5" stroke-linecap="round"/><line x1="66" y1="66" x2="30" y2="102" stroke="#ff6b6b" stroke-width="5" stroke-linecap="round"/>';
-  if(card.ops.length>1){o+=dome(196,164,22,TYPE.defence.c)+plus(196,134,8,TYPE.repair.c);}
+  if(card.ask){o+=dome(150,166,20,TYPE.defence.c)+plus(150,140,8,TYPE.repair.c);}
  }else{
   o+=partIcon(PARTCODE[card.part],92,120,1.15,c)+chevrons(184,112,'#ffd84a');
  }
@@ -371,7 +378,7 @@ function cardSVG(card,uid){
  o+='<text x="16" y="202" font-size="13" font-weight="800" fill="'+t.c+'" letter-spacing="1.5">'+t.name+'</text>';
  var lines=wrap(card.text,26),fs=lines.length>4?13.5:15.5,lh=lines.length>4?17:19.5,y0=234+(4-Math.min(lines.length,4))*lh/2-(lines.length>4?8:0);
  for(var i=0;i<lines.length;i++){o+='<text x="125" y="'+(y0+i*lh).toFixed(1)+'" text-anchor="middle" font-size="'+fs+'" font-weight="600" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
- o+='<text x="125" y="313" text-anchor="middle" font-size="10.5" fill="#aeb8d4" class="nd">'+esc(card.ask?'Needs a new rule first':t.needs)+'</text>';
+ o+='<text x="125" y="313" text-anchor="middle" font-size="10.5" fill="#aeb8d4" class="nd">'+esc(card.ask?'Needs a new rule first':(card.needs||t.needs))+'</text>';
  o+='<line x1="16" y1="320" x2="234" y2="320" stroke="#33406a" stroke-width="1"/>';
  if(r){o+=gems(r,24,331)+'<text x="'+(24+r.n*17)+'" y="335" font-size="11.5" font-weight="800" fill="'+r.c+'" letter-spacing="1">'+r.name+'</text>';}
  else{o+='<text x="18" y="335" font-size="11.5" font-weight="800" fill="'+t.c+'" letter-spacing="1">'+esc(card.part.toUpperCase())+'</text>';}
@@ -421,12 +428,12 @@ function paint(){
 var el=function(id){return document.getElementById(id);};
 (function(){
  var L=[['','Common','Rare','Epic'],
-  ['Attack: add to your attack','+5 to +10','+15, +20, or two things','double it; round it up to 100'],
-  ['Defence: block an attack','8 to 15','20, 25, or two things','the whole attack'],
-  ['Repair one part','6 to 12','share 20; 5 on every part; round up','bring a part back; every part to full'],
-  ['Repair the Main Shield','+10 to +15','+25','+50'],
-  ['Spy: damage past the shield','4 to 6 in all','8 to 12 in all','25 in all'],
-  ['Guard: stop a Spy','stop it','stop it, and +10 shield','']],h='';
+  ['Attack: add to your attack','5 to 10','15, 20, 5 a part, or two things','double it; round it up to the next hundred'],
+  ['Defence: block an attack','8 to 15','20, 25, 4 a card, or two things','the whole attack'],
+  ['Repair parts','6 to 12 on one part','share 20; 5 on every part; round up; move 10','bring a part back; every part to full'],
+  ['Repair the Main Shield','10 to 15','25','50, even on a broken shield'],
+  ['Spy: damage past the shield','3 or 4 in all','6 to 9 in all','20 in all'],
+  ['Guard: stop a Spy (your Policeman)','stop it','','']],h='';
  L.forEach(function(r,i){h+='<tr>'+r.map(function(c){return (i?'<td>':'<th>')+c+(i?'</td>':'</th>');}).join('')+'</tr>';});
  el('ladder').innerHTML=h;
  h='<tr><th>Border</th><th>Kind</th><th>What it means on every part</th></tr>';
