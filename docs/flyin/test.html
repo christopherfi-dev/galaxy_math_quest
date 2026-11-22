@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Nothing leaves the iPad: this rule stops the page from loading or sending anything at all. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<title>GMQ iPad test</title>
+<!--
+  Galaxy Math Quest: the iPad test page for the Voltara fly-in (Phase 0).
+  It shows what this iPad can draw, and how fast. It sends nothing anywhere. Marc reads the screen.
+  One file. No library, no pictures, no network.
+  The ball copies the colours of the game's own Voltara from orbit (voltaraBall in prototypes/kis_station_sketch.html).
+  Checked by checks/flyin_testpage_test.js.
+-->
+<style>
+:root { color-scheme: dark; --ink: #e8eef8; --muted: #a9b9d0; --line: #33476a; --panel: #132035; --good: #6fd08a; --mid: #ffcf5a; --bad: #ff9486; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: #060912; color: var(--ink); font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: clamp(14px, calc(2.1vmin + 6px), 22px); line-height: 1.3; -webkit-text-size-adjust: 100%; }
+main { min-height: 100%; display: grid; gap: .7em; padding: max(.7em, env(safe-area-inset-top)) max(.8em, env(safe-area-inset-right)) max(.7em, env(safe-area-inset-bottom)) max(.8em, env(safe-area-inset-left)); grid-template-columns: minmax(0, 1fr); align-content: start; }
+h1 { margin: 0; font-size: 1.25em; }
+h2 { margin: 0 0 .25em; font-size: 1em; color: var(--muted); font-weight: 600; }
+.rows { display: grid; gap: .3em; }
+.row { display: flex; justify-content: space-between; align-items: baseline; gap: .8em; background: var(--panel); border: 1px solid var(--line); border-radius: .5em; padding: .32em .65em; }
+.row span { color: var(--muted); }
+.row b { text-align: right; font-weight: 700; }
+.yes { color: var(--good); } .no { color: var(--bad); } .ok { color: var(--mid); }
+.big { font-size: 1.25em; letter-spacing: .03em; }
+#box { position: relative; width: 100%; height: 20vh; min-height: 110px; border: 1px solid var(--line); border-radius: .6em; overflow: hidden; background: #050814; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#count:empty { display: none; }
+#count { position: absolute; left: .5em; top: .4em; background: rgba(6, 9, 18, .72); border-radius: .4em; padding: .15em .5em; font-weight: 700; }
+#photo { margin: 0; font-size: 1.15em; font-weight: 700; color: #ffe58a; }
+#photo.wait { color: var(--muted); font-weight: 400; }
+.small { margin: 0; font-size: .72em; color: var(--muted); overflow-wrap: anywhere; }
+button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; border: 0; border-radius: .5em; padding: .4em .9em; }
+.foot { display: flex; flex-wrap: wrap; align-items: center; gap: .6em .9em; }
+@media (orientation: landscape) and (min-width: 700px) {
+  main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: 1.1em; }
+  h1 { grid-column: 1 / -1; }
+  #facts { grid-column: 1; grid-row: 2; }
+  #right { grid-column: 2; grid-row: 2; }
+  #notes { grid-column: 2; grid-row: 3; }
+  #end { grid-column: 1; grid-row: 3; align-self: start; }
+  #box { height: 38vh; }
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Galaxy Math Quest: iPad test</h1>
+
+  <section id="facts">
+    <h2>What this iPad has</h2>
+    <div class="rows">
+      <div class="row"><span>WebGL 2</span><b id="gl2" class="big">…</b></div>
+      <div class="row"><span>WebGPU</span><b id="gpu" class="big">…</b></div>
+      <div class="row"><span>Screen</span><b id="scr">…</b></div>
+      <div class="row"><span>Pixel ratio</span><b id="dpr">…</b></div>
+      <div class="row"><span>Browser</span><b id="brw">…</b></div>
+      <div class="row"><span>System</span><b id="sys">…</b></div>
+    </div>
+  </section>
+
+  <section id="right">
+    <h2>The planet test: frames a second</h2>
+    <div id="box"><canvas id="cv"></canvas><div id="count"></div></div>
+    <div class="rows" style="margin-top:.45em">
+      <div class="row"><span>Small picture</span><b id="r0">…</b></div>
+      <div class="row"><span>Sharp picture</span><b id="r1">…</b></div>
+      <div class="row"><span>Hard test</span><b id="r2">…</b></div>
+    </div>
+  </section>
+
+  <section id="end">
+    <p id="photo" class="wait">Please wait. The test is running.</p>
+    <div class="foot" style="margin-top:.5em"><button id="again" type="button">Test again</button><p class="small">Nothing is sent anywhere. This page only shows numbers.</p></div>
+  </section>
+
+  <section id="notes">
+    <p class="small" id="tip">60 is the most an iPad shows. If every speed is close to 30, Low Power Mode may be on. Turn it off and test again.</p>
+    <p class="small" id="dots" style="margin-top:.3em"></p>
+    <p class="small" id="chip" style="margin-top:.3em"></p>
+    <p class="small" id="ua" style="margin-top:.3em"></p>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  // The line a child reads at the end. [Waiting on Marc: how do the children address him?]
+  var PHOTO_LINE = 'Take a photo of this screen and send it to your teacher.';
+  var PASS_MS = 3300, WARM_MS = 400;          // three passes, about 10 seconds in all; the first 0.4 s of each is not counted
+
+  var $ = function (id) { return document.getElementById(id); };
+  var set = function (id, text, cls) { var e = $(id); e.textContent = text; e.className = (e.className.indexOf('big') >= 0 ? 'big ' : '') + (cls || ''); };
+
+  // ---------- what the browser tells us ----------
+  function facts() {
+    var ua = navigator.userAgent || '', m, sys = 'It does not say', brw = 'It does not say';
+    var touchMac = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;      // an iPad's Safari says it is a Mac
+    if ((m = ua.match(/iPad; CPU OS (\d+)[_.](\d+)/))) sys = 'iPad, iPadOS ' + m[1] + '.' + m[2];
+    else if ((m = ua.match(/iPhone OS (\d+)[_.](\d+)/))) sys = 'iPhone, iOS ' + m[1] + '.' + m[2];
+    else if (touchMac) sys = 'iPad (it hides its iPadOS number)';
+    else if ((m = ua.match(/Android (\d+(?:\.\d+)?)/))) sys = 'Android ' + m[1];
+    else if (/Macintosh/.test(ua)) sys = 'Mac';
+    else if (/Windows/.test(ua)) sys = 'Windows';
+    else if (/Linux/.test(ua)) sys = 'Linux';
+    if ((m = ua.match(/CriOS\/(\d+)/))) brw = 'Chrome ' + m[1] + ' for iPad';
+    else if ((m = ua.match(/FxiOS\/(\d+)/))) brw = 'Firefox ' + m[1] + ' for iPad';
+    else if ((m = ua.match(/Edg(?:iOS|A)?\/(\d+)/))) brw = 'Edge ' + m[1];
+    else if ((m = ua.match(/Version\/(\d+(?:\.\d+)?)[^ ]* (?:Mobile\/\S+ )?Safari/))) brw = 'Safari ' + m[1];
+    else if ((m = ua.match(/Chrome\/(\d+)/))) brw = 'Chrome ' + m[1];
+    else if ((m = ua.match(/Firefox\/(\d+)/))) brw = 'Firefox ' + m[1];
+    set('sys', sys); set('brw', brw);
+    $('ua').textContent = ua;
+    screenFacts();
+  }
+  function screenFacts() {
+    var same = (screen.width === window.innerWidth && screen.height === window.innerHeight) || (screen.width === window.innerHeight && screen.height === window.innerWidth);
+    set('scr', screen.width + ' × ' + screen.height + (same ? '' : ' (window ' + window.innerWidth + ' × ' + window.innerHeight + ')'));
+    set('dpr', String(Math.round((window.devicePixelRatio || 1) * 100) / 100));
+  }
+  function webgpu() {
+    if (!navigator.gpu || !navigator.gpu.requestAdapter) { set('gpu', 'NO', 'no'); return; }
+    set('gpu', '…');
+    var done = false, no = function () { if (!done) { done = true; set('gpu', 'NO', 'no'); } };
+    try { navigator.gpu.requestAdapter().then(function (a) { if (done) return; done = true; if (a) set('gpu', 'YES', 'yes'); else set('gpu', 'NO', 'no'); }, no); } catch (e) { no(); }
+    setTimeout(no, 3000);
+  }
+
+  // ---------- the planet: one flat picture drawn by a small program on the graphics chip ----------
+  var VS = '#version 300 es\nin vec2 a; void main(){ gl_Position = vec4(a, 0., 1.); }';
+  var FS = [
+    '#version 300 es',
+    'precision highp float;',
+    'uniform vec2 uK;',      // canvas dots to box units
+    'uniform vec2 uB;',      // the box, in CSS pixels
+    'uniform float uT;',     // seconds
+    'uniform float uA;',     // how solid this layer is
+    'out vec4 o;',
+    'const vec3 BAND[8] = vec3[8](vec3(1.,.561,.722), vec3(1.,.702,.478), vec3(1.,.898,.541), vec3(.659,.902,.69), vec3(.561,.788,1.), vec3(.725,.639,1.), vec3(1.,.561,.722), vec3(1.,.702,.478));',
+    'float h2(vec2 p){ p = fract(p * vec2(.1031, .1030)); p += dot(p, p.yx + 33.33); return fract((p.x + p.y) * p.y); }',
+    'float h3(vec3 p){ p = fract(p * .1031); p += dot(p, p.zyx + 31.32); return fract((p.x + p.y) * p.z); }',
+    'float n3(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);',
+    '  return mix(mix(mix(h3(i), h3(i + vec3(1,0,0)), f.x), mix(h3(i + vec3(0,1,0)), h3(i + vec3(1,1,0)), f.x), f.y),',
+    '             mix(mix(h3(i + vec3(0,0,1)), h3(i + vec3(1,0,1)), f.x), mix(h3(i + vec3(0,1,1)), h3(i + vec3(1,1,1)), f.x), f.y), f.z); }',
+    'void main(){',
+    '  vec2 dp = gl_FragCoord.xy * uK, uv = dp / uB;',
+    '  float R = min(uB.x, uB.y) * .34, px = 1.2 / R;',
+    '  vec2 p = (dp - uB * .5) / R;',
+    '  float d = length(p);',
+    // space, and stars that twinkle
+    '  vec3 col = mix(vec3(5., 8., 20.), vec3(14., 9., 34.), (uv.x + 1. - uv.y) * .5) / 255.;',
+    '  col += vec3(.16, .05, .2) * max(0., 1. - length(uv - vec2(.2, .8)) * 1.6) + vec3(.02, .12, .14) * max(0., 1. - length(uv - vec2(.85, .15)) * 1.8);',
+    '  vec2 sc = dp / (min(uB.x, uB.y) * .045), si = floor(sc); float sh = h2(si);',
+    '  if (sh > .8) { vec2 sp = si + .2 + .6 * vec2(h2(si + 7.3), h2(si + 3.1)); float tw = .5 + .5 * sin(uT * 1.5 + sh * 90.); col += vec3(1., .94, .86) * tw * smoothstep(.09, .03, length(sc - sp)); }',
+    // the pink glow round the planet
+    '  col += vec3(1., .667, .882) * .6 * clamp(1. - (d - .92) / .48, 0., 1.) * step(.92, d);',
+    // two small moons
+    '  for (int k = 0; k < 2; k++) { float md = k == 0 ? 1.45 : 1.75, an = uT * .15 + (k == 0 ? 0. : 2.6), mr = k == 0 ? .09 : .055;',
+    '    vec2 mp = vec2(cos(an) * md, -sin(an) * md * .35), mq = p - mp; float ml = length(mq);',
+    '    if (ml < mr + px && !(sin(an) < 0. && length(mp) < 1.)) { vec3 mc = k == 0 ? vec3(.91, .878, 1.) : vec3(1., .851, .769); mc = mix(mc, vec3(.03, .016, .157), .5 * step(0., dot(mq, vec2(.6, -.8)))); col = mix(col, mc, smoothstep(mr + px, mr - px, ml)); } }',
+    '  if (d < 1. + px) {',
+    '    vec3 n = vec3(p, sqrt(max(0., 1. - d * d)));',
+    '    vec3 q = vec3(n.x, n.y * .969 - n.z * .247, n.y * .247 + n.z * .969);',       // the clouds ride a globe that leans a little, so their paths curve like the bands
+    '    float lon = atan(q.x, q.z) + uT * .22, cl = sqrt(max(0., 1. - q.y * q.y));',
+    // rainbow bands
+    '    float bx = p.x / 1.25, f = clamp(4. * (1. - p.y - .62 * (1. - sqrt(max(0., 1. - bx * bx))) + .012 * sin(uT * .3 + p.x * 2.)) - .25, 0., 7.999), fi = floor(f);',   // the same curved bands as voltaraBall
+    '    int i = int(fi);',
+    '    vec3 pc = mix(BAND[i], BAND[min(i + 1, 7)], smoothstep(1. - 5. * px, 1., f - fi));',
+    // cotton-candy clouds, pink and white, drifting
+    '    float lc = lon + uT * .07; vec3 s = vec3(sin(lc) * cl, q.y, cos(lc) * cl);',
+    '    float cn = n3(s * vec3(2.6, 7.5, 2.6) + 3.7) + .5 * n3(s * vec3(5.5, 15., 5.5) + 1.3);',
+    '    float pink = step(.5, n3(s * 1.7 + 9.));',
+    '    pc = mix(pc, mix(vec3(1.), vec3(1., .804, .91), pink), .8 * smoothstep(.98, 1.04, cn));',
+    // the night side: the same soft shadow as the game, with a few city lights
+    '    float dd = length(p - vec2(-.5, .38));',
+    '    float sa = dd < 1.325 ? mix(0., .5, clamp((dd - .8) / .525, 0., 1.)) : mix(.5, .95, clamp((dd - 1.325) / .525, 0., 1.));',
+    '    pc = mix(pc, vec3(.039, .02, .188), sa);',
+    '    vec2 lg = p * 20., li = floor(lg); float lh = h2(li + 11.);',
+    '    float la = atan(-p.y, p.x);',
+    '    if (lh > .7 && la > .2 && la < 1.3 && d > .6 && d < .93) pc += vec3(1., .88, .55) * (.5 + .4 * sin(uT * 2. + lh * 70.)) * smoothstep(.2, .08, length(lg - li - .25 - .5 * vec2(h2(li + 5.), h2(li + 17.))));',
+    // the bright rim on the day side
+    '    float ra = mod(atan(-p.y, p.x) + 6.2832, 6.2832);',
+    '    if (ra > 2.5 && ra < 4.9) pc = mix(pc, vec3(1., .882, .961), .65 * smoothstep(.975, .99, d));',
+    '    col = mix(col, pc, smoothstep(1. + px, 1. - px, d));',
+    '  }',
+    '  o = vec4(col, uA);',
+    '}'].join('\n');
+
+  var cv = $('cv'), box = $('box'), gl = null, prog = null, U = {}, hasGL2 = false;
+  function startGL() {
+    try { gl = cv.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' }); } catch (e) { gl = null; }
+    if (!gl) return false;
+    var mk = function (type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || 'shader'); return s; };
+    prog = gl.createProgram(); gl.attachShader(prog, mk(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, mk(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog) || 'link');
+    gl.useProgram(prog);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    ['uK', 'uB', 'uT', 'uA'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    gl.disable(gl.DEPTH_TEST); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    var chip = ''; try { var ex = gl.getExtension('WEBGL_debug_renderer_info'); chip = String(ex ? gl.getParameter(ex.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)); } catch (e) {}
+    if (chip) $('chip').textContent = 'Graphics chip: ' + chip;
+    return true;
+  }
+
+  // ---------- the test: three passes ----------
+  var dprNow = function () { return Math.min(2, window.devicePixelRatio || 1); };
+  var PASSES = [
+    { id: 'r0', scale: function () { return 1; }, layers: 1 },          // one dot for each point of the screen
+    { id: 'r1', scale: dprNow, layers: 1 },                             // every dot of a sharp screen
+    { id: 'r2', scale: dprNow, layers: 4 }];                            // the sharp picture, drawn four times over
+  var st = null, raf = 0, t0 = performance.now();
+
+  function sizeFor(scale) {      // the canvas gets as many dots as the WHOLE screen would need, so the speed is honest
+    var w = Math.max(1, Math.round(window.innerWidth * scale)), h = Math.max(1, Math.round(window.innerHeight * scale));
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    gl.viewport(0, 0, w, h);
+    var bw = box.clientWidth || 1, bh = box.clientHeight || 1;
+    gl.uniform2f(U.uK, bw / w, bh / h); gl.uniform2f(U.uB, bw, bh);
+    return w + ' × ' + h;
+  }
+  function draw(now, layers) {
+    gl.uniform1f(U.uT, (now - t0) / 1000);
+    gl.disable(gl.BLEND); gl.uniform1f(U.uA, 1); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (layers > 1) { gl.enable(gl.BLEND); gl.uniform1f(U.uA, .5); for (var i = 1; i < layers; i++) gl.drawArrays(gl.TRIANGLES, 0, 3); }
+  }
+  function word(fps) { return fps >= 50 ? ['smooth', 'yes'] : fps >= 28 ? ['OK', 'ok'] : ['slow', 'no']; }
+  function begin() {
+    cancelAnimationFrame(raf);
+    document.body.dataset.done = '0';
+    PASSES.forEach(function (p) { set(p.id, '…'); });
+    $('photo').textContent = 'Please wait. The test is running.'; $('photo').className = 'wait';
+    screenFacts();
+    if (!hasGL2) { PASSES.forEach(function (p) { set(p.id, 'No planet: it needs WebGL 2', 'no'); }); finish(); return; }
+    st = { i: 0, start: -1, last: -1, sum: 0, n: 0, worst: 0, dots: '', sizes: [] }; $('dots').textContent = '';
+    raf = requestAnimationFrame(frame);
+  }
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    if (!st) { draw(now, 1); return; }                                   // after the test the planet keeps turning
+    var P = PASSES[st.i];
+    if (st.start < 0) { st.start = now; st.last = -1; st.sum = 0; st.n = 0; st.worst = 0; st.dots = sizeFor(P.scale()); }
+    var el = now - st.start;
+    if (el > WARM_MS) { if (st.last >= 0) { var dt = now - st.last; st.sum += dt; st.n++; if (dt > st.worst) st.worst = dt; } st.last = now; }
+    draw(now, P.layers);
+    $('count').textContent = String(Math.max(1, Math.ceil(((PASSES.length - st.i) * PASS_MS - el) / 1000)));
+    if (el >= PASS_MS) {
+      if (st.n > 0) { var fps = 1000 * st.n / st.sum, w = word(fps); set(P.id, Math.round(fps) + ', ' + w[0] + ' (slowest frame ' + Math.round(st.worst) + ' ms)', w[1]); }
+      else set(P.id, 'Too slow to count', 'no');
+      st.sizes.push(st.dots); $('dots').textContent = 'Picture sizes tested: ' + st.sizes.filter(function (x, k, a) { return a.indexOf(x) === k; }).join(' and ') + ' dots. The hard test draws the sharp picture 4 times over.';
+      st.i++; st.start = -1;
+      if (st.i >= PASSES.length) { st = null; sizeFor(1); finish(); }
+    }
+  }
+  function finish() {
+    $('count').textContent = '';
+    $('photo').textContent = PHOTO_LINE; $('photo').className = '';
+    document.body.dataset.done = '1';
+  }
+  function stopped(msg) { cancelAnimationFrame(raf); st = null; PASSES.forEach(function (p) { if ($(p.id).textContent === '…') set(p.id, msg, 'no'); }); finish(); $('photo').textContent = 'The picture stopped. Tap Test again.'; }
+
+  // ---------- start ----------
+  facts(); webgpu();
+  try { hasGL2 = startGL(); } catch (e) { hasGL2 = false; $('chip').textContent = 'The planet could not start: ' + String(e && e.message || e).slice(0, 160); }
+  if (hasGL2) set('gl2', 'YES', 'yes');
+  else {
+    var old = false; try { var c1 = document.createElement('canvas'); old = !!(c1.getContext('webgl') || c1.getContext('experimental-webgl')); } catch (e) {}
+    set('gl2', old ? 'NO (only the old WebGL 1)' : 'NO', 'no');
+  }
+  cv.addEventListener('webglcontextlost', function (e) { e.preventDefault(); stopped('The picture stopped. Tap Test again.'); });
+  cv.addEventListener('webglcontextrestored', function () { try { hasGL2 = startGL(); } catch (e) { hasGL2 = false; } });
+  $('again').addEventListener('click', begin);
+  var rz = 0;
+  window.addEventListener('resize', function () {           // the iPad was turned: a running test starts again; a finished one keeps its numbers
+    clearTimeout(rz); rz = setTimeout(function () { screenFacts(); if (!hasGL2) return; if (st) begin(); else sizeFor(1); }, 250);
+  });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && st && hasGL2) begin(); });   // a test that was hidden half-way does not count
+  begin();
+})();
+</script>
+</body>
+</html>
