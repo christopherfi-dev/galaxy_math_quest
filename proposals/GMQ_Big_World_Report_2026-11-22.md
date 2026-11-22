@@ -17,12 +17,23 @@
 | The Reach, as built | `proposals/GMQ_Big_World_Reach_Design_v1_2026-11-22.md` |
 | The Terrace Hills: designed, failed review, not built | `proposals/GMQ_Big_World_Hills_Design_v1_2026-11-22.md` |
 | The sunk raft: designed, failed review, not built | `proposals/GMQ_Big_World_SunkRaft_Design_v1_2026-11-22.md` |
+| **Patterns: a bank of ideas** (you asked me to step back) | `proposals/GMQ_Big_World_Pattern_Ideas_v1_2026-11-22.md` |
 
 A game saved before tonight still opens. To begin at the story: **Ship**, then **Start again**.
 
 ---
 
-## 2. What is new since the first report
+## 2. Read this first
+
+**Late in the night you told me to step back:** stop inventing as I build, and first find kinds of pattern and ways to show them. I stopped building. The ideas are in `proposals/GMQ_Big_World_Pattern_Ideas_v1_2026-11-22.md`.
+
+**Its first finding:** Algora is in Galaxy Patternox, and almost nothing built on it is a pattern. The stepping stones are. The machines are rules. The fleet and the well are times tables.
+
+So what follows is what is built. It is checked and it plays. Whether it is the right thing to have built is your call.
+
+---
+
+## 2b. What is new since the first report
 
 **You said: "it needs to allow typing and actions like the previous one. That was the point."**
 
@@ -83,7 +94,7 @@ Open the website link with `?seed=7` on the end, on a fresh save.
 | **The Reach's numbers, 20,000 children** (`bigworld_reach_numbers_check.js`) | Passed: the fleet (its own search of every line; no right plan is "the same number for every town" or "use every raft"), the well, the Makers' box, the loose cog |
 | **The map and the world's tables** (`bigworld_map_check.js`) | Passed. Fifteen broken copies were fed in, the law of the road among them; all fifteen were caught |
 | **The tunes** (`bigworld_music_check.js`) | Passed as data. **I cannot hear them. Only you can judge them** |
-| **The play test, by taps and typing** (`bigworld_play_test.js`) | PLAYTEST_RESULT |
+| **The play test, by taps and typing** (`bigworld_play_test.js`) | **Passed** on all three screens, and for the second child over the old stones, on the page as pushed. Four full runs tonight. They found: two stale lines in the test; a tap on the walk that can begin the well's quest early (the test now allows it); and one real fault, the ship panel's Close button pushed off a phone's screen by a long list of cards (the buttons come first now) |
 | **The size test page** | Passed on this machine. Not a real iPad |
 
 **Not run:** the game's own tests. This thread changed no file of the game's.
