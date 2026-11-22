@@ -139,3 +139,17 @@ Work as long as you can. **Quality first:** if only one region can be done well 
 2. Your match of big quests to ship parts.
 3. Typing on Algora: as in the game, or taps only?
 4. The other choices from your design note's section 11, and the Reach's decisions you made for him.
+
+## 7. Added later the same evening: mistakes that show themselves
+
+[Source: Marc, 22 November] "If they make a mistake, we shouldn't say no that's not right. We should let it happen, and they will see negative consequences of it... then we step back to an easier scaffolding... and then even you go back to the harder one and maybe even go one past that." He compares it to his Math Skills engine.
+
+- **Read** `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md` before you design a big quest. It turns his words and the engine's steps into five rules for a world. The short version:
+  1. The plan happens, and the picture shows the cause.
+  2. One more try, in case it was a slip.
+  3. Offer a smaller, different problem of the same kind.
+  4. Back to the big one.
+  5. One past it, if the child wants.
+  - Kind consequences; nothing earned is lost; the answer is never shown; a child who is stuck twice gets help finishing, and the mission report says which skill broke.
+- **The engine is in the repository:** `engines/math-skills/current-v1.1/api/constraints/math-skills.txt` (its rules) and `skills/skill_map.csv` (1,835 skills by band, area and galaxy: the ladder for "one or two levels down").
+- **The Reach's fleet:** replace "The order is not right" with what the town got and what it lacked, shown in the picture.
