@@ -13,7 +13,7 @@ function ok(cond, what, info) { checks++; if (!cond) fail(what, info); }
 const KINDS = ['standard', 'guardian', 'striker', 'lucky'];
 function combos() { let out = [{}]; B.SWITCHES.forEach(s => { const next = []; out.forEach(o => s.values.forEach(v => { const n = Object.assign({}, o); n[s.key] = v[0]; next.push(n); })); out = next; }); return out; }
 let seed = 12345; function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
-const stats = { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0, firstLoss: {} };
+const stats = { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0, lastLead: [0, 0], held: 0, firstLoss: {} };
 
 function play(opts, k0, k1, sd, keep) {
   const S = B.newBattle(opts, k0, k1, sd), size = B.cardCount(S.P[0]);
@@ -41,7 +41,7 @@ function play(opts, k0, k1, sd, keep) {
       // Shield Generator lost: no block
       ok(L.snap.sg[i] || L.block[i] === 0, 'a ship without its Shield Generator cannot block');
       // Marc, 22 November: a lower card cannot block a higher attack card
-      if (opts.kindBlock && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d])) ok(L.block[i] === 0, 'a common card cannot block a rare attack card, and common or rare cannot block gold', B.card(L.card[i]).name + ' against ' + B.card(L.card[d]).name);
+      if (opts.kindBlock && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d])) ok(L.block[i] === 0, 'a common card cannot block a rare attack card, and common or rare cannot block epic', B.card(L.card[i]).name + ' against ' + B.card(L.card[d]).name);
       if (!opts.kindBlock && L.snap.sg[i] && c.ops.some(o => o.op === 'block')) ok(L.block[i] > 0, 'with the rule off, any block card blocks');
       if (opts.kindGuard && B.isGuard(L.card[i]) && B.isSpy(L.card[d]) && B.rank(L.card[i]) < B.rank(L.card[d])) ok(!L.stopped[d], 'with that switch on, a common Guard does not stop a higher Spy');
       if (!opts.kindGuard && B.isGuard(L.card[i]) && B.isSpy(L.card[d])) ok(L.stopped[d], 'a Guard stops any Spy that is on the table with it');
@@ -60,7 +60,13 @@ function play(opts, k0, k1, sd, keep) {
       const thr = L.through[i];
       ok(thr === (L.block[i] < 0 ? 0 : Math.max(0, L.atk[d] - L.block[i])), 'what gets through is the attack less the block');
       const hpAfter = me.parts.map(q => q.hp);
-      if (L.snap.shieldOn[i]) {
+      ok(!L.noStrike[i] || B.turnOrder(S), 'a strike is only held back when attacks land in turn order');
+      ok(!L.noStrike[i] || i === L.leader, 'only the ship that went first can be spared the strike back');
+      if (L.noStrike[i]) {
+        ok(thr > 0 && S.P[d].parts.every(q => q.hp === 0), 'a strike is held back only when the ship that fired it has lost its last part');
+        ok(hpAfter.every((h, x) => h === L.snap.hp[i][x]) && me.shield === L.snap.shield[i], 'a ship beaten first does not strike back: the other ship is not touched');
+        ok(S.over && S.over.winner === i, 'the ship whose attack landed first wins', JSON.stringify(S.over));
+      } else if (L.snap.shieldOn[i]) {
         ok(hpAfter.every((h, x) => h === L.snap.hp[i][x]), 'while the shield stands, no part is hit by an attack');
         ok(me.shield === (thr > L.snap.shield[i] ? 0 : L.snap.shield[i] - thr), 'the shield takes the hit, and nothing carries over', L.snap.shield[i] + ' - ' + thr + ' gave ' + me.shield);
       } else {
@@ -86,12 +92,14 @@ function play(opts, k0, k1, sd, keep) {
     if (S.over.winner === 0) ok(b[1] && !b[0], 'a win means all five enemy parts are at 0, and yours are not');
     if (S.over.winner === 1) ok(b[0] && !b[1], 'a win means all five enemy parts are at 0, and yours are not');
     if (S.over.winner === -1) ok((b[0] && b[1]) || (!b[0] && !b[1]), '"nobody wins" is never given when one ship is beaten');
+    if (B.turnOrder(S)) ok(!(b[0] && b[1]), 'when attacks land in turn order, the two ships are never beaten in the same round');
     if (!b[0] && !b[1]) ok(S.round - 1 >= opts.roundLimit || (!B.canHurt(S, 0) && !B.canHurt(S, 1)), '"nobody wins" without a beaten ship only at the limit, or when neither can hurt the other');
   }
   if (keep) {
     stats.battles++; stats.rounds.push(S.round - 1);
     if (S.over.winner >= 0) stats.win[S.over.winner]++; else { stats.none++; if (S.P.every(p => p.parts.every(q => q.hp === 0))) stats.both++; else if (S.round - 1 >= opts.roundLimit) stats.limit++; else stats.stuck++; }
     const sil = S.log.findIndex(l => !l.snap.wep[0] || !l.snap.wep[1]); if (sil >= 0 && sil < 8) stats.silenced++;
+    const last = S.log[S.log.length - 1]; if (S.over.winner >= 0) { stats.lastLead[S.over.winner === last.leader ? 0 : 1]++; if (last.noStrike[0] || last.noStrike[1]) stats.held++; }
   }
   return S;
 }
@@ -102,13 +110,15 @@ console.log('     ' + all.length + ' combinations of switches, ' + PER + ' battl
 all.forEach((o, n) => { for (let i = 0; i < PER; i++) play(o, kinds(), kinds(), n * 1000 + i + 1, false); });
 // the default rules, many times, with Standard ships: the numbers Marc will see
 const D = B.defaults(), STD = ['standard', 'standard', 'standard', 'standard', 'standard'];
-['gentle', 'clever'].forEach(level => {
-  const O = Object.assign({}, D, { cpu: level });
-  Object.assign(stats, { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0 });
+[['turn', 'gentle'], ['turn', 'clever'], ['nobody', 'gentle'], ['nobody', 'clever']].forEach(pair => {
+  const level = pair[1], O = Object.assign({}, D, { cpu: level, bothFall: pair[0] });
+  Object.assign(stats, { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0, lastLead: [0, 0], held: 0 });
   for (let i = 0; i < 4000; i++) play(O, STD, STD, 900000 + i, true);
   stats.rounds.sort((a, b) => a - b);
   const n = stats.battles, pct = x => Math.round(1000 * x / n) / 10;
-  console.log('     default rules, two Standard ships, two ' + level + ' computer players, ' + n + ' battles:');
+  console.log('     ' + (pair[0] === 'turn' ? 'default rules (attacks land in turn order)' : 'the switch "both attacks land together"') + ', two Standard ships, two ' + level + ' computer players, ' + n + ' battles:');
+  console.log('       the last round: the ship that went first in it won ' + pct(stats.lastLead[0]) + '%, the ship that answered won ' + pct(stats.lastLead[1]) + '%; a ship was beaten before it could strike back in ' + pct(stats.held) + '%');
+  if (pair[0] === 'turn') ok(stats.both === 0, 'with the default rules, no battle ends with both ships beaten');
   console.log('       rounds: shortest ' + stats.rounds[0] + ', middle ' + stats.rounds[n >> 1] + ', longest ' + stats.rounds[n - 1]);
   console.log('       first ship wins ' + pct(stats.win[0]) + '%, second ship wins ' + pct(stats.win[1]) + '%, nobody wins ' + pct(stats.none) + '%');
   console.log('       nobody wins because: both beaten together ' + pct(stats.both) + '%, the round limit ' + pct(stats.limit) + '%, neither can hurt the other ' + pct(stats.stuck) + '%');
@@ -173,15 +183,41 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
     B.startRound(S, h[0], h[1]); B.steps(S).forEach(st => { const req = B.need(S, st); B.run(S, st, req ? B.cpuChoose(S, req) : null); });
     return S.log[0];
   }
-  let L = duel('A12', 'D02'); ok(L.atk[0] === 100 && L.block[1] === 0 && L.through[1] === 100, 'a common block card cannot block a gold attack card', JSON.stringify([L.atk, L.block, L.through]));
-  L = duel('A12', 'D06'); ok(L.block[1] === 0 && L.through[1] === 100, 'a rare block card cannot block a gold attack card');
+  let L = duel('A12', 'D02'); ok(L.atk[0] === 100 && L.block[1] === 0 && L.through[1] === 100, 'a common block card cannot block an epic attack card', JSON.stringify([L.atk, L.block, L.through]));
+  L = duel('A12', 'D06'); ok(L.block[1] === 0 && L.through[1] === 100, 'a rare block card cannot block an epic attack card');
   L = duel('A08', 'D02'); ok(L.block[1] === 0 && L.through[1] === 75, 'a common block card cannot block a rare attack card');
   L = duel('A08', 'D06'); ok(L.block[1] === 20 && L.through[1] === 55, 'a rare block card blocks a rare attack card');
   L = duel('A01', 'D06'); ok(L.block[1] === 20 && L.through[1] === 40, 'a rare block card blocks a common attack card');
   L = duel('A01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 50, 'a common block card blocks a common attack card');
   L = duel('R01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 45, 'any block card blocks a plain attack, when no attack card is played');
-  L = duel('A12', 'D09'); ok(L.atk[0] === 100 && L.through[1] === 0, 'the gold block card blocks a gold attack card');
-  L = duel('A12', 'A10'); ok(L.block[1] === 0, 'the block half of a rare card cannot block a gold attack card, but its attack half still works: ' + L.atk[1]) ; ok(L.atk[1] === 65, 'Hit and Hide still adds 10');
+  L = duel('A12', 'D09'); ok(L.atk[0] === 100 && L.through[1] === 0, 'the epic block card blocks an epic attack card');
+  L = duel('A12', 'A10'); ok(L.block[1] === 0, 'the block half of a rare card cannot block an epic attack card, but its attack half still works: ' + L.atk[1]) ; ok(L.atk[1] === 65, 'Hit and Hide still adds 10');
+})();
+// Marc's ruling of 22 November: attacks land in turn order; a ship that loses its last part does not strike back
+(function () {
+  function last(opts, leader, setup, c0, c1, ch) {
+    const S = B.newBattle(Object.assign({}, D, opts), STD, STD, 321); S.leader = leader;
+    S.P.forEach(p => { p.shield = 0; p.parts.forEach((q, x) => { q.hp = x === 3 ? 1 : 0; }); });
+    if (setup) setup(S);
+    const pick = [c0, c1].map((id, i) => { const p = S.P[i]; if (id === 'spy') id = p.deck.concat(p.hand).filter(B.isSpy)[0]; let x = p.hand.indexOf(id); if (x < 0) { const d = p.deck.indexOf(id); p.deck.splice(d, 1); p.deck.push(p.hand[0]); p.hand[0] = id; x = 0; } return x; });
+    S.said = []; B.startRound(S, pick[0], pick[1]); B.steps(S).forEach(st => { const req = B.need(S, st); const R = B.run(S, st, req ? (ch && ch[st.k + (st.a === undefined ? st.d : st.a)]) || B.cpuChoose(S, req) : null); S.said = S.said.concat(R.lines); });
+    return S;
+  }
+  const hp = (S, i) => S.P[i].parts.map(q => q.hp).join(',');
+  let S = last({}, 0, null, 'A01', 'A01');
+  ok(S.over && S.over.winner === 0 && hp(S, 0) === '0,0,0,1,0' && hp(S, 1) === '0,0,0,0,0' && S.log[0].noStrike[0] && /The enemy's ship is beaten before it can strike back/.test(S.said.join(' ')), 'each ship has one part left and you went first: you win, and are not hit', JSON.stringify([S.over, hp(S, 0), hp(S, 1)]));
+  S = last({}, 1, null, 'A01', 'A01');
+  ok(S.over && S.over.winner === 1 && hp(S, 1) === '0,0,0,1,0' && hp(S, 0) === '0,0,0,0,0' && S.log[0].noStrike[1] && /Your ship is beaten before it can strike back/.test(S.said.join(' ')), 'the same with the enemy first: the enemy wins, and is not hit', JSON.stringify([S.over, hp(S, 0), hp(S, 1)]));
+  S = last({ bothFall: 'nobody' }, 0, null, 'A01', 'A01');
+  ok(S.over && S.over.winner === -1 && hp(S, 0) === '0,0,0,0,0' && hp(S, 1) === '0,0,0,0,0' && !S.log[0].noStrike[0], 'with the switch on "together", both are beaten and nobody wins', JSON.stringify([S.over, hp(S, 0), hp(S, 1)]));
+  S = last({ guard: 'blind' }, 0, null, 'A01', 'A01');
+  ok(S.over && S.over.winner === -1, 'with both cards put down together there is no leader, so both attacks land together', JSON.stringify(S.over));
+  // the first hit takes the other ship's Weapons but not its last part: it had already fired, so its attack still lands
+  S = last({}, 0, T => { T.P[0].shield = 100; T.P[1].parts[0].hp = 20; }, 'A01', 'A01', { land1: [0, 0, 0, 25, 0] });
+  ok(!S.over && S.P[1].parts[3].hp === 0 && S.P[1].parts[0].hp === 20 && S.P[0].shield === 100 - S.log[0].atk[1] && S.log[0].atk[1] === 30 && !S.log[0].noStrike[0], 'a ship that loses its Weapons, but not its last part, to the first hit still strikes back that round', JSON.stringify([S.over, hp(S, 1), S.P[0].shield, S.log[0].atk]));
+  // two Spies: the leader's acts first
+  S = last({}, 1, null, 'spy', 'spy');
+  ok(S.over && S.over.winner === 1 && hp(S, 1) === '0,0,0,1,0' && /Your ship is beaten\. Its Spy does nothing/.test(S.said.join(' ')), 'two Spies and one part each: the Spy of the player who went first acts first, and the other Spy does nothing', JSON.stringify([S.over, hp(S, 0), hp(S, 1), S.said]));
 })();
 const names = Object.keys(bad);
 console.log('     ' + checks + ' checks made');

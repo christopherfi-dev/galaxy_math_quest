@@ -79,7 +79,7 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 <ul>
 <li><b>A working part</b> has HP left. A lost part is at 0.</li>
 <li><b>Block</b> comes off the attack first, before it reaches your shield or your parts.</li>
-<li><b>Your rule, 22 November:</b> a block card stops an attack card only of its own kind, or a lower one. A common card cannot block a rare card. A common or a rare card cannot block a gold (epic) card.</li>
+<li><b>Your rule, 22 November:</b> a block card stops an attack card only of its own kind, or a lower one. A common card cannot block a rare card. A common or a rare card cannot block an epic card.</li>
 <li><b>A repair</b> is for a working part, and never lifts it above the HP it started with. Only Stellar Revival brings a lost part back.</li>
 <li><b>The Main Shield</b> never passes 100. Once it is broken, only Shield Reborn brings it back.</li>
 </ul>
@@ -91,7 +91,7 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 <p class="small">A ship of five Standard parts has <b id="stdhp"></b> HP and <b id="stdap"></b> AP. The names and the Standard numbers are yours. 13 of the 15 Standard, Guardian and Striker numbers are the ones in the table from your 2023 chats. The two moved onto the rule: Neutron Wall (33 and 2 there) and Quantum Deflector (28 and 7 there). The Lucky Draw numbers are new, except the Cosmic Navigator.</p>
 
 <h2>3. The battle cards: <span id="nplay"></span> to choose from</h2>
-<p class="lead">The <b>big symbol</b> is what the card does: a laser gun attacks, a shield blocks, a heart repairs, a spy sneaks past the shield, a policeman stops a spy. The <b>thick rim</b> is the kind: green for common, purple for rare, gold for gold. Those are the colours of your 2023 cards. The <b>Guard</b> is your Policeman under a new name; change it back if you prefer.</p>
+<p class="lead">The <b>big symbol</b> is what the card does: a laser gun attacks, a shield blocks, a heart repairs, a spy sneaks past the shield, a policeman stops a spy. The <b>thick rim</b> is the kind: green for common, purple for rare, gold for epic. Those are the colours of your 2023 cards. The <b>Guard</b> is your Policeman under a new name; change it back if you prefer.</p>
 <p class="lead"><b>In a battle</b> each deck has one Spy card, drawn at random from the seven here, and two Guards. [Marc, 22 November: one Spy card each, and at least as many Policemen.]</p>
 <div class="chips" id="chips"></div>
 <div id="play" class="grid"></div>
@@ -248,7 +248,7 @@ var TYPE={
  guard:{name:'POLICE',c:'#5b8cff',d:'#101c40',needs:'Stops a Spy card'},
  upgrade:{name:'UPGRADE',c:'#ffd23f',d:'#2a2210',needs:'Makes one part Level 2'}
 };
-var RAR={common:{name:'COMMON',c:'#7ed957',n:1},rare:{name:'RARE',c:'#b388ff',n:2},epic:{name:'GOLD',c:'#ffd23f',n:3}};
+var RAR={common:{name:'COMMON',c:'#7ed957',n:1},rare:{name:'RARE',c:'#b388ff',n:2},epic:{name:'EPIC',c:'#ffd23f',n:3}};
 var KIND={};DATA.kinds.forEach(function(k){KIND[k.key]=k;});
 var PARTCODE={'Engine Core':'engine','Navigation':'nav','Shield Generator':'gen','Weapons System':'weapons','Power Module':'power'};
 
@@ -397,7 +397,7 @@ var el=function(id){return document.getElementById(id);};
   var host=e.kind==='part'?'parts':(e.idea?'ideas':(e.d.type==='upgrade'?'ups':'play'));
   el(host).appendChild(tile(i));
  });
- var chips=[['all','All'],['attack','Attack'],['defence','Defence'],['repair','Repair'],['spy','Spy'],['guard','Police'],['common','Common'],['rare','Rare'],['epic','Gold']],cur='all';
+ var chips=[['all','All'],['attack','Attack'],['defence','Defence'],['repair','Repair'],['spy','Spy'],['guard','Police'],['common','Common'],['rare','Rare'],['epic','Epic']],cur='all';
  chips.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='chip'+(c[0]==='all'?' on':'');b.textContent=c[1]+(c[0]==='all'?'':' ('+DATA.cards.filter(function(x){return x.type===c[0]||x.rarity===c[0];}).length+')');b.setAttribute('data-f',c[0]);
   b.addEventListener('click',function(){cur=c[0];var bs=el('chips').children;for(var i=0;i<bs.length;i++){bs[i].className='chip'+(bs[i].getAttribute('data-f')===cur?' on':'');}
    var ts=el('play').children;for(var j=0;j<ts.length;j++){var d=ALL[+ts[j].getAttribute('data-i')].d;ts[j].style.display=(cur==='all'||d.type===cur||d.rarity===cur)?'':'none';}});

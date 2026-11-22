@@ -46,6 +46,8 @@ async function state(page) {
       pods: [pods(0), pods(1)], bub: [!!q('bub0'), !!q('bub1')], shl: [txt(q('shl0'), '.sht'), txt(q('shl1'), '.sht')], shlBox: [r(q('shl0')), r(q('shl1'))],
       still: [0, 1].map(i => q('ship' + i) ? !/\bbob\b/.test(q('ship' + i).getAttribute('class')) : null), banner: q('banner') ? q('banner').textContent : null,
       myatk: r(q('myatk')), myatkText: q('myatk').textContent, eatkNum: q('eatk').querySelector('b') ? q('eatk').querySelector('b').textContent : '', eatkText: q('eatk').textContent, stage: r(q('stagewrap')), tray: r(q('tray')), btns: r(q('btns')),
+      shipText: [0, 1].map(i => q('ship' + i) ? Array.from(q('ship' + i).children).filter(e => e.tagName === 'text').map(e => e.textContent).join(' ') : ''), turn: S ? B.turnOrder(S) : false,
+      goldSeen: all('svg text').map(e => e.textContent).concat([q('msg').textContent, q('note') ? q('note').textContent : '', q('fore') ? q('fore').textContent : '']).concat(all('.tag').map(e => e.textContent)).filter(x => /gold/i.test(x)),
       inputs: all('input,textarea,select').length, roundText: q('round').textContent, lastRound: S && S.log.length ? S.log[S.log.length - 1].round : 0,
       vw: innerWidth, vh: innerHeight, docH: document.documentElement.scrollHeight, docW: document.documentElement.scrollWidth
     };
@@ -78,6 +80,7 @@ async function act(page, name, flags, size) {
   LAST = name + ' round ' + st.round + ' ' + st.phase + ' | ' + st.msg.slice(0, 70);
   if (st.over || st.again) return 'over';
   pass(name + ': no sum is ever asked: there is no box to type a number in', st.inputs === 0);
+  pass(name + ': the top kind is called "epic" on every card and in every message, never "gold"', st.goldSeen.length === 0, st.goldSeen.slice(0, 3).join(' | '));
   pass(name + ': every HP on your ship is the HP in the rules engine', st.pods[0].every((p, ix) => p && (p.lost ? st.hp[0][ix] === 0 : +p.hp === st.hp[0][ix] && +p.ap === st.ap[0][ix])), JSON.stringify([st.pods[0].map(p => p.hp), st.hp[0]]));
   pass(name + ': the bubble is there exactly when the shield works, with its number', st.bub[0] === st.shieldOn[0] && (!st.shieldOn[0] || st.shl[0] === 'MAIN SHIELD ' + st.shield[0]), st.shl[0]);
   if (st.phase === 'pick') {
@@ -94,6 +97,7 @@ async function act(page, name, flags, size) {
       if (!flags.shotLed) { flags.shotLed = true; await shot(page, name + '_3_enemy_goes_first'); }
     }
     pass(name + ': your attack at the top is the AP of your working parts', st.apNow[0] > 0 ? new RegExp('(YOUR ATTACK|YOU)\\s*' + st.apNow[0] + '$').test(st.myatkText.trim()) : /NO ATTACK/.test(st.myatkText), st.myatkText + ' against ' + st.apNow[0]);
+    if (st.turn) pass(name + ': the ship of the player who went first is marked as the one that hits first', st.leader === 0 ? /YOU HIT FIRST/.test(st.shipText[0]) && !/HITS FIRST/.test(st.shipText[1]) : /HITS FIRST/.test(st.shipText[1]) && !/HIT FIRST/.test(st.shipText[0]), JSON.stringify(st.shipText));
     if (/You go first/.test(st.msg)) { flags.youLed = true; pass(name + ': when you go first, no enemy order is shown', !st.foecard && !st.order[1]); }
     let i = st.cards.findIndex(c => !c.tag); if (i < 0) i = 0;
     await page.locator('.hc.mine').nth(i).tap();
@@ -255,7 +259,7 @@ async function act(page, name, flags, size) {
     await shot(page, name + '_8_how');
     await page.locator('#hclose').tap();
     await page.locator('#brules').tap();
-    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 14);
+    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 15);
     await page.locator('#rclose').tap();
     await page.locator('#again').tap();
     pass(name + ': New battle goes back to the first screen', await page.locator('#setup.open').count() === 1);

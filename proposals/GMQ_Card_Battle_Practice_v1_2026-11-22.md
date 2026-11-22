@@ -4,7 +4,9 @@
 **Play it:** `docs/battle/index.html` (the same file is `prototypes/card_battle.html`).
 **The cards:** `docs/battle/cards.html`.
 
-**The rules are yours.** Not one rule, part, number or card changed for this screen. Every point you have not decided is still a switch. Nothing is in the game.
+**The rules are yours.** Not one rule, part, number or card changed for the new screen. Every point you have not decided is still a switch. Nothing is in the game.
+
+**Your rulings of 22 November are in** (section 1b). The page is on the site: https://christopherfi-dev.github.io/galaxy_math_quest/battle/
 
 ---
 
@@ -28,6 +30,40 @@ Here is how I read the problem.
   - The hit arrives as **blocks: tens, fives and ones.** A hit of 65 is six tens and a five.
   - The child sends each block to a part. A ten can be **broken** into two fives, a five into five ones.
   - That is place value with their hands. Nobody types a number. [Proposal: tell me if you would rather they typed.]
+
+---
+
+## 1b. Your rulings of 22 November, and what I did
+
+| You ruled | Done |
+|---|---|
+| **Say "epic" everywhere, never "gold".** | Every card, message and rule now says epic. The rim is still gold in colour. The play test now fails if "gold" appears on a card or in a message. |
+| **Any Guard stops any Spy.** | It was already so. The switch stays, marked as your ruling. |
+| **Attacks land in turn order.** The leader's attack lands first. If it destroys the other ship's last part, that ship does not strike back. Keep a switch for "nobody wins". | Done, with the switch. The ship that hits first is marked on the screen: "YOU HIT FIRST". |
+| **Tell me if leading the last round becomes too strong.** | See below. |
+
+**Leading the last round** (4,000 battles between two computer players, Standard ships):
+
+| | Before: both attacks together | Now: turn order |
+|---|---|---|
+| **Nobody wins** | 19 to 22 in 100 | 0 |
+| **The ship that led the last round wins** | about 40 in 100 | 60 or 61 in 100 |
+| **The ship that answered in the last round wins** | about 40 in 100 | 39 or 40 in 100 |
+| **The ship that led round 1 wins the battle** | 40 against 40 | 50 against 50 |
+| **A battle lasts** | 9 rounds | 9 rounds |
+
+- **What it means:** every battle that used to end with nobody winning now goes to the ship that led the last round. That is the whole of its edge: 60 against 40.
+- **Is that too strong? I think not.** [My judgement; yours to overrule]
+  - The lead passes every round. Nobody can choose to lead.
+  - Over a whole battle, leading round 1 is worth nothing: 50 against 50.
+  - The player who answers has seen the other card. Hitting first is what the leader gets in return.
+- **What could prove this wrong:** computer players do not plan. A child may learn to save a strong attack card for a round they lead. That is good play, but it could push 60 higher. Only children playing will show it.
+
+**Three things I had to read into your ruling** [Proposal: say if any is wrong]
+
+1. **A ship that loses its Weapons to the first hit, but not its last part, still strikes back that round.** It had already fired. Your ruling names only the last part.
+2. **Spies follow the same order.** The leader's Spy acts first. A ship with no part left sends no Spy.
+3. **Turn order needs a leader.** With the switch "both put cards down together", both attacks land together, as before.
 
 ---
 
@@ -56,7 +92,7 @@ Here is how I read the problem.
 4. **A policeman stops a Spy.**
 5. **A Spy that is not stopped acts first.** If it is yours, you tap the enemy part to hit.
 6. **Hearts repair.**
-7. **Both ships attack.** The page adds up the AP and the card.
+7. **Both ships attack.** The page adds up the AP and the card. The attack of the player who went first lands first. A ship that loses its last part does not strike back.
 8. **A hit meets the bubble first.** If the hit is bigger than the shield, the shield breaks and soaks up all of it.
 9. **With no shield, you choose which parts take the hit.**
    - The blocks are in a row. One is lit.
@@ -106,10 +142,11 @@ Open **Rules** on the page. A change starts with the next battle.
 | Switch | Choices (the first is the default) | Where it comes from |
 |---|---|---|
 | **Who puts a card down first** | one leads and the other answers; both together, policeman swapped in; both together, policeman as a guess | **you, 22 November** |
+| **Whose attack lands first** | the player who went first, and a ship that loses its last part does not strike back; both together, and nobody wins if both ships fall | **you, 22 November** |
 | **Spy cards in each deck** | 1, drawn at random; all 7 | **you, 22 November** |
 | **Policemen in each deck** | 2; 1 | **you, 22 November** (2 is my reading of "more") |
 | **A block card stops an attack card only of its own kind, or lower** | yes; no | **you, 22 November** |
-| **The same for a policeman against a Spy card** | no; yes | not said yet |
+| **The same for a policeman against a Spy card** | no: any Guard stops any Spy; yes | **you, 22 November** |
 | **"Lose 1 card"** (Engine or Navigation lost) | one card thrown away, once; the hand is one card smaller | rules sheet 5 |
 | **"Cannot defend"** (Shield Generator lost) | defence cards stop; defence cards and the Main Shield stop | rules sheet 5 |
 | **A repair may lift a part above its full HP** | no; yes | my guess |
@@ -124,38 +161,38 @@ Open **Rules** on the page. A change starts with the next battle.
 
 ## 6. Things I had to settle to make it run [Proposal: each is yours to change]
 
-1. **Both ships lose their last part in the same round: nobody wins.**
+1. **A ship that loses its Weapons to the first hit, but not its last part, still strikes back that round.**
 2. **A hit may only be put on working parts.**
 3. **A block comes off the attack before it reaches the shield.**
-4. **Inside a round the order is:** the policeman, then Spies, then repairs, then both attacks at once.
+4. **Inside a round the order is:** the policeman, then Spies (the leader's first), then repairs, then the leader's attack, then the other's. Both attacks are added up before either lands.
 5. **"Lose 1 card" throws away a card at random,** at the moment the part is lost.
 6. **An upgrade card played in a battle** makes that part Level 2 until the battle ends.
 7. **A Spy played second cannot be stopped.** The first player has already given an order. That follows from your rule.
-8. **Both ships attack every round,** whoever went first.
+8. **Both ships attack every round,** whoever went first. Only a ship with no part left does not strike back.
 9. **The block rule compares the two cards on the table.** If the other player played no attack card, any block card works against the ship's plain attack.
 
 ---
 
-## 7. What 120,000 battles between two computer players showed
+## 7. What the battles between two computer players showed
 
-Two Standard ships, your rules, the default switches. The rules engine did not change today, so these numbers stand.
+Two Standard ships, your rules, the default switches, 4,000 battles for each kind of player.
 
 | | Two gentle players | Two clever players |
 |---|---|---|
 | **Length** | 9 rounds in the middle; from 5 to 13 | 9 rounds in the middle; from 4 to 13 |
-| **A ship wins** | 78 in 100 | 81 in 100 |
-| **Nobody wins** | 22 in 100 | 19 in 100 |
+| **A ship wins** | 100 in 100 | 100 in 100 |
+| **Nobody wins** | 0 | 0 |
+| **The ship that led the last round wins** | 60 in 100 | 61 in 100 |
 | **A ship has no Weapons by round 8** | 1 in 100 | 1 in 100 |
 
+- **A clever player beats a gentle one** in 69 battles in 100.
 - **Your ruling on the Spy fixed the biggest problem.** With seven Spy cards in a deck, a clever player took the other ship's Weapons early in 32 battles in 100. With one, it is 1 in 100.
-- **Going first or second in round 1 makes no difference between two computer players:** 41 in 100 against 40.
 
 ### Still for you to rule on
 
 1. **The split** (section 4, point 2).
-2. **Both ships fall in the same round in about 20 battles in 100.** Your rules sheet does not say who wins then.
-   - Choices: nobody; the ship with more HP at the start of that round; the player who went second; one more round.
-3. **Does your block rule hold for a policeman against a Spy card?** The policeman is common. Three Spy cards are rare and one is gold.
+2. **Sound,** or no sound.
+3. **My three readings of your turn-order ruling** (section 1b).
 
 ---
 
@@ -169,7 +206,9 @@ Two Standard ships, your rules, the default switches. The rules engine did not c
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 927 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,045 checks, all pass. It checks:
+  - "epic" on every card and in every message, never "gold";
+  - the ship that hits first is marked;
   - two ships, five parts on each, none over another;
   - under each of your parts, its "if lost" rule from your board;
   - your shield as a bubble with its number; your attack in the top corner;
@@ -183,7 +222,7 @@ Two Standard ships, your rules, the default switches. The rules engine did not c
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 24,576 combinations of switches, then 24,000 more battles. 28.9 million checks, all pass. The engine did not change today.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 49,152 combinations of switches (one more switch than before), then 32,000 more battles. 65 million checks, all pass. New in it: a strike is held back only when the ship that fired it has lost its last part, and only for the ship that went first; in turn order the two ships are never beaten together; six cases worked by hand.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.

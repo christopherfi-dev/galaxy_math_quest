@@ -147,13 +147,14 @@ button{font-family:inherit}
   <h2>How to play</h2>
   <h3>The cards</h3>
   <div class="keyrow" id="keyrow"></div>
-  <p>The <b>rim</b> of a card is its kind: <b style="color:#7ed957">green is common</b>, <b style="color:#b388ff">purple is rare</b>, <b style="color:#ffd23f">gold is gold</b>. A common card cannot block a rare attack card. A common or a rare card cannot block a gold one.</p>
+  <p>The <b>rim</b> of a card is its kind: <b style="color:#7ed957">green is common</b>, <b style="color:#b388ff">purple is rare</b>, <b style="color:#ffd23f">gold is epic</b>. A common card cannot block a rare attack card. A common or a rare card cannot block an epic one.</p>
   <h3>A round</h3>
   <ol>
     <li>A card is an order to your ship. One player goes first and gives an order. The other sees it, then answers. You take turns to go first.</li>
     <li>A Spy acts first. It gets past the shield. A policeman stops it.</li>
     <li>Hearts repair.</li>
     <li>Both ships attack. Your attack is the AP of all your working parts, plus your card. The page adds it up.</li>
+    <li>The attack of the player who went first lands first. A ship that loses its last part does not strike back.</li>
     <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
     <li>With no shield, <b>you choose which of your parts take the hit</b>. The hit comes as blocks of ten, five and one. Tap a part to send it the lit block. Tap another block to light it. "Break a block" makes the lit block into smaller ones.</li>
   </ol>
@@ -274,6 +275,7 @@ var SHORT={'Engine Core':'Engine','Navigation':'Navigation','Shield Generator':'
 /* Every open point of the rules sheet, and every working guess, is a switch. The first value is the default. */
 var SWITCHES=[
  {key:'guard',label:'Who puts a card down first',from:'Marc, 22 November: one player leads, the other answers',values:[['lead','One player leads, the other answers. They swap each round.'],['swap','Both together. A Guard may be swapped in when a Spy is turned over.'],['blind','Both together. A Guard is put down as a guess.']]},
+ {key:'bothFall',label:'Whose attack lands first',from:'Marc, 22 November: attacks land in turn order; a ship that loses its last part does not strike back',values:[['turn','The attack of the player who went first lands first. A ship that loses its last part does not strike back.'],['nobody','Both attacks land together. If both ships lose their last part, nobody wins.']]},
  {key:'spies',label:'Spy cards in each deck',from:'Marc, 22 November: one Spy card each',values:[[1,'1, drawn at random from the seven'],[7,'all 7']]},
  {key:'guards',label:'Guard (Policeman) cards in each deck',from:'Marc, 22 November: at least as many as Spy cards, better more',values:[[2,'2'],[1,'1']]},
  {key:'loseCard',label:'Engine or Navigation lost: "lose 1 card"',from:'rules sheet 5',values:[['once','One card is thrown away, once'],['smaller','The hand is one card smaller']]},
@@ -284,8 +286,8 @@ var SWITCHES=[
  {key:'shieldIsHealing',label:'Cards that add to the Main Shield count as',from:'a guess',values:[[true,'repair (need the Power Module)'],[false,'defence (need the Shield Generator)']]},
  {key:'upgrades',label:'Level 2 upgrade cards are in the decks',from:'a guess',values:[[true,'Yes'],[false,'No']]},
  {key:'roundLimit',label:'A battle ends with no winner after',from:'a guess',values:[[60,'60 rounds'],[30,'30 rounds']]},
- {key:'kindBlock',label:'A block card stops an attack card only of its own kind, or a lower one',from:'Marc, 22 November: common cannot block rare; common and rare cannot block gold',values:[[true,'Yes'],[false,'No: any block card works']]},
- {key:'kindGuard',label:'The same for a Guard against a Spy card',from:'not said yet',values:[[false,'No: any Guard stops any Spy'],[true,'Yes: a common Guard stops only a common Spy']]},
+ {key:'kindBlock',label:'A block card stops an attack card only of its own kind, or a lower one',from:'Marc, 22 November: common cannot block rare; common and rare cannot block epic',values:[[true,'Yes'],[false,'No: any block card works']]},
+ {key:'kindGuard',label:'The same for a Guard against a Spy card',from:'Marc, 22 November: any Guard stops any Spy',values:[[false,'No: any Guard stops any Spy'],[true,'Yes: a common Guard stops only a common Spy']]},
  {key:'cpu',label:'The computer player',from:'not a rule: how hard the enemy plays',values:[['gentle','Gentle: it picks its cards and its targets at random'],['clever','Clever: it plays its best card, and its Spy goes for your Weapons']]}
 ];
 function defaults(){var o={};SWITCHES.forEach(function(s){o[s.key]=s.values[0][0];});return o;}
@@ -331,9 +333,11 @@ function needOf(S,op){
 }
 function opWorks(S,pl,o){var n=needOf(S,o.op);return !n||has(pl,n);}
 function isSpy(id){return CARD[id].type==='spy';}
-var RANK={common:0,rare:1,epic:2},KINDWORD={common:'common',rare:'rare',epic:'gold'};
+var RANK={common:0,rare:1,epic:2},KINDWORD={common:'common',rare:'rare',epic:'epic'},AKIND={common:'a common',rare:'a rare',epic:'an epic'};
+/* Marc, 22 November: attacks land in turn order. That needs a leader, so it holds only when one player leads and the other answers. */
+function turnOrder(S){return S.opts.bothFall==='turn'&&S.opts.guard==='lead';}
 function rank(id){var r=RANK[CARD[id].rarity];return r===undefined?0:r;}
-/* Marc, 22 November: a common card cannot block a rare attack card; a common or a rare card cannot block a gold one.
+/* Marc, 22 November: a common card cannot block a rare attack card; a common or a rare card cannot block an epic one.
    It compares the two cards on the table. A ship's plain attack, with no attack card, can be blocked by any block card. */
 function outranked(S,mine,theirs){return S.opts.kindBlock&&CARD[theirs].type==='attack'&&rank(mine)<rank(theirs);}
 function guardTooLow(S,guard,spy){return S.opts.kindGuard&&rank(guard)<rank(spy);}
@@ -343,7 +347,7 @@ function isGuard(id){return CARD[id].type==='guard';}
 /* startRound: S.cur holds the round in progress. picks are hand positions. */
 function startRound(S,pick0,pick1){
  var c=[S.P[0].hand[pick0],S.P[1].hand[pick1]];
- S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],lostNow:[[],[]],pending:[],lines:[],step:0};
+ S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],noStrike:[false,false],lostNow:[[],[]],pending:[],lines:[],step:0};
  return S.cur;
 }
 /* swap mode: may player i swap a Guard in for the card they put down? */
@@ -360,9 +364,11 @@ function swapBoth(S,want){var h=[canSwap(S,0),canSwap(S,1)];for(var i=0;i<2;i++)
 /* the ordered steps of a round, after both cards are final */
 function steps(S){
  var a=[{k:'guard'}],i,j;
- for(i=0;i<2;i++){if(isSpy(S.cur.card[i]))a.push({k:'spy',a:i});}
+ var first=turnOrder(S)?S.leader:0,who=[first,1-first];
+ for(i=0;i<2;i++){if(isSpy(S.cur.card[who[i]]))a.push({k:'spy',a:who[i]});}
  for(i=0;i<2;i++){var ops=CARD[S.cur.card[i]].ops;for(j=0;j<ops.length;j++){if(!/^(atk_|block|spy|guard)/.test(ops[j].op))a.push({k:'own',a:i,o:j});}}
- a.push({k:'attack'});a.push({k:'land',d:1});a.push({k:'land',d:0});a.push({k:'end'});
+ /* the hit on the player who answered lands first, when attacks land in turn order */
+ a.push({k:'attack'});if(turnOrder(S)){a.push({k:'land',d:1-S.leader});a.push({k:'land',d:S.leader});}else{a.push({k:'land',d:1});a.push({k:'land',d:0});}a.push({k:'end'});
  return a;
 }
 function hit(S,side,idx,n){var p=S.P[side].parts[idx],before=p.hp;p.hp=Math.max(0,p.hp-n);if(before>0&&p.hp===0)lose(S,side,p.part);return {before:before,after:p.hp};}
@@ -383,6 +389,7 @@ function need(S,st){
  var me,foe,o,al;
  if(st.k==='spy'){
   if(S.cur.stopped[st.a])return null;
+  if(turnOrder(S)&&beaten(S.P[st.a]))return null;
   o=CARD[S.cur.card[st.a]].ops[0];foe=S.P[1-st.a];al=aliveIdx(foe);
   if(o.parts>=5||al.length<=o.parts)return null;
   return {who:st.a,type:'targets',side:1-st.a,count:o.parts,among:al,n:o.n};
@@ -400,6 +407,7 @@ function need(S,st){
  if(st.k==='land'){
   var d=st.d,inc=S.cur.through[d];me=S.P[d];
   if(inc<=0||shieldWorks(S,me))return null;
+  if(turnOrder(S)&&beaten(S.P[1-d]))return null;
   al=aliveIdx(me);if(al.length<=1)return null;
   return {who:d,type:'amounts',side:d,among:al,total:inc,limit:false,verb:'split'};
  }
@@ -430,11 +438,12 @@ function run0(S,st,ch){
  var R={lines:[],sums:[]},cur=S.cur,i,me,foe,o,c,r,name=['You','The enemy'];
  function sum(side,what,label,before,change,answer,kind){R.sums.push({side:side,what:what,label:label,before:before,change:change,answer:answer,kind:kind});}
  if(st.k==='guard'){
-  for(i=0;i<2;i++){if(isGuard(cur.card[i])){if(isSpy(cur.card[1-i])&&guardTooLow(S,cur.card[i],cur.card[1-i])){R.lines.push((i?'The enemy\'s':'Your')+' Guard is '+KINDWORD[CARD[cur.card[i]].rarity]+'. It cannot stop a '+KINDWORD[CARD[cur.card[1-i]].rarity]+' Spy.');}else if(isSpy(cur.card[1-i])){cur.stopped[1-i]=true;R.lines.push((i?'The enemy\'s':'Your')+' Guard stops the Spy.');}else{R.lines.push((i?'The enemy\'s':'Your')+' Guard has no Spy to stop.');}}}
+  for(i=0;i<2;i++){if(isGuard(cur.card[i])){if(isSpy(cur.card[1-i])&&guardTooLow(S,cur.card[i],cur.card[1-i])){R.lines.push((i?'The enemy\'s':'Your')+' Guard is '+KINDWORD[CARD[cur.card[i]].rarity]+'. It cannot stop '+AKIND[CARD[cur.card[1-i]].rarity]+' Spy.');}else if(isSpy(cur.card[1-i])){cur.stopped[1-i]=true;R.lines.push((i?'The enemy\'s':'Your')+' Guard stops the Spy.');}else{R.lines.push((i?'The enemy\'s':'Your')+' Guard has no Spy to stop.');}}}
   return R;
  }
  if(st.k==='spy'){
   if(cur.stopped[st.a])return R;
+  if(turnOrder(S)&&beaten(S.P[st.a])){R.lines.push((st.a?'The enemy\'s':'Your')+' ship is beaten. Its Spy does nothing.');return R;}
   o=CARD[cur.card[st.a]].ops[0];foe=S.P[1-st.a];var al=aliveIdx(foe),tg=(o.parts>=5||al.length<=o.parts)?al:ch;
   tg.forEach(function(ix){r=hit(S,1-st.a,ix,o.n);R.lines.push((st.a?'The enemy\'s':'Your')+' Spy hits '+(st.a?'your ':'their ')+SHORT[foe.parts[ix].part]+': '+r.before+' to '+r.after+'.');sum(1-st.a,'hp',SHORT[foe.parts[ix].part],r.before,-o.n,r.after,'spy');});
   if(!tg.length)R.lines.push('The Spy finds no part to hit.');
@@ -468,7 +477,7 @@ function run0(S,st,ch){
     else if(q.op==='atk_per_part'){bonus+=q.n*aliveIdx(me).length;how='perpart';}
     else if(q.op==='atk_double'){bonus+=ap;how='double';}
     else if(q.op==='atk_round100'){bonus+=(100-ap%100)%100;how='round100';}
-    else if(/^block/.test(q.op)&&outranked(S,cur.card[i],cur.card[1-i])){R.lines.push((i?'The enemy\'s ':'Your ')+c.name+' is '+KINDWORD[c.rarity]+'. It cannot block a '+KINDWORD[CARD[cur.card[1-i]].rarity]+' attack card.');}
+    else if(/^block/.test(q.op)&&outranked(S,cur.card[i],cur.card[1-i])){R.lines.push((i?'The enemy\'s ':'Your ')+c.name+' is '+KINDWORD[c.rarity]+'. It cannot block '+AKIND[CARD[cur.card[1-i]].rarity]+' attack card.');}
     else if(q.op==='block'){blk+=q.n;}
     else if(q.op==='block_per_card'){blk+=q.n*otherCards(S,i);}
     else if(q.op==='block_all'){blk=-1;}
@@ -485,6 +494,8 @@ function run0(S,st,ch){
  if(st.k==='land'){
   var d=st.d,inc=cur.through[d];me=S.P[d];var whose=d?'The enemy\'s':'Your';
   if(inc<=0)return R;
+  /* the other attack landed first and took this attacker's last part: no strike back */
+  if(turnOrder(S)&&beaten(S.P[1-d])){cur.noStrike[d]=true;R.lines.push((d?'Your':'The enemy\'s')+' ship is beaten before it can strike back.');return R;}
   if(shieldWorks(S,me)){var sb=me.shield;if(inc>sb){me.shield=0;R.lines.push(whose+' Main Shield breaks. It soaks up the whole attack.');}else{me.shield=sb-inc;R.lines.push(whose+' Main Shield: '+sb+' to '+me.shield+'.');}sum(d,'shield','Main Shield',sb,-inc,me.shield,'land');return R;}
   var al2=aliveIdx(me),alloc=[0,0,0,0,0];if(al2.length===1){alloc[al2[0]]=inc;}else if(al2.length>1){alloc=ch;}
   me.parts.forEach(function(q,ix){if(alloc[ix]>0){r=hit(S,d,ix,alloc[ix]);R.lines.push(whose+' '+SHORT[q.part]+' takes '+alloc[ix]+': '+r.before+' to '+r.after+'.');sum(d,'hp',SHORT[q.part],r.before,-alloc[ix],r.after,'land');}});
@@ -499,7 +510,7 @@ function run0(S,st,ch){
    draw(S,me);
   }
   var b0=beaten(S.P[0]),b1=beaten(S.P[1]);
-  S.log.push({round:S.round,card:cur.card.slice(),stopped:cur.stopped.slice(),atk:cur.atk.slice(),bonus:cur.bonus.slice(),block:cur.block.slice(),through:cur.through.slice(),snap:cur.snap,lost:cur.lostNow,lines:cur.lines.concat(R.lines)});
+  S.log.push({round:S.round,card:cur.card.slice(),stopped:cur.stopped.slice(),atk:cur.atk.slice(),bonus:cur.bonus.slice(),block:cur.block.slice(),through:cur.through.slice(),noStrike:cur.noStrike.slice(),leader:S.leader,snap:cur.snap,lost:cur.lostNow,lines:cur.lines.concat(R.lines)});
   if(b0&&b1)S.over={winner:-1,why:'Both ships are beaten in the same round. Nobody wins.'};
   else if(b1)S.over={winner:0,why:'All five enemy parts are at 0. You win.'};
   else if(b0)S.over={winner:1,why:'All five of your parts are at 0. The enemy wins.'};
@@ -580,7 +591,7 @@ function autoRound(S){
  steps(S).forEach(function(st){var req=need(S,st),ch=req?cpuChoose(S,req):null;var R=run(S,st,ch);if(S.cur)S.cur.lines=S.cur.lines.concat(R.lines);});
 }
 return {PARTS:PARTS,SHORT:SHORT,SWITCHES:SWITCHES,defaults:defaults,load:load,card:card,newBattle:newBattle,startRound:startRound,canSwap:canSwap,doSwap:doSwap,swapBoth:swapBoth,steps:steps,need:need,validate:validate,run:run,
- cpuPick:cpuPick,cpuChoose:cpuChoose,autoRound:autoRound,shipAP:shipAP,has:has,aliveIdx:aliveIdx,handSize:handSize,shieldWorks:shieldWorks,cardCount:cardCount,needOf:needOf,opWorks:opWorks,isSpy:isSpy,isGuard:isGuard,canHurt:canHurt,rank:rank,outranked:outranked,guardTooLow:guardTooLow,KINDWORD:KINDWORD,roomOf:roomOf,otherCards:otherCards,rand:rand};
+ cpuPick:cpuPick,cpuChoose:cpuChoose,autoRound:autoRound,shipAP:shipAP,has:has,aliveIdx:aliveIdx,handSize:handSize,shieldWorks:shieldWorks,cardCount:cardCount,needOf:needOf,opWorks:opWorks,isSpy:isSpy,isGuard:isGuard,canHurt:canHurt,rank:rank,outranked:outranked,guardTooLow:guardTooLow,KINDWORD:KINDWORD,AKIND:AKIND,turnOrder:turnOrder,roomOf:roomOf,otherCards:otherCards,rand:rand};
 })();
 /* ENGINE-END */
 
@@ -599,7 +610,7 @@ var TYPE={
  guard:{name:'POLICE',c:'#5b8cff',d:'#101c40',needs:'Stops a Spy card'},
  upgrade:{name:'UPGRADE',c:'#ffd23f',d:'#2a2210',needs:'Makes one part Level 2'}
 };
-var RAR={common:{name:'COMMON',c:'#7ed957',n:1},rare:{name:'RARE',c:'#b388ff',n:2},epic:{name:'GOLD',c:'#ffd23f',n:3}};
+var RAR={common:{name:'COMMON',c:'#7ed957',n:1},rare:{name:'RARE',c:'#b388ff',n:2},epic:{name:'EPIC',c:'#ffd23f',n:3}};
 var KIND={};DATA.kinds.forEach(function(k){KIND[k.key]=k;});
 var PARTCODE={'Engine Core':'engine','Navigation':'nav','Shield Generator':'gen','Weapons System':'weapons','Power Module':'power'};
 
@@ -841,7 +852,9 @@ function shipSVG(side){
   if(weak)o+='<path d="M'+(cx+214)+','+(cy-136)+' l-10,24 l20,8 l-12,22 M'+(cx-240)+','+(cy+126)+' l14,-14 l-18,-4" fill="none" stroke="#e0f2fe" stroke-width="3"/>';
   o+='</g>';}
  o+='<g id="shl'+side+'" pointer-events="none"><rect x="'+(cx-132)+'" y="'+(cy-191)+'" width="264" height="38" rx="19" fill="'+(on?'#0c4a6e':'#1f2937')+'" stroke="'+(on?'#7dd3fc':'#4b5563')+'" stroke-width="3"/><text x="'+cx+'" y="'+(cy-164)+'" text-anchor="middle" font-size="22" font-weight="900" fill="'+(on?'#fff':'#9ca3af')+'" class="sht">'+(pl.shield>0?(on?'MAIN SHIELD '+pl.shield:'SHIELD OFF ('+pl.shield+')'):'SHIELD BROKEN')+'</text></g>';
- o+='<text x="'+(cx+d*-338)+'" y="'+((side&&!U.L.land)?s.cy-176:s.cy+196)+'" text-anchor="'+(side?'end':'start')+'" font-size="20" font-weight="900" fill="'+trim+'" opacity=".9">'+(side?'THE ENEMY':'YOUR SHIP')+'</text>';
+ var hf=B.turnOrder(S)&&S.leader===side&&U.phase!=='roundend'&&U.phase!=='over';
+ o+='<text x="'+(cx+d*-338)+'" y="'+((side&&!U.L.land)?s.cy-176:s.cy+196)+'" text-anchor="'+(side?'end':'start')+'" font-size="20" font-weight="900" fill="'+trim+'" opacity=".9">'+(side?'THE ENEMY':'YOUR SHIP')+((hf&&!(side&&!U.L.land))?(side?'  \u2022  HITS FIRST':'  \u2022  YOU HIT FIRST'):'')+'</text>';
+ if(hf&&side&&!U.L.land)o+='<text x="'+(cx+d*-338)+'" y="'+(s.cy-153)+'" text-anchor="end" font-size="18" font-weight="900" fill="'+trim+'" opacity=".9">HITS FIRST</text>';
  return o+'</g>';
 }
 function tableCards(){
@@ -903,7 +916,7 @@ function handNote(h){
  if(c.type==='spy'&&lead&&S.leader===0)note='You go first, so the enemy may answer with a policeman.';
  if(c.ops.some(function(o){return /^block/.test(o.op);})){
   if(seen&&B.outranked(S,c.id,seen)){note='The enemy\'s order is '+B.KINDWORD[B.card(seen).rarity]+'. A '+B.KINDWORD[c.rarity]+' card cannot block it.';tag='cannot block';}
-  else if(S.opts.kindBlock&&!seen&&c.rarity!=='epic'&&!note)note='A '+B.KINDWORD[c.rarity]+' card cannot block a '+(c.rarity==='common'?'rare or gold':'gold')+' attack.';
+  else if(S.opts.kindBlock&&!seen&&c.rarity!=='epic'&&!note)note='A '+B.KINDWORD[c.rarity]+' card cannot block '+(c.rarity==='common'?'a rare or an epic':'an epic')+' attack card.';
  }
  return {note:note,tag:tag};
 }

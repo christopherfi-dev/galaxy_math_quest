@@ -58,11 +58,11 @@ You said: "You could tell right away if something is a shield or attack or the p
   - a spy in a hat and dark glasses
   - a policeman holding a STOP sign
   - three arrows up: upgrade
-- **A thick rim says the kind:** green for common, purple for rare, gold for gold. Those are your 2023 colours.
+- **A thick rim says the kind:** green for common, purple for rare, gold for epic. Those are your 2023 colours.
 - **One big number** in a white circle.
 - **Every symbol is a new drawing.** The five ideas are yours; nothing is copied. Your 2023 Spy was a character from a comic strip, so the new one is our own.
 - **The first drawings are gone.** Each card had its own small picture (a comet, a rocket, a net). They were pretty, and you could not tell the cards apart.
-- **The words on the card say "gold",** as you do. The files still say "epic" inside.
+- **The words on the card say "epic".** [You, 22 November: "epic" everywhere, never "gold".] The rim stays gold in colour.
 
 ## 4. The ship parts
 
@@ -156,7 +156,7 @@ I did not wait for your answers to the review. I used my pick each time and mark
 - **One player leads and the other answers.** Who leads round 1 is chance; after that they take turns. So a Guard is played as the answer to a Spy.
 - **One Spy card in each deck,** for now. The seven Spy cards here are seven designs; a deck draws one of them.
 - **At least as many Guards as Spies, better more.** The practice battle puts 2 Guards in each deck.
-- **A block card stops an attack card only of its own kind, or a lower one.** Common cannot block rare. Common and rare cannot block gold (epic). So the two gold attack cards, Doubling Drive and Hundred Cannon, can be stopped only by the gold Vanishing Act.
+- **A block card stops an attack card only of its own kind, or a lower one.** Common cannot block rare. Common and rare cannot block epic. So the two epic attack cards, Doubling Drive and Hundred Cannon, can be stopped only by the epic Vanishing Act.
 - Section 7.1 was written before this. With one Spy each, a ship loses its Weapons early in about 2 battles in 100, not 32.
 
 ### 7.4 Two names
