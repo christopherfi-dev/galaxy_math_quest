@@ -24,12 +24,12 @@ The scene is 9.5 seconds. Then a half-second fade hands over to the game: 10 sec
 
 | Time | What the child sees |
 |---|---|
-| 0 – 0.6 s | Space, exactly as the game draws it. The cockpit closes round the picture: two struts, a top rim and a dashboard, in the ship's own white, red and dark blue. The ship seen from outside fades away: we are in it now. |
+| 0 – 0.6 s | Space, exactly as the game draws it. The cockpit closes round the picture: two struts and a dashboard, in the ship's own white, red and dark blue. The ship seen from outside fades away: we are in it now. |
 | 0.6 – 2.8 s | Through the windscreen: Voltara ahead, growing. The dive. The planet grows past the edges. We head for the night side, to the spot where the game shows the city's small lights. The trade beacon is left behind. |
 | 2.8 – 4.2 s | Over the night side. **The city is the same skyline the child will see from the meadow:** twelve dark towers, with the three streets' colours on their roofs (Home Street, Market Street, Factory Row). Its windows are lit. They flicker and go out, one by one. The Sparkling River runs in front. Glowing trees dot the dark land. |
 | 4.1 – 6 s | Down through cotton-candy clouds: pink, blue and white, the game's own cloud shape. At 5.2 s the windscreen is all cloud; behind it the scene changes from space to sky. |
-| 6 – 9 s | **The flight.** Out of the clouds, low and fast over woods of glowing trees, banking left and then right. The Sparkling River is ahead, and the dark city beyond it. We slow, straighten and come down. |
-| 9 – 9.5 s | We are down on the Landing Meadow. The cockpit opens (it slides away), and the ship is there, standing where the game stands it. The picture is now the game's own meadow picture. |
+| 6 – 8.9 s | **The flight.** Out of the clouds, low and fast over woods of glowing trees, mushrooms and flowers, banking left and then right. The Sparkling River is ahead, and the dark city beyond it. We slow, straighten and come down. At 8.9 s we touch down: the view dips once on the ship's legs and settles. |
+| 9 – 9.5 s | The cockpit opens (it slides away), and the ship is there, standing where the game stands it. The picture is now the game's own meadow picture. |
 | 9.5 – 10 s | The hand-over: the fly-in fades out over the game's meadow. |
 
 **The other view is kept as one setting** (`view: 'outside'`): the ship seen from outside all the way, as in the first draft.
@@ -49,7 +49,7 @@ The scene is 9.5 seconds. Then a half-second fade hands over to the game: 10 sec
 - **Everything else is the game's own drawing.** I copied the shapes and colours of `spaceBack`'s stars, `rocket`, the trade beacon, `farCity`, `towerDraw`, `vSky`, `vFar`, `drawMeadow`, `alienTree`, `fluff` and `frontMeadow` into the page. Each thing is painted once as a flat card, **at this picture's own size and with the game's own line weights**.
 - **For the landing the cards stand in 3D, like a paper theatre,** at the distances the game's picture implies. The camera flies down to the exact view the game draws. **That is why the last frame matches: it is the same picture, seen from the same place.**
 - **It looks drawn because it is the game's drawing**, not a 3D model of it.
-- **Size:** the piece the game would use is 56.7 KB (the target was under 60 KB). The whole page is 64 KB.
+- **Size:** the piece the game would use is 57.4 KB (the target was under 60 KB).
 - **Nothing is made anew in a frame.** One texture, one buffer, three small programs. The cards are painted again only if the picture changes size (an iPad turned).
 
 ## 4. For the older iPad
@@ -135,7 +135,14 @@ Its minors, and what happened to each:
 - **Taken:** the glowing-tree dots were brighter than the windows (now fewer and dimmer, and none in front of the city); the tower's legs were too thin (now the game's widths); the top of each trunk lacked the game's soft light (added); the ship sat on a building at 2.6 s (it is gone into the planet before the city shows); far lights showed as blocks at 2.2 s (they fade sooner); the pale path on the grass showed as an oval from above (it shows only at the very end); the city was lit only briefly (the windows now stay lit about a quarter second longer).
 - **Left, written down as limits:** the river stays lit; the buildings lean outward when seen from high up (true perspective on flat art; it called that taste).
 
-**Round 3** (the first-person version): see the end of this section, added when its report came.
+**Round 3** (the same reviewer, the first-person version): **"Nothing above MINOR in the pictures supplied."** The cockpit "reads as a cockpit, not as a frame or a menu", covers about a fifth of the picture at every size, and the story reads "slightly better than round 2". The last frame is still within half a pixel of the game's at all three sizes.
+
+Its minors, and what happened to each:
+- **Taken:** there was no touchdown before the cockpit opened (the flight now ends at 8.9 s with a small dip and settle, and only then does the cockpit open); the top rim read as a window's title bar (removed: the struts run off the top); the last lit windows sat against the struts (the city is kept inside the windscreen); the woods were thin (more trees, and glowing mushrooms and flowers on the ground we fly over); the dark front plants showed as black marks in the middle of the meadow from above (they come in only as we come down to them); the cockpit's outlines were soft (sharper); trees stood on the city's bank (removed in this view).
+- **Left, written down as limits:** the river stays lit; the ship is see-through for a quarter second as it fades in after landing; from high up the meadow looks like a small model of itself; the far bank is a wide green plain until we are low.
+- **I checked these last fixes myself, as pictures.** The critic has not seen them.
+
+**What no picture can show, and the critic said so each time:** how it moves. Whether the banking feels like flying or feels like too much, and whether the landing feels like a landing, can only be judged on a screen.
 
 ## 8. Decisions
 
