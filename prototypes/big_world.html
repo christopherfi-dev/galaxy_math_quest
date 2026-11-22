@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<!-- Nothing leaves the iPad: this rule stops the page from loading or sending anything at all. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<title>Planet Algora: the big world</title>
+<!--
+  Galaxy Math Quest: THE BIG WORLD.  One planet to explore from above.   [Handoff: HANDOFF_Big_World_2026-11-22.md]
+  Planet Algora, Galaxy Patternox. Design: proposals/GMQ_Big_World_Design_v1_2026-11-22.md.
+  One file. No library, no pictures, no network. Everything is drawn by code.
+  It keeps its own save (gmq-bigworld-v1). It never writes the game's save.
+
+  HOW IT IS LAID OUT, for the next person or AI:
+    MAP-BEGIN .. MAP-END      the map's letters. Painted by checks/bigworld_map_build.js. Do not edit by hand.
+    NUM-BEGIN .. NUM-END      every number rule: the machines' rules, the pouch, the pan, the stepping stones. Checked on 20,000 seeds by checks/bigworld_numbers_check.js.
+    WORLD-BEGIN .. WORLD-END  the world as data: regions, things, beings, finds, gates, needs. bwCheck() reads it and lists every fault.
+    The rest is the engine: drawing, walking, the reading card, the desk, the tasks, saving.
+  THE RULES IT KEEPS (CLAUDE.md and the handoff):
+    The picture shows the task. The desk holds only words, boxes and buttons.
+    The game never does the child's sum: with real pips the child says what will come out BEFORE the machine runs.
+    A need goes on the list only when the child talked to someone or looked at something.
+    No main job needs a secret. Every gate on the main road has a second way.
+-->
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #060912; color: #e8eef8; font-family: 'Andika', 'Trebuchet MS', 'Segoe UI', sans-serif; font-size: 17px; line-height: 1.38; -webkit-text-size-adjust: 100%; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+#app { position: fixed; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+#stage { position: relative; overflow: hidden; background: #060912; min-height: 0; min-width: 0; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+#desk { background: #0b1322; border-top: 2px solid #33476a; display: flex; flex-direction: column; gap: 6px; padding: 8px 12px 10px; height: clamp(300px, 42vh, 470px); height: clamp(300px, 42dvh, 470px); min-height: 0; overflow: hidden; }
+@media (orientation: landscape) and (min-width: 900px) {
+  #app { grid-template-columns: minmax(0, 1fr) clamp(330px, 31vw, 400px); grid-template-rows: minmax(0, 1fr); }
+  #desk { border-top: 0; border-left: 2px solid #33476a; height: auto; padding: 10px 12px; }
+}
+@media (max-width: 560px) { html, body { font-size: 15px; } #desk { padding: 6px 8px 8px; gap: 5px; height: clamp(300px, 48vh, 400px); height: clamp(300px, 48dvh, 400px); }
+  #desk.busy #log { display: none; } #task { padding: 7px 9px; gap: 5px; } #task h3 { display: none; } #task .pq { display: none; } #task .msg:empty { display: none; } #task .dim { font-size: .82rem; line-height: 1.25; } .box { min-height: 36px; font-size: 1.15rem; } #pad { gap: 4px; } .brow { gap: 5px; } }
+/* over the picture: the place name and three small buttons. Nothing else covers the picture, but the reading card. */
+#hud { position: absolute; left: 8px; right: 8px; top: 8px; display: flex; gap: 6px; align-items: flex-start; pointer-events: none; }
+#place { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: clamp(1rem, 2.6vw, 1.45rem); line-height: 1.1; color: #ffb23e; background: rgba(6, 9, 18, .82); padding: 5px 11px; border-radius: 10px; }
+#stonesbar { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-size: .8rem; color: #a9b9d0; background: rgba(6, 9, 18, .82); padding: 4px 9px; border-radius: 10px; white-space: nowrap; }
+#stonesbar b { color: #ffd25e; letter-spacing: .12em; }
+#hudr { margin-left: auto; display: flex; gap: 6px; pointer-events: auto; }
+.hb { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: .86rem; background: rgba(6, 9, 18, .86); color: #e8eef8; border: 1.5px solid #4a5d80; border-radius: 10px; padding: 7px 10px; min-height: 36px; }
+.hb.on { background: #6db3ff; color: #08121f; border-color: #6db3ff; }
+.hb.new::after { content: ' ●'; color: #ff8f6b; }
+/* the reading card: words wait on the picture until OK */
+#read { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); width: min(94%, 640px); background: rgba(8, 13, 26, .95); border: 2px solid #ffb23e; border-radius: 14px; padding: 10px 14px 10px; display: flex; flex-direction: column; gap: 8px; }
+#readwho { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: #ffb23e; }
+#readwho:empty { display: none; }
+#readtext { font-size: 1.16rem; line-height: 1.36; color: #fff; }
+#readrow { display: flex; gap: 8px; align-items: center; }
+#readn { color: #a9b9d0; font-size: .8rem; margin-right: auto; }
+.btn { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; background: #6db3ff; color: #08121f; border: 0; border-radius: 10px; padding: 9px 15px; font-size: 1rem; min-height: 42px; }
+.btn.quiet { background: transparent; color: #6db3ff; border: 1.5px solid #6db3ff; }
+.btn.warm { background: #ffb23e; color: #2b1a00; }
+.btn:disabled { opacity: .4; }
+/* the desk */
+#log { min-height: 3.1em; display: flex; flex-direction: column; justify-content: flex-end; gap: 1px; flex: 0 0 auto; }
+#log .you { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; color: #6db3ff; text-transform: uppercase; letter-spacing: .04em; font-size: .8rem; }
+#log .new { font-size: 1.02rem; color: #fff; }
+#words { display: flex; flex-direction: column; gap: 6px; flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.wrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.wlab { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: #a9b9d0; width: 100%; }
+.word { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: .98rem; background: #1c2c46; color: #e8eef8; border: 1.5px solid #4a5d80; border-radius: 999px; padding: 7px 13px; min-height: 40px; }
+.word.verb { border-radius: 10px; }
+.word.on { background: #ffb23e; color: #2b1a00; border-color: #ffb23e; }
+.word.thing { border-color: #6fd08a; }
+#cmdrow { display: flex; gap: 6px; flex: 0 0 auto; }
+#cmd { flex: 1; min-width: 0; font: inherit; font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 8px 10px; border: 2px solid #4a5d80; border-radius: 10px; background: #132035; color: #e8eef8; -webkit-user-select: text; user-select: text; }
+#cmd::placeholder { text-transform: none; font-weight: 400; letter-spacing: 0; color: #7f90aa; font-family: 'Andika', 'Trebuchet MS', sans-serif; }
+/* a task, or a list, on the desk: in place of the word rows */
+#task { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; border: 2px solid #ffb23e; border-radius: 14px; padding: 9px 11px; }
+#task h3 { margin: 0; font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-size: 1rem; color: #ffb23e; }
+#task p { margin: 0; }
+#task .q { font-size: 1.04rem; }
+#task .dim { color: #a9b9d0; font-size: .88rem; }
+#task .msg { color: #ffd25e; min-height: 1.3em; }
+#task .field { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.box { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: 1.3rem; min-width: 3.4em; min-height: 42px; text-align: center; background: #132035; color: #fff; border: 2px solid #4a5d80; border-radius: 10px; padding: 4px 8px; }
+.box.on { border-color: #ffb23e; box-shadow: 0 0 0 2px rgba(255, 178, 62, .35); }
+.box:empty::before { content: '?'; color: #56688a; }
+.signs { display: flex; gap: 6px; }
+.signs .word { font-size: 1.3rem; min-width: 46px; padding: 4px 8px; border-radius: 10px; }
+#pad { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+#pad button { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: 1.15rem; min-height: 40px; background: #1c2c46; color: #e8eef8; border: 1.5px solid #4a5d80; border-radius: 9px; padding: 0; }
+#pad button[data-k="del"] { color: #ff9486; }
+.brow { display: flex; flex-wrap: wrap; gap: 6px; }
+.notes { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-size: .95rem; color: #cfe0f5; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.notes span { background: #132035; border: 1px solid #33476a; border-radius: 7px; padding: 1px 7px; white-space: nowrap; }
+.list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.list li { background: #132035; border: 1px solid #33476a; border-radius: 9px; padding: 6px 9px; font-size: .96rem; }
+.list li.done { color: #8fa3bf; text-decoration: line-through; }
+.list li small { display: block; color: #a9b9d0; font-size: .8rem; text-decoration: none; }
+.list li b { color: #ffd25e; }
+@media (max-width: 560px) { .word { padding: 6px 11px; min-height: 36px; } #pad button { min-height: 36px; } .btn { min-height: 38px; padding: 7px 12px; } #readtext { font-size: 1.05rem; } .hb { padding: 6px 8px; font-size: .78rem; } #stonesbar { display: none; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="cv" aria-label="The picture: Planet Algora"></canvas>
+    <div id="hud"><div id="place"></div><div id="stonesbar" hidden></div>
+      <div id="hudr"><button class="hb" id="b_map">Map</button><button class="hb" id="b_needs">Needs</button><button class="hb" id="b_ship">Ship</button></div></div>
+    <div id="read" hidden><div id="readwho"></div><div id="readtext"></div><div id="readrow"><span id="readn"></span><button class="btn quiet" id="readsay">Read to me</button><button class="btn" id="readok">OK</button></div></div>
+  </div>
+  <div id="desk">
+    <div id="log"></div>
+    <div id="words"></div>
+    <div id="task" hidden></div>
+    <div id="cmdrow"><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="none" placeholder="tap words, or tap the picture" aria-label="What you do"><button class="btn" id="go">Go</button></div>
+  </div>
+</div>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const PLANET = 'Planet Algora';          /* [Proposal] the name is Marc's to choose. It is used from here only. */
+const VERSION = 'big world 1';
+const KEY = 'gmq-bigworld-v1', GAMEKEY = 'gmq-station-sketch-v5';      /* its own save. The game's save is read for the cadet's name only, and never written. */
+
+/*MAP-BEGIN (painted by checks/bigworld_map_build.js; change that file, not these letters)*/
+const MAPW = 128, MAPH = 96;
+const MAP = [
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~.^^.^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~~~Dddd^^^.~~~~~~~~~~~~~~~...^^^pppppp~~~~~~~~~~~~~~~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~dddDdd^^^..~~~~~~~~~~.......^^^pppp^^pp~~~~~~~^^~~~~~~~~~~~~~~pp^^^..^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~dDdddd~~dddddDddd^^....~~~~~...........^^pppp^^ppp^~~~~pp^pp^ppp~~~~~~~pppp^^..^^cccc#cccccccccr~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~DdddddDdddddDddddd^^....................^^pppp^p^^^ppp^^pppppppp^^^^^pp^pppp^^..^^cccc#cccccccccccrcc#~~~~~~~~~~~~~~',
+'~~~~~~~~~~~dddddDdddddDdddddDd^^....................^^ppppppp^^^^^ppppppppppppppppp^^ppp^^..^^cccc#ccccrccccccccc##~~~~~~~~~~~~~',
+'~~~~~~~~~~DdddddDdddddDdddddDd^^t....t....t.........^^^ppp^ppp^pppppppppppppppppp^^ppppp^^..^^cccc#cccccrcccccccc###~~~~~~~~~~~~',
+'~~~~~~~~~ddDdddddDdddddDdddddD^^t..t.t..t.t..t......^^^ppp^p^p^pppppppppppppppppp^^ppppp^^..^^######cccccccccccccc#cr~~~~~~~~~~~',
+'~~~~~~~~dddddDdddddDdddddDdddd^^.t....t....t.........^^ppp^pp^^ppppppppppppppppp^p^ppppp^^..^^ccccc##ccccccccc###ccccc~~~~~~~~~~',
+'~~~~~~~~DdddddDdddddDdddddDddd^^.t..t.t..t.t.........^^pppppp^^pppppppppppppppppp^^^pppp^^..^^ccccc#ccccccccccc##ccccccc~~~~~~~~',
+'~~~~~~~dDdddddDdddddDdddddDddd^^..t....t....t........^^ppppp^^ppppppppppppppppp^p^pppppp^^..^^ccccc#cccccccccccc#cccccccc~~~~~~~',
+'~~~~~~~dddddDdddddDdddddDddddd^^t.t..t.t..t.t........^^ppppp^pp^ppppppppppppp^^^^^^ppppp^^..^^ccccc#cccrcccccccc##ccccccccccc~~~',
+'~~~~~~~dddDdddddDdddddDdddddDd^^...t....t....t.......^^ppp^pp^^^^^^^ppppp^p^p^pp^^pppppp^^..^^^cccc#ccccccccccccc####ccccccccc~~',
+'~~~~~~~dddDdddddDdddddDdddddDd^^.t.t..t.t..t.t.......^^pppppp^^p^^pppppp^^pp^^^ppp^^pppp^^..^^^cccc#ccccRRRRRRRRRcccc#ccccccrc~~',
+'~~~~~~~ddddDdddddDdddddDddddd^^t....t....t...........^^pppppppp^^^^pppp^^^pp^^^^^p^^pppp^^..c^^cccc#cccrRRRRRRRRRccccc#cccccccc~',
+'~~~~~~~DdddddDdddddDdddddDdd^^^t..t.t..t.t..t........^^pppp^^p^p^ppp^pp^^ppppp^^^^p^^ppp^^..c^^cccc#ccccRRRRRRRRRccccc#crcccccc~',
+'~~~~~~~dDdddddDdddd^^^^^^^^^^^^.t....t....t..........^^ppp^ppp^^p^pppp^^p^p^^^^p^p^^pppp^^..c^^cccc#ccccRRRRRRRRRccrccccccccccc~',
+'~~~~~~~^^^^^^^^^^^^^^^^^^^^^ddd.t..t.t..t.t..t.......^^ppp^^^^^p^p^^pp~~p^^p^^^^^p^ppppp^^..c^^cccc#ccccRRRRRRRRRccrcc#cccccccc~',
+'~~~~~~~^^^^^^^^^^^^^ddddddddddd..t....t....t........^^^ppppppppppppppp~~ppppppppppppppp^^^..c^^cccc#ccccRRRRRRRRRcccc#ccccccccc~',
+'~~~~~~~.t..t.t..t.t..t.t..t.t..t.t..t.t..t.t........^^^p^^^^^^p^^^^^pp~~pppp^^^^^^ppppp^^...c^^cccc#ccccRRRRRRRRRcccccccccccccc~',
+'~~~~~~~..t....t....t....t....t....t....t....t........^^^^^^^^^^^^^^.p.~~....^^^^^^^^^^^^^...c^^cccc#ccccccccccc#cccccccccccccc~~',
+'~~~~~~.t.t..t.t..t.t..t.t..t.t..t.t..t.t..t.t........^^^^...^^^^....ps~~s.......^^^^^^^^^...^^^cccccccrccccrcc#ccccccccccccccc~~',
+'~~~~~~....t....t....t....t....t....t....t....t........^^^...........ps~~s.............^^....^^cccccccccccccccc#cccccccccccccc~~~',
+'~~~~~~~.t.t..t.t..t.t..t.t..t.t..t.t..t.:::::t.........^^.........T.s~~~s........TT..^^^....^^ccccccccccccccrc#cccccccccccccc~~~',
+'~~~~~~~....t....t....t....t....t....t...:t..............T...........s~~~s...T........^^^....^^ccccc#ccccccccc#ccccccccccrcccc~~~',
+'~~~~~~~..t.t.......t.t..t.t..t.t..t.t..t:t..t........................s~~ssss................^^ccccc#ccccccc#ccccccccccccccccc~~~',
+'~~~~~~~t..............t....t....t....t..:.t...........T............ss~~~~~~~ssT.....T...T...^^cccccccccccc#cccccrccrcccc~~~~~~~~',
+'~~~~~~~t..t.....:.....t..t.t..t.t..t.t..:.t.^^...................ss~~~~~~~~~~~sT.T..........^^cccccccccccccccccccrccccc~~~~~~~~~',
+'~~~~~~..t.......:......t....t....t......:..t^^...............TTss~~~~~~~~~~~~~~~ss.T........^^cccc#cccccc#cccccccccccccc~~~~~~~~',
+'~~~~~~t.t..t.t..:....t.t..t.t..t........:t.t^^^............sT~~~~~~~~~~~~~~~~~~~~~sT........^^rccc#cccccc#cccrccccrccccccc~~~~~~',
+'~~~~~~...t....t.:..t....t....t..........:...^^^.........TTs~~~~~~~~~~~~~~~~~~~~~~~~~s.......^^crcr#cccccc#ccccccccccccccccc~~~~~',
+'~~~~~..t.t..t.t.:t.t..t.t..t.t....:::::::.t.t^^..........T~~~~~~~~~~~~~~~~~~~~~ss~~~~ss..T..^^crccc#ccccc#cccccccccccccrccc~~~~~',
+'~~~~~.....t....t:...t....t....t...:.....t....^^.........s~~~~~~~~~~~~~~~~~~~~~s.s~~~~~~s.T..^^cccccc#ccc##cccrrcccccccrrccc~~~~~',
+'~~~~~...t.t..t.t:::::::::::::::::::.....t..t.^^^........s~~~~sss~~~~~~~~~~~~~~~sT~~~~~~~s..^^^ccccccccccc######cccccrcccccc~~~~~',
+'~~~~~~t....t....t....:....t....t.........t....^^.......s~~~~~s.s~~~~~~~~~~~~~~~~~~~~~~~~s..^^cccccccccccc##cccc#ccccccc####~~~~~',
+'~~~~~~t..t.t..t.t..t.:..t.t..t.t..t.t..t.t..t.^^.......s~~~~~sss~~~~~~~~~~~~~~~~~~~~~~~~s..^^cccccccccccc#ccccc##ccccc#####~~~~~',
+'~~~~~~~t....t....t...:t....t....t....t....t...^^^......T~~~~~~~~~~~~~~~sssss~~~~~~~~~~~~sT.^^ccccccccccccc#cccc#ccccccc####~~~~~',
+'~~~~~~~t..t.t..t.t..t:t..t.t..t.t..t.t..t.t..t.^^......s~~~~~~~~~~~~~~s....s~~~~~~~~~~~~s..^^ccccccccccccr#ccc#cccccccccc#r~~~~~',
+'~~~~~~~.t....t.......:.t....t....t....t....t...^^......s~~~~~~~~~~~~~sT.....s~~~~~~~~~~s...^^ccccccccrcccc####cccccccccccrc~~~~~',
+'~~~~~~~~t..t.t.......:....t.t..t.t..t.t..t.t...^^.......s~~~~~~~~~~~~~s....s~~~~~~~~~~~sss.^cccccccccccccccrccrrccccccccccc~~~~~',
+'~~~~~~~~.t....t......:.......t....t....t....t.^^........s~~~~~~~~~~~~~~sTss~~~~~~~~~~~s~~~s.cccccccrccccccccccccccccccccccc~~~~~',
+'~~~~~~~~.t..t.t......:.....t.t..t.t..t.t..t.t.^^........s~~~~~~~~~~~~~~~~~~~~~~~~ssssss~~~~.cccccrcccccccccccccccccccccccc~~~~~~',
+'~~~~~~~~..t....t.....:........t....t....t....t^^......T..s~~~~~~~~~~~~~~~~~~~~~~s......s~~~~~ccccccccccccccccccccccccccccc~~~~~~',
+'~~~~~~~~t.t..t.t.....::::::.t.t..t.t.......t.t^^.........s~~~~~~~~~~~~~~~~~~~~~~~s......ss~~~~cccccccccccrcccccccrcccccccc~~~~~~',
+'~~~~~~~....t....t.........:....t.........t....^^........T.s~~~~~~~~~~~~~~~~~~~~~~s........s~~~~~cccccccccccccccccccccccccc~~~~~~',
+'~~~~~~~..t.t..t.t..t.t..t.:..t.t..t......t..t.^^......T....s~~~~~~~~~~~~~~~~~~~~~s....T.....c~~~~ccrrccccccccccccccccccccc~~~~~~',
+'~~~~~~.t....t....t....t...:t....t.........t...#^......T.T..ss~~~~~~~~~~~~~~~~~~~s....T......cc~~~~cccccccccccccccccccccccc~~~~~~',
+'~~~~~..t..t.t..t.t..t.t..t:t..t.t..t.t..t.t..t#..........ss~~~s~~~~~~~~~~~~~~~~s............ccc~~~~~cccccccccccccccrcccccc~~~~~~',
+'~~~~~...t....t....t....t..:.t....t....t....t..#.........s~~~~~Tsss~~~~~~~~~~~~s.T...T....T..ccccc~~~~ccccccccccccccccccccc~~~~~~',
+'~~~~~.t.t..t.t..t.t..t.t..:.t..t.t..t.t..t.t..#.......TT~~~~ss....ss~~~~~~~~~s.T....T.TT....cccccc~~~~~~~~~~~cccccccccccccc~~~~~',
+'~~~~~~...t....t....t....t.:..t....t....t....t.#......s~~~~~s........ss~~~~~ss..........T....cccccccc~~~~~~~~~~~~~~ccccccccc~~~~~',
+'~~~~~~~...................:...................#....~~~~~~~s...........sssss.....T...........ccccccccccccccc~~~~~~~~~~~~cccc~~~~~',
+'~~~~~~~###################.#######################~~~~~sss.............T........................................~~~~~~~~~~~~~~~~',
+'~~~~~~....................:......................~~~~ss...T..........T...............................................~~~~~~~~~~~',
+'~~~~~~T...................:.................TT..~~~~..................................#...................................~~~~~~',
+'~~~~~.TT..T...............:...............TTmmm.~~~mmmm...............................#...wwwwwwwww.........wwwwwwwww......~~~~~',
+'~~~~~....,.........T...T..:.**.rrrr..T......mm..~~....m......m...,....mmm.mm......,...#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
+'~~~~~T.,,,,,T......::.....:***rrrrrr....:::::::~~~:::.m........m.........m..........,.#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
+'~~~~~T.,,,,,......T.:T....:.**rrrrrrr..T:...mmm.~~..:.m.......m,m,...mm...m.m.m.......#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
+'~~~~~..,,,,,T.......:.....:...r...rrrr..:...mTm.~~..:.m.....~..,,......m..,.,...,.m.,m#.######.########.########.########.~~~~~~',
+'~~~~~.....T.........:.....:.....:.rrrrr.:....m..~~..:.m.....m~m.m.,.......mm..m...,...#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~.....T........:T....:.....:..rrr.T:...T...~~..:.m.....,.~mm,.m......m.....,.....#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~....T.......T.:.....:,,,.T:...T...:......~~~..:.m.......,~..mm....m.......m.m..,#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~...~~~........:::::::::::::.....T,:,.....~~..m:mmmmmm...m.~...mm.~~~~~~...,.....#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~..~~~~~...T....:.....,,,........,,:,,....~~...:.....m.m...m~.~~~~~....m~~.,..m....######.########.########.########~~~~~~~',
+'~~~~~~...~~~~.......T:..............T.,,:,,....~~...:.....mmmm....~.mmm,m.....~~......#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~....T...:......:......T.........,,:,,....~~...:......m....m~m,.,..........~.....#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~........:.*....:.H...............,:,.T...~~...:......m...m.~..,,.m.........~~...#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~........:***....H.H...............:......~~...:......m.,..,~...,..........,.~~..#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~........:.*....:.:................:......~~...:......m.,...~...,,m............~.#.######.########.########.#######~~~~~~~~',
+'~~~~~~......T.:......:::...T..T.........:......~~...:..:...m....~~..m..,........m...,,#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~.....T...:........:....T.....:::::::::::::~~~::::::...m.m,.~mmm......m........,..#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~...*T....:::::::::::::::::::::............~~~.........m.,..~..,m......mm....,....#.ww.........wwwwwwwww.........wwwww~~~~~~',
+'~~~~~~.*.*.........:..............:..........T.~~~.........mm...~....,..m........,..,.#.ww.........wwwwwwwww.........wwwwww~~~~~',
+'~~~~~~..*.....T....:..............:............~~~......*..m....~....m..,,m..m...m.m..#.######.########.########.########.#.~~~~',
+'~~~~~~.............:..............:............~~........*.m.m.m~m..m.,...........m,..#...wwwwwwwww.........wwwwwwwww........~~~',
+'~~~~~~~......:::::::............T..............~~......mmmmmmm..~~..,....,..m.......m.#...wwwwwwwww.........wwwwwwwww........~~~',
+'~~~~~~~......:.................................~~mmmmmm.....,...m~..m..m..,,,......,..#...wwwwwwssssssssssssssssssssssssssssss~~',
+'~~~~~~~~.....:...............a.a.a.a.a.a.......~~.............m..~~,....m...m.......,.#.........ssssssss~~~sssssss~~~~~~sss~~~~~',
+'~~~~~~~~~....:.................................~~............m....~.......,.m.m.m..m..#.........ssssss~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~....................a.a.a.a.a.a.......~~...........m......~,.,.........,m....##........sssss~~~~~~~~~~~s~~~~~~~~~~~~~~~',
+'~~~~~~~~~~......,,,,,......................*.T.~~............,...,.~~....m....~~~~m,...#........ss~~~~~~~~~~~~~sss~~~~~~~~~~~~~~',
+'~~~~~~~~~~~....T,,,,,,.......a.a.a.a.a.a..***..~~..............m..,.~....,..~~~..,~~~..#........~~~~~~~s~~~~~~~ss~~ssss~~~~~~~~~',
+'~~~~~~~~~~~.....,,,,,....................T.*...~~..................m~~..,~~~..m,...m~~.#........~~~~~~ssss~~~~~~~~~sssss~~~~~~~~',
+'~~~~~~~~~~~..T..T............a.a.a.a.a.a.......~~............m..m.m,m~,~~~.............#........s~~~~sssss~~~~~~~~~sssss~~~~~~~~',
+'~~~~~~~~~~~ssssssssssssssssssssssssssssssssssss~~...........mm~~......~mm........m.....#........ss~~~~sss~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~ssssssssssssssssss~~~sssssssssssss~~~~...........~~~~~....,~..m..,....,..m..##.......sss~~~~~~~~~~sss~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~ssssssssssssss~~~~~~~ssss~~~~~~~~~~~~~.......~~~~~~~~~~,.~mm.......,.......#.......sss~~~~~~~~~sssss~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~..........~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~~~~~m.,......m.m.m..#......~~~~~~~~~~~~~~sss~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~..~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.............#....~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~..~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'];
+const REG = [
+'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+'00000000000000000000000000000000000000000000000000005577770000000000000000000000000000000000000000000000000000000000000000000000',
+'00000000000000000000000000000900000000000000000000455577777000000000000000000000000000000000000000000000000000000000000000000000',
+'00000000000000000000000009999994400000000000000044455577777700000000000000000000000000000000000000000000000000000000000000000000',
+'00000000000000000000000999999994440000000000444444455577777777000000077000000000000007777555600000000000000000000000000000000000',
+'00000000000009999990099999999994444400000444444444455577777777770000777700000000000077777555666666666666666660000000000000000000',
+'00000000000099999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666600000000000000',
+'00000000000999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666660000000000000',
+'00000000009999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666000000000000',
+'00000000099999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666600000000000',
+'00000000999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666660000000000',
+'00000000999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666600000000',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666660000000',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666000',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666600',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666600',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666660',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666660',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666660',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666660',
+'00000009999999999999999999999994444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666660',
+'00000004444444444444444444444444444444444444444444455577777777777777777777777777777777777555666666666666666666666666666666666660',
+'00000004444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666666600',
+'00000044444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666666600',
+'00000044444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666666000',
+'00000004444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666666000',
+'00000004444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666666000',
+'00000004444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666666000',
+'00000004444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666600000000',
+'00000004444444444444444444444444444444444444444444455555555555555555550055555555555555555555666666666666666666666666666000000000',
+'00000044444444444444444444444444444444444444444444455555555555555555500000005555555555555555666666666666666666666666666600000000',
+'00000044444444444444444444444444444444444444444444455555555555555550000000000055555555555555666666666666666666666666666666000000',
+'00000044444444444444444444444444444444444444444444455555555555555000000000000055555555555555666666666666666666666666666666600000',
+'00000444444444444444444444444444444444444444444444455555555555550000000000000555555555555555666666666666666666666666666666600000',
+'00000444444444444444444444444444444444444444444444455555555055555000000000005555555055555555666666666666666666666666666666600000',
+'00000444444444444444444444444444444444444444444444455555555555555500000000000555555005555555666666666666666666666666666666600000',
+'00000044444444444444444444444444444444444444444444455555550555555500000555550055550000555555666666666666666666666666666666600000',
+'00000044444444444444444444444444444444444444444444455555550555555500005555555005500000555555666666666666666666666666666666600000',
+'00000004444444444444444444444444444444444444444444455555550055555000055555555500000000555555666666666666666666666666666666600000',
+'00000004444444444444444444444444444444444444444444455555550005550000555555555500000000555555666666666666666666666666666666600000',
+'00000004444444444444444444444444444444444444444444455555550000000005555555555550000005555555666666666666666666666666666666600000',
+'00000000444444444444444444444444444444444444444444455555555000000000555555555500055555555555666666666666666666666666666666600000',
+'00000000444444444444444444444444444444444444444444455555555000000000055555555000555555555555666666666666666666666666666666600000',
+'00000000444444444444444444444444444444444444444444455555555000000000005555550005555555555555666666666666666666666666666666000000',
+'00000000444444444444444444444444444444444444444444455555555500000000000555500055555555555555666666666666666666666666666666000000',
+'00000000444444444444444444444444444444444444444444455555555500000000000000000005555555555555666666666666666666666666666666000000',
+'00000004444444444444444444444444444444444444444444455555555550000000000000000005555555555555666666666666666666666666666666000000',
+'00000004444444444444444444444444444444444444444444455555555555500000000000000005555555555555666666666666666666666666666666000000',
+'00000044444444444444444444444444444444444444444444455555555555555500000000000055555555555555666666666666666666666666666666000000',
+'00000444444444444444444444444444444444444444444444455555555555555555000000000555555555555555666666666666666666666666666666000000',
+'00000444444444444444444444444444444444444444444444455555555555555555550000055555555555555555666666666666666666666666666666000000',
+'00000444444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666600000',
+'00000044444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666600000',
+'00000004444444444444444444444444444444444444444444455555555555555555555555555555555555555555666666666666666666666666666666600000',
+'00000001111111111111111111111111111111111111111111155555555555555555555555555555555555333333333333333333333333333333333333300000',
+'00000011111111111111111111111111111111111111111111155555555555555555555555555555555555333333333333333333333333333333333333000000',
+'00000011111111111111111111111111111111111111111111155555555555555555555555555555555555333333333333333333333333333333333333000000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333300000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333000000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333000000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333000000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333000000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333300000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333330000000',
+'00000111111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333000000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333300000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333330000',
+'00000011111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333333000',
+'00000001111111111111111111111111111111111111111111122222222222222222222222222222222222333333333333333333333333333333333333333000',
+'00000001111111111111111111111111111111111111111111122222222222222222222222222222222222333333333388888888888888888888888888888800',
+'00000000111111111111111111111111111111111111111111122222222222222222222222222222222222333333333388888888000888888800000088800000',
+'00000000011111111111111111111111111111111111111111122222222222222222222222222222222222333333333388888800000000000000000000000000',
+'00000000011111111111111111111111111111111111111111122222222222222222222222222222222222333333333388888000000000008000000000000000',
+'00000000001111111111111111111111111111111111111111122222222222222222222222222222222222333333333388000000000000088800000000000000',
+'00000000000111111111111111111111111111111111111111122222222222222222222222222222222222333333333300000008000000088008888000000000',
+'00000000000111111111111111111111111111111111111111122222222222222222222222222222222222333333333300000088880000000008888800000000',
+'00000000000111111111111111111111111111111111111111122222222222222222222222222222222222333333333380000888880000000008888800000000',
+'00000000000111111111111111111111111111111111111111122222222222002222222222222222222222333333333388000088800000000000000000000000',
+'00000000000111111111111111111000111111111111100111122222222200000222222222222222222222333333333388800000000008880000000000000000',
+'00000000000001111111111111100000001111000000000000022222220000000000222222222222222222333333333388800000000088888000000000000000',
+'00000000000000011111111110000000000000000000000000000222000000000000000022222222222222333333333000000000000008880000000000000000',
+'00000000000000000011000000000000000000000000000000000000000000000000000000022222222222333333300000000000000000000000000000000000',
+'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000330000000000000000000000000000000000000',
+'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'];
+/*MAP-END*/
+
+/*NUM-BEGIN  Every number rule. Nothing here touches the screen, so checks/bigworld_numbers_check.js can run it on thousands of seeds. */
+function wrng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const SIGN = { times: '×', plus: '+', minus: '−', share: '÷' }, OPWORD = { times: 'times', plus: 'add', minus: 'take away', share: 'share by' };
+const SITES = ['pond', 'wall', 'hill', 'orchard'], PIPCAP = 100, TESTMAX = 20;
+/* What a machine gives for v things. null means it cannot follow its rule: it rattles and hands them back.
+   A machine never makes a part of a pip, never goes below nothing, and with real pips never holds more than 100 (Grade 3 stays inside 100). */
+function ruleOut(rule, v, cap) { const n = rule.n; cap = cap || 1e9;
+  if (rule.op === 'times') return v > 0 && v * n <= cap ? v * n : null;
+  if (rule.op === 'plus') return v + n <= cap ? v + n : null;
+  if (rule.op === 'minus') return v >= n ? v - n : null;
+  if (rule.op === 'share') return v > 0 && v % n === 0 ? v / n : null;
+  return null; }
+const ruleText = rule => SIGN[rule.op] + ' ' + rule.n;
+function bwGcd(a, b) { while (b) { const t = a % b; a = b; b = t; } return a; }
+/* One child's numbers for the Tindle Meadow.
+   Four machines, one of each kind. Which machine stands where is mixed for each child, so "the pond one is times" is no help to a friend.
+   The pouch starts with `start` pips. The bridge pan wants exactly `target`.
+   Kept by this rule, and checked on 20,000 seeds:
+     - the shortest way from start to target takes exactly 3 machine runs, and none of the shortest ways is one machine three times
+     - at least one shortest way uses the times machine together with the add or the take-away machine, so the ORDER of the machines matters
+     - from every number the pouch can ever hold, the target can still be reached (no dead end: + and − have no common factor)
+     - the finished examples use other rules: × 4 and + 6 (the old pump), × 10 and + 1 (the seed carving). No child's machine has those. */
+function bwNumbers(seed) { const ops = ['times', 'plus', 'minus', 'share'];
+  for (let k = 0; k < 500; k++) { const r = wrng((seed >>> 0) * 7919 + k * 104729 + 17), pick = a => a[Math.floor(r() * a.length)];
+    const rule = { times: { op: 'times', n: pick([2, 3, 5]) }, plus: { op: 'plus', n: pick([3, 4, 5, 7, 8, 9]) }, minus: { op: 'minus', n: pick([2, 3, 4, 5, 6, 7, 8]) }, share: { op: 'share', n: pick([2, 3]) } };
+    const start = 3 + Math.floor(r() * 6), pickT = r(), mix = [r(), r(), r(), r()];
+    if (rule.plus.n === rule.minus.n || bwGcd(rule.plus.n, rule.minus.n) !== 1) continue;
+    const dist = new Array(PIPCAP + 1).fill(-1), q = [start]; dist[start] = 0;
+    for (let h = 0; h < q.length; h++) for (const o of ops) { const w = ruleOut(rule[o], q[h], PIPCAP); if (w !== null && dist[w] < 0) { dist[w] = dist[q[h]] + 1; q.push(w); } }
+    const back = t => { const ok = new Array(PIPCAP + 1).fill(false); ok[t] = true; let ch = true; while (ch) { ch = false; for (const v of q) if (!ok[v]) for (const o of ops) { const w = ruleOut(rule[o], v, PIPCAP); if (w !== null && ok[w]) { ok[v] = true; ch = true; break; } } } return q.every(v => ok[v]); };
+    const ways = t => { const out = []; for (const a of ops) for (const b of ops) for (const c of ops) { const v1 = ruleOut(rule[a], start, PIPCAP); if (v1 === null) continue; const v2 = ruleOut(rule[b], v1, PIPCAP); if (v2 === null) continue; if (ruleOut(rule[c], v2, PIPCAP) === t) out.push([a, b, c]); } return out; };
+    const cands = []; for (let t = 20; t <= 90; t++) { if (dist[t] !== 3) continue; const w = ways(t); if (!w.length || w.some(p => p[0] === p[1] && p[1] === p[2]) || !w.some(p => p.indexOf('times') >= 0 && (p.indexOf('plus') >= 0 || p.indexOf('minus') >= 0))) continue; if (!back(t)) continue; cands.push({ t, w }); }
+    if (!cands.length) continue;
+    const c = cands[Math.floor(pickT * cands.length)], order = ops.map((o, i) => [mix[i], o]).sort((a, b) => a[0] - b[0]).map(a => a[1]), at = {};
+    SITES.forEach((s, i) => { at[s] = rule[order[i]]; });
+    return { at, rule, start, target: c.t, ways: c.w, best: 3 }; }
+  return null; }
+/* The old stepping stones: a number pattern. Three numbers are carved on the post. Five rows of three stones follow; one stone in each row goes on with the pattern.
+   After a splash the river moves the stones: a new pattern (round + 1), so trying each stone in turn is no way across. */
+function bwStones(seed, round) { round = round || 0; const before = round > 0 ? bwStones(seed, round - 1).shown.join() : ''; for (let k = 0; ; k++) { const s = bwStonesRaw(seed, round, k); if (s.shown.join() !== before || k > 40) return s; } }
+function bwStonesRaw(seed, round, k) { const r = wrng((seed >>> 0) * 31337 + round * 9973 + k * 613 + 5), step = [3, 4, 6, 7, 8, 9][Math.floor(r() * 6)], down = r() < .25, a0 = down ? 100 - Math.floor(r() * 10) : 2 + Math.floor(r() * 28), d = down ? -step : step;
+  const shown = [a0, a0 + d, a0 + 2 * d], rows = []; let prev = shown[2];
+  for (let i = 0; i < 5; i++) { const right = prev + d, wrong = [right - 1, right + 1, right - 2, right + 2, prev + (down ? -10 : 10), prev + d * 2].filter(v => v !== right && v > 0 && v <= 110 && v !== prev), opts = [right]; let guard = 0;
+    while (opts.length < 3 && guard++ < 50) { const w = wrong[Math.floor(r() * wrong.length)]; if (opts.indexOf(w) < 0) opts.push(w); }
+    const mixed = opts.map(v => [r(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]); rows.push({ opts: mixed, right: mixed.indexOf(right) }); prev = right; }
+  return { shown, step, down, rows }; }
+/*NUM-END*/
+
+/*WORLD-BEGIN  The world as data. A person or an AI adds a being, a find or a place HERE, and bwCheck() says at once if a rule is broken.
+  kind: place (has an inside), machine, being (says hello, or asks), find (a thing to look at or take), gate, sign, view.
+  x, y: its square. stand: where the cadet stands to use it (worked out if left off).  words: the first one is the word a child taps.
+  says: what a greeter says, a line each time.  look: what looking shows.  secret: the game never asks for it.  act: it has code of its own (ACT in the engine). */
+const WALK = '.:,*swcpdR';
+const REGIONS = {
+  0: { id: 'sea', name: 'The sea' },
+  1: { id: 'meadow', name: 'Tindle Meadow', built: true, g: ['#62b05c', '#5aa856'], folk: 'the Tindles: small copper folk who keep the Makers\' machines', maths: 'find the rule of a number machine (3.OA.9); plan with two or three rules in order (3.OA.8)' },
+  2: { id: 'reach', name: 'The Reach', built: false, g: ['#5fa888', '#57a080'], folk: 'the Rillfolk: river people with rafts', maths: 'the missing number (3.OA.4, 3.OA.6)' },
+  3: { id: 'hills', name: 'The Terrace Hills', built: false, g: ['#93b455', '#8aab4e'], folk: 'the Furrows: tall farmers of the steps', maths: 'split and swap (3.OA.5)' },
+  4: { id: 'woods', name: 'The Pattern Woods', built: false, g: ['#3f917c', '#3a8874'], folk: 'the Eights: the crew of the S.S. Infinity', maths: 'number patterns and codes (3.OA.9)' },
+  5: { id: 'lake', name: 'The Lake of Two Suns', built: false, g: ['#6db26a', '#65aa62'], folk: 'the Twinseers: watchers of the two suns', maths: 'times and share undo each other (3.OA.6, 3.OA.7)' },
+  6: { id: 'canyon', name: 'The Canyon and the Old Works', built: false, g: ['#c98660', '#c07e58'], folk: 'nobody now: the Makers\' ruins', maths: 'two machines in a row (3.OA.8)' },
+  7: { id: 'gate', name: 'Gate Mountain', built: false, g: ['#aaa5c6', '#a19cbd'], folk: 'the Gate', maths: 'everything together: the cosmic code' },
+  8: { id: 'isles', name: 'The Prime Isles', built: false, extra: true, g: ['#ead9a6', '#e3d19c'], maths: 'Grade 4: factor pairs and primes (4.OA.4)' },
+  9: { id: 'dunes', name: 'The Growing Dunes', built: false, extra: true, g: ['#e8cd90', '#e1c588'], maths: 'Grade 4: patterns that grow (4.OA.5)' } };
+const THINGS = [
+  { id: 'ship', kind: 'place', x: 13, y: 83, stand: [13, 82], name: 'your ship', words: ['ship'], act: 'ship' },
+  { id: 'sign', kind: 'sign', x: 15, y: 80, stand: [14, 80], name: 'a signpost', words: ['sign', 'signpost'], look: 'The sign says: TINDLE VILLAGE, north. THE RILL, east.' },
+  { id: 'village', kind: 'place', x: 23, y: 71, stand: [23, 72], name: 'Tindle Village', words: ['village', 'huts'], act: 'village', label: 'Tindle Village' },
+  { id: 'm_pond', kind: 'machine', site: 'pond', x: 14, y: 68, stand: [14, 69], name: 'the Pond Machine', words: ['machine', 'pond'], act: 'machine', label: 'Pond Machine' },
+  { id: 'm_wall', kind: 'machine', site: 'wall', x: 18, y: 60, stand: [19, 60], name: 'the Wall Machine', words: ['machine', 'wall'], act: 'machine', label: 'Wall Machine' },
+  { id: 'm_hill', kind: 'machine', site: 'hill', x: 33, y: 62, stand: [32, 62], name: 'the Hill Machine', words: ['machine', 'hill'], act: 'machine', label: 'Hill Machine' },
+  { id: 'm_orchard', kind: 'machine', site: 'orchard', x: 34, y: 79, stand: [34, 78], name: 'the Orchard Machine', words: ['machine', 'orchard'], act: 'machine', label: 'Orchard Machine' },
+  { id: 'pan', kind: 'gate', gate: 'bridge', x: 46, y: 73, stand: [46, 74], name: 'the bridge pan', words: ['pan', 'bridge'], act: 'pan', label: 'The bridge' },
+  { id: 'post', kind: 'gate', gate: 'stones', x: 46, y: 59, stand: [46, 60], name: 'the old stone post', words: ['post', 'stones'], act: 'post', label: 'The old stones' },
+  { id: 'hedge', kind: 'gate', gate: 'hedge', x: 26, y: 55, stand: [26, 56], name: 'the hedge', words: ['hedge'], act: 'hedge' },
+  { id: 'gardener', kind: 'being', x: 20, y: 78, name: 'a Tindle gardener', words: ['gardener'], col: '#c9793a', says: ['Hello, sky-walker!', 'Two suns today. Good for the beans.', 'The village is up the path. Elder Rivet will want to see you.'] },
+  { id: 'fisher', kind: 'being', x: 13, y: 66, name: 'a Tindle fisher', words: ['fisher'], col: '#b86a3a', says: ['Shh. The fish are counting.', 'No bites yet. Hello anyway.'] },
+  { id: 'listener', kind: 'being', x: 38, y: 72, name: 'a Tindle with big ears', words: ['listener'], col: '#d08a4a', says: ['The Rillfolk sing at night, across the river.', 'We have not heard them since the bridge went up.', 'I miss the singing.'] },
+  { id: 'gran', kind: 'being', x: 29, y: 70, name: 'an old Tindle', words: ['old', 'tindle'], col: '#a8683a', says: ['My gran crossed the Rill up north. On the old stones, past the reeds.', 'She said the stones only hold if you know their rule.', 'Hello again, dear.'] },
+  { id: 'keeper', kind: 'being', x: 41, y: 82, name: 'the orchard keeper', words: ['keeper'], col: '#c08040', act: 'keeper' },
+  { id: 'rubble', kind: 'find', secret: true, x: 21, y: 57, stand: [21, 58], name: 'some rubble', words: ['rubble'], act: 'rubble', gives: 'half' },
+  { id: 'log', kind: 'find', secret: true, x: 24, y: 86, name: 'a hollow log', words: ['log'], act: 'log', gives: 'coin' },
+  { id: 'spin', kind: 'find', x: 9, y: 70, name: 'something red', words: ['red', 'spinner'], act: 'spin', gives: 'spinner' },
+  { id: 'well', kind: 'find', x: 27, y: 77, name: 'a well', words: ['well'], scenery: true, look: 'You drop a pebble in. Plink. The echo comes back three times: plink, plink, plink.' },
+  { id: 'ring', kind: 'find', x: 8, y: 76, name: 'a ring of flowers', words: ['flowers', 'ring'], scenery: true, look: 'Twelve flowers in a ring. Someone planted them in threes: 3, 3, 3 and 3.' },
+  { id: 'cliff', kind: 'view', x: 7, y: 79, name: 'the west cliff', words: ['cliff'], scenery: true, look: 'You look out over the sea. Far away you can just see hills of sand. They look like steps, each one bigger than the last.' },
+  { id: 'lookout', kind: 'view', x: 55, y: 71, stand: [55, 72], name: 'the lookout hill', words: ['lookout', 'hill'], act: 'lookout', label: 'Lookout' },
+  { id: 'guard', kind: 'being', x: 58, y: 74, stand: [57, 74], name: 'a Rillfolk guard', words: ['guard'], col: '#4a9fd8', act: 'guard' } ];
+/* inside the village: a side view. x is how far across the picture (0 to 1). */
+const SCENES = { village: { name: 'Tindle Village', out: 'village', things: [
+  { id: 'door', x: .07, name: 'the way out', words: ['out', 'leave'], act: 'leave' },
+  { id: 'kid', x: .25, name: 'a Tindle child', words: ['child'], act: 'kid' },
+  { id: 'store', x: .42, name: 'the pip store', words: ['store', 'bins'], look: 'Three big bins for pips. Two are empty. One has a few pips at the bottom.' },
+  { id: 'elder', x: .59, name: 'Elder Rivet', words: ['elder', 'rivet'], act: 'elder' },
+  { id: 'mural', x: .76, name: 'the painted wall', words: ['wall', 'painting'], act: 'mural' },
+  { id: 'rstone', x: .92, name: 'the Rule Stone', words: ['stone'], act: 'rstone' } ] } };
+/* gates: squares that are shut until something opens them. built: false means the far side is not made yet. */
+const GATES = {
+  bridge: { name: 'the bridge', tiles: [[47, 74], [48, 74], [49, 74]], job: 'bridge' },
+  stones: { name: 'the old stepping stones', tiles: [[47, 60], [48, 60], [49, 60]], job: 'stones' },
+  hedge: { name: 'the hedge gate', tiles: [[26, 55]], built: false, to: 4 },
+  reeds: { name: 'the reed gate', tiles: [[59, 74]], built: false, to: 2 } };
+/* borders on the main road. Every one needs two ways across. [Source: Marc, 22 November: "or you can do different quests to get those"] */
+const BORDERS = [{ id: 'rill', name: 'the Rill', from: 1, to: 2, main: true, ways: ['bridge', 'stones'] }];
+/* jobs. main: on the main road. way: opens a gate. mini: a small quest from someone you talk to. needs: things carried. */
+const JOBS = {
+  plates: { name: 'New plates for the four machines', main: true, region: 1, asker: 'elder', needs: [], card: 'Rule Finder', maths: '3.OA.9: find the rule of a number machine from tests the child chooses' },
+  bridge: { name: 'Exactly the right pips on the bridge pan', way: 'bridge', region: 1, asker: 'elder', needs: [], card: 'Bridge Bringer', maths: '3.OA.8 and 3.OA.7: reach a number with three rules in the right order; say each result before the machine runs' },
+  stones: { name: 'Cross the old stepping stones', way: 'stones', region: 1, asker: 'post', needs: [], card: 'Stone Stepper', maths: '3.OA.9: go on with a number pattern' },
+  spinner: { name: 'The lost spinner', mini: true, region: 1, asker: 'kid', needs: ['spinner'], card: 'Kind Finder' },
+  coin: { name: 'The lucky coin', mini: true, region: 1, asker: 'keeper', needs: ['coin'], card: 'Lucky Coin' } };
+const ITEMS = {
+  notebook: { name: 'your notebook', from: 'elder' },
+  pouch: { name: 'the pip pouch', from: 'elder' },
+  spinner: { name: 'a red spinner', from: 'spin', use: 'spinner' },
+  coin: { name: 'a Maker\'s coin', from: 'log', secret: true, use: 'coin' },
+  half: { name: 'half a burnt plate', from: 'rubble', secret: true, helps: 'plates' } };
+/* The check. It walks the map the way a child can, and reads the tables above. It returns a list of faults; an empty list means every rule holds.
+   Kept by this check:  every thing can be reached  ·  nothing that is not built can be reached  ·  every border on the main road has two ways, and each way alone gets across
+   ·  no main job and no way across needs a secret  ·  every find has a use, helps a job, or is scenery  ·  no job waits on a place that is not built. */
+function bwCheck() { const bad = [], key = (x, y) => y * MAPW + x, T = (x, y) => x < 0 || y < 0 || x >= MAPW || y >= MAPH ? '~' : MAP[y][x], Rg = (x, y) => +REG[y][x];
+  const solid = {}, gateOf = {}; THINGS.forEach(t => { if (solid[key(t.x, t.y)]) bad.push(`two things on one square: ${t.id} and ${solid[key(t.x, t.y)]}`); solid[key(t.x, t.y)] = t.id; });
+  Object.keys(GATES).forEach(g => GATES[g].tiles.forEach(([x, y]) => { gateOf[key(x, y)] = g; }));
+  const flood = open => { const got = new Uint8Array(MAPW * MAPH), ship = THINGS.find(t => t.id === 'ship'), q = [ship.stand]; got[key(q[0][0], q[0][1])] = 1;
+    for (let h = 0; h < q.length; h++) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const x = q[h][0] + dx, y = q[h][1] + dy, k = key(x, y); if (got[k] || solid[k]) continue; const g = gateOf[k]; if (g ? open.indexOf(g) < 0 : WALK.indexOf(T(x, y)) < 0) continue; got[k] = 1; q.push([x, y]); } return got; };
+  const stand = t => t.stand || bwStand(t), ids = {}; THINGS.forEach(t => { if (ids[t.id]) bad.push(`two things called ${t.id}`); ids[t.id] = t; });
+  Object.keys(SCENES).forEach(s => SCENES[s].things.forEach(t => { ids[t.id] = t; }));
+  const none = flood([]), builtGates = Object.keys(GATES).filter(g => GATES[g].built !== false), all = flood(builtGates), LAND = (x, y) => x >= 50 && x <= 58 && y >= 59 && y <= 80;
+  THINGS.forEach(t => { const s = stand(t); if (!s) { bad.push(`${t.id}: no square to stand on`); return; } if (WALK.indexOf(T(s[0], s[1])) < 0 || solid[key(s[0], s[1])]) bad.push(`${t.id}: its standing square ${s} cannot be walked on`); if (Math.abs(s[0] - t.x) + Math.abs(s[1] - t.y) !== 1) bad.push(`${t.id}: its standing square is not beside it`);
+    if (Rg(t.x, t.y) === 1) { if (!none[key(s[0], s[1])]) bad.push(`${t.id}: cannot be reached from the ship`); } else for (const b of BORDERS) for (const w of b.ways) if (!flood([w])[key(s[0], s[1])]) bad.push(`${t.id}: cannot be reached when only ${w} is open`); });
+  for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) { if (!all[key(x, y)]) continue; if (Rg(x, y) !== 1 && !LAND(x, y)) { bad.push(`square ${x},${y} in region ${Rg(x, y)} can be reached, and that region is not built`); y = MAPH; break; } }
+  for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) if (none[key(x, y)] && Rg(x, y) !== 1) { bad.push(`square ${x},${y} is outside the Meadow and can be reached with every gate shut`); y = MAPH; break; }
+  BORDERS.forEach(b => { if (b.main && b.ways.length < 2) bad.push(`border ${b.id}: only one way across`); b.ways.forEach(w => { if (!GATES[w]) bad.push(`border ${b.id}: no gate ${w}`); else if (!JOBS[GATES[w].job] || JOBS[GATES[w].job].way !== w) bad.push(`gate ${w}: no job opens it`); }); if (new Set(b.ways.map(w => JOBS[GATES[w].job] && JOBS[GATES[w].job].maths)).size < b.ways.length) bad.push(`border ${b.id}: its ways are the same maths`); });
+  Object.keys(JOBS).forEach(j => { const job = JOBS[j], asker = ids[job.asker]; if (!asker) bad.push(`job ${j}: nobody called ${job.asker} gives it`); if (!REGIONS[job.region] || !REGIONS[job.region].built) bad.push(`job ${j}: waits on a region that is not built`);
+    job.needs.forEach(n => { const it = ITEMS[n]; if (!it) { bad.push(`job ${j}: needs ${n}, which does not exist`); return; } if ((job.main || job.way) && it.secret) bad.push(`job ${j} is on the main road and needs a secret (${n})`); if (!ids[it.from]) bad.push(`item ${n}: comes from ${it.from}, which does not exist`); }); });
+  Object.keys(ITEMS).forEach(n => { const it = ITEMS[n]; if (!ids[it.from]) bad.push(`item ${n}: comes from nowhere`); if (it.use && !(JOBS[it.use] && JOBS[it.use].needs.indexOf(n) >= 0)) bad.push(`item ${n}: its use ${it.use} does not need it`); if (it.helps && !JOBS[it.helps]) bad.push(`item ${n}: helps a job that does not exist`); });
+  THINGS.forEach(t => { if (t.kind === 'find' && !t.scenery && !(t.gives && ITEMS[t.gives] && (ITEMS[t.gives].use || ITEMS[t.gives].helps))) bad.push(`find ${t.id}: leads nowhere and is not marked scenery`); if (t.secret && Object.keys(JOBS).some(j => (JOBS[j].main || JOBS[j].way) && JOBS[j].asker === t.id)) bad.push(`${t.id} is a secret and gives a main job`); if (t.says && t.says.some(s => s.length > 120)) bad.push(`${t.id}: a line is too long to read`); });
+  return bad; }
+function bwStand(t) { const T = (x, y) => x < 0 || y < 0 || x >= MAPW || y >= MAPH ? '~' : MAP[y][x]; for (const [dx, dy] of [[0, 1], [-1, 0], [1, 0], [0, -1]]) { const x = t.x + dx, y = t.y + dy; if (WALK.indexOf(T(x, y)) >= 0 && !THINGS.some(o => o.x === x && o.y === y)) return [x, y]; } return null; }
+/*WORLD-END*/
+
+/* ================= THE ENGINE ================= */
+const cv = $('cv'), cx = cv.getContext('2d'), INK = '#0e1626';
+let vw = 0, vh = 0, tNow = 0, S = null, NUM = null;
+const key = (x, y) => y * MAPW + x, clamp = (v, a, b) => Math.max(a, Math.min(b, v)), esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const seen = new Uint8Array(MAPW * MAPH), TH = {}, SOLID = {}, GATEOF = {};
+THINGS.forEach(t => { if (!t.stand) t.stand = bwStand(t); TH[t.id] = t; SOLID[key(t.x, t.y)] = t; });
+Object.keys(GATES).forEach(g => GATES[g].tiles.forEach(([x, y]) => { GATEOF[key(x, y)] = g; }));
+const P = { px: 13, py: 82, route: [], then: null, step: 0, dir: 'down', idle: 0 }, cam = { x: 13, y: 82 }, SC = { x: .12, to: null, then: null, dir: 'right', step: 0 };
+let PIC = null, BIG = false, FADE = 0;
+
+/* ---- saving. Everything the child did is in S. It is written after every change. */
+function fresh() { let seed = 1 + Math.floor(Math.random() * 2000000000); try { const g = JSON.parse(localStorage.getItem(GAMEKEY)); if (g && g.c && g.c.seed) seed = g.c.seed >>> 0 || seed; } catch (e) {}      /* the same cadet gets the same numbers; nothing else is read */
+  const q = /[?&]seed=(\d+)/.exec(location.search); if (q) seed = +q[1];
+  return { v: 1, seed, x: 13, y: 82, dir: 'down', at: 'map', sx: .12, seen: '', intro: 0, flags: {}, said: {}, needs: [], bag: [], cards: [], log: [], notes: {}, mach: {}, pouch: null, runs: 0, st: { round: 0, row: 0 }, gates: {}, lit: 0, open: null, sound: true, t0: Date.now() }; }
+function packSeen() { const out = []; let cur = 0, run = 0; for (let i = 0; i < seen.length; i++) { if (seen[i] === cur) run++; else { out.push(run.toString(36)); cur = seen[i]; run = 1; } } out.push(run.toString(36)); return out.join('.'); }
+function unpackSeen(s) { seen.fill(0); if (!s) return; let i = 0, cur = 0; for (const part of s.split('.')) { const n = parseInt(part, 36); if (cur) seen.fill(1, i, Math.min(seen.length, i + n)); i += n; cur = 1 - cur; } }
+function save() { if (!S) return; S.seen = packSeen(); S.x = Math.round(P.px); S.y = Math.round(P.py); S.dir = P.dir; S.sx = SC.x; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() { try { const j = JSON.parse(localStorage.getItem(KEY)); if (j && j.v === 1 && j.seed && typeof j.x === 'number') return j; } catch (e) {} return null; }
+const flag = k => !!S.flags[k], setFlag = k => { S.flags[k] = 1; };
+const has = it => S.bag.indexOf(it) >= 0;
+function report(what, maths, result) { S.log.push({ t: Math.round((Date.now() - S.t0) / 60000), what, maths: maths || '', result: result || '' }); if (S.log.length > 300) S.log.shift(); }
+function giveCard(job) { const j = JOBS[job]; if (S.cards.some(c => c.job === job)) return false; S.cards.push({ job, name: j.card, t: Date.now() }); report('Card: ' + j.card, '', 'earned'); return true; }
+function need(id, text, later) { if (S.needs.some(n => n.id === id)) return; S.needs.push({ id, text, done: false, later: !!later }); $('b_needs').classList.add('new'); }
+function needDone(id) { const n = S.needs.find(n => n.id === id); if (n) n.done = true; }
+function needText(id, text) { const n = S.needs.find(n => n.id === id); if (n) n.text = text; }
+const M = site => S.mach[site] || (S.mach[site] = { tests: 0, tries: 0, ok: false, last: null, seenIt: false });
+const platesDone = () => SITES.filter(s => M(s).ok).length;
+
+/* ---- the map: what is where, where the cadet can walk, what has been seen */
+const tileAt = (x, y) => x < 0 || y < 0 || x >= MAPW || y >= MAPH ? '~' : MAP[y][x], regAt = (x, y) => x < 0 || y < 0 || x >= MAPW || y >= MAPH ? 0 : +REG[y][x];
+const gateOpen = g => !!S.gates[g];
+function walkable(x, y) { const k = key(x, y); if (x < 0 || y < 0 || x >= MAPW || y >= MAPH || SOLID[k]) return false; const g = GATEOF[k]; return g ? gateOpen(g) : WALK.indexOf(MAP[y][x]) >= 0; }
+function see() { const R = 5, x0 = Math.round(P.px), y0 = Math.round(P.py); let ch = false; for (let y = y0 - R; y <= y0 + R; y++) for (let x = x0 - R; x <= x0 + R; x++) if (x >= 0 && y >= 0 && x < MAPW && y < MAPH && Math.hypot(x - x0, y - y0) <= R + .5 && !seen[key(x, y)]) { seen[key(x, y)] = 1; ch = true; } if (ch) bigDirty = true; }
+/* the path finder: breadth first, through squares the child has seen. It ends on the reachable square nearest the tap. */
+function pathTo(tx, ty) { const sx = Math.round(P.px), sy = Math.round(P.py), from = new Int32Array(MAPW * MAPH).fill(-2), q = [key(sx, sy)]; from[q[0]] = -1; let best = q[0], bd = Math.hypot(sx - tx, sy - ty);
+  for (let h = 0; h < q.length && bd > 0; h++) { const k = q[h], x = k % MAPW, y = (k - x) / MAPW; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + dx, ny = y + dy, nk = key(nx, ny); if (nx < 0 || ny < 0 || nx >= MAPW || ny >= MAPH || from[nk] !== -2 || !seen[nk] || !walkable(nx, ny)) continue; from[nk] = k; q.push(nk); const d = Math.hypot(nx - tx, ny - ty); if (d < bd) { bd = d; best = nk; } } }
+  const out = []; for (let k = best; from[k] >= 0; k = from[k]) out.unshift([k % MAPW, Math.floor(k / MAPW)]); return out; }
+function goTo(tx, ty, then) { P.route = pathTo(tx, ty); P.then = then || null; if (!P.route.length && then && Math.round(P.px) === tx && Math.round(P.py) === ty) { P.then = null; then(); } return P.route.length; }
+function goThing(t, then) { const s = t.stand; goTo(s[0], s[1], () => { const dx = t.x - s[0], dy = t.y - s[1]; P.dir = dx > 0 ? 'right' : dx < 0 ? 'left' : dy < 0 ? 'up' : 'down'; then(); }); if (P.route.length === 0 && !(Math.round(P.px) === s[0] && Math.round(P.py) === s[1])) note('You cannot get there yet.'); }
+const thingSeen = t => !!seen[key(t.x, t.y)] && !(t.id === 'spin' && (has('spinner') || flag('spinGiven'))) ;
+function nearThings() { const x0 = Math.round(P.px), y0 = Math.round(P.py); return THINGS.filter(t => thingSeen(t) && Math.max(Math.abs(t.x - x0), Math.abs(t.y - y0)) <= 3).sort((a, b) => Math.hypot(a.x - x0, a.y - y0) - Math.hypot(b.x - x0, b.y - y0)); }
+const hereName = () => S.at !== 'map' ? SCENES[S.at].name : (REGIONS[regAt(Math.round(P.px), Math.round(P.py))] || REGIONS[1]).name;
+
+/* ---- small drawing tools, the same look as the game: flat colours, dark outlines */
+function size() { const dpr = Math.min(2, window.devicePixelRatio || 1); vw = cv.clientWidth; vh = cv.clientHeight; cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0); bigDirty = true; }
+function rr(x, y, w, h, r) { cx.beginPath(); if (cx.roundRect) cx.roundRect(x, y, w, h, r); else cx.rect(x, y, w, h); }
+const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, Math.max(0, r), 0, 7); };
+const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
+const FONT_D = '"Chakra Petch", "Trebuchet MS", sans-serif', FONT_B = '"Andika", "Trebuchet MS", sans-serif';
+function pill(text, X, Y, big, col) { cx.font = `700 ${big ? Math.max(14, vw * .022) : Math.max(11, Math.min(15, vw * .017))}px ${FONT_B}`; const w = cx.measureText(text).width + 14, h = big ? 26 : 21; X = clamp(X, w / 2 + 3, vw - w / 2 - 3); cx.fillStyle = 'rgba(6,9,18,.86)'; rr(X - w / 2, Y - h / 2, w, h, 7); cx.fill(); cx.fillStyle = col || '#fff'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(text, X, Y + 1); cx.textBaseline = 'alphabetic'; cx.textAlign = 'left'; }
+function text(t, X, Y, px, col, align, font, weight) { cx.font = `${weight || 700} ${px}px ${font || FONT_D}`; cx.fillStyle = col || '#fff'; cx.textAlign = align || 'center'; cx.textBaseline = 'middle'; cx.fillText(t, X, Y); cx.textBaseline = 'alphabetic'; cx.textAlign = 'left'; }
+function wrapText(t, X, Y, maxW, px, col, font) { cx.font = `700 ${px}px ${font || FONT_B}`; const words = String(t).split(' '), rows = []; let row = ''; for (const w of words) { if (row && cx.measureText(row + ' ' + w).width > maxW) { rows.push(row); row = w; } else row = row ? row + ' ' + w : w; } rows.push(row); cx.fillStyle = col || '#fff'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; rows.forEach((r, i) => cx.fillText(r, X, Y + (i - (rows.length - 1) / 2) * px * 1.25)); cx.textBaseline = 'alphabetic'; cx.textAlign = 'left'; return rows.length; }
+/* the astronaut, as in the game: four facings, a leg and arm cycle, a body bob */
+function drawAstro(X, Y, s, moving, dir, step) { const sw = moving ? Math.sin(step * 10) : 0, bob = moving ? Math.abs(sw) * s * .09 : Math.sin(tNow * 2) * s * .012, side = dir === 'left' || dir === 'right', fd = dir === 'left' ? -1 : 1; cx.lineJoin = 'round';
+  cx.fillStyle = 'rgba(0,0,0,.3)'; cx.beginPath(); cx.ellipse(X, Y + s * .37, s * .26, s * .09, 0, 0, 7); cx.fill();
+  for (const i of [-1, 1]) { const fx = X + (side ? i * sw * s * .19 : i * s * .1), fy = Y + s * .26 - (side ? Math.max(0, i * sw) * s * .09 : Math.max(0, i * sw) * s * .14); cx.fillStyle = '#c9d2df'; rr(fx - s * .075, fy, s * .15, s * .12, 4); cx.fill(); ol(1.5); }
+  if (side) { cx.fillStyle = '#8795ab'; rr(X - fd * s * .3 - (fd > 0 ? s * .16 : 0), Y - s * .1 - bob, s * .16, s * .32, 4); cx.fill(); ol(1.5); }
+  if (!side) for (const i of [-1, 1]) { cx.fillStyle = '#eef2f7'; rr(X + i * s * .2 - s * .06, Y - s * .04 - bob - i * sw * s * .07 * (dir === 'up' ? -1 : 1), s * .12, s * .24, 5); cx.fill(); ol(1.5); }
+  cx.fillStyle = '#f4f7fb'; rr(X - s * .19, Y - s * .12 - bob, s * .38, s * .4, s * .12); cx.fill(); ol(2);
+  cx.fillStyle = '#f08a2c'; cx.fillRect(X - s * .18, Y + s * .1 - bob, s * .36, s * .06);
+  if (dir === 'down') { cx.fillStyle = '#2d6fb4'; rr(X - s * .08, Y - s * .04 - bob, s * .16, s * .1, 2); cx.fill(); }
+  if (dir === 'up') { cx.fillStyle = '#8795ab'; rr(X - s * .15, Y - s * .1 - bob, s * .3, s * .32, 5); cx.fill(); ol(1.5); }
+  if (side) { cx.fillStyle = '#eef2f7'; rr(X + fd * sw * s * .12 - s * .06, Y - s * .04 - bob, s * .12, s * .24, 5); cx.fill(); ol(1.5); }
+  cx.fillStyle = '#f4f7fb'; circ(X, Y - s * .26 - bob, s * .22); cx.fill(); ol(2);
+  if (dir === 'down') { cx.fillStyle = '#16264a'; rr(X - s * .15, Y - s * .36 - bob, s * .3, s * .2, s * .09); cx.fill(); cx.fillStyle = 'rgba(255,255,255,.6)'; rr(X - s * .1, Y - s * .33 - bob, s * .1, s * .05, 2); cx.fill(); }
+  else if (side) { cx.fillStyle = '#16264a'; rr(X - s * .11 + fd * s * .09, Y - s * .36 - bob, s * .22, s * .2, s * .09); cx.fill(); cx.fillStyle = 'rgba(255,255,255,.6)'; rr(X + fd * s * .08 - s * .03, Y - s * .33 - bob, s * .08, s * .05, 2); cx.fill(); }
+  else { cx.fillStyle = '#c9d2df'; rr(X - s * .1, Y - s * .46 - bob, s * .2, s * .07, 3); cx.fill(); cx.fillStyle = '#ff5a4d'; circ(X, Y - s * .48 - bob, s * .04); cx.fill(); } }
+/* a Tindle: a small round copper person with one feeler that ends in a little cog. Algora's own. */
+function tindle(X, Y, r, col, t, kind) { const bobv = Math.sin(tNow * 2.2 + t) * r * .05; cx.lineJoin = 'round';
+  cx.fillStyle = 'rgba(0,0,0,.26)'; cx.beginPath(); cx.ellipse(X, Y + r * .98, r * .7, r * .2, 0, 0, 7); cx.fill();
+  cx.fillStyle = '#6b4a22'; for (const sg of [-1, 1]) { rr(X + sg * r * .38 - r * .2, Y + r * .72, r * .4, r * .26, r * .1); cx.fill(); ol(1.5); }
+  cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X, Y - r * .8 + bobv); cx.quadraticCurveTo(X + r * .25, Y - r * 1.35 + bobv, X + r * .1 + Math.sin(tNow * 1.7 + t) * r * .1, Y - r * 1.6 + bobv); cx.stroke();
+  const gx = X + r * .1 + Math.sin(tNow * 1.7 + t) * r * .1, gy = Y - r * 1.6 + bobv; cx.fillStyle = '#ffd25e'; cx.beginPath(); for (let i = 0; i < 12; i++) { const a = i / 12 * 6.283 + tNow + t, q = r * (i % 2 ? .13 : .2); cx[i ? 'lineTo' : 'moveTo'](gx + Math.cos(a) * q, gy + Math.sin(a) * q); } cx.closePath(); cx.fill(); ol(1.2);
+  cx.fillStyle = col; cx.beginPath(); cx.ellipse(X, Y + bobv, r * .86, r * .9, 0, 0, 7); cx.fill(); ol(2);
+  cx.fillStyle = 'rgba(255,255,255,.18)'; cx.beginPath(); cx.ellipse(X - r * .3, Y - r * .35 + bobv, r * .3, r * .2, -.5, 0, 7); cx.fill();
+  cx.fillStyle = '#3b2a12'; rr(X - r * .86, Y + r * .18 + bobv, r * 1.72, r * .16, 2); cx.fill();
+  for (const sg of [-1, 1]) { cx.fillStyle = '#fff'; circ(X + sg * r * .3, Y - r * .15 + bobv, r * .2); cx.fill(); ol(1.2); cx.fillStyle = INK; circ(X + sg * r * .3 + r * .04, Y - r * .13 + bobv, r * .09); cx.fill(); }
+  if (kind === 'elder') { cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.moveTo(X - r * .5, Y + r * .1 + bobv); cx.quadraticCurveTo(X, Y + r * .75 + bobv, X + r * .5, Y + r * .1 + bobv); cx.quadraticCurveTo(X, Y + r * .3 + bobv, X - r * .5, Y + r * .1 + bobv); cx.fill(); ol(1.5); }
+  else { cx.strokeStyle = INK; cx.lineWidth = 1.8; cx.beginPath(); cx.arc(X, Y + r * .02 + bobv, r * .2, .3, Math.PI - .3); cx.stroke(); }
+  if (kind === 'rill') { cx.fillStyle = shadeC(col, .8); cx.beginPath(); cx.moveTo(X - r * .2, Y - r * .85 + bobv); cx.lineTo(X, Y - r * 1.3 + bobv); cx.lineTo(X + r * .25, Y - r * .82 + bobv); cx.closePath(); cx.fill(); ol(1.5); } }
+function shadeC(hex, f) { const n = parseInt(hex.slice(1), 16), c = i => clamp(Math.round(((n >> i) & 255) * f), 0, 255); return `rgb(${c(16)},${c(8)},${c(0)})`; }
+/* a pip (gold) or a test stone (grey) */
+function pip(x, y, r, gold) { cx.fillStyle = gold ? '#ffd25e' : '#aab4c4'; circ(x, y, r); cx.fill(); ol(Math.max(1, r * .22)); cx.fillStyle = 'rgba(255,255,255,.55)'; circ(x - r * .3, y - r * .3, r * .28); cx.fill(); }
+/* a pile of n things in rows of ten, so a child can count them; the layout shows tens, never the rule */
+function pile(n, X, Y, W, gold) { const per = 10, r = Math.max(2.5, Math.min(W / 22, 11)), rows = Math.ceil(n / per); for (let i = 0; i < n; i++) { const c = i % per, rw = Math.floor(i / per); pip(X - (per - 1) * r * 1.05 + c * r * 2.1 + (c >= 5 ? r * .8 : -r * .8) * .5, Y - rw * r * 2.15, r, gold); } return rows * r * 2.15; }
+/* a small machine, for the map; and the big one for the picture is in machinePic() */
+function machineIcon(X, Y, s, ok, run) { cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(X + s * .08, Y + s * .4, s * .5, s * .14, 0, 0, 7); cx.fill();
+  cx.fillStyle = '#b9853a'; rr(X - s * .4, Y - s * .5, s * .8, s * .85, s * .12); cx.fill(); ol(2);
+  cx.fillStyle = '#8a5f24'; cx.beginPath(); cx.moveTo(X - s * .36, Y - s * .5); cx.lineTo(X - s * .22, Y - s * .86); cx.lineTo(X + s * .1, Y - s * .86); cx.lineTo(X + s * .02, Y - s * .5); cx.closePath(); cx.fill(); ol(1.8);
+  const a = run ? tNow * 5 : ok ? tNow * .8 : 0; cx.fillStyle = ok ? '#ffd25e' : '#8d8f96'; cx.beginPath(); for (let i = 0; i < 16; i++) { const an = i / 16 * 6.283 + a, q = s * (i % 2 ? .16 : .22); cx[i ? 'lineTo' : 'moveTo'](X + s * .16 + Math.cos(an) * q, Y - s * .2 + Math.sin(an) * q); } cx.closePath(); cx.fill(); ol(1.5);
+  cx.fillStyle = ok ? '#fff7dc' : '#2b2b30'; rr(X - s * .32, Y + s * .04, s * .64, s * .22, 3); cx.fill(); ol(1.5); if (!ok) { cx.fillStyle = '#ff8f6b'; cx.font = `700 ${s * .2}px ${FONT_D}`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('?', X, Y + s * .16); cx.textBaseline = 'alphabetic'; cx.textAlign = 'left'; } }
+/* the two suns of Algora. [Source: Marc's 2023 site: "the Twin Star System of Multiplica and Dividia"] */
+function twoSuns(w, hz) { const g = cx.createRadialGradient(w * .76, hz * .3, 0, w * .76, hz * .3, hz * .5); g.addColorStop(0, 'rgba(255,220,130,.55)'); g.addColorStop(1, 'rgba(255,220,130,0)'); cx.fillStyle = g; cx.fillRect(0, 0, w, hz);
+  cx.fillStyle = '#ffd25e'; circ(w * .76, hz * .3, Math.min(w, hz) * .1); cx.fill(); cx.fillStyle = '#fff3c4'; circ(w * .76, hz * .3, Math.min(w, hz) * .075); cx.fill();
+  cx.fillStyle = '#bfe4ff'; circ(w * .9, hz * .52, Math.min(w, hz) * .045); cx.fill(); cx.fillStyle = '#fff'; circ(w * .9, hz * .52, Math.min(w, hz) * .03); cx.fill(); }
+
+/* ---- drawing the map: only the squares on the screen */
+const V = { ts: 48, cols: 0, rows: 0, ox: 0, oy: 0 };
+function geo() { V.ts = clamp(Math.min(vw / 12.5, vh / 8.2), 36, 66); V.cols = vw / V.ts; V.rows = vh / V.ts; V.ox = clamp(cam.x - V.cols / 2, 0, Math.max(0, MAPW - V.cols)); V.oy = clamp(cam.y - V.rows / 2, 0, Math.max(0, MAPH - V.rows)); }
+const TALL = 'TtarH^#mD';
+function ground(t, x, y, px, py, ts) { const R = REGIONS[regAt(x, y)] || REGIONS[1], g = R.g || REGIONS[1].g, base = (x + y) % 2 ? g[0] : g[1];
+  if (t === '~') { cx.fillStyle = (x + y) % 2 ? '#2f6fd0' : '#2c69c6'; cx.fillRect(px, py, ts + 1, ts + 1); cx.strokeStyle = 'rgba(255,255,255,.5)'; cx.lineWidth = 2; for (let k = 0; k < 2; k++) { const o = ((tNow * .45 + k * .5 + y * .37 + x * .11) % 1) * ts; cx.beginPath(); cx.moveTo(px + o, py + ts * (.3 + k * .4)); cx.lineTo(px + Math.min(ts, o + ts * .28), py + ts * (.3 + k * .4)); cx.stroke(); } if ((x * 7 + y * 13) % 11 === 0) { cx.fillStyle = (x + y) % 2 ? 'rgba(255,225,140,.7)' : 'rgba(200,235,255,.7)'; circ(px + ts * .6, py + ts * .55, ts * (.04 + .03 * Math.sin(tNow * 2 + x))); cx.fill(); } return; }
+  cx.fillStyle = t === ':' ? '#e2cf9a' : t === 's' ? ((x + y) % 2 ? '#ead9a6' : '#e4d29c') : t === 'c' || t === 'p' || t === 'd' ? base : t === 'D' ? '#d8b878' : t === 'R' ? '#9a94ac' : t === 'w' ? '#d9c25a' : base; cx.fillRect(px, py, ts + 1, ts + 1);
+  if (t === ':') { cx.fillStyle = '#cdb97f'; cx.fillRect(px + ts * (.2 + ((x * 5 + y * 3) % 4) * .12), py + ts * (.3 + ((x + y * 7) % 3) * .2), ts * .14, ts * .09); cx.fillRect(px + ts * (.55 + ((x * 3 + y) % 3) * .1), py + ts * (.62 + ((x + y) % 2) * .14), ts * .1, ts * .07); }
+  else if (t === ',') { cx.strokeStyle = '#2f7f3f'; cx.lineWidth = Math.max(1.5, ts * .05); cx.lineCap = 'round'; for (let k = 0; k < 5; k++) { const bx = px + ts * (.12 + k * .19), by = py + ts * (.5 + ((k * 7 + x) % 3) * .2), sway = Math.sin(tNow * 1.6 + x + k) * ts * .05; cx.beginPath(); cx.moveTo(bx, by); cx.lineTo(bx + sway, by - ts * .34); cx.stroke(); } cx.lineCap = 'butt'; }
+  else if (t === '*') { for (const [a, b, col] of [[.28, .34, '#ffd25e'], [.66, .56, '#ff8fb0'], [.4, .74, '#fff'], [.78, .26, '#b9a3ff']]) { cx.fillStyle = col; circ(px + ts * a, py + ts * b, ts * .075); cx.fill(); cx.fillStyle = '#f08a2c'; circ(px + ts * a, py + ts * b, ts * .03); cx.fill(); } }
+  else if (t === 'w') { cx.strokeStyle = '#b89a34'; cx.lineWidth = 1.5; for (let k = 0; k < 3; k++) { cx.beginPath(); cx.moveTo(px, py + ts * (.25 + k * .3)); cx.lineTo(px + ts, py + ts * (.25 + k * .3)); cx.stroke(); } }
+  else if (t === 'R') { cx.strokeStyle = '#7d7890'; cx.lineWidth = 1.5; cx.strokeRect(px + 1, py + 1, ts - 1, ts - 1); }
+  else if (t === '.' && (x * 13 + y * 7) % 9 === 0) { cx.fillStyle = 'rgba(255,255,255,.1)'; cx.fillRect(px + ts * .3, py + ts * .5, ts * .08, ts * .16); cx.fillRect(px + ts * .42, py + ts * .44, ts * .08, ts * .22); } }
+function shadow2(px, py, ts, rx) { cx.fillStyle = 'rgba(20,30,60,.2)'; cx.beginPath(); cx.ellipse(px + ts * .64, py + ts * .9, ts * rx, ts * .1, 0, 0, 7); cx.fill(); cx.fillStyle = 'rgba(60,40,10,.14)'; cx.beginPath(); cx.ellipse(px + ts * .36, py + ts * .93, ts * rx * .8, ts * .08, 0, 0, 7); cx.fill(); }
+function tall(t, x, y, px, py, ts) {
+  if (t === 'T' || t === 't' || t === 'a') { shadow2(px, py, ts, .36); cx.fillStyle = '#6b4a22'; cx.fillRect(px + ts * .43, py + ts * .5, ts * .14, ts * .42); cx.strokeStyle = INK; cx.lineWidth = 1.2; cx.strokeRect(px + ts * .43, py + ts * .5, ts * .14, ts * .42);
+    cx.fillStyle = t === 't' ? ((x + y) % 3 ? '#b58ad8' : '#d88ab8') : t === 'a' ? '#4fa04a' : (x * 7 + y * 3) % 3 ? '#2f8f55' : '#3c9a6c'; circ(px + ts * .5, py + ts * .34, ts * .4); cx.fill(); ol(1.6); cx.fillStyle = 'rgba(255,255,255,.14)'; circ(px + ts * .38, py + ts * .22, ts * .16); cx.fill();
+    if (t === 'a') { cx.fillStyle = '#ff6a4d'; for (const [a, b] of [[.34, .28], [.62, .3], [.5, .5]]) { circ(px + ts * a, py + ts * b, ts * .075); cx.fill(); ol(1); } } }
+  else if (t === 'r') { shadow2(px, py, ts, .34); cx.fillStyle = (x + y) % 2 ? '#8d93a2' : '#7f8696'; cx.beginPath(); for (let i = 0; i < 8; i++) { const an = i / 8 * 6.283, q = ts * (.34 + .08 * Math.sin(x * 12.9 + y * 4.1 + i * 2.3)); cx[i ? 'lineTo' : 'moveTo'](px + ts * .5 + Math.cos(an) * q, py + ts * .55 + Math.sin(an) * q * .8); } cx.closePath(); cx.fill(); ol(1.6); }
+  else if (t === '^') { cx.fillStyle = '#8f8aa8'; cx.beginPath(); cx.moveTo(px + ts * .02, py + ts * .98); cx.lineTo(px + ts * .4, py + ts * .06); cx.lineTo(px + ts * .62, py + ts * .5); cx.lineTo(px + ts * .78, py + ts * .26); cx.lineTo(px + ts * .99, py + ts * .98); cx.closePath(); cx.fill(); ol(1.6); cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.moveTo(px + ts * .31, py + ts * .3); cx.lineTo(px + ts * .4, py + ts * .06); cx.lineTo(px + ts * .5, py + ts * .28); cx.closePath(); cx.fill(); }
+  else if (t === '#') { cx.fillStyle = '#8b8798'; cx.fillRect(px, py + ts * .12, ts + 1, ts * .8); cx.strokeStyle = INK; cx.lineWidth = 1.6; cx.strokeRect(px, py + ts * .12, ts + 1, ts * .8); cx.strokeStyle = '#6d6a7a'; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(px, py + ts * .52); cx.lineTo(px + ts, py + ts * .52); cx.moveTo(px + ts * (x % 2 ? .35 : .65), py + ts * .12); cx.lineTo(px + ts * (x % 2 ? .35 : .65), py + ts * .52); cx.moveTo(px + ts * (x % 2 ? .65 : .35), py + ts * .52); cx.lineTo(px + ts * (x % 2 ? .65 : .35), py + ts * .92); cx.stroke(); cx.fillStyle = '#5a9a4a'; if ((x * 3 + y) % 4 === 0) { circ(px + ts * .3, py + ts * .16, ts * .09); cx.fill(); } }
+  else if (t === 'H') { shadow2(px, py, ts, .44); cx.fillStyle = '#e6dcc2'; rr(px + ts * .1, py + ts * .36, ts * .8, ts * .56, 4); cx.fill(); ol(1.8); cx.fillStyle = '#c9793a'; cx.beginPath(); cx.arc(px + ts * .5, py + ts * .4, ts * .5, Math.PI, 0); cx.closePath(); cx.fill(); ol(1.8); cx.fillStyle = '#6b4a22'; rr(px + ts * .4, py + ts * .6, ts * .2, ts * .32, 3); cx.fill(); cx.fillStyle = '#ffd25e'; circ(px + ts * .5, py + ts * .06, ts * .07); cx.fill(); ol(1); }
+  else if (t === 'm') { cx.strokeStyle = '#4f8f4a'; cx.lineWidth = Math.max(2, ts * .06); cx.lineCap = 'round'; for (let k = 0; k < 4; k++) { const bx = px + ts * (.16 + k * .22), sway = Math.sin(tNow * 1.3 + x + k * 2) * ts * .04; cx.beginPath(); cx.moveTo(bx, py + ts * .95); cx.lineTo(bx + sway, py + ts * .2); cx.stroke(); cx.fillStyle = '#7a5a2a'; rr(bx + sway - ts * .045, py + ts * .14, ts * .09, ts * .22, 3); cx.fill(); } cx.lineCap = 'butt'; }
+  else if (t === 'D') { cx.strokeStyle = '#b8944e'; cx.lineWidth = 2; cx.beginPath(); cx.arc(px + ts * .5, py + ts * 1.1, ts * .7, Math.PI * 1.2, Math.PI * 1.8); cx.stroke(); } }
+/* things on the map */
+function drawThing(t, X, Y, ts) { const id = t.id;
+  if (id === 'ship') { cx.fillStyle = 'rgba(0,0,0,.28)'; cx.beginPath(); cx.ellipse(X, Y + ts * .42, ts * 1.1, ts * .2, 0, 0, 7); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = 3; for (const sg of [-1, 1]) { cx.beginPath(); cx.moveTo(X + sg * ts * .5, Y); cx.lineTo(X + sg * ts * .95, Y + ts * .4); cx.stroke(); }
+    cx.fillStyle = '#dfe6f0'; cx.beginPath(); cx.ellipse(X, Y - ts * .1, ts * .95, ts * .42, 0, 0, 7); cx.fill(); ol(2.2); cx.fillStyle = '#f08a2c'; cx.fillRect(X - ts * .9, Y - ts * .06, ts * 1.8, ts * .1); cx.fillStyle = '#6db3ff'; cx.beginPath(); cx.arc(X, Y - ts * .32, ts * .42, Math.PI, 0); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = 'rgba(255,255,255,.5)'; circ(X - ts * .14, Y - ts * .5, ts * .1); cx.fill();
+    for (let i = -1; i <= 1; i++) { cx.fillStyle = Math.sin(tNow * 3 + i) > 0 ? '#ffd25e' : '#8a6a1a'; circ(X + i * ts * .5, Y + ts * .1, ts * .07); cx.fill(); ol(1); } }
+  else if (id === 'sign') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - ts * .05, Y - ts * .2, ts * .1, ts * .6); cx.fillStyle = '#e6dcc2'; rr(X - ts * .36, Y - ts * .5, ts * .72, ts * .34, 3); cx.fill(); ol(1.6); cx.strokeStyle = '#6b4a22'; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(X - ts * .24, Y - ts * .38); cx.lineTo(X + ts * .24, Y - ts * .38); cx.moveTo(X - ts * .24, Y - ts * .27); cx.lineTo(X + ts * .1, Y - ts * .27); cx.stroke(); }
+  else if (id === 'village') { tindle(X, Y + ts * .05, ts * .26, '#c9793a', 3, 'elder'); }
+  else if (t.kind === 'machine') machineIcon(X, Y + ts * .1, ts * 1.05, M(t.site).ok, false);
+  else if (id === 'pan') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - ts * .06, Y - ts * .7, ts * .12, ts * 1.1); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(X - ts * .06, Y - ts * .7, ts * .12, ts * 1.1); cx.strokeStyle = '#8d8f96'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X, Y - ts * .66); cx.lineTo(X + ts * .34, Y - ts * .66); cx.lineTo(X + ts * .34, Y - ts * .1); cx.stroke(); cx.fillStyle = gateOpen('bridge') ? '#ffd25e' : '#b9853a'; cx.beginPath(); cx.ellipse(X + ts * .34, Y - ts * .04, ts * .26, ts * .09, 0, 0, 7); cx.fill(); ol(1.6); }
+  else if (id === 'post') { cx.fillStyle = '#9a94ac'; rr(X - ts * .16, Y - ts * .6, ts * .32, ts * .98, 4); cx.fill(); ol(1.8); cx.strokeStyle = '#5d5870'; cx.lineWidth = 1.5; for (let k = 0; k < 3; k++) { cx.beginPath(); cx.moveTo(X - ts * .08, Y - ts * .4 + k * ts * .2); cx.lineTo(X + ts * .08, Y - ts * .4 + k * ts * .2); cx.stroke(); } }
+  else if (id === 'hedge') { cx.fillStyle = '#2f7f3f'; rr(X - ts * .5, Y - ts * .45, ts, ts * .9, 8); cx.fill(); ol(2); for (const [a, b] of [[-.25, -.2], [.2, -.1], [-.05, .15], [.28, .22], [-.3, .2]]) { cx.fillStyle = '#4fae5a'; circ(X + ts * a, Y + ts * b, ts * .12); cx.fill(); } cx.fillStyle = '#ff8fb0'; circ(X + ts * .1, Y - ts * .25, ts * .05); cx.fill(); }
+  else if (t.kind === 'being') tindle(X, Y + ts * .02, ts * .3, t.col || '#c9793a', t.x * 3 + t.y, id === 'guard' ? 'rill' : '');
+  else if (id === 'rubble') { for (const [a, b, q] of [[-.2, .1, .14], [.12, .16, .11], [.02, -.06, .1], [.26, -.02, .07]]) { cx.fillStyle = '#8b8798'; rr(X + ts * a - ts * q, Y + ts * b - ts * q * .6, ts * q * 2, ts * q * 1.2, 2); cx.fill(); ol(1.3); } if (!has('half')) { cx.fillStyle = '#2b2b30'; rr(X - ts * .1, Y - ts * .02, ts * .22, ts * .14, 2); cx.fill(); ol(1.2); } }
+  else if (id === 'log') { cx.fillStyle = '#8a5f34'; rr(X - ts * .42, Y - ts * .08, ts * .84, ts * .36, ts * .16); cx.fill(); ol(1.8); cx.fillStyle = '#3b2a12'; cx.beginPath(); cx.ellipse(X + ts * .32, Y + ts * .1, ts * .09, ts * .15, 0, 0, 7); cx.fill(); ol(1.3); if (!has('coin') && !flag('coinGiven') && Math.sin(tNow * 3) > .6) { cx.fillStyle = '#fff3c4'; circ(X + ts * .32, Y + ts * .08, ts * .03); cx.fill(); } }
+  else if (id === 'spin') { cx.fillStyle = '#e8483a'; cx.beginPath(); for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + tNow * .3, q = ts * (i % 2 ? .1 : .2); cx[i ? 'lineTo' : 'moveTo'](X + Math.cos(a) * q, Y + ts * .2 + Math.sin(a) * q * .7); } cx.closePath(); cx.fill(); ol(1.4); }
+  else if (id === 'well') { cx.fillStyle = '#9a94ac'; cx.beginPath(); cx.ellipse(X, Y + ts * .16, ts * .36, ts * .2, 0, 0, 7); cx.fill(); ol(1.8); cx.fillStyle = '#16264a'; cx.beginPath(); cx.ellipse(X, Y + ts * .14, ts * .24, ts * .12, 0, 0, 7); cx.fill(); cx.strokeStyle = '#6b4a22'; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(X - ts * .3, Y + ts * .1); cx.lineTo(X - ts * .3, Y - ts * .4); cx.lineTo(X + ts * .3, Y - ts * .4); cx.lineTo(X + ts * .3, Y + ts * .1); cx.stroke(); }
+  else if (id === 'ring') { for (let i = 0; i < 12; i++) { const a = i / 12 * 6.283; cx.fillStyle = ['#ffd25e', '#ff8fb0', '#fff'][Math.floor(i / 3) % 3]; circ(X + Math.cos(a) * ts * .36, Y + ts * .1 + Math.sin(a) * ts * .26, ts * .06); cx.fill(); ol(.8); } }
+  else if (id === 'cliff' || id === 'lookout') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - ts * .03, Y - ts * .6, ts * .06, ts * .9); cx.fillStyle = '#ffb23e'; cx.beginPath(); cx.moveTo(X + ts * .03, Y - ts * .6); cx.lineTo(X + ts * .4 + Math.sin(tNow * 3) * ts * .03, Y - ts * .46); cx.lineTo(X + ts * .03, Y - ts * .3); cx.closePath(); cx.fill(); ol(1.4); } }
+/* gates on the map */
+function drawGate(g, px, py, ts, x, y) {
+  if (g === 'bridge') { if (gateOpen(g)) { cx.fillStyle = '#a8713f'; cx.fillRect(px - 1, py + ts * .1, ts + 2, ts * .8); cx.strokeStyle = '#6b4424'; cx.lineWidth = 2; for (let k = 0; k < 4; k++) { cx.beginPath(); cx.moveTo(px + ts * k / 4, py + ts * .1); cx.lineTo(px + ts * k / 4, py + ts * .9); cx.stroke(); } cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(px, py + ts * .1); cx.lineTo(px + ts, py + ts * .1); cx.moveTo(px, py + ts * .9); cx.lineTo(px + ts, py + ts * .9); cx.stroke(); }
+    else if (x === 47) { cx.fillStyle = '#a8713f'; cx.beginPath(); cx.moveTo(px - 2, py + ts * .9); cx.lineTo(px - 2, py + ts * .1); cx.lineTo(px + ts * .42, py - ts * .5); cx.lineTo(px + ts * .5, py + ts * .28); cx.closePath(); cx.fill(); ol(2); } }
+  else if (g === 'stones') { cx.fillStyle = gateOpen(g) ? '#b9b2d6' : '#8f8aa8'; cx.beginPath(); cx.ellipse(px + ts * .5, py + ts * .52, ts * .32, ts * .24, 0, 0, 7); cx.fill(); ol(1.6); cx.fillStyle = 'rgba(255,255,255,.25)'; cx.beginPath(); cx.ellipse(px + ts * .42, py + ts * .46, ts * .14, ts * .08, 0, 0, 7); cx.fill(); }
+  else if (g === 'reeds') { cx.fillStyle = '#7a5a2a'; for (let k = 0; k < 4; k++) cx.fillRect(px + ts * (.1 + k * .24), py + ts * .1, ts * .1, ts * .85); cx.fillRect(px, py + ts * .3, ts, ts * .1); cx.fillRect(px, py + ts * .65, ts, ts * .1); } }
+function drawMap(dt) { geo(); const ts = V.ts, x0 = Math.floor(V.ox), y0 = Math.floor(V.oy), x1 = Math.min(MAPW - 1, Math.ceil(V.ox + V.cols)), y1 = Math.min(MAPH - 1, Math.ceil(V.oy + V.rows)), X = x => Math.round((x - V.ox) * ts), Y = y => Math.round((y - V.oy) * ts);
+  cx.fillStyle = '#1a2046'; cx.fillRect(0, 0, vw, vh);
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (!seen[key(x, y)]) continue; const t = MAP[y][x], px = X(x), py = Y(y), g = GATEOF[key(x, y)]; ground(TALL.indexOf(t) >= 0 ? '.' : t, x, y, px, py, ts); if (g) drawGate(g, px, py, ts, x, y); }
+  const py0 = Math.round(P.py + .49);
+  for (let y = y0; y <= Math.min(MAPH - 1, y1 + 1); y++) { for (let x = x0; x <= x1; x++) { if (!seen[key(x, y)]) continue; const t = MAP[y][x]; if (TALL.indexOf(t) >= 0) tall(t, x, y, X(x), Y(y), ts); const th = SOLID[key(x, y)]; if (th && thingSeen(th)) drawThing(th, X(x) + ts / 2, Y(y) + ts / 2, ts); }
+    if (y === py0) drawAstro(X(P.px) + ts / 2, Y(P.py) + ts / 2 - ts * .1, ts * 1.3, P.route.length > 0, P.dir, P.step); }
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (seen[key(x, y)]) continue; const px = X(x), py = Y(y), e = (x > 0 && seen[key(x - 1, y)]) || (x < MAPW - 1 && seen[key(x + 1, y)]) || (y > 0 && seen[key(x, y - 1)]) || (y < MAPH - 1 && seen[key(x, y + 1)]); cx.fillStyle = e ? '#2a3260' : '#1a2046'; cx.fillRect(px, py, ts + 1, ts + 1); if ((x + y) % 2 === 0) { cx.fillStyle = 'rgba(190,200,255,.07)'; cx.beginPath(); cx.ellipse(px + ts * (.6 + .3 * Math.sin(tNow * .3 + x * 1.7 + y)), py + ts * (.5 + .2 * Math.cos(tNow * .25 + y * 1.3 + x)), ts * .8, ts * .3, 0, 0, 7); cx.fill(); } }
+  for (const t of THINGS) { if (!t.label || !thingSeen(t) || t.x < x0 - 1 || t.x > x1 + 1 || t.y < y0 - 1 || t.y > y1 + 1) continue; const lx = X(t.x) + ts / 2, ly = Y(t.y) + ts * 1.2, done = t.kind === 'machine' ? M(t.site).ok : t.gate ? gateOpen(t.gate) : false; if (t.kind === 'machine' && !M(t.site).seenIt) continue; pill((done ? '✓ ' : '') + t.label, lx, ly);
+    if (bang(t)) { const by = Y(t.y) - ts * .55 - Math.abs(Math.sin(tNow * 3)) * 5; cx.fillStyle = '#ffd25e'; circ(lx, by, Math.max(9, ts * .24)); cx.fill(); ol(2); text('!', lx, by + 1, Math.max(12, ts * .34), INK); } }
+  if (P.route.length) { const [tx, ty] = P.route[P.route.length - 1]; cx.strokeStyle = 'rgba(255,255,255,.75)'; cx.lineWidth = 2; cx.setLineDash([5, 5]); circ(X(tx) + ts / 2, Y(ty) + ts / 2, ts * .3); cx.stroke(); cx.setLineDash([]); } }
+/* a "!" floats over the village while the elder has something new to say. Never over a secret. */
+function bang(t) { if (t.id !== 'village') return false; const n = platesDone(); return !flag('metElder') || (n >= 1 && !flag('gotPouch')) || (n === 4 && !flag('stoneLit')); }
+function stepWalk(dt) { if (!P.route.length) { P.idle += dt; return; } const [tx, ty] = P.route[0], dx = tx - P.px, dy = ty - P.py, d = Math.hypot(dx, dy), st = 5.4 * dt; P.step += dt; P.idle = 0; if (Math.abs(dx) > Math.abs(dy)) P.dir = dx > 0 ? 'right' : 'left'; else if (dy) P.dir = dy > 0 ? 'down' : 'up';
+  if (d <= st) { P.px = tx; P.py = ty; P.route.shift(); see(); if (!P.route.length) { save(); drawWords(); setPlace(); const th = P.then; P.then = null; if (th) th(); } else if (P.route.length % 4 === 0) { drawWords(); setPlace(); } } else { P.px += dx / d * st; P.py += dy / d * st; } }
+
+/* ---- the big map: the whole planet. The land's shape is your ship's landing photo; the mist lifts where you have walked. */
+let bigCv = null, bigDirty = true;
+function bigGeo() { const s = Math.max(2, Math.floor(Math.min((vw - 16) / MAPW, (vh - 70) / MAPH) * 2) / 2); return { s, ox: Math.round((vw - s * MAPW) / 2), oy: Math.round((vh - s * MAPH) / 2 + 14) }; }
+function drawBig() { const g = bigGeo(), s = g.s; if (bigDirty || !bigCv || bigCv.width !== MAPW * 4) { bigCv = bigCv || document.createElement('canvas'); bigCv.width = MAPW * 4; bigCv.height = MAPH * 4; const b = bigCv.getContext('2d');
+    for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) { const t = MAP[y][x], R = REGIONS[regAt(x, y)] || REGIONS[1]; let col; if (!seen[key(x, y)]) col = t === '~' ? '#141a3c' : (x + y) % 2 ? '#2b3364' : '#28305e'; else col = t === '~' ? '#2f6fd0' : t === ':' ? '#e2cf9a' : t === 'T' || t === 'a' ? '#2f8f55' : t === 't' ? '#b58ad8' : t === '^' ? '#8f8aa8' : t === '#' || t === 'r' ? '#8b8798' : t === 'H' ? '#c9793a' : t === 's' ? '#ead9a6' : t === ',' ? '#4a9a4a' : t === 'm' ? '#4f8f4a' : t === '*' ? '#ffd0e0' : (R.g || REGIONS[1].g)[0]; b.fillStyle = col; b.fillRect(x * 4, y * 4, 4, 4); const gt = GATEOF[key(x, y)]; if (gt && seen[key(x, y)] && gateOpen(gt)) { b.fillStyle = gt === 'bridge' ? '#a8713f' : '#b9b2d6'; b.fillRect(x * 4, y * 4, 4, 4); } } bigDirty = false; }
+  cx.fillStyle = '#0b1026'; cx.fillRect(0, 0, vw, vh); cx.imageSmoothingEnabled = false; cx.drawImage(bigCv, g.ox, g.oy, MAPW * s, MAPH * s); cx.imageSmoothingEnabled = true; cx.strokeStyle = '#4a5d80'; cx.lineWidth = 2; cx.strokeRect(g.ox - 1, g.oy - 1, MAPW * s + 2, MAPH * s + 2);
+  text(PLANET + ': your map', vw / 2, Math.max(54, g.oy - 16), Math.max(15, Math.min(22, vw * .03)), '#ffb23e');
+  const mark = (x, y, col, r) => { cx.fillStyle = col; circ(g.ox + (x + .5) * s, g.oy + (y + .5) * s, r); cx.fill(); ol(1.5); };
+  for (const t of THINGS) { if (!thingSeen(t)) continue; if (t.id === 'ship') mark(t.x, t.y, '#dfe6f0', Math.max(4, s * .9)); else if (t.id === 'village') mark(t.x, t.y, '#c9793a', Math.max(4, s * .9)); else if (t.kind === 'machine') mark(t.x, t.y, M(t.site).ok ? '#ffd25e' : '#8d8f96', Math.max(3, s * .7)); }
+  const seenReg = {}; for (let y = 0; y < MAPH; y += 2) for (let x = 0; x < MAPW; x += 2) if (seen[key(x, y)]) { const r = regAt(x, y); if (r) { const o = seenReg[r] || (seenReg[r] = { n: 0, x: 0, y: 0 }); o.n++; o.x += x; o.y += y; } }
+  const bx = g.ox + (P.px + .5) * s, by = g.oy + (P.py + .5) * s;
+  Object.keys(seenReg).forEach(r => { const o = seenReg[r]; if (o.n < 30) return; let lx = g.ox + (o.x / o.n) * s, ly = g.oy + (o.y / o.n) * s - 12; if (Math.abs(ly - (by - 16)) < 26 && Math.abs(lx - bx) < 120) ly = by + 26; pill(REGIONS[r].name, lx, ly); });
+  const  pulse = 5 + Math.sin(tNow * 5) * 2; cx.fillStyle = '#ff5a4d'; circ(bx, by, pulse); cx.fill(); ol(2); pill('You', bx, by - 16, false, '#ffd25e');
+  wrapText('The dark part is land you have not walked yet. Your ship took its shape from the sky.', vw / 2, Math.min(vh - 22, g.oy + MAPH * s + 22), vw - 30, Math.max(12, Math.min(15, vw * .02)), '#a9b9d0'); }
+
+/* ---- a place from the side: the village */
+function drawScene(dt) { const w = vw, h = vh, hz = h * .56, gy = h * .84, sc = SCENES[S.at], r = Math.max(16, Math.min(w, h) * .075);
+  if (SC.to !== null) { const d = SC.to - SC.x, st = dt * .32; SC.step += dt; SC.dir = d > 0 ? 'right' : 'left'; if (Math.abs(d) <= st) { SC.x = SC.to; SC.to = null; const th = SC.then; SC.then = null; save(); if (th) th(); } else SC.x += Math.sign(d) * st; }
+  const bands = ['#3b78c9', '#5b97d9', '#86b8e6', '#b5d6ee', '#ffe2ad']; bands.forEach((b, i) => { cx.fillStyle = b; cx.fillRect(0, hz * i / bands.length, w, hz / bands.length + 1); }); twoSuns(w, hz);
+  cx.fillStyle = '#4f9a6a'; cx.beginPath(); cx.moveTo(0, hz); for (let i = 0; i <= 12; i++) cx.lineTo(w * i / 12, hz - h * (.04 + ((i * 5) % 4) * .03)); cx.lineTo(w, hz); cx.closePath(); cx.fill();
+  cx.fillStyle = '#62b05c'; cx.fillRect(0, hz, w, h - hz); cx.fillStyle = '#e2cf9a'; cx.fillRect(0, gy - h * .02, w, h * .09); cx.fillStyle = '#58a554'; cx.fillRect(0, gy + h * .07, w, h);
+  for (const [fx, sz] of [[.16, 1], [.5, 1.25], [.84, 1]]) { const X = w * fx, bw = r * 3.4 * sz, bh = r * 2.2 * sz, by = gy - h * .02; cx.fillStyle = '#e6dcc2'; rr(X - bw / 2, by - bh, bw, bh, 6); cx.fill(); ol(2); cx.fillStyle = '#c9793a'; cx.beginPath(); cx.arc(X, by - bh, bw * .56, Math.PI, 0); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#ffd25e'; circ(X, by - bh - bw * .56, r * .22); cx.fill(); ol(1.5); cx.fillStyle = '#6b4a22'; rr(X - bw * .12, by - bh * .62, bw * .24, bh * .62, 4); cx.fill(); ol(1.5); cx.fillStyle = '#9fd6ff'; for (const sg of [-1, 1]) { circ(X + sg * bw * .3, by - bh * .55, r * .26); cx.fill(); ol(1.5); } }
+  for (const t of sc.things) { const X = w * t.x, base = gy + h * .02;
+    if (t.id === 'door') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - r * .1, base - r * 2.2, r * .2, r * 2.2); cx.fillStyle = '#e6dcc2'; cx.beginPath(); cx.moveTo(X - r * 1.1, base - r * 1.9); cx.lineTo(X + r * .7, base - r * 2.2); cx.lineTo(X + r * .7, base - r * 1.4); cx.lineTo(X - r * 1.1, base - r * 1.4); cx.closePath(); cx.fill(); ol(1.8); text('← OUT', X - r * .15, base - r * 1.72, r * .42, '#6b4a22'); }
+    else if (t.id === 'kid') tindle(X, base - r * .62, r * .62, '#e09a55', 1, '');
+    else if (t.id === 'store') { for (let i = 0; i < 3; i++) { const bx = X + (i - 1) * r * 1.25; cx.fillStyle = '#8a5f34'; rr(bx - r * .52, base - r * 1.25, r * 1.04, r * 1.25, 5); cx.fill(); ol(2); cx.fillStyle = '#3b2a12'; cx.beginPath(); cx.ellipse(bx, base - r * 1.25, r * .52, r * .16, 0, 0, 7); cx.fill(); ol(1.5); if (i === 2) for (let k = 0; k < 3; k++) pip(bx - r * .22 + k * r * .22, base - r * 1.2, r * .09, true); } }
+    else if (t.id === 'elder') tindle(X, base - r * 1.02, r * 1.02, '#b86a2a', 2, 'elder');
+    else if (t.id === 'mural') { cx.fillStyle = '#efe6cc'; rr(X - r * 1.5, base - r * 3.3, r * 3, r * 2.2, 6); cx.fill(); ol(2); cx.fillStyle = '#7fb6e0'; rr(X - r * 1.1, base - r * 2.9, r * .9, r * 1.2, 4); cx.fill(); ol(1.5); cx.strokeStyle = '#6b4a22'; cx.lineWidth = 2; for (let k = 0; k < 3; k++) { cx.beginPath(); cx.moveTo(X + r * .1, base - r * 2.8 + k * r * .45); cx.lineTo(X + r * 1.2, base - r * 2.8 + k * r * .45); cx.stroke(); } cx.fillStyle = '#6b4a22'; cx.fillRect(X - r * 1.3, base - r * 1.1, r * .16, r * 1.1); cx.fillRect(X + r * 1.14, base - r * 1.1, r * .16, r * 1.1); }
+    else if (t.id === 'rstone') { cx.fillStyle = '#8b8798'; rr(X - r * .7, base - r * .7, r * 1.4, r * .7, 4); cx.fill(); ol(2); const lit = flag('stoneLit'); if (lit) { const g = cx.createRadialGradient(X, base - r * 1.5, 0, X, base - r * 1.5, r * 2.4); g.addColorStop(0, 'rgba(255,225,120,.75)'); g.addColorStop(1, 'rgba(255,225,120,0)'); cx.fillStyle = g; circ(X, base - r * 1.5, r * 2.4); cx.fill(); } cx.fillStyle = lit ? '#ffd25e' : '#4a4f66'; cx.beginPath(); cx.moveTo(X, base - r * 2.5); cx.lineTo(X + r * .6, base - r * 1.5); cx.lineTo(X, base - r * .7); cx.lineTo(X - r * .6, base - r * 1.5); cx.closePath(); cx.fill(); ol(2); text('?', X, base - r * 1.5, r * .6, lit ? '#7a5200' : '#7f86a3'); if (lit) text('+ − × ÷', X, base - r * 2.9, r * .42, '#fff3c4'); }
+    pill(t.name, X, base + r * .62 + (Math.round(t.x * 100) % 2 ? 0 : 0)); }
+  drawAstro(w * SC.x, gy - r * .5, r * 2.5, SC.to !== null, SC.dir, SC.step); }
+
+/* ---- sound: small beeps made here, no files. Off with the Sound button on the ship panel. */
+let AC = null;
+function beep(f, d, type) { if (!S || !S.sound) return; try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); const o = AC.createOscillator(), g = AC.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(.06, AC.currentTime); g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + d); o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime + d); } catch (e) {} }
+function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .9; speechSynthesis.speak(u); } catch (e) {} }
+function hush() { try { speechSynthesis.cancel(); } catch (e) {} }
+
+/* ---- the reading card: a sentence or two, then OK. [Marc's rule 7: short readings] */
+const READ = { q: [], i: 0, then: null, who: '' };
+const reading = () => READ.q.length > 0;
+function tell(pages, then, who) { READ.q = pages.filter(Boolean); READ.i = 0; READ.then = then || null; READ.who = who || ''; if (!READ.q.length) { READ.then = null; if (then) then(); return; } showRead(); }
+function showRead() { $('read').hidden = false; $('readwho').textContent = READ.who; $('readtext').textContent = READ.q[READ.i]; $('readn').textContent = READ.q.length > 1 ? (READ.i + 1) + ' of ' + READ.q.length : ''; $('readok').textContent = READ.i < READ.q.length - 1 ? 'Next' : 'OK'; lines.push({ text: READ.q[READ.i] }); lines = lines.slice(-3); drawLog(); drawWords(); drawTask(); }
+function readOk() { if (!reading()) return; hush(); beep(520, .05); if (READ.i < READ.q.length - 1) { READ.i++; showRead(); return; } $('read').hidden = true; const th = READ.then; READ.q = []; READ.then = null; READ.who = ''; if (th) th(); drawWords(); drawTask(); setPlace(); save(); }
+let lines = [];
+function note(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-3); drawLog(); }
+function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2]; $('log').innerHTML = (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last ? (last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : (reading() ? '' : `<span class="new">${esc(last.text)}</span>`)) : ''); }
+function setPlace() { const t = PIC && PIC.title ? PIC.title : BIG ? PLANET : hereName(); if ($('place').textContent !== t) $('place').textContent = t; const sb = $('stonesbar'); if (S && flag('metElder')) { sb.hidden = false; sb.innerHTML = 'Rule Stones <b>' + '●'.repeat(S.lit) + '○'.repeat(5 - S.lit) + '</b>'; } else sb.hidden = true; }
+
+/* ---- the desk: words to tap. A doing word, then a thing. No keyboard is needed. [Source: Marc, 17 November] */
+const VERBS = ['look', 'talk', 'take', 'go'];
+let verb = '', TASK = null, PANEL = '';
+function hereThings() { return S.at === 'map' ? nearThings() : SCENES[S.at].things; }
+function drawWords() { const W = $('words'), busy = reading() || !!TASK || !!PANEL || !!PIC || BIG; $('task').hidden = !(TASK || PANEL); W.hidden = !!(TASK || PANEL); $('cmdrow').hidden = !!(TASK || PANEL); $('desk').classList.toggle('busy', !!(TASK || PANEL));
+  if (W.hidden) return; if (reading() || PIC || BIG || S.intro < 9) { W.innerHTML = `<div class="wrow"><span class="wlab">${reading() ? 'Read the words on the picture. Then tap OK.' : BIG ? 'Tap the map to close it.' : ''}</span></div>`; return; }
+  const things = hereThings(), seenW = {}; let h = '<div class="wrow"><span class="wlab">Do</span>' + VERBS.map(v => `<button class="word verb${verb === v ? ' on' : ''}" data-verb="${v}">${v}</button>`).join('') + '</div>';
+  if (verb === 'go') h += '<div class="wrow"><span class="wlab">Where</span>' + (S.at === 'map' ? ['north', 'south', 'east', 'west'].map(d => `<button class="word" data-dir="${d}">${d}</button>`).join('') + '<button class="word thing" data-dir="ship">ship</button>' + (thingSeen(TH.village) ? '<button class="word thing" data-dir="village">village</button>' : '') : '<button class="word thing" data-thing="door">out</button>') + '</div>';
+  else h += '<div class="wrow"><span class="wlab">' + (things.length ? 'Here' : 'Nothing is close. Tap the picture to walk.') + '</span>' + things.map(t => { let w = t.words[0]; if (seenW[w] && t.words[1]) w = t.words[1]; seenW[w] = 1; return `<button class="word thing" data-thing="${t.id}">${esc(w)}</button>`; }).join('') + '</div>';
+  W.innerHTML = h; }
+function runThing(t, v) { if (reading() || TASK) return; v = v || ''; const name = t.words[0]; note('', (v || (t.says || t.act === 'kid' || t.act === 'elder' || t.act === 'keeper' || t.act === 'guard' ? 'talk' : 'look')) + ' ' + name); verb = ''; $('cmd').value = ''; drawWords();
+  if (S.at === 'map') goThing(t, () => act(t, v)); else { const tx = clamp(t.x + (SC.x < t.x ? -.07 : .07), .05, .95); SC.to = tx; SC.then = () => { SC.dir = t.x > SC.x ? 'right' : 'left'; act(t, v); }; if (Math.abs(SC.x - tx) < .005) { SC.to = null; const th = SC.then; SC.then = null; th(); } } }
+function act(t, v) { beep(440, .05); const talky = t.kind === 'being' || ['kid', 'elder', 'keeper', 'guard'].indexOf(t.act) >= 0;
+  if (v === 'talk' && !talky) return tell(['You say hello. Nothing answers.']);
+  if (v === 'take' && !(t.gives && ITEMS[t.gives])) return tell(['You cannot take that.']);
+  if (t.act && ACT[t.act]) return ACT[t.act](t, v);
+  if (t.says) { const i = S.said[t.id] || 0; S.said[t.id] = (i + 1) % t.says.length; return tell([t.says[i]], null, cap(t.name)); }
+  if (t.look) return tell([t.look]);
+  tell(['Nothing happens.']); }
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+function command(raw) { const words = raw.toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter(Boolean); if (!words.length || reading() || TASK) return; let v = VERBS.indexOf(words[0]) >= 0 ? words.shift() : '';
+  if (words[0] === 'map') return toggleBig(); if (words[0] === 'needs') return openPanel('needs');
+  if (v === 'go' || (!v && ['north', 'south', 'east', 'west'].indexOf(words[0]) >= 0)) return goDir(words[0]);
+  const things = hereThings(), t = things.find(o => words.some(w => o.words.indexOf(w) >= 0)) || (S.at === 'map' ? THINGS.find(o => thingSeen(o) && words.some(w => o.words.indexOf(w) >= 0)) : null);
+  if (!t) { note('There is no "' + words.join(' ') + '" here.', raw); $('cmd').value = ''; verb = ''; drawWords(); return; } runThing(t, v); }
+function goDir(d) { verb = ''; $('cmd').value = ''; note('', 'go ' + d); if (S.at !== 'map') { if (d === 'out' || d === 'ship') return runThing(SCENES[S.at].things[0], ''); return drawWords(); }
+  if (d === 'ship') return goThing(TH.ship, () => {}); if (d === 'village') return goThing(TH.village, () => {});
+  const v = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] }[d]; if (!v) return drawWords(); let x = Math.round(P.px), y = Math.round(P.py), n = 0; while (n < 4 && walkable(x + v[0], y + v[1])) { x += v[0]; y += v[1]; n++; } if (!n) note('You cannot go ' + d + ' from here.'); else { P.route = []; let cx0 = Math.round(P.px), cy0 = Math.round(P.py); for (let i = 0; i < n; i++) { cx0 += v[0]; cy0 += v[1]; P.route.push([cx0, cy0]); } P.then = null; } drawWords(); }
+
+/* ---- a task, or a list, on the desk. Words, boxes and buttons only: the picture shows the task. */
+const BOX = { on: '', v: {} };
+function padHtml() { return '<div id="pad">' + ['1', '2', '3', '4', '5', 'del', '6', '7', '8', '9', '0', 'clr'].map(k => `<button data-k="${k}">${k === 'del' ? '⌫' : k === 'clr' ? 'C' : k}</button>`).join('') + '</div>'; }
+const boxHtml = id => `<button class="box${BOX.on === id ? ' on' : ''}" data-box="${id}">${esc(BOX.v[id] || '')}</button>`;
+const boxNum = id => BOX.v[id] ? parseInt(BOX.v[id], 10) : null;
+function padKey(k) { const id = BOX.on; if (!id) return; let v = BOX.v[id] || ''; if (k === 'del') v = v.slice(0, -1); else if (k === 'clr') v = ''; else if (v.length < 3) v = (v + k).replace(/^0+(\d)/, '$1'); BOX.v[id] = v; const el = document.querySelector(`[data-box="${id}"]`); if (el) el.textContent = v; beep(600, .03); if (TASK) TASK.msg = ''; const m = document.querySelector('#task .msg'); if (m) m.textContent = ''; }
+function closeTask() { TASK = null; PIC = null; S.open = null; BOX.on = ''; BOX.v = {}; drawWords(); setPlace(); save(); }
+function drawTask() { const T = $('task'); if (PANEL) { T.innerHTML = panelHtml(); return; } if (!TASK) { T.innerHTML = ''; return; } if (reading()) { T.innerHTML = `<h3>${esc(TASK.title || '')}</h3><p class="dim">Read the words on the picture. Then tap OK.</p>`; return; } T.innerHTML = TASKS[TASK.kind].html(); }
+const btn = (id, label, cls, off) => `<button class="btn ${cls || ''}" data-b="${id}"${off ? ' disabled' : ''}>${label}</button>`;
+function notesHtml(site) { const n = S.notes[site] || []; return `<div class="notes"><b>My notes:</b> ${n.length ? n.map(r => `<span>${r[0]} → ${r[1] === null ? 'handed back' : r[1]}</span>`).join('') : '<i class="dim">nothing written yet</i>'}${S.hint === site ? '<span>plate half: ÷</span>' : ''}</div>`; }
+
+/* ---- THE MACHINES.  Find the rule from tests the child chooses (3.OA.9). Then, with real pips, say what will come out before it runs. */
+const MA = { phase: '', t: 0, n: 0, out: null, gold: false, cb: null, show: null };
+function runMachine(n, out, gold, cb) { MA.phase = 'in'; MA.t = 0; MA.n = n; MA.out = out; MA.gold = gold; MA.cb = cb; MA.show = null; beep(300, .1, 'square'); }
+const siteThing = site => THINGS.find(t => t.site === site), siteName = site => siteThing(site).name;
+const TASKS = {
+  machine: { html() { const site = TASK.site, m = M(site), rule = NUM.at[site], busy = !!MA.phase; let h = `<h3>${esc(cap(siteName(site)))}</h3>`;
+      if (TASK.phase === 'test') { h += `<p class="q${TASK.msg ? ' pq' : ''}">${m.ok ? 'Its plate says <b>' + ruleText(rule) + '</b>. You can still try the grey test stones.' : 'Its plate is burnt. Put grey test stones in. See what comes out.'}</p><div class="field"><span>Test stones in (1 to ${TESTMAX}):</span>${boxHtml('in')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('pull', 'Pull the lever', '', busy)}${m.last && !inNotes(site, m.last) ? btn('write', 'Write it down', 'quiet') : ''}${m.ok ? (S.pouch !== null && !S.gates.bridge ? btn('real', 'Use my real pips', 'warm') : '') : btn('plate', 'I know the rule', 'warm')}${btn('leave', 'Leave', 'quiet')}</div>${notesHtml(site)}`; }
+      else if (TASK.phase === 'plate') { h += `<p class="q${TASK.msg ? ' pq' : ''}">Make the new plate. Tap a sign. Then tap the number.</p><div class="field"><div class="signs">${['plus', 'minus', 'times', 'share'].map(o => `<button class="word${TASK.sign === o ? ' on' : ''}" data-sign="${o}">${SIGN[o]}</button>`).join('')}</div>${boxHtml('n')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('fit', 'Fit the plate', 'warm')}${btn('back', 'More tests first', 'quiet')}</div>${notesHtml(site)}`; }
+      else { h += `<p class="q">The plate says <b>${ruleText(rule)}</b>. Your pouch holds <b>${S.pouch}</b> pips.</p><p class="dim${TASK.msg ? ' pq' : ''}">The pan wants exactly ${NUM.target}. Say what will come out before you pull.</p><div class="field"><span>What will come out?</span>${boxHtml('out')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('pour', 'Pour and pull', 'warm', busy)}${btn('tests', 'Test stones', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div>`; }
+      return h; },
+    press(b) { const site = TASK.site, m = M(site), rule = NUM.at[site]; if (MA.phase) return;
+      if (b === 'leave') return closeTask();
+      if (b === 'pull') { const n = boxNum('in'); if (!n || n < 1 || n > TESTMAX) { TASK.msg = `Tap a number from 1 to ${TESTMAX} first.`; return drawTask(); } const out = ruleOut(rule, n); m.tests++; TASK.msg = ''; drawTask(); return runMachine(n, out, false, () => { m.last = [n, out]; TASK.msg = out === null ? `It rattles. It cannot follow its rule with ${n}. It hands them back.` : `${n} went in. ${out} came out.`; save(); drawTask(); }); }
+      if (b === 'write') { if (m.last) { const N = S.notes[site] || (S.notes[site] = []); if (!inNotes(site, m.last)) N.push(m.last.slice()); if (N.length > 14) N.shift(); beep(700, .05); save(); } return drawTask(); }
+      if (b === 'plate') { TASK.phase = 'plate'; TASK.sign = ''; TASK.msg = ''; BOX.v = {}; BOX.on = 'n'; return drawTask(); }
+      if (b === 'back' || b === 'tests') { TASK.phase = 'test'; TASK.msg = ''; BOX.v = {}; BOX.on = 'in'; return drawTask(); }
+      if (b === 'real') { TASK.phase = 'real'; TASK.msg = ''; BOX.v = {}; BOX.on = 'out'; return drawTask(); }
+      if (b === 'fit') { const n = boxNum('n'); if (!TASK.sign) { TASK.msg = 'Tap a sign first: + − × or ÷'; return drawTask(); } if (!n || n < 1 || n > 20) { TASK.msg = 'Tap the number for the plate, from 1 to 20.'; return drawTask(); } return fitPlate(site, { op: TASK.sign, n }); }
+      if (b === 'pour') { const guess = boxNum('out'), p = S.pouch; if (BOX.v.out === undefined || BOX.v.out === '') { TASK.msg = 'First say what will come out.'; return drawTask(); } const out = p === 0 && rule.op !== 'plus' ? null : ruleOut(rule, p, PIPCAP);
+        if (out === null) { S.rattles = (S.rattles || 0) + 1; TASK.msg = ''; drawTask(); return runMachine(p, null, true, () => { TASK.msg = p === 0 ? 'Your pouch is empty. Nothing goes in.' : rule.op === 'share' ? `It rattles. ${p} pips cannot be shared by ${rule.n} with none left over. It hands them back.` : rule.op === 'minus' ? `It rattles. It cannot take ${rule.n} from ${p}. It hands them back.` : 'It groans. More than 100 pips is too heavy for it. It hands them back.'; report(`${cap(siteName(site))}: tried ${p} ${ruleText(rule)}`, 'the machine could not run', 'pips handed back'); save(); drawTask(); }); }
+        if (guess !== out) { S.miss = (S.miss || 0) + 1; beep(180, .15, 'square'); TASK.msg = 'A Tindle stops your hand. “That is not what the plate says. Work it out again.”'; report(`${cap(siteName(site))}: said ${guess} for ${p} ${ruleText(rule)}`, '', 'not right; the machine did not run'); save(); return drawTask(); }
+        TASK.msg = ''; drawTask(); return runMachine(p, out, true, () => { S.pouch = out; S.runs++; BOX.v = {}; TASK.msg = `${p} went in. ${out} came out. They are in your pouch.`; report(`${cap(siteName(site))}: ${p} ${ruleText(rule)} = ${out}`, 'said before the machine ran', 'right'); beep(660, .1); save(); drawTask(); }); } } },
+  /* THE PAN. The bridge comes down when the pan holds exactly the stamped number. */
+  pan: { html() { return `<h3>The bridge pan</h3><p class="q">The pan is stamped <b>${NUM.target}</b>. It wants exactly that many pips.</p><p class="q">Your pouch holds <b>${S.pouch}</b> pips.</p><p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('pour', 'Pour my pips on the pan', 'warm')}${btn('carving', 'Look at the carving', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div><p class="dim${TASK.msg ? ' pq' : ''}">A machine with a true plate can change your pips. Elder Rivet can give you a fresh pouch.</p>`; },
+    press(b) { if (b === 'leave') return closeTask(); if (b === 'carving') return showCarving(() => { PIC = panPic(); drawTask(); });
+      if (b === 'pour') { if (S.pouch === NUM.target) { S.gates.bridge = 1; bigDirty = true; const runs = S.runs; S.pouch = null; needDone('pan'); giveCard('bridge'); report(`The bridge pan: exactly ${NUM.target} pips, from ${NUM.start}`, `${runs} machine runs (the fewest is 3)`, 'the bridge is down'); PIC.down = 0.001; beep(520, .2); TASK.title = 'The bridge pan';
+          return tell(['The pan sinks. Chains rattle. The bridge comes down!', runs <= 3 ? 'Three machine runs. No Tindle has ever done it in fewer.' : `You used ${runs} machine runs. Old Tindles say it can be done in 3.`, 'The pan keeps the pips. They hold the bridge down. The way to the Reach is open.'], () => { closeTask(); }); }
+        S.panTries = (S.panTries || 0) + 1; beep(180, .15, 'square'); TASK.msg = `The pan dips, then springs back. It wants exactly ${NUM.target}. You scoop your pips back up.`; report(`The bridge pan: tried ${S.pouch} pips`, `it wants ${NUM.target}`, 'not right'); save(); return drawTask(); } } },
+  /* THE OLD STEPPING STONES. A number pattern (3.OA.9). The second way over the Rill. */
+  stones: { html() { const st = bwStones(S.seed, S.st.round), row = st.rows[S.st.row]; return `<h3>The old stepping stones</h3><p class="q">The post says: <b>${st.shown.join(', ')}</b> …</p><p class="q">Step on the stone that comes next. Tap it on the picture, or here:</p><div class="brow">${row.opts.map((v, i) => `<button class="word" data-b="s${i}">${v}</button>`).join('')}</div><p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('carving', 'Look at the old picture', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div>`; },
+    press(b) { if (b === 'leave') { S.st.row = 0; return closeTask(); } if (b === 'carving') return showStoneExample(() => { PIC = stonesPic(); drawTask(); }); if (/^s\d$/.test(b)) stepStone(+b[1]); } },
+  fresh: { html() { return `<h3>Elder Rivet</h3><p class="q">“Your pouch holds <b>${S.pouch}</b> pips. Do you want to start again with our ${NUM.start}?”</p><div class="brow">${btn('yes', `A fresh pouch of ${NUM.start}`, 'warm')}${btn('no', 'No, thank you', 'quiet')}</div>`; },
+    press(b) { if (b === 'yes') { S.pouch = NUM.start; S.runs = 0; S.resets = (S.resets || 0) + 1; report('A fresh pouch from Elder Rivet', '', `${NUM.start} pips`); note(`Elder Rivet gives you a fresh pouch: ${NUM.start} pips.`); } closeTask(); } },
+  reset: { html() { return `<h3>Start again?</h3><p class="q">This wipes everything you did on ${PLANET}. Ask your teacher first.</p><div class="brow">${btn('yes', 'Yes, wipe it all', 'warm')}${btn('no', 'No, keep it', 'quiet')}</div>`; },
+    press(b) { if (b === 'yes') { try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); } else closeTask(); } } };
+const inNotes = (site, r) => (S.notes[site] || []).some(q => q[0] === r[0] && q[1] === r[1]);
+function openMachine(site, quiet) { const m = M(site); TASK = { kind: 'machine', site, phase: m.ok && S.pouch !== null && !S.gates.bridge ? 'real' : 'test', msg: '', title: cap(siteName(site)) }; BOX.v = {}; BOX.on = TASK.phase === 'real' ? 'out' : 'in'; MA.done = null; MA.show = null; PIC = machinePic(site); S.open = { kind: 'machine', site }; drawWords(); drawTask(); setPlace(); save(); }
+/* A Tindle fits the child's plate and tests it in front of them. A wrong plate is shown wrong by a test, never just called wrong:
+   a rule has to work for every number. The test is one the child could have done. */
+function fitPlate(site, plate) { const m = M(site), rule = NUM.at[site], right = plate.op === rule.op && plate.n === rule.n, pt = ruleText(plate), nm = cap(siteName(site)); m.tries++; MA.show = { plate: pt, n: null, out: null };
+  const setShow = (n, out) => () => { MA.show = { plate: pt, n, out }; };
+  if (right) { const a = [6, 4, 8].find(n => ruleOut(rule, n) !== null) || rule.n * 2, b = [9, 12, 10, 15].find(n => n !== a && ruleOut(rule, n) !== null) || rule.n * 3, pages = [`A Tindle fits your plate: ${pt}.`, `It drops in ${a} test stones. The plate says ${ruleOut(plate, a)} will come out. Out come ${ruleOut(rule, a)}!`, `It tries ${b}. The plate says ${ruleOut(plate, b)}. Out come ${ruleOut(rule, b)}! The plate is true.`, `The Tindles cheer. They can use ${siteName(site)} again.`];
+    m.ok = true; report(`${nm}: the plate ${pt}`, `${m.tests} tests, ${(S.notes[site] || []).length} written down`, `right on try ${m.tries}`); const n = platesDone(); needText('plates', `Elder Rivet: new plates for the four machines (${n} of 4 made).`); beep(660, .12); save();
+    READ.hook = [setShow(null, null), setShow(a, ruleOut(rule, a)), setShow(b, ruleOut(rule, b)), setShow(null, null)]; MA.show = { plate: pt, n: null, out: null };
+    return tell(pages.concat(n === 1 && !flag('gotPouch') ? ['Elder Rivet will want to hear of this.'] : n === 4 ? ['That was the last one! Go and tell Elder Rivet.'] : []), () => { MA.show = null; READ.hook = null; TASK.phase = S.pouch !== null && !S.gates.bridge ? 'real' : 'test'; TASK.msg = ''; BOX.v = {}; BOX.on = TASK.phase === 'real' ? 'out' : 'in'; drawTask(); }); }
+  /* a test that shows the plate is wrong: both can run and they differ, if there is one; else one that only the machine, or only the plate, can run */
+  let n = 0; for (const c of [5, 6, 4, 7, 8, 3, 9, 10, 12, 2, 11]) { const x = ruleOut(plate, c), y = ruleOut(rule, c); if (x !== null && y !== null && x !== y) { n = c; break; } } if (!n) for (const c of [6, 5, 4, 7, 8, 3, 9, 10, 12, 2, 11]) if (ruleOut(plate, c) !== ruleOut(rule, c)) { n = c; break; }
+  const x = ruleOut(plate, n), y = ruleOut(rule, n); m.last = [n, y]; report(`${nm}: tried the plate ${pt}`, `${m.tests} tests so far`, 'not the rule'); beep(180, .15, 'square'); save();
+  READ.hook = [setShow(null, null), setShow(n, y), setShow(n, y)];
+  tell([`A Tindle fits your plate: ${pt}.`, x === null ? `It drops in ${n} test stones. Your plate says the machine cannot do that. But out come ${y}.` : y === null ? `It drops in ${n} test stones. Your plate says ${x} will come out. The machine rattles and hands them back.` : `It drops in ${n} test stones. Your plate says ${x} will come out. Out come ${y}.`, 'The plate falls off. Not the rule yet. A rule must work for every number.'], () => { MA.show = null; READ.hook = null; TASK.phase = 'test'; TASK.msg = `The Tindle's test: ${n} in, ${y === null ? 'handed back' : y + ' out'}.`; BOX.v = {}; BOX.on = 'in'; drawTask(); }); }
+
+/* ---- pictures that fill the stage while a child works. Each is { title, draw(w, h, dt), tap(x, y) }. */
+function backdrop(w, h, hz) { const bands = ['#3b78c9', '#5b97d9', '#86b8e6', '#b5d6ee']; bands.forEach((b, i) => { cx.fillStyle = b; cx.fillRect(0, hz * i / bands.length, w, hz / bands.length + 1); }); twoSuns(w, hz); cx.fillStyle = '#4f9a6a'; cx.beginPath(); cx.moveTo(0, hz); for (let i = 0; i <= 12; i++) cx.lineTo(w * i / 12, hz - h * (.03 + ((i * 5) % 4) * .025)); cx.lineTo(w, hz); cx.closePath(); cx.fill(); cx.fillStyle = '#62b05c'; cx.fillRect(0, hz, w, h - hz); cx.fillStyle = '#58a554'; for (let i = 0; i < 14; i++) cx.fillRect((i * 97 % 100) / 100 * w, hz + ((i * 53) % 100) / 100 * (h - hz), 18, 4); }
+function drum(X, Y, s, label, val) { cx.fillStyle = '#fff7dc'; rr(X - s * .6, Y - s * .42, s * 1.2, s * .84, s * .14); cx.fill(); ol(2); text(val === null || val === undefined ? '' : String(val), X, Y + 1, s * .62, INK); text(label, X, Y - s * .68, s * .34, '#fff3c4'); }
+function machinePic(site) { return { title: cap(siteName(site)), draw(w, h, dt) { const m = M(site), rule = NUM.at[site], hz = h * .42; backdrop(w, h, hz);
+    const bw = Math.min(w * .44, h * .46), X0 = w * .4 - bw / 2, Y0 = h * .34, bh = bw * .82; let jx = 0, jy = 0;
+    if (MA.phase) { MA.t += dt; if (MA.phase === 'in' && MA.t > .7) { MA.phase = 'shake'; MA.t = 0; beep(140, .5, 'sawtooth'); } else if (MA.phase === 'shake') { jx = Math.sin(MA.t * 60) * 3; jy = Math.cos(MA.t * 47) * 2; if (MA.t > .9) { MA.phase = 'out'; MA.t = 0; beep(MA.out === null ? 160 : 520, .12); } } else if (MA.phase === 'out' && MA.t > .6) { MA.phase = ''; const cb = MA.cb; MA.cb = null; MA.done = { n: MA.n, out: MA.out, gold: MA.gold }; if (cb) cb(); } }
+    const show = MA.show, done = MA.done, vin = show ? show.n : MA.phase ? MA.n : done ? done.n : null, vout = show ? show.out : MA.phase === 'out' || (!MA.phase && done) ? (MA.phase ? MA.out : done.out) : null, gold = show ? false : MA.phase ? MA.gold : done ? done.gold : false, handed = !show && ((MA.phase === 'out' && MA.out === null) || (!MA.phase && done && done.out === null));
+    const x = X0 + jx, y = Y0 + jy;
+    cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(X0 + bw * .55, Y0 + bh + bw * .04, bw * .75, bw * .1, 0, 0, 7); cx.fill();
+    cx.fillStyle = '#8a5f24'; cx.beginPath(); cx.moveTo(x + bw * .96, y + bh * .62); cx.lineTo(x + bw * 1.34, y + bh * .86); cx.lineTo(x + bw * 1.3, y + bh * .98); cx.lineTo(x + bw * .96, y + bh * .86); cx.closePath(); cx.fill(); ol(2);                                    /* the chute */
+    cx.fillStyle = '#6b4a22'; rr(X0 + bw * 1.08, Y0 + bh * .98, bw * .62, bw * .09, 4); cx.fill(); ol(2);                                                                                                                                           /* the tray */
+    cx.fillStyle = '#b9853a'; rr(x, y, bw, bh, bw * .08); cx.fill(); ol(3); cx.fillStyle = 'rgba(255,255,255,.12)'; rr(x + bw * .05, y + bh * .06, bw * .3, bh * .12, 6); cx.fill();
+    for (const [a, b] of [[.06, .9], [.94, .9], [.06, .1], [.94, .1]]) { cx.fillStyle = '#6b4a22'; circ(x + bw * a, y + bh * b, bw * .022); cx.fill(); ol(1); }
+    cx.fillStyle = '#8a5f24'; cx.beginPath(); cx.moveTo(x + bw * .1, y); cx.lineTo(x - bw * .02, y - bw * .24); cx.lineTo(x + bw * .56, y - bw * .24); cx.lineTo(x + bw * .44, y); cx.closePath(); cx.fill(); ol(2.5);                                         /* the hopper */
+    const ga = MA.phase === 'shake' ? tNow * 7 : m.ok ? tNow * .7 : 0; cx.fillStyle = m.ok ? '#ffd25e' : '#8d8f96'; cx.beginPath(); for (let i = 0; i < 20; i++) { const an = i / 20 * 6.283 + ga, q = bw * (i % 2 ? .1 : .135); cx[i ? 'lineTo' : 'moveTo'](x + bw * .78 + Math.cos(an) * q, y + bh * .26 + Math.sin(an) * q); } cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#6b4a22'; circ(x + bw * .78, y + bh * .26, bw * .03); cx.fill();
+    /* the plate */ const pw = bw * .56, ph = bh * .26, px = x + bw * .08, py = y + bh * .5, ptext = show ? show.plate : m.ok ? ruleText(rule) : null;
+    cx.fillStyle = ptext ? '#fff7dc' : '#26262b'; rr(px, py, pw, ph, 6); cx.fill(); ol(2.5); if (ptext) text(ptext, px + pw / 2, py + ph / 2 + 1, ph * .62, INK); else { cx.fillStyle = '#3a3a42'; for (const [a, b, q] of [[.2, .4, .1], [.6, .6, .14], [.8, .3, .08]]) { circ(px + pw * a, py + ph * b, ph * q); cx.fill(); } text('?', px + pw / 2, py + ph / 2 + 1, ph * .6, '#ff8f6b'); }
+    text('RULE', px + pw / 2, py - bh * .06, bh * .075, '#fff3c4');
+    drum(x + bw * .27, y + bh * .2, bw * .16, 'IN', vin); drum(x + bw * .82, y + bh * .76, bw * .16, 'OUT', handed ? '—' : vout);
+    /* what goes in, and what comes out: in rows of ten, so they can be counted */
+    const inY = y - bw * .3; if (MA.phase === 'in') { cx.save(); cx.globalAlpha = 1 - MA.t / .7 * .6; pile(MA.n, x + bw * .27, inY + MA.t / .7 * bw * .22, bw * .5, MA.gold); cx.restore(); }
+    else if (handed) pile(MA.phase ? MA.n : done.n, x + bw * .27, inY, bw * .5, gold);
+    if (vout !== null && vout !== undefined && !handed && vout > 0) { const a = MA.phase === 'out' ? Math.min(1, MA.t / .4) : 1; cx.save(); cx.globalAlpha = a; pile(vout, X0 + bw * 1.39, Y0 + bh * .98 - bw * .045, bw * .62, gold); cx.restore(); }
+    /* the tray of grey test stones, and a Tindle who watches */
+    cx.fillStyle = '#6b4a22'; rr(w * .04, h * .86, bw * .5, bw * .1, 4); cx.fill(); ol(2); for (let i = 0; i < 7; i++) pip(w * .04 + bw * (.06 + i * .063), h * .86 - bw * .02, bw * .028, false); text('test stones', w * .04 + bw * .25, h * .86 + bw * .17, Math.max(11, bw * .06), '#e8f5e0', 'center', FONT_B);
+    tindle(w * .08 + bw * .62, h * .84, bw * .1, '#c9793a', 5, ''); } }; }
+function inkLine(pts, col, lw) { cx.strokeStyle = col; cx.lineWidth = lw; cx.lineCap = 'round'; cx.beginPath(); pts.forEach((p, i) => i ? cx.lineTo(p[0], p[1]) : cx.moveTo(p[0], p[1])); cx.stroke(); cx.lineCap = 'butt'; }
+/* FINISHED EXAMPLE 1: how Elder Rivet once found a rule. About buckets and an old pump, with x 4 and + 6: no child's machine has those. */
+function muralPic() { return { title: 'The painted wall', draw(w, h) { const s = READ.i; cx.fillStyle = '#d8ccae'; cx.fillRect(0, 0, w, h); cx.fillStyle = '#efe6cc'; rr(w * .04, h * .1, w * .92, h * .62, 12); cx.fill(); ol(3);
+    const u = Math.min(w * .9, h * 1.3), px = w * .24, py = h * .42, bw = u * .2;
+    cx.fillStyle = '#7fb6e0'; rr(px - bw / 2, py - bw * .5, bw, bw * 1.05, 8); cx.fill(); ol(2.5); cx.fillStyle = '#5a93c0'; cx.beginPath(); cx.moveTo(px - bw * .4, py - bw * .5); cx.lineTo(px - bw * .55, py - bw * .82); cx.lineTo(px + bw * .15, py - bw * .82); cx.lineTo(px, py - bw * .5); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#5a93c0'; rr(px + bw * .5, py + bw * .2, bw * .4, bw * .14, 3); cx.fill(); ol(2);
+    cx.fillStyle = s >= 4 ? '#fff7dc' : '#26262b'; rr(px - bw * .36, py - bw * .05, bw * .72, bw * .32, 4); cx.fill(); ol(2); text(s >= 4 ? '× 4' : '?', px, py + bw * .12, bw * .22, s >= 4 ? INK : '#ff8f6b'); text('the old pump', px, py + bw * .78, Math.max(12, u * .028), '#6b4a22', 'center', FONT_B);
+    const tx = w * .64, ty = h * .2, rw = Math.min(w * .5, u * .5), rh = Math.max(26, h * .085), fs = Math.max(13, Math.min(rh * .55, u * .04)); text('buckets IN', tx - rw * .25, ty, fs * .8, '#6b4a22'); text('buckets OUT', tx + rw * .25, ty, fs * .8, '#6b4a22'); inkLine([[tx - rw / 2, ty + rh * .5], [tx + rw / 2, ty + rh * .5]], '#6b4a22', 2); inkLine([[tx, ty - rh * .4], [tx, ty + rh * 3.2]], '#6b4a22', 2);
+    if (s >= 1) { text('2', tx - rw * .25, ty + rh * 1.1, fs * 1.2, INK); text('8', tx + rw * .25, ty + rh * 1.1, fs * 1.2, INK); }
+    if (s >= 3) { text('3', tx - rw * .25, ty + rh * 2.2, fs * 1.2, INK); text('12', tx + rw * .25, ty + rh * 2.2, fs * 1.2, INK); }
+    if (s === 2 || s === 3) { const by = ty + rh * 3.9; for (const [k, lab] of [[-1, 'add 6 ?'], [1, 'times 4 ?']]) { const bx = tx + k * rw * .27; cx.fillStyle = '#fff'; rr(bx - rw * .23, by - rh * .5, rw * .46, rh, rh * .4); cx.fill(); ol(2); text(lab, bx, by + 1, fs * .9, INK, 'center', FONT_B); if (s === 3 && k === -1) { inkLine([[bx - rw * .2, by + rh * .3], [bx + rw * .2, by - rh * .3]], '#e8483a', 4); text('3 add 6 is 9, not 12', bx, by + rh * 1.05, fs * .72, '#b3261e', 'center', FONT_B); } } }
+    if (s >= 4) text('3 times 4 is 12.  2 times 4 is 8.', tx, ty + rh * 3.9, fs * .85, '#1c7c3a', 'center', FONT_B);
+    cx.fillStyle = '#62b05c'; cx.fillRect(0, h * .8, w, h * .2); tindle(w * .1, h * .8, Math.min(w, h) * .07, '#b86a2a', 2, 'elder'); } }; }
+function showMural(then) { const back = PIC; PIC = muralPic(); setPlace(); tell(['Long ago I found the rule of the old water pump. Look at my painting.', 'I poured in 2 buckets. Out came 8.', 'Was the rule “add 6”? Or “times 4”? One test cannot tell.', 'So I poured in 3 buckets. Add 6 would give 9. Out came 12.', '3 times 4 is 12. The rule was “times 4”. I made its plate: × 4.', 'Now you. Each machine has grey test stones. Try more than one number.'], () => { PIC = back; setPlace(); if (then) then(); }, 'Elder Rivet'); }
+/* FINISHED EXAMPLE 2: the order of the machines matters. About seeds, with x 10 and + 1. */
+function carvingPic() { return { title: 'The carving on the post', draw(w, h) { const s = READ.i; cx.fillStyle = '#6f6a82'; cx.fillRect(0, 0, w, h); cx.fillStyle = '#a9a4bc'; rr(w * .05, h * .1, w * .9, h * .66, 14); cx.fill(); ol(3);
+    const u = Math.min(w, h * 1.5), fs = Math.max(14, u * .045), row = (y, parts, show) => { if (!show) return; const n = parts.length, gap = w * .8 / n; parts.forEach((p, i) => { const X = w * .1 + gap * (i + .5); if (p[0] === '[') { cx.fillStyle = '#b9853a'; rr(X - gap * .4, y - fs * .9, gap * .8, fs * 1.8, 6); cx.fill(); ol(2); text(p.slice(1, -1), X, y + 1, fs, '#fff7dc'); } else text(p, X, y + 1, fs * 1.15, INK); if (i < n - 1) inkLine([[X + gap * .42, y], [X + gap * .58, y]], INK, 2.5); }); };
+    text('2 seeds, two machines', w / 2, h * .19, fs * .8, '#3b3550', 'center', FONT_B);
+    row(h * .32, ['2', '[× 10]', '20', '[+ 1]', '21'], s >= 1); row(h * .5, ['2', '[+ 1]', '3', '[× 10]', '30'], s >= 2);
+    if (s >= 3) text('Same machines. Another order. Another end.', w / 2, h * .67, fs * .82, '#3b3550', 'center', FONT_B); cx.fillStyle = '#62b05c'; cx.fillRect(0, h * .82, w, h * .18); } }; }
+function showCarving(then) { PIC = carvingPic(); setPlace(); tell(['Words are cut into the post: SEEDS, LONG AGO.', 'A farmer had 2 seeds. First the “times 10” machine: 20. Then the “add 1” machine: 21.', 'Another day: first “add 1”: 3. Then “times 10”: 30.', 'The same two machines. Another order. Another end. Think about your order.'], () => { setFlag('sawE2'); if (then) then(); }); }
+/* FINISHED EXAMPLE 3: a pattern of stones on another river. 2, 5, 8: each is 3 more. */
+function stoneExPic() { return { title: 'The old picture on the post', draw(w, h) { const s = READ.i; cx.fillStyle = '#6f6a82'; cx.fillRect(0, 0, w, h); cx.fillStyle = '#a9a4bc'; rr(w * .05, h * .12, w * .9, h * .6, 14); cx.fill(); ol(3); cx.fillStyle = '#7fb6e0'; rr(w * .09, h * .3, w * .82, h * .26, 10); cx.fill(); ol(2);
+    const vals = [2, 5, 8, 11, 14, 17], r = Math.min(w * .058, h * .1); vals.forEach((v, i) => { if (i >= 3 && s < 2) return; const X = w * (.16 + i * .136), Y = h * .43; cx.fillStyle = i >= 3 ? '#ffe7a0' : '#d9d5e6'; circ(X, Y, r); cx.fill(); ol(2); text(String(v), X, Y + 1, r * .9, INK); if (i > 0 && s >= 2) { cx.strokeStyle = '#1c7c3a'; cx.lineWidth = 2.5; cx.beginPath(); cx.arc(X - w * .068, Y - r * 1.05, w * .05, Math.PI * 1.15, Math.PI * 1.85); cx.stroke(); text('+3', X - w * .068, Y - r * 1.9, r * .6, '#1c7c3a'); } });
+    if (s >= 1) text('another river, long ago', w / 2, h * .22, Math.max(13, r * .7), '#3b3550', 'center', FONT_B); cx.fillStyle = '#62b05c'; cx.fillRect(0, h * .82, w, h * .18); } }; }
+function showStoneExample(then) { PIC = stoneExPic(); setPlace(); tell(['Words are cut into the old post: THE STONES THAT HOLD GO ON WITH THE RULE.', 'Under the words is a picture of another river, long ago. Its first stones said 2, 5, 8.', 'Each stone is 3 more. So the next were 11, 14, 17. Those stones held.', 'Now look at this river. Its numbers are not the same. Find their rule.'], () => { setFlag('sawE3'); if (then) then(); }); }
+/* the pan and the bridge */
+function panPic() { return { title: 'The bridge over the Rill', down: gateOpen('bridge') ? 1 : 0, draw(w, h, dt) { const hz = h * .36; backdrop(w, h, hz); if (this.down > 0 && this.down < 1) this.down = Math.min(1, this.down + dt * .7);
+    const rx = w * .56; cx.fillStyle = '#2f6fd0'; cx.fillRect(rx, hz, w * .3, h - hz); cx.strokeStyle = 'rgba(255,255,255,.5)'; cx.lineWidth = 2; for (let i = 0; i < 9; i++) { const yy = hz + (h - hz) * (i + .5) / 9, o = ((tNow * .3 + i * .37) % 1) * w * .3; cx.beginPath(); cx.moveTo(rx + o * .8, yy); cx.lineTo(rx + o * .8 + w * .05, yy); cx.stroke(); } cx.fillStyle = '#5fa888'; cx.fillRect(rx + w * .3, hz, w, h - hz);
+    const by = h * .66, ang = -(1 - this.down) * 1.15, L = w * .32; cx.save(); cx.translate(rx - 2, by); cx.rotate(ang); cx.fillStyle = '#a8713f'; cx.fillRect(0, -h * .03, L, h * .06); cx.strokeStyle = INK; cx.lineWidth = 2.5; cx.strokeRect(0, -h * .03, L, h * .06); cx.strokeStyle = '#6b4424'; cx.lineWidth = 2; for (let k = 1; k < 8; k++) { cx.beginPath(); cx.moveTo(L * k / 8, -h * .03); cx.lineTo(L * k / 8, h * .03); cx.stroke(); } cx.restore();
+    const px = w * .4, u = Math.min(w, h); cx.fillStyle = '#6b4a22'; cx.fillRect(px - u * .018, h * .3, u * .036, by - h * .3 + h * .04); cx.strokeStyle = INK; cx.lineWidth = 2; cx.strokeRect(px - u * .018, h * .3, u * .036, by - h * .3 + h * .04); cx.fillRect(px - u * .16, h * .3, u * .18, u * .03); cx.strokeRect(px - u * .16, h * .3, u * .18, u * .03);
+    const panX = px - u * .14, panY = h * .5 + this.down * h * .08; inkLine([[panX, h * .3 + u * .03], [panX, panY - u * .02]], '#8d8f96', 3); inkLine([[panX - u * .1, panY], [panX, panY - u * .06], [panX + u * .1, panY]], '#8d8f96', 2.5);
+    cx.fillStyle = '#b9853a'; cx.beginPath(); cx.ellipse(panX, panY, u * .115, u * .035, 0, 0, 7); cx.fill(); ol(2.5); cx.fillStyle = '#fff7dc'; rr(panX - u * .075, panY + u * .05, u * .15, u * .085, 5); cx.fill(); ol(2); text(String(NUM.target), panX, panY + u * .085, u * .05, INK); text('PIPS', panX, panY + u * .155, u * .028, '#fff3c4');
+    if (this.down > 0) pile(Math.min(NUM.target, 100), panX, panY - u * .02, u * .2, true);
+    else if (S.pouch) { const qx = u * .15, qy = h * .9; cx.fillStyle = '#8a5f34'; cx.beginPath(); cx.ellipse(qx, qy, u * .13, u * .028, 0, 0, 7); cx.fill(); ol(2); pile(S.pouch, qx + u * .012, qy - u * .012, u * .18, true); text('your pips', qx, qy + u * .055, Math.max(11, u * .026), '#e8f5e0', 'center', FONT_B); }
+    drawAstro(Math.min(w * .5, px + u * .12), h * .74, u * .17, false, 'right', 0); } }; }
+/* the stepping stones */
+function stonesPic() { return { title: 'The old stepping stones', hop: 0, splash: 0, hit: [], draw(w, h, dt) { const st = bwStones(S.seed, S.st.round), bankH = h * .17; cx.fillStyle = '#2f6fd0'; cx.fillRect(0, 0, w, h); cx.strokeStyle = 'rgba(255,255,255,.45)'; cx.lineWidth = 2; for (let i = 0; i < 16; i++) { const yy = h * (i + .5) / 16, o = ((tNow * .25 + i * .37) % 1) * w; cx.beginPath(); cx.moveTo(o, yy); cx.lineTo(o + w * .07, yy); cx.stroke(); }
+    cx.fillStyle = '#62b05c'; cx.fillRect(0, h - bankH, w, bankH); cx.fillStyle = '#5fa888'; cx.fillRect(0, 0, w, bankH * .62); cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, h - bankH); cx.lineTo(w, h - bankH); cx.moveTo(0, bankH * .62); cx.lineTo(w, bankH * .62); cx.stroke();
+    const rowY = i => h - bankH - (h - bankH - bankH * .62) * (i + .5) / 5, r = Math.min(w * .085, (h - bankH * 1.62) / 5 * .4); this.hit = [];
+    st.rows.forEach((row, i) => row.opts.forEach((v, k) => { const X = w * (.24 + k * .26) + (i % 2 ? w * .035 : -w * .035), Y = rowY(i), cur = i === S.st.row, past = i < S.st.row, on = past && k === row.right; if (past && !on) cx.globalAlpha = .45; cx.fillStyle = on ? '#ffe7a0' : cur ? '#d9d5e6' : '#a9a4bc'; cx.beginPath(); cx.ellipse(X, Y, r * 1.2, r * .86, 0, 0, 7); cx.fill(); ol(cur ? 3 : 2); text(String(v), X, Y + 1, r * .8, INK); cx.globalAlpha = 1; if (cur) this.hit.push([X, Y, r * 1.3, k]); }));
+    /* the post, with its three carved numbers */ const pw = Math.min(w * .5, 300), ph = bankH * .56; cx.fillStyle = '#9a94ac'; rr(w * .06, h - bankH * .8, pw, ph, 6); cx.fill(); ol(2.5); text(st.shown.join(',  ') + ',  …', w * .06 + pw / 2, h - bankH * .8 + ph / 2 + 1, Math.min(ph * .56, pw * .11), INK);
+    /* the cadet */ const at = S.st.row === 0 ? [w * .76, h - bankH * .5] : (() => { const i = S.st.row - 1, k = st.rows[i].right; return [w * (.24 + k * .26) + (i % 2 ? w * .035 : -w * .035), rowY(i) - r * .5]; })(); if (this.splash > 0) { this.splash -= dt; cx.strokeStyle = '#fff'; cx.lineWidth = 3; for (let i = 0; i < 8; i++) { const a = i / 8 * 6.283, q = (1.2 - this.splash) * r * 2; cx.beginPath(); cx.moveTo(this.sx + Math.cos(a) * q * .6, this.sy + Math.sin(a) * q * .4); cx.lineTo(this.sx + Math.cos(a) * q, this.sy + Math.sin(a) * q * .7); cx.stroke(); } } else drawAstro(at[0], at[1], r * 2.6, false, 'up', 0); },
+    tap(x, y) { for (const [X, Y, R, k] of this.hit) if (Math.hypot(x - X, y - Y) <= R) return stepStone(k); } }; }
+function stepStone(k) { if (reading()) return; const st = bwStones(S.seed, S.st.round), row = st.rows[S.st.row]; if (!row) return; S.stTries = (S.stTries || 0) + 1;
+  if (k === row.right) { S.st.row++; beep(620 + S.st.row * 40, .08); TASK.msg = 'The stone holds.'; if (S.st.row >= 5) { S.gates.stones = 1; bigDirty = true; S.st.row = 0; giveCard('stones'); needDone('stones'); report(`The old stepping stones: ${st.shown.join(', ')} … (${st.down ? 'take away' : 'add'} ${st.step})`, `${S.st.round} splashes before`, 'crossed'); P.px = 50; P.py = 60; P.dir = 'right'; cam.x = 50; cam.y = 60; see();
+      return tell(['The last stone holds. You jump to the far bank!', 'Behind you the stones settle into the river bed. They will stay still for you now.'], () => { closeTask(); }); } save(); return drawTask(); }
+  report(`The old stepping stones: after ${[st.shown[2]].concat(st.rows.slice(0, S.st.row).map(r => r.opts[r.right])).pop()} stepped on ${row.opts[k]}`, `pattern ${st.shown.join(', ')} …`, 'splash'); if (PIC && PIC.hit) { const hh = PIC.hit.find(q => q[3] === k); if (hh) { PIC.splash = 1.2; PIC.sx = hh[0]; PIC.sy = hh[1]; } } beep(140, .3, 'sawtooth');
+  tell(['Splash! The stone tips over. You swim back to the bank.', 'The river rolls the stones about. Their numbers are new now.'], () => { S.st.round++; S.st.row = 0; if (TASK) TASK.msg = ''; save(); drawTask(); }); }
+/* the lookout: the rest of the planet, seen from far away */
+function vistaPic() { return { title: 'The lookout hill', draw(w, h) { const hz = h * .46; ['#3b78c9', '#5b97d9', '#86b8e6', '#b5d6ee', '#ffe2ad'].forEach((b, i) => { cx.fillStyle = b; cx.fillRect(0, hz * i / 5, w, hz / 5 + 1); }); twoSuns(w, hz);
+    /* far away, ahead (north): the mountain and the Gate */
+    cx.fillStyle = '#8f8aa8'; cx.beginPath(); cx.moveTo(w * .3, hz); cx.lineTo(w * .43, hz * .5); cx.lineTo(w * .5, hz * .34); cx.lineTo(w * .58, hz * .52); cx.lineTo(w * .7, hz); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.moveTo(w * .46, hz * .44); cx.lineTo(w * .5, hz * .34); cx.lineTo(w * .545, hz * .45); cx.closePath(); cx.fill();
+    cx.strokeStyle = '#4a4f66'; cx.lineWidth = Math.max(3, w * .008); cx.beginPath(); cx.ellipse(w * .5, hz * .3, w * .028, hz * .1, 0, 0, 7); cx.stroke(); cx.strokeStyle = `rgba(190,170,255,${.3 + .25 * Math.sin(tNow * 9) * Math.sin(tNow * 2.3)})`; cx.lineWidth = 2; cx.stroke();
+    /* left (west): the Pattern Woods. right (east): the red Canyon */
+    cx.fillStyle = '#b58ad8'; cx.beginPath(); cx.moveTo(0, hz); for (let i = 0; i <= 8; i++) cx.lineTo(w * .32 * i / 8, hz - h * (.05 + ((i * 3) % 4) * .02)); cx.lineTo(w * .32, hz); cx.closePath(); cx.fill(); ol(1.5);
+    cx.fillStyle = '#c98660'; cx.beginPath(); cx.moveTo(w * .68, hz); cx.lineTo(w * .78, hz - h * .07); cx.lineTo(w * .9, hz - h * .05); cx.lineTo(w, hz - h * .09); cx.lineTo(w, hz); cx.closePath(); cx.fill(); ol(1.5);
+    /* the land between, then the lake: gold on the side of the gold sun, blue on the side of the blue one */
+    cx.fillStyle = '#6db26a'; cx.fillRect(0, hz, w, h - hz); const g = cx.createLinearGradient(w * .12, 0, w * .88, 0); g.addColorStop(0, '#3f7fd8'); g.addColorStop(.45, '#6fa8e0'); g.addColorStop(1, '#e8c860'); cx.fillStyle = g; cx.beginPath(); cx.ellipse(w * .5, hz + h * .075, w * .4, h * .06, 0, 0, 7); cx.fill(); ol(2);
+    cx.fillStyle = '#6db26a'; cx.beginPath(); cx.ellipse(w * .5, hz + h * .075, w * .06, h * .018, 0, 0, 7); cx.fill(); ol(1.5); cx.fillStyle = '#e6dcc2'; cx.fillRect(w * .492, hz + h * .025, w * .016, h * .045); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(w * .492, hz + h * .025, w * .016, h * .045);
+    /* near, to the right (east): the Reach. Reeds, water, houses on legs */
+    cx.fillStyle = '#5fa888'; cx.beginPath(); cx.moveTo(w * .46, h * .62); cx.lineTo(w, h * .58); cx.lineTo(w, h * .8); cx.lineTo(w * .38, h * .8); cx.closePath(); cx.fill(); cx.fillStyle = '#2f6fd0'; for (const [a, b, c] of [[.6, .665, .12], [.84, .7, .1], [.7, .755, .14]]) { cx.beginPath(); cx.ellipse(w * a, h * b, w * c, h * .012, 0, 0, 7); cx.fill(); }
+    for (let i = 0; i < 5; i++) { const X = w * (.52 + i * .1), Y = h * (.66 + (i % 2) * .05); cx.strokeStyle = '#6b4a22'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X - w * .012, Y); cx.lineTo(X - w * .012, Y + h * .04); cx.moveTo(X + w * .012, Y); cx.lineTo(X + w * .012, Y + h * .04); cx.stroke(); cx.fillStyle = '#4a9fd8'; rr(X - w * .022, Y - h * .03, w * .044, h * .034, 3); cx.fill(); ol(1.5); }
+    cx.strokeStyle = '#4f8f4a'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { const X = w * (.44 + i * .041), Y = h * (.79 - (i % 3) * .012); cx.beginPath(); cx.moveTo(X, Y); cx.lineTo(X + 2, Y - h * .03); cx.stroke(); }
+    /* the hill you stand on, to the left, clear of the reading card */
+    cx.fillStyle = '#62b05c'; cx.beginPath(); cx.moveTo(0, h * .66); cx.quadraticCurveTo(w * .18, h * .56, w * .4, h * .8); cx.lineTo(w, h * .8); cx.lineTo(w, h); cx.lineTo(0, h); cx.closePath(); cx.fill(); ol(2); drawAstro(w * .14, h * .64, Math.min(w, h) * .17, false, 'up', 0); } }; }
+/* the first pages: why the cadet is here. Told before any maths. */
+function introPic() { return { title: 'Galaxy Patternox', draw(w, h) { const s = READ.i; cx.fillStyle = '#070a1c'; cx.fillRect(0, 0, w, h); for (let i = 0; i < 70; i++) { cx.fillStyle = `rgba(220,230,255,${.3 + .5 * ((i * 37) % 10) / 10})`; cx.fillRect((i * 173) % w, (i * 97) % h, 2, 2); }
+    const u = Math.min(w, h);
+    if (s <= 2) { const X = w * .5, Y = h * .42, fl = .35 + .65 * Math.abs(Math.sin(tNow * 7) * Math.sin(tNow * 1.9)); for (let k = 0; k < 5; k++) { cx.strokeStyle = `rgba(${150 + k * 20},${120 + k * 12},255,${fl * (.9 - k * .15)})`; cx.lineWidth = u * .012; cx.beginPath(); cx.ellipse(X, Y, u * (.3 - k * .045), u * (.2 - k * .03), 0, 0, 7); cx.stroke(); } cx.fillStyle = `rgba(20,10,60,${.9})`; cx.beginPath(); cx.ellipse(X, Y, u * .09, u * .06, 0, 0, 7); cx.fill();
+      if (s >= 1) { const sx = X - u * .42 + ((tNow * .12) % 1) * u * .3; cx.fillStyle = '#dfe6f0'; cx.beginPath(); cx.ellipse(sx, Y + u * .2, u * .05, u * .022, 0, 0, 7); cx.fill(); ol(1.5); cx.fillStyle = '#6db3ff'; cx.beginPath(); cx.arc(sx, Y + u * .19, u * .024, Math.PI, 0); cx.fill(); ol(1.2); }
+      if (s === 2) { cx.fillStyle = 'rgba(8,13,26,.9)'; rr(w * .14, h * .08, w * .72, u * .13, 10); cx.fill(); cx.strokeStyle = '#6fd08a'; cx.lineWidth = 2; cx.stroke(); text('· · ·  S.S. INFINITY  · · ·', w / 2, h * .08 + u * .065, Math.max(13, u * .04), '#6fd08a'); } }
+    else { const X = w * .5, Y = h * .5; cx.fillStyle = '#ffd25e'; circ(w * .14, h * .2, u * .09); cx.fill(); cx.fillStyle = '#fff3c4'; circ(w * .14, h * .2, u * .065); cx.fill(); cx.fillStyle = '#bfe4ff'; circ(w * .9, h * .24, u * .042); cx.fill(); cx.fillStyle = '#fff'; circ(w * .9, h * .24, u * .028); cx.fill();
+      cx.fillStyle = '#2f6fd0'; circ(X, Y, u * .27); cx.fill(); cx.save(); circ(X, Y, u * .27); cx.clip(); cx.fillStyle = '#62b05c'; for (const [a, b, q] of [[-.08, .02, .16], [.1, -.1, .1], [.06, .12, .09]]) { circ(X + u * a, Y + u * b, u * q); cx.fill(); } cx.fillStyle = '#b58ad8'; circ(X - u * .12, Y - u * .1, u * .07); cx.fill(); cx.fillStyle = '#c98660'; circ(X + u * .14, Y - u * .12, u * .06); cx.fill(); cx.fillStyle = 'rgba(255,215,120,.28)'; cx.fillRect(X - u * .3, Y - u * .3, u * .24, u * .6); cx.fillStyle = 'rgba(160,210,255,.25)'; cx.fillRect(X + u * .1, Y - u * .3, u * .2, u * .6); cx.restore(); circ(X, Y, u * .27); ol(3);
+      text(PLANET, X, Y + u * .36, Math.max(16, u * .06), '#ffb23e'); } } }; }
+
+/* ---- what people and things do. Kept short: a sentence or two at a time. */
+const ACT = {
+  ship() { openPanel('ship'); },
+  village(t, v) { S.at = 'village'; SC.x = .13; SC.to = null; SC.dir = 'right'; FADE = 1; beep(420, .08); setPlace(); drawWords(); save(); if (!flag('sawVillage')) { setFlag('sawVillage'); tell(['Tindle Village. Three round huts with copper roofs.', 'An old Tindle with a white beard waves to you.']); } },
+  leave() { S.at = 'map'; FADE = 1; beep(380, .08); setPlace(); drawWords(); save(); },
+  elder() { const n = platesDone(), who = 'Elder Rivet';
+    if (!flag('metElder')) return tell(['Sky-walker! Welcome. I am Elder Rivet.', 'The Makers built machines for us, long ago. Each machine follows one rule.', 'When the Gate broke, every rule plate burnt black. Now nobody knows the rules.', 'One machine ate half our pips! We do not dare to use them.', 'Four machines stand in our meadow. Find each rule. Make each one a new plate.', 'First look at my painted wall. It shows how I once found a rule.'], () => { setFlag('metElder'); S.bag.push('notebook'); need('plates', 'Elder Rivet: new plates for the four machines (0 of 4 made).'); report('Met Elder Rivet', 'the job: find the rule of each machine', ''); showMural(() => { note('You have a notebook now. The machines are by the pond, on the hill, by the old wall and in the orchard.'); }); }, who);
+    if (n >= 1 && !flag('gotPouch')) return tell(['You found a rule! Now I can trust you with these.', `Here are our last ${NUM.start} pips. Gold ones. Real ones.`, 'The bridge over the Rill went up when the Gate broke. Our friends the Rillfolk are on the far side.', `The bridge comes down when its pan holds exactly ${NUM.target} pips. Not one more. Not one less.`, `Machines can turn ${NUM.start} pips into ${NUM.target}. But only a machine with a true plate.`, 'And our law: say what will come out before you pull the lever.'], () => { setFlag('gotPouch'); S.pouch = NUM.start; S.runs = 0; S.bag.push('pouch'); need('pan', `The bridge pan: exactly ${NUM.target} pips. You have a pouch of pips.`); report('Elder Rivet gave the pip pouch', `${NUM.start} pips; the pan wants ${NUM.target}`, ''); }, who);
+    if (n === 4 && !flag('stoneLit')) return tell(['All four plates are true! We can use our machines again.', 'Look: our Rule Stone is glowing. A rule was used to help someone. That is what lights it.', 'Its light flies to the Gate on the mountain. That is one of five.', 'The other four are with the other peoples of Algora. The Rillfolk are the nearest: over the river.'], () => { setFlag('stoneLit'); S.lit = 1; needDone('plates'); giveCard('plates'); beep(700, .25); report('The Tindles\' Rule Stone is lit', 'all four rules found', 'Rule Stones: 1 of 5'); setPlace(); }, who);
+    if (flag('gotPouch') && !S.gates.bridge && S.pouch !== NUM.start) { TASK = { kind: 'fresh', title: 'Elder Rivet' }; drawWords(); return drawTask(); }
+    tell([n < 4 ? `You have made ${n} of the 4 plates. ${4 - n} to go.` : S.gates.bridge || S.gates.stones ? 'The Rillfolk are over the river. They keep the second Rule Stone.' : 'The bridge pan still waits for its pips. Or ask about the old stones.'], null, who); },
+  mural() { if (!flag('metElder')) return tell(['A painted wall. A blue pump, and some numbers. You do not know what it means yet.']); showMural(); },
+  rstone() { tell(flag('stoneLit') ? ['The Rule Stone glows gold. Its light points north, to the mountain.'] : ['A dark stone on a stand. Four signs are cut into it: + − × ÷', flag('metElder') ? 'It is dark. Elder Rivet says a Rule Stone lights when its rule is used to help someone.' : 'It is dark and cold.']); },
+  kid() { const who = 'Pim';
+    if (flag('spinGiven')) return tell([['Whee! Look at it spin!', 'The big kids cross the river up north. On the old stones.', 'I can count to 100 by fives. Want to hear?'][(S.said.kid = ((S.said.kid || 0) + 1) % 3)]], null, who);
+    if (has('spinner')) return tell(['Hello! I am Pim. Oh! That is my spinner! You found it!', 'Thank you! Want a secret? The big kids cross the river up north. On the old stones, past the reeds.'], () => { S.bag.splice(S.bag.indexOf('spinner'), 1); setFlag('spinGiven'); needDone('spinner'); giveCard('spinner'); report('Gave Pim the lost spinner', '', 'a clue: the old stones'); }, who);
+    setFlag('askedSpin'); need('spinner', 'Pim, in the village: a lost red spinner. Somewhere by the pond.'); tell(['Hello! I am Pim.', 'I lost my spinner by the pond. It is red. Have you seen it?'], null, who); },
+  spin(t, v) { if (has('spinner') || flag('spinGiven')) return; tell(['A red spinner lies in the grass. A toy.', 'You pick it up. Somebody must miss it.'], () => { S.bag.push('spinner'); report('Found a red spinner by the pond', '', ''); }); },
+  rubble() { if (has('half')) return tell(['Only stones now.']); const site = SITES.find(s => NUM.at[s].op === 'share'); tell(['Bits of stone, fallen from the old wall. Something black lies among them.', 'It is half of a burnt rule plate. You can still read one sign: ÷', `Scratched on the back: “${siteName(site).replace('the ', '')}”.`, 'You keep it.'], () => { S.bag.push('half'); S.hint = site; report('Found half a burnt plate', `it shows ÷, from ${siteName(site)}`, 'a secret that helps'); }); },
+  log() { if (has('coin') || flag('coinGiven')) return tell(['A hollow log. Empty now.']); tell(['A hollow log. Something shines inside.', 'You reach in. A coin! A tiny machine is stamped on it.'], () => { S.bag.push('coin'); report('Found a Maker\'s coin in the hollow log', '', 'a secret'); }); },
+  keeper() { const who = 'The orchard keeper', rule = NUM.at.orchard, more = rule.op === 'times' || rule.op === 'plus';
+    if (flag('coinGiven')) return tell([['Four rows of six. All there.', 'That coin was my grandfather\'s.', 'The fruit is nearly ripe.'][(S.said.keeper = ((S.said.keeper || 0) + 1) % 3)]], null, who);
+    if (has('coin')) return tell(['My lucky coin! After all these years!', `I will tell you something. In my day the Orchard Machine always gave back ${more ? 'more' : 'less'} than you put in.`], () => { S.bag.splice(S.bag.indexOf('coin'), 1); setFlag('coinGiven'); needDone('coin'); giveCard('coin'); report('Gave the orchard keeper the lucky coin', `a fact: the Orchard Machine gives back ${more ? 'more' : 'less'}`, ''); }, who);
+    const i = S.said.keeper || 0; S.said.keeper = (i + 1) % 2; if (i === 1) need('coin', 'The orchard keeper: a lucky coin that rolled into something hollow.'); tell([['Four rows of six trees. I count them every day.', 'My lucky coin rolled away years ago. Into something hollow, I think.'][i]], null, who); },
+  hedge() { need('hedge', 'The hedge in the old wall: a knock it knows.', true); tell(['A thick hedge fills the gap in the old wall. It rustles, as if it is listening.', 'A small sign: KNOCK THE WAY THE WOODS COUNT.', 'You do not know that knock yet.']); },
+  guard() { const who = 'A Rillfolk guard', i = S.said.guard || 0; S.said.guard = Math.min(2, i + 1) === 2 && i === 2 ? 1 : i + 1; if (i >= 1) need('road', 'The Rillfolk road east: washed out. Come back another day.', true);
+    tell([[S.gates.bridge ? 'A sky-walker! You brought the bridge down! The Rillfolk thank you.' : 'A sky-walker! You crossed the old stones! Nobody has done that for years.', 'The road east is washed out. Our menders are at work. Come back another day.', 'Climb the little hill. You can see far from there.'][Math.min(i, 2)]], null, who); },
+  lookout() { PIC = vistaPic(); setPlace(); tell(['From the hill you can see far.', 'To your right, the east: reeds and water, and houses on legs. That is the Reach.', 'Ahead, to the north: a great lake. It shines blue on one side and gold on the other.', 'Past the lake stands a mountain. On top is a ring of stone, as tall as a tower. It flickers. The Gate.', 'Four more peoples live out there. Each one keeps a Rule Stone.'], () => { PIC = null; setFlag('vista'); report('Looked out from the lookout hill', '', ''); setPlace(); }); },
+  machine(t) { const m = M(t.site);
+    if (!flag('metElder')) return tell(['A brass machine, taller than you. Its plate is burnt black.', 'A Tindle waves you away. “Do not touch it! Ask Elder Rivet first. In the village.”']);
+    if (!m.seenIt) { m.seenIt = true; MA.done = null; MA.show = null; PIC = machinePic(t.site); setPlace(); return tell([`${cap(t.name)}. Brass, with a big hopper on top.`, 'Its rule plate is burnt black.', 'A tray of grey test stones sits beside it. They stay here.', t.site === 'wall' ? 'Bits of stone and metal lie along the old wall, to the east.' : ''], () => openMachine(t.site)); }
+    openMachine(t.site); },
+  pan() { if (S.gates.bridge) return tell(['The bridge is down. The pan is full of gold pips.']);
+    if (!flag('gotPouch')) { need('pan', `The bridge pan: exactly ${NUM.target} pips.`); PIC = panPic(); setPlace(); return tell(['A flat pan hangs from a post by the river. The bridge is pulled up high.', `A number is stamped on the pan: ${NUM.target}. Under it: PIPS.`, 'The Tindles count in pips. Ask in the village.'], () => { PIC = null; setPlace(); }); }
+    const open = () => { TASK = { kind: 'pan', msg: '', title: 'The bridge pan' }; PIC = panPic(); S.open = { kind: 'pan' }; drawWords(); drawTask(); setPlace(); save(); };
+    if (!flag('sawE2')) return showCarving(open); open(); },
+  post() { if (S.gates.stones) return tell(['The old stones lie still in the river. You can walk across.']);
+    need('stones', 'The old stepping stones: go on with their number pattern.'); const open = () => { TASK = { kind: 'stones', msg: '', title: 'The old stepping stones' }; PIC = stonesPic(); S.open = { kind: 'stones' }; drawWords(); drawTask(); setPlace(); save(); };
+    if (!flag('sawE3')) return showStoneExample(open); open(); } };
+
+/* ---- lists on the desk: what I still need, and the ship */
+function openPanel(p) { if (reading() || TASK) return; PANEL = PANEL === p ? '' : p; if (p === 'needs') $('b_needs').classList.remove('new'); $('b_needs').classList.toggle('on', PANEL === 'needs'); $('b_ship').classList.toggle('on', PANEL === 'ship' || PANEL === 'report'); drawWords(); drawTask(); }
+function panelHtml() {
+  if (PANEL === 'needs') { const open = S.needs.filter(n => !n.done && !n.later), later = S.needs.filter(n => !n.done && n.later), done = S.needs.filter(n => n.done), carry = S.bag.map(i => i === 'pouch' ? (S.pouch === null ? '' : `the pip pouch (${S.pouch} pips)`) : ITEMS[i].name).filter(Boolean);
+    return `<h3>What I still need</h3><ul class="list"><li><b>My mission:</b> mend the Gate, so Patternox is open to everyone.<small>Rule Stones lit: ${S.lit} of 5</small></li></ul>${open.length || later.length || done.length ? '' : '<p class="dim">Nothing else yet. Talk to people. Look at things.</p>'}<ul class="list">${open.map(n => `<li>${esc(n.text)}</li>`).join('')}${later.map(n => `<li>${esc(n.text)}<small>for another day</small></li>`).join('')}${done.map(n => `<li class="done">${esc(n.text)}</li>`).join('')}</ul><p class="q"><b>I carry:</b> ${carry.length ? esc(carry.join(', ')) : 'nothing yet'}</p>${Object.keys(S.notes).filter(s => S.notes[s].length).map(s => `<p class="dim">${esc(cap(siteName(s)))}</p>${notesHtml(s)}`).join('')}<div class="brow">${btn('close', 'Close', 'quiet')}</div>`; }
+  if (PANEL === 'report') return `<h3>Mission report</h3><p class="dim">For your teacher: what you did, the maths, and how it went.</p><ul class="list">${S.log.length ? S.log.slice().reverse().map(l => `<li>${esc(l.what)}<small>${esc([l.maths, l.result, l.t + ' min'].filter(Boolean).join(' · '))}</small></li>`).join('') : '<li>Nothing yet.</li>'}</ul><div class="brow">${btn('ship', 'Back', 'quiet')}</div>`;
+  const atShip = S.at === 'map' && Math.abs(Math.round(P.px) - 13) + Math.abs(Math.round(P.py) - 82) <= 1;
+  return `<h3>Your ship</h3><p class="q">${atShip ? 'Your ship waits here. Everything you do is saved by itself.' : 'Your ship is in the meadow where you landed.'}</p><div class="brow">${atShip || S.at !== 'map' ? '' : btn('home', 'Go back to my ship', 'warm')}${btn('report', 'Mission report', 'quiet')}${btn('sound', 'Sound: ' + (S.sound ? 'on' : 'off'), 'quiet')}</div><p class="q"><b>Cards won on Algora:</b> ${S.cards.length ? esc(S.cards.map(c => c.name).join(', ')) : 'none yet'}</p><div class="brow">${btn('close', 'Close', 'quiet')}${btn('reset', 'Start again', 'quiet')}</div><p class="dim">Rule Stones lit: ${S.lit} of 5. Only the Tindle Meadow and the Reach's landing are built so far. More of Algora is coming. (${VERSION})</p>`; }
+function panelPress(b) { if (b === 'close') return openPanel(PANEL); if (b === 'report' || b === 'ship') { PANEL = b; return drawTask(); } if (b === 'sound') { S.sound = !S.sound; save(); beep(600, .08); return drawTask(); }
+  if (b === 'home') { openPanel(PANEL); FADE = 1; P.route = []; P.then = null; P.px = 13; P.py = 82; P.dir = 'down'; cam.x = 13.5; cam.y = 82.5; see(); note('You follow your own tracks back to the ship.'); save(); drawWords(); return setPlace(); }
+  if (b === 'reset') { PANEL = ''; $('b_ship').classList.remove('on'); TASK = { kind: 'reset', title: 'Start again?' }; drawWords(); return drawTask(); } }
+function toggleBig() { if (reading() || TASK || PIC) return; BIG = !BIG; $('b_map').classList.toggle('on', BIG); if (BIG) { PANEL = ''; $('b_needs').classList.remove('on'); $('b_ship').classList.remove('on'); } drawWords(); drawTask(); setPlace(); }
+
+/* ---- taps and keys */
+function stageTap(e) { const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; if (reading()) return; if (BIG) return toggleBig(); if (PIC) { if (PIC.tap) PIC.tap(x, y); return; } if (TASK) return; if (PANEL) openPanel(PANEL);
+  if (S.at !== 'map') { const sc = SCENES[S.at], fx = x / vw; let best = null; for (const t of sc.things) if (Math.abs(t.x - fx) < .075 && (!best || Math.abs(t.x - fx) < Math.abs(best.x - fx))) best = t; if (best) return runThing(best, verb); SC.to = clamp(fx, .05, .95); SC.then = null; return; }
+  geo(); const tx = Math.floor(V.ox + x / V.ts), ty = Math.floor(V.oy + y / V.ts); if (tx < 0 || ty < 0 || tx >= MAPW || ty >= MAPH) return; let t = seen[key(tx, ty)] ? SOLID[key(tx, ty)] : null; if (!t && seen[key(tx, ty)]) { const g = GATEOF[key(tx, ty)]; if (g && !gateOpen(g)) t = THINGS.find(o => o.gate === g); if (!t && MAP[ty][tx] === 'H') t = TH.village; if (!t && Math.abs(tx - 13) <= 1 && ty === 83) t = TH.ship; } if (t && thingSeen(t)) return runThing(t, verb); verb = ''; beep(500, .03); goTo(tx, ty); drawWords(); }
+cv.addEventListener('pointerdown', e => { e.preventDefault(); stageTap(e); });
+$('readok').onclick = readOk; $('readsay').onclick = () => { if (reading()) speak(READ.q[READ.i]); };
+$('read').addEventListener('pointerdown', e => e.stopPropagation());
+$('b_map').onclick = toggleBig; $('b_needs').onclick = () => { if (BIG) toggleBig(); openPanel('needs'); }; $('b_ship').onclick = () => { if (BIG) toggleBig(); openPanel('ship'); };
+$('words').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.verb) { verb = verb === b.dataset.verb ? '' : b.dataset.verb; $('cmd').value = verb ? verb + ' ' : ''; beep(560, .03); return drawWords(); } if (b.dataset.dir) return goDir(b.dataset.dir); if (b.dataset.thing) { const t = hereThings().find(o => o.id === b.dataset.thing); if (t) runThing(t, verb); } });
+$('task').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.k) return padKey(b.dataset.k); if (b.dataset.box) { BOX.on = b.dataset.box; return drawTask(); } if (b.dataset.sign) { TASK.sign = b.dataset.sign; TASK.msg = ''; beep(560, .03); return drawTask(); } if (b.disabled) return; if (b.dataset.b) { if (PANEL) return panelPress(b.dataset.b); if (TASK) TASKS[TASK.kind].press(b.dataset.b); } });
+$('go').onclick = () => command($('cmd').value); $('cmd').addEventListener('keydown', e => { if (e.key === 'Enter') command($('cmd').value); });
+window.addEventListener('keydown', e => { if (e.target === $('cmd')) return; if (reading() && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return readOk(); } if (TASK && BOX.on && /^[0-9]$/.test(e.key)) return padKey(e.key); if (TASK && e.key === 'Backspace') return padKey('del'); const d = { ArrowUp: 'north', ArrowDown: 'south', ArrowRight: 'east', ArrowLeft: 'west' }[e.key]; if (d && !TASK && !reading() && !PIC && !BIG && S.at === 'map') { e.preventDefault(); const v = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] }[d], x = Math.round(P.px) + v[0], y = Math.round(P.py) + v[1]; if (!P.route.length && walkable(x, y)) { P.route = [[x, y]]; P.then = null; } } });
+window.addEventListener('resize', size);
+
+/* ---- what a future AI may be told about this place: facts only, from the tables above and the save. [CLAUDE.md: the constraint architecture] */
+function bwSlice() { const r = regAt(Math.round(P.px), Math.round(P.py)), R = REGIONS[r] || REGIONS[1], near = hereThings().map(t => t.name); return ['PLACE: ' + hereName() + ', ' + PLANET + ', Galaxy Patternox', 'FOLK: ' + (R.folk || ''), 'NEAR: ' + (near.join('; ') || 'nothing'), 'CARRIES: ' + (S.bag.map(i => ITEMS[i].name).join('; ') || 'nothing') + (S.pouch !== null ? ` (${S.pouch} pips)` : ''), 'NEEDS: ' + (S.needs.filter(n => !n.done).map(n => n.text).join(' | ') || 'none'), `FACTS: plates made ${platesDone()} of 4; bridge ${S.gates.bridge ? 'down' : 'up'}; old stones ${S.gates.stones ? 'crossed' : 'not crossed'}; Rule Stones lit ${S.lit} of 5`, 'NEVER SAY: any machine\'s rule, the number that will come out, or which stone is next'].join('\n'); }
+
+/* ---- start, and the frame loop */
+function boot() { S = load() || fresh(); if (!S.st) S.st = { round: 0, row: 0 }; NUM = bwNumbers(S.seed); unpackSeen(S.seen); P.px = S.x; P.py = S.y; P.dir = S.dir || 'down'; cam.x = S.x + .5; cam.y = S.y + .5; SC.x = S.sx || .13; see(); size(); setPlace(); drawLog(); drawWords(); drawTask();
+  const faults = bwCheck(); if (faults.length) console.error('bwCheck: ' + faults.join(' | '));
+  if (S.intro < 9) { PIC = introPic(); setPlace(); tell(['The wormhole to Galaxy Patternox is broken. It flickers.', 'A small ship can slip through a flicker. A big ship cannot.', 'A call comes through the flicker: “This is the S.S. Infinity. We are lost in Patternox. The Gate\'s code is broken. Please help.”', 'Past the wormhole is one planet with two suns: ' + PLANET + '.', 'Your mission: find out why the Gate broke. Mend it. Then Patternox is open to everyone.', 'You land in a green meadow. Tap the picture to walk. Tap a word to do something.'], () => { S.intro = 9; PIC = null; report('Landed on ' + PLANET, '', ''); setPlace(); drawWords(); save(); }, 'Mission'); }
+  else if (S.open) { const o = S.open; if (o.kind === 'machine' && TH['m_' + o.site]) openMachine(o.site); else if (o.kind === 'pan' && !S.gates.bridge && S.pouch !== null) { TASK = { kind: 'pan', msg: '', title: 'The bridge pan' }; PIC = panPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'stones' && !S.gates.stones) { TASK = { kind: 'stones', msg: '', title: 'The old stepping stones' }; PIC = stonesPic(); drawWords(); drawTask(); setPlace(); } else S.open = null; }
+  requestAnimationFrame(loop); }
+let last = 0;
+function loop(ts) { const dt = Math.min(.05, last ? (ts - last) / 1000 : .016); last = ts; tNow += dt; if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();
+  if (reading() && READ.hook && READ.hook[READ.i]) { READ.hook[READ.i](); }
+  if (PIC) PIC.draw(vw, vh, dt); else if (BIG) drawBig(); else if (S.at === 'map') { stepWalk(dt); cam.x += (P.px + .5 - cam.x) * Math.min(1, dt * 6); cam.y += (P.py + .5 - cam.y) * Math.min(1, dt * 6); drawMap(dt); } else drawScene(dt);
+  if (FADE > 0) { cx.fillStyle = `rgba(4,6,14,${Math.min(1, FADE)})`; cx.fillRect(0, 0, vw, vh); FADE -= dt * 2.4; }
+  requestAnimationFrame(loop); }
+window.__bw = { S: () => S, NUM: () => NUM, P, SC, MA, READ, check: bwCheck, slice: bwSlice, pic: () => PIC, task: () => TASK, panel: () => PANEL, big: () => BIG, idle: () => !P.route.length && SC.to === null && !MA.phase && FADE <= 0, seen, walkable, tell, things: TH, stones: bwStones, cam: () => { geo(); return { ts: V.ts, ox: V.ox, oy: V.oy }; } };
+boot();
+</script>
+</body>
+</html>
