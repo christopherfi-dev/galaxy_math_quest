@@ -147,10 +147,11 @@ I did not wait for your answers to the review. I used my pick each time and mark
 - **What I did:** a plain shield card only works while the shield is still up. Only the epic Shield Reborn rebuilds a broken one.
 - **Without that limit,** a common "+10 shield" on a broken shield would block a whole attack every time. That is as strong as the epic Vanishing Act.
 
-### 7.3 How the Guard is played
-The card says "Stops a Spy." **When** it may be played is your rule, not mine. The practice battle will have a switch:
-- **Swapped in:** when a Spy is turned over, the other player may take their card back and put down a Guard.
-- **Blind:** the Guard is put down as a guess, with the other cards.
+### 7.3 Decided by you on 22 November, after this note was written
+- **One player leads and the other answers.** Who leads round 1 is chance; after that they take turns. So a Guard is played as the answer to a Spy.
+- **One Spy card in each deck,** for now. The seven Spy cards here are seven designs; a deck draws one of them.
+- **At least as many Guards as Spies, better more.** The practice battle puts 2 Guards in each deck.
+- Section 7.1 was written before this. With one Spy each, a ship loses its Weapons early in about 2 battles in 100, not 32.
 
 ### 7.4 Two names
 **"Pulsar Phaser"** and **"Inertial Dampener"** use words from a famous television series. They are your names from 2023, so I kept them. "Pulsar Lance" and "Steady Drive" would be free of it. No new name in the set uses such a word. A check tests that.

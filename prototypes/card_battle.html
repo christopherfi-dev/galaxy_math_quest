@@ -95,7 +95,7 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
   <div class="row"><button class="btn small" id="sstd" type="button">All Standard</button><button class="btn small" id="srand" type="button">Draw at random</button></div>
   <h3>The enemy ship</h3>
   <div class="row" id="foemode"></div>
-  <p><b>The cards:</b> you and the enemy each have your own deck of all <span id="ncards"></span> cards, shuffled. You each hold 5.</p>
+  <p><b>The cards:</b> you and the enemy each have your own deck of <span id="ncards"></span> cards, shuffled. You each hold 5. Each deck has <span id="nspy"></span> and <span id="nguard"></span>.</p>
   <div class="row"><button class="btn go" id="sgo" type="button">Start the battle</button><button class="btn" id="srules" type="button">Change the rules</button></div>
   <p style="color:#8f9bbd;font-size:13px">A test table for Marc's battle rules. Every card and every number is a first draft. Nothing is sent anywhere. <a href="cards.html" style="color:#93c5fd">See all the cards</a></p>
 </div></div>
@@ -120,7 +120,7 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
   <h2>How a round goes</h2>
   <p><b>HP</b> is how much damage a part can take. <b>AP</b> is how hard it hits.</p>
   <ol>
-    <li>You and the enemy each put down one card, at the same time.</li>
+    <li>One player goes first and puts down a card. The other sees it, then answers with a card. Who goes first in round 1 is chance. After that you take turns.</li>
     <li>A Spy acts first. It gets past the shield.</li>
     <li>Repair cards work next.</li>
     <li>Both ships attack. Your attack is the AP of all your working parts added up, plus your card.</li>
@@ -246,7 +246,9 @@ var PARTS=['Engine Core','Navigation','Shield Generator','Weapons System','Power
 var SHORT={'Engine Core':'Engine','Navigation':'Navigation','Shield Generator':'Shield Gen','Weapons System':'Weapons','Power Module':'Power'};
 /* Every open point of the rules sheet, and every working guess, is a switch. The first value is the default. */
 var SWITCHES=[
- {key:'guard',label:'The Policeman (the Station Guard card)',from:'rules sheet 3 and 6',values:[['swap','When a Spy is turned over, you may swap your Guard in'],['blind','You put the Guard down as a guess, with the other cards'],['lead','One player leads, the other answers']]},
+ {key:'guard',label:'Who puts a card down first',from:'Marc, 22 November: one player leads, the other answers',values:[['lead','One player leads, the other answers. They swap each round.'],['swap','Both together. A Guard may be swapped in when a Spy is turned over.'],['blind','Both together. A Guard is put down as a guess.']]},
+ {key:'spies',label:'Spy cards in each deck',from:'Marc, 22 November: one Spy card each',values:[[1,'1, drawn at random from the seven'],[7,'all 7']]},
+ {key:'guards',label:'Guard (Policeman) cards in each deck',from:'Marc, 22 November: at least as many as Spy cards, better more',values:[[2,'2'],[1,'1']]},
  {key:'loseCard',label:'Engine or Navigation lost: "lose 1 card"',from:'rules sheet 5',values:[['once','One card is thrown away, once'],['smaller','The hand is one card smaller']]},
  {key:'cannotDefend',label:'Shield Generator lost: "cannot defend"',from:'rules sheet 5',values:[['cards','Defence cards stop working'],['cardsAndShield','Defence cards and the Main Shield stop']]},
  {key:'repairCap',label:'A repair may lift a part above its full HP',from:'a guess',values:[[true,'No'],[false,'Yes']]},
@@ -269,11 +271,15 @@ function newBattle(opts,kinds0,kinds1,seed){
  var S={v:1,opts:o,seed:(seed%2147483646)+1,round:1,leader:0,P:[],log:[],over:null,cur:null};
  [kinds0,kinds1].forEach(function(kinds,i){
   var parts=PARTS.map(function(pn,j){var d=DATA.parts.filter(function(x){return x.part===pn&&x.kind===kinds[j];})[0];return {part:pn,kind:d.kind,name:d.name,max:d.hp,hp:d.hp,ap:d.ap,lvl:1};});
-  var ids=DATA.cards.map(function(c){return c.id;});if(o.upgrades){ids=ids.concat(DATA.upgrades.map(function(c){return c.id;}));}
+  var ids=[],spy=[],g;DATA.cards.forEach(function(c){if(c.type==='spy'){spy.push(c.id);}else if(c.type!=='guard'){ids.push(c.id);}});
+  if(o.spies>=spy.length){ids=ids.concat(spy);}else{shuffle(S,spy);ids=ids.concat(spy.slice(0,o.spies));}
+  var guard=DATA.cards.filter(function(c){return c.type==='guard';})[0].id;for(g=0;g<o.guards;g++){ids.push(guard);}
+  if(o.upgrades){ids=ids.concat(DATA.upgrades.map(function(c){return c.id;}));}
   var pl={parts:parts,shield:100,deck:shuffle(S,ids),hand:[],thrown:0};
   S.P.push(pl);
  });
  S.P.forEach(function(pl){draw(S,pl);});
+ S.leader=rand(S)<0.5?0:1;   /* who leads round 1 is random; after that they take turns */
  return S;
 }
 function part(pl,name){for(var i=0;i<pl.parts.length;i++){if(pl.parts[i].part===name)return pl.parts[i];}return null;}
@@ -723,7 +729,7 @@ var U={S:null,opts:B.defaults(),showSums:false,phase:'setup',sel:-1,cpuLead:-1,f
 var LOSTWORD={'Weapons System':'cannot attack','Engine Core':'lose a card','Navigation':'lose a card','Shield Generator':'no defence cards','Power Module':'no repairs'};
 
 function save(){try{localStorage.setItem(KEY,JSON.stringify({S:U.S,opts:U.opts,showSums:U.showSums,kinds:U.kinds,foeMode:U.foeMode}));}catch(e){}}
-function loadSaved(){try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.opts){U.opts=d.opts;U.showSums=!!d.showSums;U.kinds=d.kinds||U.kinds;U.foeMode=d.foeMode||'same';if(d.S&&!d.S.over){d.S.cur=null;U.S=d.S;return true;}}}catch(e){}return false;}
+function loadSaved(){try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.opts){var df=B.defaults(),kk;for(kk in df){if(d.opts[kk]===undefined)d.opts[kk]=df[kk];}if(d.S&&d.S.opts){for(kk in df){if(d.S.opts[kk]===undefined){d.S=null;break;}}}U.opts=d.opts;U.showSums=!!d.showSums;U.kinds=d.kinds||U.kinds;U.foeMode=d.foeMode||'same';if(d.S&&!d.S.over){d.S.cur=null;U.S=d.S;return true;}}}catch(e){}return false;}
 function cardInner(c,uid){return cardSVG(c,uid).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');}
 
 /* ---------- the picture: both ships, their parts, their shields, the two cards ---------- */
@@ -797,13 +803,14 @@ function renderPick(){
  var S=U.S,w=el('work');msg('');
  var lead=S.opts.guard==='lead';
  if(lead&&S.leader===1&&U.cpuLead<0){U.cpuLead=B.cpuPick(S,1,null);}
- if(lead&&S.leader===1)say('The enemy leads with '+B.card(S.P[1].hand[U.cpuLead]).name+'.','Choose your answer.');
- else say('Choose a card.',lead?'You lead this round. The enemy will see your card first.':'The enemy chooses at the same time.');
+ if(lead&&S.leader===1)say('The enemy goes first: '+B.card(S.P[1].hand[U.cpuLead]).name+'.','Its card is on the table. Choose your card to answer it.');
+ else say(lead?'You go first. Choose a card.':'Choose a card.',lead?'The enemy will see your card, then answer it.':'The enemy chooses at the same time.');
  if(U.sel<0){w.innerHTML='<p style="color:#aeb8d4;font-size:15px;margin:6px 0">Tap a card below to read it.</p>';}
  else{
   var c=B.card(S.P[0].hand[U.sel]),note='';
   c.ops.forEach(function(o){if(!B.opWorks(S,S.P[0],o)){note='Your '+B.SHORT[B.needOf(S,o.op)]+' is lost. '+(c.ops.length>1?'Part of this card':'This card')+' would do nothing.';}});
-  if(c.type==='guard')note=S.opts.guard==='blind'?'It only works if the enemy plays a Spy this round.':(S.opts.guard==='swap'?'Keep it in your hand: you can swap it in when a Spy is turned over.':'It only works against a Spy.');
+  if(c.type==='guard'){var led=lead&&S.leader===1&&B.isSpy(S.P[1].hand[U.cpuLead]);note=S.opts.guard==='blind'?'It only works if the enemy plays a Spy this round.':(S.opts.guard==='swap'?'Keep it in your hand: you can swap it in when a Spy is turned over.':(led?'The enemy went first with a Spy. This card stops it.':(S.leader===1?'It only stops a Spy. The enemy did not play one.':'It only stops a Spy, and you go first this round. Keep it for a round when you answer.')));}
+  if(c.type==='spy'&&lead&&S.leader===0)note='You go first, so the enemy may answer with a Guard.';
   w.innerHTML='<div class="picked"><div class="big">'+cardSVG(c,'P')+'</div><div class="side"><div style="font-size:15px;line-height:1.35;color:#c9d2ea;margin-bottom:8px">'+esc(note)+'</div><button class="btn go" id="playit" type="button">Play this card</button></div></div>';
   el('playit').addEventListener('click',playCard);
  }
@@ -818,7 +825,7 @@ function playCard(){
  if(S.opts.guard==='lead'){c=S.leader===1?U.cpuLead:B.cpuPick(S,1,S.P[0].hand[h]);}else{c=B.cpuPick(S,1,null);}
  U.phase='resolve';U.sel=-1;U.cpuLead=-1;el('work').innerHTML='';drawHand();
  B.startRound(S,h,c);U.queue=B.steps(S);U.qi=0;
- feed(['You play '+B.card(S.cur.card[0]).name+'. The enemy plays '+B.card(S.cur.card[1]).name+'.']);
+ feed([S.opts.guard!=='lead'?'You play '+B.card(S.cur.card[0]).name+'. The enemy plays '+B.card(S.cur.card[1]).name+'.':(S.leader===0?'You go first: '+B.card(S.cur.card[0]).name+'. The enemy answers with '+B.card(S.cur.card[1]).name+'.':'The enemy went first: '+B.card(S.cur.card[1]).name+'. You answer with '+B.card(S.cur.card[0]).name+'.')]);
  var mine=B.canSwap(S,0),theirs=B.canSwap(S,1);
  function go(yes){
   var before=S.cur.card.slice();B.swapBoth(S,[yes,true]);
@@ -830,7 +837,7 @@ function playCard(){
  if(mine>=0){say('The enemy played a Spy!','Swap in your '+B.card(S.P[0].hand[mine]).name+'? Your '+B.card(S.cur.card[0]).name+' goes back to your hand.');
   el('work').innerHTML='<div class="row"><button class="btn go" id="swy" type="button">Yes, stop the Spy</button><button class="btn" id="swn" type="button">No</button></div>';
   el('swy').addEventListener('click',function(){el('work').innerHTML='';go(true);});el('swn').addEventListener('click',function(){el('work').innerHTML='';go(false);});}
- else{say('The cards are turned over.');go(false);}
+ else{say(S.opts.guard==='lead'?'Both cards are on the table.':'The cards are turned over.');go(false);}
 }
 function dry(st,ch){var C=JSON.parse(JSON.stringify(U.S));return B.run(C,st,ch);}
 function nextStep(){
@@ -944,9 +951,9 @@ function askSums(st,list,done){
   else if(s.what==='shield'){lab='Your Main Shield has '+s.before+'. What is it now?';}
   else{p=partOf(s.side,s.label);
    if(s.kind==='spy'||s.kind==='land')lab=(s.side?'Their ':'Your ')+s.label+' has '+s.before+'. It takes '+(-s.change)+'. HP left?';
-   else if(s.kind==='repair')lab='Your '+s.label+' has '+s.before+'. Add '+s.change+'. Full is '+p.max+'.';
-   else if(s.kind==='round')lab='Your '+s.label+' has '+s.before+'. Full is '+p.max+'.';
-   else lab='Your '+s.label+' has '+s.before+'. '+(s.change<0?'Take away '+(-s.change):'Add '+s.change)+'.';}
+   else if(s.kind==='repair')lab='Your '+s.label+' has '+s.before+'. Add '+s.change+'. Full is '+p.max+'. HP now?';
+   else if(s.kind==='round')lab='Your '+s.label+' has '+s.before+'. Full is '+p.max+'. HP now?';
+   else lab='Your '+s.label+' has '+s.before+'. '+(s.change<0?'Take away '+(-s.change):'Add '+s.change)+'. HP now?';}
   return {key:'a'+i,label:lab,answer:s.answer};
  });
  if(first.what==='attack'){head='Work out your attack.';small='Add up the AP of your working parts.'+({add:' Then add your card.',perpart:' Then add 5 for each working part.',double:' Then double it.',round100:' Then round it up to the next hundred.',plain:''}[first.kind]||'');}
@@ -977,7 +984,9 @@ function drawSetup(){
  var bs=el('myship').children;for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){var j=+this.getAttribute('data-i');U.kinds[j]=KINDKEYS[(KINDKEYS.indexOf(U.kinds[j])+1)%4];drawSetup();});}
  var f='';[['same','The same kinds as yours'],['random','Drawn at random']].forEach(function(m){f+='<button class="btn small'+(U.foeMode===m[0]?' go':'')+'" type="button" data-m="'+m[0]+'">'+m[1]+'</button>';});
  el('foemode').innerHTML=f;var fs=el('foemode').children;for(i=0;i<fs.length;i++){fs[i].addEventListener('click',function(){U.foeMode=this.getAttribute('data-m');drawSetup();});}
- el('ncards').textContent=DATA.cards.length+(U.opts.upgrades?DATA.upgrades.length:0);
+ var nsp=DATA.cards.filter(function(c){return c.type==='spy';}).length,spn=Math.min(U.opts.spies,nsp);
+ el('ncards').textContent=DATA.cards.length-nsp-1+spn+U.opts.guards+(U.opts.upgrades?DATA.upgrades.length:0);
+ el('nspy').textContent=spn===1?'1 Spy card':spn+' Spy cards';el('nguard').textContent=U.opts.guards===1?'1 Guard':U.opts.guards+' Guards';
 }
 function openSetup(){show('rules',false);show('logv',false);show('help',false);drawSetup();show('setup',true);}
 function newBattle(){

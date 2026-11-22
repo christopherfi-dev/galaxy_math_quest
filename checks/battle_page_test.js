@@ -44,6 +44,8 @@ async function act(page, name, flags) {
   if (st.over || st.again) return 'over';
   if (st.phase === 'pick') {
     pass(name + ': a hand of cards is on the desk', st.hand.length >= 3 && st.hand.length <= 5, String(st.hand.length));
+    if (/goes first/.test(st.say)) { flags.enemyLed = true; pass(name + ': when the enemy goes first, its card is on the table before you choose', await page.locator('#board .tablecard').count() === 1); }
+    if (/You go first/.test(st.say)) { flags.youLed = true; pass(name + ': when you go first, no enemy card is shown yet', await page.locator('#board .tablecard').count() === 0); }
     const i = await page.evaluate(() => { const U = window.GMQB.U, B = window.GMQB.B, S = U.S; let best = 0; S.P[0].hand.forEach((id, h) => { const c = B.card(id); if (c.ops.some(o => B.opWorks(S, S.P[0], o)) && c.type !== 'guard') best = h; }); return best; });
     await page.locator('#hand button').nth(i).tap();
     const picked = await page.locator('#playit').boundingBox();
@@ -130,11 +132,14 @@ const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 4 min
     await shot(page, name + '_1_setup');
     await page.locator('#myship button').nth(3).tap();   // change the Weapons kind once: Standard to Guardian
     pass(name + ': tapping a part changes its kind', /Proton Launcher/.test(await page.locator('#myship').textContent()));
+    pass(name + ': the first screen says 1 Spy card and 2 Guards in each deck', /1 Spy card and 2 Guards/.test(await page.locator('#setup').textContent()));
     await page.locator('#sstd').tap();
     await page.evaluate(() => window.GMQB.setSeed(2026));
     await page.locator('#sgo').tap();
     let st = await state(page);
     pass(name + ': the battle starts at round 1 with 5 cards and two shields of 100', st.round === 1 && st.hand.length === 5 && st.shield[0] === 100 && st.shield[1] === 100);
+    const deck = await page.evaluate(() => { const B = window.GMQB.B, p = window.GMQB.U.S.P.map(x => x.deck.concat(x.hand)); return p.map(a => [a.length, a.filter(B.isSpy).length, a.filter(B.isGuard).length]); });
+    pass(name + ': each deck has one Spy card and two Guards', deck.every(d => d[1] === 1 && d[2] === 2), JSON.stringify(deck));
     pass(name + ': the page does not scroll', st.docH <= st.vh + 1 && st.docW <= st.vw + 1, st.docW + 'x' + st.docH + ' in ' + st.vw + 'x' + st.vh);
     // ---- the picture: ten parts, every word inside its tile, the picture inside the stage
     const board = await page.evaluate(() => {
@@ -185,9 +190,10 @@ const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 4 min
     }
     pass(name + ': the child did sums by hand', (flags.sums || 0) >= 5, String(flags.sums));
     pass(name + ': a wrong sum was tried', !!flags.wrongSum);
+    pass(name + ': the lead passed from one player to the other', !!flags.enemyLed && !!flags.youLed);
     // ---- the rules screen: turn the sums on, and play on to the end
     await page.locator('#brules').tap();
-    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 10);
+    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 12);
     await shot(page, name + '_5_rules');
     await page.locator('#sumon').tap();
     await page.locator('#rclose').tap();
@@ -215,23 +221,21 @@ const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 4 min
     pass(name + ': New battle goes back to the first screen', await page.locator('#setup.open').count() === 1);
     // ---- the other two ways to play the Guard, a few rounds each (the sums are still shown)
     if (name === 'ipad_sideways') {
-      for (const [mode, idx] of [['lead', 2], ['blind', 1]]) {
+      for (const [mode, idx] of [['swap', 1], ['blind', 2]]) {
         await page.locator('#srules').tap();
         await page.locator('#switches button[data-key="guard"][data-i="' + idx + '"]').tap();
         await page.locator('#rnew').tap();
         await page.evaluate(() => window.GMQB.setSeed(4711));
         await page.locator('#sgo').tap();
-        let sawLead = false, g = 0;
+        let g = 0;
         while (g++ < 400) {
           st = await state(page);
           if (st.over || st.round > 5) break;
-          if (/leads with/.test(st.say) || /You lead/.test(st.say)) sawLead = true;
-          if (st.phase === 'pick' && /leads with/.test(st.say)) pass(name + ': when the enemy leads, its card is on the table before you choose', /The enemy's card/.test(st.boardText) && await page.locator('#board .tablecard').count() === 1);
+          if (st.phase === 'pick') pass(name + ': with both cards put down together, no card is shown before you choose', await page.locator('#board .tablecard').count() === 0);
           await act(page, name, flags);
         }
         st = await state(page);
         pass(name + ': a battle with the Guard "' + mode + '" plays on', st.round > 5 || !!st.over, 'round ' + st.round);
-        if (mode === 'lead') pass(name + ': in "one leads" the page says who leads', sawLead);
         await page.locator('#bnew').tap();
       }
     }

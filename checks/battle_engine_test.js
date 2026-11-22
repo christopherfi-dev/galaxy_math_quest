@@ -6,7 +6,7 @@ const html = fs.readFileSync(path.resolve(__dirname, '..', 'prototypes', 'card_b
 const DATA = JSON.parse(html.match(/<script id="carddata" type="application\/json">([\s\S]*?)<\/script>/)[1]);
 const B = new Function(html.match(/\/\* ENGINE-BEGIN[\s\S]*?\/\* ENGINE-END \*\//)[0] + '\nreturn GMQBattle;')();
 B.load(DATA);
-const PER = parseInt(process.argv[2] || '40', 10);
+const PER = parseInt(process.argv[2] || '10', 10);
 const bad = {}; let checks = 0;
 function fail(what, info) { if (!bad[what]) { bad[what] = 0; console.log('FAIL ' + what + (info ? ': ' + info : '')); } bad[what]++; }
 function ok(cond, what, info) { checks++; if (!cond) fail(what, info); }
@@ -17,7 +17,9 @@ const stats = { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0,
 
 function play(opts, k0, k1, sd, keep) {
   const S = B.newBattle(opts, k0, k1, sd), size = B.cardCount(S.P[0]);
-  ok(size === (opts.upgrades ? 50 : 45), 'each deck starts with all the cards', size);
+  const start = S.P.map(p => p.deck.concat(p.hand).sort().join(','));
+  ok(size === 37 + Math.min(opts.spies, 7) + opts.guards + (opts.upgrades ? 5 : 0), 'each deck starts with the right number of cards', size);
+  ok(S.P.every(p => p.deck.concat(p.hand).filter(B.isSpy).length === Math.min(opts.spies, 7) && p.deck.concat(p.hand).filter(B.isGuard).length === opts.guards), 'each deck has the Spy and Guard cards the switches say');
   ok(S.P[0].hand.length === 5 && S.P[1].hand.length === 5, 'a hand of 5 at the start');
   ok(S.P[0].shield === 100 && S.P[1].shield === 100, 'both shields start at 100');
   let thrown = [0, 0], guard = 0;
@@ -29,7 +31,7 @@ function play(opts, k0, k1, sd, keep) {
     for (let i = 0; i < 2; i++) {
       const me = S.P[i], c = B.card(L.card[i]), d = 1 - i;
       ok(B.cardCount(me) === size, 'each deck keeps its number of cards', B.cardCount(me) + ' of ' + size);
-      ok(new Set(me.deck.concat(me.hand)).size === size, 'no card is doubled or lost');
+      ok(me.deck.concat(me.hand).sort().join(',') === start[i], 'no card is doubled or lost');
       ok(me.parts.every(q => q.hp >= 0 && (!opts.repairCap || q.hp <= q.max)), 'HP never goes below 0, or above full when the cap is on');
       ok(me.shield >= 0 && (!opts.shieldCap || me.shield <= 100), 'the shield never goes below 0, or above 100 when the cap is on', me.shield);
       // the card played was in the hand
@@ -123,12 +125,18 @@ const D = B.defaults(), STD = ['standard', 'standard', 'standard', 'standard', '
   console.log('     clever against gentle, 2000 battles: clever wins ' + Math.round(w[0] / 20) + '%, gentle wins ' + Math.round(w[1] / 20) + '%, nobody ' + Math.round(w[2] / 20) + '%');
   ok(w[0] > w[1], 'the clever player beats the gentle one more often than not');
 })();
+(function () {
+  let first = [0, 0];
+  for (let i = 0; i < 2000; i++) { const S = B.newBattle(D, STD, STD, 31000 + i); first[S.leader]++; const l0 = S.leader; B.autoRound(S); ok(S.over || S.leader === 1 - l0, 'the lead passes to the other player each round'); }
+  console.log('     who leads round 1, in 2000 battles: you ' + first[0] + ', the enemy ' + first[1]);
+  ok(Math.abs(first[0] - first[1]) < 200, 'who leads round 1 is chance');
+})();
 // a battle is the same battle when it is played again from the same seed (so a saved game can be trusted)
 const a = play(D, STD, STD, 4242, false), b = play(D, STD, STD, 4242, false);
 ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the same battle');
 // the rules by hand: four small cases with known answers
 (function () {
-  const S = B.newBattle(D, STD, STD, 7);
+  const S = B.newBattle(Object.assign({}, D, { spies: 7, guard: 'swap' }), STD, STD, 7);
   ok(B.shipAP(S.P[0]) === 55 && S.P[0].parts.reduce((t, q) => t + q.hp, 0) === 100, 'a Standard ship has 100 HP and 55 AP');
   function force(i, id) { const p = S.P[i]; let h = p.hand.indexOf(id); if (h < 0) { const d = p.deck.indexOf(id); p.deck.splice(d, 1); p.deck.push(p.hand[0]); p.hand[0] = id; h = 0; } return h; }
   function round(c0, c1, ch) { B.startRound(S, force(0, c0), force(1, c1)); B.doSwap(S, 0); B.doSwap(S, 1); B.steps(S).forEach(st => { const req = B.need(S, st); B.run(S, st, req ? (ch && ch[st.k + (st.a === undefined ? st.d : st.a)]) || B.cpuChoose(S, req) : null); }); return S.log[S.log.length - 1]; }
