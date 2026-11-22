@@ -78,8 +78,7 @@ for i, r in by.items():
         faults.append(f'6. {i} is new, but nothing uses it')
 
 # 8. no job and no landing may need a secret
-WAITING = {'glow_stone': 'Voltara: the tunnel to the Nomads needs the glow stone (GMQ_Secrets_Balance_v1, decision 2)',
-           'hollow': 'Voltara: reaching Nomad Hollow is counted as a secret, but it is the main quest (GMQ_Secrets_Balance_v1, decision 2)'}
+WAITING = {}   # Voltara's glow stone and Nomad Hollow were waiting on Marc; decided 2026-11-22 (V2), built in version 85
 waiting_seen = set()
 for i, r in by.items():
     if r['planet_job'] != 'yes' and r['kind'] != 'land': continue
