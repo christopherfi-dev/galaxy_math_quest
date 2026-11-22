@@ -348,7 +348,8 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,742 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,760 checks, all pass. It checks:
+  - the opened card at six real screen sizes, with the browser's own bars taken off (two iPhones upright, two phones sideways, iPad both ways): the picture, "Give this order" and "Back" are inside the screen for every card in the hand, and the button works;
   - a shield with a kind: the bubble wears its colour and name; the opened card says what will go through; you are asked to place exactly that; the shield soaks the ship's own attack;
   - placing a hit: the view moves in and the parts are large; a tapped part's own HP changes; the words keep count; a tap that would destroy a part places nothing and asks for a second tap; the button names every part that will be lost;
   - the sound button: off, remembered, on again; at real speed a laser, a Spy, a block, a burst and a win each ask for their sound, with no error; with the sound off, nothing is asked for;
@@ -373,6 +374,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.
 - **Did not run:** the game's play tests. Nothing in the game was touched.
+- **A fault you found on your phone, 22 November:** an opened card's words pushed "Give this order" and "Back" off the bottom of the screen. My test had used a phone screen 760 points tall. A real iPhone shows about 660, less sideways. Fixed: the two buttons are always on the screen, and the words above them scroll if they are long. The test now uses real sizes.
 - **Not tested at all:** a real iPad, a real finger, a real child.
 
 ## 10. The independent review
