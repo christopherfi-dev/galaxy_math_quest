@@ -137,7 +137,8 @@ Each reviewer saw only CLAUDE.md, the handoff and what I gave them. Neither saw 
 2. **Play the Meadow** on your own iPad. Tell me where you got lost, bored or stuck.
 3. **One line of permission** to push this thread's own files to the main branch, if you want it on the website.
 4. **The decisions** in the design note, section 11. The first six are choices I made tonight that are yours.
-5. **Read the Reach's design note** (`GMQ_Big_World_Reach_Design_v1_2026-11-22.md`) and answer its six decisions. Its number rule is checked on 20,000 children. Nothing of it is built. I stopped there on purpose.
+5. **Read the Reach's design note** (`GMQ_Big_World_Reach_Design_v1_2026-11-22.md`) and answer its seven decisions. Its number rule is checked on 20,000 children. Nothing of it is built. I stopped there on purpose.
+   - A third independent reviewer found two blockers in its first version. The fleet problem was redesigned the same night. The second version has not been reviewed again.
 
 ---
 

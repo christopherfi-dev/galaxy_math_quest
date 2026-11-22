@@ -97,7 +97,7 @@ Nothing in the game was touched. A child cannot reach regions 2 to 9 yet.
 **No people's job is ever needed to reach another people.** [The 2023 lesson: Patternox waited on a quest that was never written.]
 
 - Every border has two ways across. Each way is a lock at the door, opened by maths, needing nothing carried.
-- **Tools never open the main road.** The raft, the rope ladder and the star lamp open short cuts, extra layers and old places seen again [Source: Marc, 21 November: "go back to your previous places... get better things"].
+- **Tools never open the main road, and a tool is never one of a border's two ways.** The raft, the rope ladder and the star lamp open short cuts, extra layers and old places seen again [Source: Marc, 21 November: "go back to your previous places... get better things"].
 - **Any four of the five Rule Stones open the Gate.**
 - **The test of the law:** leave any one people's job undone. Every people can still be reached, and four stones can still be lit. The page's check will test this as regions are built. Today it tests the one border that exists.
 
@@ -108,7 +108,7 @@ Nothing in the game was touched. A child cannot reach regions 2 to 9 yet.
 | Meadow to Reach | The bridge: exactly the right pips on its pan | The old stepping stones: go on with a number pattern | **both** |
 | Meadow to Woods | The hedge: a knock pattern. The birds on the wall tap it out | The wall's west door: a weighing lock with a missing number | no |
 | Woods to Lake | The ridge pass. An open path | (the Reach's north shore also reaches the Lake) | no |
-| Across the Lake | The Twinseers' ferry: the ferry keeper's riddle | The raft, a tool from the Rillfolk | no |
+| Across the Lake, to the island | The Twinseers' ferry: the ferry keeper's riddle | The low-tide causeway: step out when the tide table says so | no |
 | Reach to Hills | The lift: it rises on the right skip count | The hill road from the Lake's east shore | no |
 | Lake to Gate Mountain | The stair from the north shore | The high path from the Woods | no |
 | To the Old Works (extra) | The rope ladder, a tool from the Furrows | The lamp tunnel, with the Eights' star lamp | no |
@@ -214,13 +214,13 @@ flowchart LR
 
 **This one now has its own full design note:** `GMQ_Big_World_Reach_Design_v1_2026-11-22.md`, with a number rule checked on 20,000 children. The lines below are the short form.
 
-- **Their trouble:** every dock has a load dial: rafts × baskets on each = baskets. One window on each dial burnt out. Rafts go out too heavy, or half empty.
-- **Warm-up:** mend three dials. 6 × ? = 42. ? × 4 = 36.
-- **The open problem that lights the stone, "the three towns":** the fleet is 12 rafts of 6 baskets. Three towns ask for baskets: more than the fleet can carry. Each raft goes full to one town. A town is fed only if it gets all it asked for.
-  - The child decides who is fed. The towns remember it. [Your rule 4: your decision must matter.]
-  - The maths is the missing number, many times: how many rafts make 42?
-- **Still to decide:** the towns' numbers for each child, so that more than one plan works and none feeds everyone. What a town left short says and does. The picture must not let the child count baskets one by one to get the missing number.
-- **Finished example:** to be written. About loaves and trays, not baskets and rafts.
+- **Their trouble:** every dock has a load dial: rafts × baskets on each raft = baskets. One window on each dial burnt out. The crews load wrong.
+- **Warm-up:** mend three dials, which show last season's load. ? × 7 = 63. 5 × ? = 30. 3 × 6 = ?
+- **The open problem that lights the stone, "the fleet":** the harbour has three kinds of raft: say 4-rafts, 6-rafts and 7-rafts, a few of each. Three towns have ordered baskets. A raft sails full. A town's rafts are all one kind. Each town gets exactly its order.
+  - The maths is the missing number, many times: what times 6 makes 36? Does anything times 7?
+  - The towns cannot be done one at a time. A choice that is right for one town can take the rafts another needs.
+- **The first version of this problem** had too few rafts, and the child chose who went without. A reviewer showed it needed almost no Grade 3 maths, and that a kind child would fail it. Whether a town may go without is your decision 1 in the Reach's note.
+- **Finished example:** the baker: 24 loaves, trays for 5 or trays for 6.
 - **They give:** a raft. A tool: short cuts on the lake and the coast.
 
 ### 3. The Furrows: split and swap
