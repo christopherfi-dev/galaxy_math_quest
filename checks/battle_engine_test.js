@@ -41,7 +41,11 @@ function play(opts, k0, k1, sd, keep) {
       // Shield Generator lost: no block
       ok(L.snap.sg[i] || L.block[i] === 0, 'a ship without its Shield Generator cannot block');
       // Marc, 22 November: a lower card cannot block a higher attack card
-      if (opts.kindBlock && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d])) ok(L.block[i] === 0, 'a common card cannot block a rare attack card, and common or rare cannot block epic', B.card(L.card[i]).name + ' against ' + B.card(L.card[d]).name);
+      if (opts.kindBlock && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d])) {
+        if (!opts.shieldKind) ok(L.block[i] === 0, 'with the old rule switched on, a lower block card does not block a higher attack card at all', B.card(L.card[i]).name + ' against ' + B.card(L.card[d]).name);
+        else ok(L.block[i] >= 0 && L.block[i] <= Math.max(0, L.atk[d] - L.bonus[d]), 'a lower block card blocks no more than the ship\'s own attack: never the part a higher attack card adds', JSON.stringify([L.block[i], L.atk[d], L.bonus[d]]));
+      }
+      ok(!L.capped[i] || (opts.shieldKind && opts.kindBlock && B.rank(L.card[i]) < B.rank(L.card[d])), 'a block is only held to the ship\'s own attack when the attack card is of a higher kind');
       if (!opts.kindBlock && L.snap.sg[i] && c.ops.some(o => o.op === 'block')) ok(L.block[i] > 0 || L.raised[i] > 0, 'with the rule off, any block card blocks, or puts the shield back up');
       // Marc's idea of 22 November: a block card on a broken shield puts the shield back up, when that choice is on
       if (L.raised[i] > 0) ok(opts.shieldRebuild === 'blocks' && L.snap.sg[i] && L.block[i] === 0 && L.snap.shield[i] === (opts.shieldCap ? Math.min(100, L.raised[i]) : L.raised[i]) && c.ops.some(o => /^block/.test(o.op)), 'a block card puts the shield back up only with that choice on, only with a Shield Generator, and then it does not also block', JSON.stringify([opts.shieldRebuild, L.raised, L.block, L.snap.shield]));
@@ -125,15 +129,16 @@ console.log('     ' + all.length + ' combinations of switches, ' + PER + ' battl
 all.forEach((o, n) => { for (let i = 0; i < PER; i++) play(o, kinds(), kinds(), n * 1000 + i + 1, false); });
 // the default rules, many times, with Standard ships: the numbers Marc will see
 const D = B.defaults(), STD = ['standard', 'standard', 'standard', 'standard', 'standard'];
-[['turn', 'gentle'], ['turn', 'clever'], ['nobody', 'gentle'], ['nobody', 'clever']].forEach(pair => {
+[['nobody', 'gentle'], ['nobody', 'clever'], ['turn', 'gentle'], ['turn', 'clever']].forEach(pair => {
   const level = pair[1], O = Object.assign({}, D, { cpu: level, bothFall: pair[0] });
   Object.assign(stats, { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0, lastLead: [0, 0], held: 0, backUp: 0 });
   for (let i = 0; i < 4000; i++) play(O, STD, STD, 900000 + i, true);
   stats.rounds.sort((a, b) => a - b);
   const n = stats.battles, pct = x => Math.round(1000 * x / n) / 10;
-  console.log('     ' + (pair[0] === 'turn' ? 'default rules (attacks land in turn order)' : 'the switch "both attacks land together"') + ', two Standard ships, two ' + level + ' computer players, ' + n + ' battles:');
+  console.log('     ' + (pair[0] === 'nobody' ? 'default rules (both attacks land together)' : 'the switch "attacks land in turn order"') + ', two Standard ships, two ' + level + ' computer players, ' + n + ' battles:');
   console.log('       the last round: the ship that went first in it won ' + pct(stats.lastLead[0]) + '%, the ship that answered won ' + pct(stats.lastLead[1]) + '%; a ship was beaten before it could strike back in ' + pct(stats.held) + '%');
-  if (pair[0] === 'turn') ok(stats.both === 0, 'with the default rules, no battle ends with both ships beaten');
+  if (pair[0] === 'turn') ok(stats.both === 0, 'with attacks in turn order, no battle ends with both ships beaten');
+  if (pair[0] === 'nobody') ok(stats.held === 0, 'with the default rules, no strike is ever held back');
   console.log('       rounds: shortest ' + stats.rounds[0] + ', middle ' + stats.rounds[n >> 1] + ', longest ' + stats.rounds[n - 1]);
   console.log('       first ship wins ' + pct(stats.win[0]) + '%, second ship wins ' + pct(stats.win[1]) + '%, nobody wins ' + pct(stats.none) + '%');
   console.log('       nobody wins because: both beaten together ' + pct(stats.both) + '%, the round limit ' + pct(stats.limit) + '%, neither can hurt the other ' + pct(stats.stuck) + '%');
@@ -214,21 +219,28 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
 })();
 // Marc's rule of 22 November, each case in a fresh battle: which card can block which
 (function () {
-  function duel(c0, c1) {
-    const S = B.newBattle(Object.assign({}, D, { spies: 7, guard: 'swap' }), STD, STD, 99);
+  function duel(c0, c1, setup, opts) {
+    const S = B.newBattle(Object.assign({}, D, { spies: 7, guard: 'swap' }, opts || {}), STD, STD, 99);
+    if (setup) setup(S);
     const h = [c0, c1].map((id, i) => { const p = S.P[i]; let x = p.hand.indexOf(id); if (x < 0) { const d = p.deck.indexOf(id); p.deck.splice(d, 1); p.deck.push(p.hand[0]); p.hand[0] = id; x = 0; } return x; });
     B.startRound(S, h[0], h[1]); B.steps(S).forEach(st => { const req = B.need(S, st); B.run(S, st, req ? B.cpuChoose(S, req) : null); });
     return S.log[0];
   }
-  let L = duel('A12', 'D02'); ok(L.atk[0] === 100 && L.block[1] === 0 && L.through[1] === 100, 'a common block card cannot block an epic attack card', JSON.stringify([L.atk, L.block, L.through]));
-  L = duel('A12', 'D06'); ok(L.block[1] === 0 && L.through[1] === 100, 'a rare block card cannot block an epic attack card');
-  L = duel('A08', 'D02'); ok(L.block[1] === 0 && L.through[1] === 75, 'a common block card cannot block a rare attack card');
+  // Marc, 22 November (evening): a lower shield card still stops the ship's regular AP; only the part a higher card adds gets past it
+  let L = duel('A12', 'D02'); ok(L.atk[0] === 100 && L.block[1] === 10 && L.through[1] === 90, 'Ten-Tile Wall (common) against Hundred Cannon (epic, 55 + 45): it still blocks 10 of the ship\'s own 55', JSON.stringify([L.atk, L.block, L.through]));
+  L = duel('A12', 'D06'); ok(L.block[1] === 20 && L.through[1] === 80, 'Meteor Net (rare) against Hundred Cannon (epic): it still blocks 20');
+  L = duel('A08', 'D02'); ok(L.block[1] === 10 && L.through[1] === 65, 'Ten-Tile Wall (common) against Twin Tens (rare): it still blocks 10');
   L = duel('A08', 'D06'); ok(L.block[1] === 20 && L.through[1] === 55, 'a rare block card blocks a rare attack card');
   L = duel('A01', 'D06'); ok(L.block[1] === 20 && L.through[1] === 40, 'a rare block card blocks a common attack card');
   L = duel('A01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 50, 'a common block card blocks a common attack card');
   L = duel('R01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 45, 'any block card blocks a plain attack, when no attack card is played');
-  L = duel('A12', 'D09'); ok(L.atk[0] === 100 && L.through[1] === 0, 'the epic block card blocks an epic attack card');
-  L = duel('A12', 'A10'); ok(L.block[1] === 0, 'the block half of a rare card cannot block an epic attack card, but its attack half still works: ' + L.atk[1]) ; ok(L.atk[1] === 65, 'Hit and Hide still adds 10');
+  L = duel('A12', 'D09'); ok(L.atk[0] === 100 && L.through[1] === 0, 'the epic block card blocks an epic attack card whole');
+  L = duel('A12', 'A10'); ok(L.block[1] === 10 && L.atk[1] === 65, 'Hit and Hide (rare) against an epic attack card: its block of 10 still comes off the ship\'s own attack, and it still adds 10');
+  // the cap: a block bigger than the ship's own attack cannot eat into what the higher card adds
+  L = duel('A11', 'D07', S => { S.P[0].parts.forEach((q, x) => { if (x !== 3) q.hp = 0; }); }); ok(L.atk[0] === 40 && L.bonus[0] === 20 && L.block[1] === 20 && L.capped[1] && L.through[1] === 20, 'a ship with only its Weapons (AP 20) plays Doubling Drive (epic): Quarter Wall (rare, 25) stops the ship\'s own 20, and the card\'s 20 gets through', JSON.stringify([L.atk, L.bonus, L.block, L.through]));
+  // the old rule, kept on the switch
+  L = duel('A12', 'D02', null, { shieldKind: false }); ok(L.block[1] === 0 && L.through[1] === 100, 'with the old rule switched on: a common block card does not block an epic attack card at all');
+  L = duel('A08', 'D02', null, { shieldKind: false }); ok(L.block[1] === 0 && L.through[1] === 75, 'with the old rule switched on: a common block card does not block a rare attack card at all');
 })();
 // Marc's idea of 22 November, by hand: a shield card on a broken shield
 (function () {
@@ -272,19 +284,20 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
     return S;
   }
   const hp = (S, i) => S.P[i].parts.map(q => q.hp).join(',');
-  let S = last({}, 0, null, 'A01', 'A01');
+  let S = last({ bothFall: 'turn' }, 0, null, 'A01', 'A01');
   ok(S.over && S.over.winner === 0 && hp(S, 0) === '0,0,0,1,0' && hp(S, 1) === '0,0,0,0,0' && S.log[0].noStrike[0] && /The enemy's ship is beaten before it can strike back/.test(S.said.join(' ')), 'each ship has one part left and you went first: you win, and are not hit', JSON.stringify([S.over, hp(S, 0), hp(S, 1)]));
-  S = last({}, 1, null, 'A01', 'A01');
+  S = last({ bothFall: 'turn' }, 1, null, 'A01', 'A01');
   ok(S.over && S.over.winner === 1 && hp(S, 1) === '0,0,0,1,0' && hp(S, 0) === '0,0,0,0,0' && S.log[0].noStrike[1] && /Your ship is beaten before it can strike back/.test(S.said.join(' ')), 'the same with the enemy first: the enemy wins, and is not hit', JSON.stringify([S.over, hp(S, 0), hp(S, 1)]));
-  S = last({ bothFall: 'nobody' }, 0, null, 'A01', 'A01');
-  ok(S.over && S.over.winner === -1 && hp(S, 0) === '0,0,0,0,0' && hp(S, 1) === '0,0,0,0,0' && !S.log[0].noStrike[0], 'with the switch on "together", both are beaten and nobody wins', JSON.stringify([S.over, hp(S, 0), hp(S, 1)]));
-  S = last({ guard: 'blind' }, 0, null, 'A01', 'A01');
+  ok(B.defaults().bothFall === 'nobody', 'the page starts with both attacks landing together');
+  S = last({}, 0, null, 'A01', 'A01');
+  ok(S.over && S.over.winner === -1 && hp(S, 0) === '0,0,0,0,0' && hp(S, 1) === '0,0,0,0,0' && !S.log[0].noStrike[0], 'as the page starts: each ship has one part left, both attacks land, both are beaten and nobody wins', JSON.stringify([S.over, hp(S, 0), hp(S, 1)]));
+  S = last({ guard: 'blind', bothFall: 'turn' }, 0, null, 'A01', 'A01');
   ok(S.over && S.over.winner === -1, 'with both cards put down together there is no leader, so both attacks land together', JSON.stringify(S.over));
   // the first hit takes the other ship's Weapons but not its last part: it had already fired, so its attack still lands
-  S = last({}, 0, T => { T.P[0].shield = 100; T.P[1].parts[0].hp = 20; }, 'A01', 'A01', { land1: [0, 0, 0, 25, 0] });
+  S = last({ bothFall: 'turn' }, 0, T => { T.P[0].shield = 100; T.P[1].parts[0].hp = 20; }, 'A01', 'A01', { land1: [0, 0, 0, 25, 0] });
   ok(!S.over && S.P[1].parts[3].hp === 0 && S.P[1].parts[0].hp === 20 && S.P[0].shield === 100 - S.log[0].atk[1] && S.log[0].atk[1] === 30 && !S.log[0].noStrike[0], 'a ship that loses its Weapons, but not its last part, to the first hit still strikes back that round', JSON.stringify([S.over, hp(S, 1), S.P[0].shield, S.log[0].atk]));
   // two Spies: the leader's acts first
-  S = last({}, 1, null, 'spy', 'spy');
+  S = last({ bothFall: 'turn' }, 1, null, 'spy', 'spy');
   ok(S.over && S.over.winner === 1 && hp(S, 1) === '0,0,0,1,0' && /Your ship is beaten\. Its Spy does nothing/.test(S.said.join(' ')), 'two Spies and one part each: the Spy of the player who went first acts first, and the other Spy does nothing', JSON.stringify([S.over, hp(S, 0), hp(S, 1), S.said]));
 })();
 const names = Object.keys(bad);
