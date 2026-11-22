@@ -14,7 +14,7 @@ The guard on the far bank opens the reed gate: "The harbour keeper needs every h
 
 In the harbour, the keeper says, in five short pages:
 
-1. "A sky-walker! I am the harbour keeper. We need every hand."
+1. "A visitor from the sky! I am the harbour keeper. We need every hand."
 2. "Everything here moves by raft. The high water is coming. After it, no raft can sail for a long time."
 3. "Three towns have sent for baskets of river rice: Stilt Town, Reed Town and Mud Town."
 4. "The Makers built us a board that worked out every load. When the Gate broke, it went dark. Now nobody can load the fleet."

@@ -7,7 +7,9 @@
 - The Furrows could "only count parts with a side of 1, 2, 5 or 10". By that rule my own example (7 by 10 and 7 by 4) was not allowed. **The world would have refused correct maths.** Children would learn to guess the planter's rule, not the property.
 - With that rule most fields had exactly one allowed split. It was a procedure, not an open problem.
 
-So that rule is gone. **In this version the world never refuses correct maths.** What changed is in section 9. **Version 2 has not been reviewed again.** Please read it before I build.
+So that rule is gone. What changed is in section 9.
+
+**Version 2 was then reviewed by a second independent reviewer. It failed: six blockers. Do not build from this note.** They are in section 10, with what a version 3 needs. Four of them are in one place: the top terrace. Two things need your answer first (section 10).
 
 ---
 
@@ -20,7 +22,7 @@ Told by the head planter, in four short pages:
 1. "Planting day is here. Every field must get exactly its seedlings. Too few leaves bare earth. Too many, and they choke each other."
 2. "We sing our times tables as we plant. Our songs stop at ten tens."
 3. "For a field bigger than the songs, the Makers gave us a counting frame. When the Gate broke, it burnt. Now a field of 14 rows is more than we can sing."
-4. "You know numbers, sky-walker. How many seedlings for each field?"
+4. "You know numbers, sky visitor. How many seedlings for each field?"
 
 **What is wrong:** the fields are bigger than the times table, and the frame that counted them is burnt.
 **What the cadet does:** works out each field, and shows the Furrows a way they can keep: a big field is small fields, side by side.
@@ -148,7 +150,7 @@ The rule is not written yet. It must keep:
 - **A wrong total gets no hint** but "it does not come out even". With a nudge button, as everywhere.
 - **Tapping between rows** on a small screen. A box on the desk ("fence after row __") must do the same.
 - **"The planting cart holds 10"** is a made-up limit. It is a thing in the picture, and it is told first. Watch whether children accept it or argue.
-- **Nobody has seen any of it,** and this version has had no reviewer.
+- **Nobody has seen any of it.** The second reviewer's faults are in section 10.
 
 ---
 
@@ -164,7 +166,7 @@ The rule is not written yet. It must keep:
 | 6 | How many fields | Four. Or three | four |
 | 7 | Which ship part | Shield. Or another | Shield |
 | 8 | The second way up | The plank stair. Or wait for the Lake's road | the plank stair |
-| 9 | Build it? | After you have played the Reach, and after another review | after both |
+| 9 | Build it? | After you have played the Reach, and after a version 3 passes a review | after both |
 
 ---
 
@@ -184,3 +186,45 @@ The rule is not written yet. It must keep:
 | Decisions made outside the list | Section 8 has nine now |
 | 3.MD.7c missing; 14 × 7 too sure | Section 6 |
 | The quilt's example modelled a split the rule refused | Every split is allowed now. The quilt says so: "Any seam would do" |
+
+---
+
+## 10. The second review of version 2: six blockers
+
+The reviewer worked every number again. **All the arithmetic in this note is right.** The design is not.
+
+| | Blocker | A case |
+|---|---|---|
+| B1 | **The cart rule still refuses correct maths.** One line says a child "may just say" 14 × 7. Another says a row longer than 10 gets "Turn the field first" | The field shows 7 rows of 14. The child types 98. Either a right answer is turned away, or the Furrows plant rows of 14 with a cart of 10 |
+| B2 | **The top terrace breaks the rule of the land.** Its rows are 12 long. Turned, it is 12 rows of 5, with eleven right answers, not four. "Split each row into 10 and 2" is not a move the note allows | Beans in the tens, gourds in the twos: every row full, every seedling in, and not one of my four answers |
+| B3 | **The top terrace reads four ways.** May a row hold both crops? Is 5 and 0 allowed? Rows or seedlings? Full of 12, or of 10? | 30 beans and 30 gourds, half and half in every row |
+| B4 | **The top terrace's picture gives the answer, or shows nothing.** If the rows are drawn, the child counts 5 lines and 60 ÷ 12 is done | |
+| B5 | **"It does not come out even"** will be read as even and odd | The field is 7 by 13. The child types 81, reads "not even", and the right answer, 91, is odd |
+| B6 | **The seed tower has no problem inside.** The note says so itself | |
+
+**The major faults, in short:**
+- The top terrace's choice does not matter: nothing follows from it.
+- A wrong pair of parts with a right whole would pass (60 and 38 for 98). "Wrong sums" was never defined.
+- Turning is one forced tap, and the page does the swap for the child.
+- **"Bigger than the times table" is only true if your class's tables stop at 10.** 11 of the 24 possible fields have a long side of 11 or 12.
+- A short side of 8 or 9 can only meet 11 or 12. I never said so.
+- The quilt hands over the method: split at 10, add.
+- The quest can be done as four typed numbers.
+- Some standards were cited loosely: 60 ÷ 12 is past Grade 3 as a division; the lift is nearer skip counting than 3.OA.9; the stair is 3.OA.3, not 3.OA.4.
+- The words "perimeter", "multiply" and "times" are missing. You asked for the maths words to be said.
+- Section 8 left out many decisions: the story and its names, the rewards, that the top choice is for ever, the quilt, the whole mini quest, on screen only.
+- "Sky-walker" sounds like a famous film's name. **It was in the built page too, ten times. It is gone from the page tonight:** the peoples now say "visitor from the sky" and "sky visitor".
+
+### What a version 3 needs [Proposal]
+
+1. **One rule only: the songs.** The Furrows can sing up to 10 tens. Drop the cart. A child may always just say the total. Fencing is how the child *shows the Furrows a way they can sing*: every part must be one the songs reach.
+2. **No turning button.** If a swap matters, the child says the swapped numbers.
+3. **A new top terrace,** with one reading, a picture that does not count for the child, and a choice that changes something a child can see afterwards. Or no open problem at all, said plainly.
+4. **A wrong answer shown in plain words:** "That is not the right number of seedlings." No idiom.
+5. **A rule for wrong parts,** and tests for wrong cases, not only right ones.
+6. **The seed tower's inside problem,** designed.
+
+### Two things I need from you first
+
+1. **Does your class learn its tables to 10 × 10, or to 12 × 12?** If to 12, the long sides must start at 13.
+2. **Do you want part of this quest off the screen,** as your old big tasks were? A terrace to draw and split on paper would fit it.
