@@ -107,7 +107,7 @@ In every case the game would simply do today's landing.
 - **The city can be painted lit** (`lit`, `tower`), for landings after the quest. I checked that by eye, once.
 - **From the air, the land has soft patches and the river has glints** that fade away as the camera lands. They are not in the game's picture. They are there so the land is not an empty green slab from above.
 - **On a screen with one dot for each point** (not an iPad), the last frame is a little softer than the game's.
-- **I did not read all of Atlantis.** I read its README by name only, its detail-level file and the hooks of its frame loop, for method. I reused none of its code.
+- **I did not read all of Atlantis.** I read only its detail-level file and the hooks of its frame loop, for method. I did not read its README, its brief or its other files. I reused none of its code.
 
 ## 7. The independent critic
 
