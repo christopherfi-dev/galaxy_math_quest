@@ -194,6 +194,7 @@ var GMQFlyin = (function () {
     function circ(x, y, r) { c.beginPath(); c.arc(x, y, r, 0, 7); }
     function ell(x, y, rx, ry, rot, a0, a1) { c.beginPath(); c.ellipse(x, y, rx, ry, rot || 0, a0 || 0, a1 == null ? 7 : a1); }
     function ol(w) { c.strokeStyle = INK; c.lineWidth = w || 2; c.stroke(); }
+    function rr(x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }      // older iPads have no roundRect
     function rgba(h, a) { var k = hex(h); return 'rgba(' + Math.round(k[0] * 255) + ',' + Math.round(k[1] * 255) + ',' + Math.round(k[2] * 255) + ',' + a + ')'; }
     function tree(name, th, frac, leanPx, fruit) { var lean = leanPx * th / (frac * 600), k = th / (frac * 600);       // alienTree, with its ink lines scaled to the painted size
       sprite(name, th * .84 + 10, th * 1.16 + 8, function (w, h) { var X = w / 2 - lean / 2, gy = h - 3, top = gy - th, tx = X + lean, i, b;
@@ -221,19 +222,19 @@ var GMQFlyin = (function () {
     // row 2: three more trees, the ship, a dark plant close to the eye, a white cloud, the islands, small things
     tree('tree1', 200, .22, 8, false); tree('tree2', 220, .26, -10, false); tree('tree3', 260, .32, -12, true);
     sprite('ship', 184, 272, function () { var L = 250; c.translate(92, 136); c.rotate(-Math.PI / 2); c.lineJoin = 'round';        // the game's rocket(), nose up
-      c.fillStyle = '#4b566b'; [-.055, .055].forEach(function (yy) { c.beginPath(); c.roundRect(-L * .53, L * (yy - .04), L * .1, L * .08, 4); c.fill(); ol(3.3); });
+      c.fillStyle = '#4b566b'; [-.055, .055].forEach(function (yy) { rr(-L * .53, L * (yy - .04), L * .1, L * .08, 4); c.fill(); ol(3.3); });
       c.fillStyle = '#d2553a'; [-1, 1].forEach(function (sg) { c.beginPath(); c.moveTo(L * .08, sg * L * .08); c.lineTo(-L * .3, sg * L * .35); c.lineTo(-L * .45, sg * L * .35); c.lineTo(-L * .36, sg * L * .08); c.closePath(); c.fill(); ol(4.4); });
       c.fillStyle = '#eef2f7'; c.beginPath(); c.moveTo(L * .5, 0); c.quadraticCurveTo(L * .34, -L * .115, L * .14, -L * .115); c.lineTo(-L * .4, -L * .1); c.lineTo(-L * .46, -L * .06); c.lineTo(-L * .46, L * .06); c.lineTo(-L * .4, L * .1); c.lineTo(L * .14, L * .115); c.quadraticCurveTo(L * .34, L * .115, L * .5, 0); c.fill(); ol(4.4);
       c.fillStyle = '#f08a2c'; c.fillRect(-L * .06, -L * .106, L * .05, L * .212); c.fillStyle = '#d2553a'; c.fillRect(-L * .45, -L * .012, L * .22, L * .024);
       c.fillStyle = '#2d6fb4'; ell(L * .27, 0, L * .085, L * .055); c.fill(); ol(3.3); c.fillStyle = 'rgba(255,255,255,.65)'; ell(L * .3, -L * .02, L * .03, L * .014); c.fill(); });
     sprite('plant', 350, 204, function () { c.fillStyle = '#0d2b27'; for (var j = -2; j <= 2; j++) { var X = 175, B = 204, L = 200; c.beginPath(); c.moveTo(X - 5, B); c.quadraticCurveTo(X + j * L * .22, B - L * .7, X + j * L * .42, B - L * (1 - Math.abs(j) * .16)); c.quadraticCurveTo(X + j * L * .26, B - L * .5, X + 5, B); c.fill(); } });
     fluff('puff', '#ffffff', '#f6d7e8');
-    [0, 1].forEach(function (n) { sprite('isle' + n, 106, 116, function () { var r = 48; c.translate(53, 36); c.fillStyle = '#4a3a86'; c.beginPath(); c.moveTo(-r, 0); c.lineTo(r, 0); c.lineTo(r * .3, r * 1.1); c.lineTo(-r * .4, r * .8); c.closePath(); c.fill(); ol(1.8); c.fillStyle = '#3fb88f'; c.beginPath(); c.roundRect(-r * 1.05, -r * .22, r * 2.1, r * .3, r * .15); c.fill(); ol(1.8);
+    [0, 1].forEach(function (n) { sprite('isle' + n, 106, 116, function () { var r = 48; c.translate(53, 36); c.fillStyle = '#4a3a86'; c.beginPath(); c.moveTo(-r, 0); c.lineTo(r, 0); c.lineTo(r * .3, r * 1.1); c.lineTo(-r * .4, r * .8); c.closePath(); c.fill(); ol(1.8); c.fillStyle = '#3fb88f'; rr(-r * 1.05, -r * .22, r * 2.1, r * .3, r * .15); c.fill(); ol(1.8);
       c.fillStyle = 'rgba(150,255,230,.88)'; c.beginPath(); c.moveTo(r * .2, -r * .2); c.lineTo(r * .34, -r * .7); c.lineTo(r * .5, -r * .2); c.fill(); c.strokeStyle = 'rgba(200,240,255,.7)'; c.lineWidth = 2; c.setLineDash([4, 5]); c.lineDashOffset = n * 4; c.beginPath(); c.moveTo(-r * .5, r * .1); c.lineTo(-r * .5, r * 1.6); c.stroke(); c.setLineDash([]); }); });
     sprite('legs', 166, 62, function () { c.strokeStyle = INK; c.lineWidth = 10; c.beginPath(); [-1, 1].forEach(function (sg) { c.moveTo(83 + sg * 35, 6); c.lineTo(83 + sg * 75, 58); }); c.stroke(); });
     sprite('flame', 50, 64, function () { [-13.75, 13.75].forEach(function (yy) { c.fillStyle = 'rgba(255,170,60,.95)'; c.beginPath(); c.moveTo(25 + yy - 8.75, 0); c.lineTo(25 + yy, 60); c.lineTo(25 + yy + 8.75, 0); c.fill(); c.fillStyle = '#fff3b0'; c.beginPath(); c.moveTo(25 + yy - 4.5, 0); c.lineTo(25 + yy, 27.5); c.lineTo(25 + yy + 4.5, 0); c.fill(); }); });
     sprite('rock', 56, 48, function () { var rs = 24; c.fillStyle = '#8b93a5'; ell(28, 26, rs, rs * .8); c.fill(); ol(2); c.fillStyle = 'rgba(40,45,60,.4)'; c.beginPath(); c.arc(28, 26, rs * .75, .3, 2.6); c.fill(); c.fillStyle = 'rgba(255,255,255,.35)'; circ(28 - rs * .35, 26 - rs * .35, rs * .18); c.fill(); });
-    sprite('fly', 56, 44, function () { var z = 20; c.translate(28, 20); c.fillStyle = '#fff'; [-1, 1].forEach(function (sg) { ell(sg * z * .55, -z * .25, z * .6, z * .5, sg * .5); c.fill(); ol(1.6); ell(sg * z * .4, z * .3, z * .4, z * .34, -sg * .5); c.fill(); ol(1.6); }); c.fillStyle = INK; c.beginPath(); c.roundRect(-2, -z * .5, 4, z, 2); c.fill(); });
+    sprite('fly', 56, 44, function () { var z = 20; c.translate(28, 20); c.fillStyle = '#fff'; [-1, 1].forEach(function (sg) { ell(sg * z * .55, -z * .25, z * .6, z * .5, sg * .5); c.fill(); ol(1.6); ell(sg * z * .4, z * .3, z * .4, z * .34, -sg * .5); c.fill(); ol(1.6); }); c.fillStyle = INK; rr(-2, -z * .5, 4, z, 2); c.fill(); });
     sprite('disc', 64, 64, function () { c.fillStyle = '#fff'; circ(32, 32, 30); c.fill(); });
     sprite('glow', 64, 64, function () { var g = c.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, 64, 64); });
     sprite('white', 8, 8, function () { c.fillStyle = '#fff'; c.fillRect(0, 0, 8, 8); });
@@ -265,7 +266,7 @@ var GMQFlyin = (function () {
     g.played = true;
     var gl = g.gl, SP = g.SP, V = g.V, nq = 0, O = [], nInf = 0, cw = 0, ch = 0, asp = 1, W = 1, H = 1, m = 1;
     var cy = EYE, cz = 0, sth = 0, cth = 1, px = 0, py = 0, pz = 0;
-    var auto = opts.q == null && opts.t == null, q = opts.q != null ? opts.q : g.q, ring = new Float32Array(16), rn = 0, quiet = 8, last = -1, nf = 0, sum = 0, worst = 0, drops = 0;
+    var auto = opts.q == null && opts.t == null && !g.cap, stuck = 0, base = 0, baseQ = 0, q = opts.q != null ? opts.q : g.q, ring = new Float32Array(16), rn = 0, quiet = 8, last = -1, nf = 0, sum = 0, worst = 0, drops = 0;
     var begin = opts.short ? LEN - SHORT : 0, shipO = null, legsO = null, flameO = null;
     g.onlost = function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('lost'); };
 
@@ -387,7 +388,10 @@ var GMQFlyin = (function () {
       if (!ended) {
         if (t >= LEN + FADE) { if (opts.fade) cv.style.opacity = 0; draw(LEN, t); finish('end'); return; }
         if (++nf > 3) { sum += dt; if (dt > worst) worst = dt; ring[rn++ & 15] = dt;                 // slow frames: draw the next ones with fewer dots
-          if (auto && --quiet < 0 && rn >= 16) { var avg = 0; for (var i = 0; i < 16; i++) avg += ring[i]; var nx = q + 1; while (nx < SCALES.length && SCALES[nx] >= (window.devicePixelRatio || 1)) nx++; if (avg / 16 > 22 && nx < SCALES.length) { q = g.q = nx; drops++; size(); quiet = 14; rn = 0; } } }
+          if (auto && --quiet < 0 && rn >= 16) { var avg = 0; for (var i = 0; i < 16; i++) avg += ring[i]; avg /= 16; var nx = q + 1; while (nx < SCALES.length && SCALES[nx] >= (window.devicePixelRatio || 1)) nx++;
+            if (stuck && avg < base * .88) stuck = 0;                                                      // the last step down helped
+            if (stuck >= 2 || (stuck && nx >= SCALES.length && avg > 22)) { q = g.q = baseQ; auto = false; g.cap = true; size(); }      // two steps down and no gain: the browser is holding the speed (Low Power Mode does). Step back and leave it.
+            else if (avg > 22 && nx < SCALES.length) { if (!stuck) { base = avg; baseQ = q; } stuck++; q = g.q = nx; drops++; size(); quiet = 14; rn = 0; } } }
         if (opts.fade && t > LEN) cv.style.opacity = String(1 - (t - LEN) / FADE);
       }
       draw(Math.min(t, LEN), ended ? (performance.now() - tHold) / 1000 + LEN : t);
@@ -400,7 +404,7 @@ var GMQFlyin = (function () {
     timer = setTimeout(function () { finish('end'); }, ((opts.short ? SHORT : LEN) + FADE) * 1000 + 450);      // the scene ends on time even if the browser stops drawing
     raf = requestAnimationFrame(frame);
     return { skip: function () { onTap({ preventDefault: function () {} }); }, stop: function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('skip'); },
-      stats: function () { return { setup: g.ms, full: !!SP._full, level: q, scale: Math.min(window.devicePixelRatio || 1, SCALES[q]), drops: drops, fps: nf > 4 && sum ? 1000 * (nf - 3) / sum : 0, worst: worst, frames: nf }; } };
+      stats: function () { return { setup: g.ms, full: !!SP._full, level: q, scale: Math.min(window.devicePixelRatio || 1, SCALES[q]), drops: drops, cap: !!g.cap, fps: nf > 4 && sum ? 1000 * (nf - 3) / sum : 0, worst: worst, frames: nf }; } };
   }
   return { play: play, prepare: function (cv, o) { try { return !!prepare(cv, o); } catch (e) { ERR = String(e && e.message || e); return false; } }, error: function () { return ERR; }, LEN: LEN + FADE };
 })();
@@ -419,7 +423,7 @@ var GMQFlyin = (function () {
     var o = { hold: true, short: !!short }; if (Q.has('q')) o.q = Math.max(0, Math.min(3, +Q.get('q') | 0)); if (Q.has('t')) o.t = +Q.get('t'); if (Q.has('lit')) { o.lit = { R: 1, C: 1, I: 1 }; o.tower = true; }
     var began = performance.now(), mine = ctl = GMQFlyin.play(cv, o, function (why) {
       document.body.dataset.took = ((performance.now() - began) / 1000).toFixed(2); $('hint').style.display = 'none'; $('say').textContent = WHY[why] || why; document.body.dataset.state = 'done'; document.body.dataset.why = why;
-      setTimeout(function () { if (mine !== ctl) return; var s = mine.stats(); if (!s) { $('stat').textContent = GMQFlyin.error().slice(0, 200); return; } $('stat').textContent = (s.fps ? 'Speed: ' + Math.round(s.fps) + ' frames a second. Slowest frame ' + Math.round(s.worst) + ' ms. ' : '') + (s.scale ? 'Picture size ' + s.scale + ' (it dropped ' + s.drops + ' time' + (s.drops === 1 ? '' : 's') + '). ' : '') + 'Set-up took ' + Math.round(s.setup) + ' ms.'; }, 0);
+      setTimeout(function () { if (mine !== ctl) return; var s = mine.stats(); if (!s) { $('stat').textContent = GMQFlyin.error().slice(0, 200); return; } $('stat').textContent = (s.fps ? 'Speed: ' + Math.round(s.fps) + ' frames a second. Slowest frame ' + Math.round(s.worst) + ' ms. ' : '') + (s.scale ? 'Picture size ' + s.scale + ' (it dropped ' + s.drops + ' time' + (s.drops === 1 ? '' : 's') + (s.cap ? '; the browser is holding the speed, perhaps Low Power Mode' : '') + '). ' : '') + 'Set-up took ' + Math.round(s.setup) + ' ms.'; }, 0);
     });
     if (o.t != null) { document.body.dataset.state = 'held'; $('hint').style.display = 'none'; $('say').textContent = 'Held at ' + o.t + ' seconds.'; }
   }
