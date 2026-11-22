@@ -25,7 +25,10 @@ want('battle cards', len(cards), 45)
 want('ship part cards', len(parts), 20)
 want('upgrade cards', len(ups), 5)
 want('cards in all, without the ideas', len(cards) + len(parts) + len(ups), 70)
-want('by type', dict(Counter(c['type'] for c in cards)), {'attack': 12, 'defence': 10, 'repair': 15, 'spy': 7, 'guard': 1})
+want('by type', dict(Counter(c['type'] for c in cards)), {'attack': 12, 'defence': 15, 'repair': 10, 'spy': 7, 'guard': 1})
+# Marc, 22 November: a card that gives Main Shield shows a shield; a heart is only for repairing the HP of parts
+want('every card that adds to the Main Shield is a shield card', [c['id'] for c in cards if any(o['op'].startswith('shield_') for o in c['ops']) and c['type'] != 'defence'], [])
+want('no heart card touches the Main Shield', [c['id'] for c in cards if c['type'] == 'repair' and any(o['op'].startswith('shield_') or o['op'].startswith('block') for o in c['ops'])], [])
 mix = Counter(c['rarity'] for c in cards)
 want('common, rare, epic', [mix['common'], mix['rare'], mix['epic']], [22, 16, 7])
 print('     that is', [round(100.0 * mix[k] / len(cards)) for k in ('common', 'rare', 'epic')], 'in a hundred; the 2023 target was 50, 35, 15')
@@ -45,8 +48,8 @@ RULES = {  # op: where the rules sheet carries it
     'atk_add': 'section 3: a bonus from the card', 'atk_per_part': 'section 3: a bonus from the card', 'atk_double': 'section 3: a bonus from the card',
     'atk_round100': 'section 3: a bonus from the card', 'block': 'section 5: defence cards', 'block_all': 'section 5: defence cards',
     'repair_one': 'section 5: healing HP', 'repair_share': 'section 5: healing HP', 'repair_all': 'section 5: healing HP', 'repair_full': 'section 5: healing HP',
-    'round_up10': 'section 5: healing HP', 'move_hp': 'section 5: healing HP', 'revive': 'section 5: revival', 'shield_add': 'section 5: healing HP',
-    'shield_per_card': 'section 5: healing HP', 'shield_rebuild': 'section 5: healing HP', 'block_per_card': 'section 5: defence cards', 'spy': 'section 6: Spy', 'guard': 'section 6: Policeman', 'upgrade': 'section 9: upgrades'}
+    'round_up10': 'section 5: healing HP', 'move_hp': 'section 5: healing HP', 'revive': 'section 5: revival', 'shield_add': 'section 5: defence cards',
+    'shield_per_card': 'section 5: defence cards', 'shield_rebuild': 'section 5: defence cards', 'block_per_card': 'section 5: defence cards', 'spy': 'section 6: Spy', 'guard': 'section 6: Policeman', 'upgrade': 'section 9: upgrades'}
 want('ops outside the rules sheet (set)', sorted({o['op'] for c in cards + ups for o in c['ops']} - set(RULES)), [])
 want('a Guard has one job (rules sheet, section 6)', [c['id'] for c in cards if c['type'] == 'guard' and c['ops'] != [{'op': 'guard'}]], [])
 want('idea cards are kept out of the set', all(c['ops'] == [{'op': 'x'}] and c.get('ask') for c in ideas), True)

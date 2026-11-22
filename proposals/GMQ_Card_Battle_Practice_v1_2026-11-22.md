@@ -113,7 +113,13 @@ Below is what I measured before I made it the start.
 2. **Once the shield is down, the number on a shield card stops mattering.** A shield of 8 and a shield of 25 both soak one whole hit. So a common card does the work of a rare one.
 3. **Some cards' words would be wrong.** "Add 10 HP to your Main Shield, if it is still up." I have not changed any card. If you rule for this, I rewrite them.
 
-**One more thing** [Proposal]: the cards that add to the Main Shield should now carry a shield, not a heart. Then the rule a child sees is simple: "a card with a shield on it puts my shield up."
+**Shields give shield. Hearts repair parts.** [Your ruling, 22 November: "The hearts are the ones that can help repair your ship parts."]
+
+- **The five cards that add to the Main Shield now show a shield,** in blue, and say DEFENCE: Shield Spark, Nano Shield, Dome Top-Up, Quarter Dome and Shield Reborn. A deck now has 15 shield cards and 10 heart cards.
+- **So a child can see the rule:** a card with a shield on it works on my shield. A card with a heart on it mends my parts.
+- **One thing follows from your board, and I did it** [My reading: say if it is wrong]. Your board says "Shield Generator lost: cannot defend" and "Power Module lost: cannot heal". These five cards are shield cards now, so they stop when the **Shield Generator** is lost. Before, they stopped when the Power Module was lost. It is a switch ("Cards that add to the Main Shield are").
+- **What that does:** the Shield Generator is now the part to protect. Lose it and no card brings your shield back. I measured it: battles are still 11 rounds with random play and 14 with clever play.
+- Their small id in the corner still starts with R (R05, R15). I left the ids alone so that nothing you have marked is lost.
 
 **What could prove this wrong:** the computer plays a shield card when it has one. A child may save them all for the end and make a battle very long. Only play will show.
 
@@ -286,7 +292,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 ### Still for you to rule on
 
 1. **The split** (section 4, point 2).
-2. **Should cards that add to the Main Shield show a shield, not a heart?** (section 1c)
+2. **Shield cards now need the Shield Generator** (section 1c). Is that right?
 3. **My three readings of your turn-order ruling** (section 1b).
 
 ---
@@ -300,7 +306,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,484 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,589 checks, all pass. It checks:
   - placing a hit: the view moves in and the parts are large; a tapped part's own HP changes; the words keep count; a tap that would destroy a part places nothing and asks for a second tap; the button names every part that will be lost;
   - the sound button: off, remembered, on again; at real speed a laser, a Spy, a block, a burst and a win each ask for their sound, with no error; with the sound off, nothing is asked for;
   - your shield rule: with a broken shield, a block card and a card that adds to the shield are marked "shield back", the opened card says the shield will come back and soak the hit, and it does; with either narrower switch on, it does not, and the card says why;
