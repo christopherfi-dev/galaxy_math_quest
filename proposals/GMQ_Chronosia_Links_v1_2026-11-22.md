@@ -109,6 +109,19 @@ Everything is **[Proposal]** unless it says [Source].
    - I recommend B.
 5. **Strand A next:** the Nomads' lantern as the quest prize that lights the passage for every child. Your 21 November words say it should be this way.
 
-## 6. Test results
+## 6. Test results (final run, version 87)
 
-The results are filled in below by the final run.
+Every test below ran on the finished file, and every one passed:
+
+| Test | Result |
+|---|---|
+| `chronosia_links_test.js` (new) | Every check passed, on three screens. The gear door: 5,000 cadets, 0 bad. |
+| `finds_test.js` | 19 finds checked; the check caught 21 of 21 broken finds; 50,000 lock questions worked out again, 0 bad. |
+| `chronosia_test.js` | 20,000 seeds for the tortoise and the cougar, 0 wrong; all six quests played. One old line was fixed first: it expected the Galaxy Metrica greeting from before Lengthar. |
+| `no_secret_needed_test.js` | The station launches with 0 secrets and an empty bag. |
+| `station_playthrough_test.js` | 15 of 15 tasks and 18 of 18 secrets, on iPad and phone. (Run because the way typed item words are matched changed.) |
+| `voltara_quest_test.js` | 9 of 9 steps and 6 of 6 secrets, on iPad and phone. (Same reason.) |
+| `lengthar_test.js`, `lengthar_check.js` | Pass. 20,000 cadets. |
+| `world_web_check.py` | Every law holds. |
+
+**Not run:** the full suite, which you paused.
