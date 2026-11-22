@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- One file. It loads nothing and sends nothing: this rule forbids it. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<title>Voltara fly-in</title>
+<!--
+  Galaxy Math Quest: the arrival at Planet Voltara, as its own page (Phase 1 of HANDOFF_Voltara_Flyin_2026-11-21.md).
+  The game file is not touched. The piece the game would use is GMQFlyin, between the two marked lines below.
+  Shot list and notes: proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md.   Checked by checks/flyin_test.js.
+  Address words for testing:  ?t=7 holds the picture at 7 seconds   ?q=0..3 fixes the picture size (0 is the sharpest)
+                              ?short=1 plays the two-second one     ?bare=1 hides the bar under the picture
+-->
+<style>
+html, body { margin: 0; height: 100%; background: #04060e; color: #e8eef8; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; -webkit-text-size-adjust: 100%; }
+#stage { position: fixed; inset: 0; display: flex; flex-direction: column; }
+#pic { position: relative; flex: 1; min-height: 0; background: #04060e; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: manipulation; }
+#hint { position: absolute; right: .7em; bottom: .7em; background: rgba(6, 9, 18, .78); border-radius: .5em; padding: .25em .7em; font-weight: 700; pointer-events: none; }
+#bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35em .9em; padding: .5em max(.8em, env(safe-area-inset-right)) max(.5em, env(safe-area-inset-bottom)) max(.8em, env(safe-area-inset-left)); background: #0a0e1a; border-top: 1px solid #33476a; font-size: clamp(14px, calc(1.6vmin + 7px), 20px); }
+#say { font-weight: 700; }
+#stat { flex-basis: 100%; font-size: .78em; color: #a9b9d0; }
+button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; border: 0; border-radius: .5em; padding: .3em .8em; }
+.bare #bar, .bare #hint { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="pic"><canvas id="cv"></canvas><div id="hint">Tap to skip</div></div>
+  <div id="bar"><span id="say">Arriving at Planet Voltara…</span><button id="again" type="button">Watch again</button><button id="short" type="button">The short one</button><span id="stat"></span></div>
+</div>
+
+<script>
+/* ===== GMQ FLY-IN: start =====
+   The arrival at Planet Voltara. One entry point:  GMQFlyin.play(canvas, opts, done)
+     canvas  a canvas of its own, laid over the game's picture (the game's own canvas is 2D and cannot be shared)
+     opts    { short: true      the two-second one, for later landings
+               fade: true       in the last half second the canvas fades out, to show what lies under it (the game's meadow)
+               hold: true       keep the last picture alive after the end (this page uses it; the game would not)
+               clock: seconds   the game's own clock (tNow), so clouds, moons and sparkles carry on from where the game has them
+               sp: [x, y]       where the ship is on the space map (the game's SP), so the stars sit where the game has them
+               beacon: false    the trade beacon is silent (the game's tradeOpen() is false)
+               lit: {R,C,I}     how much of each street is lit, 0 to 1 (a saved city); tower: true lights the Power Plaza tower
+               q: 0..3          fix the picture size; left out, it starts sharp and steps down by itself when frames come slow
+               t: seconds       hold the picture at one moment (for review pictures) }
+     done    called once, with why it ended: 'end', 'skip', 'nowebgl', 'slowstart', 'hidden' or 'lost'
+   It never blocks: a tap skips it, no WebGL 2 ends it at once, and a timer ends it even if the browser stops drawing.
+   It makes no sound, reads no saved state and writes none. Nothing is made anew in a frame: everything is set up once.
+   How it is drawn: space and the planet are one small shader, with the colours, bands and clouds of the game's voltaraBall.
+   Everything else is the game's own drawing (spaceBack, rocket, farCity, towerDraw, vSky, vFar, drawMeadow, alienTree, fluff,
+   frontMeadow), painted once, at this picture's own size and with the game's own line weights, into one texture as flat cards.
+   For the landing the cards stand in 3D like a paper theatre, and the camera comes down to the exact view the game draws,
+   so the last frame is the game's meadow picture. */
+var GMQFlyin = (function () {
+  'use strict';
+  var LEN = 9.5, FADE = .5, TS = 5.5, SHORT = 2;           // seconds: the scene; the hand-over fade; when the clouds hide the change from space to sky; the short one
+  var HZ = .56, GY = .86, F = 1, EYE = 3, PAR = -.37;      // the meadow as the game draws it: horizon and ground rows, the lens, eye height, and the cadet standing at .13
+  var INK = '#0e1626', SCALES = [1.5, 1.25, 1, .75], MAXQ = 700, AW = 2048, AHMAX = 2048;
+  var CITYP = [.44, -.44];                                  // where the city is on the ball from orbit, in the night
+  var NEB = [[.22, .3, '#7a3fd0', .42], [.8, .26, '#4a2f9e', .36], [.82, .76, '#1f5fd0', .44], [.2, .8, '#1f9e6a', .38], [.5, .12, '#d0503f', .36], [.5, .56, '#c98a2f', .3], [.6, .9, '#a02f7a', .4]];
+  var SKY = ['#2c2a8f', '#6a4fd0', '#c26fe8', '#ff8fb1', '#ffb86b', '#ffe58a', '#c8f5c9'];
+  var G = null, ERR = '';
+
+  function hex(h) { var n = parseInt(h.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; }
+  function tint(h, a) { var c = hex(h); a = a == null ? 1 : a; return [c[0] * a, c[1] * a, c[2] * a, a]; }      // colours are kept ready-multiplied by how solid they are
+  function v3(h) { var c = hex(h); return 'vec3(' + c[0].toFixed(3) + ',' + c[1].toFixed(3) + ',' + c[2].toFixed(3) + ')'; }
+  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function ss(a, b, x) { x = clamp((x - a) / (b - a)); return x * x * (3 - 2 * x); }
+  function fr(x) { return x - Math.floor(x); }
+  var WHITE = [1, 1, 1, 1];
+
+  /* ---------- the three small programs for the graphics chip ---------- */
+  var VS = '#version 300 es\nin vec3 aP; in vec2 aU; in vec4 aC; out vec2 vU; out vec4 vC; void main(){ vU = aU; vC = aC; gl_Position = vec4(aP.xy, 0., aP.z); }';
+  var FS_CARD = '#version 300 es\nprecision highp float; uniform sampler2D uS; in vec2 vU; in vec4 vC; out vec4 o; void main(){ o = texture(uS, vU, -.6) * vC; }';
+  var GLSL = 'float h2(vec2 p){ p = fract(p * vec2(.1031, .1030)); p += dot(p, p.yx + 33.33); return fract((p.x + p.y) * p.y); }\n' +
+    'float RS(float hi, float lo, float x){ return 1. - smoothstep(lo, hi, x); }\n' +
+    'float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f); return mix(mix(h2(i), h2(i + vec2(1, 0)), f.x), mix(h2(i + vec2(0, 1)), h2(i + vec2(1, 1)), f.x), f.y); }';
+  // the ground: every point works out which row of the game's meadow picture it belongs to, and takes that row's colour
+  var FS_GROUND = ['#version 300 es', 'precision highp float;', 'uniform float uA, uT, uK;', 'in vec2 vU; in vec4 vC; out vec4 o;', GLSL,
+    'void main(){',
+    '  float z = max(vU.y, .05), v = vU.y > .5 ? ' + HZ + ' + ' + (F * EYE).toFixed(2) + ' / z : 3., u = .5 + ' + F.toFixed(1) + ' * vU.x / (z * uA), e = fwidth(v) + .0004;',
+    '  vec3 c = mix(' + v3('#49a888') + ', ' + v3('#3a8f76') + ', clamp((v - ' + HZ + ') / .1, 0., 1.));',
+    '  c = mix(c, vec3(.66, .9, .76), smoothstep(250., 2600., z));',                                                         // far away the land pales into the sky
+    '  c = mix(c, ' + v3('#143a33') + ', smoothstep(-e, e, v - .66));',
+    '  float top = .633 + .007 * sin(u * 9. + uT), bot = .735 + .007 * sin(u * 7. - uT);',
+    '  vec3 rv = mix(' + v3('#59c4f0') + ', ' + v3('#2f7fd0') + ', clamp((v - .63) / .11, 0., 1.));',
+    '  vec2 gq = vec2(vU.x * 1.1, z * .55 + uT * .1), gi = floor(gq); float gh = h2(gi);',                                    // from the air the Sparkling River glints; the glints fade as the camera lands
+    '  rv += uK * vec3(.5) * step(.82, gh) * max(0., sin(uT * 3. + gh * 60.)) * RS(.3, .1, length(gq - gi - .5));',
+    '  c = mix(c, rv, smoothstep(-e, e, v - top) * RS(e, -e, v - bot));',
+    '  c = mix(c, mix(' + v3('#2f8468') + ', ' + v3('#17443c') + ', clamp((v - .74) / .26, 0., 1.)), smoothstep(-e, e, v - .748 - .006 * sin(u * 11.)));',
+    '  vec2 lp = vec2((u - .5) / .52, (v - ' + (GY + .03) + ') / .03);',
+    '  c = mix(c, vec3(.745, .922, .784), .16 * (1. - uK) * (1. - uK) * step(dot(lp, lp), 1.));',                                         // the pale path on the grass shows as the camera lands
+    '  o = vec4(c * (1. + uK * .2 * RS(700., 90., z) * (n2(vU * .045) - .5)), 1.);', '}'].join('\n');
+  // space and the planet from orbit: the same colours, curved bands and clouds as the game's voltaraBall, and it can be flown into
+  var FS_PLANET = ['#version 300 es', 'precision highp float;', 'uniform vec2 uRes, uC;', 'uniform float uR, uT, uZ, uH;', 'in vec2 vU; in vec4 vC; out vec4 o;', GLSL,
+    'const vec3 BAND[8] = vec3[8](' + ['#ff8fb8', '#ffb37a', '#ffe58a', '#a8e6b0', '#8fc9ff', '#b9a3ff', '#ff8fb8', '#ffb37a'].map(v3).join(',') + ');',
+    'const vec3 NP[7] = vec3[7](' + NEB.map(function (n) { return 'vec3(' + n[0] + ',' + (1 - n[1]).toFixed(2) + ',' + n[3] + ')'; }).join(',') + ');',
+    'const vec3 NC[7] = vec3[7](' + NEB.map(function (n) { return v3(n[2]); }).join(',') + ');',
+    'void main(){',
+    '  vec2 fc = gl_FragCoord.xy, uv = fc / uRes; float M = max(uRes.x, uRes.y);',
+    '  vec2 p = (fc - uC) / uR; float d = length(p), px = 1.5 / uR;',
+    '  vec3 col = mix(vec3(5., 8., 20.), vec3(14., 9., 34.), (uv.x + 1. - uv.y) * .5) / 255.;',
+    '  for (int i = 0; i < 7; i++) { float q = length((uv - NP[i].xy) * uRes) / (NP[i].z * M); col += NC[i] * (q < .5 ? mix(.34, .12, q * 2.) : mix(.12, 0., clamp(q * 2. - 1., 0., 1.))); }',
+    '  col += vec3(1., .667, .882) * .6 * clamp(1. - (d - .92) / .48, 0., 1.) * step(.92, d);',
+    '  for (int k = 0; k < 2; k++) { float md = k == 0 ? 1.45 : 1.75, an = uT * .15 + (k == 0 ? 0. : 2.6), mr = k == 0 ? .09 : .055;',
+    '    vec2 mp = vec2(cos(an) * md, -sin(an) * md * .35), mq = p - mp; float ml = length(mq);',
+    '    if (ml < mr + px && !(sin(an) < 0. && length(mp) < 1.)) { vec3 mc = k == 0 ? vec3(.91, .878, 1.) : vec3(1., .851, .769); mc = mix(mc, vec3(.03, .016, .157), .5 * step(0., dot(mq, vec2(.6, -.8)))); col = mix(col, mc, RS(mr + px, mr - px, ml)); col = mix(col, vec3(.055, .086, .149), RS(px * 1.1, px * .4, abs(ml - mr))); } }',
+    '  if (d < 1. + px) {',
+    '    float bx = p.x / 1.25, f = clamp(4. * (1. - p.y - .62 * (1. - sqrt(max(0., 1. - bx * bx))) + .012 * sin(uT * .3 + p.x * 2.)) - .25, 0., 7.999), fi = floor(f);',
+    '    int i = int(fi);',
+    '    vec3 pc = mix(BAND[i], BAND[min(i + 1, 7)], smoothstep(1. - 5. * px, 1., f - fi));',
+    '    for (int k = 0; k < 4; k++) { float fk = float(k); vec2 q = p - vec2(sin(fk * 2.1) * .4, .5 - fk * .33), qe = q / vec2(.16, .05); float lq = length(qe);',     // four thin swirls
+    '      float ds = abs(lq - 1.) * lq / max(.001, length(qe / vec2(.16, .05))); pc = mix(pc, vec3(1.), .3 * RS(.01 + px, .01 - px, ds) * step(mod(atan(-q.y, q.x) + 6.2832, 6.2832), 5.)); }',
+    '    float cm = 0.;',
+    '    for (int k = 0; k < 11; k++) { float fk = float(k), u = mod(fk * .137 + uT * .012, 1.3) - .15, sq = max(.25, 1. - abs(u - .5) * 1.5);',                        // eleven cotton-candy clouds drift across, white and pink
+    '      vec2 c = vec2(-1. + u * 2., .78 - mod(fk * 53., 100.) / 100. * 1.56);',
+    '      float a = max(RS(1. + px * 20., 1. - px * 20., length((p - c) / vec2(.2 * sq, .05))), RS(1. + px * 25., 1. - px * 25., length((p - c - vec2(.08 * sq, .035)) / vec2(.11 * sq, .04))));',
+    '      pc = mix(pc, mod(fk, 2.) > .5 ? vec3(1.) : vec3(1., .804, .91), .75 * a); cm = max(cm, a); }',
+    '    float dd = length(p - vec2(-.5, .38));',
+    '    float sa = dd < 1.325 ? mix(0., .5, clamp((dd - .8) / .525, 0., 1.)) : mix(.5, .95, clamp((dd - 1.325) / .525, 0., 1.));',
+    '    sa = mix(sa, min(.9, sa * 1.95), uZ);',                                                       // close up, the night is deeper
+    '    pc = mix(pc, vec3(.039, .02, .188), sa);',
+    '    if (uZ > 0.) {',                                                                              // down there in the night: woods of glowing trees, and the Sparkling River
+    '      float dark = clamp(smoothstep(.25, .5, sa) * (1. - cm), 0., 1.) * uZ;',
+    '      float ry = p.y - (' + CITYP[1] + ' - .07 + .01 * sin(p.x * 30.) + .016 * sin(p.x * 11.)), rw = RS(.017 + px, .017 - px, abs(ry));',
+    '      vec2 g = p * 100., gi = floor(g); float gh = h2(gi), wood = n2(p * 11.), gr = .12 + .18 * h2(gi + 5.);',
+    '      float clear = smoothstep(.85, 1.25, length((p - vec2(' + CITYP[0] + ', ' + (CITYP[1] + .04) + ')) / vec2(.2, .1)));',
+    '      float tr = clear * step(1.1 - .45 * wood, gh) * RS(gr, gr * .7, length(g - gi - .3 - .4 * vec2(h2(gi + 3.), h2(gi + 8.))));',
+    '      pc += dark * (1. - rw) * vec3(.0, .11, .08) * smoothstep(.45, .75, wood);',
+    '      pc += dark * (1. - rw) * vec3(.16, .62, .46) * tr * (.6 + .4 * sin(uT * 2. + gh * 50.));',
+    '      vec2 rg = p * 300., ri = floor(rg); float rh = h2(ri);',
+    '      pc = mix(pc, vec3(.16, .42, .78) + vec3(.9) * step(.84, rh) * max(0., sin(uT * 4. + rh * 40.)) * RS(.4, .2, length(rg - ri - .5)), dark * rw * .9);',
+    '    }',
+    '    float ra = mod(atan(-p.y, p.x) + 6.2832, 6.2832);',
+    '    if (ra > 2.5 && ra < 4.9) pc = mix(pc, vec3(1., .882, .961), .65 * smoothstep(.975, .99, d));',
+    '    col = mix(col, pc, RS(1. + px, 1. - px, d));',
+    '  }',
+    '  o = vec4(mix(col, vec3(.86, .62, .93), uH), 1.);', '}'].join('\n');
+
+  /* ---------- set up once: the context and the programs ---------- */
+  function prepare(cv) {
+    if (G && G.cv === cv && !G.lost) return G;
+    var t0 = performance.now(), gl = null;
+    try { gl = cv.getContext('webgl2', { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance' }); } catch (e) { gl = null; }
+    if (!gl || (gl.isContextLost && gl.isContextLost())) return null;
+    function prog(fs) { var p = gl.createProgram(); [[gl.VERTEX_SHADER, VS], [gl.FRAGMENT_SHADER, fs]].forEach(function (a) { var s = gl.createShader(a[0]); gl.shaderSource(s, a[1]); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || 'shader'); gl.attachShader(p, s); });
+      gl.bindAttribLocation(p, 0, 'aP'); gl.bindAttribLocation(p, 1, 'aU'); gl.bindAttribLocation(p, 2, 'aC'); gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || 'link');
+      var u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS); for (var i = 0; i < n; i++) { var nm = gl.getActiveUniform(p, i).name; u[nm] = gl.getUniformLocation(p, nm); } return { p: p, u: u }; }
+    var g = { cv: cv, gl: gl, q: 0, lost: false, ms: 0 };
+    g.card = prog(FS_CARD); g.ground = prog(FS_GROUND); g.planet = prog(FS_PLANET);
+    g.V = new Float32Array(MAXQ * 36); g.vb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, g.vb); gl.bufferData(gl.ARRAY_BUFFER, g.V.byteLength, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 36, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 36, 12); gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 4, gl.FLOAT, false, 36, 20);
+    var ix = new Uint16Array(MAXQ * 6); for (var i = 0; i < MAXQ; i++) ix.set([i * 4, i * 4 + 1, i * 4 + 2, i * 4, i * 4 + 2, i * 4 + 3], i * 6);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, ix, gl.STATIC_DRAW);
+    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture()); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.disable(gl.DEPTH_TEST); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.clearColor(.172, .165, .561, 1);
+    gl.finish(); g.ms = performance.now() - t0;
+    cv.addEventListener('webglcontextlost', function (e) { e.preventDefault(); g.lost = true; if (g.onlost) g.onlost(); });
+    G = g; return g;
+  }
+
+  /* ---------- every card, painted for a picture w by h points, exactly as the game draws that thing at that size ----------
+     Each card remembers its size and where its own "here" point is, so the layout can put it where the game would draw it. */
+  function texture(g, w, h, o) {
+    var key = [w, h, JSON.stringify(o.lit || 0), !!o.tower].join();
+    if (g.key === key) return;
+    var t0 = performance.now(), gl = g.gl, m = Math.min(w, h), hz = h * HZ, list = [], SP = {}, c = null, i;
+    function S(name, sw, sh, ox, oy, fn, res) { list.push({ n: name, w: sw, h: sh, ox: ox, oy: oy, fn: fn, res: res || 1 }); }
+    function circ(x, y, r) { c.beginPath(); c.arc(x, y, r, 0, 7); }
+    function ell(x, y, rx, ry, rot, a0, a1) { c.beginPath(); c.ellipse(x, y, rx, ry, rot || 0, a0 || 0, a1 == null ? 7 : a1); }
+    function ol(lw) { c.strokeStyle = INK; c.lineWidth = lw || 2; c.stroke(); }
+    function rr(x, y, bw, bh, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + bw, y, x + bw, y + bh, r); c.arcTo(x + bw, y + bh, x, y + bh, r); c.arcTo(x, y + bh, x, y, r); c.arcTo(x, y, x + bw, y, r); c.closePath(); }      // older iPads have no roundRect
+    function rgba(hx, a) { var k = hex(hx); return 'rgba(' + Math.round(k[0] * 255) + ',' + Math.round(k[1] * 255) + ',' + Math.round(k[2] * 255) + ',' + a + ')'; }
+
+    // the game's alienTree (without its glow and its fruit, which are cards of their own)
+    function tree(name, th, lean) { var hw = th * .42 + Math.abs(lean) + 6;
+      S(name, hw * 2, th * 1.24 + 14, hw, th * 1.16 + 5, function () { var X = 0, gy = 0, top = gy - th, tx = X + lean, i, b;
+        c.lineCap = 'round'; c.strokeStyle = INK; c.lineWidth = th * .095 + 4; c.beginPath(); c.moveTo(X, gy); c.quadraticCurveTo(X - lean * .6, gy - th * .5, tx, top + th * .28); c.stroke();
+        c.strokeStyle = '#6a4466'; c.lineWidth = th * .095; c.stroke(); c.strokeStyle = '#8a5c84'; c.lineWidth = th * .03; c.beginPath(); c.moveTo(X - th * .01, gy - th * .05); c.quadraticCurveTo(X - lean * .6, gy - th * .5, tx - th * .01, top + th * .3); c.stroke();
+        c.strokeStyle = '#6a4466'; c.lineWidth = th * .045; [-1, 1].forEach(function (sg) { c.beginPath(); c.moveTo(X - lean * .2 + (tx - X) * .55, gy - th * .52); c.quadraticCurveTo(tx + sg * th * .16, top + th * .4, tx + sg * th * .26, top + th * .26); c.stroke(); }); c.lineCap = 'butt';
+        c.globalCompositeOperation = 'source-atop'; var gg = c.createRadialGradient(tx, top + th * .18, 0, tx, top + th * .18, th * .62); gg.addColorStop(0, 'rgba(226,255,255,.34)'); gg.addColorStop(1, 'rgba(226,255,255,0)'); c.fillStyle = gg; circ(tx, top + th * .18, th * .62); c.fill(); c.globalCompositeOperation = 'source-over';
+        var blobs = [[-.2, .3, .15], [.2, .3, .15], [-.1, .16, .16], [.11, .15, .16], [0, .04, .15], [0, .27, .16]];
+        [[INK, 0, 0, 1, 2.5], ['#17806f', 0, 0, 1, 0], ['#2fc7a3', -.12, -.16, .8, 0], ['#8ff5d6', -.3, -.36, .36, 0]].forEach(function (L) { c.fillStyle = L[0]; for (i = 0; i < 6; i++) { b = blobs[i]; circ(tx + b[0] * th + b[2] * th * L[1], top + b[1] * th + b[2] * th * L[2], b[2] * th * L[3] + L[4]); c.fill(); } });
+        for (i = 0; i < 7; i++) { var lx = tx + (i - 3) * th * .11, ly = top + th * (.46 + (i % 3) * .05); c.strokeStyle = 'rgba(200,255,235,.5)'; c.lineWidth = 1; c.beginPath(); c.moveTo(lx, top + th * .36); c.lineTo(lx, ly); c.stroke(); c.fillStyle = 'rgba(190,255,230,.85)'; ell(lx, ly + th * .02, th * .016, th * .028); c.fill(); }
+      }); }
+    tree('tree1', h * .22, 8); tree('tree2', h * .26, -10); tree('tree3', h * .32, -12); tree('tree4', h * .46, 14);
+    // the game's fluff: one cloud shape, in three colours
+    var fr0 = h * .058; [['pink', '#ffc4de', '#e58fc0'], ['blue', '#dcebff', '#a9c4f0'], ['puff', '#ffffff', '#f6d7e8']].forEach(function (k) { S(k[0], fr0 * 3.97 + 4, fr0 * 2.57 + 4, fr0 * 1.985 + 2, fr0 * 1.285 + 2, function () { var r = fr0; c.fillStyle = k[2]; circ(0, r * .25, r); c.fill(); circ(r * 1.15, r * .4, r * .78); c.fill(); circ(-r * 1.15, r * .42, r * .74); c.fill(); c.fillStyle = k[1]; circ(0, 0, r); c.fill(); circ(r * 1.1, r * .2, r * .76); c.fill(); circ(-r * 1.1, r * .24, r * .72); c.fill(); circ(r * .35, -r * .55, r * .7); c.fill(); c.fillStyle = 'rgba(255,255,255,.55)'; circ(-r * .2, -r * .35, r * .4); c.fill(); }); });
+    S('sky', 8, hz + 2, 0, 0, function () { var gd = c.createLinearGradient(0, 0, 0, hz); SKY.forEach(function (k, i) { gd.addColorStop(i / (SKY.length - 1), k); }); c.fillStyle = gd; c.fillRect(0, 0, 8, hz + 2); }, .5);
+    S('rainbow', h * 1.22 + 4, h * .61 + 2, h * .61 + 2, h * .61 + 2, function () { ['#ff6b6b', '#ffb347', '#fff275', '#7bd88f', '#6db3ff', '#b28dff'].forEach(function (k, i) { c.strokeStyle = rgba(k, .6); c.lineWidth = h * .013; c.beginPath(); c.arc(0, 0, h * (.6 - i * .015), Math.PI, 2 * Math.PI); c.stroke(); }); }, .5);
+    var gr = m * .15; S('giant', gr * 3.4, gr * 2.1, gr * 1.7, gr * 1.05, function () { c.strokeStyle = 'rgba(255,240,210,.55)'; c.lineWidth = gr * .1; ell(0, 0, gr * 1.7, gr * .4, -.35, Math.PI * .98, Math.PI * 2.02); c.stroke();
+      c.save(); circ(0, 0, gr); c.clip(); c.fillStyle = '#ffd9b0'; c.fillRect(-gr, -gr, gr * 2, gr * 2); ['#ffc7a0', '#f7a6c0', '#ffe0b8', '#e9a0d0'].forEach(function (k, i) { c.fillStyle = k; c.fillRect(-gr, -gr * .7 + i * gr * .42, gr * 2, gr * .2); });
+      var gs = c.createRadialGradient(-gr * .4, -gr * .4, gr * .2, 0, 0, gr * 1.1); gs.addColorStop(0, 'rgba(60,30,120,0)'); gs.addColorStop(1, 'rgba(60,30,120,.6)'); c.fillStyle = gs; c.fillRect(-gr, -gr, gr * 2, gr * 2); c.restore();
+      c.strokeStyle = 'rgba(255,240,210,.8)'; c.lineWidth = gr * .1; ell(0, 0, gr * 1.7, gr * .4, -.35, .02 * Math.PI, Math.PI * .98); c.stroke(); });
+    // the game's rocket, nose up, painted at its biggest (in space); its legs and its flame are cards of their own
+    var sL = Math.max(54, h * .15), L = Math.max(sL, m * .2), ik = L / sL;
+    S('ship', L * .72 + 8, L * 1.03 + 8, L * .36 + 4, L * .5 + 4, function () { c.rotate(-Math.PI / 2); c.lineJoin = 'round';
+      c.fillStyle = '#4b566b'; [-.055, .055].forEach(function (yy) { rr(-L * .53, L * (yy - .04), L * .1, L * .08, 2 * ik); c.fill(); ol(1.5 * ik); });
+      c.fillStyle = '#d2553a'; [-1, 1].forEach(function (sg) { c.beginPath(); c.moveTo(L * .08, sg * L * .08); c.lineTo(-L * .3, sg * L * .35); c.lineTo(-L * .45, sg * L * .35); c.lineTo(-L * .36, sg * L * .08); c.closePath(); c.fill(); ol(2 * ik); });
+      c.fillStyle = '#eef2f7'; c.beginPath(); c.moveTo(L * .5, 0); c.quadraticCurveTo(L * .34, -L * .115, L * .14, -L * .115); c.lineTo(-L * .4, -L * .1); c.lineTo(-L * .46, -L * .06); c.lineTo(-L * .46, L * .06); c.lineTo(-L * .4, L * .1); c.lineTo(L * .14, L * .115); c.quadraticCurveTo(L * .34, L * .115, L * .5, 0); c.fill(); ol(2 * ik);
+      c.fillStyle = '#f08a2c'; c.fillRect(-L * .06, -L * .106, L * .05, L * .212); c.fillStyle = '#d2553a'; c.fillRect(-L * .45, -L * .012, L * .22, L * .024);
+      c.fillStyle = '#2d6fb4'; ell(L * .27, 0, L * .085, L * .055); c.fill(); ol(1.5 * ik); c.fillStyle = 'rgba(255,255,255,.65)'; ell(L * .3, -L * .02, L * .03, L * .014); c.fill(); });
+    S('flame', L * .19 + 4, L * .25 + 2, L * .095 + 2, 1, function () { [-.055, .055].forEach(function (yy) { c.fillStyle = 'rgba(255,170,60,.95)'; c.beginPath(); c.moveTo(L * (yy - .035), 0); c.lineTo(L * yy, L * .24); c.lineTo(L * (yy + .035), 0); c.fill(); c.fillStyle = '#fff3b0'; c.beginPath(); c.moveTo(L * (yy - .018), 0); c.lineTo(L * yy, L * .11); c.lineTo(L * (yy + .018), 0); c.fill(); }); });
+    S('legs', sL * .6 + 10, sL * .2 + 10, sL * .3 + 5, sL * .2 + 4, function () { c.strokeStyle = INK; c.lineWidth = 4; c.beginPath(); [-1, 1].forEach(function (sg) { c.moveTo(sg * sL * .14, -sL * .2); c.lineTo(sg * sL * .3, 2); }); c.stroke(); });
+    var pL = h * .22; S('plant', pL * 1.75, pL * 1.02, pL * .875, pL * 1.02, function () { c.fillStyle = '#0d2b27'; for (var j = -2; j <= 2; j++) { c.beginPath(); c.moveTo(-5, 0); c.quadraticCurveTo(j * pL * .22, -pL * .7, j * pL * .42, -pL * (1 - Math.abs(j) * .16)); c.quadraticCurveTo(j * pL * .26, -pL * .5, 5, 0); c.fill(); } });
+    [.05, .035].forEach(function (ir, n) { var r = ir * w; S('isle' + n, r * 2.2 + 6, r * 2.4 + 6, r * 1.1 + 3, r * .75 + 3, function () { c.fillStyle = '#4a3a86'; c.beginPath(); c.moveTo(-r, 0); c.lineTo(r, 0); c.lineTo(r * .3, r * 1.1); c.lineTo(-r * .4, r * .8); c.closePath(); c.fill(); ol(1.5); c.fillStyle = '#3fb88f'; rr(-r * 1.05, -r * .22, r * 2.1, r * .3, r * .15); c.fill(); ol(1.5);
+      c.fillStyle = 'rgba(150,255,230,.88)'; c.beginPath(); c.moveTo(r * .2, -r * .2); c.lineTo(r * .34, -r * .7); c.lineTo(r * .5, -r * .2); c.fill(); c.strokeStyle = 'rgba(200,240,255,.7)'; c.lineWidth = 2; c.setLineDash([4, 5]); c.lineDashOffset = n * 4; c.beginPath(); c.moveTo(-r * .5, r * .1); c.lineTo(-r * .5, r * 1.6); c.stroke(); c.setLineDash([]); }); });
+    var rs = Math.max(18, h * .045); S('rock', rs * 2 + 6, rs * 1.6 + 6, rs + 3, rs * .8 + 3, function () { c.fillStyle = '#8b93a5'; ell(0, 0, rs, rs * .8); c.fill(); ol(2); c.fillStyle = 'rgba(40,45,60,.4)'; c.beginPath(); c.arc(0, 0, rs * .75, .3, 2.6); c.fill(); c.fillStyle = 'rgba(255,255,255,.35)'; circ(-rs * .35, -rs * .35, rs * .18); c.fill(); });
+    var bz = Math.max(9, h * .026); S('fly', bz * 2.8 + 4, bz * 2.2 + 4, bz * 1.4 + 2, bz + 2, function () { c.fillStyle = '#fff'; [-1, 1].forEach(function (sg) { ell(sg * bz * .55, -bz * .25, bz * .6, bz * .5, sg * .5); c.fill(); ol(1.2); ell(sg * bz * .4, bz * .3, bz * .4, bz * .34, -sg * .5); c.fill(); ol(1.2); }); c.fillStyle = INK; rr(-1.5, -bz * .5, 3, bz, 1.5); c.fill(); });
+    // the trade beacon of the space view (its lamp is a card of its own, so it can blink)
+    var tz = m * .05; S('beacon', tz * 3.6, tz * 1.4, tz * 1.8, tz * .7, function () { c.fillStyle = '#5f7aa8'; c.fillRect(-tz * 1.7, -tz * .22, tz * 1.1, tz * .44); c.fillRect(tz * .6, -tz * .22, tz * 1.1, tz * .44); c.fillStyle = '#c4cfdf'; rr(-tz * .5, -tz * .5, tz, tz, tz * .2); c.fill(); ol(2); });
+    S('disc', 52, 52, 26, 26, function () { c.fillStyle = '#fff'; circ(0, 0, 24); c.fill(); });
+    S('glow', 48, 48, 24, 24, function () { var gd = c.createRadialGradient(0, 0, 0, 0, 0, 24); gd.addColorStop(0, 'rgba(255,255,255,1)'); gd.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = gd; c.fillRect(-24, -24, 48, 48); });
+    S('white', 6, 6, 3, 3, function () { c.fillStyle = '#fff'; c.fillRect(-3, -3, 6, 6); });
+    S('bar', 8, 8, 4, 4, function () { c.fillStyle = '#fff'; c.fillRect(-4, -2, 8, 4); });                    // a line: solid in the middle, clear at the edges, so slanted lines are smooth
+    S('spark', 16, 16, 8, 8, function () { var z = 7; c.fillStyle = '#fff'; c.beginPath(); c.moveTo(0, -z); c.lineTo(z * .3, -z * .3); c.lineTo(z, 0); c.lineTo(z * .3, z * .3); c.lineTo(0, z); c.lineTo(-z * .3, z * .3); c.lineTo(-z, 0); c.lineTo(-z * .3, -z * .3); c.fill(); });
+    S('streak', w * .04 + 4, 8, 2, 5, function () { c.strokeStyle = 'rgba(255,255,255,.45)'; c.lineWidth = 2; c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(w * .02, -3, w * .04, 0); c.stroke(); });
+    S('lily', h * .044 + 4, h * .016 + 4, h * .022 + 2, h * .008 + 2, function () { c.fillStyle = '#fff'; ell(0, 0, h * .022, h * .008); c.fill(); ol(1); });
+    [['tuftD', '#22654f'], ['tuftL', '#4fb58c']].forEach(function (k) { S(k[0], 18, 15, 9, 13, function () { c.strokeStyle = k[1]; c.lineWidth = 2; c.beginPath(); c.moveTo(-4, 0); c.lineTo(-6, -8); c.moveTo(0, 0); c.lineTo(0, -11); c.moveTo(4, 0); c.lineTo(7, -8); c.stroke(); }); });
+    S('shroom', 14, 15, 7, 13, function () { c.fillStyle = '#e8e0ff'; c.fillRect(-1.5, -7, 3, 7); c.fillStyle = 'rgba(150,255,235,.92)'; ell(0, -8, 6, 4, 0, Math.PI, 2 * Math.PI); c.fill(); });
+    // the game's farCity: its own place is (0.095 of the width, the horizon)
+    var win = [], lit = o.lit || {};
+    S('city', w * .505, h * .17 + 6, 0, h * .17 + 2, function () { 'RCI'.split('').forEach(function (k, i) { var f = lit[k] || 0, x0 = ([.1, .27, .44][i] - .095) * w, dw = w * .15; for (var b = 0; b < 4; b++) { var bw = dw * .22, bh = h * (.07 + ((b * 7 + i * 3) % 5) * .024), X = x0 + b * dw * .26, Y = -bh;
+      c.fillStyle = f > 0 ? '#3d3684' : '#2a2560'; c.fillRect(X, Y, bw, bh + 2); c.strokeStyle = INK; c.lineWidth = 1.5; c.strokeRect(X, Y, bw, bh + 2); c.fillStyle = ['#ff8f6b', '#35d0c4', '#f0c23b'][i]; c.fillRect(X - 1, Y, bw + 2, 4);
+      for (var r = 0; r < 3; r++) for (var q = 0; q < 2; q++) { var on = ((b * 6 + r * 2 + q) * 7 % 24) < f * 24; c.fillStyle = on ? '#fff0a8' : '#141136'; c.fillRect(X + bw * (.2 + q * .4), Y + bh * (.18 + r * .26), bw * .22, bh * .14); win.push([X + bw * (.2 + q * .4), Y + bh * (.18 + r * .26), bw * .22, bh * .14, i * 4 + b]); } } }); });
+    // the game's far mountains: two ranges
+    S('hills', w * 1.1, h * .165 + 2, w * .05, h * .165, function () { [['#8a6fd6', .13, .02, 5.2], ['#6a54b8', .09, 0, 8.3]].forEach(function (Lr) { c.fillStyle = Lr[0]; c.beginPath(); c.moveTo(-w * .05, 2); for (var x = -w * .05; x <= w * 1.05; x += w / 80) { var u = x / w; c.lineTo(x, -h * (Lr[2] + Lr[1] * (.55 + .45 * Math.abs(Math.sin(u * Lr[3] + 1)) * (.7 + .3 * Math.sin(u * Lr[3] * 2.7))))); } c.lineTo(w * 1.05, 2); c.fill(); }); }, .7);
+
+    // pack the cards into one sheet, tallest first; if they do not fit, paint everything a little smaller
+    var D = Math.min(2, window.devicePixelRatio || 1) / .85, used = 0, pad = 3;
+    list.sort(function (a, b) { return b.h * b.res - a.h * a.res; });
+    do { D *= .85; var X0 = pad, Y0 = pad, rowH = 0; for (i = 0; i < list.length; i++) { var it = list[i], tw = Math.ceil(it.w * D * it.res), thh = Math.ceil(it.h * D * it.res); if (X0 + tw + pad > AW) { X0 = pad; Y0 += rowH + pad; rowH = 0; } it.x = X0; it.y = Y0; it.tw = tw; it.th = thh; X0 += tw + pad; if (thh > rowH) rowH = thh; } used = Y0 + rowH + pad; } while (used > AHMAX && D > .3);
+    var ac = document.createElement('canvas'); ac.width = AW; ac.height = used; c = ac.getContext('2d');
+    for (i = 0; i < list.length; i++) { it = list[i]; c.save(); c.beginPath(); c.rect(it.x, it.y, it.tw, it.th); c.clip(); c.translate(it.x, it.y); c.scale(it.tw / it.w, it.th / it.h); c.translate(it.ox, it.oy); it.fn(); c.restore();
+      SP[it.n] = [(it.x + .5) / AW, (it.y + .5) / used, (it.x + it.tw - .5) / AW, (it.y + it.th - .5) / used, it.w, it.h, it.ox, it.oy]; }
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ac); gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LOD, 3);
+    ac.width = ac.height = 1;                                                                  // the painting canvas is not needed again
+    gl.finish(); g.SP = SP; g.win = win; g.key = key; g.D = D; g.sheet = AW + ' x ' + used; g.ms += performance.now() - t0;
+  }
+
+  // the game's 170 stars (STARS), worked out once
+  var ST = []; (function () { for (var i = 0; i < 170; i++) ST.push({ x: (i * 97.31) % 1, y: (i * 61.73 + i * i * .0131) % 1, s: 1 + (i % 3) * .6, p: i * 1.7, z: 1 + i % 3 }); })();
+
+  /* ---------- play ---------- */
+  function play(cv, opts, done) {
+    opts = opts || {};
+    var g = null, ended = false, timer = 0, run = false, raf = 0, T0 = -1, tHold = 0, none = function () {};
+    function finish(why) { if (ended) return; ended = true; tHold = performance.now(); run = !!opts.hold && why !== 'nowebgl' && why !== 'slowstart' && why !== 'lost'; clearTimeout(timer); cv.removeEventListener('pointerdown', onTap); document.removeEventListener('visibilitychange', onHide); if (!run) cancelAnimationFrame(raf); if (done) done(why); }
+    function onTap(e) { e.preventDefault(); finish('skip'); }
+    function onHide() { if (document.hidden) finish('hidden'); }
+    try { g = prepare(cv); if (g) { g.ms0 = g.ms; texture(g, cv.clientWidth || 2, cv.clientHeight || 2, opts); } } catch (e) { g = null; ERR = String(e && e.message || e); }
+    if (!g) { finish('nowebgl'); return { skip: none, stop: none, stats: function () { return null; } }; }
+    if (g.ms > 1000 && opts.t == null && !g.played) { g.played = true; finish('slowstart'); return { skip: none, stop: none, stats: function () { return { setup: g.ms }; } }; }
+    g.played = true;
+    var gl = g.gl, SP = g.SP, V = g.V, nq = 0, O = [], nInf = 0, cw = 0, ch = 0, asp = 1, W = 1, H = 1, m = 1;
+    var cy = EYE, cz = 0, sth = 0, cth = 1, px = 0, py = 0, pz = 0;
+    var auto = opts.q == null && opts.t == null && !g.cap, stuck = 0, base = 0, baseQ = 0, q = opts.q != null ? opts.q : g.q, late = false, ring = new Float32Array(16), rn = 0, quiet = 8, last = -1, nf = 0, sum = 0, worst = 0, drops = 0;
+    var begin = opts.short ? LEN - SHORT : 0, clock = opts.clock || 0, spx = opts.sp ? opts.sp[0] : .27, spy = opts.sp ? opts.sp[1] : .42, shipO = null, legsO = null, flameO = null, tmp = [0, 0, 0, 0];
+    g.onlost = function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('lost'); };
+
+    function vtx(i, x, y, w, u, v, c) { V[i] = x; V[i + 1] = y; V[i + 2] = w; V[i + 3] = u; V[i + 4] = v; V[i + 5] = c[0]; V[i + 6] = c[1]; V[i + 7] = c[2]; V[i + 8] = c[3]; }
+    function proj(X, Y, Z, inf) { var dy = Y - (inf ? EYE : cy), dz = Z - (inf ? 0 : cz), yc = dy * cth - dz * sth; pz = dy * sth + dz * cth; px = 2 * F * X / asp; py = (1 - 2 * HZ) * pz + 2 * F * yc; }
+    function wq(o) {                                                    // a card standing in the world (o.p: four corners, for a slanted line)
+      if (nq >= MAXQ) return; var s = o.sp, i = nq * 36, c = o.c, p = o.p, z1;
+      if (p) { proj(p[0], p[1], o.z, o.inf); z1 = pz; vtx(i, px, py, pz, s[0], s[1], c); proj(p[2], p[3], o.z, o.inf); vtx(i + 9, px, py, pz, s[2], s[1], c); proj(p[4], p[5], o.z, o.inf); vtx(i + 18, px, py, pz, s[2], s[3], c); proj(p[6], p[7], o.z, o.inf); vtx(i + 27, px, py, pz, s[0], s[3], c); }
+      else { proj(o.x0, o.y1, o.z, o.inf); z1 = pz; vtx(i, px, py, pz, s[0], s[1], c); proj(o.x1, o.y1, o.z, o.inf); vtx(i + 9, px, py, pz, s[2], s[1], c); proj(o.x1, o.y0, o.z, o.inf); vtx(i + 18, px, py, pz, s[2], s[3], c); proj(o.x0, o.y0, o.z, o.inf); vtx(i + 27, px, py, pz, s[0], s[3], c); }
+      if (z1 > .02 || pz > .02) nq++;
+    }
+    function sq(s, x, y, hw, hh, rot, c) {                              // a card flat on the screen, in picture points: middle, half sizes, turn
+      if (nq >= MAXQ) return; var i = nq * 36, co = rot ? Math.cos(rot) : 1, si = rot ? Math.sin(rot) : 0, k;
+      for (k = 0; k < 4; k++) { var dx = (k === 0 || k === 3 ? -hw : hw), dy = (k < 2 ? -hh : hh); vtx(i + k * 9, 2 * (x + dx * co - dy * si) / W - 1, 1 - 2 * (y + dx * si + dy * co) / H, 1, k === 0 || k === 3 ? s[0] : s[2], k < 2 ? s[1] : s[3], c); }
+      nq++;
+    }
+    function sa(s, x, y, k, rot, c) { var mx = (s[4] / 2 - s[6]) * k, my = (s[5] / 2 - s[7]) * k, co = rot ? Math.cos(rot) : 1, si = rot ? Math.sin(rot) : 0; sq(s, x + mx * co - my * si, y + mx * si + my * co, s[4] * k / 2, s[5] * k / 2, rot, c); }      // the same, by the card's own "here" point and a scale
+    function col4(c, r, gg, b, a) { c[0] = r * a; c[1] = gg * a; c[2] = b * a; c[3] = a; return c; }
+    function hue(c, hdeg) { var k = function (n) { var t = (n + hdeg / 30) % 12; return .62 - .361 * Math.max(-1, Math.min(t - 3, 9 - t, 1)); }; c[0] = k(0); c[1] = k(8); c[2] = k(4); c[3] = 1; }      // hsl(h 95% 62%), the FlavorBursts' colours
+
+    // Where everything stands. Each thing is given by its place in the game's finished meadow picture (in picture points) and its distance.
+    function lay() {
+      W = cw; H = ch; asp = W / H; m = Math.min(W, H); O = [];
+      var w = W, h = H, hz = h * HZ, gy = h * GY, i;
+      function put(o, x, y, ww, hh) { var k = o.z / (F * h); o.x0 = (x - w / 2) * k; o.x1 = (x + ww - w / 2) * k; o.y1 = EYE + (hz - y) * k; o.y0 = EYE + (hz - y - hh) * k; return o; }
+      function at(o, x, y, k) { var s = o.sp; k = k || 1; return put(o, x - s[6] * k, y - s[7] * k, s[4] * k, s[5] * k); }      // by the card's own "here" point
+      function R(sp, x, y, ww, hh, z, c, fn, inf) { var o = put({ sp: SP[sp], z: z, c: c || WHITE, fn: fn, inf: !!inf }, x, y, ww, hh); O.push(o); return o; }
+      function A(sp, x, y, z, c, fn, inf, k) { var o = at({ sp: SP[sp], z: z, c: c || WHITE, fn: fn, inf: !!inf }, x, y, k); O.push(o); return o; }
+      function disc(x, y, r, z, c, fn, inf) { return R('disc', x - r * 26 / 24, y - r * 26 / 24, r * 52 / 24, r * 52 / 24, z, c, fn, inf); }
+      function line(x1, y1, x2, y2, lw, z, c) { var dx = x2 - x1, dy = y2 - y1, n = Math.sqrt(dx * dx + dy * dy) || 1, ox = -dy / n * lw, oy = dx / n * lw, k = z / (F * h), P = function (x, y) { return [(x - w / 2) * k, EYE + (hz - y) * k]; };      // a slanted line, lw points wide
+        O.push({ sp: SP.bar, z: z, c: c, p: [].concat(P(x1 + ox, y1 + oy), P(x2 + ox, y2 + oy), P(x2 - ox, y2 - oy), P(x1 - ox, y1 - oy)) }); }
+      function depth(y) { return F * EYE * h / Math.max(1, y - hz); }      // how far away a spot on the ground is, from its row in the picture
+      // the sky and what hangs in it: endlessly far, so only looking up or down moves it
+      R('white', -w, -h * 3, w * 3, h * 3 + 1, 1e5, tint(SKY[0]), null, 1); R('sky', -w, 0, w * 3, hz + 2, 1e5, null, null, 1);
+      for (i = 0; i < 40; i++) (function (i) { var c = [1, 1, 1, 1]; R('white', ST[i].x * w, ST[i].y * h * .2, 2, 2, 1e5, c, function (o, t) { col4(c, 1, 1, 1, (.5 + .5 * Math.sin(t * 2 + ST[i].p)) * .8); }, 1); })(i);
+      var gr = m * .15;
+      A('giant', w * .8 - PAR * w * .01, h * .19, 1e5, null, null, 1); disc(w * .56, h * .09, gr * .22, 1e5, tint('#ffffff', .92), null, 1);
+      A('rainbow', w * .36, hz + h * .14, 1e5, null, null, 1);
+      for (i = 0; i < 6; i++) (function (i) { var r = h * .034 * (1 + (i % 3) * .35), o = A(i % 2 ? 'pink' : 'blue', 0, 0, 1e5, null, function (o, t) { at(o, ((i * .21 + t * .005 * (1 + i % 2)) % 1.24 - .12) * w, h * (.07 + (i * 37 % 22) / 100), r / (h * .058)); }, 1); })(i);
+      nInf = O.length;
+      // far things, then nearer and nearer
+      var mx = -PAR * w * .03, sh = -PAR * w * .04;
+      A('hills', mx, hz, 1500);
+      [[.7, .36, .05], [.93, .43, .035]].forEach(function (I, n) { A('isle' + n, 0, 0, 900, null, function (o, t) { at(o, I[0] * w + mx * 1.4, I[1] * h + Math.sin(t * .6 + I[0] * 9) * 4); }); });
+      A('city', .095 * w + sh, hz, 320);
+      // the Power Plaza tower (the game's towerDraw): two legs, three rungs and a lamp
+      var tX = .655 * w + sh, tth = h * .36, half = w * .028, top = hz - tth, tr0 = Math.max(6, half * .45), TZ = 300, lite = hex('#c9d2df').concat(1), ink = tint(INK);
+      line(tX - half, hz, tX, top, 5, TZ, ink); line(tX, top, tX + half, hz, 5, TZ, ink); line(tX - half, hz, tX, top, 3, TZ, lite); line(tX, top, tX + half, hz, 3, TZ, lite);
+      for (i = 1; i < 4; i++) { var yy = hz - tth * i / 4, ww = half * (1 - i / 4); line(tX - ww, yy, tX + ww, yy, 3, TZ, lite); }
+      disc(tX, top, tr0 + 1, TZ, ink); disc(tX, top, tr0 - 1, TZ, tint(opts.tower ? '#fff3a6' : '#6b7689'));
+      if (opts.tower) (function () { var c = [0, 0, 0, 0]; R('glow', tX - tr0 * 5, top - tr0 * 5, tr0 * 10, tr0 * 10, TZ, c, function (o, t) { var a = .55 + .2 * Math.sin(t * 3); c[0] = a; c[1] = .94 * a; c[2] = .59 * a; }); })();
+      for (i = 0; i < 9; i++) disc((i * .123 + .03) * w, hz + h * .012, h * .022 + (i % 3) * 3, 250, tint(i % 2 ? '#2f8a6c' : '#57b894'));
+      // the Sparkling River: diamonds, ripples and lily pads
+      for (i = -26; i < 48; i++) (function (i) { var X = (i * .0457 + .012) * w, Y = h * (.65 + (((i * 29) % 70 + 70) % 70) / 1000), c = [1, 1, 1, 1]; A('spark', 0, 0, depth(Y), c, function (o, t) { var a = Math.max(0, Math.sin(t * 3 + i * 1.7)); col4(c, 1, 1, 1, a); at(o, X, Y, (2 + a * 4) / 7); }); })(i);
+      for (i = 0; i < 9; i++) (function (i) { var Y = h * (.652 + (i * 31 % 70) / 1000); A('streak', 0, 0, depth(Y), null, function (o, t) { at(o, ((i * .137 + t * .02) % 1.1 - .05) * w, Y); }); })(i);
+      [[.4, '#ff9ec4'], [.55, '#8ff5d6'], [.72, '#ff9ec4']].forEach(function (Lp) { A('lily', 0, 0, depth(h * .705), tint(Lp[1]), function (o, t) { at(o, Lp[0] * w, h * .705 + Math.sin(t + Lp[0] * 9) * 2); }); });
+      // grass tufts, flowers and glowing mushrooms: under the trees, as the game draws them
+      for (i = 0; i < 70; i++) { var tu = (i * .6180339) % 1, tv = (i * .37) % 1, kind = i % 5, TX = tu * w, TY = h * (.77 + tv * .2), o1; if (Math.abs(TY - gy - h * .03) < h * .025 && kind) continue; var dz = depth(TY);
+        if (kind < 3) A(kind ? 'tuftL' : 'tuftD', TX, TY, dz).key = 30; else if (kind === 3) { disc(TX, TY - 4, 3.2, dz, tint(['#ff9ec4', '#fff275', '#b9a3ff'][Math.floor(tu * 30) % 3])).key = 30; disc(TX, TY - 4, 1.2, dz).key = 30; } else A('shroom', TX, TY, dz).key = 30; }
+      // the four trees of the meadow, each with its glow; the FlavorBursts change colour as they hang
+      function tr(name, X, base, thPx, lean, seed) { var z = depth(base), c = [0, 0, 0, 0];
+        R('glow', X + lean - thPx * .62, base - thPx * .82 - thPx * .62, thPx * 1.24, thPx * 1.24, z, c, function (o, t) { var a = .34 + .14 * Math.sin(t * 2 + seed); c[0] = .47 * a; c[1] = a; c[2] = .82 * a; }); A(name, X, base, z); }
+      tr('tree1', .52 * w, gy - h * .02, h * .22, 8, 1); tr('tree2', .985 * w, gy - h * .01, h * .26, -10, 2); tr('tree3', .2 * w, gy, h * .32, -12, 3); tr('tree4', .77 * w, gy, h * .46, 14, 4);
+      for (i = 0; i < 5; i++) (function (i) { var th = h * .32, fx = .2 * w - 12 + (i - 2) * th * .13, fy = gy - th + th * (.34 + (i % 2) * .08), z = depth(gy), c = [1, 1, 1, 1]; disc(fx, fy, th * .05 + .75, z, tint(INK)); disc(fx, fy, th * .05 - .75, z, c, function (o, t) { hue(c, (t * 50 + i * 72) % 360); }); disc(fx - th * .016, fy - th * .018, th * .016, z, tint('#ffffff', .7)); })(i);
+      // more trees to the sides, which only the high view sees
+      for (i = 0; i < 18; i++) { var ez = [-30, -22, -15, -9, -3, 2, 6, 9, 12, 14, 48, 56, 66, 80, 95, 115, 140, 170][i], side = i % 2 ? 1 : -1, hw = Math.max(ez, 0) * asp / (2 * F), ex = side * (hw * 1.12 + 4 + ((i * 7.31) % 1) * (ez > 40 ? 60 : 16)), eth = (ez > 40 ? 4.2 : 3) + (i % 3) * .7, es = SP[['tree1', 'tree2', 'tree4'][i % 3]], ek = eth / (es[7] - 5) * 1.16;
+        O.push({ sp: SP.glow, z: ez, c: [.16, .34, .28, 0], x0: ex - eth * .62, x1: ex + eth * .62, y0: eth * .82 - eth * .62, y1: eth * .82 + eth * .62 }); O.push({ sp: es, z: ez, c: WHITE, x0: ex - es[6] * ek, x1: ex + (es[4] - es[6]) * ek, y0: -(es[5] - es[7]) * ek, y1: es[7] * ek }); }
+      // the ship: its legs, its flame and its body. They come down together and stand where the game stands the ship.
+      var sL = Math.max(54, h * .15), sx = w * .07, zs = depth(gy), kS = sL / Math.max(sL, m * .2);
+      legsO = A('legs', sx, gy, zs); flameO = A('flame', sx, gy - .06 * sL, zs, [1, 1, 1, 1], null, 0, kS); shipO = A('ship', sx, gy - .56 * sL, zs, null, null, 0, kS);
+      [legsO, flameO, shipO].forEach(function (o) { o.b0 = o.y0; o.b1 = o.y1; o.a0 = o.x0; o.a1 = o.x1; o.zf = zs; o.key = 5.5; }); flameO.len = flameO.b1 - flameO.b0;
+      A('rock', .91 * w, gy - Math.max(18, h * .045) * .55, zs);
+      [[.47, 0, '#4f8dff'], [.3, 2.2, '#ff8fd0']].forEach(function (B) { var o = A('fly', 0, 0, zs, tint(B[2]), function (o, t) { var fl = .25 + .75 * Math.abs(Math.sin(t * 11 + B[1])), bx = w * (B[0] + .03 * Math.sin(t * 1.3 + B[1])), by = h * (.67 + .04 * Math.sin(t * 2.1 + B[1])) + (B[1] ? -h * .08 : 0); at(o, bx, by); var mid = (o.x0 + o.x1) / 2, hw2 = (o.x1 - o.x0) / 2 * fl; o.x0 = mid - hw2; o.x1 = mid + hw2; }); o.key = 5.4; });
+      // close to the eye: big dark plants, and fireflies
+      [[-.02, 1], [.23, .6], [.78, .7], [1.03, 1.1]].forEach(function (P) { A('plant', P[0] * w - PAR * w * .22, h + 4, 5, null, null, 0, P[1] / 1.1); });
+      for (i = 0; i < 14; i++) (function (i) { var c = [0, 0, 0, 0], r = (2 + (i % 3)) * 2.2; R('glow', 0, 0, 1, 1, 4.5, c, function (o, t) { var t2 = (t * .05 + i * .0714) % 1, a = Math.sin(t2 * Math.PI) * .7, X = ((i * .173 + Math.sin(t * .4 + i) * .01) % 1) * w, Y = gy + h * .1 - t2 * h * .5; c[0] = .63 * a; c[1] = a; c[2] = .88 * a; put(o, X - r, Y - r, r * 2, r * 2); }); })(i);
+      var far = O.slice(0, nInf), near = O.slice(nInf); near.sort(function (a, b) { return (b.key || b.z) - (a.key || a.z); }); O = far.concat(near);
+    }
+
+    function size() { var sc = Math.min(window.devicePixelRatio || 1, late && q < 2 ? 2 : SCALES[q]), w = Math.max(2, Math.round(cw * sc)), h = Math.max(2, Math.round(ch * sc)); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } gl.viewport(0, 0, w, h); }
+    function fit() { var w = cv.clientWidth || 2, h = cv.clientHeight || 2; if (w !== cw || h !== ch) { cw = w; ch = h; texture(g, w, h, opts); SP = g.SP; lay(); size(); } }
+
+    function draw(T, t) {          // T: where the scene is, 0 to LEN.   t: the clock that keeps running (the game's, if it was given), for twinkles and drifting
+      var i, a, pw = cv.width, ph = cv.height, n0, n1, n2, s, c = tmp;
+      nq = 0;
+      sq(SP.white, W / 2, H / 2, W / 2, H / 2, 0, WHITE);                                       // card 0: the whole screen, for the planet
+      var veil = Math.max(1 - Math.abs(T - TS) / .62, opts.short ? 1 - (T - begin) / .45 : 0);   // the white inside of a cloud: it hides the change from space to sky
+      if (T < TS) {
+        // ---- space: Voltara ahead, growing, and the camera dives at its night side ----
+        var R0 = m * .33, e = .1 * ss(0, 1.6, T) + .68 * ss(1.4, 3.2, T) + .22 * ss(3, TS, T), Rr = R0 * Math.exp(Math.log(15) * e), ec = ss(1.4, 3.1, T), zoom = Rr / R0, uz = ss(.7, 1.9, Rr / m);
+        var bx = (-.06 * W / R0) * (1 - ec) + CITYP[0] * ec, by = CITYP[1] * ec, k = pw / W, pcx = W / 2 - bx * Rr, pcy = H / 2 + by * Rr, R2 = Rr * Rr;
+        // the game's stars: a faint band, then 170 that twinkle, some with a little cross. They drift outwards as we dive; the planet hides those behind it.
+        var sc0 = 1 + (zoom - 1) * .05, behind = function (x, y) { return (x - pcx) * (x - pcx) + (y - pcy) * (y - pcy) < R2; }, X, Y, z;
+        for (i = 0; i < 170; i++) { s = ST[i]; X = W / 2 + (s.x * W - W / 2) * sc0 + 1; Y = H / 2 + ((.16 + s.x * .66 + (s.y - .5) * .2) * H - H / 2) * sc0 + 1; if (!behind(X, Y)) sq(SP.white, X, Y, 1, 1, 0, col4(c, .745, .824, 1, .16)); }
+        for (i = 0; i < 170; i++) { s = ST[i]; z = s.s * .8 * s.z * .7; a = Math.max(0, .35 + .5 * Math.sin(t * 1.5 + s.p)); X = W / 2 + (fr(s.x - spx * .03 * s.z) * W - W / 2) * sc0 + z / 2; Y = H / 2 + (fr(s.y - spy * .03 * s.z) * H - H / 2) * sc0 + z / 2; if (behind(X, Y)) continue;
+          col4(c, 1, .94, .86, a); c[3] = 0; sq(SP.white, X, Y, z / 2, z / 2, 0, c); if (s.p % 17 < 1.7) { sq(SP.white, X + .5 - z / 2, Y + .5 - z / 2, 3.5, .5, 0, c); sq(SP.white, X + .5 - z / 2, Y + .5 - z / 2, .5, 3.5, 0, c); } }
+        // the trade beacon of the space view: we leave it behind
+        var bk = 1 + (zoom - 1) * .9, bX = W / 2 + (W * .2 - W / 2) * bk, bY = H / 2 + (H * .26 - H / 2) * bk, tz = m * .05 * (1 + (zoom - 1) * .5), open = opts.beacon !== false, blink = open && Math.sin(t * 5) > 0;
+        if (bX > -tz * 2 && bY > -tz * 2) { sa(SP.beacon, bX, bY, tz / (m * .05), 0, WHITE); s = hex(blink ? '#ffe58a' : open ? '#a8862f' : '#39415c'); sq(SP.disc, bX, bY - tz * .78, tz * .2 * 26 / 24, tz * .2 * 26 / 24, 0, col4(c, s[0], s[1], s[2], 1)); if (blink) { col4(c, 1, .9, .54, .35); c[3] = 0; sq(SP.glow, bX, bY - tz * .78, tz * 1.2, tz * 1.2, 0, c); } }
+        // the lights of the city on the night side, as the game shows them from far
+        for (i = 0; i < 26; i++) { var an = .2 + fr(i * .37) * 1.1, lr = Rr * (.62 + fr(i * .61) * .3), lz = 1.1 * Math.sqrt(zoom); a = (.5 + .4 * Math.sin(t * 2 + i)) * (1 - ss(.5, 1, Rr / m)); if (a > .01) sq(SP.white, pcx + Math.cos(an) * lr + 1.1, pcy + Math.sin(an) * lr + 1.1, lz, lz, 0, col4(c, 1, .882, .549, a)); }
+        // close up: the city itself, the same skyline the meadow shows, and its windows going out one by one
+        var cu = uz * (1 - ss(4.7, 5.35, T)); if (cu > 0) { var cs = SP.city, ck = Math.min(.3 * Rr, W * (.92 + Math.max(0, T - 4.4) * .7)) / cs[4], cx0 = pcx + CITYP[0] * Rr - cs[4] * ck / 2, cy0 = pcy - CITYP[1] * Rr, wn = g.win, wv;
+          sq(SP.glow, cx0 + cs[4] * ck / 2, cy0, cs[4] * ck * .66, cs[4] * ck * .09, 0, col4(c, .02, .01, .09, .7 * cu)); sa(cs, cx0, cy0, ck, 0, col4(c, 1, 1, 1, cu));
+          for (i = 0; i < wn.length; i++) { wv = wn[i]; var off = 3.25 + 1.0 * fr(wv[4] * .618 + .13) + .2 * fr(i * .37), on = T < off && (T < off - .45 || fr(T * 9 + i * .31) > .45); if (on) sq(SP.white, cx0 + (wv[0] + wv[2] / 2) * ck, cy0 + (wv[1] + wv[3] / 2) * ck, wv[2] * ck / 2, wv[3] * ck / 2, 0, col4(c, 1, .941, .659, cu)); } }
+        // the ship flies ahead of us, into the planet
+        var es = ss(.2, 2.5, T), tx = W / 2 + W * .04 + R0 * .2, ty = H / 2 + R0 * .25, sx0 = W * .17, sy0 = H * .76, sxx = sx0 + (tx - sx0) * es, syy = sy0 + (ty - sy0) * es, Ls = m * .2 * (1 - .78 * es), al = 1 - ss(2.0, 2.4, T), sk = Ls / Math.max(Math.max(54, H * .15), m * .2);
+        var rot = (-.5 + (Math.atan2(ty - sy0, tx - sx0) + .5) * ss(0, .9, T)) + Math.PI / 2, fl = 1 + Math.sin(t * 40) * .2;
+        if (al > 0) { col4(c, 1, 1, 1, al); s = SP.flame; sq(s, sxx - Math.sin(rot) * (Ls * .5 + s[5] * sk * fl / 2), syy + Math.cos(rot) * (Ls * .5 + s[5] * sk * fl / 2), s[4] * sk / 2, s[5] * sk * fl / 2, rot, c); sa(SP.ship, sxx, syy, sk, rot, c); }
+        n0 = nq;
+      } else {
+        // ---- the sky of Voltara: down over the Sparkling River to the Landing Meadow ----
+        var p = clamp((T - TS) / (LEN - TS)), kk = 1 - p, th = -.85 * Math.pow(kk, 1.3);
+        cy = EYE + 52 * Math.pow(kk, 2.3); cz = -30 * kk * kk; sth = Math.sin(th); cth = Math.cos(th);
+        var alt = (cy - EYE) * .9, sz = cz + shipO.zf * (1 + .9 * kk), kx = (1 - .5 * kk * kk) * (sz - cz) / shipO.zf;      // the ship: ahead of the camera and below it, coming down onto its own spot as the camera settles
+        [legsO, flameO, shipO].forEach(function (o) { var mid = (o.a0 + o.a1) / 2 * kx, hw = (o.a1 - o.a0) / 2; o.z = sz; o.x0 = mid - hw; o.x1 = mid + hw; o.y0 = o.b0 + alt; o.y1 = o.b1 + alt; });
+        a = alt > .04 ? 1 : 0; flameO.c[0] = flameO.c[1] = flameO.c[2] = flameO.c[3] = a; flameO.y0 = flameO.y1 - flameO.len * (1 + Math.sin(t * 40) * .2) * Math.min(1, .4 + alt * .25);
+        // card 1: the ground, a great flat sheet
+        var gi = nq * 36, gc = [[-9000, -600], [9000, -600], [9000, 12000], [-9000, 12000]]; for (i = 0; i < 4; i++) { proj(gc[i][0], 0, gc[i][1], 0); vtx(gi + i * 9, px, py, pz, gc[i][0], gc[i][1], WHITE); } nq++;
+        for (i = 0; i < O.length; i++) { if (i === nInf) n1 = nq; var o = O[i]; if (o.fn) o.fn(o, t); wq(o); }
+        n0 = nq;
+      }
+      // cotton-candy clouds to fly through
+      for (i = 0; i < 14; i++) { var st = 4.4 + i * .115, pp = (T - st) / 1.15; if (pp <= 0 || pp >= 1) continue; var ang = i * 2.4, dist = m * (.13 + 1.0 * Math.pow(pp, 2.2)), r = m * (.05 + .62 * pp * pp), av = ss(0, .14, pp) * (1 - ss(.72, 1, pp));
+        sa(SP[['puff', 'pink', 'blue'][i % 3]], W / 2 + Math.cos(ang) * dist * Math.max(1, asp), H / 2 + Math.sin(ang) * dist * Math.max(1, 1 / asp), r / (H * .058), 0, col4(c, 1, 1, 1, av)); }
+      if (veil > 0) { a = Math.min(1, veil * 1.25); c[0] = a; c[1] = .87 * a; c[2] = .94 * a; c[3] = a; sq(SP.white, W / 2, H / 2, W / 2, H / 2, 0, c); }
+      n2 = nq;
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, V, 0, nq * 36);
+      if (T < TS) {
+        gl.disable(gl.BLEND); gl.useProgram(g.planet.p); var u = g.planet.u;
+        gl.uniform2f(u.uRes, pw, ph); gl.uniform2f(u.uC, pcx * k, (H - pcy) * k); gl.uniform1f(u.uR, Rr * k); gl.uniform1f(u.uT, t); gl.uniform1f(u.uZ, uz); gl.uniform1f(u.uH, .62 * ss(4.5, TS, T));
+        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+        gl.enable(gl.BLEND); gl.useProgram(g.card.p); gl.drawElements(gl.TRIANGLES, (n2 - 1) * 6, gl.UNSIGNED_SHORT, 12);
+      } else {
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.enable(gl.BLEND); gl.useProgram(g.card.p); gl.drawElements(gl.TRIANGLES, (n1 - 2) * 6, gl.UNSIGNED_SHORT, 24);
+        gl.disable(gl.BLEND); gl.useProgram(g.ground.p); gl.uniform1f(g.ground.u.uA, asp); gl.uniform1f(g.ground.u.uT, t); gl.uniform1f(g.ground.u.uK, clamp(kk * 2.2)); gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 12);
+        gl.enable(gl.BLEND); gl.useProgram(g.card.p); gl.drawElements(gl.TRIANGLES, (n2 - n1) * 6, gl.UNSIGNED_SHORT, n1 * 12);
+      }
+    }
+
+    function frame(now) {
+      if (!run) return; raf = requestAnimationFrame(frame);
+      if (T0 < 0) T0 = now; var t = ended ? LEN + FADE : (now - T0) / 1000 + begin, dt = last < 0 ? 16.7 : now - last; last = now;
+      fit();
+      if (!ended) {
+        if (t >= LEN + FADE) { if (opts.fade) cv.style.opacity = 0; draw(LEN, clock + t - begin); finish('end'); return; }
+        if (!late && t > LEN - .7) { late = true; auto = false; size(); }                               // the last, still moments are cheap to draw: draw them as sharp as the screen, so the hand-over to the game's picture is clean
+        else if (++nf > 3 && !late) { sum += dt; if (dt > worst) worst = dt; ring[rn++ & 15] = dt;       // slow frames: draw the next ones with fewer dots
+          if (auto && --quiet < 0 && rn >= 16) { var avg = 0; for (var i = 0; i < 16; i++) avg += ring[i]; avg /= 16; var nx = q + 1; while (nx < SCALES.length && SCALES[nx] >= (window.devicePixelRatio || 1)) nx++;
+            if (stuck && avg < base * .88) stuck = 0;                                                      // the last step down helped
+            if (stuck >= 2 || (stuck && nx >= SCALES.length && avg > 22)) { q = g.q = baseQ; auto = false; g.cap = true; size(); }      // two steps down and no gain: the browser is holding the speed (Low Power Mode does). Step back and leave it.
+            else if (avg > 22 && nx < SCALES.length) { if (!stuck) { base = avg; baseQ = q; } stuck++; q = g.q = nx; drops++; size(); quiet = 14; rn = 0; } } }
+        if (opts.fade && t > LEN) cv.style.opacity = String(1 - (t - LEN) / FADE);
+      }
+      draw(Math.min(t, LEN), clock + (ended ? (performance.now() - tHold) / 1000 + LEN + FADE : t) - begin);
+    }
+
+    if (opts.fade) cv.style.opacity = 1;
+    if (opts.t != null) late = opts.t > LEN - .7;
+    fit();
+    if (opts.t != null) { draw(Math.min(opts.t, LEN), clock + opts.t - begin); return { skip: none, stop: none, redraw: function () { fit(); draw(Math.min(opts.t, LEN), clock + opts.t - begin); }, stats: function () { return { setup: g.ms, level: q, sheet: g.sheet, D: g.D }; } }; }
+    run = true; cv.addEventListener('pointerdown', onTap); document.addEventListener('visibilitychange', onHide);
+    timer = setTimeout(function () { finish('end'); }, ((opts.short ? SHORT : LEN) + FADE) * 1000 + 450);      // the scene ends on time even if the browser stops drawing
+    raf = requestAnimationFrame(frame);
+    return { skip: function () { finish('skip'); }, stop: function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('skip'); },
+      stats: function () { return { setup: g.ms, sheet: g.sheet, D: g.D, level: q, scale: Math.min(window.devicePixelRatio || 1, SCALES[q]), drops: drops, cap: !!g.cap, fps: nf > 4 && sum ? 1000 * (nf - 3) / sum : 0, worst: worst, frames: nf }; } };
+  }
+  return { play: play, prepare: function (cv) { try { return !!prepare(cv); } catch (e) { ERR = String(e && e.message || e); return false; } }, error: function () { return ERR; }, LEN: LEN + FADE };
+})();
+/* ===== GMQ FLY-IN: end ===== */
+
+/* ---------- this page: it plays the fly-in, then says what the game would do next ---------- */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); }, Q = new URLSearchParams(location.search), cv = $('cv'), ctl = null;
+  if (Q.has('bare')) document.body.className = 'bare';
+  var WHY = { end: 'The game starts here: the Landing Meadow.', skip: 'Skipped. The game starts here: the Landing Meadow.', hidden: 'The page was hidden, so the fly-in stopped. The game starts here.',
+    nowebgl: 'No fly-in on this device (no WebGL 2). The game goes straight to the landing.', slowstart: 'The fly-in took too long to get ready. The game goes straight to the landing.', lost: 'The picture stopped. The game goes straight to the landing.' };
+  function go(short) {
+    if (ctl) ctl.stop();
+    document.body.dataset.state = 'playing'; document.body.dataset.why = ''; $('say').textContent = 'Arriving at Planet Voltara…'; $('stat').textContent = ''; $('hint').style.display = '';
+    var o = { hold: true, short: !!short }; if (Q.has('q')) o.q = Math.max(0, Math.min(3, +Q.get('q') | 0)); if (Q.has('t')) o.t = +Q.get('t'); if (Q.has('lit')) { o.lit = { R: 1, C: 1, I: 1 }; o.tower = true; }
+    var began = performance.now(), mine = ctl = GMQFlyin.play(cv, o, function (why) {
+      document.body.dataset.took = ((performance.now() - began) / 1000).toFixed(2); $('hint').style.display = 'none'; $('say').textContent = WHY[why] || why; document.body.dataset.state = 'done'; document.body.dataset.why = why;
+      setTimeout(function () { if (mine !== ctl) return; var s = mine.stats(); if (!s) { $('stat').textContent = GMQFlyin.error().slice(0, 200); return; } $('stat').textContent = (s.fps ? 'Speed: ' + Math.round(s.fps) + ' frames a second. Slowest frame ' + Math.round(s.worst) + ' ms. ' : '') + (s.scale ? 'Picture size ' + s.scale + ' (it dropped ' + s.drops + ' time' + (s.drops === 1 ? '' : 's') + (s.cap ? '; the browser is holding the speed, perhaps Low Power Mode' : '') + '). ' : '') + 'Set-up took ' + Math.round(s.setup) + ' ms.'; }, 0);
+    });
+    if (o.t != null) { document.body.dataset.state = 'held'; $('hint').style.display = 'none'; $('say').textContent = 'Held at ' + o.t + ' seconds.'; }
+  }
+  $('again').addEventListener('click', function () { go(false); }); $('short').addEventListener('click', function () { go(true); });
+  window.addEventListener('resize', function () { if (ctl && ctl.redraw) ctl.redraw(); });
+  go(Q.has('short'));
+})();
+</script>
+</body>
+</html>
