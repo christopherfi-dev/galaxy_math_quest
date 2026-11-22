@@ -13,6 +13,29 @@
 
 ---
 
+## Decided since: Marc's rulings of 22 November
+
+These come from his messages to the battle thread, recorded at the end of `INFO_FROM_MARC.md`. They replace the matching [Open] points below.
+
+1. **Who plays when (section 3)** [Source]:
+   - One player leads and the other answers. Who leads round 1 is random.
+   - The players swap every round.
+   - The answering player sees the leader's card before choosing. This replaces "They go same time" (20 November).
+2. **Blocking (section 4)** [Source]:
+   - A block card stops an attack card only of its own kind or a lower one.
+   - A common card cannot block a rare attack card. A common or a rare card cannot block an epic one. (Marc said "gold"; the cards say epic.)
+3. **Spy and Policeman (section 6)** [Source]:
+   - One Spy card in each deck, and at least as many Policemen (on the page: Station Guards). The page uses 2.
+   - "Someone should not have three spy cards they play one after another."
+4. **The deck (section 9)** [Source]: for the practice battle, each player gets all 50 new cards, shuffled. "Just try them all."
+5. **The cards are a baseline** [Source]: "We can update and make the bonuses on each more consistent. Varied. Creatively named. Designed."
+
+**Still open, for Marc:**
+- **Who wins when both ships lose their last part in the same round?** It happens in about 1 battle in 5. The page says nobody.
+- **Does the kind rule hold for a Guard against a Spy?** Today any Guard stops any Spy.
+- **The ship parts' numbers:** the printed cards (a Standard ship is 75 HP, 40 AP), the 2023 site (70, 40) or the 2023 chat table (100, 55). The page uses 100 and 55 as a working guess.
+- Everything still marked [Open] below that is not answered above.
+
 ## 1. What each player needs
 
 - **A ship of five parts:** Engine Core, Navigation, Shield Generator, Weapons System and Power Module.
