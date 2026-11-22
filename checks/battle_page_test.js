@@ -49,6 +49,7 @@ async function state(page) {
       shipText: [0, 1].map(i => q('ship' + i) ? Array.from(q('ship' + i).children).filter(e => e.tagName === 'text').map(e => e.textContent).join(' ') : ''), turn: S ? B.turnOrder(S) : false,
       goldSeen: all('svg text').map(e => e.textContent).concat([q('msg').textContent, q('note') ? q('note').textContent : '', q('fore') ? q('fore').textContent : '']).concat(all('.tag').map(e => e.textContent)).filter(x => /gold/i.test(x)),
       sound: q('bsound') ? q('bsound').textContent : '', soundBox: r(q('bsound')), soundSaved: (function () { try { return localStorage.getItem('gmq_battle_sound'); } catch (e) { return 'error'; } })(),
+      skind: S ? S.P.map(p => S.opts.shieldKind ? B.shieldKindOf(p) : -1) : [], bubKind: [0, 1].map(i => q('bub' + i) ? q('bub' + i).getAttribute('data-kind') : null), bubColour: [0, 1].map(i => q('bub' + i) ? q('bub' + i).firstChild.getAttribute('stroke') : null),
       inputs: all('input,textarea,select').length, roundText: q('round').textContent, lastRound: S && S.log.length ? S.log[S.log.length - 1].round : 0,
       vw: innerWidth, vh: innerHeight, docH: document.documentElement.scrollHeight, docW: document.documentElement.scrollWidth
     };
@@ -90,7 +91,8 @@ async function act(page, name, flags, size) {
   pass(name + ': no sum is ever asked: there is no box to type a number in', st.inputs === 0);
   pass(name + ': the top kind is called "epic" on every card and in every message, never "gold"', st.goldSeen.length === 0, st.goldSeen.slice(0, 3).join(' | '));
   pass(name + ': every HP on your ship is the HP in the rules engine', st.pods[0].every((p, ix) => p && (p.lost ? st.hp[0][ix] === 0 : +p.hp === st.hp[0][ix] && +p.ap === st.ap[0][ix])), JSON.stringify([st.pods[0].map(p => p.hp), st.hp[0]]));
-  pass(name + ': the bubble is there exactly when the shield works, with its number', st.bub[0] === st.shieldOn[0] && (!st.shieldOn[0] || st.shl[0] === 'MAIN SHIELD ' + st.shield[0]), st.shl[0]);
+  pass(name + ': the bubble is there exactly when the shield works, with its number', st.bub[0] === st.shieldOn[0] && (!st.shieldOn[0] || st.shl[0] === (st.skind[0] >= 0 ? ['COMMON', 'RARE', 'EPIC'][st.skind[0]] : 'MAIN') + ' SHIELD ' + st.shield[0]), st.shl[0]);
+  pass(name + ': a shield that a card put up wears the colour of its kind', [0, 1].every(i => !st.bub[i] || (st.skind[i] >= 0 ? st.bubColour[i] === ['#7ed957', '#b388ff', '#ffd23f'][st.skind[i]] && st.bubKind[i] === String(st.skind[i]) : st.bubColour[i] === '#38bdf8')), JSON.stringify([st.skind, st.bubColour]));
   if (st.phase === 'pick') {
     flags.podW = st.pods[0][0].box.w;
     pass(name + ': the hand is on the screen', st.cards.length >= 3 && st.cards.length <= 5, String(st.cards.length));
@@ -285,7 +287,7 @@ async function act(page, name, flags, size) {
     await shot(page, name + '_8_how');
     await page.locator('#hclose').tap();
     await page.locator('#brules').tap();
-    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 15);
+    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 16);
     await page.locator('#rclose').tap();
     await page.locator('#again').tap();
     pass(name + ': New battle goes back to the first screen', await page.locator('#setup.open').count() === 1);
@@ -324,6 +326,32 @@ async function act(page, name, flags, size) {
       let g2 = 0; while (g2++ < 60) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
       const L = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { atk: l.atk, block: l.block, through: l.through, lines: l.lines.join(' ') }; });
       pass(name + ': played anyway, the common card blocks nothing and the log says why', L.block[0] === 0 && L.through[0] === L.atk[1] && /is common\. It cannot block a rare attack card/.test(L.lines), JSON.stringify(L).slice(0, 200));
+      await idle(page);
+      await page.locator('#bnew').tap();
+
+      // ---- Marc's rule of 22 November: the part a higher attack card adds goes through a lower shield; the ship's own AP is stopped
+      await page.evaluate(() => window.GMQB.setSeed(5));
+      await page.locator('#sgo').tap();
+      await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;S.P[0].shield=0;put(S.P[1],"A08",0);put(S.P[0],"D01",0);U.cpuLead=0;})()');
+      await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+      let k0 = await state(page);
+      pass(name + ': against a rare order, a common shield card on a broken shield is not marked "cannot block": it is marked "shield back"', k0.cards[0].id === 'D01' && k0.cards[0].tag === '' && k0.cards[0].plus === 'shield back', JSON.stringify(k0.cards[0]));
+      await page.locator('.hc.mine').nth(0).tap();
+      st = await state(page);
+      pass(name + ': the opened card says the ship\'s 55 goes into the shield and the card\'s 20 goes through', st.fore.indexOf('This card puts your Main Shield back up: 8.') >= 0 && st.fore.indexOf('Your shield is common. The enemy\'s card is rare: the 20 it adds goes through to your parts.') >= 0 && st.fore.indexOf('The ship\'s own 55 goes into your shield, and breaks it.') >= 0, st.fore);
+      await shot(page, name + '_9c_goes_through_card');
+      await page.locator('#playit').tap();
+      await page.waitForFunction(() => window.GMQB.U.phase === 'alloc', null, { timeout: 8000 });
+      st = await state(page);
+      pass(name + ': you are asked to place exactly the 20 that went through, with your green shield still up', st.alloc.total === 20 && /card goes through your shield: 20\./.test(st.msg) && st.shl[0] === 'COMMON SHIELD 8' && st.bubColour[0] === '#7ed957', st.msg + ' | ' + st.shl[0] + ' | ' + st.bubColour[0]);
+      await shot(page, name + '_9c_goes_through_place');
+      let g4 = 0; while (g4++ < 60) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
+      const thru = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { pierce: l.pierce[0], raised: l.raised[0], lines: l.lines.join(' ') }; });
+      pass(name + ': played: the shield of 8 soaks the ship\'s 55 and breaks, and your parts lose exactly 20', thru.pierce === 20 && thru.raised === 8 && st.shield[0] === 0 && k0.hp[0].reduce((a, b) => a + b, 0) - st.hp[0].reduce((a, b) => a + b, 0) === 20 && /20 goes through it/.test(thru.lines), JSON.stringify([thru, st.shield[0], st.hp[0]]));
+      await page.evaluate(() => { const S = window.GMQB.U.S; S.P[0].shield = 20; S.P[0].skind = 1; S.P[1].shield = 100; S.P[1].skind = 2; window.dispatchEvent(new Event('resize')); });
+      st = await state(page);
+      pass(name + ': a rare shield is purple and says RARE SHIELD; an epic one is gold and says EPIC SHIELD', st.shl[0] === 'RARE SHIELD 20' && st.bubColour[0] === '#b388ff' && st.shl[1] === 'EPIC SHIELD 100' && st.bubColour[1] === '#ffd23f', JSON.stringify([st.shl, st.bubColour]));
+      await shot(page, name + '_9c_shield_colours');
       await idle(page);
       await page.locator('#bnew').tap();
 

@@ -3,6 +3,8 @@
 **Date:** 22 November 2026. **For:** Marc. **From:** the battle thread.
 **You asked for analysis.** Nothing here is built. Every option is yours to choose. [Proposal throughout]
 
+**Built on 22 November, after you said it a third time.** Section 10 is now in the battle, as its starting rule. What was built, and the five readings I made, are in `GMQ_Card_Battle_Practice_v1_2026-11-22.md`, section 1f. Dodge cards (section 4) are not built.
+
 **Read section 10 first.** It is your second idea, sent a few minutes after the first, and I think it is the best answer. Sections 3 to 8 are what I wrote before it. Section 5 has a mistake of mine, marked.
 
 ---

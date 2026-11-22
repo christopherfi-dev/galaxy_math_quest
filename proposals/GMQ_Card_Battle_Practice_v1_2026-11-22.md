@@ -134,6 +134,47 @@ Your block rule still holds: a common block card does nothing against a rare att
 
 ---
 
+## 1f. A shield has a kind, and a higher attack card's own part goes through it
+
+You said: *"the epic attack, like the add 40 to your attack... The +40 gets through but the base AP gets blocked by the shield."* And before it: *"any newly rebuilt shield could be labeled as common or rare."*
+
+**It is built, and it is how the battle starts.** [Your ruling, 22 November]
+
+- **A shield that a card puts back up has the kind of that card.** The bubble is green, purple or gold, and says "COMMON SHIELD 8".
+- **It always stops the other ship's own attack** (the AP).
+- **If the other player's attack card is of a higher kind, the part that card adds goes through** to your parts. You share that part out, as with any hit.
+- **An attack card of the shield's own kind, or lower, is stopped whole.**
+
+**Your example, as the page plays it.** Your shield is broken. You play Dust Screen (common): a green shield of 8 goes up. The enemy plays Twin Tens (rare). The top of the screen says "ENEMY ATTACK 75, 55 + 20".
+- The opened card tells you before you play: "Your shield is common. The enemy's card is rare: the 20 it adds goes through to your parts. The ship's own 55 goes into your shield, and breaks it."
+- The 55 goes into the green shield. It breaks.
+- "The enemy's rare card goes through your shield: 20. You choose which parts take it." A gold bolt carries it.
+
+**What I measured** (two computer players, 2,000 battles each)
+
+| | Before | Now |
+|---|---|---|
+| **A battle lasts (random play / clever play)** | 11 / 14 rounds | 11 / 14 rounds |
+| **An attack goes through a shield** | never | about once every one or two battles |
+| **How much goes through, each time** | | about 32 points |
+| **Battles that got stuck** | 0 | 0 |
+
+**Five readings I had to make** [each is yours to change]
+
+1. **The shield you start with has no kind.** It stops everything. Only a shield that a card put up can be gone through.
+2. **Shield Reborn makes an epic shield.** Nothing goes through it.
+3. **Adding to a shield that is still up** leaves its kind as it was.
+4. **A block card played while your shield is still up** is unchanged: against a higher attack card it blocks nothing. [Your rule of 22 November.]
+5. **A block card played on a broken shield** now always puts its shield up, even against a higher attack card. Before, it did nothing. Its kind then decides what goes through.
+
+**It is a switch:** "A shield that a card puts back up has the kind of that card". Off gives the page as it was this morning.
+
+**Not built:** dodge cards at common and rare (Wormhole Zip, Triple Illusion). The same law would fit them. Say if you want them. The thinking is in `proposals/GMQ_Card_Battle_Kind_Rule_v1_2026-11-22.md`.
+
+**What could prove it wrong:** a child must read "55 + 20" and follow which part went where. The page says it in words and shows two bolts. Whether an eight-year-old follows it, only play will show.
+
+---
+
 ## 1d. Sound
 
 You said: *"Sound or haptics good."*
@@ -246,6 +287,7 @@ Open **Rules** on the page. A change starts with the next battle.
 | **Spy cards in each deck** | 1, drawn at random; all 7 | **you, 22 November** |
 | **Policemen in each deck** | 2; 1 | **you, 22 November** (2 is my reading of "more") |
 | **A block card stops an attack card only of its own kind, or lower** | yes; no | **you, 22 November** |
+| **A shield that a card puts back up has the kind of that card** | yes: a higher attack card's own part goes through it; no: any shield stops any attack | **you, 22 November** (section 1f) |
 | **The same for a policeman against a Spy card** | no: any Guard stops any Spy; yes | **you, 22 November** |
 | **"Lose 1 card"** (Engine or Navigation lost) | one card thrown away, once; the hand is one card smaller | rules sheet 5 |
 | **"Cannot defend"** (Shield Generator lost) | defence cards stop; defence cards and the Main Shield stop | rules sheet 5 |
@@ -306,7 +348,8 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,589 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,742 checks, all pass. It checks:
+  - a shield with a kind: the bubble wears its colour and name; the opened card says what will go through; you are asked to place exactly that; the shield soaks the ship's own attack;
   - placing a hit: the view moves in and the parts are large; a tapped part's own HP changes; the words keep count; a tap that would destroy a part places nothing and asks for a second tap; the button names every part that will be lost;
   - the sound button: off, remembered, on again; at real speed a laser, a Spy, a block, a burst and a win each ask for their sound, with no error; with the sound off, nothing is asked for;
   - your shield rule: with a broken shield, a block card and a card that adds to the shield are marked "shield back", the opened card says the shield will come back and soak the hit, and it does; with either narrower switch on, it does not, and the card says why;
@@ -325,7 +368,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 73,728 combinations of switches, then 44,000 more battles. 114 million checks, all pass. It measures your shield rule against the two narrower rules and tests it by hand. New in it: a strike is held back only when the ship that fired it has lost its last part, and only for the ship that went first; in turn order the two ships are never beaten together; six cases worked by hand.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 122 million checks, all pass. It tests each of your rulings of 22 November by hand: the block rule, turn order, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.

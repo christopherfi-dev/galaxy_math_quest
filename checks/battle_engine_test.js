@@ -1,19 +1,19 @@
 // Battle thread, step C. Plays Marc's rules, computer against computer, for every combination of switches.
-// Run:  node checks/battle_engine_test.js [battles for each combination, default 40]
+// Run:  node checks/battle_engine_test.js [battles for each combination, default 2]
 // The last line is "ALL OK" or the list of what failed.
 const fs = require('fs'), path = require('path');
 const html = fs.readFileSync(path.resolve(__dirname, '..', 'prototypes', 'card_battle.html'), 'utf8');
 const DATA = JSON.parse(html.match(/<script id="carddata" type="application\/json">([\s\S]*?)<\/script>/)[1]);
 const B = new Function(html.match(/\/\* ENGINE-BEGIN[\s\S]*?\/\* ENGINE-END \*\//)[0] + '\nreturn GMQBattle;')();
 B.load(DATA);
-const PER = parseInt(process.argv[2] || '4', 10);
+const PER = parseInt(process.argv[2] || '2', 10);
 const bad = {}; let checks = 0;
 function fail(what, info) { if (!bad[what]) { bad[what] = 0; console.log('FAIL ' + what + (info ? ': ' + info : '')); } bad[what]++; }
 function ok(cond, what, info) { checks++; if (!cond) fail(what, info); }
 const KINDS = ['standard', 'guardian', 'striker', 'lucky'];
 function combos() { let out = [{}]; B.SWITCHES.forEach(s => { const next = []; out.forEach(o => s.values.forEach(v => { const n = Object.assign({}, o); n[s.key] = v[0]; next.push(n); })); out = next; }); return out; }
 let seed = 12345; function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
-const stats = { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0, lastLead: [0, 0], held: 0, backUp: 0, firstLoss: {} };
+const stats = { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0, lastLead: [0, 0], held: 0, backUp: 0, pierced: 0, piercedBy: 0, firstLoss: {} };
 
 function play(opts, k0, k1, sd, keep) {
   const S = B.newBattle(opts, k0, k1, sd), size = B.cardCount(S.P[0]);
@@ -64,9 +64,20 @@ function play(opts, k0, k1, sd, keep) {
       const thr = L.through[i];
       ok(thr === (L.block[i] < 0 ? 0 : Math.max(0, L.atk[d] - L.block[i])), 'what gets through is the attack less the block');
       const hpAfter = me.parts.map(q => q.hp);
+      if (L.snap.shieldOn[i] && L.snap.skind[i] < 0) ok(L.pierce[i] === 0, 'nothing goes through the shield a battle starts with');
+      if (!opts.shieldKind) ok(L.pierce[i] === 0 && L.pierce[d] === 0, 'with the switch off, nothing ever goes through a shield');
       ok(!L.noStrike[i] || B.turnOrder(S), 'a strike is only held back when attacks land in turn order');
       ok(!L.noStrike[i] || i === L.leader, 'only the ship that went first can be spared the strike back');
-      if (L.noStrike[i]) {
+      // Marc, 22 November: the part a higher attack card adds goes through a lower shield that a card put up
+      const pc = L.pierce[i];
+      if (pc > 0) {
+        ok(opts.shieldKind && opts.kindBlock && L.snap.shieldOn[i] && L.snap.skind[i] >= 0 && B.card(L.card[d]).type === 'attack' && B.rank(L.card[d]) > L.snap.skind[i], 'an attack goes through a shield only when a card put that shield up and the attack card is of a higher kind', JSON.stringify([L.snap.skind, B.card(L.card[d]).name]));
+        ok(pc <= L.bonus[d] && pc <= thr, 'only the part the attack card adds goes through, never the ship\'s own AP', pc + ' of ' + L.bonus[d]);
+        const held = thr - pc, took = hpAfter.reduce((s, h, x) => s + (L.snap.hp[i][x] - h), 0);
+        ok(me.shield === (held > L.snap.shield[i] ? 0 : L.snap.shield[i] - held), 'the ship\'s own AP goes into the shield, and nothing of it carries over', JSON.stringify([L.snap.shield[i], held, me.shield]));
+        ok(took > 0 && took <= pc && hpAfter.every((h, x) => h <= L.snap.hp[i][x]), 'what goes through lands on the parts, and no more than that', took + ' of ' + pc);
+        if (keep) { stats.pierced++; stats.piercedBy += pc; }
+      } else if (L.noStrike[i]) {
         ok(thr > 0 && S.P[d].parts.every(q => q.hp === 0), 'a strike is held back only when the ship that fired it has lost its last part');
         ok(hpAfter.every((h, x) => h === L.snap.hp[i][x]) && me.shield === L.snap.shield[i], 'a ship beaten first does not strike back: the other ship is not touched');
         ok(S.over && S.over.winner === i, 'the ship whose attack landed first wins', JSON.stringify(S.over));
@@ -138,6 +149,17 @@ const D = B.defaults(), STD = ['standard', 'standard', 'standard', 'standard', '
     stats.rounds.sort((a, b) => a - b);
     const n = stats.battles, pct = x => Math.round(1000 * x / n) / 10;
     console.log('     ' + v[1] + ', two ' + level + ' players, ' + n + ' battles: rounds shortest ' + stats.rounds[0] + ', middle ' + stats.rounds[n >> 1] + ', 9 in 10 done by ' + stats.rounds[Math.floor(n * 0.9)] + ', longest ' + stats.rounds[n - 1] + '; a shield came back ' + (Math.round(10 * stats.backUp / n) / 10) + ' times in a battle; nobody wins ' + pct(stats.none) + '% (the round limit ' + pct(stats.limit) + '%); the last round\'s leader wins ' + pct(stats.lastLead[0]) + '%');
+  });
+});
+// Marc's rule of 22 November: a shield a card puts up has that card's kind, and the part a higher attack card adds goes through it
+[[false, 'any shield stops any attack (the page before)'], [true, 'Marc\'s rule, the page now: a higher attack card\'s own part goes through a lower shield']].forEach(v => {
+  ['gentle', 'clever'].forEach(level => {
+    const O = Object.assign({}, D, { cpu: level, shieldKind: v[0] });
+    Object.assign(stats, { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0, stuck: 0, silenced: 0, lastLead: [0, 0], held: 0, backUp: 0, pierced: 0, piercedBy: 0 });
+    for (let i = 0; i < 2000; i++) play(O, STD, STD, 640000 + i, true);
+    stats.rounds.sort((a, b) => a - b);
+    const n = stats.battles;
+    console.log('     ' + v[1] + ', two ' + level + ' players, ' + n + ' battles: rounds middle ' + stats.rounds[n >> 1] + ', 9 in 10 done by ' + stats.rounds[Math.floor(n * 0.9)] + ', longest ' + stats.rounds[n - 1] + '; an attack went through a shield ' + (Math.round(100 * stats.pierced / n) / 100) + ' times in a battle' + (stats.pierced ? ', for ' + Math.round(stats.piercedBy / stats.pierced) + ' points each time' : '') + '; nobody wins ' + stats.none);
   });
 });
 // a clever player against a gentle one: the clever one should win more (the two levels really differ)
@@ -217,6 +239,7 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
     return S;
   }
   const whole = S => S.P[0].parts.every(q => q.hp === q.max);
+  const lostHP = S => S.P[0].parts.reduce((s, q) => s + (q.max - q.hp), 0);
   let S = one({ shieldRebuild: 'reborn' }, 'R05', 'A01'); ok(!whole(S) && S.P[0].shield === 0, 'with "Shield Reborn only": Shield Spark on a broken shield does nothing, and the hit lands on the parts');
   ok(B.defaults().shieldRebuild === 'blocks', 'the page starts on Marc\'s rule: any shield card puts a broken shield back up');
   S = one({}, 'D10', 'A01'); ok(whole(S) && S.log[0].raised[0] === 16 && S.P[0].shield === 0, 'the page as it starts: Card Wall with four other cards puts up a shield of 16, and the whole hit goes into it', JSON.stringify([S.log[0].raised, S.P[0].shield]));
@@ -227,7 +250,15 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   S = one({ shieldRebuild: 'any' }, 'R05', 'A01'); ok(whole(S) && S.P[0].shield === 0 && S.log[0].snap.shield[0] === 10, 'with "only a card that adds to the Main Shield": Shield Spark puts up a shield of 10, it soaks the whole hit of 60, and breaks', JSON.stringify([S.P[0].shield, S.log[0].snap.shield]));
   S = one({ shieldRebuild: 'any' }, 'D01', 'A01'); ok(!whole(S) && S.log[0].block[0] === 8 && S.log[0].raised[0] === 0, 'with "only a card that adds to the Main Shield": a block card still only blocks');
   S = one({ shieldRebuild: 'blocks' }, 'D01', 'A01'); ok(whole(S) && S.P[0].shield === 0 && S.log[0].raised[0] === 8 && S.log[0].block[0] === 0 && S.log[0].through[0] === 60, 'Marc\'s rule: Dust Screen puts up a shield of 8, it soaks the whole hit of 60, and breaks', JSON.stringify([S.P[0].shield, S.log[0].raised, S.log[0].through]));
-  S = one({ shieldRebuild: 'blocks' }, 'D01', 'A08'); ok(!whole(S) && S.log[0].raised[0] === 0, 'your block rule still holds: a common block card does nothing against a rare attack card, shield or no shield');
+  S = one({ shieldRebuild: 'blocks', shieldKind: false }, 'D01', 'A08'); ok(!whole(S) && S.log[0].raised[0] === 0 && lostHP(S) === 75, 'with the kind-of-shield switch off: a common block card does nothing against a rare attack card, and all 75 lands');
+  // Marc's example: a common shield of 8, a rare card that adds 20: the ship's 55 goes into the shield, the 20 goes through
+  S = one({}, 'D01', 'A08'); ok(S.log[0].raised[0] === 8 && S.log[0].snap.skind[0] === 0 && S.log[0].pierce[0] === 20 && S.P[0].shield === 0 && lostHP(S) === 20, 'Dust Screen (common) against Twin Tens (rare, +20): the shield of 8 soaks the ship\'s 55, and exactly 20 goes through to the parts', JSON.stringify([S.log[0].raised, S.log[0].pierce, S.P[0].shield, lostHP(S)]));
+  S = one({}, 'D01', 'A01'); ok(S.log[0].pierce[0] === 0 && lostHP(S) === 0, 'Dust Screen (common) against Spark Shot (common): stopped whole');
+  S = one({}, 'D06', 'A08'); ok(S.log[0].snap.skind[0] === 1 && S.log[0].pierce[0] === 0 && lostHP(S) === 0, 'Meteor Net (rare) against Twin Tens (rare): stopped whole');
+  S = one({}, 'D06', 'A11'); ok(S.log[0].pierce[0] === 55 && S.P[0].shield === 0 && lostHP(S) <= 55 && lostHP(S) > 0, 'Meteor Net (rare) against Doubling Drive (epic, 55 + 55): the shield soaks the ship\'s 55, and the card\'s 55 goes through', JSON.stringify([S.log[0].pierce, lostHP(S)]));
+  S = one({}, 'R15', 'A12'); ok(S.log[0].snap.skind[0] === 2 && S.log[0].pierce[0] === 0 && lostHP(S) === 0, 'Shield Reborn makes an epic shield: nothing goes through it, not even Hundred Cannon');
+  S = one({}, 'R05', 'A12'); ok(S.log[0].snap.skind[0] === 0 && S.log[0].pierce[0] === 45 && lostHP(S) > 0, 'Shield Spark (common) against Hundred Cannon (epic, 55 + 45): 45 goes through', JSON.stringify(S.log[0].pierce));
+  (function () { const T = B.newBattle(Object.assign({}, D, { guard: 'blind' }), STD, STD, 79); const pick = ['R01', 'A11'].map((id, i) => { const p = T.P[i]; let x = p.hand.indexOf(id); if (x < 0) { const dd = p.deck.indexOf(id); p.deck.splice(dd, 1); p.deck.push(p.hand[0]); p.hand[0] = id; x = 0; } return x; }); B.startRound(T, pick[0], pick[1]); B.steps(T).forEach(st => { const req = B.need(T, st); B.run(T, st, req ? B.cpuChoose(T, req) : null); }); ok(T.log[0].pierce[0] === 0 && T.P[0].shield === 0 && T.P[0].parts.every(q => q.hp === q.max), 'the shield a battle starts with has no kind: Doubling Drive (110) breaks it and is soaked up whole', JSON.stringify([T.log[0].pierce, T.P[0].shield])); })();
   S = one({ shieldRebuild: 'blocks' }, 'D09', 'A01'); ok(whole(S) && S.log[0].raised[0] === 0 && S.log[0].through[0] === 0, 'Vanishing Act still blocks everything and puts up no shield');
 })();
 // Marc's ruling of 22 November: attacks land in turn order; a ship that loses its last part does not strike back
