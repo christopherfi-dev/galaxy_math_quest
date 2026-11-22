@@ -31,7 +31,7 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | File | What it checks |
 |---|---|
 | `flyin_testpage_test.js` | The iPad test page (`docs/flyin/test.html`): on three screens it starts, ends by itself with a number on each line, fits the screen and asks the network for nothing; it copes with no WebGL 2, the words a real iPad sends, an iPad turned in the middle, and Test again. It does not check speed: this machine draws WebGL in software. Needs Playwright. About 1 minute |
-| `flyin_test.js` | The Voltara fly-in as its own page (`prototypes/voltara_flyin.html`, copied to `docs/flyin/index.html`): it starts and ends by itself on time on four screens (10 seconds at the fast speed, 15 at the usual one), and its last picture is the meadow; a tap skips it at every second; it gives way at once with no WebGL 2, a slow set-up, a hidden page or a lost picture; the short one; an iPad turned in the middle; Watch again; no network; the piece for the game is under 60 KB. It does not check speed. Needs Playwright. About 3 minutes |
+| `flyin_test.js` | The Voltara fly-in as its own page (`prototypes/voltara_flyin.html`, copied to `docs/flyin/index.html`): it starts and ends by itself on time on four screens (10 seconds at the fast speed, about 13 at the usual one), and its last picture is the meadow; a tap skips it at every second; it gives way at once with no WebGL 2, a slow set-up, a hidden page or a lost picture; the short one; an iPad turned in the middle; Watch again; no network; the piece for the game is under 60 KB. It does not check speed. Needs Playwright. About 3 minutes |
 
 ## Play tests: a real browser plays the game
 

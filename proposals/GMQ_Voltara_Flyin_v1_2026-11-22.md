@@ -20,7 +20,7 @@ No words are shown in the scene. The pictures carry it. (A caption is an open qu
 
 **The view is first person** [Source: Marc, 2026-11-22: "I think it'll be cool if they feel like they're flying… They actually see the planet arriving from like a first person perspective"]. The child sits in the cockpit. The ship is seen from outside only at the very start and once it has landed.
 
-**It plays in 15 seconds** [Source: Marc, 2026-11-22, after watching the 10-second version: "Can we slow down the approach? It feels way too fast"]. The handoff's "10 seconds or less" was a proposal; his word replaces it. The scene was made as 10 seconds and is played half as fast again; **the times in the table below are those of the 10-second version, so multiply by 1.5.** The speed is one setting (`pace`: 1 is 10 seconds, 1.5 is 15, 2 is 20). The page has **Slower** and **Faster** buttons, so the right speed can be chosen by eye. The flight after the clouds also covers less ground than before, and banks less.
+**It plays in about 13 seconds** [Source: Marc, 2026-11-22. After the 10-second version: "Can we slow down the approach? It feels way too fast". After trying the Slower and Faster buttons: "I think 13-second speed works best for now"]. The handoff's "10 seconds or less" was a proposal; his word replaces it. The scene was made as 10 seconds and is played a quarter slower (12.5 seconds in all); **the times in the table below are those of the 10-second version, so multiply by 1.25.** The speed is one setting (`pace`: 1 is 10 seconds, 1.25 is the usual, 2 is 20). The page has **Slower** and **Faster** buttons, so the right speed can be chosen by eye. The flight after the clouds also covers less ground than before, and banks less.
 
 The last half second (at any speed, the last twentieth) is the fade that hands over to the game. **A tap anywhere skips it, at any moment.**
 
@@ -155,6 +155,7 @@ Its minors, and what happened to each:
 - **A caption:** none.
 - **Phase 2:** the main thread wires it in.
 - **Publishing:** this thread may push its own files to the main branch.
+- **The speed:** the 13-second one, "for now".
 
 **Still open:**
 
@@ -170,9 +171,7 @@ Its minors, and what happened to each:
 
    **What could prove this wrong:** children who try to steer with their fingers the first time they see it. Watch two or three of them.
 
-2. **Which speed?** It now plays in 15 seconds. Try Slower and Faster on the page and say which number feels right. A slower scene costs the child waiting time on the first landing only; later landings get the short one.
-
-3. **How do the children address you?** The test page still says "send it to your teacher".
+2. **How do the children address you?** The test page still says "send it to your teacher".
 
 ## 9. Phase 2, when you say so: how it would fit in (read only; nothing is done)
 
