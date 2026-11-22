@@ -212,6 +212,8 @@ flowchart LR
 
 ### 2. The Rillfolk: the missing number (the next to build, if you agree)
 
+**This one now has its own full design note:** `GMQ_Big_World_Reach_Design_v1_2026-11-22.md`, with a number rule checked on 20,000 children. The lines below are the short form.
+
 - **Their trouble:** every dock has a load dial: rafts × baskets on each = baskets. One window on each dial burnt out. Rafts go out too heavy, or half empty.
 - **Warm-up:** mend three dials. 6 × ? = 42. ? × 4 = 36.
 - **The open problem that lights the stone, "the three towns":** the fleet is 12 rafts of 6 baskets. Three towns ask for baskets: more than the fleet can carry. Each raft goes full to one town. A town is fed only if it gets all it asked for.

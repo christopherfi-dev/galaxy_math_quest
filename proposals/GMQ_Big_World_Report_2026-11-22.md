@@ -11,10 +11,11 @@ Nothing is on the website yet. I do not have your line of permission to push to 
 
 | What | Where |
 |---|---|
-| The big world, to play | A private page on claude.ai (the link is in my reply). It opens on your own iPad or computer, signed in as you |
+| The big world, to play | https://claude.ai/artifact/XxJzhCzDk2dvTwuSjgqeav . A private page. It opens on your own iPad or computer, signed in as you. The children cannot open it unless you share it |
 | The same page, in the repository | `docs/bigworld/index.html`, on branch `claude/inspiring-albattani-umveps` |
 | The size test | `docs/bigworld/size_test.html`, same branch |
 | The design note, with the map | `proposals/GMQ_Big_World_Design_v1_2026-11-22.md` |
+| The next region's design, to read before I build | `proposals/GMQ_Big_World_Reach_Design_v1_2026-11-22.md` |
 
 **To put it on the website** for the children's iPads, give this thread one line: permission to push its own files to `claude/trusting-edison-vl78nc`. Then the links will be:
 - `https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/`
@@ -136,7 +137,7 @@ Each reviewer saw only CLAUDE.md, the handoff and what I gave them. Neither saw 
 2. **Play the Meadow** on your own iPad. Tell me where you got lost, bored or stuck.
 3. **One line of permission** to push this thread's own files to the main branch, if you want it on the website.
 4. **The decisions** in the design note, section 11. The first six are choices I made tonight that are yours.
-5. **Which region next?** I would write the Reach's full design note first, and build nothing until you have read it.
+5. **Read the Reach's design note** (`GMQ_Big_World_Reach_Design_v1_2026-11-22.md`) and answer its six decisions. Its number rule is checked on 20,000 children. Nothing of it is built. I stopped there on purpose.
 
 ---
 
