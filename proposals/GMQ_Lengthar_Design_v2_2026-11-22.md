@@ -1,6 +1,25 @@
 # Planet Lengthar, version 2: metric
 
 **Date:** 22 November 2026. **For:** Marc. It replaces `GMQ_Lengthar_Design_v1_2026-11-21.md`.
+
+## Built: version 86, on the preview link
+
+- **All five places and all four jobs,** as in sections 3 to 5. The numbers are checked on 20,000 cadets (`checks/lengthar_check.js`). It is played as a child would on three screens (`checks/lengthar_test.js`): wrong taps, wrong readings, closing the game half-way, and each measuring picture checked to be exactly its length.
+- **An independent reviewer** looked at 23 screenshots without seeing the code. It measured every picture by eye, and every reading matched. What it found, and what was done:
+  - **Fixed:**
+    - The Guardian's crystals had pointed ends, which a child could misread. They now have flat, upright ends.
+    - "Right number" was shown before the ruler was lined up. Now, until it is lined up, a reading is never called right or wrong.
+    - The finished example's peg was also one of the things to measure. It is now a paint brush.
+    - The rope example said "folded" but was drawn straight. It is now drawn folded, then opened, with ½ on each half.
+    - The ruler story: the cadet now uses the ship's ruler, which is in the bag. The thanks at the end is a measuring tape.
+    - The bench: the things sit beside the cadet, each in its own colour, with a green dot when measured.
+    - Phones: no millimetre marks, which blurred into one band, and bigger numbers. The plot's line stops at its last mark.
+    - The walking words offer only the ways that exist. The ending's words now match what is drawn.
+  - **Not changed, and why:**
+    - **The number pad can cover the message on a phone.** It is the game's own pad, used in every place, and it can be moved. Your class uses iPads.
+    - **The task pictures fill the width, but not the full height, on an iPad held sideways.** They are wide by nature: a ruler and a rod.
+    - **"Read…" beside "Read to me" on the arrival screens.** It is the same as on Xylophora.
+
 Everything is **[Proposal]** unless it says [Source].
 
 [Source: Marc, 2026-11-22] "We learn the metric system." Version 1 measured in quarter inches. This version uses centimetres and metres.
@@ -71,7 +90,7 @@ Everything else here is mine [Proposal]: the places, the objects, the numbers an
 
 ## 6. How it joins the world web [Proposal; your laws]
 
-- **Lengthar gives:** the Measuronians thank the cadet with **a true ruler**. In strand A, the Nomads' glassworks on Voltara cut their lantern's glass panes to exact centimetres, so the cadet measures again on another planet. Lengthar's skill travels.
+- **Lengthar gives:** the Measuronians thank the cadet with **a measuring tape** whose marks never shake off. (The cadet measures with the ship's own ruler; the tape is the thanks.) In strand A, the Nomads' glassworks on Voltara cut their lantern's glass panes to exact centimetres, so the cadet measures again on another planet. Lengthar's skill travels.
 - **Lengthar needs nothing from elsewhere** for its own jobs (law 7).
 - **Massar** (grams and kilograms, 3.MD.2) stays for later. It could take the world web's sand sack.
 

@@ -99,7 +99,7 @@ const path = require('path');
     for (let i = 0; i < 3; i++) { const v = await V(); await truthful(v.G[i], 0, `crystal ${i + 1}`); await tapSvg('lsvg', 100, 300); await answer(v.G[i]); await p.waitForTimeout(150);
       if (i === 0) { await shot('10_judge'); await p.click(`[data-j="${v.tr[0] ? 0 : 1}"]`); expect(await msg(), /Are they the same/, 'a wrong judgement'); }
       await p.click(`[data-j="${v.tr[i] ? 1 : 0}"]`); await p.waitForTimeout(300); }
-    ok(await p.evaluate(() => LEN().done.guard && S.inv.includes('ruler') && S.cards.some(c => c.r === 'gold')), 'the Guardian is gone; a true ruler and an epic card'); await shot('11_done');
+    ok(await p.evaluate(() => LEN().done.guard && S.inv.includes('tape') && S.inv.includes('sruler') && S.cards.some(c => c.r === 'gold')), 'the Guardian is gone; the ship\'s ruler, a measuring tape and an epic card'); await shot('11_done');
     ok(await p.evaluate(() => { const el = $('mission'); return !!el && /4 of 4/.test(lMissionHtml()); }), 'the mission panel says 4 of 4');
     expect(await say('hint'), /fly on/, 'the last hint');
     // ---- fly away; the report home is offered in space

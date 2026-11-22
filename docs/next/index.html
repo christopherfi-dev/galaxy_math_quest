@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 84</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 86</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -331,7 +331,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <section class="box" id="partsbox" data-m="ship" aria-label="Your ship parts and tasks"></section>
   <section class="box" id="cards" data-m="cards" aria-label="Your cards"></section>
   <div id="teacherbox" data-m="teacher">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><button class="word" type="button" id="t_xyl">Go to Xylophora</button><button class="word" type="button" id="t_std">Go to Stardust</button><span class="note" id="t_now"></span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><button class="word" type="button" id="t_xyl">Go to Xylophora</button><button class="word" type="button" id="t_len">Go to Lengthar</button><button class="word" type="button" id="t_std">Go to Stardust</button><span class="note" id="t_now"></span></p>
   <section class="box" id="stars" aria-label="Your star chart"></section>
   <details class="box">
     <summary>For the teacher: what this sketch shows</summary>
@@ -400,7 +400,8 @@ const ODDS = [['common', 70], ['rare', 25], ['gold', 5]];
 /* [Marc, 2026-11-21, agreed] the top card is called "epic", his word ("Common, rare, epic"). Saved games store it as 'gold', so only the name a child reads changes.
    The Lucky Draw ship parts keep "gold". */
 const CARDNAME = { common: 'common', rare: 'rare', gold: 'epic' }, aCard = r => `${r === 'gold' ? 'an' : 'a'} ${CARDNAME[r] || r} card`;
-const TOTAL_SECRETS = 25;   // 18 on the station, 7 on Voltara
+const TOTAL_SECRETS = 24;   // 18 on the station, 6 on Voltara. Nomad Hollow is where the quest goes, so it is not a secret (version 85).
+const secCount = () => S.secrets.filter(id => id !== 'hollow').length;
 /* the alien artifacts in the Engine Bay: four colours, and a shape for each so colour is never the only clue */
 const GEMC = [['red', '#ff7a6b', 'diamond'], ['blue', '#6db3ff', 'round'], ['green', '#6fd08a', 'triangle'], ['gold', '#ffd25e', 'square']];
 const DSLOT = [[3, 14], [5, 14], [7, 14], [9, 14], [3, 16], [5, 16], [8, 16], [10, 15]];   // where the practice drones hover
@@ -501,8 +502,8 @@ const OBJ = {
   bench:   { room: 'power',  tiles: [[28, 17]], words: ['bench', 'table', 'blocks', 'block'], label: 'block bench', block: 1 },
   cells:   { room: 'power',  tiles: [[29, 13]], words: ['cells', 'cell', 'emergency', 'meter'], label: 'power cells', stand: [29, 14] }
 };
-const ITEMS = { wrench: 'wrench', magnet: 'magnet', keycard: 'key card', chart: 'star chart', badge: 'badge', oil: 'oil can', fuse: 'fuse', burst: 'FlavorBurst', stone: 'glow stone', ckey: 'crystal key' };
-const ITEM_WORDS = { wrench: ['wrench', 'spanner', 'tool'], magnet: ['magnet'], keycard: ['keycard', 'key', 'card'], chart: ['chart'], badge: ['badge'], oil: ['oil', 'can', 'oilcan'], fuse: ['fuse'], burst: ['flavorburst', 'fruit', 'burst'], stone: ['stone', 'glow', 'light'], ckey: ['key', 'crystal'] };
+const ITEMS = { sruler: 'ship\'s ruler', tape: 'measuring tape', wrench: 'wrench', magnet: 'magnet', keycard: 'key card', chart: 'star chart', badge: 'badge', oil: 'oil can', fuse: 'fuse', burst: 'FlavorBurst', stone: 'glow stone', ckey: 'crystal key' };
+const ITEM_WORDS = { sruler: ['ruler'], tape: ['tape', 'measuring'], wrench: ['wrench', 'spanner', 'tool'], magnet: ['magnet'], keycard: ['keycard', 'key', 'card'], chart: ['chart'], badge: ['badge'], oil: ['oil', 'can', 'oilcan'], fuse: ['fuse'], burst: ['flavorburst', 'fruit', 'burst'], stone: ['stone', 'glow', 'light'], ckey: ['key', 'crystal'] };
 const VERBS = {
   look: ['look', 'l', 'examine', 'x', 'read', 'see', 'check', 'inspect', 'search', 'watch'],
   take: ['take', 'get', 'grab', 'pick', 'lift', 'eat', 'bite', 'taste'], open: ['open', 'unlock'], push: ['push', 'pull', 'move', 'shove', 'slide'],
@@ -661,11 +662,12 @@ function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arr
   if (S.mode === 'planet') return vThings().filter(t => t.x != null).map(t => [t.spot ? t.spot.name.toLowerCase() : t.words[0], t.label]);
   if (S.mode === 'chrono') return cHere();
   if (S.mode === 'xylo') return xHere();
+  if (S.mode === 'len') return lHere();
   if (S.mode === 'star') return sHere();
   if (S.mode === 'world') return wThings(wKit(WORLD().at)).map(t => [t.words[t.words.length - 1].indexOf(' ') > 0 ? t.words[0] : t.words[0], t.label]);
-  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia'], ['land xylophora', 'land on Xylophora']] : S.at === 'databa' && !SP.to ? [['dock', 'dock with the mission ship']] : []).concat(Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name])); }
+  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia'], ['land xylophora', 'land on Xylophora'], ['land lengthar', 'land on Lengthar']] : S.at === 'databa' && !SP.to ? [['dock', 'dock with the mission ship']] : []).concat(Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name])); }
 /* ways to go, as words to tap [Source: Marc, 2026-11-19: "Can you also add West East north and south as buttons to tap?"] */
-function dirWords() { if (!S || widget) return []; return S.mode === 'station' ? ['north', 'south', 'east', 'west'] : S.mode === 'planet' || S.mode === 'world' ? ['west', 'east'] : (S.mode === 'chrono' && C().at === 'map') || S.mode === 'xylo' || (S.mode === 'star' && SD().at === 'map') ? ['north', 'south', 'east', 'west'] : []; }
+function dirWords() { if (!S || widget) return []; return S.mode === 'station' ? ['north', 'south', 'east', 'west'] : S.mode === 'len' ? ['west', 'east'].filter(d => LSC[LEN().sc][d[0]]) : S.mode === 'planet' || S.mode === 'world' ? ['west', 'east'] : (S.mode === 'chrono' && C().at === 'map') || S.mode === 'xylo' || (S.mode === 'star' && SD().at === 'map') ? ['north', 'south', 'east', 'west'] : []; }
 function drawDirs() { const el = $('dirs'); let d = []; try { d = dirWords(); } catch (e) {} const sig = d.join(); if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !d.length; el.innerHTML = '<span class="lab">Go</span>' + d.map(x => `<button class="word dir" type="button" data-d="${x}">${x}</button>`).join(''); el.querySelectorAll('button').forEach(b => b.onclick = () => act('go ' + b.dataset.d)); }
 function drawWords() { fitSoon(); drawDirs(); if (S && drawWords.m !== S.mode) { drawWords.m = S.mode; try { drawBag(); } catch (e) {} }      /* the doing words fit the kind of place */
   let list = []; try { list = hereWords(); } catch (e) {} const el = $('nouns'), sig = S ? S.mode + '|' + list.map(x => x[0]).join(',') : ''; if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !list.length;
@@ -697,7 +699,7 @@ const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your
 function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); const L = $('log').parentNode; if (L) L.scrollTop = L.scrollHeight; }
 const MENU = { open: null, seen: {} }, FIT = { ctl: 0, key: '' };
 function menuCounts() { return { cards: S.cards.length + (S.q4 || 0), ship: S.parts.length * 100 + tasksDone() }; }
-function drawMenu() { const p = $('panels'); if (!p || !S) return; const mhere = (S.mode === 'star' && !!S.sd) || (S.mode === 'chrono' && !!S.c) || (S.mode === 'xylo' && !!S.xy), mb = $('m_mission'); if (MENU.open === 'mission' && !S.v && !mhere) MENU.open = null; if (MENU.open) p.dataset.open = MENU.open; else delete p.dataset.open; mb.hidden = !(S.v || mhere); { const lab = mhere || S.mode === 'planet' ? 'Mission' : 'Voltara mission'; if (mb.textContent !== lab) mb.textContent = lab; }      /* away from Voltara the button says whose mission it holds */
+function drawMenu() { const p = $('panels'); if (!p || !S) return; const mhere = (S.mode === 'star' && !!S.sd) || (S.mode === 'chrono' && !!S.c) || (S.mode === 'xylo' && !!S.xy) || (S.mode === 'len' && !!S.ln), mb = $('m_mission'); if (MENU.open === 'mission' && !S.v && !mhere) MENU.open = null; if (MENU.open) p.dataset.open = MENU.open; else delete p.dataset.open; mb.hidden = !(S.v || mhere); { const lab = mhere || S.mode === 'planet' ? 'Mission' : 'Voltara mission'; if (mb.textContent !== lab) mb.textContent = lab; }      /* away from Voltara the button says whose mission it holds */
   const n = menuCounts(); document.querySelectorAll('#menu .mbtn').forEach(b => { const k = b.dataset.m, on = k === MENU.open; b.classList.toggle('on', on); b.setAttribute('aria-expanded', on ? 'true' : 'false'); if (n[k] != null) { if (on || MENU.seen[k] == null) MENU.seen[k] = n[k]; b.classList.toggle('new', n[k] > MENU.seen[k]); } }); }
 function menuOpen(k) { MENU.open = k || null; drawMenu(); fitSoon(); if (MENU.open) { const el = document.querySelector(`#panels > [data-m="${MENU.open}"]`); if (el && el.scrollIntoView) setTimeout(() => el.scrollIntoView({ block: 'nearest' }), 30); } }
 /* with the controls under the picture, the picture takes the room that is left, so the box and the word rows are never below the edge of the screen */
@@ -712,7 +714,7 @@ function fit() { deskSet(); const c = document.querySelector('.console'); if (!c
   const top = c.getBoundingClientRect().top + window.scrollY, room = Math.max(300, Math.min(window.innerHeight * .82, window.innerHeight - top - FIT.ctl - 26)), want = Math.round(widget ? Math.max(room, Math.min(window.innerHeight * .82, window.innerWidth * 1.5)) : room);      /* a task needs the room it had before; the word rows are not used while one is open */ if (Math.abs((parseFloat(c.style.height) || 0) - want) > 2) { c.style.minHeight = '0'; c.style.height = want + 'px'; if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); } }      /* the number pad and the small keys follow, or they would sit on top of what just moved */
 function fitSoon() { if (FIT.t) return; FIT.t = requestAnimationFrame(() => { FIT.t = 0; try { fit(); } catch (e) {} }); }
 function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
-  $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
+  $('status').innerHTML = `<span class="chip${secCount() ? ' on' : ''}">Secrets ${secCount()} of ${TOTAL_SECRETS}</span>` +
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.xy ? `<span class="chip${xCount() ? ' on' : ''}">Xylophora ${xCount()} of 5</span>` : ''}${S.sd ? `<span class="chip${sCount() ? ' on' : ''}">Stardust ${sCount()} of 5</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. ${REALON.on ? 'Purple tasks are done in real life, with your teacher.' : 'Every task is played here.'}</p>` +
@@ -733,7 +735,7 @@ function chipTap(w, label, bag) { const box = $('cmd'), draft = box.value.replac
   if (!words.length || (CHIPN && draft.trim() === CHIPN)) { box.value = (words.length ? draft.trim() + ' ' : '') + w + ' '; CHIPN = box.value.trim(); mark(); beep(620, .03); return say(`${label}. Now tap a doing word. Or tap Do it to look.`, null, 'chip thing'); }
   CHIPN = ''; if (bag && words.length === 1 && TWO.indexOf(first) >= 0) { const to = first === 'give' || first === 'feed' ? 'to' : 'on'; box.value = `${first} ${w} ${to} `; mark(); beep(620, .03); return say(`${first[0].toUpperCase() + first.slice(1)} the ${label} ${to} what? Tap a thing.`, null, 'chip two'); }
   const next = draft.replace(/ $/, '') + ' ' + w; if (verbWords().has(first)) return act(next); box.value = next + ' '; mark(); beep(620, .03); }
-const BAGHOME = { station: ['wrench', 'magnet', 'keycard', 'chart', 'badge', 'oil', 'fuse'], arrive: ['wrench', 'magnet', 'keycard', 'chart', 'badge', 'oil', 'fuse'], planet: ['burst', 'stone', 'ckey'] }; let bagOpen = false, bagMode = '';
+const BAGHOME = { station: ['wrench', 'magnet', 'keycard', 'chart', 'badge', 'oil', 'fuse'], arrive: ['wrench', 'magnet', 'keycard', 'chart', 'badge', 'oil', 'fuse'], planet: ['burst', 'stone', 'ckey'], len: ['sruler', 'tape'] }; let bagOpen = false, bagMode = '';
 function drawBag() {
   $('verbs').innerHTML = '<span class="lab">Do</span>' + (VCHIPS[S && S.mode] || VCHIPS.station).map(v => `<button class="word" type="button" data-v="${v}">${v}</button>`).join('') + `<button class="word hintb" id="hintb" type="button">Hint</button>`;      /* Sound sits under More now [Marc, 2026-11-21, agreed] */
   $('hintb').onclick = () => act('hint');
@@ -749,7 +751,7 @@ function drawBag() {
 function mark() { const v = $('cmd').value.trim().split(' ')[0].toLowerCase(); $('verbs').querySelectorAll('.word').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
 function secret(id, text) {
   if (S.secrets.includes(id)) return; S.secrets.push(id); if (S.tut < 3) S.tut = 3; save(); drawStatus(); chime(); sparkle = { t: 1.2, x: P.x, y: P.y };
-  say(`${text} Secret ${S.secrets.length} of ${TOTAL_SECRETS}.`);
+  say(`${text} Secret ${secCount()} of ${TOTAL_SECRETS}.`);
 }
 function give(item) { if (!S.inv.includes(item)) S.inv.push(item); save(); drawBag(); beep(740, .1); floatText = { t: 1.4, text: '+ ' + ITEMS[item] }; }
 
@@ -796,6 +798,7 @@ function rude(t, strict) { const words = String(t).toLowerCase().split(/\s+/).fi
 let KNOWN = null;
 function knownWords() { if (KNOWN) return KNOWN; const k = new Set('the a an my at to by in into under of around up please on with and it this that north south east west left right back out teacher ship rocket name land yes no board sign street places place trade beacon routes route trader traders gems space fly galaxy planet hint help touch poke shake dig creature animal alien rock post stall flag seed star east west hazard practice practise sums sum asteroid asteroids worm worms wind wormhole hole tree down'.split(' ')); Object.keys(SOFT).forEach(g => SOFT[g].forEach(x => k.add(x)));
   { const addc = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); }); Object.keys(CPL).forEach(p => { addc(CPL[p].name); CPL[p].words.forEach(addc); }); Object.keys(CSC).forEach(p => { addc(CSC[p].name); CSC[p].things.forEach(t => { addc(t.label); t.words.forEach(addc); }); }); Object.keys(CVB).forEach(v => CVB[v].forEach(addc)); Object.keys(CDIR).forEach(addc); Object.keys(FINDS).forEach(p => FINDS[p].forEach(f => { addc(f.name); f.words.forEach(addc); })); XT.forEach(t => { addc(t.label); t.words.forEach(addc); }); Object.keys(XVB).forEach(v => XVB[v].forEach(addc)); 'xylophora pioneer architect manager innovator colonist panel panels square squares floor floors roof roofs wall walls'.split(' ').forEach(addc); ST.forEach(t => { addc(t.label); t.words.forEach(addc); }); Object.keys(SVB).forEach(v => SVB[v].forEach(addc)); 'stardust dock mission degrees litres packs month months energy corridor airlock greenhouse quarters storage'.split(' ').forEach(addc); 'chronosia fruit timetweak taste metrica bridge river mist wisp wisps swap rat rats mud fight credit credits quarter quarters nudge stabilizer quake seventh'.split(' ').forEach(addc); }
+  LT.forEach(t => { t.words.forEach(x => k.add(x)); t.label.toLowerCase().split(/[^a-z]+/).forEach(x => x && k.add(x)); }); Object.keys(LSC).forEach(q => LSC[q].name.toLowerCase().split(/[^a-z]+/).forEach(x => x && k.add(x))); 'lengthar measuronian measuronians measure fix mend feed face fight talk ask speak use look go walk east west fly leave hint help'.split(' ').forEach(x => k.add(x));
   Object.keys(ITEM_WORDS).forEach(i => ITEM_WORDS[i].forEach(x => k.add(x))); Object.keys(ITEMS).forEach(i => ITEMS[i].toLowerCase().split(' ').forEach(x => k.add(x)));
   Object.keys(WKIT.flora).forEach(t => WKIT.flora[t][0].split(' ').forEach(x => k.add(x))); WKIT.rock.forEach(r => r[0].split(' ').forEach(x => k.add(x))); Object.keys(TR).forEach(n => { const kk = wKit(n); k.add(kk.name.toLowerCase()); k.add(kk.cr.name.toLowerCase()); });
   const add = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).forEach(x => { if (x) k.add(x); });
@@ -883,7 +886,7 @@ const DO = {
   cells: { look: () => S.done.blocks ? 'The power cells glow a steady green.' : 'Emergency power cells. Their blocks flicker. Type: use cells.', use: () => { if (S.done.blocks) return 'The power is steady.'; startBlocks(); return 'The cells show their blocks.'; }, open: () => DO.cells.use(), push: () => DO.cells.use(), take: 'They are part of the wall.' }
 };
 const NOPE = { look: 'You see nothing special.', take: 'You cannot take that.', open: 'It does not open.', push: 'It does not move.', use: 'Nothing happens.', talk: 'It does not answer.' };
-const ITEM_LOOK = { wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'The old captain\'s star chart. On its back is a map of this station. It has a strip that would fit a thin slot.', badge: 'A captain’s badge. You are wearing it.', oil: 'A small oil can. Good for rusty things.', fuse: 'A spare fuse. It fits a fuse box.', burst: 'A FlavorBurst. It changes flavour with every bite. Someone may want it.', stone: 'A glow stone. It lights up dark places.', ckey: 'A crystal key from the Energy Council. It opens the tower.' };
+const ITEM_LOOK = { sruler: 'Your ship\'s ruler, marked in centimetres. The storm did not shake its numbers off.', tape: 'A Measuronian measuring tape, marked in centimetres and half centimetres. Its marks will never shake off.', wrench: 'A heavy wrench. Good for screws and loose arms.', magnet: 'A strong magnet on a string.', keycard: 'A key card. It fits a slot somewhere.', chart: 'The old captain\'s star chart. On its back is a map of this station. It has a strip that would fit a thin slot.', badge: 'A captain’s badge. You are wearing it.', oil: 'A small oil can. Good for rusty things.', fuse: 'A spare fuse. It fits a fuse box.', burst: 'A FlavorBurst. It changes flavour with every bite. Someone may want it.', stone: 'A glow stone. It lights up dark places.', ckey: 'A crystal key from the Energy Council. It opens the tower.' };
 
 /* =====================================================================
    THE PARSER. Two to four words: VERB THING, or USE THING ON THING.
@@ -910,7 +913,7 @@ function act(raw) { CHIPN = '';
   const text = raw.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim(); if (!text) return;
   if (widget && widget.kind === 'login') return;
   if (READ.open && !/^teacher (voltara|station|space|chronosia|xylophora|stardust)$/.test(text)) return readNudge();
-  if (/^teacher (voltara|station|space|chronosia|xylophora|stardust)$/.test(text)) { $('cmd').value = ''; return text.endsWith('voltara') ? goVoltara() : text.endsWith('space') ? goSpace() : text.endsWith('chronosia') ? goChronosia() : text.endsWith('xylophora') ? goXylophora() : text.endsWith('stardust') ? goStardust() : goStation(); }
+  if (/^teacher (voltara|station|space|chronosia|xylophora|stardust|lengthar)$/.test(text)) { $('cmd').value = ''; return text.endsWith('lengthar') ? goLengthar() : text.endsWith('voltara') ? goVoltara() : text.endsWith('space') ? goSpace() : text.endsWith('chronosia') ? goChronosia() : text.endsWith('xylophora') ? goXylophora() : text.endsWith('stardust') ? goStardust() : goStation(); }
   $('cmd').value = ''; mark();
   if (rude(raw)) return say('Kind words only, cadet. Try a command like: look, take, open, push, use, go.', '…');
   let shown = echoSafe(raw); const out = s => { if (s) say(s, shown); else { lines.push({ you: shown }); drawLog(); } };
@@ -920,6 +923,7 @@ function act(raw) { CHIPN = '';
   if (S.mode === 'world') return actWorld(text, out);
   if (S.mode === 'chrono') return actChrono(text, out);
   if (S.mode === 'xylo') return xAct(text, out);
+  if (S.mode === 'len') return lAct(text, out);
   if (S.mode === 'star') return sAct(text, out);
   if (widget && widget.kind === 'drones' && /^\D*\d+\D*$/.test(text)) { const i = widget.d.findIndex(d => d.n === +text.match(/\d+/)[0] && !d.hit); out(null); return i < 0 ? say('No drone shows that number.') : droneTap(i); }
   if (widget) return out('Finish this first. Or tap Leave.');
@@ -2166,7 +2170,7 @@ function drawCargo() {        // the cargo pile and the big scale, drawn in the 
 function showEnding() {
   const rows = S.log.map(l => `<tr><td>${l.what}</td><td>${l.skill}</td><td>${l.result || (l.tries === l.need ? 'No mistakes ✓' : l.tries + ' tries')}</td></tr>`).join('');
   const t = $('report'); t.hidden = false; t.innerHTML = `<h3>Mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p><b>Secrets found: ${S.secrets.length} of ${TOTAL_SECRETS}.</b> ${S.secrets.length < TOTAL_SECRETS ? 'Eighteen are on the station. Seven are on Voltara.' : 'You found them all!'}</p>
+    <p><b>Secrets found: ${secCount()} of ${TOTAL_SECRETS}.</b> ${secCount() < TOTAL_SECRETS ? 'Eighteen are on the station. Six are on Voltara.' : 'You found them all!'}</p>
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
   $('again').onclick = restart;
 }
@@ -2192,7 +2196,7 @@ function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const c = i => Math.max(0, Math.min(255, Math.round(((n >> i) & 255) * f))); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 const ol = w => { cx.strokeStyle = INK; cx.lineWidth = w || 2; cx.stroke(); };
 const circ = (x, y, r) => { cx.beginPath(); cx.arc(x, y, r, 0, 7); };
-function setPlace() { const sv = $('stageview'), t = sv && !sv.hidden && sv.dataset.title ? sv.dataset.title : olPicOn() ? widget.pic.title : S.mode === 'intro' ? ['Earth, 2028', 'Earth, 2028', 'Earth, 2028', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'chrono' ? cPlaceName() : S.mode === 'xylo' ? xPlaceName() : S.mode === 'star' ? sPlaceName() : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : S.mode === 'chrono' ? (C().at === 'map' ? 'like: go north' : 'like: talk keeper') : S.mode === 'world' ? 'like: touch rock' : S.mode === 'xylo' ? 'like: look giant' : S.mode === 'star' ? 'like: look thermometer' : 'like: push crate'; } }
+function setPlace() { const sv = $('stageview'), t = sv && !sv.hidden && sv.dataset.title ? sv.dataset.title : olPicOn() ? widget.pic.title : S.mode === 'intro' ? ['Earth, 2028', 'Earth, 2028', 'Earth, 2028', 'KIS Station', 'KIS Station', 'Five galaxies', 'Lift-off'][S.beat] : S.mode === 'arrive' ? 'KIS Station' : S.mode === 'space' ? 'Deep Space' : S.mode === 'world' ? wKit(WORLD().at).name : S.mode === 'chrono' ? cPlaceName() : S.mode === 'xylo' ? xPlaceName() : S.mode === 'len' ? lPlaceName() : S.mode === 'star' ? sPlaceName() : S.mode === 'planet' ? VSC[V().sc].name : ROOMS[S.room].name; if (t !== placeText) { drawWords(); placeText = t; $('place').textContent = t; $('t_now').textContent = 'You are in: ' + t; $('cmd').placeholder = S.mode === 'space' ? 'like: fly to numerix' : S.mode === 'planet' ? 'like: talk butterfly' : S.mode === 'chrono' ? (C().at === 'map' ? 'like: go north' : 'like: talk keeper') : S.mode === 'world' ? 'like: touch rock' : S.mode === 'len' ? 'like: talk measuronian' : S.mode === 'xylo' ? 'like: look giant' : S.mode === 'star' ? 'like: look thermometer' : 'like: push crate'; } }
 function tState(c) { if (c.t === 'void') return 0; if (!S.poster && c.rooms.length && c.rooms.every(r => ROOMS[r].secret) && c !== G[14][15]) return 0;   /* the dark passage is not drawn at all, so its shape gives nothing away */ if (!c.rooms.some(r => S.seen.includes(r))) return c.rooms.some(r => !ROOMS[r].secret) ? 1 : 0; return c.rooms.includes(S.room) ? 3 : 2; }
 
 function drawFloor(x, y) {
@@ -2439,6 +2443,7 @@ function frame1(now) {
   if (S.mode === 'world') { try { drawWorld(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (S.mode === 'chrono') { try { drawChrono(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (S.mode === 'xylo') { try { drawXylo(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
+  if (S.mode === 'len') { try { drawLen(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (S.mode === 'star') { try { drawStar(dt); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (olPicOn()) { try { olPic(); } catch (e) { drawOops(e); } return requestAnimationFrame(frame); }
   if (P.route.length) { const [tx, ty] = P.route[0], dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy), stepLen = 4.6 * dt; P.step += dt; P.idle = 0;
@@ -2553,7 +2558,7 @@ function drawSpace(dt) {
   for (const gh of GHOSTS) { const [gx, gy, dir] = ghostPos(gh); rocket(gx * vw, gy * vh, R * .42, dir > 0 ? .3 : Math.PI - .3, { flame: true, col: '#c4cfdf', col2: '#5f7aa8' }); cx.font = `700 ${Math.max(11, vw * .015)}px "Chakra Petch", sans-serif`; cx.fillStyle = '#c4cfdf'; cx.textAlign = 'center'; cx.fillText(gh.n, gx * vw, gy * vh - R * .3); }
   if (SP.to) { const T = GAL[SP.to], dx = T.x - SP.x, dy = T.y - SP.y, d = Math.hypot(dx, dy), step = .2 * dt; SP.ang = Math.atan2(dy * vh, dx * vw); TRAIL.push([SP.x, SP.y, 1]);
     if (d <= step + .075) { const id = SP.to; SP.to = null; S.at = id; save(); beep(520, .15);
-      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planet Chronosia is open. So is Planet Xylophora. Tap a word below to land.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'A mission ship floats here: Operation Stardust. Tap the galaxy again to dock. Or type: dock.' }[id] || ''}`); }
+      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planets Chronosia, Xylophora and Lengthar are open. Tap a word below to land.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'A mission ship floats here: Operation Stardust. Tap the galaxy again to dock. Or type: dock.' }[id] || ''}`); }
     else { SP.x += dx / d * step; SP.y += dy / d * step; } }
   cx.globalCompositeOperation = 'lighter'; for (const t of TRAIL) { t[2] -= dt * .9; cx.fillStyle = `rgba(255,190,90,${Math.max(0, t[2]) * .7})`; circ(t[0] * vw, t[1] * vh, R * .05 * (1.4 - t[2])); cx.fill(); } cx.globalCompositeOperation = 'source-over'; while (TRAIL.length && TRAIL[0][2] <= 0) TRAIL.shift();
   SP.zoom = Math.max(0, Math.min(1, SP.zoom + (S.at === 'numerix' && !SP.to ? .9 : -3) * dt));
@@ -2628,6 +2633,8 @@ function actSpace(text, out) {
   const tk = text.split(/\s+/), id = Object.keys(GAL).find(g => tk.some(t => t.length > 2 && GAL[g].name.toLowerCase().split(' ').some(w => w !== 'galaxy' && w.startsWith(t))));
   if (S.at === 'databa' && !SP.to && ['dock', 'land', 'stardust', 'board'].some(t => tk.includes(t))) return landStar();
   if (tk.includes('stardust') || tk.includes('dock')) return out('The mission ship is in Galaxy Databa. Fly there first.');
+  if (S.at === 'metrica' && !SP.to && tk.includes('lengthar')) return landLen();
+  if (tk.includes('lengthar')) return out('Planet Lengthar is in Galaxy Metrica. Fly there first.');
   if (S.at === 'metrica' && !SP.to && tk.includes('xylophora')) return landXylo();
   if (tk.includes('xylophora')) return out('Planet Xylophora is in Galaxy Metrica. Fly there first.');
   if (S.at === 'metrica' && !SP.to && (tk.includes('land') || tk.includes('chronosia'))) return landChrono();
@@ -2647,7 +2654,7 @@ function tapSpace(e) {
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .2) * vw, (y - .26) * vh) < Math.min(vw, vh) * .1) return say(tradeTry());
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .56) * vw, (y - .5) * vh) < Math.min(vw, vh) * .34) { land(); return say('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); }
   if (GHOSTS.some(g => { const [gx, gy] = ghostPos(g); return Math.hypot(x - gx, y - gy) < .05; })) return say('Another cadet. Battles between ships come later. They will use your cards.');
-  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'databa' && S.at === 'databa' && !SP.to) return landStar(); if (id === 'metrica' && S.at === 'metrica' && !SP.to) return say('Two planets are open here. Tap a word below: land on Chronosia, or land on Xylophora.'); if (id) flyTo(id, s);
+  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'databa' && S.at === 'databa' && !SP.to) return landStar(); if (id === 'metrica' && S.at === 'metrica' && !SP.to) return say('Three planets are open here. Tap a word below: land on Chronosia, Xylophora or Lengthar.'); if (id) flyTo(id, s);
 }
 
 /* =====================================================================
@@ -2943,7 +2950,7 @@ function planetState() { const v = V(), d = lastDay(); if (!d) return v.plan ? '
 const num = n => n.toLocaleString('en');
 function vWin(flag, text, gold) { closeToy(); if (flag) V()[flag] = true; save(); drawStatus(); chime(); card(gold ? 'gold' : undefined); say(text); }
 const VSEE = { river: 'The river sparkles like diamonds. A Gumblefish giggles in the water.', plaza: 'A wide plaza. A tall tower stands dark. A notice flaps on a post.', homes: 'Round houses and tall thin ones. Not one window is lit.', shops: 'Shops, a theatre and a big wheel. All of it is still.',
-  works: 'Factories and a silent solar plant.', hall: 'Three councillors look up. They seem tired, and glad to see you.', tunnel: 'Cold air. A thick cable hums on the wall.', hollow: 'Shelves of rock, and on them... tiny houses, each with one tiny light.' };
+  works: 'Factories and a silent solar plant.', hall: 'Three councillors look up. They seem tired, and glad to see you.', tunnel: 'Cold air. A thick cable hums on the wall.', hollow: 'A hidden town, deep under the hill! Shelves of rock, and on them... tiny houses, each with one tiny light.' };
 /* MUD RATS: an ambush in a dark street.
    [Source: Marc, 2026-11-18: "you're walking into the dark neighborhood and suddenly something pops up, and it says a band of mud rats attack you from the dark.
     You have one minute to defeat them all or you run back to your ship."]
@@ -2967,7 +2974,7 @@ function ratsEnd(win, lead) { const w = widget, v = V(), secs = w.t0 ? Math.max(
   S.log.push({ what: `Voltara: mud rats on ${CITY[w.k].street}`, skill: HAZ[w.lvl].skill, result: win ? `beaten: ${w.n} sums in ${secs} s, ${w.miss} slips` : `ran away: ${w.i || 0} of ${w.n} in ${secs} s` });
   if (win) { v.ratBeat = v.ratBeat || {}; v.ratBeat[w.k] = v.day; chime(); const got = creditWin(); save(); drawStatus(); return say(`The last mud rat squeaks and runs off into the dark. The band is beaten! ${got} Light this street, and the rats will not come back.`, null, 'rats beaten'); }
   vGo('meadow', .22); drawStatus(); say(`${lead} There are too many mud rats! You run all the way back to your ship. Catch your breath. The rats will rest for a while.`, null, 'rats ran'); }
-function vGo(sc, x) { V().sc = sc; RATS.due = ratsMay(sc) ? tNow + 1.6 : 0; PL.x = x; PL.to = null; PL.then = null; PL.fade = 1; V().been = V().been || []; save(); beep(420, .08); if (sc === 'hollow' && !S.secrets.includes('hollow')) secret('hollow', 'A hidden town, deep under the hill! Tiny lights fill the dark.'); }
+function vGo(sc, x) { V().sc = sc; RATS.due = ratsMay(sc) ? tNow + 1.6 : 0; PL.x = x; PL.to = null; PL.then = null; PL.fade = 1; V().been = V().been || []; save(); beep(420, .08); }
 
 /* ---------- things in each place ---------- */
 const VT = {
@@ -3015,7 +3022,7 @@ const VDO = {
   fountain: { look: () => V().plan ? (S.secrets.includes('coin') ? 'The fountain sparkles.' : 'The fountain runs again. Something shines in the water.') : 'A dry fountain. The pump has no power.',
     take: () => { if (!V().plan) return 'It is dry. Nothing is here.'; if (S.secrets.includes('coin')) return 'Only water now.'; secret('coin', 'You reach in. A lucky Voltara coin! You keep it.'); card(); }, use: () => VDO.fountain.take() },
   hall: { look: 'The Energy Council Hall. Its door is open.', go: () => { const nw = !(V().been || []).includes('hall'); vGo('hall', .1); if (nw) { V().been.push('hall'); save(); } return 'You step into the Council Hall.' + (nw ? ' ' + VSEE.hall : ''); }, open: () => VDO.hall.go(), use: () => VDO.hall.go() },
-  hatch: { look: 'A hatch in the ground. A low hum comes from under it. A cable runs down.', open: () => { vGo('tunnel', .08); return (has('stone') ? 'You climb down. Your glow stone lights the way. ' : 'You climb down. It is pitch dark. You cannot see the way on. ') + VSEE.tunnel; }, go: () => VDO.hatch.open(), use: () => VDO.hatch.open() },
+  hatch: { look: 'A hatch in the ground. A low hum comes from under it. A cable runs down.', open: () => { vGo('tunnel', .08); return (has('stone') ? 'You climb down. Your glow stone lights the way. ' : 'You climb down. It is pitch dark. Keep one hand on the humming cable, and you can follow it east. ') + VSEE.tunnel; }, go: () => VDO.hatch.open(), use: () => VDO.hatch.open() },
   exit: { look: 'The door back to the plaza.', go: () => { vGo('plaza', .8); return 'You step out into the plaza.'; }, open: () => VDO.exit.go(), use: () => VDO.exit.go() },
   map: { look: () => V().plan ? `A map of the city. ${V().plan.filter(i => i < 21).length} places are lit. ${21 - V().plan.filter(i => i < 21).length} are dark. ${planetState()}` : 'A map of the city: three streets and 21 places. Not one light is on.' },
   table: { look: () => V().plan ? `The plan table. It is day ${V().day}. The tower holds ${num(V().supply)}. ${V().planDay === V().day ? `Today's plan uses ${num(used())}.` : 'Today has no plan yet.'}` : 'The plan table. A small tower of light floats over it.',
@@ -3023,7 +3030,7 @@ const VDO = {
       if (!v.short) { startShort(); return 'Numbers float up over the table.'; } startPlan(); return v.final ? 'The places float over the table. Nomad Hollow is among them now.' : 'All 21 places float over the table.'; }, open: () => VDO.table.use() },
   council: { look: 'Three councillors. They look tired and kind.', talk: () => { const v = V(); if (!v.met) { v.met = true; give('ckey'); save(); drawStatus(); return 'The Council says: you came! Our city is dark. ' + councilSays(); } if (v.houses && !v.final) { startChoice(); return 'The Council listens.'; } return 'The Council says: ' + councilSays(); }, use: () => VDO.council.talk() },
   log: { look: () => `The tower log. It is day ${V().day}. The tower holds ${num(V().supply)}.${lastDay() ? ' ' + planetState() : ''}`, use: () => { const v = V(); if (v.planDay !== v.day) return `It is day ${v.day}. The tower holds ${num(v.supply)}. Make today's plan at the table first. The log reports in the morning.`; startLog(); return 'Night passes. You read the morning report.'; }, open: () => VDO.log.use() },
-  cable: { look: () => has('stone') ? 'A thick cable. It hums. A thin wire is clipped to it and runs east.' : 'You feel a cable. It hums. It is too dark to see more.', take: 'It is bolted to the wall.', push: 'It hums a little louder.' },
+  cable: { look: () => has('stone') ? 'A thick cable. It hums. A thin wire is clipped to it and runs east.' : 'You feel a thick cable. It hums, and it runs east into the dark. With one hand on it, you can follow it.', take: 'It is bolted to the wall.', push: 'It hums a little louder.' },
   tinydoor: { look: 'The tiny door, from the inside. It leads up to the meadow.' },
   elder: { look: 'A Number Nomad, no taller than your thumb. It has a long silver beard.', talk: () => { if (V().final) return powered(21) ? 'The elder says: thank you, neighbour. We have light, and we have mended one of your panels.' : 'The elder says: our lights are out. We understand. Energy is short. But it is very dark down here.'; if (V().houses) return 'The elder says: a cosmic storm stranded us here, long ago. We only wanted a little light. Please tell the Council.'; startHouses(); return 'The elder says: you found us! Please, count our homes before you judge us.'; }, use: () => VDO.elder.talk() },
   houses: { look: () => V().final && !powered(21) ? 'Tiny houses on shelves of rock. Their lights are out.' : 'Tiny houses on shelves of rock. Each has one tiny light. They sit in neat rows.', take: 'You would never take someone\'s home.', use: () => VDO.elder.talk() },
@@ -3037,7 +3044,7 @@ function spotDo(p, verb, it) { const on = powered(p.i), hurt = lastDay() && last
 function planetHint() { const v = V(); return !v.crossed ? (!v.fed ? (has('burst') ? 'Give the FlavorBurst to the Gumblefish at the river.' : 'The Gumblefish at the river is hungry. Take a FlavorBurst from the tree by your ship.') : 'Talk to the Gumblefish. Hop across the stones.')
   : !v.met ? 'Walk east to the Power Plaza. Go into the Council Hall and talk to the Council.' : !v.count ? 'Open the energy tower in the plaza. Count what is in it.'
   : !vDone('survey') ? `Use the board at the west end of ${CITY['RCI'.split('').find(c => !v.need[c])].street}.` : !v.plan ? 'Go to the Council Hall. Use the plan table.' : !v.lost ? 'Night must pass. Read the tower log in the Council Hall for the morning report.'
-  : !v.houses ? (!has('stone') ? 'The tunnel under Factory Row is dark. Dig by the tall tree in the meadow for a glow stone.' : V().sc === 'hollow' ? 'Talk to the elder.' : 'Open the hatch at the east end of Factory Row. Follow the cable east.')
+  : !v.houses ? (V().sc === 'hollow' ? 'Talk to the elder.' : V().sc === 'tunnel' && !has('stone') ? 'Keep one hand on the humming cable and walk east. It is slow in the dark. A glow stone would light the way: the butterfly knows where one is.' : 'Open the hatch at the east end of Factory Row. Follow the cable east.')
   : !v.final ? 'Go to the Council Hall. Tell the Council what you found.' : v.planDay !== v.day ? 'A new day. Go to the Council Hall and make today\'s plan. Nomad Hollow is on the table now.' : 'Read the tower log to see how the day went. Or fly on from your ship.'; }
 function vCross() { PL.to = PL.x < .5 ? .84 : .16; return 'You hop across the stones.'; }
 
@@ -3072,19 +3079,20 @@ function actPlanet(text, out) {
   const run = () => { let r; if (best.spot) r = spotDo(best.spot, v, item); else { const d = VDO[best.id] || {}, h = d[v === 'go' ? (d.go ? 'go' : 'look') : v]; r = typeof h === 'function' ? h(item) : h; if (r === undefined && h !== undefined) return; r = r || (v === 'eat' ? 'You cannot eat that.' : NOPE[v]) || 'Nothing happens.'; } if (r !== undefined && r !== true) say(r); };
   if (best.x == null) return run();
   let tx = best.x + (Math.abs(PL.x - best.x) < .03 ? 0 : -.035 * (PL.x < best.x ? 1 : -1)); if (sc === 'river' && !v0.crossed) tx = Math.min(tx, .19); if (sc === 'river' && v0.crossed && tx > .22 && tx < .78) tx = PL.x < .5 ? .19 : .81;
-  if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); PL.to = tx; PL.then = run;
+  PL.to = tx; PL.then = run;
 }
 function vWalkOut(d) { strayed(); const sc = V().sc, to = VSC[sc][d]; if (!to) return sc === 'meadow' && d === 'w' ? 'Thick glowing woods. You cannot go that way.' : 'You cannot go that way.';
   if (sc === 'river' && d === 'e' && !V().crossed) { PL.to = .19; return V().fed ? 'The stones wait. Talk to the Gumblefish to cross.' : 'The river is too wide and deep. You need a way across.'; }
-  if (sc === 'tunnel' && d === 'e' && !has('stone')) return 'It is pitch dark. You cannot see the way. You need a light.';
-  PL.to = d === 'e' ? 1.02 : -.02; PL.then = () => { vGo(to, d === 'e' ? (to === 'hall' ? .1 : .05) : (sc === 'hall' ? .8 : .95)); const nw = !V().been.includes(to) && !(to !== 'hall' && VSC[to].k && V().plan); if (!V().been.includes(to)) { V().been.push(to); save(); } say(`You reach ${VSC[to].at}.${nw && VSEE[to] ? ' ' + VSEE[to] : ''}`); }; return `You walk ${d === 'e' ? 'east' : 'west'}.`; }
+  /* [Marc, 2026-11-22, agreed: V2 in GMQ_Secrets_Balance_v1] the glow stone helps, and is never needed: in the dark the cadet follows the cable, slowly */
+  const feel = sc === 'tunnel' && !has('stone') ? 'You keep one hand on the humming cable and shuffle ' + (d === 'e' ? 'east' : 'west') + ' in the dark. It is slow. ' : '';
+  PL.to = d === 'e' ? 1.02 : -.02; PL.then = () => { vGo(to, d === 'e' ? (to === 'hall' ? .1 : .05) : (sc === 'hall' ? .8 : .95)); const nw = !V().been.includes(to) && !(to !== 'hall' && VSC[to].k && V().plan); if (!V().been.includes(to)) { V().been.push(to); save(); } say(`You reach ${VSC[to].at}.${nw && VSEE[to] ? ' ' + VSEE[to] : ''}`); }; return feel || `You walk ${d === 'e' ? 'east' : 'west'}.`; }
 function tapPlanet(e) {
   const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase(), sc = V().sc;
   if (widget) return say('Finish this first. Or tap Leave.');
   if (x > .93 && VSC[sc].e) return say(vWalkOut('e')); if (x < .07 && VSC[sc].w) return say(vWalkOut('w'));
   const near = vThings().filter(t => t.x != null && Math.abs(t.x - x) < (t.spot ? .045 : .06) && y > .2).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0], id = near || (y < .14 && !VSC[sc].inside ? { words: ['sky'] } : null);
   if (id) return act(`${/^(look|take|open|push|use|talk|eat)$/.test(draft) ? draft : id.tap || 'look'} ${id.spot ? id.spot.name.toLowerCase() : id.words[0]}`);
-  let tx = Math.max(.03, Math.min(.97, x)); if (sc === 'river' && !V().crossed) tx = Math.min(tx, .19); if (sc === 'river' && V().crossed && tx > .22 && tx < .78) return say(vCross()); if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); strayed(); PL.to = tx; PL.then = null;
+  let tx = Math.max(.03, Math.min(.97, x)); if (sc === 'river' && !V().crossed) tx = Math.min(tx, .19); if (sc === 'river' && V().crossed && tx > .22 && tx < .78) return say(vCross()); strayed(); PL.to = tx; PL.then = null;
 }
 
 /* ---------- the maths that opens the way. Each one starts by showing the idea. ---------- */
@@ -3230,7 +3238,8 @@ function startChoiceReal() { widget = { kind: 'choice', tries: 0 };
 function drawMission() { const el = $('mission');      /* the mission of the place you are in. On the mission ship that is Operation Stardust, not Voltara (Marc, 2026-11-20: "my mission is stuck to Voltara") */
   if (S.mode === 'star' && S.sd) { el.hidden = false; el.setAttribute('aria-label', 'Your mission on the mission ship'); el.innerHTML = sMissionHtml(); return; }
   if (S.mode === 'chrono' && S.c) { el.hidden = false; el.setAttribute('aria-label', 'Your mission on Chronosia'); el.innerHTML = cMissionHtml(); return; }
-  if (S.mode === 'xylo' && S.xy) { el.hidden = false; el.setAttribute('aria-label', 'Your mission on Xylophora'); el.innerHTML = xMissionHtml(); return; } el.setAttribute('aria-label', 'Your mission on Voltara');
+  if (S.mode === 'xylo' && S.xy) { el.hidden = false; el.setAttribute('aria-label', 'Your mission on Xylophora'); el.innerHTML = xMissionHtml(); return; }
+  if (S.mode === 'len' && S.ln) { el.hidden = false; el.setAttribute('aria-label', 'Your mission on Lengthar'); el.innerHTML = lMissionHtml(); return; } el.setAttribute('aria-label', 'Your mission on Voltara');
   if (!S.v) { el.hidden = true; return; } el.hidden = false; const v = V(), n = STEPS.filter(s => vDone(s[0])).length, notes = [v.count && 'The tower holds 1,650', ...'RCI'.split('').map(k => v.need[k] && `${CITY[k].street} needs ${CITY[k].total}`), v.short && 'The city is 570 short', v.lost && '240 goes missing each night: 30 an hour', v.houses && '30 tiny houses use 30 an hour'].filter(Boolean);
   el.innerHTML = `<h3>Mission Voltara: ${n} of ${STEPS.length} steps</h3><div class="const">${STEPS.map(s => `<span class="star ${vDone(s[0]) ? 'lit' : 'off'}${s[0] === 'final' && REALON.on ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${s[1]}</span>`).join('')}</div>${notes.length ? `<p class="note"><b>Your notebook:</b> ${notes.join(' · ')}.</p>` : ''}${v.plan ? `<p class="note"><b>Voltara, day ${v.day}:</b> ${planetState()}</p>` : ''}${S.trade && S.trade.log.length ? `<p class="note"><b>Galactic Trade:</b> season ${S.trade.season}, ${S.trade.done ? 'all 3 trips done' : `trip ${S.trade.trip} of 3`}. You have ${num(S.trade.gems)} gems.</p>` : ''}`; }
 
@@ -3388,9 +3397,9 @@ function drawHollow(w, h, hz, gy, par) { const g = cx.createRadialGradient(w * .
   const ex = w * .2; cx.fillStyle = '#e8e0ff'; cx.fillRect(ex - 4, gy - h * .06, 8, h * .06); cx.fillStyle = '#ff9ec4'; cx.beginPath(); cx.ellipse(ex, gy - h * .06, w * .028, h * .022, 0, Math.PI, 0); cx.fill(); ol(2);
   const er = Math.max(5, h * .014), ey = gy - h * .085 - er; cx.fillStyle = '#8ff5d6'; circ(ex, ey, er); cx.fill(); ol(1.5); cx.fillStyle = '#e8eef8'; cx.beginPath(); cx.moveTo(ex - er * .5, ey + er * .3); cx.lineTo(ex, ey + er * 2); cx.lineTo(ex + er * .5, ey + er * .3); cx.fill(); cx.fillStyle = INK; circ(ex - er * .3, ey - er * .1, 1.5); cx.fill(); circ(ex + er * .3, ey - er * .1, 1.5); cx.fill(); }
 const VDRAW = { meadow: drawMeadow, river: drawRiverScene, plaza: drawPlaza, homes: drawStreet, shops: drawStreet, works: drawStreet, hall: drawHall, tunnel: drawTunnel, hollow: drawHollow };
-function drawPlanet(dt) { ratsTick();
+function drawPlanet(dt) { ratsTick(); const slowDark = V().sc === 'tunnel' && !has('stone');
   const w = vw, h = Math.max(220, vh), hz = h * .56, gy = h * .86;
-  if (PL.to != null) { const d = PL.to - PL.x, st = .3 * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
+  if (PL.to != null) { const d = PL.to - PL.x, st = (slowDark ? .13 : .3) * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
   const v = V(), sc = v.sc, par = PL.x - .5;      // read the place only after the step: a step can carry you into the next place
   VDRAW[sc](w, h, hz, gy, par);
   if (v.smoke && sc !== 'hall' && sc !== 'tunnel' && sc !== 'hollow') { const g = cx.createLinearGradient(0, 0, 0, gy), al = Math.min(.62, .12 + v.smoke / 260); g.addColorStop(0, `rgba(84,62,44,${al})`); g.addColorStop(.7, `rgba(96,76,58,${al * .7})`); g.addColorStop(1, 'rgba(96,76,58,0)'); cx.fillStyle = g; cx.fillRect(0, 0, w, gy); }   /* smoke from the Factory: the more days it ran, the browner the sky */
@@ -3399,7 +3408,7 @@ function drawPlanet(dt) { ratsTick();
   if (sc === 'meadow') frontMeadow(w, h, hz, gy, par);
   if (sc === 'tunnel') { const X = PL.x * w, Y = gy - s * .5, R = has('stone') ? Math.max(w, h) * .95 : h * .13, g = cx.createRadialGradient(X, Y, R * .25, X, Y, R); g.addColorStop(0, has('stone') ? 'rgba(150,255,230,.1)' : 'rgba(0,0,0,0)'); g.addColorStop(1, has('stone') ? 'rgba(2,2,8,.8)' : 'rgba(2,2,8,.97)'); cx.fillStyle = g; cx.fillRect(0, 0, w, vh); }
   if (!widget) { const worn = VSC[sc].k && streetNames(w, CITY[VSC[sc].k].places.length); for (const t of vThings()) { if (t.x == null || Math.abs(PL.x - t.x) > (t.spot ? .07 : .11) || (t.spot && worn) || (t.id === 'board' && V().met && !V().need[VSC[sc].k])) continue; pill(t.label, Math.max(50, Math.min(w - 50, t.x * w)), t.spot ? gy + h * .045 : sc === 'hall' && t.id === 'council' ? gy - h * .42 : gy - h * .27 - (t.id === 'tree' ? h * .28 : t.id === 'tower' ? h * .2 : 0)); }
-    cx.font = `700 ${Math.max(12, Math.min(16, w * .02))}px "Chakra Petch", sans-serif`; for (const [d, X, al] of [['e', w - 10, 'right'], ['w', 10, 'left']]) { const to = VSC[sc][d]; if (!to || (sc === 'river' && d === 'e' && !v.crossed) || (sc === 'tunnel' && d === 'e' && !has('stone'))) continue; const t = d === 'e' ? `${VSC[to].name} »` : `« ${VSC[to].name}`, tw = cx.measureText(t).width + 16; cx.fillStyle = 'rgba(6,9,18,.82)'; rr(d === 'e' ? X - tw : X, gy + h * .055, tw, 24, 7); cx.fill(); cx.fillStyle = '#ffcf5a'; cx.textAlign = al; cx.textBaseline = 'middle'; cx.fillText(t, d === 'e' ? X - 8 : X + 8, gy + h * .055 + 13); cx.textBaseline = 'alphabetic'; }
+    cx.font = `700 ${Math.max(12, Math.min(16, w * .02))}px "Chakra Petch", sans-serif`; for (const [d, X, al] of [['e', w - 10, 'right'], ['w', 10, 'left']]) { const to = VSC[sc][d]; if (!to || (sc === 'river' && d === 'e' && !v.crossed)) continue; const t = d === 'e' ? `${VSC[to].name} »` : `« ${VSC[to].name}`, tw = cx.measureText(t).width + 16; cx.fillStyle = 'rgba(6,9,18,.82)'; rr(d === 'e' ? X - tw : X, gy + h * .055, tw, 24, 7); cx.fill(); cx.fillStyle = '#ffcf5a'; cx.textAlign = al; cx.textBaseline = 'middle'; cx.fillText(t, d === 'e' ? X - 8 : X + 8, gy + h * .055 + 13); cx.textBaseline = 'alphabetic'; }
     // a strip map: where you are on Voltara
     const order = ['meadow', 'river', 'plaza', 'homes', 'shops', 'works'], small = w < 520, mw = small ? w * .3 : Math.min(w * .5, 230), mx = w - mw - 12, myy = 16; cx.fillStyle = 'rgba(6,9,18,.75)'; rr(mx - 8, myy - 10, mw + 16, small ? 20 : 30, 8); cx.fill(); cx.strokeStyle = '#59657a'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(mx + 6, myy); cx.lineTo(mx + mw - 6, myy); cx.stroke();
     order.forEach((o, i) => { const X = mx + 6 + (mw - 12) * i / 5, here = o === sc || (sc === 'hall' && o === 'plaza') || ((sc === 'tunnel' || sc === 'hollow') && o === 'works'); cx.fillStyle = here ? '#ffb23e' : '#6d8fc0'; circ(X, myy, here ? 6 : 4); cx.fill(); if (here && !small) { cx.fillStyle = '#fff'; cx.font = '700 10px "Chakra Petch", sans-serif'; cx.textAlign = i > 3 ? 'right' : i < 2 ? 'left' : 'center'; cx.fillText(VSC[sc].name.toUpperCase(), X, myy + 16); } }); cx.textAlign = 'left'; }
@@ -4531,6 +4540,301 @@ function drawXylo(dt) { const c = XY(), w = vw, h = vh, v = xNums(c.seed); if (c
 /* XYLO-END */
 
 /* =====================================================================
+   PLANET LENGTHAR (Galaxy Metrica). The planet of lengths.   LEN-BEGIN
+   [Source: Marc's Magnificent Measurements drafts: the Measuronians, an energy anomaly that throws lengths into chaos, Planet Lengthar,
+    the Unit Alignment Matrix, the tasks "Unit Alignment" and "Space Ruler", the Chaos Guardian, "a creature feeding on imprecision".]
+   [Source: Marc, 2026-11-22: "We learn the metric system."]   [Proposal: everything else. The design: proposals/GMQ_Lengthar_Design_v2_2026-11-22.md]
+   Five places in a row, each a picture you stand in. Every length is kept in HALF CENTIMETRES (15 means 7½ cm).
+   No changing of units anywhere: the rod is in metres, the ruler in centimetres. Changing units is Grade 4 (4.MD.1).
+   Numbers: checks/lengthar_check.js. Play test: checks/lengthar_test.js. Standards: AERO 3.MD.4 (metric), 3.NF.2, 3.NF.3.
+   ===================================================================== */
+const LSC = { strip: { name: 'The Landing Strip', at: 'the Landing Strip', e: 'shop' }, shop: { name: 'The Workshop', at: 'the Workshop', w: 'strip', e: 'hall' },
+  hall: { name: 'The Long Hall', at: 'the Long Hall', w: 'shop', e: 'matrix' }, matrix: { name: 'The Unit Alignment Matrix', at: 'the Unit Alignment Matrix', w: 'hall', e: 'rift' },
+  rift: { name: 'The Guardian\'s Rift', at: 'the Guardian\'s Rift', w: 'matrix' } };
+const LSEE = { shop: 'A stone workshop. Its measuring rod lies on the bench, with no marks on it.', hall: 'A long hall. Eight small things wait on a bench, to be measured.',
+  matrix: 'A great machine hums here: the Unit Alignment Matrix. Its screen shows an empty line.', rift: 'The ground splits open here. Something swirls in the crack, and watches you.' };
+const LOBJ = [['brass key', 'key'], ['crystal pencil', 'pencil'], ['feather quill', 'quill'], ['copper bolt', 'bolt'], ['seed pod', 'pod'], ['silver spoon', 'spoon'], ['twig', 'twig'],
+  ['paint brush', 'brush'], ['glass straw', 'straw'], ['chalk stick', 'chalk'], ['shell comb', 'comb'], ['tin whistle', 'whistle']];
+const lHalf = n => `${Math.floor(n / 2)}${n % 2 ? '½' : ''}`;                      /* 15 -> "7½" */
+const LNUMS = {};
+/* each cadet's own numbers. The same rule is checked on 20,000 cadets by checks/lengthar_check.js */
+function lNums(seed) { if (LNUMS[seed]) return LNUMS[seed]; const r = wrng(seed * 7 + 3), pk = a => a[Math.floor(r() * a.length)];
+  const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+  let v = null;
+  for (let t = 0; t < 500 && !v; t++) {
+    const w0 = 6 + Math.floor(r() * 15), vals = [0, 1, 2, 3, 4].map(i => w0 + i), cnt = [0, 0, 0, 0, 0];     /* five neighbouring half centimetres, from 3 cm up to 12 cm */
+    for (let i = 0; i < 8; i++) cnt[Math.floor(r() * 5)]++;
+    const mx = Math.max.apply(null, cnt);
+    if (cnt.filter(c => c === mx).length !== 1 || cnt.filter(c => c > 0).length < 3) continue;                  /* one most common length, and at least three different ones */
+    let L = []; cnt.forEach((c, i) => { for (let k = 0; k < c; k++) L.push(vals[i]); });
+    if (!L.some(x => x % 2 === 0) || !L.some(x => x % 2 === 1)) continue;                                        /* a whole one and a half one */
+    L = shuf(L);
+    const off = L.map((x, i) => i < 4 ? 0 : (r() < .5 ? -1 : 1));                                                /* the last four end 1 mm before or after a mark, never between */
+    const names = shuf(LOBJ).slice(0, 8), mode = vals[cnt.indexOf(mx)];
+    let q = null;
+    if (r() < .5) { const ws = vals.filter(x => x % 2 === 0 && x > vals[0] && x < vals[4]); if (ws.length) { const th = pk(ws), ans = L.filter(x => x > th).length; if (ans >= 1 && ans <= 7) q = { kind: 'longer', th, ans }; } }
+    if (!q) q = { kind: 'most', ans: mode };
+    const exC = [9, 13, 17, 19, 22].filter(x => x < w0 - 1 || x > w0 + 5); if (!exC.length) continue;           /* the finished example is not one of the cadet's lengths */
+    const ex = pk(exC), G = [0, 1, 2].map(() => 7 + Math.floor(r() * 16)), tr = [r() < .5, r() < .5, r() < .5];
+    if (tr.every(x => x === tr[0])) tr[Math.floor(r() * 3)] = !tr[0];                                           /* the Guardian lies at least once, and tells the truth at least once */
+    const claim = G.map((g, i) => tr[i] ? g : g + pk([-2, -1, 1, 2].filter(d => g + d >= 5 && g + d <= 25)));
+    v = { w0, vals, cnt, L, off, names, mode, q, ex, G, tr, claim, rodOrder: r() < .5 ? ['1/4', '3/4'] : ['3/4', '1/4'], start: L.map(() => pk([-4, -3, 2, 3])) };
+  }
+  return LNUMS[seed] = v; }
+function LEN() { if (!S.ln) S.ln = { seed: 1 + Math.floor(Math.random() * 99990), sc: 'strip', x: .2, done: {}, tries: {}, nud: {}, meas: [], i: 0, plot: null, gi: 0, been: ['strip'], intro: 0 }; return S.ln; }
+const lJobs = [['rod', 'Mend the measuring rod (the Workshop)'], ['hall', 'Measure the eight things (the Long Hall)'], ['plot', 'Feed the Matrix its line plot'], ['guard', 'Face the Chaos Guardian (the Rift)']];
+
+/* ---- the things in each place */
+const LT = [
+  { id: 'ship', sc: 'strip', x: .12, words: ['ship', 'rocket'], label: 'your ship', look: 'Your ship, on the Landing Strip. To leave Lengthar, type: fly.' },
+  { id: 'guide', sc: 'strip', x: .5, words: ['measuronian', 'guide', 'alien', 'person', 'helper'], label: 'a Measuronian', tap: 'talk', look: 'A Measuronian. A measuring tape curls behind it like a tail. It holds a peg and a ruler.', talk: () => lExample(), use: () => lExample() },
+  { id: 'sign', sc: 'strip', x: .82, words: ['sign', 'signpost', 'post', 'arrow'], label: 'signpost', look: 'A signpost. Its arrow points east: WORKSHOP. The distance on it is blank. The numbers fell off.' },
+  { id: 'foreman', sc: 'shop', x: .25, words: ['foreman', 'measuronian', 'builder', 'alien', 'person'], label: 'the foreman', tap: 'talk', look: 'The workshop foreman. Sawdust in its whiskers.', talk: () => lRod(), use: () => lRod() },
+  { id: 'rod', sc: 'shop', x: .62, words: ['rod', 'measuring', 'stick', 'bench'], label: 'the measuring rod', tap: 'use', look: () => LEN().done.rod ? 'The measuring rod: one metre long, marked again in halves and quarters.' : 'The measuring rod. It is one metre long. Every mark on it has gone.', use: () => lRod() },
+  { id: 'keeper', sc: 'hall', x: .16, words: ['keeper', 'measuronian', 'alien', 'person'], label: 'the hall keeper', tap: 'talk', look: 'The keeper of the Long Hall. It looks worried.', talk: () => lHall(), use: () => lHall() },
+  { id: 'bench', sc: 'hall', x: .44, words: ['bench', 'things', 'objects', 'table', 'key', 'pencil'], label: 'the bench', tap: 'use', look: () => LEN().done.hall ? 'The bench. Every thing on it has its true length now.' : 'A long bench with eight small things on it. Nobody knows how long they are.', use: () => lHall() },
+  { id: 'matrix', sc: 'matrix', x: .58, words: ['matrix', 'machine', 'screen', 'plot', 'line'], label: 'the Matrix', tap: 'use', look: () => LEN().done.plot ? 'The Unit Alignment Matrix. It hums, steady and calm.' : 'The Unit Alignment Matrix. Its screen shows a line, marked in half centimetres, with nothing on it.', use: () => lPlot() },
+  { id: 'guardian', sc: 'rift', x: .62, words: ['guardian', 'chaos', 'creature', 'monster', 'crystals', 'crystal'], label: 'the Chaos Guardian', tap: 'talk', look: () => LEN().done.guard ? 'The Rift is quiet. The Chaos Guardian is gone.' : 'The Chaos Guardian: a swirl of crooked lines with eyes. It holds three crystals.', talk: () => lGuard(), use: () => lGuard(), when: () => !LEN().done.guard },
+  { id: 'crack', sc: 'rift', x: .35, words: ['rift', 'crack', 'chasm', 'hole'], label: 'the Rift', look: 'A deep crack in the ground. Bent rulers lie at the bottom.' }];
+const lThings = () => LT.filter(t => t.sc === LEN().sc && (!t.when || t.when()));
+function lHere() { const out = lThings().map(t => [t.words[0], t.label]); if (LEN().sc === 'strip') out.push(['fly', 'fly away']); return out; }
+function lPlaceName() { return S.ln ? LSC[LEN().sc].name : 'Planet Lengthar'; }
+const lNext = () => { const d = LEN().done; return lJobs.find(j => !d[j[0]]); };
+function lHint() { const c = LEN(), d = c.done;
+  if (!d.ex) return c.sc === 'strip' ? 'Talk to the Measuronian. It will show you how to measure.' : 'Go back west to the Landing Strip. The Measuronian there shows how to measure.';
+  if (!d.rod) return c.sc === 'shop' ? 'Use the measuring rod. The foreman needs its marks back.' : 'Walk east to the Workshop. The measuring rod needs its marks.';
+  if (!d.hall) return c.sc === 'hall' ? 'Use the bench. Measure each thing with your ruler.' : 'Walk to the Long Hall, east of the Workshop.';
+  if (!d.plot) return c.sc === 'matrix' ? 'Use the Matrix. Put an X for each length you measured.' : 'Walk to the Unit Alignment Matrix, east of the Long Hall.';
+  if (!d.guard) return c.sc === 'rift' ? 'Talk to the Chaos Guardian. Measure its crystals. Is it telling the truth?' : 'Walk east to the Guardian\'s Rift.';
+  return 'Lengthar\'s lengths are true again. Walk back to your ship and fly on.'; }
+function lMissionHtml() { const d = LEN().done, n = lJobs.filter(j => d[j[0]]).length, nx = lNext();
+  return `<h3>Lengthar: ${n} of ${lJobs.length} jobs</h3><div class="const">${lJobs.map(j => mRow(d[j[0]], j[1])).join('')}</div><p class="note">${nx ? `<b>Next:</b> ${nx[1]}.` : 'Every job on Lengthar is done.'}</p>`; }
+
+/* ---- arriving: three short screens, the first time [as on Xylophora] */
+const LINTRO = [['Planet Lengthar', 'On Lengthar, everything is built to an exact length. Every rod, every step and every door. The Measuronians who live here measure everything.'],
+  ['The anomaly', 'The cosmic storm that wrecked KIS Station passed here too. It carried an energy anomaly. The anomaly shook every number off the Measuronians\' rulers and rods. Now nobody knows how long anything is.'],
+  ['Your job', 'Your ship\'s ruler still has its numbers. Help the Measuronians find true lengths, and feed them to their great machine. But beware the Chaos Guardian. It feeds on careless measuring.']];
+const lIntroDue = () => READ.on && !LEN().intro && !Object.keys(LEN().done).length;
+function lIntro(i) { const c = LEN(); widget = { kind: 'lintro' }; const [title, text] = LINTRO[i], last = i === LINTRO.length - 1, wait = Math.max(3500, Math.min(5000, 700 + READW(text) * 180));
+  toy(`<p class="eyebrow">Planet Lengthar · ${i + 1} of ${LINTRO.length}</p><h3>${title}</h3><p class="story q">${text}</p><div class="field"><button class="btn" type="button" id="next" disabled>Read…</button><button class="btn quiet" type="button" id="readme">Read to me</button></div>`);
+  $('readme').onclick = () => speak(title + '. ' + text); const b = $('next'); clearTimeout(c.itm); c.itm = setTimeout(() => { if (document.body.contains(b)) { b.disabled = false; b.textContent = last ? 'Land' : 'Next'; } }, wait);
+  b.onclick = () => { if (b.disabled) return; beep(520, .06); if (!last) return lIntro(i + 1); c.intro = 1; closeToy(); save(); PL.fade = 1; say('You land on Planet Lengthar. A Measuronian waves from the middle of the strip.'); }; }
+function landLen(text) { const c = LEN(); closeToy(); if (!S.inv.includes('sruler')) S.inv.push('sruler'); S.mode = 'len'; c.sc = 'strip'; PL.x = .2; PL.to = null; PL.then = null; PL.fade = 1; save(); drawStatus(); beep(300, .3); drawWords();
+  if (lIntroDue()) return lIntro(0);
+  say(text || 'You land on Planet Lengthar. Everything here was built to an exact length. A Measuronian waves from the middle of the strip.'); }
+function goLengthar() { S.ended = true; S.beat = 0; tidy(); landLen('Teacher shortcut. You land on Planet Lengthar. A Measuronian waves from the middle of the strip.'); $('place').scrollIntoView({ block: 'nearest' }); }
+function leaveLen(out) { closeToy(); reportHomeSoon('len'); S.mode = 'space'; S.at = 'metrica'; SP.to = null; SP.x = GAL.metrica.x + .06; SP.y = GAL.metrica.y + .04; save(); drawStatus(); beep(200, .4, 'sawtooth'); drawWords(); out('You lift off from Lengthar. Galaxy Metrica turns below you.'); }
+function lGo(sc, x) { const c = LEN(); c.sc = sc; PL.x = x; PL.to = null; PL.then = null; PL.fade = 1; const nw = c.been.indexOf(sc) < 0; if (nw) c.been.push(sc); save(); beep(420, .08); drawWords(); say(`You reach ${LSC[sc].at}.${nw && LSEE[sc] ? ' ' + LSEE[sc] : ''}`); }
+function lWalkOut(d) { strayed(); const sc = LEN().sc, to = LSC[sc][d]; if (!to) return sc === 'strip' && d === 'w' ? 'The strip ends here, at a straight white line. Exactly straight.' : 'The Rift is too wide to cross. This is as far as you go.';
+  PL.to = d === 'e' ? 1.02 : -.02; PL.then = () => lGo(to, d === 'e' ? .06 : .94); return `You walk ${d === 'e' ? 'east' : 'west'}.`; }
+
+/* ---- what the cadet types */
+function lAct(text, out) { if (widget) return out('Finish this first. Or tap Leave.'); const tk = text.split(/\s+/).filter(t => ['the', 'a', 'an', 'my', 'at', 'to', 'with', 'on', 'please'].indexOf(t) < 0); if (!tk.length) return;
+  const VB = { look: ['look', 'l', 'see', 'read', 'check', 'examine'], use: ['use', 'open', 'push', 'measure', 'mend', 'fix', 'feed', 'play'], talk: ['talk', 'ask', 'speak', 'say', 'hi', 'hello', 'face', 'fight'], go: ['go', 'walk', 'run'], fly: ['fly', 'leave', 'launch', 'takeoff'], hint: ['hint', 'help'] };
+  const verb = Object.keys(VB).find(v => VB[v].indexOf(tk[0]) >= 0), rest = verb ? tk.slice(1) : tk;
+  if (verb === 'hint') return out(lHint());
+  const dir = (verb === 'go' || !verb) && ({ east: 'e', e: 'e', right: 'e', west: 'w', w: 'w', left: 'w' })[rest[0]];
+  if (dir) return out(lWalkOut(dir));
+  if (verb === 'fly' || (verb === 'use' && rest.some(r => r === 'ship' || r === 'rocket'))) { if (LEN().sc !== 'strip') return out('Your ship is on the Landing Strip, to the west.'); if (PL.x < .3) return leaveLen(out); PL.to = .14; PL.then = () => leaveLen(say); return out('You walk to your ship.'); }
+  if (verb === 'go') { const sc = Object.keys(LSC).find(k => rest.some(r => LSC[k].name.toLowerCase().split(' ').indexOf(r) >= 0 && r.length > 3)); if (sc && sc !== LEN().sc) { const i = Object.keys(LSC).indexOf(sc), j = Object.keys(LSC).indexOf(LEN().sc); return out(lWalkOut(i > j ? 'e' : 'w')); } }
+  const th = lThings().find(t => rest.some(r => t.words.indexOf(r) >= 0)) || (rest.length ? null : lThings().find(t => t.tap === verb));
+  if (!th) return out(rest.length ? 'You do not see that here.' : 'Type a doing word and a thing. Like: talk measuronian. Or: go east.');
+  const v = verb === 'go' ? 'look' : verb || 'look', h = th[v] || (v === 'use' ? th.talk : v === 'talk' ? null : th.look), run = () => { const r = typeof h === 'function' ? h() : h; if (r) say(r); };
+  if (!h) return out(v === 'talk' ? 'It does not answer.' : 'Nothing happens.');
+  out(null); if (Math.abs(PL.x - th.x) < .06) return run(); PL.to = th.x + (PL.x < th.x ? -.05 : .05); PL.then = run; }
+function lTap(e) { const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase(), sc = LEN().sc;
+  if (widget) return say('Finish this first. Or tap Leave.');
+  if (x > .93 && LSC[sc].e) return say(lWalkOut('e')); if (x < .07 && LSC[sc].w) return say(lWalkOut('w'));
+  const near = lThings().filter(t => Math.abs(t.x - x) < .07 && y > .2).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0];
+  if (near) return act(`${/^(look|use|talk)$/.test(draft) ? draft : near.tap || 'look'} ${near.words[0]}`);
+  strayed(); PL.to = Math.max(.03, Math.min(.97, x)); PL.then = null; }
+function lWin(what, skill, k, text, rare) { const c = LEN(), t = c.tries[k] || 1, nd = c.nud[k] || 0; c.done[k] = true; S.log.push({ what: 'Lengthar: ' + what, skill, result: `solved on try ${t}, with ${nd} nudge${nd === 1 ? '' : 's'}`, tries: t, need: 1 }); closeToy(); save(); drawStatus(); drawWords(); chime(); card(rare ? 'gold' : undefined); say(text); }
+
+/* ---- the ruler and the things to measure, drawn at true scale in the picture.  U picture units are one centimetre */
+const LU = 50;
+function lShape(kind, x0, x1, y, col) { const L = x1 - x0, h = 26, k = INK;
+  const bar = (a, b, hh, f) => `<rect x="${a}" y="${y - hh / 2}" width="${Math.max(1, b - a)}" height="${hh}" rx="${Math.min(6, hh / 2)}" fill="${f}" stroke="${k}" stroke-width="2"/>`;
+  if (kind === 'pencil') return bar(x0, x1 - 30, h, '#f2c14e') + `<polygon points="${x1 - 30},${y - h / 2} ${x1},${y} ${x1 - 30},${y + h / 2}" fill="#e8d3b0" stroke="${k}" stroke-width="2"/><polygon points="${x1 - 9},${y - 4} ${x1},${y} ${x1 - 9},${y + 4}" fill="#5a4a8a"/>`;
+  if (kind === 'key') return `<circle cx="${x0 + 20.5}" cy="${y}" r="16" fill="none" stroke="#d9a62e" stroke-width="9"/><circle cx="${x0 + 20.5}" cy="${y}" r="20.5" fill="none" stroke="${k}" stroke-width="1.5"/>` + bar(x0 + 35, x1, 12, '#d9a62e') + `<rect x="${x1 - 26}" y="${y + 5}" width="8" height="14" fill="#d9a62e" stroke="${k}" stroke-width="1.5"/><rect x="${x1 - 12}" y="${y + 5}" width="8" height="10" fill="#d9a62e" stroke="${k}" stroke-width="1.5"/>`;
+  if (kind === 'bolt') return `<polygon points="${x0},${y - 18} ${x0 + 22},${y - 18} ${x0 + 22},${y + 18} ${x0},${y + 18}" fill="#c77d4a" stroke="${k}" stroke-width="2"/>` + bar(x0 + 22, x1, 16, '#d8935c') + Array.from({ length: Math.max(0, Math.floor((L - 30) / 10)) }, (_, i) => `<line x1="${x0 + 28 + i * 10}" y1="${y - 8}" x2="${x0 + 33 + i * 10}" y2="${y + 8}" stroke="${k}" stroke-width="1.2"/>`).join('');
+  if (kind === 'quill') return `<path d="M${x0},${y} Q${x0 + L * .35},${y - 26} ${x0 + L * .8},${y - 6} L${x1},${y} L${x0 + L * .8},${y + 6} Q${x0 + L * .35},${y + 22} ${x0},${y} Z" fill="#cfe6ff" stroke="${k}" stroke-width="2"/><line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#6a7fa8" stroke-width="2.5"/>`;
+  if (kind === 'spoon') return `<ellipse cx="${x1 - 28}" cy="${y}" rx="28" ry="17" fill="#dfe6ee" stroke="${k}" stroke-width="2"/>` + bar(x0, x1 - 54, 9, '#c9d2dc');
+  if (kind === 'twig') return `<path d="M${x0},${y + 3} L${x1},${y - 2}" stroke="#8a5a34" stroke-width="10" stroke-linecap="butt"/><path d="M${x0 + L * .4},${y} l18,-16 M${x0 + L * .7},${y - 1} l14,12" stroke="#8a5a34" stroke-width="5" stroke-linecap="round"/>`;
+  if (kind === 'pod') return `<path d="M${x0},${y} Q${x0 + L / 2},${y - 30} ${x1},${y} Q${x0 + L / 2},${y + 30} ${x0},${y} Z" fill="#8fc46a" stroke="${k}" stroke-width="2"/>` + [.3, .5, .7].map(f => `<circle cx="${x0 + L * f}" cy="${y}" r="5" fill="#4f7d34"/>`).join('');
+  if (kind === 'whistle') return bar(x0, x1, 18, '#b9c3cf') + [.45, .6, .75].map(f => `<circle cx="${x0 + L * f}" cy="${y}" r="3.5" fill="${k}"/>`).join('');
+  if (kind === 'comb') return bar(x0, x1, 12, '#f1d7e6') + Array.from({ length: Math.max(1, Math.floor(L / 9)) }, (_, i) => `<line x1="${x0 + 4 + i * 9}" y1="${y + 6}" x2="${x0 + 4 + i * 9}" y2="${y + 18}" stroke="#d39ab8" stroke-width="4"/>`).join('');
+  if (kind === 'straw') return bar(x0, x1, 14, 'rgba(180,230,255,.8)') + `<line x1="${x0 + 4}" y1="${y - 3}" x2="${x1 - 4}" y2="${y - 3}" stroke="#fff" stroke-width="2"/>`;
+  if (kind === 'chalk') return bar(x0, x1, 18, '#f6f3ea');
+  if (kind === 'brush') return bar(x0, x1 - 26, 12, '#c0503a') + `<rect x="${x1 - 26}" y="${y - 11}" width="26" height="22" fill="#3a3a48" stroke="${k}" stroke-width="2"/>`;
+  if (kind === 'crystal') return `<rect x="${x0}" y="${y - 20}" width="${L}" height="40" fill="#b49cff" stroke="${k}" stroke-width="2"/><line x1="${x0}" y1="${y - 7}" x2="${x1}" y2="${y - 7}" stroke="rgba(255,255,255,.55)" stroke-width="2"/><line x1="${x0}" y1="${y + 9}" x2="${x1}" y2="${y + 9}" stroke="rgba(60,30,120,.35)" stroke-width="2"/>`;      /* a crystal rod with flat, upright ends: no point or corner to read from instead of its end */
+  return bar(x0, x1, 22, col || '#e3b778'); }                                    /* the peg */
+/* a centimetre ruler: long marks and numbers at each centimetre, a middle mark at each half, small marks for millimetres */
+function lRuler(cm, rx, y) { let s = `<g class="lruler" style="cursor:grab"><rect x="${rx - 16}" y="${y}" width="${cm * LU + 66}" height="84" rx="8" fill="#f7e9a8" stroke="${INK}" stroke-width="2.5"/>`;
+  const small = innerWidth < 600; for (let m = 0; m <= cm * 10; m++) { const X = rx + m * LU / 10, big = m % 10 === 0, half = m % 5 === 0; if (small && !half) continue; s += `<line x1="${X}" y1="${y}" x2="${X}" y2="${y + (big ? 36 : half ? 25 : 12)}" stroke="${INK}" stroke-width="${big ? 3 : half ? 2.2 : 1}" opacity="${big || half ? 1 : .7}"/>`;
+    if (big) s += `<text x="${X}" y="${y + 70}" text-anchor="middle" font-size="${m >= 100 ? 28 : 33}" font-weight="700" fill="${INK}">${m / 10}</text>`; }
+  return s + `<text x="${rx + cm * LU + 28}" y="${y + 66}" text-anchor="start" font-size="20" font-weight="700" fill="#6b5a1e">cm</text></g>`; }
+/* the measuring picture: one thing at its true length, and the ruler where the cadet has put it */
+function lMeasureSvg(kind, len, mm, off, label) { const cm = Math.ceil(len / 2 + .2) + 2, x0 = 2 * LU, W = x0 + (cm + 2) * LU + 80, H = 340, x1 = x0 + len / 2 * LU + mm * LU / 10, rx = x0 + off / 2 * LU;
+  return `<svg class="picsvg" id="lsvg" viewBox="0 0 ${W} ${H}" style="aspect-ratio:${W}/${H};touch-action:none" role="img" aria-label="A ${label} lies on the bench. Your ruler is below it.">
+    <rect width="${W}" height="${H}" fill="#efe6d2"/><rect y="200" width="${W}" height="${H - 200}" fill="#e2d4b6"/><g transform="translate(0 120) scale(1 1.7) translate(0 -120)">${lShape(kind, x0, x1, 120)}</g>${lRuler(cm, rx, 176)}</svg>`; }
+/* drag the ruler, or tap where its 0 should go. It settles on the start of the thing when it is very close, as a real ruler settles against an edge */
+function lRulerDrag(w, onMove) { const svg = $('lsvg'); if (!svg) return; const pt = e => { const q0 = svg.createSVGPoint(); q0.x = e.clientX; q0.y = e.clientY; return q0.matrixTransform(svg.getScreenCTM().inverse()); };
+  let drag = null; const set = X => { let off = (X - 2 * LU) / LU * 2; if (Math.abs(off) < .4) off = 0; w.off = Math.round(off * 10) / 10; onMove(); };
+  svg.onpointerdown = e => { const p = pt(e); drag = { x: p.x, off: w.off }; svg.setPointerCapture && svg.setPointerCapture(e.pointerId); };
+  svg.onpointermove = e => { if (!drag) return; const p = pt(e); set(2 * LU + drag.off / 2 * LU + (p.x - drag.x)); };
+  svg.onpointerup = e => { if (!drag) return; const p = pt(e), moved = Math.abs(p.x - drag.x) > 6; if (!moved) set(p.x); drag = null; }; }
+function lAnswerBox(lab) { return `<div class="field"><label for="ans" class="note">${lab}</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="2" style="width:4em"><button class="btn quiet" type="button" id="half" aria-pressed="false">and a half</button><span class="note">cm</span><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`; }
+function lReadBox() { const a = $('ans'), h = $('half'); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); }; a.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('try').click(); } };
+  h.onclick = () => { const on = h.getAttribute('aria-pressed') !== 'true'; h.setAttribute('aria-pressed', on ? 'true' : 'false'); h.classList.toggle('on', on); h.textContent = on ? 'and a half ✓' : 'and a half'; };
+  return () => a.value === '' ? null : +a.value * 2 + (h.getAttribute('aria-pressed') === 'true' ? 1 : 0); }
+/* what to say about a wrong reading: never the answer */
+function lWhy(w, got, want, mm, name) { if (w.off !== 0) return `Slide your ruler first, so its 0 is at the very start of the ${name}. Then read the end.`;
+  if (Math.abs(got - want) === 1) return mm ? `Close. The end is not exactly on a mark. Which mark is it nearest to?` : `Close. Look at the end again: is it on a number, or on the half mark between two numbers?`;
+  return `Look at where the ${name} ends, on your ruler. Read the number there.`; }
+
+/* THE LANDING STRIP: a finished example, about a different thing [CLAUDE.md: a finished example first] */
+function lExample() { const c = LEN(), v = lNums(c.seed), k = 0; widget = { kind: 'lex', step: 0 };
+  const steps = [`May I borrow your ship's ruler? Ours lost its numbers. I put the 0 of the ruler at one end of my peg. Exactly at the end. Not the edge of the ruler: the 0.`,
+    `I look at the other end of the peg. It is at ${lHalf(v.ex)}${v.ex % 2 ? ': past the ' + Math.floor(v.ex / 2) + ', on the middle mark before the ' + (Math.floor(v.ex / 2) + 1) : ''}.`,
+    `So my peg is ${lHalf(v.ex)} centimetres long.${v.ex % 2 ? ' The middle mark between two numbers is a half.' : ''} Your ruler is the only true one on Lengthar now. Will you help us?`];
+  const show = () => { const w = widget; toy(`<p class="eyebrow">Planet Lengthar · the Landing Strip</p><p class="mw"><b>Maths word: centimetre (cm).</b> A short length. Your little finger is about 1 centimetre wide.</p><h3>How a Measuronian measures</h3>
+      <div class="picrow"><div class="pic">${lMeasureSvg('peg', v.ex, 0, 0, 'measuring peg')}</div><div class="pictext"><p class="note"><b>A finished example.</b></p>${steps.slice(0, w.step + 1).map(t => `<p class="story">${t}</p>`).join('')}</div></div>
+      <div class="field"><button class="btn" type="button" id="next">${w.step < 2 ? 'Next' : 'I will help'}</button><button class="btn quiet" type="button" id="leave">Leave</button></div>`);
+    $('leave').onclick = () => { closeToy(); say('The Measuronian waits, ruler in hand.'); };
+    $('next').onclick = () => { if (w.step < 2) { w.step++; beep(520, .05); return show(); } c.done.ex = true; save(); closeToy(); drawWords(); say('"Thank you, cadet! Our workshop is east. Its measuring rod has lost every mark." The Measuronian points east.'); }; };
+  show(); }
+
+/* THE WORKSHOP: the measuring rod, one metre long [3.NF.2, 3.NF.3]. Tap where each mark goes. No centimetres here: that would be changing units. */
+const LROD = { '1/2': [.5, '½'], '1/4': [.25, '¼'], '3/4': [.75, '¾'], '2/4': [.5, '2/4'], '4/4': [1, '4/4'] };
+function lRodSvg(w) { const X = f => 100 + f * 800, marks = w.marks.map(m => `<line x1="${X(LROD[m][0])}" y1="112" x2="${X(LROD[m][0])}" y2="${m === '1/2' || m === '2/4' ? 186 : 172}" stroke="${INK}" stroke-width="5"/><text x="${X(LROD[m][0])}" y="${m === '2/4' || m === '4/4' ? 206 : 92}" text-anchor="middle" font-size="34" font-weight="700" fill="${m === '2/4' || m === '4/4' ? '#7a3cc2' : INK}">${LROD[m][1]}</text>`).join('');
+  const pend = w.tap == null ? '' : `<line x1="${X(w.tap)}" y1="100" x2="${X(w.tap)}" y2="196" stroke="#e0632f" stroke-width="6" stroke-dasharray="8 6"/><circle cx="${X(w.tap)}" cy="94" r="11" fill="#e0632f"/>`;
+  return `<svg class="picsvg" id="lrod" viewBox="0 0 1000 400" style="aspect-ratio:1000/400;touch-action:manipulation" role="img" aria-label="The measuring rod, one metre long, from 0 to 1"><rect width="1000" height="400" fill="#efe6d2"/><rect y="250" width="1000" height="150" fill="#e2d4b6"/>
+    <rect x="60" y="250" width="880" height="26" fill="#8b6f45" stroke="${INK}" stroke-width="2"/><rect x="90" y="276" width="22" height="110" fill="#8b6f45"/><rect x="888" y="276" width="22" height="110" fill="#8b6f45"/>
+    <g transform="translate(0 40)"><rect x="${X(0)}" y="112" width="800" height="60" rx="8" fill="#d9a66b" stroke="${INK}" stroke-width="3"/><text x="${X(0)}" y="92" text-anchor="middle" font-size="32" font-weight="700" fill="${INK}">0</text><text x="${X(1)}" y="92" text-anchor="middle" font-size="32" font-weight="700" fill="${INK}">1 metre</text>
+    ${marks}${pend}</g></svg>`; }
+function lRod() { const c = LEN(), v = lNums(c.seed); if (!c.done.ex) return 'The foreman looks at you. "Has the Measuronian on the strip shown you how we measure? Go back west first."'; if (c.done.rod) return 'The foreman taps the rod. "Halves and quarters, true again. Thank you."';
+  const order = ['1/2', v.rodOrder[0], v.rodOrder[1], '2/4', '4/4'], w = widget = { kind: 'lrod', step: -1, marks: [], tap: null, tries: 0 };
+  const ask = { '1/2': 'Where does the half mark go? Tap the rod: one half of the way from 0 to 1.', '1/4': 'Now quarters: four equal parts. Tap where one quarter (¼) goes.', '3/4': 'Now quarters: four equal parts. Tap where three quarters (¾) goes.', '2/4': 'The foreman asks: "Where is two quarters, 2/4?" Tap it.', '4/4': 'And four quarters, 4/4. Where is that? Tap it.' };
+  const draw = () => { if (w.step === -1) { toy(`<p class="eyebrow">Planet Lengthar · the Workshop · Space Ruler</p><p class="mw"><b>Maths word: metre.</b> A long length. A door is about 2 metres tall.</p><h3>Space Ruler</h3>
+        <div class="picrow"><div class="pic">${SV(1000, 400, `<rect width="1000" height="400" fill="#efe6d2"/><text x="250" y="60" text-anchor="middle" font-size="30" font-weight="700">1. Fold it: the ends meet</text><path d="M80,150 L400,150 Q440,150 440,185 Q440,220 400,220 L80,220" fill="none" stroke="#b55" stroke-width="16" stroke-linecap="round"/><text x="455" y="194" font-size="26">the fold</text>
+          <text x="750" y="60" text-anchor="middle" font-size="30" font-weight="700">2. Open it: the fold is the middle</text><path d="M560,210 L940,210" stroke="#b55" stroke-width="16" stroke-linecap="round"/><path d="M750,170 L750,250" stroke="${INK}" stroke-width="5"/><text x="655" y="290" text-anchor="middle" font-size="30" font-weight="700">½</text><text x="845" y="290" text-anchor="middle" font-size="30" font-weight="700">½</text><text x="750" y="350" text-anchor="middle" font-size="26">two halves, the same length</text>`, 'A rope folded so its ends meet, then opened: the fold is the middle, and the two halves are the same length')}</div>
+        <div class="pictext"><p class="story">"The storm shook every mark off our measuring rod. It is one metre long. Without its halves and quarters, we cannot build."</p><p class="note"><b>A finished example.</b> The foreman folds a rope so its two ends meet. Then it opens the rope. The fold is in the middle. Each part is one half (½) of the rope, and the two halves are the same length.</p></div></div>
+        <div class="field"><button class="btn" type="button" id="go">Mark the rod</button><button class="btn quiet" type="button" id="leave">Leave</button></div>`);
+      $('go').onclick = () => { w.step = 0; draw(); }; $('leave').onclick = () => { closeToy(); say('The foreman waits by the rod.'); }; return; }
+    if (w.step >= order.length) { toy(`<p class="eyebrow">Planet Lengthar · the Workshop · Space Ruler</p><h3>One more question</h3><div class="picrow"><div class="pic">${lRodSvg(w)}</div><div class="pictext"><p class="q">Which is longer: one quarter (¼) of the rod, or three quarters (¾) of the rod?</p></div></div>
+        <div class="field"><button class="btn" type="button" data-c="1/4">¼ of the rod</button><button class="btn" type="button" data-c="3/4">¾ of the rod</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+      $('leave').onclick = () => { closeToy(); say('The foreman waits by the rod.'); };
+      document.querySelectorAll('#toy [data-c]').forEach(b => b.onclick = () => { if (b.dataset.c === '3/4') { c.tries.rod = (c.tries.rod || 0) + w.tries + 1; return lWin('the measuring rod', 'Fractions on a number line; equal fractions (AERO 3.NF.2, 3.NF.3)', 'rod', '"¾ is longer: three of the four equal parts." The foreman hangs the rod on the wall, marked true again. You earn a card.'); }
+        w.tries++; c.nud.rod = (c.nud.rod || 0) + 1; save(); $('msg').className = 'msg bad'; $('msg').textContent = 'Look at the rod. From 0, how far is ¼? How far is ¾? Which part is longer?'; }); return; }
+    const m = order[w.step]; toy(`<p class="eyebrow">Planet Lengthar · the Workshop · Space Ruler · mark ${w.step + 1} of ${order.length}</p><h3>Space Ruler</h3><div class="picrow"><div class="pic">${lRodSvg(w)}</div><div class="pictext"><p class="q">${ask[m]}</p><p class="note">Tap the rod, then Check. You can tap again to move your mark.</p></div></div>
+      <div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`);
+    /* each tap redraws the rod, so the handler always reads the rod that was tapped, never an old one */
+    const onTap = e => { const sv = e.currentTarget, q0 = sv.createSVGPoint(); q0.x = e.clientX; q0.y = e.clientY; const q = q0.matrixTransform(sv.getScreenCTM().inverse()); w.tap = Math.max(0, Math.min(1, (q.x - 100) / 800)); sv.parentNode.innerHTML = lRodSvg(w); $('lrod').onclick = onTap; };
+    $('lrod').onclick = onTap;
+    $('leave').onclick = () => { closeToy(); say('The foreman waits by the rod.'); };
+    $('try').onclick = () => { const msg = $('msg'); if (w.tap == null) { msg.className = 'msg'; msg.textContent = 'Tap the rod first, where the mark should go.'; return; }
+      if (Math.abs(w.tap - LROD[m][0]) <= .04) { w.marks.push(m); w.tap = null; w.step++; beep(700, .08);
+        if (m === '2/4') say('2/4 lands exactly on ½. Two quarters and one half are the same length: 2/4 = ½.'); if (m === '4/4') say('4/4 is the whole rod: four quarters make 1 metre. 4/4 = 1.'); return draw(); }
+      w.tries++; c.nud.rod = (c.nud.rod || 0) + 1; save(); msg.className = 'msg bad';
+      msg.textContent = m === '1/2' ? 'Are the two parts the same length? The half mark makes two equal parts.' : m === '2/4' || m === '4/4' ? 'Count the quarters from 0: one quarter, two quarters…' : 'Four equal parts: the half mark splits the rod in two. Where would you split each half?'; }; };
+  draw(); }
+
+/* THE LONG HALL: Unit Alignment [3.MD.4, metric]. Eight things, each measured to the nearest half centimetre. */
+function lHall() { const c = LEN(), v = lNums(c.seed); if (!c.done.ex) return 'The keeper shakes its head. "First let the Measuronian on the strip show you how we measure."';
+  if (c.done.hall) return '"Every thing has its true length now," says the keeper. "Take your lengths to the Matrix, east of here."';
+  const show = () => { const i = Math.min(c.i || 0, 7), w = widget = { kind: 'lhall', off: v.start[i], tries: 0 }, nm = v.names[i], len = v.L[i], mm = v.off[i];
+    toy(`<p class="eyebrow">Planet Lengthar · the Long Hall · Unit Alignment · thing ${i + 1} of 8</p><h3>How long is the ${nm[0]}?</h3>
+      <div class="picrow"><div class="pic" id="lpic">${lMeasureSvg(nm[1], len, mm, w.off, nm[0])}</div><div class="pictext"><p class="note">Slide your ruler, or tap where its 0 should go. Then read the end, to the nearest half centimetre.</p>${i >= 4 ? '<p class="note">Some ends are not exactly on a mark. Choose the mark that is nearest.</p>' : ''}${i === 0 ? '<p class="note">These are picture centimetres. A real ruler held to the screen will not match.</p>' : ''}</div></div>${lAnswerBox('The ' + nm[0] + ' is')}`);
+    const redraw = () => { $('lpic').innerHTML = lMeasureSvg(nm[1], len, mm, w.off, nm[0]); lRulerDrag(w, redraw); }; lRulerDrag(w, redraw);
+    const read = lReadBox(); $('leave').onclick = () => { closeToy(); say(`You put the ${nm[0]} down. ${i} of 8 measured.`); };
+    $('try').onclick = () => { const got = read(), msg = $('msg'); if (got == null) { msg.className = 'msg'; msg.textContent = 'Write the number of centimetres. Tap "and a half" if it ends on a half mark.'; return; }
+      if (got === len && w.off === 0) { c.meas[i] = len; c.i = i + 1; c.tries.hall = (c.tries.hall || 0) + w.tries; save(); beep(700, .08);
+        if (c.i >= 8) { c.tries.hall = Math.max(1, Math.round(c.tries.hall / 8) + 1); return lWin('Unit Alignment, eight things measured', 'Measure lengths to the nearest half centimetre (AERO 3.MD.4, metric)', 'hall', '"Eight true lengths!" The keeper writes them all down. "Take them to the Unit Alignment Matrix, east of here." You earn a card.'); }
+        say(`Yes: the ${nm[0]} is ${lHalf(len)} cm. ${c.i} of 8 measured.`); return show(); }
+      w.tries++; c.nud.hall = (c.nud.hall || 0) + 1; save(); msg.className = w.off !== 0 ? 'msg' : 'msg bad'; msg.textContent = lWhy(w, got, len, mm, nm[0]); }; };      /* before the ruler is lined up, the answer is never said to be right or wrong */
+  show(); }
+
+/* THE MATRIX: the line plot [3.MD.4]. An X for each length. Then one question, read from the plot. */
+function lPlotSvg(w, v) { const t0 = v.w0 - 1, X = k => 80 + k * 110, top = 330;
+  let s = `<rect width="900" height="420" fill="#16233a"/><line x1="${X(0) - 30}" y1="${top}" x2="${X(6) + 30}" y2="${top}" stroke="#cfe3ff" stroke-width="4"/>`;
+  for (let k = 0; k < 7; k++) { s += `<line x1="${X(k)}" y1="${top - 10}" x2="${X(k)}" y2="${top + 12}" stroke="#cfe3ff" stroke-width="3"/><text x="${X(k)}" y="${top + 44}" text-anchor="middle" font-size="36" font-weight="700" fill="#fff">${lHalf(t0 + k)}</text>`;
+    for (let n = 0; n < w.plot[k]; n++) s += `<text x="${X(k)}" y="${top - 22 - n * 40}" text-anchor="middle" font-size="40" font-weight="700" fill="#ffd34d">✕</text>`; }
+  s += `<text x="450" y="${top + 84}" text-anchor="middle" font-size="30" fill="#a9c4ee">length in centimetres</text>`;
+  return `<svg class="picsvg" id="lplot" viewBox="0 0 900 420" style="aspect-ratio:900/420;touch-action:manipulation" role="img" aria-label="The Matrix screen: a line marked in half centimetres">${s}</svg>`; }
+function lPlot() { const c = LEN(), v = lNums(c.seed); if (!c.done.hall) return 'The Matrix hums. Its screen says: TRUE LENGTHS NEEDED. Measure the things in the Long Hall first.'; if (c.done.plot) return 'The Matrix hums, steady and calm. The lengths on Lengthar are aligned.';
+  if (!c.plot) c.plot = [0, 0, 0, 0, 0, 0, 0]; const w = widget = { kind: 'lplot', plot: c.plot, tries: 0, stage: c.plotOk ? 'q' : 'plot' };
+  const data = v.names.map((n, i) => `<li>${n[0]}: <b>${lHalf(c.meas[i] || v.L[i])} cm</b></li>`).join('');
+  const draw = () => { const q = v.q, qText = q.kind === 'most' ? 'Which length did you measure most often?' : `How many things are longer than ${lHalf(q.th)} cm? (A thing that is exactly ${lHalf(q.th)} cm is not longer.)`;
+    toy(`<p class="eyebrow">Planet Lengthar · the Unit Alignment Matrix</p><p class="mw"><b>Maths word: line plot.</b> A line with an X above it for each thing you measured.</p><h3>${w.stage === 'plot' ? 'Feed the Matrix' : 'The Matrix asks'}</h3>
+      <div class="picrow"><div class="pic">${lPlotSvg(w, v)}</div><div class="pictext"><p class="note">Your eight lengths, from the Long Hall:</p><ul class="note">${data}</ul>${w.stage === 'plot' ? '<p class="note">Tap above a length to put an X there. To fix a mistake, tap Take away the last X. Then Check.</p>' : `<p class="q">${qText}</p>`}</div></div>
+      ${w.stage === 'plot' ? '<div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="undo">Take away the last X</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>' : q.kind === 'most' ? lAnswerBox('The most common length is') : `<div class="field"><label for="ans" class="note">Things longer than ${lHalf(q.th)} cm</label><input id="ans" inputmode="numeric" autocomplete="off" maxlength="1" style="width:3em"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>`}`);
+    $('leave').onclick = () => { closeToy(); save(); say('The Matrix waits, humming.'); };
+    if (w.stage === 'plot') { const svg = $('lplot'); svg.onclick = e => { const q0 = svg.createSVGPoint(); q0.x = e.clientX; q0.y = e.clientY; const p = q0.matrixTransform(svg.getScreenCTM().inverse()), k = Math.round((p.x - 80) / 110); if (k < 0 || k > 6 || p.y > 345) return;
+        if (w.plot[k] < 8) { w.plot[k]++; c.plotHist = (c.plotHist || []).concat(k); } save(); beep(560, .04); draw(); };      /* a tap in a column always adds: tapping the same spot again never takes one away by surprise */
+      $('undo').onclick = () => { const hst = c.plotHist || []; let k = hst.pop(); while (k != null && !w.plot[k]) k = hst.pop(); if (k == null) { k = w.plot.findIndex(n => n > 0); if (k < 0) return; } w.plot[k]--; c.plotHist = hst; save(); beep(300, .04); draw(); };
+      $('try').onclick = () => { const want = [0, 1, 2, 3, 4, 5, 6].map(k => v.L.filter(x => x === v.w0 - 1 + k).length), tot = w.plot.reduce((a, b) => a + b, 0), msg = $('msg');
+        if (want.every((n, k) => n === w.plot[k])) { c.plotOk = true; w.stage = 'q'; save(); beep(700, .08); say('The Matrix glows: every length is in place.'); return draw(); }
+        w.tries++; c.nud.plot = (c.nud.plot || 0) + 1; save(); msg.className = 'msg bad';
+        msg.textContent = tot !== 8 ? `The line has ${tot} X${tot === 1 ? '' : 's'}. You measured 8 things: one X for each.` : w.tries < 3 ? 'Eight Xs. But some are in the wrong place. Check each length on your list against its X.' : `Look at the ${lHalf(v.w0 - 1 + want.findIndex((n, k) => n !== w.plot[k]))} cm column again. How many of your things are that long?`; }; return; }
+    const read = q.kind === 'most' ? lReadBox() : (() => { const a = $('ans'); a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 1); }; return () => a.value === '' ? null : +a.value; })();
+    $('try').onclick = () => { const got = read(), msg = $('msg'); if (got == null) return; if (got === q.ans) { c.tries.plot = (c.tries.plot || 0) + w.tries + 1; return lWin('the line plot', 'Show measurements on a line plot, and read it (AERO 3.MD.4, metric)', 'plot', 'The Unit Alignment Matrix hums. Across Lengthar, rods and doors settle back to their true lengths. Far to the east, something in the Rift screams. You earn a card.'); }
+      w.tries++; c.nud.plot = (c.nud.plot || 0) + 1; save(); msg.className = 'msg bad'; msg.textContent = q.kind === 'most' ? 'Look at your line plot. Which length has the tallest stack of Xs?' : `Look at the Xs to the right of ${lHalf(q.th)}. Count only those.`; }; };
+  draw(); }
+
+/* THE RIFT: the Chaos Guardian [Source: "a creature feeding on imprecision"]. It claims a length for each crystal. Measure, then say if it is right. */
+function lGuard() { const c = LEN(), v = lNums(c.seed); if (!c.done.plot) return 'The Guardian laughs, a crooked sound. "Little cadet. Feed the Matrix first, if you can."'; if (c.done.guard) return 'The Rift is quiet.';
+  const show = () => { const i = Math.min(c.gi || 0, 2), w = widget = { kind: 'lguard', off: v.start[i], tries: 0, stage: 'measure' }, len = v.G[i];
+    const draw = () => { toy(`<p class="eyebrow">Planet Lengthar · the Guardian's Rift · crystal ${i + 1} of 3</p><h3>The Chaos Guardian</h3>
+        <div class="picrow"><div class="pic" id="lpic">${lMeasureSvg('crystal', len, 0, w.off, 'crystal')}</div><div class="pictext"><p class="story">The Guardian hisses: "This crystal is ${lHalf(v.claim[i])} centimetres long. Trust me."</p>${w.stage === 'measure' ? '<p class="note">Do not trust it. Measure the crystal first.</p>' : `<p class="q">You measured ${lHalf(len)} cm. Is the Guardian right?</p>`}</div></div>
+        ${w.stage === 'measure' ? lAnswerBox('The crystal is') : '<div class="field"><button class="btn" type="button" data-j="1">It is right</button><button class="btn" type="button" data-j="0">It is wrong</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div>'}`);
+      $('leave').onclick = () => { closeToy(); say('The Guardian swirls, waiting.'); };
+      if (w.stage === 'measure') { const redraw = () => { $('lpic').innerHTML = lMeasureSvg('crystal', len, 0, w.off, 'crystal'); lRulerDrag(w, redraw); }; lRulerDrag(w, redraw); const read = lReadBox();
+        $('try').onclick = () => { const got = read(), msg = $('msg'); if (got == null) return; if (got === len && w.off === 0) { w.stage = 'judge'; beep(700, .08); return draw(); }
+          w.tries++; c.nud.guard = (c.nud.guard || 0) + 1; save(); msg.className = w.off !== 0 ? 'msg' : 'msg bad'; msg.textContent = lWhy(w, got, len, 0, 'crystal'); }; return; }
+      document.querySelectorAll('#toy [data-j]').forEach(b => b.onclick = () => { const said = b.dataset.j === '1', msg = $('msg');
+        if (said === v.tr[i]) { c.gi = i + 1; c.tries.guard = (c.tries.guard || 0) + w.tries; save(); beep(700, .08);
+          if (c.gi >= 3) { c.tries.guard = Math.max(1, Math.round(c.tries.guard / 3) + 1); if (!S.inv.includes('tape')) give('tape'); return lWin('the Chaos Guardian', 'Measure exactly, and compare with a claim (AERO 3.MD.4, metric)', 'guard', 'Exact measuring! The Chaos Guardian has nothing left to feed on. It shrinks to a puff of smoke and sinks into the Rift. Far away, the Measuronians cheer. They send you a measuring tape with marks that will never shake off. You earn an epic card.', true); }
+          say(v.tr[i] ? 'You nod: the Guardian told the truth this time. It looks disappointed.' : `"Wrong! It is ${lHalf(len)} cm, not ${lHalf(v.claim[i])}." The Guardian shrinks a little.`); return show(); }
+        w.tries++; c.nud.guard = (c.nud.guard || 0) + 1; save(); msg.className = 'msg bad'; msg.textContent = `Compare: you measured ${lHalf(len)} cm. The Guardian said ${lHalf(v.claim[i])} cm. Are they the same?`; }); };
+    draw(); };
+  show(); }
+
+/* ---- the pictures: Lengthar, drawn from the side. Straight lines everywhere, except where the anomaly bent them */
+function drawLen(dt) { const c = LEN(), w = vw, h = Math.max(220, vh), hz = h * .6, gy = h * .86, m = Math.min(w, h), sc = c.sc, r = wrng(7 + Object.keys(LSC).indexOf(sc) * 13), fixed = !!c.done.plot;
+  if (PL.to != null) { const d = PL.to - PL.x, st = .3 * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle += dt;
+  const g = cx.createLinearGradient(0, 0, 0, hz); g.addColorStop(0, '#2c2a64'); g.addColorStop(1, '#5fa8b8'); cx.fillStyle = g; cx.fillRect(0, 0, w, vh);
+  for (let i = 1; i < 7; i++) { cx.strokeStyle = 'rgba(255,255,255,.07)'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(0, hz * i / 7); cx.lineTo(w, hz * i / 7); cx.stroke(); }       /* the sky is ruled, like paper */
+  cx.fillStyle = '#f3e9c6'; circ(w * .82, h * .14, m * .05); cx.fill();
+  for (let i = 0; i < 9; i++) { const X = w * (i / 8) - w * .04, bw = w * .09, bh = h * (.08 + r() * .2), tilt = fixed ? 0 : (r() - .5) * .22; cx.save(); cx.translate(X + bw / 2, hz); cx.rotate(tilt); cx.fillStyle = 'rgba(30,40,80,.55)'; cx.fillRect(-bw / 2, -bh, bw, bh); for (let k = 1; k < bh / (h * .03); k++) { cx.fillStyle = 'rgba(255,255,255,.08)'; cx.fillRect(-bw / 2, -k * h * .03, bw, 2); } cx.restore(); }   /* far towers of exact blocks; the anomaly tilts them */
+  vGround(w, h, hz, '#d8c79a', '#a8915f');
+  for (let x = 0; x < w; x += Math.max(8, w / 120)) { const big = Math.round(x / Math.max(8, w / 120)) % 10 === 0; cx.fillStyle = 'rgba(70,50,20,.45)'; cx.fillRect(x, hz, 1.5, big ? h * .03 : h * .012); }                         /* the edge of the ground is marked like a ruler */
+  const s = Math.max(48, h * .15);
+  if (sc === 'strip') { cx.fillStyle = 'rgba(255,255,255,.5)'; for (let i = 0; i < 6; i++) cx.fillRect(w * (.05 + i * .16), gy + h * .04, w * .09, h * .012); rocket(w * .12, gy - m * .12, m * .2, -Math.PI / 2, {});
+    { const X = w * .82; cx.fillStyle = '#6b5a3a'; cx.fillRect(X - 3, gy - s * 1.4, 6, s * 1.4); cx.fillStyle = '#f1e4bd'; cx.beginPath(); cx.moveTo(X - s * .5, gy - s * 1.35); cx.lineTo(X + s * .45, gy - s * 1.35); cx.lineTo(X + s * .65, gy - s * 1.15); cx.lineTo(X + s * .45, gy - s * .95); cx.lineTo(X - s * .5, gy - s * .95); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = INK; cx.font = `700 ${Math.max(10, s * .16)}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('WORKSHOP', X, gy - s * 1.15); cx.textAlign = 'left'; cx.textBaseline = 'alphabetic'; } }
+  if (sc === 'shop') { cx.fillStyle = '#b8a47e'; cx.fillRect(w * .05, hz - h * .2, w * .9, h * .2 + 2); ol(2); cx.fillStyle = '#8b6f45'; cx.fillRect(w * .4, gy - s * .55, w * .45, s * .12); cx.fillRect(w * .43, gy - s * .43, w * .02, s * .43); cx.fillRect(w * .8, gy - s * .43, w * .02, s * .43);
+    cx.fillStyle = '#d9a66b'; cx.fillRect(w * .42, gy - s * .7, w * .4, s * .14); ol(2); if (c.done.rod) { cx.fillStyle = INK; [.25, .5, .75].forEach(f => cx.fillRect(w * (.42 + .4 * f) - 1.5, gy - s * .7, 3, s * (f === .5 ? .14 : .09))); } }
+  if (sc === 'hall') { cx.fillStyle = '#c9b88c'; cx.fillRect(0, hz - h * .26, w, h * .26 + 2); for (let i = 0; i < 6; i++) { cx.fillStyle = 'rgba(80,60,30,.25)'; cx.fillRect(w * (.08 + i * .16), hz - h * .22, w * .05, h * .16); }
+    cx.fillStyle = '#8b6f45'; cx.fillRect(w * .48, gy - s * .5, w * .42, s * .12); cx.fillRect(w * .5, gy - s * .38, w * .02, s * .38); cx.fillRect(w * .86, gy - s * .38, w * .02, s * .38);
+    const v = lNums(c.seed), COLS = ['#d9a62e', '#f2c14e', '#cfe6ff', '#d8935c', '#8fc46a', '#dfe6ee', '#8a5a34', '#c0503a', '#b4e6ff', '#f6f3ea', '#f1d7e6', '#b9c3cf']; v.names.forEach((n, i) => { const X = w * (.5 + i * .046), L = w * .036 * v.L[i] / 24 + w * .006; cx.fillStyle = COLS[LOBJ.findIndex(o => o[0] === n[0]) % COLS.length]; rr(X, gy - s * .6, L, s * .08, 3); cx.fill(); ol(1.5); if (c.meas[i]) { cx.fillStyle = '#1c7c3a'; circ(X + L / 2, gy - s * .72, Math.max(3, s * .04)); cx.fill(); } }); }      /* each thing in its own colour; a green dot once it is measured */
+  if (sc === 'matrix') { const X = w * .58, mw = Math.min(w * .5, h * .9), mh = h * .48; cx.fillStyle = '#3b4a6b'; rr(X - mw / 2, gy - mh, mw, mh, 10); cx.fill(); ol(3); cx.fillStyle = fixed ? '#16233a' : '#0d1424'; rr(X - mw * .4, gy - mh * .88, mw * .8, mh * .5, 6); cx.fill(); ol(2);
+    cx.strokeStyle = '#cfe3ff'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X - mw * .34, gy - mh * .48); cx.lineTo(X + mw * .34, gy - mh * .48); cx.stroke();
+    if (c.plot) c.plot.forEach((n, k) => { for (let j = 0; j < n; j++) { cx.fillStyle = '#ffd34d'; cx.font = `700 ${Math.max(10, mh * .06)}px sans-serif`; cx.textAlign = 'center'; cx.fillText('×', X - mw * .3 + k * mw * .1, gy - mh * .5 - j * mh * .055); } });
+    for (let i = 0; i < 6; i++) { cx.fillStyle = Math.sin(tNow * 3 + i) > 0 ? '#ffb23e' : '#6db3ff'; circ(X - mw * .3 + i * mw * .12, gy - mh * .2, Math.max(3, mw * .015)); cx.fill(); } cx.textAlign = 'left'; }
+  if (sc === 'rift') { const top = [[.14, .0], [.2, -.018], [.26, .006], [.31, -.022], [.37, .004], [.42, -.016], [.48, .002], [.54, -.01]], bot = [[.54, .02], [.47, .05], [.4, .03], [.34, .062], [.27, .036], [.21, .058], [.14, .02]], Y0 = gy - h * .1;
+    cx.fillStyle = '#1a1020'; cx.beginPath(); top.forEach(([a, b], i) => cx[i ? 'lineTo' : 'moveTo'](w * a, Y0 + h * b)); bot.forEach(([a, b]) => cx.lineTo(w * a, Y0 + h * b)); cx.closePath(); cx.fill();
+    cx.strokeStyle = `rgba(190,120,255,${.35 + .2 * Math.sin(tNow * 2)})`; cx.lineWidth = 2; cx.stroke();                  /* a crack in the ground, with a purple glow from below */
+    if (!c.done.guard) { const X = w * .62, Y = gy - s * 1.2, R = s * (.9 - .15 * (c.gi || 0)); for (let i = 0; i < 7; i++) { cx.strokeStyle = `rgba(${180 + i * 10},90,220,.7)`; cx.lineWidth = 3; cx.beginPath(); for (let a = 0; a < 6.3; a += .5) { const rr2 = R * (.6 + .4 * Math.sin(a * 3 + tNow * 2 + i)); cx.lineTo(X + Math.cos(a + i) * rr2, Y + Math.sin(a + i) * rr2 * .8); } cx.closePath(); cx.stroke(); }
+      for (const e of [-1, 1]) { cx.fillStyle = '#fff'; circ(X + e * R * .25, Y - R * .1, R * .12); cx.fill(); cx.fillStyle = INK; circ(X + e * R * .25, Y - R * .08, R * .05); cx.fill(); } } }
+  const who = { strip: [.5, '#7fd3c4'], shop: [.25, '#e7a35b'], hall: [.16, '#9fb6ff'] }[sc]; if (who) { const X = w * who[0], Y = gy - s * .55, R = s * .45;      /* a Measuronian: a measuring tape curls behind it like a tail */
+    cx.strokeStyle = '#f2c94c'; cx.lineWidth = Math.max(4, R * .16); cx.lineCap = 'round'; cx.beginPath(); cx.moveTo(X + R * .5, Y + R * .6); cx.quadraticCurveTo(X + R * 1.6, Y + R * 1.1, X + R * 1.4, Y + R * .1); cx.stroke(); cx.lineCap = 'butt';
+    alienGuy(X, Y, R, who[1], 2, tNow); if (sc === 'strip') { cx.fillStyle = '#f7e9a8'; rr(X - R * 1.5, Y + R * .1, R * 1.1, R * .26, 3); cx.fill(); ol(1.5); cx.fillStyle = '#e3b778'; rr(X - R * 1.4, Y - R * .15, R * .9, R * .16, 3); cx.fill(); ol(1.5); } }
+  drawAstro(PL.x * w, gy - s * .45, s * 1.1, PL.to != null, PL.face > 0 ? 'right' : 'left', PL.step);
+  lThings().forEach(t => { if (t.id !== 'ship' || true) pill(t.label, w * t.x, gy + h * .08); });
+  cx.font = `700 ${Math.max(12, Math.min(16, w * .02))}px "Chakra Petch", sans-serif`; for (const [d, X, al] of [['e', w - 10, 'right'], ['w', 10, 'left']]) { const to = LSC[sc][d]; if (!to) continue; const t = d === 'e' ? `${LSC[to].name} »` : `« ${LSC[to].name}`, tw = cx.measureText(t).width + 16; cx.fillStyle = 'rgba(6,9,18,.82)'; const ey = Math.max(64, h * .11); rr(d === 'e' ? X - tw : X, ey, tw, 24, 7); cx.fill(); cx.fillStyle = '#ffcf5a'; cx.textAlign = al; cx.textBaseline = 'middle'; cx.fillText(t, d === 'e' ? X - 8 : X + 8, ey + 13);      /* under the place's title, clear of the labels on the ground */ cx.textBaseline = 'alphabetic'; } cx.textAlign = 'left';
+  if (PL.fade > 0) { PL.fade = Math.max(0, PL.fade - dt * 1.6); cx.fillStyle = `rgba(6,9,18,${PL.fade})`; cx.fillRect(0, 0, w, vh); } }
+/* LEN-END */
+
+/* =====================================================================
    OPERATION STARDUST (Galaxy Databa). The mission ship, the night before a year-long trip.   STAR-BEGIN
    [Source: Marc's quest "Operation Stardust: Prepping for a Year-Long Space Adventure": a mysterious signal, a 12-month trip, a crew of four,
     the Supply Chief, Voltara Mission Control, the Central Computer. The ship's five rooms and their temperatures (Living Quarters, Engine Room,
@@ -4671,6 +4975,7 @@ function sEaten() { const c = SD(), v = sNums(c.seed); if (c.done.eaten) return 
    Nobody picks one home: the reports are what a cadet saw, kept for the end of the journey. */
 const RHOME = { voltara: { name: 'Planet Voltara', done: () => !!(S.v && V().final), facts: () => ['Rainbow skies, talking animals and FlavorBurst fruit.', `Its power tower is weak. Tonight it holds ${num(V().supply)}.`, 'The Number Nomads live there too, in a hidden town.'] },
   chrono: { name: 'Planet Chronosia', done: () => !!(S.c && cAllDone()), facts: () => ['The sky is in stripes, and time is broken.', 'Quakes shake the ground, but they come in a pattern.', 'The Council keeps the clocks, and is kind.'] },
+  len: { name: 'Planet Lengthar', done: () => !!(S.ln && LEN().done.guard), facts: () => ['Everything there is built to an exact length.', 'A storm shook the marks off their measuring rods. Now they are true again.', 'The Measuronians measure in centimetres and metres.'] },
   xylo: { name: 'Planet Xylophora', done: () => !!(S.xy && XY().done.key), facts: () => ['The ground is a patchwork of squares.', 'A gentle giant sleeps in the north.', 'A colony stands now, built from the giant\'s skin.'] } };
 /* the report is asked for when the cadet leaves a finished planet: "before the trip goes on" */
 const reportHomeSoon = p => setTimeout(() => { if (S.mode === 'space' && !widget && RHOME[p].done() && !(S.home || {})[p]) reportHome(p); }, 900);      /* only while still in space: landing again first leaves it waiting in My ship */
@@ -4892,6 +5197,7 @@ cv.addEventListener('pointerdown', e => {
   if (S.mode === 'world') return tapWorld(e);
   if (S.mode === 'chrono') return tapChrono(e);
   if (S.mode === 'xylo') return xTap(e);
+  if (S.mode === 'len') return lTap(e);
   if (olPicOn()) return olPicTap(e);
   if (S.mode === 'star') return sTap(e);
   if (widget && widget.kind === 'cargo') { const r = cv.getBoundingClientRect(), fx = (e.clientX - r.left) / ts + cam.x, fy = (e.clientY - r.top) / ts + cam.y, on = [...widget.on];
@@ -4950,7 +5256,7 @@ function tidy() { try { speechSynthesis.cancel(); } catch (e) {} try { readOk(tr
 function goVoltara() { const again = !!(S.v && S.v.crossed); S.mode = 'planet'; S.ended = true; S.at = 'numerix'; S.beat = 0; V().sc = 'meadow'; PL.x = .13; PL.fade = 1; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; tidy();
   say(again ? 'Teacher shortcut. You are back on Planet Voltara, in the Landing Meadow.' : 'Teacher shortcut. You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.'); $('place').scrollIntoView({ block: 'nearest' }); }
 function goStation() { S.mode = 'station'; S.ended = false; S.beat = 0; if (S.tut == null) S.tut = 3; tidy(); P.x = S.x; P.y = S.y; say(`Teacher shortcut. You are on the KIS Station, in the ${ROOMS[S.room].name}.`); $('place').scrollIntoView({ block: 'nearest' }); }
-$('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation; $('t_space').onclick = goSpace; $('t_chr').onclick = goChronosia; $('t_xyl').onclick = goXylophora; $('t_std').onclick = goStardust;
+$('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation; $('t_space').onclick = goSpace; $('t_chr').onclick = goChronosia; $('t_xyl').onclick = goXylophora; $('t_len').onclick = goLengthar; $('t_std').onclick = goStardust;
 window.addEventListener('resize', size); window.addEventListener('resize', fitSoon); window.addEventListener('orientationchange', fitSoon);
 document.querySelectorAll('#menu .mbtn').forEach(b => b.addEventListener('click', () => menuOpen(MENU.open === b.dataset.m ? null : b.dataset.m)));
 $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); $('snd').onclick = () => { soundOn = !soundOn; $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); if (soundOn) beep(660, .1); };
@@ -4961,8 +5267,9 @@ drawStatus(); drawBag(); drawCards();
 S.mode = S.mode || 'station'; S.holes = S.holes || []; S.skill = S.skill || {}; if (S.secrets.includes('stone') && !S.inv.includes('stone')) S.inv.push('stone'); if (S.ship && rude(S.ship, true)) S.ship = ''; if (S.botName && rude(S.botName, true)) S.botName = ''; drawStars();
 if (S.tut == null) S.tut = 3;
 if (S.xy) { XM.px = S.xy.x; XM.py = S.xy.y; XM.cx = -1; if (S.mode === 'xylo') setTimeout(() => { if (!widget && S.mode === 'xylo' && xIntroDue()) xIntro(0); }, 400); }      /* a cadet who reloads before the arrival screens are done sees them again */
+if (S.ln && S.mode === 'len') setTimeout(() => { if (!widget && S.mode === 'len' && lIntroDue()) lIntro(0); }, 400);
 if (S.sd) { SM.px = S.sd.x; SM.py = S.sd.y; SM.snap = true; S.sd.at = 'map'; }
-say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'chrono' ? 'You are on Planet Chronosia.' : S.mode === 'xylo' ? 'You are on Planet Xylophora.' : S.mode === 'star' ? 'You are on the mission ship.' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
+say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'chrono' ? 'You are on Planet Chronosia.' : S.mode === 'xylo' ? 'You are on Planet Xylophora.' : S.mode === 'len' ? 'You are on Planet Lengthar.' : S.mode === 'star' ? 'You are on the mission ship.' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
 else if (S.mode === 'station' && !S.ended && !S.storyTold) { S.storyTold = true; save(); say('Mission Control: "A cosmic storm swept through this part of space. It wrecked KIS Station and broke its ships. It knocked out the power on Planet Voltara. Now Voltara is calling for help, but the message keeps breaking up. Yours is the only ship that can be fixed. Fit its parts, and you will hear more of the message."'); }
 if (S.ended) showEnding();
