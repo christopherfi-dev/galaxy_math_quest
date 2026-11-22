@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GMQ new cards: first draft</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0b1020;color:#e8ecf5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body{padding:0 14px 90px;overflow-x:hidden}
+h1{font-size:22px;margin:16px 0 4px}
+h2{font-size:19px;margin:28px 0 6px;padding-top:10px;border-top:1px solid #26304d}
+h3{font-size:15px;margin:16px 0 6px;color:#aab4cf;font-weight:600}
+p,li{font-size:15px;line-height:1.45;margin:6px 0}
+ul{margin:4px 0 4px 20px;padding:0}
+.lead{color:#c3cbe0;max-width:820px}
+.tag{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;margin-right:4px;background:#1b2440;color:#c9d2ea;border:1px solid #33406a}
+table{border-collapse:collapse;margin:8px 0;font-size:14px;max-width:100%}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+th,td{border:1px solid #2b3658;padding:5px 8px;text-align:left;vertical-align:top}
+th{background:#151d36;color:#c9d2ea}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px;margin:10px 0}
+@media(min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(176px,1fr))}}
+.partgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0}
+@media(max-width:560px){.partgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{position:relative;border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;border-radius:12px;-webkit-tap-highlight-color:transparent}
+.tile svg{display:block;width:100%;height:auto}
+.tile .mark{position:absolute;top:-6px;right:-6px;min-width:26px;height:26px;border-radius:13px;font-size:12px;font-weight:800;line-height:26px;text-align:center;padding:0 7px;color:#0b1020;display:none;box-shadow:0 1px 4px rgba(0,0,0,.6)}
+.tile.keep .mark{display:block;background:#4ade80}
+.tile.change .mark{display:block;background:#fbbf24}
+.tile.drop .mark{display:block;background:#f87171}
+.tile.drop svg{opacity:.38}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{font-size:14px;border-radius:999px;border:1px solid #3a4874;background:#141c35;color:#d5dcf0;padding:7px 13px;cursor:pointer}
+.chip.on{background:#e8ecf5;color:#0b1020;border-color:#e8ecf5;font-weight:700}
+#bar{position:fixed;left:0;right:0;bottom:0;background:#111933;border-top:1px solid #33406a;padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;z-index:5}
+#bar .count{font-size:13px;color:#c3cbe0;flex:1;min-width:0}
+.btn{font-size:15px;font-weight:700;border-radius:10px;border:1px solid #4a5a90;background:#1c2748;color:#fff;padding:10px 14px;cursor:pointer}
+.btn.primary{background:#3b82f6;border-color:#3b82f6}
+#zoom{position:fixed;inset:0;background:#070b18;z-index:10;display:none;align-items:center;justify-content:center;padding:10px 10px calc(14px + env(safe-area-inset-bottom))}
+#zoom.open{display:flex}
+#zoombox{display:flex;gap:16px;align-items:center;justify-content:center;width:100%;max-width:980px;max-height:100%}
+#zoomcard{flex:0 1 auto;height:min(86vh,640px);aspect-ratio:250/350;max-width:56vw}
+#zoomcard svg{width:100%;height:100%;display:block}
+#zoomside{flex:0 1 330px;min-width:0;max-height:92vh;overflow-y:auto}
+#zoomside h4{margin:0 0 6px;font-size:18px}
+#zoomside p{font-size:14px;margin:5px 0;color:#c9d2ea}
+#zoomside b{color:#fff}
+.picks{display:flex;gap:6px;margin:10px 0}
+.picks .btn{flex:1;padding:10px 4px}
+.btn.k.on{background:#16a34a;border-color:#16a34a}
+.btn.c.on{background:#d97706;border-color:#d97706}
+.btn.d.on{background:#dc2626;border-color:#dc2626}
+#znote{width:100%;min-height:58px;border-radius:8px;border:1px solid #3a4874;background:#0d1430;color:#fff;font-size:15px;padding:8px;font-family:inherit}
+.nav{display:flex;gap:6px;margin-top:10px}
+.nav .btn{flex:1}
+@media(max-width:700px),(orientation:portrait){
+  #zoombox{flex-direction:column;gap:8px}
+  #zoomcard{height:min(50vh,470px);max-width:86vw}
+  #zoomside{flex:0 1 auto;width:100%;max-width:520px;max-height:44vh}
+}
+@media(orientation:portrait) and (min-height:1000px){#zoomcard{height:min(58vh,680px)}}
+#out{display:none;width:100%;min-height:150px;margin-top:8px;border-radius:8px;border:1px solid #3a4874;background:#0d1430;color:#fff;font-size:13px;padding:8px}
+.small{font-size:13px;color:#9aa6c6}
+</style>
+</head>
+<body>
+
+<h1>Galaxy Math Quest: the new cards</h1>
+<p class="lead"><span class="tag">first draft</span><span class="tag">for Marc</span><span class="tag">22 November 2026</span><br>
+Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, <b>Change</b> or <b>Drop</b>, and write a note if you like. Then press <b>Copy my picks</b> at the bottom and paste the text to the battle thread.</p>
+<p class="lead"><a href="index.html" style="color:#93c5fd;font-weight:700">Play the practice battle with these cards</a></p>
+
+<h2>1. One rule for the numbers</h2>
+<p class="lead">A child can say it: <b>Common: one small number. Rare: about double, or two things at once. Epic: it does something no other card does.</b></p>
+<div class="scroll"><table id="ladder"></table></div>
+<p class="small">An attack card and a block card of the same size cancel each other. Every number is one a Grade 3 child can add or take away in their head, or on paper.</p>
+<h3>Words the cards use (working guesses, yours to change)</h3>
+<ul>
+<li><b>A working part</b> has HP left. A lost part is at 0.</li>
+<li><b>Block</b> comes off the attack first, before it reaches your shield or your parts.</li>
+<li><b>Your rule, 22 November:</b> a block card stops an attack card only of its own kind, or a lower one. A common card cannot block a rare card. A common or a rare card cannot block an epic card.</li>
+<li><b>A repair</b> is for a working part, and never lifts it above the HP it started with. Only Stellar Revival brings a lost part back.</li>
+<li><b>The Main Shield</b> never passes 100. Once it is broken, only Shield Reborn brings it back.</li>
+</ul>
+
+<h2>2. The ship parts: five parts, four kinds</h2>
+<p class="lead">The <b>colour of the border</b> is the kind. Each kind means the same thing on every part.</p>
+<div class="scroll"><table id="kindtable"></table></div>
+<div id="parts" class="partgrid"></div>
+<p class="small">A ship of five Standard parts has <b id="stdhp"></b> HP and <b id="stdap"></b> AP. The names and the Standard numbers are yours. 13 of the 15 Standard, Guardian and Striker numbers are the ones in the table from your 2023 chats. The two moved onto the rule: Neutron Wall (33 and 2 there) and Quantum Deflector (28 and 7 there). The Lucky Draw numbers are new, except the Cosmic Navigator.</p>
+
+<h2>3. The battle cards: <span id="nplay"></span> to choose from</h2>
+<p class="lead">The <b>big symbol</b> is what the card does: a laser gun attacks, a shield blocks, a heart repairs, a spy sneaks past the shield, a policeman stops a spy. The <b>thick rim</b> is the kind: green for common, purple for rare, gold for epic. Those are the colours of your 2023 cards. The <b>Guard</b> is your Policeman under a new name; change it back if you prefer.</p>
+<p class="lead"><b>In a battle</b> each deck has one Spy card, drawn at random from the seven here, and two Guards. [Marc, 22 November: one Spy card each, and at least as many Policemen.]</p>
+<div class="chips" id="chips"></div>
+<div id="play" class="grid"></div>
+
+<h2>4. Level 2 upgrades</h2>
+<p class="lead">The numbers are yours: HP +4 and AP +3. In 2023 an upgrade was earned on quests. In the practice battle it is one of the cards in each deck: playing it makes that part Level 2 for that battle. That is a guess, and a switch.</p>
+<div id="ups" class="grid"></div>
+
+<h2>5. Ideas that need a rule from you first</h2>
+<p class="lead">These are not in the set. Each needs a rule your rules sheet does not have yet. If you make the rule, the card can join.</p>
+<div id="ideas" class="grid"></div>
+
+<textarea id="out" readonly aria-label="Your picks as text"></textarea>
+
+<div id="bar">
+  <div class="count" id="count"></div>
+  <button class="btn" id="clear" type="button">Clear</button>
+  <button class="btn primary" id="copy" type="button">Copy my picks</button>
+</div>
+
+<div id="zoom" role="dialog" aria-modal="true">
+  <div id="zoombox">
+    <div id="zoomcard"></div>
+    <div id="zoomside">
+      <h4 id="zname"></h4>
+      <p id="zwhat"></p>
+      <p id="zmaths"></p>
+      <p id="zfrom"></p>
+      <p id="zrule"></p>
+      <div class="picks">
+        <button class="btn k" type="button" data-p="keep">Keep</button>
+        <button class="btn c" type="button" data-p="change">Change</button>
+        <button class="btn d" type="button" data-p="drop">Drop</button>
+      </div>
+      <textarea id="znote" placeholder="A note for this card (a new name, a new number...)"></textarea>
+      <div class="nav">
+        <button class="btn" type="button" id="zprev">Back</button>
+        <button class="btn" type="button" id="znext">Next</button>
+        <button class="btn primary" type="button" id="zclose">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="carddata" type="application/json">
+{
+"version": "new set v1.1, 2026-11-22",
+"standard_ship": {"hp": 100, "ap": 55},
+"kinds": [
+ {"key":"standard","name":"Standard","colour":"#9aa6b8","rule":"The middle. A fair share of HP and of AP.","hp":0,"ap":0},
+ {"key":"guardian","name":"Guardian","colour":"#3b82f6","rule":"Tougher: 5 more HP, 5 less AP.","hp":5,"ap":-5},
+ {"key":"striker","name":"Striker","colour":"#ef4444","rule":"Stronger: 5 less HP, 5 more AP.","hp":-5,"ap":5},
+ {"key":"lucky","name":"Lucky Draw","colour":"#f5c518","rule":"The best of both: 5 more HP and 5 more AP.","hp":5,"ap":5}
+],
+"parts": [
+ {"id":"EC-1","part":"Engine Core","kind":"standard","name":"Standard Reactor","hp":20,"ap":5,"text":"The workhorse. Steady and sturdy."},
+ {"id":"EC-2","part":"Engine Core","kind":"guardian","name":"Neutron Reactor","hp":25,"ap":0,"text":"A tough core. It adds nothing to your attack."},
+ {"id":"EC-3","part":"Engine Core","kind":"striker","name":"Quantum Reactor","hp":15,"ap":10,"text":"Less armour, more power."},
+ {"id":"EC-4","part":"Engine Core","kind":"lucky","name":"Stellar Reactor","hp":25,"ap":10,"text":"As tough as the Neutron. As strong as the Quantum."},
+ {"id":"NS-1","part":"Navigation","kind":"standard","name":"Standard Navigator","hp":15,"ap":10,"text":"A steady hand on a steady course."},
+ {"id":"NS-2","part":"Navigation","kind":"guardian","name":"Celestial Cartographer","hp":20,"ap":5,"text":"Built to last on dangerous routes."},
+ {"id":"NS-3","part":"Navigation","kind":"striker","name":"Astrolabe Navigator","hp":10,"ap":15,"text":"Quick sums behind thin walls."},
+ {"id":"NS-4","part":"Navigation","kind":"lucky","name":"Cosmic Navigator","hp":20,"ap":15,"text":"Tough and clever: the best of both."},
+ {"id":"SG-1","part":"Shield Generator","kind":"standard","name":"Standard Shield","hp":30,"ap":5,"text":"Simple and reliable."},
+ {"id":"SG-2","part":"Shield Generator","kind":"guardian","name":"Neutron Wall","hp":35,"ap":0,"text":"A heavy wall. It adds nothing to your attack."},
+ {"id":"SG-3","part":"Shield Generator","kind":"striker","name":"Quantum Deflector","hp":25,"ap":10,"text":"A lighter wall with more firepower."},
+ {"id":"SG-4","part":"Shield Generator","kind":"lucky","name":"Nova Shield","hp":35,"ap":10,"text":"A heavy wall with firepower too."},
+ {"id":"WS-1","part":"Weapons System","kind":"standard","name":"Standard Arsenal","hp":10,"ap":20,"text":"Reliable firepower."},
+ {"id":"WS-2","part":"Weapons System","kind":"guardian","name":"Proton Launcher","hp":15,"ap":15,"text":"Balanced: as much armour as firepower."},
+ {"id":"WS-3","part":"Weapons System","kind":"striker","name":"Pulsar Phaser","hp":5,"ap":25,"text":"All attack and very little armour."},
+ {"id":"WS-4","part":"Weapons System","kind":"lucky","name":"Supernova Arsenal","hp":15,"ap":25,"text":"The Launcher's armour and the Phaser's fire."},
+ {"id":"PM-1","part":"Power Module","kind":"standard","name":"Standard Battery","hp":25,"ap":15,"text":"Steady power for a steady captain."},
+ {"id":"PM-2","part":"Power Module","kind":"guardian","name":"Proton Generator","hp":30,"ap":10,"text":"More armour, less power."},
+ {"id":"PM-3","part":"Power Module","kind":"striker","name":"Quantum Dynamo","hp":20,"ap":20,"text":"Less armour, more power."},
+ {"id":"PM-4","part":"Power Module","kind":"lucky","name":"Galaxy Battery","hp":30,"ap":20,"text":"The Generator's armour and the Dynamo's power."}
+],
+"cards": [
+ {"id":"A01","pic":"spark","type":"attack","rarity":"common","name":"Spark Shot","badge":"+5","text":"Add 5 to your attack this round.","ops":[{"op":"atk_add","n":5}],"maths":"AP + 5","from":"Laser Cannon (+5)"},
+ {"id":"A02","pic":"comet","type":"attack","rarity":"common","name":"Comet Jab","badge":"+6","text":"Add 6 to your attack this round.","ops":[{"op":"atk_add","n":6}],"maths":"AP + 6","from":"Plasma Blast (+6)"},
+ {"id":"A03","pic":"rocket","type":"attack","rarity":"common","name":"Odd Rocket","badge":"+7","text":"Add 7 to your attack this round.","ops":[{"op":"atk_add","n":7}],"maths":"AP + 7, an odd number","from":"Odd Offense, with an odd number again"},
+ {"id":"A04","pic":"beam2","type":"attack","rarity":"common","name":"Even Beam","badge":"+8","text":"Add 8 to your attack this round.","ops":[{"op":"atk_add","n":8}],"maths":"AP + 8, an even number","from":"Gamma Rays (+8)"},
+ {"id":"A05","pic":"stars9","type":"attack","rarity":"common","name":"Nine-Star Burst","badge":"+9","text":"Add 9 to your attack this round.","ops":[{"op":"atk_add","n":9}],"maths":"AP + 9 (add 10, take away 1)","from":"the +9 card of 2023"},
+ {"id":"A06","pic":"torpedo","type":"attack","rarity":"common","name":"Tens Torpedo","badge":"+10","text":"Add 10 to your attack this round.","ops":[{"op":"atk_add","n":10}],"maths":"AP + 10","from":"Addition Armament (+10)"},
+ {"id":"A07","pic":"bolt","type":"attack","rarity":"rare","name":"Voltara Bolt","badge":"+15","text":"Add 15 to your attack this round.","ops":[{"op":"atk_add","n":15}],"maths":"AP + 15","from":"Comet Strike (+15); named for Planet Voltara"},
+ {"id":"A08","pic":"torpedo2","type":"attack","rarity":"rare","name":"Twin Tens","badge":"+20","text":"Add 20 to your attack this round.","ops":[{"op":"atk_add","n":20}],"maths":"AP + 20","from":"Supernova Strike (+20)"},
+ {"id":"A09","type":"attack","rarity":"rare","name":"All Hands Fire","badge":"5×","text":"Count your working parts. Add 5 for each one.","ops":[{"op":"atk_per_part","n":5}],"maths":"5 x your working parts, then AP + that","from":"new: it uses the five times table"},
+ {"id":"A10","pic":"torpedo","type":"attack","rarity":"rare","name":"Hit and Hide","badge":"+10","text":"Add 10 to your attack. Block 10, or bring back a broken shield with 10 HP.","ops":[{"op":"atk_add","n":10},{"op":"block","n":10}],"maths":"AP + 10, and their attack - 10","from":"EMP Wave (attack and defence on one card)","needs":"Needs Weapons and Shield Generator"},
+ {"id":"A11","type":"attack","rarity":"epic","name":"Doubling Drive","badge":"×2","text":"Double your ship's AP for this attack.","ops":[{"op":"atk_double"}],"maths":"AP + AP","from":"Multiplication Munition"},
+ {"id":"A12","type":"attack","rarity":"epic","name":"Hundred Cannon","badge":"100s","text":"Round your ship's AP up to the next hundred for this attack.","ops":[{"op":"atk_round100"}],"maths":"round up to the next hundred (always up)","from":"new: Rounding Rover's idea, for attack"},
+ {"id":"D01","pic":"dust","type":"defence","rarity":"common","name":"Dust Screen","badge":"−8","text":"Block 8 of the attack on you. Or bring back a broken shield with 8 HP.","ops":[{"op":"block","n":8}],"maths":"their attack - 8","from":"Anti-Laser Coating, with a number that matters"},
+ {"id":"D02","pic":"tiles","type":"defence","rarity":"common","name":"Ten-Tile Wall","badge":"−10","text":"Block 10 of the attack on you. Or bring back a broken shield with 10 HP.","ops":[{"op":"block","n":10}],"maths":"their attack - 10","from":"Subtraction Shield (10)"},
+ {"id":"D03","pic":"gems","type":"defence","rarity":"common","name":"Dozen Deflector","badge":"−12","text":"Block 12 of the attack on you. Or bring back a broken shield with 12 HP.","ops":[{"op":"block","n":12}],"maths":"their attack - 12","from":"new"},
+ {"id":"D04","pic":"bricks","type":"defence","rarity":"common","name":"Double-Seven Wall","badge":"−14","text":"Block 14 of the attack on you. Or bring back a broken shield with 14 HP.","ops":[{"op":"block","n":14}],"maths":"their attack - 14 (7 and 7)","from":"new"},
+ {"id":"D05","pic":"minus","type":"defence","rarity":"common","name":"Subtraction Shield","badge":"−15","text":"Block 15 of the attack on you. Or bring back a broken shield with 15 HP.","ops":[{"op":"block","n":15}],"maths":"their attack - 15","from":"Subtraction Shield (your name)"},
+ {"id":"D06","pic":"net","type":"defence","rarity":"rare","name":"Meteor Net","badge":"−20","text":"Block 20 of the attack on you. Or bring back a broken shield with 20 HP.","ops":[{"op":"block","n":20}],"maths":"their attack - 20","from":"Deflection Field (30)"},
+ {"id":"D07","pic":"quarter","type":"defence","rarity":"rare","name":"Quarter Wall","badge":"−25","text":"Block 25 of the attack on you. Or bring back a broken shield with 25 HP.","ops":[{"op":"block","n":25}],"maths":"their attack - 25","from":"new"},
+ {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Block","badge":"−15","text":"Block 15, or bring back a broken shield with 15 HP. Repair 5 HP on one working part.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card","needs":"Needs Shield Generator and Power Module"},
+ {"id":"D10","pic":"cards","type":"defence","rarity":"rare","name":"Card Wall","badge":"4×","text":"Count the other cards in your hand. Block 4 for each, or bring back a broken shield.","ops":[{"op":"block_per_card","n":4}],"maths":"4 x the cards left in your hand, then their attack - that","from":"new: the four times table, to match Nano Shield"},
+ {"id":"D09","type":"defence","rarity":"epic","name":"Vanishing Act","badge":"0","text":"No attack hits you this round. A Spy still can.","ops":[{"op":"block_all"}],"maths":"none: the attack on you is 0","from":"Cloaking Device, Wormhole, Teleport and nine more"},
+ {"id":"R01","pic":"patch","type":"repair","rarity":"common","name":"Quick Patch","badge":"+6","text":"Repair 6 HP on one of your working parts.","ops":[{"op":"repair_one","n":6}],"maths":"part HP + 6","from":"Emergency Repairs (6)"},
+ {"id":"R02","pic":"tape","type":"repair","rarity":"common","name":"Hull Tape","badge":"+8","text":"Repair 8 HP on one of your working parts.","ops":[{"op":"repair_one","n":8}],"maths":"part HP + 8","from":"Armor Patch (7)"},
+ {"id":"R03","pic":"bot","type":"repair","rarity":"common","name":"Repair Bot","badge":"+10","text":"Repair 10 HP on one of your working parts.","ops":[{"op":"repair_one","n":10}],"maths":"part HP + 10","from":"Repair Drone (10)"},
+ {"id":"R04","pic":"bolts","type":"repair","rarity":"common","name":"Dozen Bolts","badge":"+12","text":"Repair 12 HP on one of your working parts.","ops":[{"op":"repair_one","n":12}],"maths":"part HP + 12","from":"Proton Repair (12)"},
+ {"id":"R05","type":"defence","rarity":"common","name":"Shield Spark","badge":"+10","text":"Add 10 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_add","n":10}],"maths":"shield + 10","from":"Defense Matrix (10)"},
+ {"id":"R06","type":"defence","rarity":"common","name":"Nano Shield","badge":"3×","text":"Count the other cards in your hand. Add 3 shield HP for each. A broken shield comes back.","ops":[{"op":"shield_per_card","n":3}],"maths":"3 x the cards left in your hand, then shield + that","from":"Nano Shield (your card)"},
+ {"id":"R07","type":"defence","rarity":"common","name":"Dome Top-Up","badge":"+15","text":"Add 15 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_add","n":15}],"maths":"shield + 15","from":"Quantum Shield (15)"},
+ {"id":"R08","type":"repair","rarity":"rare","name":"Meteor Mend","badge":"+20","text":"Share 20 HP between your working parts, any way you like.","ops":[{"op":"repair_share","n":20}],"maths":"split 20 into parts, then add each","from":"Meteor Mend (never printed)"},
+ {"id":"R09","type":"repair","rarity":"rare","name":"Fix-It Fleet","badge":"+5","text":"Repair 5 HP on every one of your working parts.","ops":[{"op":"repair_all","n":5}],"maths":"each part HP + 5","from":"Repair Drones (5 each)"},
+ {"id":"R10","type":"repair","rarity":"rare","name":"Rounding Rover","badge":"10s","text":"Round each damaged part up to the next ten. Never past full HP.","ops":[{"op":"round_up10"}],"maths":"round each part up to the next ten","from":"Rounding Rover (your card)"},
+ {"id":"R11","type":"repair","rarity":"rare","name":"Galactic Drift","badge":"10","text":"Move up to 10 HP from one working part to another.","ops":[{"op":"move_hp","n":10}],"maths":"one part - n, another part + n","from":"Galactic Drift (never printed)"},
+ {"id":"R12","type":"defence","rarity":"rare","name":"Quarter Dome","badge":"+25","text":"Add 25 HP to your Main Shield. A broken shield comes back.","ops":[{"op":"shield_add","n":25}],"maths":"shield + 25","from":"Nebula Armor (25)"},
+ {"id":"R13","type":"repair","rarity":"epic","name":"Stellar Revival","badge":"+5","text":"Bring back one lost part. It returns with 5 HP.","ops":[{"op":"revive","n":5}],"maths":"none: the part's HP becomes 5","from":"Stellar Revival (your name); your rules sheet, section 5"},
+ {"id":"R14","type":"repair","rarity":"epic","name":"Repair Bay","badge":"full","text":"Repair every working part to full HP.","ops":[{"op":"repair_full"}],"maths":"none: each part goes back to its starting HP","from":"Replicant Drones, Nebula Nova"},
+ {"id":"R15","type":"defence","rarity":"epic","name":"Shield Reborn","badge":"100","text":"Your Main Shield goes back to full: 100 HP. A broken shield comes back.","ops":[{"op":"shield_rebuild","n":100}],"maths":"shield = 100","from":"Cosmic Barrier (40); Marc, 22 November: the epic one goes back to full"},
+ {"id":"S01","type":"spy","rarity":"common","name":"Probe Drone","badge":"3","text":"Spy! 3 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":3,"parts":1}],"maths":"their part HP - 3","from":"Quantum Missile (5 to one part)"},
+ {"id":"S02","type":"spy","rarity":"common","name":"Sneak Circuit","badge":"4","text":"Spy! 4 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":4,"parts":1}],"maths":"their part HP - 4","from":"Quantum Missile (5 to one part)"},
+ {"id":"S03","type":"spy","rarity":"common","name":"Twin Probes","badge":"2+2","text":"Spy! 2 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":2,"parts":2}],"maths":"two parts, each HP - 2","from":"Micro Missiles (3 to two parts)"},
+ {"id":"S04","type":"spy","rarity":"rare","name":"Databa Hacker","badge":"6","text":"Spy! 6 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":6,"parts":1}],"maths":"their part HP - 6","from":"new; named for Galaxy Databa"},
+ {"id":"S05","type":"spy","rarity":"rare","name":"Double Agent","badge":"4+4","text":"Spy! 4 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":4,"parts":2}],"maths":"two parts, each HP - 4","from":"Quantum Torpedo (8 to two parts), made smaller"},
+ {"id":"S06","type":"spy","rarity":"rare","name":"Triple Tap","badge":"3×3","text":"Spy! 3 damage to each of three enemy parts. You choose them.","ops":[{"op":"spy","n":3,"parts":3}],"maths":"three parts, each HP - 3","from":"Rocket Barrage (4 to three parts)"},
+ {"id":"S07","type":"spy","rarity":"epic","name":"Five-Part Swarm","badge":"4×5","text":"Spy! 4 damage to every enemy part.","ops":[{"op":"spy","n":4,"parts":5}],"maths":"every part HP - 4","from":"Pulsar Pulse (5 to all parts), made smaller"},
+ {"id":"G01","type":"guard","rarity":"common","name":"Station Guard","badge":"stop","text":"Stops a Spy. The Spy card does nothing.","ops":[{"op":"guard"}],"maths":"none","from":"SECURITY (your Policeman, under a new name)"}
+],
+"upgrades": [
+ {"id":"U-EC","type":"upgrade","rarity":"","part":"Engine Core","name":"Booster Upgrade","badge":"L2","text":"Level 2. Your Engine Core gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-NS","type":"upgrade","rarity":"","part":"Navigation","name":"Inertial Dampener","badge":"L2","text":"Level 2. Your Navigation gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-SG","type":"upgrade","rarity":"","part":"Shield Generator","name":"Magnetic Field Amplifier","badge":"L2","text":"Level 2. Your Shield Generator gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-WS","type":"upgrade","rarity":"","part":"Weapons System","name":"Laser Sight Enhancer","badge":"L2","text":"Level 2. Your Weapons System gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-PM","type":"upgrade","rarity":"","part":"Power Module","name":"Battery Optimizer","badge":"L2","text":"Level 2. Your Power Module gets HP +4 and AP +3.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"}
+],
+"ideas": [
+ {"id":"X01","pic":"quarter","type":"defence","rarity":"rare","name":"Fraction Field","badge":"½","text":"Block half of the attack on you this round.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Division Defender, Fraction Frigate","ask":"What is half of 55? The card needs a rule for odd numbers: the bigger half, or the smaller."},
+ {"id":"X02","type":"attack","rarity":"rare","name":"Patternox Pulse","badge":"2,4,6","text":"Add 2 this round, +4 next round and +6 the round after.","ops":[{"op":"x"}],"maths":"a pattern: count on in twos","from":"Pattern Power, Infinity Invader","ask":"A rule for cards that last more than one round, and a way to keep track of them."},
+ {"id":"X03","type":"guard","rarity":"epic","name":"Signal Jammer","badge":"stop","text":"The other player's card does nothing this round.","ops":[{"op":"x"}],"maths":"none","from":"Energy Shield, EMP Pulse, Time Dilation","ask":"A rule that one card may stop another. It would also stop a Spy, so it could replace the Policeman."},
+ {"id":"X04","type":"spy","rarity":"epic","name":"Power Cut","badge":"off","text":"Choose one enemy part. For one round it counts as lost.","ops":[{"op":"x"}],"maths":"their AP without that part","from":"Sabotage, Gravity Well, Stasis Field","ask":"A rule for a part that is switched off but not at 0 HP."},
+ {"id":"X05","type":"attack","rarity":"epic","name":"Card Grab","badge":"−1","text":"Add 10 to your attack. The other player loses one card from their hand.","ops":[{"op":"x"}],"maths":"AP + 10","from":"Black Hole Bomb","ask":"Your ruling on \"lose 1 card\": once, or a smaller hand for the rest of the battle?"},
+ {"id":"X06","pic":"net","type":"defence","rarity":"epic","name":"Mirror Moon","badge":"back","text":"Half of the attack on you turns round and hits the attacker.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Deflector Field, Quantum Reflection","ask":"A rule for an attack that turns round, and the rule for half of an odd number."},
+ {"id":"X07","type":"guard","rarity":"rare","name":"Guard Captain","badge":"+10","text":"Stops a Spy. Then add 10 HP to your Main Shield.","ops":[{"op":"x"}],"maths":"shield + 10","from":"new: a Guard that is never a wasted card","ask":"Your rules sheet says a Policeman has one job. May one do a second thing?"}
+]
+}
+</script>
+
+<script>
+(function(){
+"use strict";
+var DATA=JSON.parse(document.getElementById('carddata').textContent);
+/* DRAW-BEGIN: the same block is in card_battle.html; checks/battle_cards_set_check.py compares them */
+var NS='http://www.w3.org/2000/svg';
+var TYPE={
+ attack:{name:'ATTACK',c:'#ff8a3d',d:'#2a1a12',needs:'Needs your Weapons System'},
+ defence:{name:'DEFENCE',c:'#4f9dff',d:'#111f3d',needs:'Needs your Shield Generator'},
+ repair:{name:'REPAIR',c:'#ff4d6d',d:'#2b1320',needs:'Needs your Power Module'},
+ spy:{name:'SPY',c:'#a78bfa',d:'#1d1838',needs:'Gets past the Main Shield'},
+ guard:{name:'POLICE',c:'#5b8cff',d:'#101c40',needs:'Stops a Spy card'},
+ upgrade:{name:'UPGRADE',c:'#ffd23f',d:'#2a2210',needs:'Makes one part Level 2'}
+};
+var RAR={common:{name:'COMMON',c:'#7ed957',n:1},rare:{name:'RARE',c:'#b388ff',n:2},epic:{name:'EPIC',c:'#ffd23f',n:3}};
+var KIND={};DATA.kinds.forEach(function(k){KIND[k.key]=k;});
+var PARTCODE={'Engine Core':'engine','Navigation':'nav','Shield Generator':'gen','Weapons System':'weapons','Power Module':'power'};
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function rnd(seed){var s=seed%2147483647;if(s<=0)s+=2147483646;return function(){s=s*16807%2147483647;return (s-1)/2147483646;};}
+function hash(str){var h=7;for(var i=0;i<str.length;i++){h=(h*31+str.charCodeAt(i))%2147483647;}return h;}
+function wrap(text,max){var words=text.split(' '),lines=[],cur='';for(var i=0;i<words.length;i++){var t=cur?cur+' '+words[i]:words[i];if(t.length>max&&cur){lines.push(cur);cur=words[i];}else{cur=t;}}if(cur)lines.push(cur);return lines;}
+function stars(id,x,y,w,h,n){var r=rnd(hash(id)),o='';for(var i=0;i<n;i++){var cx=x+r()*w,cy=y+r()*h,rr=0.5+r()*1.3;o+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rr.toFixed(1)+'" fill="#fff" opacity="'+(0.35+r()*0.6).toFixed(2)+'"/>';}return o;}
+
+/* ---------- the symbols: one for each thing a card can do, as on Marc's 2023 cards. All drawn here; none is copied. ---------- */
+function symGun(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M-52,-20 L18,-20 Q30,-20 30,-8 L30,2 L-10,2 L-18,34 Q-20,42 -30,42 L-40,42 Q-48,42 -46,32 L-38,2 L-52,2 Q-60,2 -60,-9 Q-60,-20 -52,-20 Z" fill="#e9eefb" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<rect x="30" y="-15" width="26" height="12" rx="3" fill="#ff8a3d" stroke="#10162c" stroke-width="4"/>'
+ +'<circle cx="62" cy="-9" r="7" fill="#ffd84a" stroke="#10162c" stroke-width="4"/>'
+ +'<rect x="-44" y="-13" width="12" height="8" rx="2" fill="#ff8a3d"/><rect x="-26" y="-13" width="12" height="8" rx="2" fill="#ff8a3d"/><rect x="-8" y="-13" width="12" height="8" rx="2" fill="#ff8a3d"/>'
+ +'<path d="M-22,2 Q-14,20 2,12 L4,2" fill="none" stroke="#10162c" stroke-width="4" stroke-linecap="round"/>'
+ +'<path d="M76,-9 L98,-9 M74,-22 L90,-34 M74,4 L90,16" stroke="#ffd84a" stroke-width="5" stroke-linecap="round"/></g>';}
+function symShield(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M0,-58 L46,-42 L46,2 Q46,40 0,60 Q-46,40 -46,2 L-46,-42 Z" fill="#4f9dff" stroke="#10162c" stroke-width="5" stroke-linejoin="round"/>'
+ +'<path d="M0,-58 L46,-42 L46,2 Q46,40 0,60 Z" fill="#2f6fd6"/>'
+ +'<path d="M0,-58 L46,-42 L46,2 Q46,40 0,60 Q-46,40 -46,2 L-46,-42 Z" fill="none" stroke="#10162c" stroke-width="5" stroke-linejoin="round"/>'
+ +'<path d="M0,-36 L26,-27 L26,0 Q26,22 0,36 Q-26,22 -26,0 L-26,-27 Z" fill="none" stroke="#e9eefb" stroke-width="5" stroke-linejoin="round"/></g>';}
+function symHeart(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M0,52 C-70,6 -62,-52 -26,-52 C-10,-52 -2,-42 0,-32 C2,-42 10,-52 26,-52 C62,-52 70,6 0,52 Z" fill="#ff4d6d" stroke="#10162c" stroke-width="5" stroke-linejoin="round"/>'
+ +'<path d="M-34,-30 Q-40,-12 -28,0" fill="none" stroke="#ffd0d8" stroke-width="7" stroke-linecap="round"/>'
+ +'<rect x="-6" y="-22" width="12" height="40" rx="3" fill="#fff"/><rect x="-20" y="-8" width="40" height="12" rx="3" fill="#fff"/></g>';}
+function symPolice(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M-70,58 Q-70,24 -38,18 L-10,18 Q20,24 20,58 Z" fill="#2f55c7" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<circle cx="-24" cy="-6" r="24" fill="#f1d3b3" stroke="#10162c" stroke-width="4"/>'
+ +'<path d="M-52,-18 Q-24,-50 4,-18 L4,-12 L-52,-12 Z" fill="#2f55c7" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<rect x="-56" y="-14" width="66" height="8" rx="3" fill="#10162c"/>'
+ +'<path d="M-24,-36 l4,7 l8,1 l-6,5 l2,8 l-8,-4 l-8,4 l2,-8 l-6,-5 l8,-1 Z" fill="#ffd84a"/>'
+ +'<circle cx="-32" cy="-2" r="3" fill="#10162c"/><circle cx="-16" cy="-2" r="3" fill="#10162c"/><path d="M-32,9 Q-24,14 -16,9" fill="none" stroke="#10162c" stroke-width="3" stroke-linecap="round"/>'
+ +'<path d="M-30,36 l6,6 l6,-6" fill="none" stroke="#ffd84a" stroke-width="4"/>'
+ +'<path d="M30,-52 L56,-52 L74,-34 L74,-8 L56,10 L30,10 L12,-8 L12,-34 Z" fill="#e5484d" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>'
+ +'<text x="43" y="-13" text-anchor="middle" font-size="21" font-weight="900" fill="#fff">STOP</text>'
+ +'<rect x="38" y="10" width="10" height="46" fill="#cfd6e2" stroke="#10162c" stroke-width="3"/></g>';}
+function symSpy(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')">'
+ +'<path d="M-56,60 Q-56,22 -22,14 L22,14 Q56,22 56,60 Z" fill="#6b7089" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<path d="M-22,14 L0,44 L22,14 L30,34 L0,60 L-30,34 Z" fill="#4a4f6a" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<circle cx="0" cy="-8" r="26" fill="#f1d3b3" stroke="#10162c" stroke-width="4"/>'
+ +'<path d="M-28,-26 L28,-26 L22,-58 Q0,-66 -22,-58 Z" fill="#2b2f45" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+ +'<rect x="-28" y="-34" width="56" height="9" fill="#8b5cf6"/>'
+ +'<ellipse cx="0" cy="-24" rx="50" ry="9" fill="#2b2f45" stroke="#10162c" stroke-width="4"/>'
+ +'<rect x="-24" y="-12" width="20" height="13" rx="5" fill="#10162c"/><rect x="4" y="-12" width="20" height="13" rx="5" fill="#10162c"/><rect x="-6" y="-9" width="12" height="4" fill="#10162c"/>'
+ +'<path d="M-8,10 Q0,14 8,10" fill="none" stroke="#10162c" stroke-width="3" stroke-linecap="round"/></g>';}
+function symUp(x,y,s){var o='<g transform="translate('+x+','+y+') scale('+s+')">';for(var i=0;i<3;i++){o+='<path d="M-44,'+(-12+i*30)+' L0,'+(-52+i*30)+' L44,'+(-12+i*30)+'" fill="none" stroke="#10162c" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M-44,'+(-12+i*30)+' L0,'+(-52+i*30)+' L44,'+(-12+i*30)+'" fill="none" stroke="'+(i===0?'#ffd84a':(i===1?'#ffb347':'#ff8a3d'))+'" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>';}return o+'</g>';}
+var SYMBOL={attack:symGun,defence:symShield,repair:symHeart,guard:symPolice,spy:symSpy,upgrade:symUp};
+function symbol(type,x,y,s){return SYMBOL[type](x,y,s);}
+function partIcon(code,x,y,s,c){
+ var g='<g transform="translate('+x+','+y+') scale('+s+')">';
+ if(code==='engine'){g+='<circle r="26" fill="#141a30" stroke="'+c+'" stroke-width="4"/><circle r="15" fill="none" stroke="#dfe6f5" stroke-width="2" stroke-dasharray="6 5"/><circle r="8" fill="#ffb347"/><circle r="4" fill="#fff"/><path d="M-36,0 L-27,0 M27,0 L36,0 M0,-36 L0,-27 M0,27 L0,36" stroke="'+c+'" stroke-width="5" stroke-linecap="round"/>';}
+ else if(code==='nav'){g+='<circle r="28" fill="#141a30" stroke="'+c+'" stroke-width="4"/><path d="M0,-22 L6,-4 L22,0 L6,4 L0,22 L-6,4 L-22,0 L-6,-4 Z" fill="#dfe6f5"/><path d="M0,-22 L6,-4 L0,0 Z" fill="'+c+'"/><circle r="3" fill="#141a30"/>';}
+ else if(code==='gen'){g+='<path d="M-34,18 A34,34 0 0 1 34,18" fill="'+c+'" fill-opacity=".2" stroke="'+c+'" stroke-width="4"/><path d="M-20,18 A20,20 0 0 1 20,18" fill="none" stroke="#dfe6f5" stroke-width="2"/><rect x="-10" y="14" width="20" height="14" rx="2" fill="#dfe6f5"/><rect x="-38" y="26" width="76" height="6" rx="3" fill="'+c+'"/><circle cy="6" r="4" fill="#fff"/>';}
+ else if(code==='weapons'){g+='<rect x="-30" y="12" width="44" height="14" rx="4" fill="#dfe6f5"/><circle cx="-8" cy="8" r="13" fill="#141a30" stroke="'+c+'" stroke-width="4"/><g transform="rotate(-28 -8 8)"><rect x="-6" y="3" width="46" height="10" rx="3" fill="'+c+'"/><rect x="34" y="1" width="8" height="14" rx="2" fill="#dfe6f5"/></g>';}
+ else {g+='<rect x="-22" y="-24" width="44" height="52" rx="6" fill="#141a30" stroke="'+c+'" stroke-width="4"/><rect x="-9" y="-31" width="18" height="8" rx="2" fill="'+c+'"/><path d="M4,-16 L-9,4 L0,4 L-4,20 L10,-2 L1,-2 Z" fill="#ffd84a"/>';}
+ return g+'</g>';
+}
+
+/* ---------- a whole card as SVG: a thick rim in the colour of its kind, one big symbol, one big number ---------- */
+function gems(r,x,y){var o='';for(var i=0;i<r.n;i++){o+='<path d="M'+(x+i*17)+','+(y-8)+' l7,8 l-7,8 l-7,-8 Z" fill="'+r.c+'" stroke="#0b1020" stroke-width="1"/>';}return o;}
+function nameSize(s){var n=s.length;return n<=12?21:(n<=15?18.5:(n<=18?16:(n<=21?14:12.5)));}
+function frame(id,edge,body){
+ var o='<defs><clipPath id="c'+id+'"><rect x="14" y="56" width="222" height="140" rx="6"/></clipPath></defs>';
+ o+='<rect x="2" y="2" width="246" height="346" rx="18" fill="#0b1020"/>';
+ o+='<rect x="4" y="4" width="242" height="342" rx="16" fill="'+edge+'"/>';
+ o+='<rect x="15" y="15" width="220" height="320" rx="8" fill="'+body+'"/>';
+ return o;
+}
+function cardSVG(card,uid){
+ var t=TYPE[card.type],r=RAR[card.rarity],id=uid||card.id.replace(/[^A-Za-z0-9]/g,'');
+ var edge=r?r.c:'#dbe3f0',o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(card.name+'. '+t.name.toLowerCase()+(card.rarity?', '+card.rarity:'')+'. '+card.text)+'">';
+ o+=frame(id,edge,'#141b33');
+ o+='<rect x="15" y="15" width="220" height="38" rx="8" fill="'+edge+'"/><rect x="15" y="40" width="220" height="13" fill="'+edge+'"/>';
+ o+='<text x="125" y="'+(34+nameSize(card.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(card.name)+'" font-weight="900" fill="#10162c" class="nm">'+esc(card.name)+'</text>';
+ o+='<rect x="15" y="53" width="220" height="146" fill="'+t.d+'"/><circle cx="108" cy="126" r="66" fill="'+t.c+'" opacity=".22"/>';
+ o+=symbol(card.type,card.type==='guard'?112:106,128,card.type==='upgrade'?0.9:1.0);
+ var bl=card.badge.length,bf=bl<=2?32:(bl===3?27:(bl===4?21:17));
+ o+='<circle cx="197" cy="186" r="34" fill="#fff" stroke="#10162c" stroke-width="5"/><text x="197" y="'+(186+bf*0.35)+'" text-anchor="middle" font-size="'+bf+'" font-weight="900" fill="#10162c" class="bd">'+esc(card.badge)+'</text>';
+ o+='<text x="24" y="218" font-size="14" font-weight="900" fill="'+t.c+'" letter-spacing="1.5" class="ty">'+t.name+'</text>';
+ var lines=wrap(card.text,25),n=lines.length,fs=n>4?14:16.5,lh=n>4?17.5:20.5,y0=246+(4-Math.min(n,4))*lh/2-(n>4?6:0);
+ for(var i=0;i<n;i++){o+='<text x="125" y="'+(y0+i*lh).toFixed(1)+'" text-anchor="middle" font-size="'+fs+'" font-weight="700" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
+ if(r){o+=gems(r,28,326)+'<text x="'+(28+r.n*17)+'" y="330" font-size="12" font-weight="900" fill="'+r.c+'" letter-spacing="1">'+r.name+'</text>';}
+ else{o+='<text x="24" y="330" font-size="12" font-weight="900" fill="'+t.c+'" letter-spacing="1">'+esc(card.part.toUpperCase())+'</text>';}
+ o+='<text x="226" y="330" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(card.id)+'</text>';
+ return o+'</svg>';
+}
+function partSVG(p,uid){
+ var k=KIND[p.kind],id=uid||p.id.replace(/[^A-Za-z0-9]/g,''),o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(p.name+', '+k.name+' '+p.part+'. HP '+p.hp+', AP '+p.ap)+'">';
+ o+=frame(id,k.colour,'#141b33');
+ o+='<rect x="15" y="15" width="220" height="38" rx="8" fill="#eef1f8"/><rect x="15" y="40" width="220" height="13" fill="#eef1f8"/>';
+ o+='<text x="125" y="'+(34+nameSize(p.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(p.name)+'" font-weight="900" fill="#10162c" class="nm">'+esc(p.name)+'</text>';
+ o+='<rect x="15" y="53" width="220" height="104" fill="#0a0f22"/><g clip-path="url(#c'+id+')">'+stars(p.id,15,53,220,104,16)+partIcon(PARTCODE[p.part],125,105,1.25,k.colour)+'</g>';
+ o+='<rect x="15" y="157" width="220" height="24" fill="'+k.colour+'"/><text x="125" y="174" text-anchor="middle" font-size="13.5" font-weight="900" fill="#10162c" letter-spacing="2">'+esc(k.name.toUpperCase())+'</text>';
+ o+='<rect x="22" y="188" width="100" height="58" rx="8" fill="#fff"/><rect x="128" y="188" width="100" height="58" rx="8" fill="#fff"/>';
+ o+='<path d="M38,210 c-7,-9 -19,1 -8,11 l8,8 l8,-8 c11,-10 -1,-20 -8,-11 Z" fill="#e5484d"/><text x="58" y="211" font-size="12" font-weight="800" fill="#5b6482">HP</text><text x="114" y="236" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="hp">'+p.hp+'</text>';
+ o+='<path d="M146,201 l-9,16 l7,0 l-3,13 l11,-17 l-7,0 Z" fill="#f59e0b"/><text x="164" y="211" font-size="12" font-weight="800" fill="#5b6482">AP</text><text x="220" y="236" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="ap">'+p.ap+'</text>';
+ var lines=wrap(p.text,27);
+ for(var i=0;i<lines.length;i++){o+='<text x="125" y="'+(270+(3-lines.length)*8+i*18)+'" text-anchor="middle" font-size="14" font-weight="600" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
+ o+='<text x="24" y="330" font-size="11.5" font-weight="800" fill="#c9d2ea" letter-spacing="1">'+esc(p.part.toUpperCase())+'</text><text x="226" y="330" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(p.id)+'</text>';
+ return o+'</svg>';
+}
+/* DRAW-END */
+
+/* ---------- picks, kept on this device only ---------- */
+var KEY='gmq_new_cards_v1',picks={};
+try{picks=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){picks={};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(picks));}catch(e){}}
+var ALL=[];
+DATA.parts.forEach(function(p){ALL.push({kind:'part',d:p});});
+DATA.cards.forEach(function(c){ALL.push({kind:'card',d:c});});
+DATA.upgrades.forEach(function(c){ALL.push({kind:'card',d:c});});
+DATA.ideas.forEach(function(c){ALL.push({kind:'card',d:c,idea:true});});
+function svgFor(e,uid){return e.kind==='part'?partSVG(e.d,uid):cardSVG(e.d,uid);}
+function tile(idx){
+ var e=ALL[idx],b=document.createElement('button');b.type='button';b.className='tile';b.setAttribute('data-i',idx);b.setAttribute('data-id',e.d.id);
+ b.innerHTML=svgFor(e)+'<span class="mark"></span>';
+ b.addEventListener('click',function(){openZoom(idx);});
+ return b;
+}
+function paint(){
+ var n={keep:0,change:0,drop:0},tiles=document.querySelectorAll('.tile');
+ for(var i=0;i<tiles.length;i++){var id=tiles[i].getAttribute('data-id'),p=picks[id];tiles[i].className='tile'+(p&&p.p?' '+p.p:'');tiles[i].querySelector('.mark').textContent=p&&p.p?(p.p==='keep'?'Keep':(p.p==='change'?'Change':'Drop')):'';if(tiles[i].style.display==='none'){tiles[i].className+='';}}
+ for(var k in picks){if(picks[k]&&picks[k].p){n[picks[k].p]++;}}
+ document.getElementById('count').textContent='Keep '+n.keep+' · Change '+n.change+' · Drop '+n.drop+' · of '+ALL.length;
+}
+
+/* ---------- build the page ---------- */
+var el=function(id){return document.getElementById(id);};
+(function(){
+ var L=[['','Common','Rare','Epic'],
+  ['Attack: add to your attack','5 to 10','15, 20, 5 a part, or two things','double it; round it up to the next hundred'],
+  ['Defence: block an attack','8 to 15','20, 25, 4 a card, or two things','the whole attack'],
+  ['Repair parts','6 to 12 on one part','share 20; 5 on every part; round up; move 10','bring a part back; every part to full'],
+  ['Repair the Main Shield','10 to 15','25','50, even on a broken shield'],
+  ['Spy: damage past the shield','3 or 4 in all','6 to 9 in all','20 in all'],
+  ['Guard: stop a Spy (your Policeman)','stop it','','']],h='';
+ L.forEach(function(r,i){h+='<tr>'+r.map(function(c){return (i?'<td>':'<th>')+c+(i?'</td>':'</th>');}).join('')+'</tr>';});
+ el('ladder').innerHTML=h;
+ h='<tr><th>Border</th><th>Kind</th><th>What it means on every part</th></tr>';
+ DATA.kinds.forEach(function(k){h+='<tr><td><span style="display:inline-block;width:46px;height:18px;border-radius:5px;background:'+k.colour+'"></span></td><td><b>'+k.name+'</b></td><td>'+k.rule+'</td></tr>';});
+ el('kindtable').innerHTML=h;
+ var hp=0,ap=0;DATA.parts.forEach(function(p){if(p.kind==='standard'){hp+=p.hp;ap+=p.ap;}});
+ el('stdhp').textContent=hp;el('stdap').textContent=ap;el('nplay').textContent=DATA.cards.length;
+ ALL.forEach(function(e,i){
+  var host=e.kind==='part'?'parts':(e.idea?'ideas':(e.d.type==='upgrade'?'ups':'play'));
+  el(host).appendChild(tile(i));
+ });
+ var chips=[['all','All'],['attack','Attack'],['defence','Defence'],['repair','Repair'],['spy','Spy'],['guard','Police'],['common','Common'],['rare','Rare'],['epic','Epic']],cur='all';
+ chips.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='chip'+(c[0]==='all'?' on':'');b.textContent=c[1]+(c[0]==='all'?'':' ('+DATA.cards.filter(function(x){return x.type===c[0]||x.rarity===c[0];}).length+')');b.setAttribute('data-f',c[0]);
+  b.addEventListener('click',function(){cur=c[0];var bs=el('chips').children;for(var i=0;i<bs.length;i++){bs[i].className='chip'+(bs[i].getAttribute('data-f')===cur?' on':'');}
+   var ts=el('play').children;for(var j=0;j<ts.length;j++){var d=ALL[+ts[j].getAttribute('data-i')].d;ts[j].style.display=(cur==='all'||d.type===cur||d.rarity===cur)?'':'none';}});
+  el('chips').appendChild(b);});
+ paint();
+})();
+
+/* ---------- the large view ---------- */
+var zi=-1;
+function openZoom(i){
+ zi=i;var e=ALL[i],d=e.d;
+ el('zoomcard').innerHTML=svgFor(e,'Z');
+ el('zname').textContent=d.name+'  ('+d.id+')';
+ if(e.kind==='part'){
+  var k=KIND[d.kind];
+  el('zwhat').innerHTML='<b>'+esc(k.name)+' '+esc(d.part)+'.</b> HP '+d.hp+', AP '+d.ap+'.';
+  el('zmaths').innerHTML='<b>The rule:</b> '+esc(k.rule);
+  el('zfrom').innerHTML='<b>The name</b> is yours, from 2023.';
+  el('zrule').innerHTML='';
+ }else{
+  el('zwhat').innerHTML='<b>'+esc(TYPE[d.type].name.charAt(0)+TYPE[d.type].name.slice(1).toLowerCase())+(d.rarity?', '+d.rarity:'')+'.</b> '+esc(d.text);
+  el('zmaths').innerHTML='<b>The child works out:</b> '+esc(d.maths);
+  el('zfrom').innerHTML='<b>It grew from:</b> '+esc(d.from);
+  el('zrule').innerHTML=e.idea?'<b>What it needs from you:</b> '+esc(d.ask):'';
+ }
+ var p=picks[d.id]||{};
+ var bs=document.querySelectorAll('.picks .btn');for(var j=0;j<bs.length;j++){bs[j].className=bs[j].className.replace(' on','')+(p.p===bs[j].getAttribute('data-p')?' on':'');}
+ el('znote').value=p.note||'';
+ el('zoom').className='open';
+}
+function closeZoom(){el('zoom').className='';zi=-1;paint();}
+(function(){
+ var bs=document.querySelectorAll('.picks .btn');
+ for(var j=0;j<bs.length;j++){bs[j].addEventListener('click',function(){var id=ALL[zi].d.id,v=this.getAttribute('data-p');picks[id]=picks[id]||{};picks[id].p=(picks[id].p===v?'':v);save();openZoom(zi);paint();});}
+ el('znote').addEventListener('input',function(){var id=ALL[zi].d.id;picks[id]=picks[id]||{};picks[id].note=this.value;save();});
+ el('zclose').addEventListener('click',closeZoom);
+ el('zprev').addEventListener('click',function(){openZoom((zi-1+ALL.length)%ALL.length);});
+ el('znext').addEventListener('click',function(){openZoom((zi+1)%ALL.length);});
+ el('zoom').addEventListener('click',function(ev){if(ev.target===el('zoom')||ev.target===el('zoombox')){closeZoom();}});
+ document.addEventListener('keydown',function(ev){if(zi<0)return;if(ev.key==='Escape')closeZoom();});
+ el('clear').addEventListener('click',function(){if(window.confirm('Clear all your picks and notes on this device?')){picks={};save();paint();el('out').style.display='none';}});
+ el('copy').addEventListener('click',function(){
+  var lines=['GMQ new cards, v1: Marc\'s picks'],g={keep:[],change:[],drop:[]};
+  ALL.forEach(function(e){var p=picks[e.d.id];if(!p)return;var s=e.d.id+' '+e.d.name+(p.note?' : '+p.note:'');if(p.p){g[p.p].push(s);}else if(p.note){g.change.push(s);}});
+  ['keep','change','drop'].forEach(function(k){lines.push('');lines.push(k.toUpperCase()+' ('+g[k].length+')');g[k].forEach(function(s){lines.push('- '+s);});});
+  var none=ALL.filter(function(e){var p=picks[e.d.id];return !(p&&(p.p||p.note));}).length;
+  lines.push('');lines.push('Not marked: '+none+' of '+ALL.length);
+  var text=lines.join('\n'),out=el('out');out.value=text;out.style.display='block';
+  var done=function(ok){el('copy').textContent=ok?'Copied':'Select the text above';setTimeout(function(){el('copy').textContent='Copy my picks';},2500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){done(true);},function(){out.focus();out.select();done(false);});}
+  else{out.focus();out.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}done(ok);}
+  out.scrollIntoView(false);
+ });
+})();
+window.GMQ_CARDS={data:DATA,all:ALL,picks:function(){return picks;}};
+})();
+</script>
+</body>
+</html>
