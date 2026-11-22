@@ -9,6 +9,15 @@
 
 ---
 
+## Built since: version 87 (22 November)
+
+Chronosia's part of strand A is built, in a smaller form. See `GMQ_Chronosia_Links_v1_2026-11-22.md`.
+- **The deep cave is one passage and one gear door,** not three chambers. It leads to the Clockmaker's workshop.
+- **Its light comes from another planet** [Source: Marc, 2026-11-21, the special torch]. Today that is Voltara's glow stone. The lantern from this strand will light it too, for every child.
+- **The clockmaker's key** comes from the tin box. The wound cougar takes it and guards the time portal.
+- **The slow pond's dive** comes from the cold tortoise, not from the bubble. The bubble keeps Xylophora's square pond (strand C).
+- The spreadsheet has the new rows. `checks/world_web_check.py` passes.
+
 ## 1. What the game has now
 
 I checked every item and person in the game's code (version 83).

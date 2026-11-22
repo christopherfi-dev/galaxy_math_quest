@@ -62,7 +62,7 @@ const { chromium } = require('playwright'); const path = require('path');
     // ---- play
     await p.evaluate(() => { skipIntro(); goSpace(); }); await p.waitForTimeout(200);
     await say('fly to metrica'); for (let i = 0; i < 100; i++) { if (await p.evaluate(() => S.at === 'metrica' && !SP.to)) break; await p.waitForTimeout(100); }
-    expect(await last(), /Planet Chronosia is open/, 'arriving at Metrica'); ok(await p.evaluate(() => hereWords().some(x => x[0] === 'land')), 'a "land on Chronosia" word at Metrica');
+    expect(await last(), /Planets Chronosia, Xylophora and Lengthar are open\./, 'arriving at Metrica (version 86 named Lengthar too)'); ok(await p.evaluate(() => hereWords().some(x => x[0] === 'land')), 'a "land on Chronosia" word at Metrica');
     expect(await say('land'), /You land on Planet Chronosia/, 'landing from space'); ok(await p.evaluate(() => S.mode === 'chrono' && C().at === 'map' && C().x === 7 && C().y === 10), 'should be on the map by the ship');
     ok(await p.evaluate(() => !cFound('K') && !cFound('G') && !cFound('H') && cSeen(8, 10)), 'at the start the places are hidden in mist'); expect(await say('go to tower'), /not found that place yet/, 'a place in the mist cannot be named');
     if (out) await p.screenshot({ path: path.join(out, `chronosia_${name}_1_land.png`) });
