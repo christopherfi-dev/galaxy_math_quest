@@ -151,6 +151,7 @@ I did not wait for your answers to the review. I used my pick each time and mark
 - **One player leads and the other answers.** Who leads round 1 is chance; after that they take turns. So a Guard is played as the answer to a Spy.
 - **One Spy card in each deck,** for now. The seven Spy cards here are seven designs; a deck draws one of them.
 - **At least as many Guards as Spies, better more.** The practice battle puts 2 Guards in each deck.
+- **A block card stops an attack card only of its own kind, or a lower one.** Common cannot block rare. Common and rare cannot block gold (epic). So the two gold attack cards, Doubling Drive and Hundred Cannon, can be stopped only by the gold Vanishing Act.
 - Section 7.1 was written before this. With one Spy each, a ship loses its Weapons early in about 2 battles in 100, not 32.
 
 ### 7.4 Two names

@@ -124,6 +124,7 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
     <li>A Spy acts first. It gets past the shield.</li>
     <li>Repair cards work next.</li>
     <li>Both ships attack. Your attack is the AP of all your working parts added up, plus your card.</li>
+    <li>A block card stops an attack card only of its own kind, or a lower one. A common card cannot block a rare card. A common or a rare card cannot block a gold one.</li>
     <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
     <li>With no shield, <b>you</b> choose which of your parts take the hit.</li>
   </ol>
@@ -257,6 +258,8 @@ var SWITCHES=[
  {key:'shieldIsHealing',label:'Cards that add to the Main Shield count as',from:'a guess',values:[[true,'repair (need the Power Module)'],[false,'defence (need the Shield Generator)']]},
  {key:'upgrades',label:'Level 2 upgrade cards are in the decks',from:'a guess',values:[[true,'Yes'],[false,'No']]},
  {key:'roundLimit',label:'A battle ends with no winner after',from:'a guess',values:[[60,'60 rounds'],[30,'30 rounds']]},
+ {key:'kindBlock',label:'A block card stops an attack card only of its own kind, or a lower one',from:'Marc, 22 November: common cannot block rare; common and rare cannot block gold',values:[[true,'Yes'],[false,'No: any block card works']]},
+ {key:'kindGuard',label:'The same for a Guard against a Spy card',from:'not said yet',values:[[false,'No: any Guard stops any Spy'],[true,'Yes: a common Guard stops only a common Spy']]},
  {key:'cpu',label:'The computer player',from:'not a rule: how hard the enemy plays',values:[['gentle','Gentle: it picks its cards and its targets at random'],['clever','Clever: it plays its best card, and its Spy goes for your Weapons']]}
 ];
 function defaults(){var o={};SWITCHES.forEach(function(s){o[s.key]=s.values[0][0];});return o;}
@@ -302,6 +305,12 @@ function needOf(S,op){
 }
 function opWorks(S,pl,o){var n=needOf(S,o.op);return !n||has(pl,n);}
 function isSpy(id){return CARD[id].type==='spy';}
+var RANK={common:0,rare:1,epic:2},KINDWORD={common:'common',rare:'rare',epic:'gold'};
+function rank(id){var r=RANK[CARD[id].rarity];return r===undefined?0:r;}
+/* Marc, 22 November: a common card cannot block a rare attack card; a common or a rare card cannot block a gold one.
+   It compares the two cards on the table. A ship's plain attack, with no attack card, can be blocked by any block card. */
+function outranked(S,mine,theirs){return S.opts.kindBlock&&CARD[theirs].type==='attack'&&rank(mine)<rank(theirs);}
+function guardTooLow(S,guard,spy){return S.opts.kindGuard&&rank(guard)<rank(spy);}
 function isGuard(id){return CARD[id].type==='guard';}
 
 /* ---------- a round ---------- */
@@ -315,7 +324,7 @@ function startRound(S,pick0,pick1){
 function canSwap(S,i){
  if(S.opts.guard!=='swap'||!S.cur)return -1;
  var me=S.P[i];if(!isSpy(S.cur.card[1-i])||isGuard(S.cur.card[i]))return -1;
- for(var h=0;h<me.hand.length;h++){if(h!==S.cur.pick[i]&&isGuard(me.hand[h]))return h;}
+ for(var h=0;h<me.hand.length;h++){if(h!==S.cur.pick[i]&&isGuard(me.hand[h])&&!guardTooLow(S,me.hand[h],S.cur.card[1-i]))return h;}
  return -1;
 }
 function doSwap(S,i){var h=canSwap(S,i);if(h<0)return false;S.cur.pick[i]=h;S.cur.card[i]=S.P[i].hand[h];return true;}
@@ -395,7 +404,7 @@ function run0(S,st,ch){
  var R={lines:[],sums:[]},cur=S.cur,i,me,foe,o,c,r,name=['You','The enemy'];
  function sum(side,what,label,before,change,answer,kind){R.sums.push({side:side,what:what,label:label,before:before,change:change,answer:answer,kind:kind});}
  if(st.k==='guard'){
-  for(i=0;i<2;i++){if(isGuard(cur.card[i])){if(isSpy(cur.card[1-i])){cur.stopped[1-i]=true;R.lines.push((i?'The enemy\'s':'Your')+' Guard stops the Spy.');}else{R.lines.push((i?'The enemy\'s':'Your')+' Guard has no Spy to stop.');}}}
+  for(i=0;i<2;i++){if(isGuard(cur.card[i])){if(isSpy(cur.card[1-i])&&guardTooLow(S,cur.card[i],cur.card[1-i])){R.lines.push((i?'The enemy\'s':'Your')+' Guard is '+KINDWORD[CARD[cur.card[i]].rarity]+'. It cannot stop a '+KINDWORD[CARD[cur.card[1-i]].rarity]+' Spy.');}else if(isSpy(cur.card[1-i])){cur.stopped[1-i]=true;R.lines.push((i?'The enemy\'s':'Your')+' Guard stops the Spy.');}else{R.lines.push((i?'The enemy\'s':'Your')+' Guard has no Spy to stop.');}}}
   return R;
  }
  if(st.k==='spy'){
@@ -433,6 +442,7 @@ function run0(S,st,ch){
     else if(q.op==='atk_per_part'){bonus+=q.n*aliveIdx(me).length;how='perpart';}
     else if(q.op==='atk_double'){bonus+=ap;how='double';}
     else if(q.op==='atk_round100'){bonus+=(100-ap%100)%100;how='round100';}
+    else if(/^block/.test(q.op)&&outranked(S,cur.card[i],cur.card[1-i])){R.lines.push((i?'The enemy\'s ':'Your ')+c.name+' is '+KINDWORD[c.rarity]+'. It cannot block a '+KINDWORD[CARD[cur.card[1-i]].rarity]+' attack card.');}
     else if(q.op==='block'){blk+=q.n;}
     else if(q.op==='block_per_card'){blk+=q.n*otherCards(S,i);}
     else if(q.op==='block_all'){blk=-1;}
@@ -490,6 +500,7 @@ function cpuPick(S,i,seen){
    else if(o.op==='atk_per_part')v=myAP?8+o.n*aliveIdx(me).length:0;
    else if(o.op==='atk_double')v=myAP?8+myAP*0.6:0;
    else if(o.op==='atk_round100')v=myAP?8+((100-myAP%100)%100)*0.6:0;
+   else if(/^block/.test(o.op)&&seen&&outranked(S,id,seen))v=0;
    else if(o.op==='block')v=foeAP?6+Math.min(o.n,foeAP)+(seen&&CARD[seen].type==='attack'?8:0):0;
    else if(o.op==='block_per_card')v=foeAP?6+Math.min(o.n*otherCards(S,i),foeAP):0;
    else if(o.op==='block_all')v=foeAP?10+foeAP*0.7:0;
@@ -503,10 +514,10 @@ function cpuPick(S,i,seen){
    else if(o.op==='shield_add'||o.op==='shield_per_card'){var n=o.op==='shield_add'?o.n:o.n*otherCards(S,i);v=(me.shield>0||S.opts.shieldRebuild==='any')?5+Math.min(n,S.opts.shieldCap?100-me.shield:n)*0.8:0;}
    else if(o.op==='shield_rebuild')v=5+Math.min(o.n,S.opts.shieldCap?100-me.shield:o.n)*(me.shield>0?0.5:1.2);
    else if(o.op==='upgrade'){var up=part(me,c.part);v=(up.hp>0&&up.lvl<2)?16:0;}
-   else if(o.op==='guard')v=(seen&&isSpy(seen))?200:(S.opts.guard==='blind'?7:0.5);
+   else if(o.op==='guard')v=(seen&&isSpy(seen)&&!guardTooLow(S,id,seen))?200:(S.opts.guard==='blind'?7:0.5);
    s+=v;
   });
-  if(S.opts.cpu==='gentle'){s=(s>1?10:(s>0?4:0))+rand(S)*10;if(seen&&isSpy(seen)&&c.type==='guard')s=200;}else{s+=rand(S)*6;}
+  if(S.opts.cpu==='gentle'){s=(s>1?10:(s>0?4:0))+rand(S)*10;if(seen&&isSpy(seen)&&c.type==='guard'&&!guardTooLow(S,id,seen))s=200;}else{s+=rand(S)*6;}
   if(s>bestScore){bestScore=s;best=h;}
  });
  return best;
@@ -543,7 +554,7 @@ function autoRound(S){
  steps(S).forEach(function(st){var req=need(S,st),ch=req?cpuChoose(S,req):null;var R=run(S,st,ch);if(S.cur)S.cur.lines=S.cur.lines.concat(R.lines);});
 }
 return {PARTS:PARTS,SHORT:SHORT,SWITCHES:SWITCHES,defaults:defaults,load:load,card:card,newBattle:newBattle,startRound:startRound,canSwap:canSwap,doSwap:doSwap,swapBoth:swapBoth,steps:steps,need:need,validate:validate,run:run,
- cpuPick:cpuPick,cpuChoose:cpuChoose,autoRound:autoRound,shipAP:shipAP,has:has,aliveIdx:aliveIdx,handSize:handSize,shieldWorks:shieldWorks,cardCount:cardCount,needOf:needOf,opWorks:opWorks,isSpy:isSpy,isGuard:isGuard,canHurt:canHurt,roomOf:roomOf,otherCards:otherCards,rand:rand};
+ cpuPick:cpuPick,cpuChoose:cpuChoose,autoRound:autoRound,shipAP:shipAP,has:has,aliveIdx:aliveIdx,handSize:handSize,shieldWorks:shieldWorks,cardCount:cardCount,needOf:needOf,opWorks:opWorks,isSpy:isSpy,isGuard:isGuard,canHurt:canHurt,rank:rank,outranked:outranked,guardTooLow:guardTooLow,KINDWORD:KINDWORD,roomOf:roomOf,otherCards:otherCards,rand:rand};
 })();
 /* ENGINE-END */
 
@@ -811,6 +822,9 @@ function renderPick(){
   c.ops.forEach(function(o){if(!B.opWorks(S,S.P[0],o)){note='Your '+B.SHORT[B.needOf(S,o.op)]+' is lost. '+(c.ops.length>1?'Part of this card':'This card')+' would do nothing.';}});
   if(c.type==='guard'){var led=lead&&S.leader===1&&B.isSpy(S.P[1].hand[U.cpuLead]);note=S.opts.guard==='blind'?'It only works if the enemy plays a Spy this round.':(S.opts.guard==='swap'?'Keep it in your hand: you can swap it in when a Spy is turned over.':(led?'The enemy went first with a Spy. This card stops it.':(S.leader===1?'It only stops a Spy. The enemy did not play one.':'It only stops a Spy, and you go first this round. Keep it for a round when you answer.')));}
   if(c.type==='spy'&&lead&&S.leader===0)note='You go first, so the enemy may answer with a Guard.';
+  if(c.type==='defence'||c.id==='A10'){var seenId=(lead&&S.leader===1)?S.P[1].hand[U.cpuLead]:null;
+   if(seenId&&B.outranked(S,S.P[0].hand[U.sel],seenId))note='The enemy\'s card is '+B.KINDWORD[B.card(seenId).rarity]+'. A '+B.KINDWORD[c.rarity]+' card cannot block it.';
+   else if(S.opts.kindBlock&&!seenId&&c.rarity!=='epic')note='A '+B.KINDWORD[c.rarity]+' card cannot block a '+(c.rarity==='common'?'rare or gold':'gold')+' attack card.';}
   w.innerHTML='<div class="picked"><div class="big">'+cardSVG(c,'P')+'</div><div class="side"><div style="font-size:15px;line-height:1.35;color:#c9d2ea;margin-bottom:8px">'+esc(note)+'</div><button class="btn go" id="playit" type="button">Play this card</button></div></div>';
   el('playit').addEventListener('click',playCard);
  }

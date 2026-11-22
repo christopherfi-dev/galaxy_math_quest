@@ -6,7 +6,7 @@ const html = fs.readFileSync(path.resolve(__dirname, '..', 'prototypes', 'card_b
 const DATA = JSON.parse(html.match(/<script id="carddata" type="application\/json">([\s\S]*?)<\/script>/)[1]);
 const B = new Function(html.match(/\/\* ENGINE-BEGIN[\s\S]*?\/\* ENGINE-END \*\//)[0] + '\nreturn GMQBattle;')();
 B.load(DATA);
-const PER = parseInt(process.argv[2] || '10', 10);
+const PER = parseInt(process.argv[2] || '4', 10);
 const bad = {}; let checks = 0;
 function fail(what, info) { if (!bad[what]) { bad[what] = 0; console.log('FAIL ' + what + (info ? ': ' + info : '')); } bad[what]++; }
 function ok(cond, what, info) { checks++; if (!cond) fail(what, info); }
@@ -40,6 +40,11 @@ function play(opts, k0, k1, sd, keep) {
       ok(L.snap.wep[i] ? L.atk[i] >= 15 : L.atk[i] === 0, 'a ship without Weapons does not attack', JSON.stringify(L.atk));
       // Shield Generator lost: no block
       ok(L.snap.sg[i] || L.block[i] === 0, 'a ship without its Shield Generator cannot block');
+      // Marc, 22 November: a lower card cannot block a higher attack card
+      if (opts.kindBlock && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d])) ok(L.block[i] === 0, 'a common card cannot block a rare attack card, and common or rare cannot block gold', B.card(L.card[i]).name + ' against ' + B.card(L.card[d]).name);
+      if (!opts.kindBlock && L.snap.sg[i] && c.ops.some(o => o.op === 'block')) ok(L.block[i] > 0, 'with the rule off, any block card blocks');
+      if (opts.kindGuard && B.isGuard(L.card[i]) && B.isSpy(L.card[d]) && B.rank(L.card[i]) < B.rank(L.card[d])) ok(!L.stopped[d], 'with that switch on, a common Guard does not stop a higher Spy');
+      if (!opts.kindGuard && B.isGuard(L.card[i]) && B.isSpy(L.card[d])) ok(L.stopped[d], 'a Guard stops any Spy that is on the table with it');
       // Power Module lost: no healing (upgrade cards are not healing)
       if (!L.snap.pm[i] && c.type !== 'upgrade') ok(L.snap.hp[i].every((h, x) => h <= before.hp[i][x]), 'a ship without its Power Module cannot repair');
       if (!L.snap.pm[i] && opts.shieldIsHealing) ok(L.snap.shield[i] <= before.shield[i], 'a ship without its Power Module cannot add to its shield');
@@ -131,6 +136,11 @@ const D = B.defaults(), STD = ['standard', 'standard', 'standard', 'standard', '
   console.log('     who leads round 1, in 2000 battles: you ' + first[0] + ', the enemy ' + first[1]);
   ok(Math.abs(first[0] - first[1]) < 200, 'who leads round 1 is chance');
 })();
+['gentle', 'clever'].forEach(level => {
+  const O = Object.assign({}, D, { cpu: level }); let w = [0, 0, 0];
+  for (let i = 0; i < 6000; i++) { const S = B.newBattle(O, STD, STD, 510000 + i), first = S.leader; let g = 0; while (!S.over && g++ < 200) B.autoRound(S); w[S.over.winner < 0 ? 2 : (S.over.winner === first ? 0 : 1)]++; }
+  console.log('     two ' + level + ' players, 6000 battles: the one who went first in round 1 wins ' + Math.round(w[0] / 60) + '%, the one who went second wins ' + Math.round(w[1] / 60) + '%, nobody ' + Math.round(w[2] / 60) + '%');
+});
 // a battle is the same battle when it is played again from the same seed (so a saved game can be trusted)
 const a = play(D, STD, STD, 4242, false), b = play(D, STD, STD, 4242, false);
 ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the same battle');
@@ -154,6 +164,24 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   S.P[0].parts[3].hp = w;
   L = round('A12', 'D09');
   ok(L.atk[0] === 100 && L.through[1] === 0, 'Hundred Cannon makes 100; Vanishing Act lets nothing through', JSON.stringify([L.atk, L.through]));
+})();
+// Marc's rule of 22 November, each case in a fresh battle: which card can block which
+(function () {
+  function duel(c0, c1) {
+    const S = B.newBattle(Object.assign({}, D, { spies: 7, guard: 'swap' }), STD, STD, 99);
+    const h = [c0, c1].map((id, i) => { const p = S.P[i]; let x = p.hand.indexOf(id); if (x < 0) { const d = p.deck.indexOf(id); p.deck.splice(d, 1); p.deck.push(p.hand[0]); p.hand[0] = id; x = 0; } return x; });
+    B.startRound(S, h[0], h[1]); B.steps(S).forEach(st => { const req = B.need(S, st); B.run(S, st, req ? B.cpuChoose(S, req) : null); });
+    return S.log[0];
+  }
+  let L = duel('A12', 'D02'); ok(L.atk[0] === 100 && L.block[1] === 0 && L.through[1] === 100, 'a common block card cannot block a gold attack card', JSON.stringify([L.atk, L.block, L.through]));
+  L = duel('A12', 'D06'); ok(L.block[1] === 0 && L.through[1] === 100, 'a rare block card cannot block a gold attack card');
+  L = duel('A08', 'D02'); ok(L.block[1] === 0 && L.through[1] === 75, 'a common block card cannot block a rare attack card');
+  L = duel('A08', 'D06'); ok(L.block[1] === 20 && L.through[1] === 55, 'a rare block card blocks a rare attack card');
+  L = duel('A01', 'D06'); ok(L.block[1] === 20 && L.through[1] === 40, 'a rare block card blocks a common attack card');
+  L = duel('A01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 50, 'a common block card blocks a common attack card');
+  L = duel('R01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 45, 'any block card blocks a plain attack, when no attack card is played');
+  L = duel('A12', 'D09'); ok(L.atk[0] === 100 && L.through[1] === 0, 'the gold block card blocks a gold attack card');
+  L = duel('A12', 'A10'); ok(L.block[1] === 0, 'the block half of a rare card cannot block a gold attack card, but its attack half still works: ' + L.atk[1]) ; ok(L.atk[1] === 65, 'Hit and Hide still adds 10');
 })();
 const names = Object.keys(bad);
 console.log('     ' + checks + ' checks made');

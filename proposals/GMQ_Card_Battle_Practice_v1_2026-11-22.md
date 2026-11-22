@@ -7,7 +7,9 @@
 You said: "I think we just do all 50. Just try them all. Me and the CPU each get the 50 cards and they come out randomly?"
 Then, after seeing it: "One player goes first, it's randomized. They play their card and the other player has a chance to respond... In the next round the player who went second goes first." And: "For this battle everybody just has one Spy card."
 
-**Both are in.** The rules are yours. Every point you have not decided is a switch. Nothing is in the game.
+And: "A common card and a rare card cannot block a gold card attack. And a common card cannot block a rare card."
+
+**All three are in.** The rules are yours. Every point you have not decided is a switch. Nothing is in the game.
 
 ---
 
@@ -29,6 +31,7 @@ Then, after seeing it: "One player goes first, it's randomized. They play their 
    - When the enemy goes first, its card is on the table before you choose.
    - When you go first, the enemy sees your card, then answers.
 3. **A Guard stops a Spy** when both are on the table.
+   - **A block card stops an attack card only of its own kind, or a lower one.** The page warns you before you play a block card that cannot work.
 4. **A Spy that is not stopped acts first.** If it is yours, you tap the enemy part to hit.
 5. **Repair and shield cards work.**
 6. **You work out your attack** and press Check.
@@ -55,6 +58,8 @@ Open **Rules** on the page. A change starts with the next battle.
 | **Who puts a card down first** | one player leads and the other answers, taking turns; both together, and a Guard may be swapped in; both together, and a Guard is a guess | **you, 22 November** |
 | **Spy cards in each deck** | 1, drawn at random; all 7 | **you, 22 November** |
 | **Guard (Policeman) cards in each deck** | 2; 1 | **you, 22 November** (2 is my reading of "more") |
+| **A block card stops an attack card only of its own kind, or lower** | yes; no | **you, 22 November** |
+| **The same for a Guard against a Spy card** | no; yes | not said yet |
 | **"Lose 1 card"** (Engine or Navigation lost) | one card thrown away, once; the hand is one card smaller | rules sheet 5 |
 | **"Cannot defend"** (Shield Generator lost) | defence cards stop; defence cards and the Main Shield stop | rules sheet 5 |
 | **A repair may lift a part above its full HP** | no; yes | my guess |
@@ -66,7 +71,7 @@ Open **Rules** on the page. A change starts with the next battle.
 | **The computer player** | gentle; clever | not a rule |
 | **Show the sums** | off; on | you, 21 November |
 
-**The first three are your rulings.** For the others, the lit choice is only where the page starts: none of them is decided.
+**The first four are your rulings.** For the others, the lit choice is only where the page starts: none of them is decided.
 
 **Not switches, because the rules sheet does not reach them yet** (levels above 2): the shield growing to 140, 220 and 360, and the hand growing to 6, 7 and 8.
 
@@ -82,8 +87,10 @@ Your rules sheet does not say these. The page needs an answer, so I chose the pl
 6. **An upgrade card played in a battle** makes that part Level 2 until the battle ends: HP +4, AP +3. A second one on the same part does nothing.
 7. **A Spy played second cannot be stopped.** The first player has already put a card down. That follows from your rule; it is not a choice of mine.
 8. **Both ships still attack every round,** whoever went first.
+9. **The block rule compares the two cards on the table.** If the other player played no attack card, their ship's plain attack can be blocked by any block card.
+10. **A block card that is too low blocks nothing at all.** A card with two jobs (Hit and Hide, Patch and Block) still does its other job.
 
-## 6. What 73,000 battles between two computer players showed
+## 6. What 120,000 battles between two computer players showed
 
 Two Standard ships, your rules, the default switches. 4,000 battles for each line.
 
@@ -95,7 +102,14 @@ Two Standard ships, your rules, the default switches. 4,000 battles for each lin
 | **A ship has no Weapons by round 8** | 1 in 100 | 2 in 100 |
 
 - **A clever player beats a gentle one** 59 times in 100, loses 23, and 19 end with no winner.
-- **Neither seat has an edge.** Who leads round 1 came out 1,003 to 997 in 2,000 battles.
+- **Who leads round 1** came out 1,003 to 997 in 2,000 battles.
+
+### Is it better to go second?
+You said: "It's almost better to go second on the first turn, because you can probably block the person's best thing."
+- **Between two computer players it makes no difference.** In 6,000 battles the player who went first in round 1 won 41 in 100, and the one who went second 40 in 100. With gentle players it was 39 and 39.
+- **Why:** the lead passes every round, so each player answers half the rounds.
+- **But the computer is not a person.** It does not save its best card for a round when it answers. A child who learns to do that may well do better going second. Only play will show it.
+- **Your block rule makes answering matter more.** A common block card is wasted against a rare attack card, so the player who answers must look at the kind of the card on the table.
 
 ### Your ruling on the Spy fixed the biggest problem
 - Before, with seven Spy cards in a deck, a clever player took the other ship's Weapons by round 8 in **32 battles in 100**. A ship with no Weapons cannot attack.
@@ -103,6 +117,11 @@ Two Standard ships, your rules, the default switches. 4,000 battles for each lin
 - No battle now runs past 13 rounds.
 
 ### Two things still for you to rule on
+
+**0. Does the block rule hold for a Guard against a Spy card too?**
+- A Guard is common. Three of the seven Spy cards are rare and one is gold.
+- If the rule holds, a Guard stops only a common Spy.
+- The page says no: any Guard stops any Spy. There is a switch.
 
 **1. Both ships often fall in the same round.**
 - It happens in about 20 battles in 100. Both ships attack every round with nearly the same numbers, so they often lose their last part together.
@@ -133,13 +152,13 @@ Two Standard ships, your rules, the default switches. 4,000 battles for each lin
 
 1. **Play it.** Then tell me what felt wrong.
 2. **Both ships falling together:** who wins?
-3. **Guards:** 2 in each deck, or 1?
+3. **Guards:** 2 in each deck, or 1? And does your block rule hold for a Guard against a Spy?
 4. **One line** of permission to push my own files to the main branch. Then the page has a link for the iPads: `/battle/`.
 
 ## 10. Checks
 
-- **Ran:** `node checks/battle_engine_test.js`. It plays your rules, computer against computer: all 6,144 combinations of switches, 10 battles each, then 12,000 more. After every round it checks that no HP or shield went below 0, that nothing carried over past a shield, that a lost part's penalty held, that a stopped Spy did nothing, and that each deck still had its 50 cards. It also checks that each deck has the Spy and Guard cards the switches say, that who leads round 1 is chance, and that the lead passes each round. Every battle ended. 18 million checks, all pass.
-- **Ran:** `node checks/battle_page_test.js`. It plays the page as a child would, at iPad sideways, iPad upright and phone size: a wrong sum, a second wrong sum, a split that does not add up, closing the page between rounds and in the middle of a round, then a whole battle to its end, and a few rounds of each other way to play the Policeman. 377 checks, all pass, three runs in a row. It checks that the enemy's card is on the table before you choose when the enemy goes first, and is not shown when you go first.
+- **Ran:** `node checks/battle_engine_test.js`. It plays your rules, computer against computer: all 24,576 combinations of switches, 4 battles each, then 24,000 more. After every round it checks that no HP or shield went below 0, that nothing carried over past a shield, that a lost part's penalty held, that a stopped Spy did nothing, and that each deck still had its 50 cards. It also checks that each deck has the Spy and Guard cards the switches say, that who leads round 1 is chance, and that the lead passes each round. It tests your block rule case by case: common against rare, rare against gold, and each kind against its own. Every battle ended. 28 million checks, all pass.
+- **Ran:** `node checks/battle_page_test.js`. It plays the page as a child would, at iPad sideways, iPad upright and phone size: a wrong sum, a second wrong sum, a split that does not add up, closing the page between rounds and in the middle of a round, then a whole battle to its end, and a few rounds of each other way to play the Policeman. 380 checks, all pass, three runs in a row. It checks that the enemy's card is on the table before you choose when the enemy goes first, and is not shown when you go first.
   - **A fault in my own test, found and fixed:** it stalled once in three runs. The cause was a wait in the test that sometimes never returned. The game was not at fault.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). They also check that the battle page carries the same cards and drawings as the cards page, and that neither page loads anything from outside.
 - **Looked at:** the screens myself, at all three sizes.

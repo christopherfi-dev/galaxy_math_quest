@@ -193,7 +193,7 @@ const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 4 min
     pass(name + ': the lead passed from one player to the other', !!flags.enemyLed && !!flags.youLed);
     // ---- the rules screen: turn the sums on, and play on to the end
     await page.locator('#brules').tap();
-    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 12);
+    pass(name + ': the rules screen lists every switch', await page.locator('#switches .sw').count() === 14);
     await shot(page, name + '_5_rules');
     await page.locator('#sumon').tap();
     await page.locator('#rclose').tap();
@@ -238,6 +238,26 @@ const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 4 min
         pass(name + ': a battle with the Guard "' + mode + '" plays on', st.round > 5 || !!st.over, 'round ' + st.round);
         await page.locator('#bnew').tap();
       }
+    }
+    // ---- Marc's rule of 22 November on the screen: a common card cannot block a rare attack card
+    if (name === 'ipad_sideways') {
+      await page.locator('#srules').tap();
+      await page.locator('#switches button[data-key="guard"][data-i="0"]').tap();
+      await page.locator('#rnew').tap();
+      await page.evaluate(() => window.GMQB.setSeed(5));
+      await page.locator('#sgo').tap();
+      await page.evaluate(() => { const U = window.GMQB.U, S = U.S; S.leader = 1; function put(pl, id, at) { let h = pl.hand.indexOf(id); if (h >= 0 && h !== at) { const t = pl.hand[at]; pl.hand[at] = id; pl.hand[h] = t; } else if (h < 0) { const d = pl.deck.indexOf(id); pl.deck.splice(d, 1); pl.deck.push(pl.hand[at]); pl.hand[at] = id; } } put(S.P[1], 'A08', 0); put(S.P[0], 'D02', 0); put(S.P[0], 'D06', 1); U.cpuLead = 0; });
+      await page.locator('#hand button').nth(0).tap();
+      pass(name + ': a common block card says it cannot block the rare card on the table', /enemy's card is rare\. A common card cannot block it/.test(await page.locator('#work').textContent()), await page.locator('#work').textContent());
+      await page.locator('#hand button').nth(1).tap();
+      pass(name + ': a rare block card carries no such warning', !/cannot block/.test(await page.locator('#work').textContent()));
+      await shot(page, name + '_8_block_rule');
+      await page.locator('#hand button').nth(0).tap();
+      await page.locator('#playit').tap();
+      let g2 = 0; while (g2++ < 60) { st = await state(page); if (st.phase !== 'resolve') break; await act(page, name, flags); }
+      const L = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { atk: l.atk, block: l.block, through: l.through, lines: l.lines.join(' ') }; });
+      pass(name + ': played anyway, the common card blocks nothing and the log says why', L.block[0] === 0 && L.through[0] === L.atk[1] && /is common\. It cannot block a rare attack card/.test(L.lines), JSON.stringify(L).slice(0, 200));
+      await page.locator('#bnew').tap();
     }
     pass(name + ': no script errors', errors.length === 0, errors.slice(0, 3).join(' | '));
     await ctx.close();
