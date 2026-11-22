@@ -71,7 +71,7 @@ Open the page with `?seed=7` on the end of the link, on a fresh save. (On the cl
 |---|---|
 | **Number rules, 20,000 children** (`bigworld_numbers_check.js`) | Passed. Every wrong plate can be shown wrong with 2 to 12 pebbles. One test alone never settles a rule. The pan's number takes exactly 3 runs. Order matters. No dead end. Nothing over 100. Each stepping-stone row has one right stone. No stone is the next row's right stone |
 | **The map and the world's tables** (`bigworld_map_check.js`) | Passed. Every thing can be reached. Nothing unbuilt can be reached. The river has two ways and each alone gets across. No main job needs a secret. No secret helps a main job. Ten broken copies were fed in; all ten were caught |
-| **The play test, by taps only** (`bigworld_play_test.js`) | PLAYTEST_RESULT |
+| **The play test, by taps only** (`bigworld_play_test.js`) | Passed on iPad sideways, iPad upright and phone, and for a second child who crosses by the stepping stones only. It plays the whole Meadow by taps: wrong answers, a nudge, leaving and coming back, closing the page in the middle of a machine and in the middle of the river. On every screen nothing scrolls and every button is on the screen. After the last small change, each screen was played again and passed |
 | **The size test page** (`bigworld_size_test.js`) | Passed on this machine: 60 frames a second at 100, 200 and 300 squares a side. Not a real iPad |
 | **The world web check,** on the main spreadsheet joined with this thread's rows | Passed |
 
@@ -107,7 +107,7 @@ Each reviewer saw only CLAUDE.md, the handoff and what I gave them. Neither saw 
 **Faults I found myself in the pictures, before the reviewers:** the lookout picture let the map show through and put the Reach on the wrong side; the astronaut hid the pan's number; a machine showed another machine's last test; the phone's desk overflowed.
 
 **Left as they are, on purpose:**
-- **Phone keys are about 35 points high.** The phone is not your class's screen. On both iPad sizes every button is 40 or more.
+- **Phone number keys are 36 points high.** The phone is not your class's screen. On both iPad sizes every button is 40 or more (measured).
 - **In the village the astronaut can stand in front of a barrel.** Six things share one screen.
 - **A wrong plate gives the child one free test.** See the design note, decision 8.
 
