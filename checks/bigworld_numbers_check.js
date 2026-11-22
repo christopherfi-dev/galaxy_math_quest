@@ -18,6 +18,7 @@
 // THE STEPPING STONES
 //   - the three carved numbers and the five right stones make one pattern with one step (3, 4, 6, 7, 8 or 9), up or down
 //   - each row has three different numbers, exactly one of them right, all from 1 to 110
+//   - no stone in a row is the next row's right stone (a child could spot the chain)
 //   - a new round gives a new pattern (so a child cannot cross by trying each stone)
 //   - the chance of crossing by guessing is 1 in 243
 //
@@ -65,6 +66,7 @@ for (let seed = 1; seed <= N; seed++) {
   for (let round = 0; round < 4; round++) { const s = bwStones(seed, round), d = s.shown[1] - s.shown[0]; say(s.shown[2] - s.shown[1] === d && Math.abs(d) === s.step && [3, 4, 6, 7, 8, 9].indexOf(s.step) >= 0, `seed ${seed} round ${round}: carved numbers ${s.shown}`);
     let prev = s.shown[2]; say(s.rows.length === 5, `seed ${seed}: ${s.rows.length} rows`);
     for (const row of s.rows) { say(row.opts.length === 3 && new Set(row.opts).size === 3, `seed ${seed} round ${round}: a row is not three different stones: ${row.opts}`); say(row.opts.every(v => v >= 1 && v <= 110 && Number.isInteger(v)), `seed ${seed} round ${round}: a stone out of range: ${row.opts}`); say(row.opts[row.right] === prev + d, `seed ${seed} round ${round}: the right stone is ${row.opts[row.right]}, the pattern says ${prev + d}`); say(row.opts.filter(v => v === prev + d).length === 1, `seed ${seed} round ${round}: two right stones`); prev += d; }
+    for (let i = 0; i < 4; i++) say(s.rows[i].opts.indexOf(s.rows[i + 1].opts[s.rows[i + 1].right]) < 0, `seed ${seed} round ${round}: a stone in row ${i + 1} is the next row's right stone (it gives the row after away)`);
     say(s.shown.every(v => v >= 1 && v <= 100), `seed ${seed} round ${round}: carved ${s.shown}`);
     const key = s.shown.join(); say(key !== lastKey, `seed ${seed}: round ${round} has the same pattern as the round before`); lastKey = key; }
 }
