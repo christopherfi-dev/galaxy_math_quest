@@ -25,7 +25,7 @@ async function state(page) {
       req: U.req || null, swap: !!q('swy'), nextr: !!q('nextr'), again: !!q('again'), cgo: q('cgo') ? !q('cgo').disabled : null, mno: !!q('mno'),
       say: q('say').textContent, msg: q('msg').textContent, work: q('work').textContent, feed: q('feed').textContent,
       hand: S ? S.P[0].hand.slice() : [], hp: S ? S.P.map(p => p.parts.map(x => x.hp)) : [], shield: S ? S.P.map(p => p.shield) : [],
-      check: r(q('check')), vw: innerWidth, vh: innerHeight, docH: document.documentElement.scrollHeight, docW: document.documentElement.scrollWidth,
+      check: r(q('check')), boxes: Array.from(document.querySelectorAll('#work .box')).map(r), pad: r(q('pad')), rnd: (q('board').querySelector('.rnd') || {}).textContent, lastRound: S && S.log.length ? S.log[S.log.length - 1].round : 0, vw: innerWidth, vh: innerHeight, docH: document.documentElement.scrollHeight, docW: document.documentElement.scrollWidth,
       boardText: q('board').textContent, cur: S && S.cur ? { card: S.cur.card, hasSnap: !!S.cur.snap } : null
     };
   });
@@ -40,6 +40,7 @@ async function typeBox(page, i, n) {
 // One pass of the loop answers whatever the page is asking. `flags` lets the first sum and the first split be answered wrongly on purpose.
 async function act(page, name, flags) {
   const st = await state(page);
+  LAST = name + ' round ' + st.round + ' ' + st.phase + ' | ' + st.say.slice(0, 60) + ' | ask ' + JSON.stringify(st.ask && st.ask.rows.map(r => r.label)) + ' | pick ' + JSON.stringify(st.pick);
   if (st.over || st.again) return 'over';
   if (st.phase === 'pick') {
     pass(name + ': a hand of cards is on the desk', st.hand.length >= 3 && st.hand.length <= 5, String(st.hand.length));
@@ -57,6 +58,8 @@ async function act(page, name, flags) {
     const row = st.ask.rows[0];
     if (/Your attack/.test(row.label)) pass(name + ': the attack total is not shown before the child works it out', !/Your attack: \d/.test(st.boardText) && !/Ship AP/.test(st.boardText));
     pass(name + ': the Check button is on the screen', st.check && st.check.b <= st.vh + 1 && st.check.t >= 0, JSON.stringify(st.check));
+    pass(name + ': every box of a sum is in view, above the number pad', st.boxes.every(b => b.t >= 0 && b.b <= st.pad.t + 1), st.boxes.length + ' boxes');
+    pass(name + ': every sum asks a question', st.ask.rows.every(r => /\?|attack/.test(r.label)) , st.ask.rows.map(r => r.label).join(' | '));
     if (!flags.wrongSum) {
       flags.wrongSum = true;
       for (let k = 0; k < st.ask.rows.length; k++) await typeBox(page, k, st.ask.rows[k].answer + 1);
@@ -78,6 +81,7 @@ async function act(page, name, flags) {
     // a split, a share-out, or the amount to move
     if (st.req.type === 'amounts') {
       pass(name + ': the Check button is on the screen', st.check && st.check.b <= st.vh + 1, JSON.stringify(st.check));
+      pass(name + ': every box of a split is in view, above the number pad', st.boxes.every(b => b.t >= 0 && b.b <= st.pad.t + 1), st.boxes.length + ' boxes, pad at ' + Math.round(st.pad.t) + ', last box ends ' + Math.round(Math.max.apply(null, st.boxes.map(b => b.b))));
       if (!st.req.limit && !flags.wrongSplit) {
         flags.wrongSplit = true;
         await typeBox(page, 0, st.req.total + 3);
@@ -109,6 +113,8 @@ async function act(page, name, flags) {
   return 'wait';
 }
 
+let LAST = 'starting';
+const watchdog = setTimeout(() => { console.log('FAIL the test stalled for 4 minutes. Last seen: ' + LAST); process.exit(2); }, 240000);
 (async () => {
   const browser = await chromium.launch();
   for (const [name, w, h] of SIZES) {
@@ -155,7 +161,7 @@ async function act(page, name, flags) {
       // leave between rounds and come back
       if (!leftOnce && st.phase === 'pick' && st.round === 3) {
         leftOnce = true;
-        await page.evaluate(() => new Promise(r => (window.requestIdleCallback || setTimeout)(r)));
+        await page.evaluate(() => new Promise(r => setTimeout(r, 60)));
         await page.reload();
         const b = await state(page);
         pass(name + ': closing the page and opening it again keeps the battle', b.round === st.round && JSON.stringify(b.hand) === JSON.stringify(st.hand) && JSON.stringify(b.hp) === JSON.stringify(st.hp) && JSON.stringify(b.shield) === JSON.stringify(st.shield), JSON.stringify([b.round, st.round]));
@@ -196,6 +202,7 @@ async function act(page, name, flags) {
       const b = st.hp.map(a => a.every(x => x === 0));
       pass(name + ': the ending matches the ships', st.over.winner === 0 ? b[1] && !b[0] : st.over.winner === 1 ? b[0] && !b[1] : true, JSON.stringify(st.over));
       pass(name + ': the ending is said in words', st.say.length > 10 && (await page.locator('#again').count()) === 1, st.say);
+      pass(name + ': the round on the picture is the round in the log', st.rnd === 'Round ' + st.lastRound, st.rnd + ' against ' + st.lastRound);
       console.log('     ' + name + ': the battle ended in round ' + (st.round - 1) + ': ' + st.over.why);
     }
     await shot(page, name + '_6_over');
@@ -232,7 +239,8 @@ async function act(page, name, flags) {
     await ctx.close();
   }
   await browser.close();
+  clearTimeout(watchdog);
   console.log('     ' + passed + ' checks passed');
   console.log(bad.length ? 'FAILED: ' + bad.join('; ') : 'ALL OK');
   process.exit(bad.length ? 1 : 0);
-})();
+})().catch(e => { console.log('FAIL the test stopped with an error: ' + String(e).slice(0, 300) + ' | last seen: ' + LAST); process.exit(3); });

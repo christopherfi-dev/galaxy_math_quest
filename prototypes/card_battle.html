@@ -11,8 +11,6 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
 #stage{flex:1 1 auto;min-width:0;min-height:0;position:relative;background:#0b1020}
 #board{position:absolute;inset:0;width:100%;height:100%;display:block}
 #desk{flex:0 0 min(41vw,470px);display:flex;flex-direction:column;background:#111933;border-left:1px solid #2b3658;min-height:0;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
-@media(orientation:portrait){#app{flex-direction:column}#stage{flex:0 0 52%}#desk{flex:1 1 auto;border-left:0;border-top:1px solid #2b3658}}
-@media(orientation:portrait) and (max-width:600px){#stage{flex:0 0 43%}}
 #top{display:flex;align-items:center;gap:6px;flex:0 0 auto}
 #round{font-weight:800;font-size:16px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb{font-size:13px;font-weight:700;border-radius:8px;border:1px solid #3a4874;background:#1c2748;color:#e8ecf5;padding:7px 10px;cursor:pointer}
@@ -35,8 +33,6 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
 .picked .big{flex:0 0 46%;max-width:210px}
 .picked .big svg{width:100%;height:auto;display:block}
 .picked .side{flex:1;min-width:0}
-@media(orientation:portrait){#hand{max-width:620px;width:100%;margin-left:auto;margin-right:auto}.picked .big{flex-basis:170px}}
-@media(orientation:portrait) and (max-width:600px){.picked .big{flex-basis:118px}#say{font-size:16px;min-height:0;margin:5px 0 2px}.box{height:40px;line-height:36px}#pad button{height:38px}.q{margin:3px 0;font-size:15px}}
 .q{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:16px}
 .q label{flex:1;min-width:0}
 .box{flex:0 0 78px;height:44px;border-radius:9px;border:2px solid #4a5a90;background:#0d1430;color:#fff;font-size:22px;font-weight:800;text-align:center;line-height:40px;cursor:pointer}
@@ -71,6 +67,10 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
 .sel rect.fr{stroke:#4ade80;stroke-width:9}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 .can rect.glow{animation:pulse 1.1s infinite}
+@media(orientation:portrait){#app{flex-direction:column}#stage{flex:0 0 52%}#desk{flex:1 1 auto;border-left:0;border-top:1px solid #2b3658}}
+@media(orientation:portrait) and (max-width:600px){#stage{flex:0 0 41%}#desk.asking #feed{display:none}}
+@media(orientation:portrait){#hand{max-width:620px;width:100%;margin-left:auto;margin-right:auto}.picked .big{flex-basis:170px}}
+@media(orientation:portrait) and (max-width:600px){.picked .big{flex-basis:118px}#desk{padding-top:5px}#say{font-size:15px;line-height:1.2;min-height:0;margin:3px 0 1px}#say small{font-size:12.5px;margin-top:1px}.box{flex-basis:62px;height:29px;line-height:25px;font-size:17px}#pad{gap:4px;margin:4px 0 0}#pad button{height:35px}.q{margin:1px 0;font-size:14px;gap:6px}.btn.small{min-height:27px;padding:2px 9px;font-size:13px}#feed{max-height:19px;margin:2px 0}#msg{min-height:17px;font-size:13.5px;margin:1px 0}.sb{padding:5px 8px;font-size:12px}#round{font-size:14px}}
 </style>
 </head>
 <body>
@@ -89,7 +89,7 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
 
 <div class="ov" id="setup"><div class="in">
   <h2>Practice battle</h2>
-  <p>A crew from the KIS Station has asked you for a practice battle. It is a training run: no ship is really harmed. Beat their ship by bringing all five of its parts to 0.</p>
+  <p>Another crew from the KIS Station has asked you for a practice battle. In this training run their ship is "the enemy". No ship is really harmed. You win when all five of the enemy's parts are at 0.</p>
   <h3>Your ship. Tap a part to change its kind.</h3>
   <div class="ship" id="myship"></div>
   <div class="row"><button class="btn small" id="sstd" type="button">All Standard</button><button class="btn small" id="srand" type="button">Draw at random</button></div>
@@ -101,14 +101,16 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
 </div></div>
 
 <div class="ov" id="rules"><div class="in">
+  <div class="row"><button class="btn small" id="rclose2" type="button">Back</button></div>
   <h2>The rules you can switch</h2>
-  <p>Each switch is a point the rules sheet leaves open, or a guess. A change starts with the next battle.</p>
+  <p>Each switch is a point the rules sheet leaves open, or a guess. The choice that is lit is only where the page starts: none of them is decided. A change starts with the next battle.</p>
   <div class="sw"><b>Show the sums (for adults trying the rules)</b><small>Off: the player works out every number and presses Check.</small><div class="opts" id="sumsw"></div></div>
   <div id="switches"></div>
   <div class="row"><button class="btn go" id="rnew" type="button">New battle with these rules</button><button class="btn" id="rclose" type="button">Back</button></div>
 </div></div>
 
 <div class="ov" id="logv"><div class="in">
+  <div class="row"><button class="btn small" id="lclose2" type="button">Back</button></div>
   <h2>The battle so far</h2>
   <div id="loglist"></div>
   <div class="row"><button class="btn go" id="lclose" type="button">Back</button></div>
@@ -116,6 +118,7 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;colo
 
 <div class="ov" id="help"><div class="in">
   <h2>How a round goes</h2>
+  <p><b>HP</b> is how much damage a part can take. <b>AP</b> is how hard it hits.</p>
   <ol>
     <li>You and the enemy each put down one card, at the same time.</li>
     <li>A Spy acts first. It gets past the shield.</li>
@@ -243,13 +246,13 @@ var PARTS=['Engine Core','Navigation','Shield Generator','Weapons System','Power
 var SHORT={'Engine Core':'Engine','Navigation':'Navigation','Shield Generator':'Shield Gen','Weapons System':'Weapons','Power Module':'Power'};
 /* Every open point of the rules sheet, and every working guess, is a switch. The first value is the default. */
 var SWITCHES=[
- {key:'guard',label:'The Guard (Policeman)',from:'rules sheet 3 and 6',values:[['swap','Swapped in when a Spy is turned over'],['blind','Played blind, as a guess'],['lead','One player leads, the other answers']]},
+ {key:'guard',label:'The Policeman (the Station Guard card)',from:'rules sheet 3 and 6',values:[['swap','When a Spy is turned over, you may swap your Guard in'],['blind','You put the Guard down as a guess, with the other cards'],['lead','One player leads, the other answers']]},
  {key:'loseCard',label:'Engine or Navigation lost: "lose 1 card"',from:'rules sheet 5',values:[['once','One card is thrown away, once'],['smaller','The hand is one card smaller']]},
  {key:'cannotDefend',label:'Shield Generator lost: "cannot defend"',from:'rules sheet 5',values:[['cards','Defence cards stop working'],['cardsAndShield','Defence cards and the Main Shield stop']]},
  {key:'repairCap',label:'A repair may lift a part above its full HP',from:'a guess',values:[[true,'No'],[false,'Yes']]},
  {key:'shieldCap',label:'The Main Shield may pass 100',from:'a guess',values:[[true,'No'],[false,'Yes']]},
  {key:'shieldRebuild',label:'A broken Main Shield can be rebuilt by',from:'a guess',values:[['reborn','Shield Reborn only'],['any','any shield card']]},
- {key:'shieldIsHealing',label:'Shield cards count as',from:'a guess',values:[[true,'repair (need the Power Module)'],[false,'defence (need the Shield Generator)']]},
+ {key:'shieldIsHealing',label:'Cards that add to the Main Shield count as',from:'a guess',values:[[true,'repair (need the Power Module)'],[false,'defence (need the Shield Generator)']]},
  {key:'upgrades',label:'Level 2 upgrade cards are in the decks',from:'a guess',values:[[true,'Yes'],[false,'No']]},
  {key:'roundLimit',label:'A battle ends with no winner after',from:'a guess',values:[[60,'60 rounds'],[30,'30 rounds']]},
  {key:'cpu',label:'The computer player',from:'not a rule: how hard the enemy plays',values:[['gentle','Gentle: it picks its cards and its targets at random'],['clever','Clever: it plays its best card, and its Spy goes for your Weapons']]}
@@ -299,7 +302,7 @@ function isGuard(id){return CARD[id].type==='guard';}
 /* startRound: S.cur holds the round in progress. picks are hand positions. */
 function startRound(S,pick0,pick1){
  var c=[S.P[0].hand[pick0],S.P[1].hand[pick1]];
- S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],lostNow:[[],[]],lines:[],step:0};
+ S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],lostNow:[[],[]],pending:[],lines:[],step:0};
  return S.cur;
 }
 /* swap mode: may player i swap a Guard in for the card they put down? */
@@ -321,7 +324,16 @@ function steps(S){
  a.push({k:'attack'});a.push({k:'land',d:1});a.push({k:'land',d:0});a.push({k:'end'});
  return a;
 }
-function hit(S,side,idx,n){var p=S.P[side].parts[idx],before=p.hp;p.hp=Math.max(0,p.hp-n);if(before>0&&p.hp===0)S.cur.lostNow[side].push(p.part);return {before:before,after:p.hp};}
+function hit(S,side,idx,n){var p=S.P[side].parts[idx],before=p.hp;p.hp=Math.max(0,p.hp-n);if(before>0&&p.hp===0)lose(S,side,p.part);return {before:before,after:p.hp};}
+/* a part is lost: say so, and "lose 1 card" happens at that moment (never the card on the table) */
+function lose(S,side,pn){
+ var cur=S.cur,me=S.P[side];cur.lostNow[side].push(pn);cur.pending.push((side?'The enemy loses its ':'You lose your ')+SHORT[pn]+'.');
+ if((pn==='Engine Core'||pn==='Navigation')&&S.opts.loseCard==='once'&&me.hand.length>1){
+  var x=Math.floor(rand(S)*(me.hand.length-1));if(x>=cur.pick[side])x++;
+  var gone=me.hand.splice(x,1)[0];me.deck.push(gone);me.thrown++;if(x<cur.pick[side])cur.pick[side]--;
+  cur.pending.push(side?'The enemy throws away a card.':'You throw away '+CARD[gone].name+'.');
+ }
+}
 function roomOf(S,p){return S.opts.repairCap?Math.max(0,p.max-p.hp):9999;}
 function otherCards(S,i){return S.P[i].hand.length-1;}
 
@@ -372,7 +384,8 @@ function validate(S,req,ch){
  return '';
 }
 /* run one step for real. Returns {lines:[text], sums:[{side,what,label,before,change,answer}]} */
-function run(S,st,ch){
+function run(S,st,ch){var R=run0(S,st,ch);if(S.cur&&S.cur.pending.length){R.lines=R.lines.concat(S.cur.pending);S.cur.pending=[];}return R;}
+function run0(S,st,ch){
  var R={lines:[],sums:[]},cur=S.cur,i,me,foe,o,c,r,name=['You','The enemy'];
  function sum(side,what,label,before,change,answer,kind){R.sums.push({side:side,what:what,label:label,before:before,change:change,answer:answer,kind:kind});}
  if(st.k==='guard'){
@@ -440,10 +453,6 @@ function run(S,st,ch){
    me=S.P[i];
    /* the played card goes to the bottom of its player's deck */
    var id=me.hand.splice(cur.pick[i],1)[0];me.deck.push(id);
-   cur.lostNow[i].forEach(function(pn){
-    R.lines.push((i?'The enemy loses its ':'You lose your ')+SHORT[pn]+'.');
-    if((pn==='Engine Core'||pn==='Navigation')&&S.opts.loseCard==='once'&&me.hand.length){var x=Math.floor(rand(S)*me.hand.length),gone=me.hand.splice(x,1)[0];me.deck.push(gone);me.thrown++;R.lines.push((i?'The enemy throws away a card.':'You throw away '+CARD[gone].name+'.'));}
-   });
    while(me.hand.length>handSize(S,me)){var y=Math.floor(rand(S)*me.hand.length);me.deck.push(me.hand.splice(y,1)[0]);}
    draw(S,me);
   }
@@ -545,7 +554,7 @@ var TYPE={
  repair:{name:'REPAIR',c:'#22a565',d:'#0c3320',needs:'Needs your Power Module'},
  spy:{name:'SPY',c:'#8b5cf6',d:'#241446',needs:'Gets past the Main Shield'},
  guard:{name:'GUARD',c:'#14b8a6',d:'#083733',needs:'Answers a Spy card'},
- upgrade:{name:'UPGRADE',c:'#f97316',d:'#3d1c06',needs:'Not played in a battle'}
+ upgrade:{name:'UPGRADE',c:'#f97316',d:'#3d1c06',needs:'Makes one part Level 2'}
 };
 var RAR={common:{name:'COMMON',c:'#b08d57',n:1},rare:{name:'RARE',c:'#cfd6e2',n:2},epic:{name:'EPIC',c:'#f5c518',n:3}};
 var KIND={};DATA.kinds.forEach(function(k){KIND[k.key]=k;});
@@ -731,7 +740,7 @@ function tile(side,ix,x,y,tw,th){
  o+='<text x="'+(tw-14).toFixed(1)+'" y="196" text-anchor="end" font-size="56" font-weight="900" fill="#fff" class="hp">'+p.hp+'</text>';
  o+='<path d="M22,214 l-10,18 l8,0 l-4,15 l13,-20 l-8,0 Z" fill="#f59e0b"/><text x="46" y="240" font-size="20" font-weight="800" fill="#aeb8d4">AP</text>';
  o+='<text x="'+(tw-14).toFixed(1)+'" y="244" text-anchor="end" font-size="38" font-weight="900" fill="#ffd84a" class="ap">'+p.ap+'</text>';
- if(lost){o+='<rect x="3" y="3" width="'+(tw-6).toFixed(1)+'" height="'+(th-6)+'" rx="13" fill="#0b0f1f" opacity=".93"/><text x="'+(tw/2).toFixed(1)+'" y="92" text-anchor="middle" font-size="'+(tw<170?23:26)+'" font-weight="800" fill="#8f9bbd">'+esc(B.SHORT[p.part])+'</text><text x="'+(tw/2).toFixed(1)+'" y="146" text-anchor="middle" font-size="44" font-weight="900" fill="#f87171">LOST</text><text x="'+(tw/2).toFixed(1)+'" y="182" text-anchor="middle" font-size="'+(tw<170?17:20)+'" font-weight="700" fill="#fca5a5">'+LOSTWORD[p.part]+'</text>';}
+ if(lost){o+='<rect x="3" y="3" width="'+(tw-6).toFixed(1)+'" height="'+(th-6)+'" rx="13" fill="#0d1224"/><text x="'+(tw/2).toFixed(1)+'" y="92" text-anchor="middle" font-size="'+(tw<170?23:26)+'" font-weight="800" fill="#8f9bbd">'+esc(B.SHORT[p.part])+'</text><text x="'+(tw/2).toFixed(1)+'" y="146" text-anchor="middle" font-size="44" font-weight="900" fill="#f87171">LOST</text><text x="'+(tw/2).toFixed(1)+'" y="182" text-anchor="middle" font-size="'+(tw<170?17:20)+'" font-weight="700" fill="#fca5a5">'+LOSTWORD[p.part]+'</text>';}
  return o+'</g>';
 }
 function header(side,y,W){
@@ -758,7 +767,7 @@ function drawBoard(){
    if(cur&&cur.stopped[i])o+='<g transform="translate('+(cx[i]+cw/2).toFixed(1)+',515)"><rect x="-86" y="-26" width="172" height="52" rx="10" fill="#070b18" stroke="#14b8a6" stroke-width="4"/><text y="10" text-anchor="middle" font-size="28" font-weight="900" fill="#5eead4">STOPPED</text></g>';}
   else{o+='<rect x="'+cx[i].toFixed(1)+'" y="384" width="'+cw.toFixed(1)+'" height="'+ch+'" rx="14" fill="#101733" stroke="#33406a" stroke-width="3" stroke-dasharray="10 8"/><text x="'+(cx[i]+cw/2).toFixed(1)+'" y="530" text-anchor="middle" font-size="64" font-weight="900" fill="#33406a">?</text>';}
  }
- o+='<text x="20" y="430" font-size="44" font-weight="900" fill="#e8ecf5">Round '+Math.min(S.round,S.opts.roundLimit)+'</text>';
+ o+='<text x="20" y="430" font-size="44" font-weight="900" fill="#e8ecf5" class="rnd">Round '+shownRound()+'</text>';
  var av=cur&&cur.snap?cur.atk:((U.phase==='roundend'||U.phase==='over')&&last?last.atk:null);
  if(av){o+='<text x="20" y="560" font-size="26" font-weight="800" fill="#93c5fd" class="youhit">Your attack: '+av[0]+'</text><text x="'+(W-20)+'" y="560" text-anchor="end" font-size="26" font-weight="800" fill="#fca5a5" class="theyhit">Their attack: '+av[1]+'</text>';}
  for(i=0;i<5;i++){o+=tile(0,i,20+i*(tw+14),656,tw,th);}
@@ -770,7 +779,8 @@ function drawBoard(){
 function say(t,small){el('say').innerHTML=esc(t)+(small?'<small>'+esc(small)+'</small>':'');}
 function msg(t){el('msg').textContent=t||'';}
 function feed(lines){lines.forEach(function(l){U.feed.push(l);});var a=U.feed.slice(-4),h='';a.forEach(function(l){h+='<div>'+esc(l)+'</div>';});el('feed').innerHTML=h;}
-function setRound(){var S=U.S;el('round').textContent=S?('Round '+Math.min(S.round,S.opts.roundLimit)+(U.showSums?' · sums shown':'')):'';}
+function shownRound(){var S=U.S;return ((U.phase==='roundend'||U.phase==='over')&&S.log.length)?S.log[S.log.length-1].round:S.round;}
+function setRound(){var S=U.S;el('round').textContent=S?('Round '+shownRound()+(U.showSums?' · sums on':'')):'';}
 function drawHand(){
  var S=U.S,h=el('hand');h.innerHTML='';
  if(U.phase!=='pick'){h.style.display='none';return;}
@@ -848,7 +858,7 @@ function doStep(st,ch){
 }
 function endRound(){
  var S=U.S;el('work').innerHTML='';msg('');hidePad();
- if(S.over){U.phase='over';save();say(S.over.why,S.over.winner===0?'Well flown.':(S.over.winner===1?'Try again?':''));
+ if(S.over){U.phase='over';save();say(S.over.why,S.over.winner===0?'Well flown.':(S.over.winner===1?'Try again? Guard your Weapons and keep your shield up.':'Try again?'));
   el('work').innerHTML='<div class="row"><button class="btn go" id="again" type="button">New battle</button><button class="btn" id="seelog" type="button">See the log</button></div>';
   el('again').addEventListener('click',openSetup);el('seelog').addEventListener('click',openLog);drawBoard();setRound();return;}
  U.phase='roundend';save();say('The round is over.','Round '+S.round+' is next.');
@@ -871,10 +881,10 @@ function askChoice(st,req){
  }
  if(req.type==='amounts'){
   var split=!req.limit;
-  if(split)say('The enemy\'s '+req.total+' hits your ship.','Share it out between your parts. A part can take more than it has.');
+  if(split)say('The enemy\'s '+req.total+' hits your ship.','Share it out between your parts. Your numbers must add up to '+req.total+'.');
   else say(c.name+': share '+req.total+' HP.','Give each part some. No part can pass its full HP.');
   var rows=req.among.map(function(ix){var p=S.P[0].parts[ix];return {key:ix,label:B.SHORT[p.part]+' (has '+p.hp+(split?'':', full '+p.max)+')',all:split};});
-  boxes(rows,split?'Your numbers must add up to '+req.total+'.':'',function(vals){var ch=[0,0,0,0,0];req.among.forEach(function(ix){ch[ix]=vals[ix]||0;});var e=B.validate(S,req,ch);if(e){return e;}w.innerHTML='';hidePad();doStep(st,ch);return '';},req.total);
+  boxes(rows,'',function(vals){var ch=[0,0,0,0,0];req.among.forEach(function(ix){ch[ix]=vals[ix]||0;});var e=B.validate(S,req,ch);if(e){return e;}w.innerHTML='';hidePad();doStep(st,ch);return '';},req.total);
   return;
  }
  if(req.type==='move'){
@@ -901,13 +911,13 @@ function onTile(side,ix){
 
 /* ---------- number boxes and the number pad (no keyboard, so nothing is covered) ---------- */
 var PADKEYS=['1','2','3','4','5','6','7','8','9','0','del'];
-function hidePad(){U.ask=null;el('padwrap').innerHTML='';}
+function hidePad(){U.ask=null;el('padwrap').innerHTML='';el('desk').className='';}
 function boxes(rows,note,onCheck,allTotal){
  var w=el('work'),h='';
- rows.forEach(function(r,i){h+='<div class="q"><label>'+esc(r.label)+'</label>'+(r.all?'<button class="btn small" type="button" data-all="'+r.key+'">All here</button>':'')+'<div class="box'+(i===0?' on':'')+'" data-key="'+r.key+'" role="textbox" aria-label="'+esc(r.label)+'"></div></div>';});
+ rows.forEach(function(r,i){h+='<div class="q"><label>'+esc(r.label)+'</label>'+(r.all?'<button class="btn small" type="button" data-all="'+r.key+'">All</button>':'')+'<div class="box'+(i===0?' on':'')+'" data-key="'+r.key+'" role="textbox" aria-label="'+esc(r.label)+'"></div></div>';});
  if(note)h+='<div style="font-size:14px;color:#aeb8d4;margin:2px 0">'+esc(note)+'</div>';
  var ph='<div id="pad">';PADKEYS.forEach(function(k){ph+='<button type="button" data-k="'+k+'">'+(k==='del'?'⌫':k)+'</button>';});ph+='<button type="button" class="w" data-k="check" id="check">Check</button></div>';
- w.innerHTML=h;w.scrollTop=0;el('padwrap').innerHTML=ph;
+ w.innerHTML=h;w.scrollTop=0;el('padwrap').innerHTML=ph;el('desk').className='asking';
  var bx=w.querySelectorAll('.box'),cur=0,vals={};
  function show(){for(var i=0;i<bx.length;i++){var k=bx[i].getAttribute('data-key');bx[i].textContent=vals[k]===undefined?'':vals[k];bx[i].className='box'+(i===cur?' on':'');}}
  for(var i=0;i<bx.length;i++){(function(i){bx[i].addEventListener('click',function(){cur=i;show();});})(i);}
@@ -933,7 +943,7 @@ function askSums(st,list,done){
   else if(s.what==='shield'&&s.kind==='land'){lab=(s.side?'Their':'Your')+' Main Shield has '+s.before+'. What is left?';}
   else if(s.what==='shield'){lab='Your Main Shield has '+s.before+'. What is it now?';}
   else{p=partOf(s.side,s.label);
-   if(s.kind==='spy'||s.kind==='land')lab=(s.side?'Their ':'Your ')+s.label+' has '+s.before+'. It takes '+(-s.change)+'.';
+   if(s.kind==='spy'||s.kind==='land')lab=(s.side?'Their ':'Your ')+s.label+' has '+s.before+'. It takes '+(-s.change)+'. HP left?';
    else if(s.kind==='repair')lab='Your '+s.label+' has '+s.before+'. Add '+s.change+'. Full is '+p.max+'.';
    else if(s.kind==='round')lab='Your '+s.label+' has '+s.before+'. Full is '+p.max+'.';
    else lab='Your '+s.label+' has '+s.before+'. '+(s.change<0?'Take away '+(-s.change):'Add '+s.change)+'.';}
@@ -943,8 +953,8 @@ function askSums(st,list,done){
  else if(first.what==='through'){head=first.side?'You attack for '+first.before+'. The enemy blocks '+(-first.change)+'.':'The enemy attacks for '+first.before+'. You block '+(-first.change)+'.';}
  else if(first.what==='shield'&&first.kind==='land'){head=first.side?'Your '+(-first.change)+' hits their Main Shield.':'The enemy\'s '+(-first.change)+' hits your Main Shield.';}
  else if(first.what==='shield'){head=c0.name+'.';small=first.kind==='percard'?'You hold '+B.otherCards(S,0)+' other cards. 3 for each.':'Add '+first.change+' to your Main Shield.';if(S.opts.shieldCap)small+=' It cannot pass 100.';}
- else if(first.kind==='spy'){head=first.side?'Your Spy strikes.':'The enemy\'s Spy strikes your ship.';}
- else if(first.kind==='land'){head='Your parts take the hit.';small='What HP is left on each?';}
+ else if(first.kind==='spy'){head=first.side?'Your Spy strikes.':'The enemy\'s Spy strikes your ship.';small='What HP is left? A part cannot go below 0.';}
+ else if(first.kind==='land'){head='Your parts take the hit.';small='What HP is left on each? A part cannot go below 0.';}
  else if(first.kind==='round'){head=c0.name+'.';small='Round each one up to the next ten. Never past full.';}
  else{head=c0.name+'.';small='What is the HP now?';}
  say(head,small);
@@ -954,6 +964,7 @@ function askSums(st,list,done){
   if(!wrong){el('work').innerHTML='';hidePad();done();return '';}
   tries++;
   var k=first.what==='attack'?'attack':(first.what==='through'?'through':(first.kind==='land'&&first.what==='hp'?'spy':first.kind));
+  if(tries>2&&first.what==='attack'){var aps=[];S.P[0].parts.forEach(function(p){if(p.hp>0)aps.push(p.ap);});return 'Not yet. The AP to add: '+aps.join(', ')+'. Then your card.';}
   return tries>1&&HINT[k]?'Not yet. '+HINT[k]:'Not yet. Try again.';
  });
 }
@@ -993,6 +1004,8 @@ el('srand').addEventListener('click',function(){U.kinds=U.kinds.map(function(){r
 el('srules').addEventListener('click',function(){drawRules();show('rules',true);});
 el('brules').addEventListener('click',function(){drawRules();show('rules',true);});
 el('rclose').addEventListener('click',function(){show('rules',false);drawSetup();});
+el('rclose2').addEventListener('click',function(){show('rules',false);drawSetup();});
+el('lclose2').addEventListener('click',function(){show('logv',false);});
 el('rnew').addEventListener('click',openSetup);
 el('blog').addEventListener('click',openLog);
 el('lclose').addEventListener('click',function(){show('logv',false);});

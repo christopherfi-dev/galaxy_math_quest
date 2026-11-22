@@ -74,8 +74,8 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     want(name + ': the marks show on the cards', /change/.test(marks[0]) && /drop/.test(marks[1]) && /Change 1/.test(marks[2]) && /Drop 1/.test(marks[2]), marks.join(' ; '));
 
     // close the page and open it again: the picks are still there
-    // let the browser finish writing before the page is closed (a sync point, not a fixed wait)
-    await page.evaluate(() => new Promise(r => (window.requestIdleCallback || setTimeout)(r)));
+    // give the browser a moment to finish writing before the page is closed
+    await page.evaluate(() => new Promise(r => setTimeout(r, 60)));
     await page.reload();
     const again = await page.evaluate(() => [document.querySelector('.tile[data-id="A09"]').className, JSON.stringify(window.GMQ_CARDS.picks())]);
     want(name + ': picks are kept after closing and opening', /change/.test(again[0]) && /make it \+4/.test(again[1]));

@@ -46,17 +46,19 @@ Open **Rules** on the page. A change starts with the next battle.
 
 | Switch | Choices (the first is the default) | Where it comes from |
 |---|---|---|
-| **The Guard (your Policeman)** | swapped in when a Spy is turned over; played blind; one player leads and the other answers | rules sheet 3 and 6 |
+| **The Policeman (the Station Guard card)** | when a Spy is turned over, you may swap your Guard in; you put it down as a guess; one player leads and the other answers | rules sheet 3 and 6 |
 | **"Lose 1 card"** (Engine or Navigation lost) | one card thrown away, once; the hand is one card smaller | rules sheet 5 |
 | **"Cannot defend"** (Shield Generator lost) | defence cards stop; defence cards and the Main Shield stop | rules sheet 5 |
 | **A repair may lift a part above its full HP** | no; yes | my guess |
 | **The Main Shield may pass 100** | no; yes | my guess |
 | **A broken Main Shield can be rebuilt by** | Shield Reborn only; any shield card | my guess |
-| **Shield cards count as** | repair (need the Power Module); defence (need the Shield Generator) | my guess |
+| **Cards that add to the Main Shield count as** | repair (need the Power Module); defence (need the Shield Generator) | my guess |
 | **Level 2 upgrade cards are in the decks** | yes; no | my guess |
 | **A battle ends with no winner after** | 60 rounds; 30 rounds | my guess |
 | **The computer player** | gentle; clever | not a rule |
 | **Show the sums** | off; on | you, 21 November |
+
+**The lit choice is only where the page starts.** None of these is decided.
 
 **Not switches, because the rules sheet does not reach them yet** (levels above 2): the shield growing to 140, 220 and 360, and the hand growing to 6, 7 and 8.
 
@@ -68,7 +70,7 @@ Your rules sheet does not say these. The page needs an answer, so I chose the pl
 2. **An attack may only be put on working parts.** Otherwise a player could put every hit on a part that is already lost.
 3. **A block comes off the attack before it reaches the shield.**
 4. **Inside a round the order is:** the Guard, then Spies, then repairs and shields, then both attacks at once. A part lost to a Spy is lost for the rest of that round.
-5. **"Lose 1 card" throws away a card at random.**
+5. **"Lose 1 card" throws away a card at random,** at the moment the part is lost. It is never the card on the table.
 6. **An upgrade card played in a battle** makes that part Level 2 until the battle ends: HP +4, AP +3. A second one on the same part does nothing.
 7. **When both players could swap in a Guard,** both decide before either swap is made.
 
@@ -130,11 +132,36 @@ Two Standard ships, your rules, the default switches. 4,000 battles for each lin
 ## 10. Checks
 
 - **Ran:** `node checks/battle_engine_test.js`. It plays your rules, computer against computer: all 1,536 combinations of switches, 40 battles each, then 10,000 more. After every round it checks that no HP or shield went below 0, that nothing carried over past a shield, that a lost part's penalty held, that a stopped Spy did nothing, and that each deck still had its 50 cards. Every battle ended. 18 million checks, all pass.
-- **Ran:** `node checks/battle_page_test.js`. It plays the page as a child would, at iPad sideways, iPad upright and phone size: a wrong sum, a second wrong sum, a split that does not add up, closing the page between rounds and in the middle of a round, then a whole battle to its end, and a few rounds of each other way to play the Guard. 200 checks, all pass.
+- **Ran:** `node checks/battle_page_test.js`. It plays the page as a child would, at iPad sideways, iPad upright and phone size: a wrong sum, a second wrong sum, a split that does not add up, closing the page between rounds and in the middle of a round, then a whole battle to its end, and a few rounds of each other way to play the Policeman. 309 checks, all pass, five runs in a row.
+  - **A fault in my own test, found and fixed:** it stalled once in three runs. The cause was a wait in the test that sometimes never returned. The game was not at fault.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). They also check that the battle page carries the same cards and drawings as the cards page, and that neither page loads anything from outside.
 - **Looked at:** the screens myself, at all three sizes.
 - **Did not run:** the game's play tests. Nothing in the game was touched.
 
 ## 11. The independent review
 
-(Filled in when the review comes back.)
+A reviewer saw only your rules sheet and 27 pictures of the screens. It worked out about 45 numbers again from the pictures and the log.
+
+**What it confirmed:**
+- **Every number on the screens is right.**
+- **No answer is given away,** on any sum or split screen. The hint after a wrong answer does not give it either.
+- **The Check button is always in view.** The picture is filled, and nothing covers it.
+
+**What it found, and I fixed:**
+- **An upgrade card said "Not played in a battle"** while being played. It now says "Makes one part Level 2".
+- **One sum asked nothing:** "Your Engine has 1. It takes 6." It now ends "HP left?", and the words above say a part cannot go below 0.
+- **The end screen showed the wrong round number.** It now shows the round in the log.
+- **On a phone, a split across five parts hid three rows.** All five now show. A test checks it.
+- **"Lose 1 card"** happened at the end of the round. Your sheet says "at that moment". It now does.
+- **The rules and log screens** had their Back button below the fold. There is one at the top too.
+- **A lost part** showed ghost text behind the word LOST.
+- **Words:** the first screen called the other ship friendly and the battle called it "the enemy"; "HP" and "AP" were never explained; the Policeman switch was hard to follow. All reworded.
+- **After three wrong tries at an attack,** the hint now lists the AP numbers to add. It never gives the total.
+
+**What it found, and I left for you:**
+- **"All" on a split** puts the whole attack on one part with one tap. That skips no sum (the HP left is still asked), but it is also the best move under your split rule.
+- **The hand of five small cards** cannot be read until a card is tapped.
+- **There is no "no limit" choice** for the length of a battle. Without a limit I cannot promise that every battle ends.
+- **The enemy's Spy card reads "You choose it"** on the table. On the enemy's card, "you" is the enemy.
+
+**It did not see:** the tapped-card view, the "How" screen, and the end screen with the sums off.
