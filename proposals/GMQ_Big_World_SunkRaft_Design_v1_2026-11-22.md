@@ -5,7 +5,7 @@
 
 **Why this note:** your Brief 2 asks for two mini quests in the Reach. One is built (the thing in the well). This is the second. The long pier already shows a sunk raft with something shining under it, and says "not yet" [built]. This quest pays that off.
 
-**It has not been reviewed.** The Hills' design failed two reviews on paper, so this goes to a reviewer before any building.
+**It was reviewed the same night, and it failed: 2 blockers and 15 major faults. It is not built, and it should not be built from this note.** The faults are in section 10. The plainest one: **it is the well quest again.**
 
 ---
 
@@ -134,3 +134,44 @@ The check must also try wrong answers: a count of only the jars that show; the f
 | 5 | Tries at the scale | No limit; the report counts them. Or three tries, then it locks until the child walks away and comes back | no limit |
 | 6 | The card | Epic, as your shape says. Name: Raft Raiser | yours |
 | 7 | Names | The float maker. The pod bank. Marsh pods | yours |
+
+---
+
+## 10. The review: 2 blockers, 15 major. Not built.
+
+The reviewer worked every number again, and listed every case the number rule allows (there are only 34).
+
+### The blockers
+
+| | Blocker | A case |
+|---|---|---|
+| B1 | **The scale cannot work as I wrote it.** Sealed jars weigh what they weigh. Turning a dial does not change them, so a real scale would not move. And the tip reads two ways | The child sets 6 and the left pan drops. "My number is too big"? Or "the jars are heavier than I said, go higher"? |
+| B2 | **"Every rule can be run backwards" is false.** "Times 0" cannot be | |
+
+### The major faults, in short
+
+- **It is the well again,** beat for beat: measure by multiplying, tell a maker a number, the maker's sum, fetch bundled plants, come back, raise a thing out of water, a Makers' device with "× a then + b", an epic card. A child will feel it.
+- **The scale needs no maths.** It works out 3 × the guess + 4 for the child and compares. Three turns of the dial open it.
+- **The scale is one equation,** and its foot gives the whole method.
+- **The strings problem lets wrong methods pass.** In 17 of the 34 cases the answer is the number of rows, or of jars in a row: it can be read off the sketch. In 5 more, adding the two numbers gives it. Only 12 cases are clean.
+- **Little spread:** 44% of the cases have 24 jars. A row of 7 never survives.
+- **"That would not hold them up exactly"** will be read as "too few". And 5 strings do hold up 24 jars: the world refuses a true answer, with no story reason for "exactly".
+- **A child who answers with the floats** has done the first step right, and is told flatly "wrong".
+- **The finished example is the same problem** with sacks for jars.
+- **A wrong basket** can mean a wrong target or a wrong sum. "This is not right" says neither, and costs two walks.
+- **One pod too many is refused** for a made-up reason. "Then throw it away," a child will say.
+- **"The sail covers the middle"** and "the first row and first column show" are two different pictures.
+- **The small raft, all its jars showing,** models counting by ones: the very error I feared.
+- **The typed world is ignored.** A child will type "pull sail", "dive", "take jar". Taking jars off is the plain cure for a raft packed too full. The note gives no reason these fail.
+- **Decisions made silently:** every number range, the epic card against your earlier rule of a random card [Conflict: 16 November and 22 November], whether the well comes first, and more.
+
+### What I take from it [Proposal]
+
+1. **A second lantern quest in the same region should not have the same bones.** Your lantern shape is yours. But two of them, in the same three towns, both ending in a Makers' device, read as one quest done twice.
+2. **The good parts are worth keeping for somewhere else:** jars in rows with part hidden; a basket that can be filled more than one right way.
+3. **The sunk raft stays a "not yet" place.** It still says why.
+
+### Two things I need from you
+
+1. **Is one mini quest for each region enough for a first test with children?** Or do you want two, and of what kind: another lantern, or something of another shape (a trade, a race against the tide, a mystery with clues)?
+2. **Does a mini quest give an epic card every time** (your words of 22 November), **or a random card** (16 November)?

@@ -15,7 +15,8 @@
 | A one-page sheet for testing with your children | `proposals/GMQ_Big_World_Testing_Sheet_2026-11-22.md` |
 | The planet's design, with the map | `proposals/GMQ_Big_World_Design_v1_2026-11-22.md` |
 | The Reach, as built | `proposals/GMQ_Big_World_Reach_Design_v1_2026-11-22.md` |
-| The Terrace Hills: designed, not built | `proposals/GMQ_Big_World_Hills_Design_v1_2026-11-22.md` |
+| The Terrace Hills: designed, failed review, not built | `proposals/GMQ_Big_World_Hills_Design_v1_2026-11-22.md` |
+| The sunk raft: designed, failed review, not built | `proposals/GMQ_Big_World_SunkRaft_Design_v1_2026-11-22.md` |
 
 A game saved before tonight still opens. To begin at the story: **Ship**, then **Start again**.
 
@@ -34,7 +35,7 @@ A game saved before tonight still opens. To begin at the story: **Ship**, then *
 - **The game's two fonts.**
 - **Big quests upgrade the ship** [Source: Marc]. The Menders lift the Engine Core to Level 2. The Rillfolk lift Navigation. The Ship button shows all five parts.
 - **The Reach is built** (region 2): the reed gate, the harbour, three towns over plank bridges, and the fleet as its big quest.
-- **A mini quest of your lantern shape:** the thing in the well. Five steps over two peoples, a real problem inside, an **epic card**. **The brief asked for two mini quests in the Reach. One is built.** The second (the sunk raft by the long pier) is not.
+- **A mini quest of your lantern shape:** the thing in the well. Five steps over two peoples, a real problem inside, an **epic card**. **The brief asked for two mini quests in the Reach. One is built.** The second (the sunk raft by the long pier) was designed tonight, and failed its review. It is not built.
 - **A surprise on the walk:** a loose cog rolls out of the grass. Three quick rules catch it.
 - **A bottle with a note** in the reeds, for Pim over the river.
 - **The law of the road** is in the page's own check.
@@ -91,7 +92,7 @@ Open the website link with `?seed=7` on the end, on a fresh save.
 
 ## 6. The reviews
 
-Eight independent reviews so far. Each reviewer saw the rules and what I gave them, never my reasoning.
+Nine independent reviews so far. Each reviewer saw the rules and what I gave them, never my reasoning.
 
 | | What was reviewed | What it found | What I did |
 |---|---|---|---|
@@ -102,6 +103,7 @@ Eight independent reviews so far. Each reviewer saw the rules and what I gave th
 | 5 | The Terrace Hills, version 1 | 2 blockers: a rule that refused correct maths; not an open problem | Version 2 |
 | 6 | The Terrace Hills, version 2 | **6 blockers.** Four are in the top terrace. The arithmetic is all right; the design is not | **Not fixed. Not built.** The blockers, and what a version 3 needs, are in the note's section 10 |
 | 7 | The Reach's pictures, 48 of them at three sizes | No blocker. 14 major, 25 minor | All 14 major points answered; one half of one is yours (below). Of the 25 minor: 8 fixed, 3 partly, 14 left (below) |
+| 8 | The sunk raft: a second mini quest for the Reach, on paper | **2 blockers, 15 major.** The plainest: it is the well quest again | **Not built.** `proposals/GMQ_Big_World_SunkRaft_Design_v1_2026-11-22.md`, section 10 |
 
 **What the pictures' reviewer found, and I fixed:**
 - "Rafts of 4" could be read as four rafts. The board now says "each carries 4", and the desk "rafts that carry 4".
@@ -141,7 +143,7 @@ Eight independent reviews so far. Each reviewer saw the rules and what I gave th
 - **The tunes are unheard.**
 - **The fonts come from the internet.** With no internet the page uses the iPad's own font. Nothing else is fetched, and nothing is sent.
 - **The Hills are not built, and their design is not ready.** Region 3 was "build only if there is time and it can be done well". It could not.
-- **One mini quest in the Reach, not two.**
+- **One mini quest in the Reach, not two.** My design for the second failed its review.
 - **Nothing gets easier for a child who struggles.** The helps are finished examples, nudges and a notebook. The four machines are not in order of difficulty.
 - **The raft does nothing yet.** It is given as the Rillfolk's thanks, and waits for the north channels.
 - **The save is in the browser.** An iPad can clear it if the page is not opened for some days.
@@ -180,7 +182,8 @@ Eight independent reviews so far. Each reviewer saw the rules and what I gave th
 2. **Listen to the music.** Ship, then Music. Tell me which tunes to change.
 3. **Open the size test on the old iPad.** Tap "Test all three". A photo of the table.
 4. **Decision 8 above:** lasting upgrades, or cards?
-5. **The Hills:** two answers first. Does your class learn tables to 10 × 10, or to 12 × 12? Do you want part of that quest off the screen, on paper? (The Hills' note, section 10.)
+5. **Mini quests:** is one for each region enough for a first test? And does a mini quest always give an epic card (your words of 22 November), or a random card (16 November)? [Conflict]
+6. **The Hills:** two answers first. Does your class learn tables to 10 × 10, or to 12 × 12? Do you want part of that quest off the screen, on paper? (The Hills' note, section 10.)
 
 ---
 
