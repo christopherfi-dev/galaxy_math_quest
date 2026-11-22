@@ -69,6 +69,7 @@ th{background:#151d36;color:#c9d2ea}
 <h1>Galaxy Math Quest: the new cards</h1>
 <p class="lead"><span class="tag">first draft</span><span class="tag">for Marc</span><span class="tag">22 November 2026</span><br>
 Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, <b>Change</b> or <b>Drop</b>, and write a note if you like. Then press <b>Copy my picks</b> at the bottom and paste the text to the battle thread.</p>
+<p class="lead"><a href="index.html" style="color:#93c5fd;font-weight:700">Play the practice battle with these cards</a></p>
 
 <h2>1. One rule for the numbers</h2>
 <p class="lead">A child can say it: <b>Common: one small number. Rare: about double, or two things at once. Epic: it does something no other card does.</b></p>
@@ -235,6 +236,7 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 (function(){
 "use strict";
 var DATA=JSON.parse(document.getElementById('carddata').textContent);
+/* DRAW-BEGIN: the same block is in card_battle.html; checks/battle_cards_set_check.py compares them */
 var NS='http://www.w3.org/2000/svg';
 var TYPE={
  attack:{name:'ATTACK',c:'#e5484d',d:'#3a1114',needs:'Needs your Weapons System'},
@@ -400,6 +402,8 @@ function partSVG(p,uid){
  o+='<line x1="16" y1="320" x2="234" y2="320" stroke="#33406a" stroke-width="1"/><text x="18" y="335" font-size="11.5" font-weight="800" fill="#c9d2ea" letter-spacing="1">'+esc(p.part.toUpperCase())+'</text><text x="232" y="335" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(p.id)+'</text>';
  return o+'</svg>';
 }
+
+/* DRAW-END */
 
 /* ---------- picks, kept on this device only ---------- */
 var KEY='gmq_new_cards_v1',picks={};

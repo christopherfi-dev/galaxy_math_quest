@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>GMQ practice battle</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;color:#e8ecf5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;touch-action:manipulation}
+#app{position:fixed;inset:0;display:flex;flex-direction:row}
+#stage{flex:1 1 auto;min-width:0;min-height:0;position:relative;background:#0b1020}
+#board{position:absolute;inset:0;width:100%;height:100%;display:block}
+#desk{flex:0 0 min(41vw,470px);display:flex;flex-direction:column;background:#111933;border-left:1px solid #2b3658;min-height:0;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+@media(orientation:portrait){#app{flex-direction:column}#stage{flex:0 0 52%}#desk{flex:1 1 auto;border-left:0;border-top:1px solid #2b3658}}
+@media(orientation:portrait) and (max-width:600px){#stage{flex:0 0 43%}}
+#top{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+#round{font-weight:800;font-size:16px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb{font-size:13px;font-weight:700;border-radius:8px;border:1px solid #3a4874;background:#1c2748;color:#e8ecf5;padding:7px 10px;cursor:pointer}
+#say{flex:0 0 auto;font-size:17px;line-height:1.3;font-weight:600;margin:8px 0 4px;min-height:44px}
+#say small{display:block;font-size:14px;font-weight:500;color:#aeb8d4;margin-top:2px}
+#work{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#feed{flex:0 0 auto;font-size:13px;line-height:1.35;color:#c3cbe0;max-height:74px;overflow:hidden;margin:4px 0;border-top:1px solid #26304d;padding-top:4px}
+#feed div:last-child{color:#fff}
+#hand{flex:0 0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:6px}
+#hand button{border:0;background:none;padding:0;cursor:pointer;border-radius:8px;position:relative}
+#hand button svg{display:block;width:100%;height:auto}
+#hand button.sel{outline:3px solid #ffd84a;outline-offset:1px}
+#hand button.no svg{opacity:.45}
+.btn{font-size:17px;font-weight:800;border-radius:11px;border:1px solid #4a5a90;background:#1c2748;color:#fff;padding:11px 16px;cursor:pointer;min-height:46px}
+.btn.go{background:#2563eb;border-color:#2563eb}
+.btn.small{font-size:14px;padding:8px 10px;min-height:38px}
+.btn:disabled{opacity:.4}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.picked{display:flex;gap:10px;align-items:flex-start}
+.picked .big{flex:0 0 46%;max-width:210px}
+.picked .big svg{width:100%;height:auto;display:block}
+.picked .side{flex:1;min-width:0}
+@media(orientation:portrait){#hand{max-width:620px;width:100%;margin-left:auto;margin-right:auto}.picked .big{flex-basis:170px}}
+@media(orientation:portrait) and (max-width:600px){.picked .big{flex-basis:118px}#say{font-size:16px;min-height:0;margin:5px 0 2px}.box{height:40px;line-height:36px}#pad button{height:38px}.q{margin:3px 0;font-size:15px}}
+.q{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:16px}
+.q label{flex:1;min-width:0}
+.box{flex:0 0 78px;height:44px;border-radius:9px;border:2px solid #4a5a90;background:#0d1430;color:#fff;font-size:22px;font-weight:800;text-align:center;line-height:40px;cursor:pointer}
+.box.on{border-color:#ffd84a;box-shadow:0 0 0 2px rgba(255,216,74,.25)}
+.box.bad{border-color:#f87171;background:#3a1114}
+.box.ok{border-color:#4ade80;background:#0c3320}
+#pad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin:6px 0 2px}
+#pad button{font-size:20px;font-weight:800;height:42px;border-radius:9px;border:1px solid #3a4874;background:#18213f;color:#fff;cursor:pointer}
+#pad button.w{background:#2563eb;border-color:#2563eb;font-size:15px}
+#padwrap{flex:0 0 auto}
+#msg{font-size:15px;font-weight:700;color:#fbbf24;min-height:20px;margin:2px 0}
+.ov{position:fixed;inset:0;background:#070b18;z-index:20;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(20px + env(safe-area-inset-bottom))}
+.ov.open{display:block}
+.ov h2{font-size:21px;margin:4px 0 8px}
+.ov h3{font-size:16px;margin:14px 0 4px;color:#c9d2ea}
+.ov p,.ov li{font-size:16px;line-height:1.45;margin:6px 0}
+.ov .in{max-width:760px;margin:0 auto}
+.sw{border:1px solid #2b3658;border-radius:10px;padding:8px 10px;margin:8px 0;background:#0f1630}
+.sw b{display:block;font-size:15px}
+.sw small{color:#8f9bbd;font-size:12px}
+.sw .opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sw .opts button{font-size:14px;border-radius:999px;border:1px solid #3a4874;background:#141c35;color:#d5dcf0;padding:7px 12px;cursor:pointer}
+.sw .opts button.on{background:#e8ecf5;color:#0b1020;border-color:#e8ecf5;font-weight:800}
+.ship{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:8px 0}
+.ship button{border:0;background:none;padding:0;cursor:pointer}
+.ship svg{width:100%;height:auto;display:block}
+@media(max-width:600px){.ship{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.lg{border-top:1px solid #26304d;padding:6px 0;font-size:14px;line-height:1.4}
+.lg b{color:#ffd84a}
+.tile{cursor:pointer}
+.can rect.fr{stroke:#ffd84a;stroke-width:7}
+.sel rect.fr{stroke:#4ade80;stroke-width:9}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.can rect.glow{animation:pulse 1.1s infinite}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage"><svg id="board" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  <div id="desk">
+    <div id="top"><div id="round"></div><button class="sb" id="bhelp" type="button">How</button><button class="sb" id="brules" type="button">Rules</button><button class="sb" id="blog" type="button">Log</button><button class="sb" id="bnew" type="button">New</button></div>
+    <div id="say"></div>
+    <div id="work"></div>
+    <div id="padwrap"></div>
+    <div id="msg"></div>
+    <div id="feed"></div>
+    <div id="hand"></div>
+  </div>
+</div>
+
+<div class="ov" id="setup"><div class="in">
+  <h2>Practice battle</h2>
+  <p>A crew from the KIS Station has asked you for a practice battle. It is a training run: no ship is really harmed. Beat their ship by bringing all five of its parts to 0.</p>
+  <h3>Your ship. Tap a part to change its kind.</h3>
+  <div class="ship" id="myship"></div>
+  <div class="row"><button class="btn small" id="sstd" type="button">All Standard</button><button class="btn small" id="srand" type="button">Draw at random</button></div>
+  <h3>The enemy ship</h3>
+  <div class="row" id="foemode"></div>
+  <p><b>The cards:</b> you and the enemy each have your own deck of all <span id="ncards"></span> cards, shuffled. You each hold 5.</p>
+  <div class="row"><button class="btn go" id="sgo" type="button">Start the battle</button><button class="btn" id="srules" type="button">Change the rules</button></div>
+  <p style="color:#8f9bbd;font-size:13px">A test table for Marc's battle rules. Every card and every number is a first draft. Nothing is sent anywhere. <a href="cards.html" style="color:#93c5fd">See all the cards</a></p>
+</div></div>
+
+<div class="ov" id="rules"><div class="in">
+  <h2>The rules you can switch</h2>
+  <p>Each switch is a point the rules sheet leaves open, or a guess. A change starts with the next battle.</p>
+  <div class="sw"><b>Show the sums (for adults trying the rules)</b><small>Off: the player works out every number and presses Check.</small><div class="opts" id="sumsw"></div></div>
+  <div id="switches"></div>
+  <div class="row"><button class="btn go" id="rnew" type="button">New battle with these rules</button><button class="btn" id="rclose" type="button">Back</button></div>
+</div></div>
+
+<div class="ov" id="logv"><div class="in">
+  <h2>The battle so far</h2>
+  <div id="loglist"></div>
+  <div class="row"><button class="btn go" id="lclose" type="button">Back</button></div>
+</div></div>
+
+<div class="ov" id="help"><div class="in">
+  <h2>How a round goes</h2>
+  <ol>
+    <li>You and the enemy each put down one card, at the same time.</li>
+    <li>A Spy acts first. It gets past the shield.</li>
+    <li>Repair cards work next.</li>
+    <li>Both ships attack. Your attack is the AP of all your working parts added up, plus your card.</li>
+    <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
+    <li>With no shield, <b>you</b> choose which of your parts take the hit.</li>
+  </ol>
+  <h3>An example, with another ship</h3>
+  <p>A ship's parts have AP 15, 10, 5, 20 and 10. That is 60. It plays a card that adds 7. Its attack is 67.</p>
+  <p>The other ship blocks 12. So 55 gets through. Its shield has 80. Now it has 25.</p>
+  <h3>A lost part</h3>
+  <ul>
+    <li><b>Weapons:</b> you cannot attack.</li>
+    <li><b>Shield Generator:</b> your defence cards do nothing.</li>
+    <li><b>Power Module:</b> your repair cards do nothing.</li>
+    <li><b>Engine</b> or <b>Navigation:</b> you lose a card.</li>
+  </ul>
+  <div class="row"><button class="btn go" id="hclose" type="button">Back</button></div>
+</div></div>
+
+<script id="carddata" type="application/json">
+{
+"version": "new set v1.1, 2026-11-22",
+"standard_ship": {"hp": 100, "ap": 55},
+"kinds": [
+ {"key":"standard","name":"Standard","colour":"#9aa6b8","rule":"The middle. A fair share of HP and of AP.","hp":0,"ap":0},
+ {"key":"guardian","name":"Guardian","colour":"#3b82f6","rule":"Tougher: 5 more HP, 5 less AP.","hp":5,"ap":-5},
+ {"key":"striker","name":"Striker","colour":"#ef4444","rule":"Stronger: 5 less HP, 5 more AP.","hp":-5,"ap":5},
+ {"key":"lucky","name":"Lucky Draw","colour":"#f5c518","rule":"The best of both: 5 more HP and 5 more AP.","hp":5,"ap":5}
+],
+"parts": [
+ {"id":"EC-1","part":"Engine Core","kind":"standard","name":"Standard Reactor","hp":20,"ap":5,"text":"The workhorse. Steady and sturdy."},
+ {"id":"EC-2","part":"Engine Core","kind":"guardian","name":"Neutron Reactor","hp":25,"ap":0,"text":"A tough core. It adds nothing to your attack."},
+ {"id":"EC-3","part":"Engine Core","kind":"striker","name":"Quantum Reactor","hp":15,"ap":10,"text":"Less armour, more power."},
+ {"id":"EC-4","part":"Engine Core","kind":"lucky","name":"Stellar Reactor","hp":25,"ap":10,"text":"As tough as the Neutron. As strong as the Quantum."},
+ {"id":"NS-1","part":"Navigation","kind":"standard","name":"Standard Navigator","hp":15,"ap":10,"text":"A steady hand on a steady course."},
+ {"id":"NS-2","part":"Navigation","kind":"guardian","name":"Celestial Cartographer","hp":20,"ap":5,"text":"Built to last on dangerous routes."},
+ {"id":"NS-3","part":"Navigation","kind":"striker","name":"Astrolabe Navigator","hp":10,"ap":15,"text":"Quick sums behind thin walls."},
+ {"id":"NS-4","part":"Navigation","kind":"lucky","name":"Cosmic Navigator","hp":20,"ap":15,"text":"Tough and clever: the best of both."},
+ {"id":"SG-1","part":"Shield Generator","kind":"standard","name":"Standard Shield","hp":30,"ap":5,"text":"Simple and reliable."},
+ {"id":"SG-2","part":"Shield Generator","kind":"guardian","name":"Neutron Wall","hp":35,"ap":0,"text":"A heavy wall. It adds nothing to your attack."},
+ {"id":"SG-3","part":"Shield Generator","kind":"striker","name":"Quantum Deflector","hp":25,"ap":10,"text":"A lighter wall with more firepower."},
+ {"id":"SG-4","part":"Shield Generator","kind":"lucky","name":"Nova Shield","hp":35,"ap":10,"text":"A heavy wall with firepower too."},
+ {"id":"WS-1","part":"Weapons System","kind":"standard","name":"Standard Arsenal","hp":10,"ap":20,"text":"Reliable firepower."},
+ {"id":"WS-2","part":"Weapons System","kind":"guardian","name":"Proton Launcher","hp":15,"ap":15,"text":"Balanced: as much armour as firepower."},
+ {"id":"WS-3","part":"Weapons System","kind":"striker","name":"Pulsar Phaser","hp":5,"ap":25,"text":"All attack and very little armour."},
+ {"id":"WS-4","part":"Weapons System","kind":"lucky","name":"Supernova Arsenal","hp":15,"ap":25,"text":"The Launcher's armour and the Phaser's fire."},
+ {"id":"PM-1","part":"Power Module","kind":"standard","name":"Standard Battery","hp":25,"ap":15,"text":"Steady power for a steady captain."},
+ {"id":"PM-2","part":"Power Module","kind":"guardian","name":"Proton Generator","hp":30,"ap":10,"text":"More armour, less power."},
+ {"id":"PM-3","part":"Power Module","kind":"striker","name":"Quantum Dynamo","hp":20,"ap":20,"text":"Less armour, more power."},
+ {"id":"PM-4","part":"Power Module","kind":"lucky","name":"Galaxy Battery","hp":30,"ap":20,"text":"The Generator's armour and the Dynamo's power."}
+],
+"cards": [
+ {"id":"A01","pic":"spark","type":"attack","rarity":"common","name":"Spark Shot","badge":"+5","text":"Add 5 to your attack this round.","ops":[{"op":"atk_add","n":5}],"maths":"AP + 5","from":"Laser Cannon (+5)"},
+ {"id":"A02","pic":"comet","type":"attack","rarity":"common","name":"Comet Jab","badge":"+6","text":"Add 6 to your attack this round.","ops":[{"op":"atk_add","n":6}],"maths":"AP + 6","from":"Plasma Blast (+6)"},
+ {"id":"A03","pic":"rocket","type":"attack","rarity":"common","name":"Odd Rocket","badge":"+7","text":"Add 7 to your attack this round.","ops":[{"op":"atk_add","n":7}],"maths":"AP + 7, an odd number","from":"Odd Offense, with an odd number again"},
+ {"id":"A04","pic":"beam2","type":"attack","rarity":"common","name":"Even Beam","badge":"+8","text":"Add 8 to your attack this round.","ops":[{"op":"atk_add","n":8}],"maths":"AP + 8, an even number","from":"Gamma Rays (+8)"},
+ {"id":"A05","pic":"stars9","type":"attack","rarity":"common","name":"Nine-Star Burst","badge":"+9","text":"Add 9 to your attack this round.","ops":[{"op":"atk_add","n":9}],"maths":"AP + 9 (add 10, take away 1)","from":"the +9 card of 2023"},
+ {"id":"A06","pic":"torpedo","type":"attack","rarity":"common","name":"Tens Torpedo","badge":"+10","text":"Add 10 to your attack this round.","ops":[{"op":"atk_add","n":10}],"maths":"AP + 10","from":"Addition Armament (+10)"},
+ {"id":"A07","pic":"bolt","type":"attack","rarity":"rare","name":"Voltara Bolt","badge":"+15","text":"Add 15 to your attack this round.","ops":[{"op":"atk_add","n":15}],"maths":"AP + 15","from":"Comet Strike (+15); named for Planet Voltara"},
+ {"id":"A08","pic":"torpedo2","type":"attack","rarity":"rare","name":"Twin Tens","badge":"+20","text":"Add 20 to your attack this round.","ops":[{"op":"atk_add","n":20}],"maths":"AP + 20","from":"Supernova Strike (+20)"},
+ {"id":"A09","type":"attack","rarity":"rare","name":"All Hands Fire","badge":"5×","text":"Count your working parts. Add 5 for each one.","ops":[{"op":"atk_per_part","n":5}],"maths":"5 x your working parts, then AP + that","from":"new: it uses the five times table"},
+ {"id":"A10","pic":"torpedo","type":"attack","rarity":"rare","name":"Hit and Hide","badge":"+10","text":"Add 10 to your attack. Block 10 of the attack on you.","ops":[{"op":"atk_add","n":10},{"op":"block","n":10}],"maths":"AP + 10, and their attack - 10","from":"EMP Wave (attack and defence on one card)","needs":"Needs Weapons and Shield Generator"},
+ {"id":"A11","type":"attack","rarity":"epic","name":"Doubling Drive","badge":"×2","text":"Double your ship's AP for this attack.","ops":[{"op":"atk_double"}],"maths":"AP + AP","from":"Multiplication Munition"},
+ {"id":"A12","type":"attack","rarity":"epic","name":"Hundred Cannon","badge":"100s","text":"Round your ship's AP up to the next hundred for this attack.","ops":[{"op":"atk_round100"}],"maths":"round up to the next hundred (always up)","from":"new: Rounding Rover's idea, for attack"},
+ {"id":"D01","pic":"dust","type":"defence","rarity":"common","name":"Dust Screen","badge":"−8","text":"Block 8 of the attack on you this round.","ops":[{"op":"block","n":8}],"maths":"their attack - 8","from":"Anti-Laser Coating, with a number that matters"},
+ {"id":"D02","pic":"tiles","type":"defence","rarity":"common","name":"Ten-Tile Wall","badge":"−10","text":"Block 10 of the attack on you this round.","ops":[{"op":"block","n":10}],"maths":"their attack - 10","from":"Subtraction Shield (10)"},
+ {"id":"D03","pic":"gems","type":"defence","rarity":"common","name":"Dozen Deflector","badge":"−12","text":"Block 12 of the attack on you this round.","ops":[{"op":"block","n":12}],"maths":"their attack - 12","from":"new"},
+ {"id":"D04","pic":"bricks","type":"defence","rarity":"common","name":"Double-Seven Wall","badge":"−14","text":"Block 14 of the attack on you this round.","ops":[{"op":"block","n":14}],"maths":"their attack - 14 (7 and 7)","from":"new"},
+ {"id":"D05","pic":"minus","type":"defence","rarity":"common","name":"Subtraction Shield","badge":"−15","text":"Block 15 of the attack on you this round.","ops":[{"op":"block","n":15}],"maths":"their attack - 15","from":"Subtraction Shield (your name)"},
+ {"id":"D06","pic":"net","type":"defence","rarity":"rare","name":"Meteor Net","badge":"−20","text":"Block 20 of the attack on you this round.","ops":[{"op":"block","n":20}],"maths":"their attack - 20","from":"Deflection Field (30)"},
+ {"id":"D07","pic":"quarter","type":"defence","rarity":"rare","name":"Quarter Wall","badge":"−25","text":"Block 25 of the attack on you this round.","ops":[{"op":"block","n":25}],"maths":"their attack - 25","from":"new"},
+ {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Block","badge":"−15","text":"Block 15 of the attack on you. Repair 5 HP on one working part.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card","needs":"Needs Shield Generator and Power Module"},
+ {"id":"D10","pic":"cards","type":"defence","rarity":"rare","name":"Card Wall","badge":"4×","text":"Count the other cards in your hand. Block 4 for each one.","ops":[{"op":"block_per_card","n":4}],"maths":"4 x the cards left in your hand, then their attack - that","from":"new: the four times table, to match Nano Shield"},
+ {"id":"D09","type":"defence","rarity":"epic","name":"Vanishing Act","badge":"0","text":"No attack hits you this round. A Spy still can.","ops":[{"op":"block_all"}],"maths":"none: the attack on you is 0","from":"Cloaking Device, Wormhole, Teleport and nine more"},
+ {"id":"R01","pic":"patch","type":"repair","rarity":"common","name":"Quick Patch","badge":"+6","text":"Repair 6 HP on one of your working parts.","ops":[{"op":"repair_one","n":6}],"maths":"part HP + 6","from":"Emergency Repairs (6)"},
+ {"id":"R02","pic":"tape","type":"repair","rarity":"common","name":"Hull Tape","badge":"+8","text":"Repair 8 HP on one of your working parts.","ops":[{"op":"repair_one","n":8}],"maths":"part HP + 8","from":"Armor Patch (7)"},
+ {"id":"R03","pic":"bot","type":"repair","rarity":"common","name":"Repair Bot","badge":"+10","text":"Repair 10 HP on one of your working parts.","ops":[{"op":"repair_one","n":10}],"maths":"part HP + 10","from":"Repair Drone (10)"},
+ {"id":"R04","pic":"bolts","type":"repair","rarity":"common","name":"Dozen Bolts","badge":"+12","text":"Repair 12 HP on one of your working parts.","ops":[{"op":"repair_one","n":12}],"maths":"part HP + 12","from":"Proton Repair (12)"},
+ {"id":"R05","type":"repair","rarity":"common","name":"Shield Spark","badge":"+10","text":"Add 10 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":10}],"maths":"shield + 10","from":"Defense Matrix (10)"},
+ {"id":"R06","type":"repair","rarity":"common","name":"Nano Shield","badge":"3×","text":"Count the other cards in your hand. Add 3 shield HP for each, if your shield is still up.","ops":[{"op":"shield_per_card","n":3}],"maths":"3 x the cards left in your hand, then shield + that","from":"Nano Shield (your card)"},
+ {"id":"R07","type":"repair","rarity":"common","name":"Dome Top-Up","badge":"+15","text":"Add 15 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":15}],"maths":"shield + 15","from":"Quantum Shield (15)"},
+ {"id":"R08","type":"repair","rarity":"rare","name":"Meteor Mend","badge":"+20","text":"Share 20 HP between your working parts, any way you like.","ops":[{"op":"repair_share","n":20}],"maths":"split 20 into parts, then add each","from":"Meteor Mend (never printed)"},
+ {"id":"R09","type":"repair","rarity":"rare","name":"Fix-It Fleet","badge":"+5","text":"Repair 5 HP on every one of your working parts.","ops":[{"op":"repair_all","n":5}],"maths":"each part HP + 5","from":"Repair Drones (5 each)"},
+ {"id":"R10","type":"repair","rarity":"rare","name":"Rounding Rover","badge":"10s","text":"Round each damaged part up to the next ten. Never past full HP.","ops":[{"op":"round_up10"}],"maths":"round each part up to the next ten","from":"Rounding Rover (your card)"},
+ {"id":"R11","type":"repair","rarity":"rare","name":"Galactic Drift","badge":"10","text":"Move up to 10 HP from one working part to another.","ops":[{"op":"move_hp","n":10}],"maths":"one part - n, another part + n","from":"Galactic Drift (never printed)"},
+ {"id":"R12","type":"repair","rarity":"rare","name":"Quarter Dome","badge":"+25","text":"Add 25 HP to your Main Shield, if it is still up.","ops":[{"op":"shield_add","n":25}],"maths":"shield + 25","from":"Nebula Armor (25)"},
+ {"id":"R13","type":"repair","rarity":"epic","name":"Stellar Revival","badge":"+5","text":"Bring back one lost part. It returns with 5 HP.","ops":[{"op":"revive","n":5}],"maths":"none: the part's HP becomes 5","from":"Stellar Revival (your name); your rules sheet, section 5"},
+ {"id":"R14","type":"repair","rarity":"epic","name":"Repair Bay","badge":"full","text":"Repair every working part to full HP.","ops":[{"op":"repair_full"}],"maths":"none: each part goes back to its starting HP","from":"Replicant Drones, Nebula Nova"},
+ {"id":"R15","type":"repair","rarity":"epic","name":"Shield Reborn","badge":"+50","text":"Add 50 HP to your Main Shield. It works even on a broken shield.","ops":[{"op":"shield_rebuild","n":50}],"maths":"shield + 50","from":"Cosmic Barrier (40); the only card that rebuilds a broken shield"},
+ {"id":"S01","type":"spy","rarity":"common","name":"Probe Drone","badge":"3","text":"Spy! 3 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":3,"parts":1}],"maths":"their part HP - 3","from":"Quantum Missile (5 to one part)"},
+ {"id":"S02","type":"spy","rarity":"common","name":"Sneak Circuit","badge":"4","text":"Spy! 4 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":4,"parts":1}],"maths":"their part HP - 4","from":"Quantum Missile (5 to one part)"},
+ {"id":"S03","type":"spy","rarity":"common","name":"Twin Probes","badge":"2+2","text":"Spy! 2 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":2,"parts":2}],"maths":"two parts, each HP - 2","from":"Micro Missiles (3 to two parts)"},
+ {"id":"S04","type":"spy","rarity":"rare","name":"Databa Hacker","badge":"6","text":"Spy! 6 damage to one enemy part. You choose it.","ops":[{"op":"spy","n":6,"parts":1}],"maths":"their part HP - 6","from":"new; named for Galaxy Databa"},
+ {"id":"S05","type":"spy","rarity":"rare","name":"Double Agent","badge":"4+4","text":"Spy! 4 damage to each of two enemy parts. You choose them.","ops":[{"op":"spy","n":4,"parts":2}],"maths":"two parts, each HP - 4","from":"Quantum Torpedo (8 to two parts), made smaller"},
+ {"id":"S06","type":"spy","rarity":"rare","name":"Triple Tap","badge":"3×3","text":"Spy! 3 damage to each of three enemy parts. You choose them.","ops":[{"op":"spy","n":3,"parts":3}],"maths":"three parts, each HP - 3","from":"Rocket Barrage (4 to three parts)"},
+ {"id":"S07","type":"spy","rarity":"epic","name":"Five-Part Swarm","badge":"4×5","text":"Spy! 4 damage to every enemy part.","ops":[{"op":"spy","n":4,"parts":5}],"maths":"every part HP - 4","from":"Pulsar Pulse (5 to all parts), made smaller"},
+ {"id":"G01","type":"guard","rarity":"common","name":"Station Guard","badge":"stop","text":"Stops a Spy. The Spy card does nothing.","ops":[{"op":"guard"}],"maths":"none","from":"SECURITY (your Policeman, under a new name)"}
+],
+"upgrades": [
+ {"id":"U-EC","type":"upgrade","rarity":"","part":"Engine Core","name":"Booster Upgrade","badge":"L2","text":"Level 2. Your Engine Core gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-NS","type":"upgrade","rarity":"","part":"Navigation","name":"Inertial Dampener","badge":"L2","text":"Level 2. Your Navigation gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-SG","type":"upgrade","rarity":"","part":"Shield Generator","name":"Magnetic Field Amplifier","badge":"L2","text":"Level 2. Your Shield Generator gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-WS","type":"upgrade","rarity":"","part":"Weapons System","name":"Laser Sight Enhancer","badge":"L2","text":"Level 2. Your Weapons System gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"},
+ {"id":"U-PM","type":"upgrade","rarity":"","part":"Power Module","name":"Battery Optimizer","badge":"L2","text":"Level 2. Your Power Module gains HP +4 and AP +3, for good.","ops":[{"op":"upgrade","hp":4,"ap":3}],"maths":"HP + 4, AP + 3","from":"your Level 2 card"}
+],
+"ideas": [
+ {"id":"X01","pic":"quarter","type":"defence","rarity":"rare","name":"Fraction Field","badge":"½","text":"Block half of the attack on you this round.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Division Defender, Fraction Frigate","ask":"What is half of 55? The card needs a rule for odd numbers: the bigger half, or the smaller."},
+ {"id":"X02","type":"attack","rarity":"rare","name":"Patternox Pulse","badge":"2,4,6","text":"Add 2 this round, +4 next round and +6 the round after.","ops":[{"op":"x"}],"maths":"a pattern: count on in twos","from":"Pattern Power, Infinity Invader","ask":"A rule for cards that last more than one round, and a way to keep track of them."},
+ {"id":"X03","type":"guard","rarity":"epic","name":"Signal Jammer","badge":"stop","text":"The other player's card does nothing this round.","ops":[{"op":"x"}],"maths":"none","from":"Energy Shield, EMP Pulse, Time Dilation","ask":"A rule that one card may stop another. It would also stop a Spy, so it could replace the Policeman."},
+ {"id":"X04","type":"spy","rarity":"epic","name":"Power Cut","badge":"off","text":"Choose one enemy part. For one round it counts as lost.","ops":[{"op":"x"}],"maths":"their AP without that part","from":"Sabotage, Gravity Well, Stasis Field","ask":"A rule for a part that is switched off but not at 0 HP."},
+ {"id":"X05","type":"attack","rarity":"epic","name":"Card Grab","badge":"−1","text":"Add 10 to your attack. The other player loses one card from their hand.","ops":[{"op":"x"}],"maths":"AP + 10","from":"Black Hole Bomb","ask":"Your ruling on \"lose 1 card\": once, or a smaller hand for the rest of the battle?"},
+ {"id":"X06","pic":"net","type":"defence","rarity":"epic","name":"Mirror Moon","badge":"back","text":"Half of the attack on you turns round and hits the attacker.","ops":[{"op":"x"}],"maths":"half of their attack","from":"Deflector Field, Quantum Reflection","ask":"A rule for an attack that turns round, and the rule for half of an odd number."},
+ {"id":"X07","type":"guard","rarity":"rare","name":"Guard Captain","badge":"+10","text":"Stops a Spy. Then add 10 HP to your Main Shield.","ops":[{"op":"x"}],"maths":"shield + 10","from":"new: a Guard that is never a wasted card","ask":"Your rules sheet says a Policeman has one job. May one do a second thing?"}
+]
+}
+</script>
+
+<script>
+/* ENGINE-BEGIN: Marc's battle rules, with no drawing in it. checks/battle_engine_test.js plays it. */
+var GMQBattle=(function(){
+"use strict";
+var PARTS=['Engine Core','Navigation','Shield Generator','Weapons System','Power Module'];
+var SHORT={'Engine Core':'Engine','Navigation':'Navigation','Shield Generator':'Shield Gen','Weapons System':'Weapons','Power Module':'Power'};
+/* Every open point of the rules sheet, and every working guess, is a switch. The first value is the default. */
+var SWITCHES=[
+ {key:'guard',label:'The Guard (Policeman)',from:'rules sheet 3 and 6',values:[['swap','Swapped in when a Spy is turned over'],['blind','Played blind, as a guess'],['lead','One player leads, the other answers']]},
+ {key:'loseCard',label:'Engine or Navigation lost: "lose 1 card"',from:'rules sheet 5',values:[['once','One card is thrown away, once'],['smaller','The hand is one card smaller']]},
+ {key:'cannotDefend',label:'Shield Generator lost: "cannot defend"',from:'rules sheet 5',values:[['cards','Defence cards stop working'],['cardsAndShield','Defence cards and the Main Shield stop']]},
+ {key:'repairCap',label:'A repair may lift a part above its full HP',from:'a guess',values:[[true,'No'],[false,'Yes']]},
+ {key:'shieldCap',label:'The Main Shield may pass 100',from:'a guess',values:[[true,'No'],[false,'Yes']]},
+ {key:'shieldRebuild',label:'A broken Main Shield can be rebuilt by',from:'a guess',values:[['reborn','Shield Reborn only'],['any','any shield card']]},
+ {key:'shieldIsHealing',label:'Shield cards count as',from:'a guess',values:[[true,'repair (need the Power Module)'],[false,'defence (need the Shield Generator)']]},
+ {key:'upgrades',label:'Level 2 upgrade cards are in the decks',from:'a guess',values:[[true,'Yes'],[false,'No']]},
+ {key:'roundLimit',label:'A battle ends with no winner after',from:'a guess',values:[[60,'60 rounds'],[30,'30 rounds']]},
+ {key:'cpu',label:'The computer player',from:'not a rule: how hard the enemy plays',values:[['gentle','Gentle: it picks its cards and its targets at random'],['clever','Clever: it plays its best card, and its Spy goes for your Weapons']]}
+];
+function defaults(){var o={};SWITCHES.forEach(function(s){o[s.key]=s.values[0][0];});return o;}
+function rand(S){S.seed=(S.seed*16807)%2147483647;return (S.seed-1)/2147483646;}
+function shuffle(S,a){for(var i=a.length-1;i>0;i--){var j=Math.floor(rand(S)*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var CARD={},DATA=null;
+function load(data){DATA=data;CARD={};data.cards.concat(data.upgrades).forEach(function(c){CARD[c.id]=c;});}
+function card(id){return CARD[id];}
+
+function newBattle(opts,kinds0,kinds1,seed){
+ var o=defaults(),k;for(k in opts){if(opts.hasOwnProperty(k))o[k]=opts[k];}
+ var S={v:1,opts:o,seed:(seed%2147483646)+1,round:1,leader:0,P:[],log:[],over:null,cur:null};
+ [kinds0,kinds1].forEach(function(kinds,i){
+  var parts=PARTS.map(function(pn,j){var d=DATA.parts.filter(function(x){return x.part===pn&&x.kind===kinds[j];})[0];return {part:pn,kind:d.kind,name:d.name,max:d.hp,hp:d.hp,ap:d.ap,lvl:1};});
+  var ids=DATA.cards.map(function(c){return c.id;});if(o.upgrades){ids=ids.concat(DATA.upgrades.map(function(c){return c.id;}));}
+  var pl={parts:parts,shield:100,deck:shuffle(S,ids),hand:[],thrown:0};
+  S.P.push(pl);
+ });
+ S.P.forEach(function(pl){draw(S,pl);});
+ return S;
+}
+function part(pl,name){for(var i=0;i<pl.parts.length;i++){if(pl.parts[i].part===name)return pl.parts[i];}return null;}
+function has(pl,name){return part(pl,name).hp>0;}
+function aliveIdx(pl){var a=[];pl.parts.forEach(function(p,i){if(p.hp>0)a.push(i);});return a;}
+function shipAP(pl){var t=0;pl.parts.forEach(function(p){if(p.hp>0)t+=p.ap;});return t;}
+function beaten(pl){return aliveIdx(pl).length===0;}
+function handSize(S,pl){var n=5;if(S.opts.loseCard==='smaller'){if(!has(pl,'Engine Core'))n--;if(!has(pl,'Navigation'))n--;}return n;}
+function draw(S,pl){var n=handSize(S,pl);while(pl.hand.length<n&&pl.deck.length){pl.hand.push(pl.deck.shift());}}
+function shieldWorks(S,pl){return pl.shield>0&&!(S.opts.cannotDefend==='cardsAndShield'&&!has(pl,'Shield Generator'));}
+function cardCount(pl){return pl.deck.length+pl.hand.length;}
+
+/* which part an effect leans on (the board: "If HP = 0") */
+function needOf(S,op){
+ if(/^atk_/.test(op))return 'Weapons System';
+ if(/^block/.test(op))return 'Shield Generator';
+ if(/^shield_/.test(op))return S.opts.shieldIsHealing?'Power Module':'Shield Generator';
+ if(/^(repair_|round_up10|move_hp|revive)/.test(op))return 'Power Module';
+ return '';
+}
+function opWorks(S,pl,o){var n=needOf(S,o.op);return !n||has(pl,n);}
+function isSpy(id){return CARD[id].type==='spy';}
+function isGuard(id){return CARD[id].type==='guard';}
+
+/* ---------- a round ---------- */
+/* startRound: S.cur holds the round in progress. picks are hand positions. */
+function startRound(S,pick0,pick1){
+ var c=[S.P[0].hand[pick0],S.P[1].hand[pick1]];
+ S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],lostNow:[[],[]],lines:[],step:0};
+ return S.cur;
+}
+/* swap mode: may player i swap a Guard in for the card they put down? */
+function canSwap(S,i){
+ if(S.opts.guard!=='swap'||!S.cur)return -1;
+ var me=S.P[i];if(!isSpy(S.cur.card[1-i])||isGuard(S.cur.card[i]))return -1;
+ for(var h=0;h<me.hand.length;h++){if(h!==S.cur.pick[i]&&isGuard(me.hand[h]))return h;}
+ return -1;
+}
+function doSwap(S,i){var h=canSwap(S,i);if(h<0)return false;S.cur.pick[i]=h;S.cur.card[i]=S.P[i].hand[h];return true;}
+/* both players see the cards at the same moment, so both decide before either swap is made */
+function swapBoth(S,want){var h=[canSwap(S,0),canSwap(S,1)];for(var i=0;i<2;i++){if(h[i]>=0&&(!want||want[i])){S.cur.pick[i]=h[i];S.cur.card[i]=S.P[i].hand[h[i]];}}return h;}
+
+/* the ordered steps of a round, after both cards are final */
+function steps(S){
+ var a=[{k:'guard'}],i,j;
+ for(i=0;i<2;i++){if(isSpy(S.cur.card[i]))a.push({k:'spy',a:i});}
+ for(i=0;i<2;i++){var ops=CARD[S.cur.card[i]].ops;for(j=0;j<ops.length;j++){if(!/^(atk_|block|spy|guard)/.test(ops[j].op))a.push({k:'own',a:i,o:j});}}
+ a.push({k:'attack'});a.push({k:'land',d:1});a.push({k:'land',d:0});a.push({k:'end'});
+ return a;
+}
+function hit(S,side,idx,n){var p=S.P[side].parts[idx],before=p.hp;p.hp=Math.max(0,p.hp-n);if(before>0&&p.hp===0)S.cur.lostNow[side].push(p.part);return {before:before,after:p.hp};}
+function roomOf(S,p){return S.opts.repairCap?Math.max(0,p.max-p.hp):9999;}
+function otherCards(S,i){return S.P[i].hand.length-1;}
+
+/* need: what must the chooser decide for this step? null = nothing. {who, type, ...} */
+function need(S,st){
+ var me,foe,o,al;
+ if(st.k==='spy'){
+  if(S.cur.stopped[st.a])return null;
+  o=CARD[S.cur.card[st.a]].ops[0];foe=S.P[1-st.a];al=aliveIdx(foe);
+  if(o.parts>=5||al.length<=o.parts)return null;
+  return {who:st.a,type:'targets',side:1-st.a,count:o.parts,among:al,n:o.n};
+ }
+ if(st.k==='own'){
+  me=S.P[st.a];o=CARD[S.cur.card[st.a]].ops[st.o];
+  if(!opWorks(S,me,o))return null;
+  al=aliveIdx(me);
+  if(o.op==='repair_one'){al=al.filter(function(i){return roomOf(S,me.parts[i])>0;});return al.length>1?{who:st.a,type:'part',side:st.a,among:al,n:o.n,verb:'repair'}:null;}
+  if(o.op==='repair_share'){al=al.filter(function(i){return roomOf(S,me.parts[i])>0;});if(!al.length)return null;var room=0;al.forEach(function(i){room+=roomOf(S,me.parts[i]);});return {who:st.a,type:'amounts',side:st.a,among:al,total:Math.min(o.n,room),limit:true,verb:'share'};}
+  if(o.op==='move_hp'){return al.length>1?{who:st.a,type:'move',side:st.a,among:al,max:o.n}:null;}
+  if(o.op==='revive'){var dead=[];me.parts.forEach(function(p,i){if(p.hp<=0)dead.push(i);});return dead.length>1?{who:st.a,type:'part',side:st.a,among:dead,n:o.n,verb:'bring back'}:null;}
+  return null;
+ }
+ if(st.k==='land'){
+  var d=st.d,inc=S.cur.through[d];me=S.P[d];
+  if(inc<=0||shieldWorks(S,me))return null;
+  al=aliveIdx(me);if(al.length<=1)return null;
+  return {who:d,type:'amounts',side:d,among:al,total:inc,limit:false,verb:'split'};
+ }
+ return null;
+}
+/* validate a human's choice. Returns '' or a short message. */
+function validate(S,req,ch){
+ var i,t=0,pl=S.P[req.side];
+ if(req.type==='targets'){if(!ch||ch.length!==req.count)return 'Choose '+req.count+'.';for(i=0;i<ch.length;i++){if(req.among.indexOf(ch[i])<0||ch.indexOf(ch[i])!==i)return 'Choose '+req.count+' different working parts.';}return '';}
+ if(req.type==='part'){return req.among.indexOf(ch)<0?'Choose one of the lit parts.':'';}
+ if(req.type==='amounts'){
+  for(i=0;i<pl.parts.length;i++){var v=ch[i]||0;if(v<0||v!==Math.floor(v))return 'Whole numbers only.';if(v>0&&req.among.indexOf(i)<0)return 'Only working parts can take it.';if(req.limit&&v>roomOf(S,pl.parts[i]))return SHORT[pl.parts[i].part]+' cannot go above its full HP.';t+=v;}
+  return t===req.total?'':'Your numbers must add up to '+req.total+'.';
+ }
+ if(req.type==='move'){
+  if(!ch||ch.n===0)return '';
+  if(req.among.indexOf(ch.from)<0||req.among.indexOf(ch.to)<0||ch.from===ch.to)return 'Choose two different working parts.';
+  if(ch.n<0||ch.n>req.max||ch.n!==Math.floor(ch.n))return 'Move '+req.max+' HP or less.';
+  if(ch.n>=pl.parts[ch.from].hp)return 'That would leave the first part with no HP.';
+  if(ch.n>roomOf(S,pl.parts[ch.to]))return 'The second part cannot go above its full HP.';
+  return '';
+ }
+ return '';
+}
+/* run one step for real. Returns {lines:[text], sums:[{side,what,label,before,change,answer}]} */
+function run(S,st,ch){
+ var R={lines:[],sums:[]},cur=S.cur,i,me,foe,o,c,r,name=['You','The enemy'];
+ function sum(side,what,label,before,change,answer,kind){R.sums.push({side:side,what:what,label:label,before:before,change:change,answer:answer,kind:kind});}
+ if(st.k==='guard'){
+  for(i=0;i<2;i++){if(isGuard(cur.card[i])){if(isSpy(cur.card[1-i])){cur.stopped[1-i]=true;R.lines.push((i?'The enemy\'s':'Your')+' Guard stops the Spy.');}else{R.lines.push((i?'The enemy\'s':'Your')+' Guard has no Spy to stop.');}}}
+  return R;
+ }
+ if(st.k==='spy'){
+  if(cur.stopped[st.a])return R;
+  o=CARD[cur.card[st.a]].ops[0];foe=S.P[1-st.a];var al=aliveIdx(foe),tg=(o.parts>=5||al.length<=o.parts)?al:ch;
+  tg.forEach(function(ix){r=hit(S,1-st.a,ix,o.n);R.lines.push((st.a?'The enemy\'s':'Your')+' Spy hits '+(st.a?'your ':'their ')+SHORT[foe.parts[ix].part]+': '+r.before+' to '+r.after+'.');sum(1-st.a,'hp',SHORT[foe.parts[ix].part],r.before,-o.n,r.after,'spy');});
+  if(!tg.length)R.lines.push('The Spy finds no part to hit.');
+  return R;
+ }
+ if(st.k==='own'){
+  me=S.P[st.a];c=CARD[cur.card[st.a]];o=c.ops[st.o];var who=st.a?'The enemy':'You',p,list=[],before;
+  if(!opWorks(S,me,o)){R.lines.push(who+(st.a?' has':' have')+' no '+SHORT[needOf(S,o.op)]+': '+c.name+' does nothing.');return R;}
+  function heal(ix,n){p=me.parts[ix];before=p.hp;p.hp=S.opts.repairCap?Math.min(p.max,p.hp+n):p.hp+n;if(p.hp!==before){R.lines.push(who+' repair'+(st.a?'s ':' ')+SHORT[p.part]+': '+before+' to '+p.hp+'.');sum(st.a,'hp',SHORT[p.part],before,n,p.hp,'repair');}}
+  if(o.op==='repair_one'){list=aliveIdx(me).filter(function(ix){return roomOf(S,me.parts[ix])>0;});if(!list.length){R.lines.push(who+(st.a?' has':' have')+' nothing to repair.');}else{heal(list.length>1?ch:list[0],o.n);}}
+  else if(o.op==='repair_all'){aliveIdx(me).forEach(function(ix){heal(ix,o.n);});if(!R.lines.length)R.lines.push(who+(st.a?' has':' have')+' nothing to repair.');}
+  else if(o.op==='repair_full'){aliveIdx(me).forEach(function(ix){p=me.parts[ix];if(p.hp<p.max){R.lines.push(who+' repair'+(st.a?'s ':' ')+SHORT[p.part]+' to full: '+p.max+'.');p.hp=p.max;}});if(!R.lines.length)R.lines.push(who+(st.a?' has':' have')+' nothing to repair.');}
+  else if(o.op==='repair_share'){if(ch){me.parts.forEach(function(q,ix){if(ch[ix]>0)heal(ix,ch[ix]);});}if(!R.lines.length)R.lines.push(who+(st.a?' has':' have')+' nothing to repair.');}
+  else if(o.op==='round_up10'){me.parts.forEach(function(q,ix){if(q.hp>0&&q.hp<q.max&&q.hp%10){before=q.hp;q.hp=Math.ceil(q.hp/10)*10;if(S.opts.repairCap)q.hp=Math.min(q.max,q.hp);R.lines.push(who+' round'+(st.a?'s ':' ')+SHORT[q.part]+' up: '+before+' to '+q.hp+'.');sum(st.a,'hp',SHORT[q.part],before,0,q.hp,'round');}});if(!R.lines.length)R.lines.push('No damaged part to round up.');}
+  else if(o.op==='move_hp'){if(ch&&ch.n>0){var f=me.parts[ch.from],t=me.parts[ch.to];R.lines.push(who+' move'+(st.a?'s ':' ')+ch.n+' HP from '+SHORT[f.part]+' to '+SHORT[t.part]+'.');sum(st.a,'hp',SHORT[f.part],f.hp,-ch.n,f.hp-ch.n,'move');sum(st.a,'hp',SHORT[t.part],t.hp,ch.n,t.hp+ch.n,'move');f.hp-=ch.n;t.hp+=ch.n;}else{R.lines.push(who+' move'+(st.a?'s':'')+' no HP.');}}
+  else if(o.op==='revive'){list=[];me.parts.forEach(function(q,ix){if(q.hp<=0)list.push(ix);});if(!list.length){R.lines.push('No lost part to bring back.');}else{p=me.parts[list.length>1?ch:list[0]];p.hp=Math.min(o.n,p.max);R.lines.push(who+' bring'+(st.a?'s ':' ')+SHORT[p.part]+' back with '+p.hp+' HP.');}}
+  else if(/^shield_/.test(o.op)){
+   var n=o.op==='shield_per_card'?o.n*otherCards(S,st.a):o.n;before=me.shield;
+   if(me.shield<=0&&o.op!=='shield_rebuild'&&S.opts.shieldRebuild==='reborn'){R.lines.push((st.a?'The enemy\'s':'Your')+' Main Shield is broken: '+c.name+' does nothing.');}
+   else{me.shield=S.opts.shieldCap?Math.min(100,me.shield+n):me.shield+n;R.lines.push((st.a?'The enemy\'s':'Your')+' Main Shield: '+before+' to '+me.shield+'.');sum(st.a,'shield','Main Shield',before,n,me.shield,o.op==='shield_per_card'?'percard':'shield');}
+  }
+  else if(o.op==='upgrade'){p=part(me,c.part);if(p.hp>0&&p.lvl<2){p.lvl=2;p.max+=o.hp;p.hp+=o.hp;p.ap+=o.ap;R.lines.push((st.a?'The enemy\'s ':'Your ')+SHORT[p.part]+' is now Level 2: HP '+p.hp+', AP '+p.ap+'.');}else{R.lines.push(c.name+' does nothing: '+(p.hp>0?'that part is already Level 2.':'that part is lost.'));}}
+  return R;
+ }
+ if(st.k==='attack'){
+  for(i=0;i<2;i++){
+   me=S.P[i];c=CARD[cur.card[i]];var ap=shipAP(me),bonus=0,blk=0,how='';
+   c.ops.forEach(function(q){
+    if(!opWorks(S,me,q)){if(/^(atk_|block)/.test(q.op))R.lines.push((i?'The enemy has':'You have')+' no '+SHORT[needOf(S,q.op)]+': '+c.name+(c.ops.length>1?' does only part of its job.':' does nothing.'));return;}
+    if(q.op==='atk_add'){bonus+=q.n;how='add';}
+    else if(q.op==='atk_per_part'){bonus+=q.n*aliveIdx(me).length;how='perpart';}
+    else if(q.op==='atk_double'){bonus+=ap;how='double';}
+    else if(q.op==='atk_round100'){bonus+=(100-ap%100)%100;how='round100';}
+    else if(q.op==='block'){blk+=q.n;}
+    else if(q.op==='block_per_card'){blk+=q.n*otherCards(S,i);}
+    else if(q.op==='block_all'){blk=-1;}
+   });
+   if(!has(me,'Weapons System')){cur.atk[i]=0;cur.bonus[i]=0;R.lines.push((i?'The enemy has':'You have')+' no Weapons: no attack.');}
+   else{cur.atk[i]=ap+bonus;cur.bonus[i]=bonus;R.lines.push((i?'The enemy attacks':'You attack')+' for '+cur.atk[i]+'.');sum(i,'attack','attack',ap,bonus,cur.atk[i],how||'plain');}
+   cur.block[i]=blk;cur.ap=cur.ap||[0,0];cur.ap[i]=ap;
+  }
+  cur.snap={hp:[S.P[0].parts.map(function(q){return q.hp;}),S.P[1].parts.map(function(q){return q.hp;})],shield:[S.P[0].shield,S.P[1].shield],shieldOn:[shieldWorks(S,S.P[0]),shieldWorks(S,S.P[1])],wep:[has(S.P[0],'Weapons System'),has(S.P[1],'Weapons System')],sg:[has(S.P[0],'Shield Generator'),has(S.P[1],'Shield Generator')],pm:[has(S.P[0],'Power Module'),has(S.P[1],'Power Module')]};
+  for(i=0;i<2;i++){var a=cur.atk[1-i],b=cur.block[i];cur.through[i]=b<0?0:Math.max(0,a-b);
+   if(a>0&&b!==0){R.lines.push((i?'The enemy blocks ':'You block ')+(b<0?'all of it':Math.min(b,a))+': '+cur.through[i]+' gets through.');if(b>0)sum(i,'through','gets through',a,-b,cur.through[i],'block');}}
+  return R;
+ }
+ if(st.k==='land'){
+  var d=st.d,inc=cur.through[d];me=S.P[d];var whose=d?'The enemy\'s':'Your';
+  if(inc<=0)return R;
+  if(shieldWorks(S,me)){var sb=me.shield;if(inc>sb){me.shield=0;R.lines.push(whose+' Main Shield breaks. It soaks up the whole attack.');}else{me.shield=sb-inc;R.lines.push(whose+' Main Shield: '+sb+' to '+me.shield+'.');}sum(d,'shield','Main Shield',sb,-inc,me.shield,'land');return R;}
+  var al2=aliveIdx(me),alloc=[0,0,0,0,0];if(al2.length===1){alloc[al2[0]]=inc;}else if(al2.length>1){alloc=ch;}
+  me.parts.forEach(function(q,ix){if(alloc[ix]>0){r=hit(S,d,ix,alloc[ix]);R.lines.push(whose+' '+SHORT[q.part]+' takes '+alloc[ix]+': '+r.before+' to '+r.after+'.');sum(d,'hp',SHORT[q.part],r.before,-alloc[ix],r.after,'land');}});
+  return R;
+ }
+ if(st.k==='end'){
+  for(i=0;i<2;i++){
+   me=S.P[i];
+   /* the played card goes to the bottom of its player's deck */
+   var id=me.hand.splice(cur.pick[i],1)[0];me.deck.push(id);
+   cur.lostNow[i].forEach(function(pn){
+    R.lines.push((i?'The enemy loses its ':'You lose your ')+SHORT[pn]+'.');
+    if((pn==='Engine Core'||pn==='Navigation')&&S.opts.loseCard==='once'&&me.hand.length){var x=Math.floor(rand(S)*me.hand.length),gone=me.hand.splice(x,1)[0];me.deck.push(gone);me.thrown++;R.lines.push((i?'The enemy throws away a card.':'You throw away '+CARD[gone].name+'.'));}
+   });
+   while(me.hand.length>handSize(S,me)){var y=Math.floor(rand(S)*me.hand.length);me.deck.push(me.hand.splice(y,1)[0]);}
+   draw(S,me);
+  }
+  var b0=beaten(S.P[0]),b1=beaten(S.P[1]);
+  S.log.push({round:S.round,card:cur.card.slice(),stopped:cur.stopped.slice(),atk:cur.atk.slice(),block:cur.block.slice(),through:cur.through.slice(),snap:cur.snap,lost:cur.lostNow,lines:cur.lines.concat(R.lines)});
+  if(b0&&b1)S.over={winner:-1,why:'Both ships are beaten in the same round. Nobody wins.'};
+  else if(b1)S.over={winner:0,why:'All five enemy parts are at 0. You win.'};
+  else if(b0)S.over={winner:1,why:'All five of your parts are at 0. The enemy wins.'};
+  else if(!canHurt(S,0)&&!canHurt(S,1))S.over={winner:-1,why:'Neither ship can hurt the other any more. Nobody wins.'};
+  else if(S.round>=S.opts.roundLimit)S.over={winner:-1,why:S.opts.roundLimit+' rounds have passed. Nobody wins.'};
+  S.round++;S.leader=1-S.leader;S.cur=null;
+  return R;
+ }
+ return R;
+}
+function canHurt(S,i){var pl=S.P[i];if(has(pl,'Weapons System'))return true;var all=pl.deck.concat(pl.hand);for(var k=0;k<all.length;k++){var c=CARD[all[k]];if(c.type==='spy')return true;if(c.ops[0].op==='revive')return true;}return false;}
+
+/* ---------- the computer player: simple and honest. It sees its own hand and the table, never the other hand. ---------- */
+var VALUE={'Weapons System':5,'Power Module':3,'Engine Core':2,'Navigation':2,'Shield Generator':1};
+function cpuPick(S,i,seen){
+ var me=S.P[i],foe=S.P[1-i],best=-1,bestScore=-1e9,myAP=shipAP(me),foeAP=has(foe,'Weapons System')?shipAP(foe):0;
+ me.hand.forEach(function(id,h){
+  var c=CARD[id],s=0;
+  c.ops.forEach(function(o){
+   if(!opWorks(S,me,o))return;var v=0,miss=0,m=0;
+   me.parts.forEach(function(p){if(p.hp>0){miss+=Math.max(0,p.max-p.hp);m=Math.max(m,p.max-p.hp);}});
+   if(o.op==='spy'){var w=part(foe,'Weapons System');v=26+o.n*o.parts*1.5+(w.hp>0?(o.n>=w.hp?40:12):0);}
+   else if(o.op==='atk_add')v=myAP?8+o.n:0;
+   else if(o.op==='atk_per_part')v=myAP?8+o.n*aliveIdx(me).length:0;
+   else if(o.op==='atk_double')v=myAP?8+myAP*0.6:0;
+   else if(o.op==='atk_round100')v=myAP?8+((100-myAP%100)%100)*0.6:0;
+   else if(o.op==='block')v=foeAP?6+Math.min(o.n,foeAP)+(seen&&CARD[seen].type==='attack'?8:0):0;
+   else if(o.op==='block_per_card')v=foeAP?6+Math.min(o.n*otherCards(S,i),foeAP):0;
+   else if(o.op==='block_all')v=foeAP?10+foeAP*0.7:0;
+   else if(o.op==='repair_one')v=m?4+Math.min(o.n,m)*1.3:0;
+   else if(o.op==='repair_share')v=miss?4+Math.min(o.n,miss)*1.2:0;
+   else if(o.op==='repair_all'){var g=0;me.parts.forEach(function(p){if(p.hp>0)g+=Math.min(o.n,Math.max(0,p.max-p.hp));});v=g?4+g*1.2:0;}
+   else if(o.op==='repair_full')v=miss?4+miss:0;
+   else if(o.op==='round_up10'){var g2=0;me.parts.forEach(function(p){if(p.hp>0&&p.hp<p.max&&p.hp%10)g2+=Math.min(p.max,Math.ceil(p.hp/10)*10)-p.hp;});v=g2?4+g2*1.2:0;}
+   else if(o.op==='move_hp'){var w2=part(me,'Weapons System');v=(w2.hp>0&&w2.hp<w2.max)?10:1;}
+   else if(o.op==='revive'){var dead=me.parts.filter(function(p){return p.hp<=0;});v=dead.length?40+(has(me,'Weapons System')?0:40):0;}
+   else if(o.op==='shield_add'||o.op==='shield_per_card'){var n=o.op==='shield_add'?o.n:o.n*otherCards(S,i);v=(me.shield>0||S.opts.shieldRebuild==='any')?5+Math.min(n,S.opts.shieldCap?100-me.shield:n)*0.8:0;}
+   else if(o.op==='shield_rebuild')v=5+Math.min(o.n,S.opts.shieldCap?100-me.shield:o.n)*(me.shield>0?0.5:1.2);
+   else if(o.op==='upgrade'){var up=part(me,c.part);v=(up.hp>0&&up.lvl<2)?16:0;}
+   else if(o.op==='guard')v=(seen&&isSpy(seen))?200:(S.opts.guard==='blind'?7:0.5);
+   s+=v;
+  });
+  if(S.opts.cpu==='gentle'){s=(s>1?10:(s>0?4:0))+rand(S)*10;if(seen&&isSpy(seen)&&c.type==='guard')s=200;}else{s+=rand(S)*6;}
+  if(s>bestScore){bestScore=s;best=h;}
+ });
+ return best;
+}
+function cpuChoose(S,req){
+ var pl=S.P[req.side],i;
+ function order(list,fn){return list.slice().sort(function(a,b){return fn(b)-fn(a);});}
+ if(req.type==='targets'&&S.opts.cpu==='gentle'){return shuffle(S,req.among.slice()).slice(0,req.count);}
+ if(req.type==='part'&&S.opts.cpu==='gentle'){return req.among[Math.floor(rand(S)*req.among.length)];}
+ if(req.type==='targets'){return order(req.among,function(ix){var p=pl.parts[ix];return VALUE[p.part]*100+p.ap-(p.hp>req.n?p.hp:0);}).slice(0,req.count);}
+ if(req.type==='part'){return order(req.among,function(ix){var p=pl.parts[ix];return VALUE[p.part]*100+(p.max-p.hp);})[0];}
+ if(req.type==='amounts'){
+  var out=[0,0,0,0,0],left=req.total;
+  if(req.limit){order(req.among,function(ix){return VALUE[pl.parts[ix].part];}).forEach(function(ix){var t=Math.min(left,roomOf(S,pl.parts[ix]));out[ix]=t;left-=t;});return out;}
+  /* a split: soak it with no part lost if that is possible; if not, give up the part that matters least */
+  var cap=0;req.among.forEach(function(ix){cap+=pl.parts[ix].hp-1;});
+  if(left<=cap){order(req.among,function(ix){return -VALUE[pl.parts[ix].part]*100+pl.parts[ix].hp;}).forEach(function(ix){var t=Math.min(left,pl.parts[ix].hp-1);out[ix]=t;left-=t;});return out;}
+  var give=order(req.among,function(ix){var p=pl.parts[ix];return -VALUE[p.part]*100-p.ap-p.hp*0.1;})[0];out[give]=left;return out;
+ }
+ if(req.type==='move'){
+  var w=-1;req.among.forEach(function(ix){if(pl.parts[ix].part==='Weapons System')w=ix;});
+  if(w<0||roomOf(S,pl.parts[w])<=0)return {n:0};
+  var from=order(req.among.filter(function(ix){return ix!==w;}),function(ix){return pl.parts[ix].hp;})[0];
+  var n=Math.min(req.max,pl.parts[from].hp-1,roomOf(S,pl.parts[w]));return n>0?{from:from,to:w,n:n}:{n:0};
+ }
+ return null;
+}
+/* a whole round with two computer players (used by the tests, and by "watch" in the page) */
+function autoRound(S){
+ var a,b;
+ if(S.opts.guard==='lead'){if(S.leader===0){a=cpuPick(S,0,null);b=cpuPick(S,1,S.P[0].hand[a]);}else{b=cpuPick(S,1,null);a=cpuPick(S,0,S.P[1].hand[b]);}}
+ else{a=cpuPick(S,0,null);b=cpuPick(S,1,null);}
+ startRound(S,a,b);swapBoth(S,null);
+ steps(S).forEach(function(st){var req=need(S,st),ch=req?cpuChoose(S,req):null;var R=run(S,st,ch);if(S.cur)S.cur.lines=S.cur.lines.concat(R.lines);});
+}
+return {PARTS:PARTS,SHORT:SHORT,SWITCHES:SWITCHES,defaults:defaults,load:load,card:card,newBattle:newBattle,startRound:startRound,canSwap:canSwap,doSwap:doSwap,swapBoth:swapBoth,steps:steps,need:need,validate:validate,run:run,
+ cpuPick:cpuPick,cpuChoose:cpuChoose,autoRound:autoRound,shipAP:shipAP,has:has,aliveIdx:aliveIdx,handSize:handSize,shieldWorks:shieldWorks,cardCount:cardCount,needOf:needOf,opWorks:opWorks,isSpy:isSpy,isGuard:isGuard,canHurt:canHurt,roomOf:roomOf,otherCards:otherCards,rand:rand};
+})();
+/* ENGINE-END */
+
+</script>
+<script>
+(function(){
+"use strict";
+var DATA=JSON.parse(document.getElementById('carddata').textContent);
+/* DRAW-BEGIN: the same block is in card_battle.html; checks/battle_cards_set_check.py compares them */
+var NS='http://www.w3.org/2000/svg';
+var TYPE={
+ attack:{name:'ATTACK',c:'#e5484d',d:'#3a1114',needs:'Needs your Weapons System'},
+ defence:{name:'DEFENCE',c:'#3b82f6',d:'#0f2147',needs:'Needs your Shield Generator'},
+ repair:{name:'REPAIR',c:'#22a565',d:'#0c3320',needs:'Needs your Power Module'},
+ spy:{name:'SPY',c:'#8b5cf6',d:'#241446',needs:'Gets past the Main Shield'},
+ guard:{name:'GUARD',c:'#14b8a6',d:'#083733',needs:'Answers a Spy card'},
+ upgrade:{name:'UPGRADE',c:'#f97316',d:'#3d1c06',needs:'Not played in a battle'}
+};
+var RAR={common:{name:'COMMON',c:'#b08d57',n:1},rare:{name:'RARE',c:'#cfd6e2',n:2},epic:{name:'EPIC',c:'#f5c518',n:3}};
+var KIND={};DATA.kinds.forEach(function(k){KIND[k.key]=k;});
+var PARTCODE={'Engine Core':'engine','Navigation':'nav','Shield Generator':'gen','Weapons System':'weapons','Power Module':'power'};
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function rnd(seed){var s=seed%2147483647;if(s<=0)s+=2147483646;return function(){s=s*16807%2147483647;return (s-1)/2147483646;};}
+function hash(str){var h=7;for(var i=0;i<str.length;i++){h=(h*31+str.charCodeAt(i))%2147483647;}return h;}
+function wrap(text,max){var words=text.split(' '),lines=[],cur='';for(var i=0;i<words.length;i++){var t=cur?cur+' '+words[i]:words[i];if(t.length>max&&cur){lines.push(cur);cur=words[i];}else{cur=t;}}if(cur)lines.push(cur);return lines;}
+function stars(id,x,y,w,h,n){var r=rnd(hash(id)),o='';for(var i=0;i<n;i++){var cx=x+r()*w,cy=y+r()*h,rr=0.5+r()*1.3;o+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rr.toFixed(1)+'" fill="#fff" opacity="'+(0.35+r()*0.6).toFixed(2)+'"/>';}return o;}
+
+/* ---------- small drawings ---------- */
+function craft(x,y,s,c){return '<g transform="translate('+x+','+y+') scale('+s+')"><path d="M0,-16 L11,10 L4,7 L0,14 L-4,7 L-11,10 Z" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.5"/><path d="M0,-6 L3.5,3 L-3.5,3 Z" fill="'+c+'"/><path d="M-3,13 L0,22 L3,13 Z" fill="#ffb347"/></g>';}
+function beam(x1,y1,x2,y2,c,w){w=w||5;return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+(w+6)+'" stroke-linecap="round" opacity=".28"/><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#fff" stroke-width="'+w*0.5+'" stroke-linecap="round"/>';}
+function burst(x,y,r,c){var o='<g transform="translate('+x+','+y+')">';for(var i=0;i<8;i++){var a=i*Math.PI/4,rr=(i%2?r*0.55:r);o+='<line x1="0" y1="0" x2="'+(Math.cos(a)*rr).toFixed(1)+'" y2="'+(Math.sin(a)*rr).toFixed(1)+'" stroke="'+c+'" stroke-width="3" stroke-linecap="round"/>';}return o+'<circle r="'+(r*0.3).toFixed(1)+'" fill="#fff"/></g>';}
+function dome(cx,cy,r,c){return '<path d="M'+(cx-r)+','+cy+' A'+r+','+r+' 0 0 1 '+(cx+r)+','+cy+'" fill="'+c+'" fill-opacity=".18" stroke="'+c+'" stroke-width="3"/><path d="M'+(cx-r*0.62)+','+cy+' A'+r*0.62+','+r*0.62+' 0 0 1 '+(cx+r*0.62)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.5" opacity=".7"/><line x1="'+(cx-r-6)+'" y1="'+cy+'" x2="'+(cx+r+6)+'" y2="'+cy+'" stroke="'+c+'" stroke-width="3" stroke-linecap="round"/>';}
+function plus(x,y,s,c){return '<g transform="translate('+x+','+y+')"><rect x="'+(-s)+'" y="'+(-s/3)+'" width="'+2*s+'" height="'+2*s/3+'" rx="2" fill="'+c+'"/><rect x="'+(-s/3)+'" y="'+(-s)+'" width="'+2*s/3+'" height="'+2*s+'" rx="2" fill="'+c+'"/></g>';}
+function wrench(x,y,s,c){return '<g transform="translate('+x+','+y+') rotate(-40) scale('+s+')"><rect x="-4" y="-4" width="8" height="34" rx="3" fill="'+c+'"/><path d="M-11,-16 A12,12 0 1 0 11,-16 L5,-10 L5,-4 L-5,-4 L-5,-10 Z" fill="'+c+'"/></g>';}
+function target(x,y,r,c){return '<g transform="translate('+x+','+y+')" fill="none" stroke="'+c+'" stroke-width="2.2"><circle r="'+r+'"/><circle r="'+(r*0.45).toFixed(1)+'"/><line x1="'+(-r-4)+'" y1="0" x2="'+(r+4)+'" y2="0"/><line x1="0" y1="'+(-r-4)+'" x2="0" y2="'+(r+4)+'"/></g>';}
+function drone(x,y,s,c){return '<g transform="translate('+x+','+y+') scale('+s+')"><line x1="0" y1="-12" x2="0" y2="-24" stroke="#dfe6f5" stroke-width="2"/><circle cx="0" cy="-26" r="3" fill="'+c+'"/><ellipse cx="0" cy="0" rx="22" ry="11" fill="#2b2f45" stroke="#dfe6f5" stroke-width="2"/><ellipse cx="0" cy="-5" rx="11" ry="8" fill="#3a4062" stroke="#dfe6f5" stroke-width="1.5"/><circle cx="0" cy="1" r="5.5" fill="'+c+'"/><circle cx="1.5" cy="-0.5" r="2" fill="#fff"/><path d="M-18,8 L-24,16 M18,8 L24,16" stroke="#dfe6f5" stroke-width="2" stroke-linecap="round"/></g>';}
+function badgeStar(x,y,s,c){var p='';for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,r=(i%2?9:21);p+=(i?'L':'M')+(Math.cos(a)*r).toFixed(1)+','+(Math.sin(a)*r).toFixed(1)+' ';}return '<g transform="translate('+x+','+y+') scale('+s+')"><path d="M0,-34 L28,-22 L24,14 Q14,32 0,38 Q-14,32 -24,14 L-28,-22 Z" fill="#10243a" stroke="'+c+'" stroke-width="4"/><path d="'+p+'Z" fill="'+c+'"/></g>';}
+function chevrons(x,y,c){var o='';for(var i=0;i<3;i++){o+='<path d="M'+(x-20)+','+(y+i*18)+' L'+x+','+(y-18+i*18)+' L'+(x+20)+','+(y+i*18)+'" fill="none" stroke="'+c+'" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="'+(1-i*0.28)+'"/>';}return o;}
+function minicard(x,y,rot,c){return '<g transform="translate('+x+','+y+') rotate('+rot+')"><rect x="-11" y="-16" width="22" height="32" rx="3" fill="#f3f5fb" stroke="'+c+'" stroke-width="2"/><rect x="-7" y="-11" width="14" height="9" fill="'+c+'" opacity=".6"/></g>';}
+
+function star4(x,y,r,c){return '<path d="M'+x+','+(y-r)+' L'+(x+r*0.28)+','+(y-r*0.28)+' L'+(x+r)+','+y+' L'+(x+r*0.28)+','+(y+r*0.28)+' L'+x+','+(y+r)+' L'+(x-r*0.28)+','+(y+r*0.28)+' L'+(x-r)+','+y+' L'+(x-r*0.28)+','+(y-r*0.28)+' Z" fill="'+c+'"/>';}
+function capsule(x,y,c){return '<g transform="translate('+x+','+y+') rotate(-23)"><path d="M-30,0 L-20,-5 L-20,5 Z" fill="#ffb347"/><rect x="-20" y="-7" width="34" height="14" rx="3" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><path d="M14,-7 Q27,0 14,7 Z" fill="'+c+'" stroke="#0b1020" stroke-width="1.2"/><rect x="-10" y="-7" width="5" height="14" fill="'+c+'"/><rect x="0" y="-7" width="5" height="14" fill="'+c+'"/></g>';}
+function trail(c){return '<line x1="62" y1="128" x2="150" y2="92" stroke="'+c+'" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round"/>';}
+function shot(pic,c){
+ var o='',i;
+ if(pic==='spark'){o+=trail(c)+'<path d="M146,98 L160,84 L164,94 L178,76 L180,88 L196,70" fill="none" stroke="#ffd84a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>'+burst(198,68,9,c);}
+ else if(pic==='comet'){o+='<g transform="translate(182,80) rotate(-23)"><path d="M0,-10 Q-70,-5 -112,0 Q-70,5 0,10 Z" fill="'+c+'" opacity=".55"/><path d="M0,-6 Q-40,-2 -70,0 Q-40,2 0,6 Z" fill="#fff" opacity=".8"/><circle r="11" fill="#fff"/><circle r="6" fill="#ffe9a8"/></g>';}
+ else if(pic==='rocket'){o+=trail(c)+'<g transform="translate(176,82) rotate(-23)"><path d="M-34,0 L-22,-6 L-22,6 Z" fill="#ffb347"/><path d="M-22,-9 L-30,-17 L-12,-9 Z M-22,9 L-30,17 L-12,9 Z" fill="'+c+'"/><rect x="-22" y="-9" width="34" height="18" rx="3" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><path d="M12,-9 Q32,0 12,9 Z" fill="'+c+'" stroke="#0b1020" stroke-width="1.2"/><circle cx="-2" cy="0" r="4.5" fill="#10162c"/></g>';}
+ else if(pic==='beam2'){o+=beam(58,124,188,70,c,4)+beam(66,136,196,82,c,4)+'<circle cx="188" cy="70" r="5" fill="#fff"/><circle cx="196" cy="82" r="5" fill="#fff"/>';}
+ else if(pic==='stars9'){o+=trail(c);for(i=0;i<9;i++){o+=star4(152+(i%3)*24+(Math.floor(i/3)%2)*8,66+Math.floor(i/3)*22,7.5,i%2?'#fff':'#ffd84a');}}
+ else if(pic==='torpedo'){o+=trail(c)+capsule(178,82,c);}
+ else if(pic==='torpedo2'){o+=trail(c)+capsule(170,74,c)+capsule(188,98,c);}
+ else if(pic==='bolt'){o+='<path d="M92,56 L150,58 L128,92 L170,92 L96,160 L116,112 L84,112 Z" fill="#ffd84a" stroke="#fff" stroke-width="2" stroke-linejoin="round" transform="translate(52,-2) scale(.92)"/>';}
+ return o;
+}
+function arcSpots(n,cx,cy,r){var a=[],i;for(i=0;i<n;i++){var t=Math.PI+(i+0.5)*Math.PI/n;a.push([cx+Math.cos(t)*r,cy+Math.sin(t)*r,t]);}return a;}
+function wall(pic,c){
+ var o='',i,sp,cx=104,cy=162;
+ if(pic==='dust'){var r=rnd(77);for(i=0;i<46;i++){var t=Math.PI+r()*Math.PI,rr=44+r()*18;o+='<circle cx="'+(cx+Math.cos(t)*rr).toFixed(1)+'" cy="'+(cy+Math.sin(t)*rr).toFixed(1)+'" r="'+(1.5+r()*3).toFixed(1)+'" fill="'+c+'" opacity="'+(0.45+r()*0.5).toFixed(2)+'"/>';}}
+ else if(pic==='tiles'){sp=arcSpots(10,cx,cy,54);for(i=0;i<10;i++){o+='<rect x="-7" y="-9" width="14" height="18" rx="2" fill="'+c+'" stroke="#dfe6f5" stroke-width="1.5" transform="translate('+sp[i][0].toFixed(1)+','+sp[i][1].toFixed(1)+') rotate('+(sp[i][2]*180/Math.PI+90).toFixed(0)+')"/>';}}
+ else if(pic==='gems'){sp=arcSpots(12,cx,cy,56);for(i=0;i<12;i++){o+='<path d="M0,-9 L6,0 L0,9 L-6,0 Z" fill="'+(i%2?c:'#dfe6f5')+'" stroke="#0b1020" stroke-width="1" transform="translate('+sp[i][0].toFixed(1)+','+sp[i][1].toFixed(1)+') rotate('+(sp[i][2]*180/Math.PI+90).toFixed(0)+')"/>';}}
+ else if(pic==='bricks'){for(i=0;i<14;i++){var row=Math.floor(i/7),col=i%7;o+='<rect x="'+(42+col*18)+'" y="'+(88+row*15)+'" width="16" height="12" rx="2" fill="'+(row?c:'#7fb0ff')+'" stroke="#0b1020" stroke-width="1"/>';}}
+ else if(pic==='minus'){o+=dome(cx,cy,52,c)+'<rect x="82" y="92" width="44" height="12" rx="4" fill="#fff"/>';}
+ else if(pic==='net'){o+=dome(cx,cy,56,c);for(i=1;i<6;i++){var a=Math.PI+i*Math.PI/6;o+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+Math.cos(a)*56).toFixed(1)+'" y2="'+(cy+Math.sin(a)*56).toFixed(1)+'" stroke="'+c+'" stroke-width="1.6"/>';}o+='<path d="M'+(cx-40)+','+cy+' A40,40 0 0 1 '+(cx+40)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.6"/><path d="M'+(cx-22)+','+cy+' A22,22 0 0 1 '+(cx+22)+','+cy+'" fill="none" stroke="'+c+'" stroke-width="1.6"/>';}
+ else if(pic==='quarter'){o+=dome(cx,cy,58,c)+'<path d="M'+cx+','+cy+' L'+cx+','+(cy-58)+' A58,58 0 0 0 '+(cx-58)+','+cy+' Z" fill="'+c+'" opacity=".75"/>';}
+ else if(pic==='cards'){o+=dome(cx,cy,50,c)+minicard(60,96,-20,c)+minicard(84,86,-7,c)+minicard(110,84,6,c)+minicard(134,92,19,c);}
+ return o;
+}
+function fixit(pic,c){
+ var o='',i;
+ if(pic==='patch'){o+='<g transform="translate(96,116) rotate(-8)"><rect x="-30" y="-24" width="60" height="48" rx="6" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.5"/><rect x="-24" y="-18" width="48" height="36" rx="3" fill="none" stroke="'+c+'" stroke-width="2.5" stroke-dasharray="5 4"/><path d="M-9,-9 L9,9 M9,-9 L-9,9" stroke="'+c+'" stroke-width="4" stroke-linecap="round"/></g>';}
+ else if(pic==='tape'){o+='<g transform="translate(96,116) rotate(-24)"><rect x="-52" y="-13" width="104" height="26" fill="#cfd6e2" stroke="#0b1020" stroke-width="1.5"/><path d="M-52,-13 l-6,6 l6,7 l-6,6 l6,7 M52,-13 l6,6 l-6,7 l6,6 l-6,7" fill="none" stroke="#cfd6e2" stroke-width="3"/>';for(i=0;i<5;i++){o+='<line x1="'+(-40+i*20)+'" y1="-13" x2="'+(-48+i*20)+'" y2="13" stroke="'+c+'" stroke-width="3"/>';}o+='</g>';}
+ else if(pic==='bot'){o+='<g transform="translate(94,118)"><line x1="0" y1="-34" x2="0" y2="-24" stroke="#dfe6f5" stroke-width="3"/><circle cx="0" cy="-37" r="4" fill="'+c+'"/><rect x="-22" y="-24" width="44" height="30" rx="7" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.5"/><circle cx="-9" cy="-10" r="5" fill="#10162c"/><circle cx="9" cy="-10" r="5" fill="#10162c"/><circle cx="-8" cy="-11" r="1.8" fill="#fff"/><circle cx="10" cy="-11" r="1.8" fill="#fff"/><rect x="-16" y="8" width="32" height="24" rx="5" fill="'+c+'" stroke="#0b1020" stroke-width="1.5"/><path d="M-16,14 L-30,24 M16,14 L32,6" stroke="#dfe6f5" stroke-width="5" stroke-linecap="round"/><circle cx="34" cy="4" r="5" fill="none" stroke="#dfe6f5" stroke-width="3"/></g>';}
+ else if(pic==='bolts'){for(i=0;i<12;i++){var x=56+(i%4)*24,y=88+Math.floor(i/4)*26;o+='<path d="M'+x+','+(y-9)+' l8,4.5 l0,9 l-8,4.5 l-8,-4.5 l0,-9 Z" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><circle cx="'+x+'" cy="'+y+'" r="3.5" fill="'+c+'"/>';}}
+ return o;
+}
+function partIcon(code,x,y,s,c){
+ var g='<g transform="translate('+x+','+y+') scale('+s+')">';
+ if(code==='engine'){g+='<circle r="26" fill="#141a30" stroke="'+c+'" stroke-width="4"/><circle r="15" fill="none" stroke="#dfe6f5" stroke-width="2" stroke-dasharray="6 5"/><circle r="8" fill="#ffb347"/><circle r="4" fill="#fff"/><path d="M-36,0 L-27,0 M27,0 L36,0 M0,-36 L0,-27 M0,27 L0,36" stroke="'+c+'" stroke-width="5" stroke-linecap="round"/>';}
+ else if(code==='nav'){g+='<circle r="28" fill="#141a30" stroke="'+c+'" stroke-width="4"/><path d="M0,-22 L6,-4 L22,0 L6,4 L0,22 L-6,4 L-22,0 L-6,-4 Z" fill="#dfe6f5"/><path d="M0,-22 L6,-4 L0,0 Z" fill="'+c+'"/><circle r="3" fill="#141a30"/>';}
+ else if(code==='gen'){g+='<path d="M-34,18 A34,34 0 0 1 34,18" fill="'+c+'" fill-opacity=".2" stroke="'+c+'" stroke-width="4"/><path d="M-20,18 A20,20 0 0 1 20,18" fill="none" stroke="#dfe6f5" stroke-width="2"/><rect x="-10" y="14" width="20" height="14" rx="2" fill="#dfe6f5"/><rect x="-38" y="26" width="76" height="6" rx="3" fill="'+c+'"/><circle cy="6" r="4" fill="#fff"/>';}
+ else if(code==='weapons'){g+='<rect x="-30" y="12" width="44" height="14" rx="4" fill="#dfe6f5"/><circle cx="-8" cy="8" r="13" fill="#141a30" stroke="'+c+'" stroke-width="4"/><g transform="rotate(-28 -8 8)"><rect x="-6" y="3" width="46" height="10" rx="3" fill="'+c+'"/><rect x="34" y="1" width="8" height="14" rx="2" fill="#dfe6f5"/></g>';}
+ else {g+='<rect x="-22" y="-24" width="44" height="52" rx="6" fill="#141a30" stroke="'+c+'" stroke-width="4"/><rect x="-9" y="-31" width="18" height="8" rx="2" fill="'+c+'"/><path d="M4,-16 L-9,4 L0,4 L-4,20 L10,-2 L1,-2 Z" fill="#ffd84a"/>';}
+ return g+'</g>';
+}
+
+/* ---------- the picture on a battle card ---------- */
+function art(card){
+ var t=TYPE[card.type],c=t.c,o='',op=card.ops[0].op,n=card.ops[0].n||0,i;
+ var X=12,Y=52,W=226,H=128;
+ o+=stars(card.id,X,Y,W,H,22);
+ if(card.type==='attack'){
+  o+=craft(52,150,1.35,c);
+  if(op==='atk_double'){o+=beam(60,128,178,78,c,6)+beam(72,140,190,92,c,6)+burst(180,76,15,c)+burst(193,91,15,c);}
+  else if(op==='atk_per_part'){for(i=0;i<5;i++){o+=beam(60,130,150+i*18,66+i*4,c,3);o+='<circle cx="'+(150+i*18)+'" cy="'+(66+i*4)+'" r="4" fill="#fff"/>';}}
+  else if(op==='atk_round100'){o+=beam(60,130,172,84,c,7)+'<circle cx="182" cy="80" r="26" fill="none" stroke="'+c+'" stroke-width="4"/><circle cx="182" cy="80" r="17" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>';}
+  else if(card.pic){o+=shot(card.pic,c);}
+  else{o+=beam(60,130,176,82,c,3+n/4)+burst(180,80,10+n*0.7,c);}
+  if(card.ops.length>1){o+=dome(128,172,22,TYPE.defence.c);}
+ }else if(card.type==='defence'){
+  if(op==='block_all'){o+='<g opacity=".35" stroke-dasharray="5 5">'+craft(125,118,2.1,c)+'</g>'+beam(30,70,96,104,TYPE.attack.c,4)+'<path d="M150,130 L214,162" stroke="'+TYPE.attack.c+'" stroke-width="3" stroke-dasharray="3 7" opacity=".6"/>';}
+  else{o+=craft(104,152,1.15,c)+wall(card.pic,c)+beam(16,58,62,102,TYPE.attack.c,4)+burst(64,104,10,'#fff');}
+  if(card.ops.length>1){o+=plus(196,82,11,TYPE.repair.c);}
+  if(op==='block_per_card'){o+='';}
+ }else if(card.type==='repair'){
+  if(op==='shield_add'||op==='shield_rebuild'){o+=dome(118,160,46+n*0.5,TYPE.defence.c)+plus(118,112,14+n*0.12,c)+craft(118,152,1,c);}
+  else if(op==='shield_per_card'){o+=dome(150,160,44,TYPE.defence.c)+minicard(44,120,-18,c)+minicard(64,114,-4,c)+minicard(84,116,10,c)+plus(150,118,13,c);}
+  else if(op==='repair_share'){o+='<g transform="translate(50,78) rotate(24)"><path d="M0,-9 Q-34,-26 -58,-40 Q-30,-14 0,9 Z" fill="#ffb347" opacity=".7"/><circle r="11" fill="#8a6f5a" stroke="#dfe6f5" stroke-width="1.5"/><circle cx="-3" cy="-2" r="3" fill="#5d4a3c"/></g>'+wrench(78,140,1.2,'#dfe6f5');for(i=0;i<4;i++){o+=plus(128+i*26,96+(i%2)*34,9+i%2*3,c);}}
+  else if(op==='repair_all'||op==='repair_full'){o+=wrench(58,132,1.4,'#dfe6f5');for(i=0;i<5;i++){o+=plus(112+i*24,(op==='repair_full'?108:120)+(i%2)*14,op==='repair_full'?11:8,c);}if(op==='repair_full'){o+='<rect x="96" y="150" width="124" height="8" rx="4" fill="'+c+'"/>';}}
+  else if(op==='round_up10'){for(i=0;i<3;i++){o+='<rect x="'+(70+i*42)+'" y="'+(140-i*22)+'" width="34" height="'+(30+i*22)+'" rx="3" fill="'+c+'" opacity="'+(0.45+i*0.25)+'"/>';}o+='<path d="M62,128 L196,74" stroke="#fff" stroke-width="3" stroke-dasharray="6 5"/><path d="M196,74 l-14,1 l8,11 Z" fill="#fff"/><g transform="translate(40,150)"><rect x="-18" y="-16" width="36" height="14" rx="4" fill="#dfe6f5" stroke="#0b1020" stroke-width="1.2"/><rect x="-4" y="-26" width="12" height="10" rx="2" fill="'+c+'"/><circle cx="-11" cy="2" r="6" fill="#10162c" stroke="#dfe6f5" stroke-width="2"/><circle cx="11" cy="2" r="6" fill="#10162c" stroke="#dfe6f5" stroke-width="2"/></g>';}
+  else if(op==='move_hp'){o+=partIcon('power',70,118,0.8,c)+partIcon('engine',182,118,0.72,c)+'<path d="M100,100 Q126,74 152,100" fill="none" stroke="#fff" stroke-width="3"/><path d="M152,100 l-12,-2 l5,-11 Z" fill="#fff"/>';}
+  else if(op==='revive'){o+='<g opacity=".4">'+partIcon('weapons',125,128,1.05,'#8892ad')+'</g>';for(i=0;i<7;i++){var a=Math.PI+(i+0.5)*Math.PI/7;o+='<line x1="'+(125+Math.cos(a)*46).toFixed(1)+'" y1="'+(150+Math.sin(a)*46).toFixed(1)+'" x2="'+(125+Math.cos(a)*64).toFixed(1)+'" y2="'+(150+Math.sin(a)*64).toFixed(1)+'" stroke="#ffd84a" stroke-width="4" stroke-linecap="round"/>';}o+=plus(182,84,12,c);}
+  else{o+=fixit(card.pic,c)+plus(card.pic==='bolts'?178:172,92,13,c);}
+ }else if(card.type==='spy'){
+  var k=card.ops[0].parts||1;
+  o+='<path d="M20,170 Q70,150 78,104" fill="none" stroke="'+c+'" stroke-width="2" stroke-dasharray="3 6"/>'+drone(80,98,1.25,c);
+  var pos=[[168,104]];if(k===2)pos=[[148,84],[198,112]];if(k===3)pos=[[142,78],[194,84],[156,128]];if(k>=5)pos=[[130,72],[168,68],[208,82],[138,112],[178,116]];
+  for(i=0;i<n;i++){var sa=-Math.PI*0.5+(i-(n-1)/2)*0.34;o+='<circle cx="'+(80+Math.cos(sa)*46).toFixed(1)+'" cy="'+(104+Math.sin(sa)*46).toFixed(1)+'" r="3.2" fill="#ffd84a"/>';}
+  for(i=0;i<pos.length;i++){o+=target(pos[i][0],pos[i][1],k>=3?12:15,'#ff8080');}
+ }else if(card.type==='guard'){
+  o+=badgeStar(125,116,1.25,c);
+  o+='<g opacity=".55">'+drone(48,84,0.7,TYPE.spy.c)+'</g><line x1="30" y1="66" x2="66" y2="102" stroke="#ff6b6b" stroke-width="5" stroke-linecap="round"/><line x1="66" y1="66" x2="30" y2="102" stroke="#ff6b6b" stroke-width="5" stroke-linecap="round"/>';
+  if(card.ask){o+=dome(150,166,20,TYPE.defence.c)+plus(150,140,8,TYPE.repair.c);}
+ }else{
+  o+=partIcon(PARTCODE[card.part],92,120,1.15,c)+chevrons(184,112,'#ffd84a');
+ }
+ return o;
+}
+
+/* ---------- a whole card as SVG ---------- */
+function gems(r,x,y){var o='';for(var i=0;i<r.n;i++){o+='<path d="M'+(x+i*17)+','+(y-8)+' l7,8 l-7,8 l-7,-8 Z" fill="'+r.c+'" stroke="#0b1020" stroke-width="1"/>';}return o;}
+function nameSize(s){var n=s.length;return n<=13?18:(n<=16?16:(n<=19?14:(n<=22?12.5:11.5)));}
+function frame(id,edge,body,epic){
+ var o='<defs><linearGradient id="g'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+body+'"/><stop offset="1" stop-color="#0c1124"/></linearGradient><clipPath id="c'+id+'"><rect x="12" y="52" width="226" height="128" rx="8"/></clipPath></defs>';
+ o+='<rect x="3" y="3" width="244" height="344" rx="16" fill="'+edge+'"/>';
+ if(epic){o+='<rect x="6.5" y="6.5" width="237" height="337" rx="13" fill="none" stroke="#fff6c9" stroke-width="1.6"/>';}
+ o+='<rect x="9" y="9" width="232" height="332" rx="11" fill="url(#g'+id+')"/>';
+ return o;
+}
+function cardSVG(card,uid){
+ var t=TYPE[card.type],r=RAR[card.rarity],id=uid||card.id.replace(/[^A-Za-z0-9]/g,'');
+ var edge=r?r.c:t.c,o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(card.name+'. '+card.text)+'">';
+ o+=frame(id,edge,t.d,card.rarity==='epic');
+ o+='<rect x="12" y="13" width="226" height="33" rx="8" fill="'+t.c+'"/>';
+ o+='<text x="125" y="'+(29.5+nameSize(card.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(card.name)+'" font-weight="800" fill="#fff" class="nm">'+esc(card.name)+'</text>';
+ o+='<rect x="12" y="52" width="226" height="128" rx="8" fill="#0a0f22"/><g clip-path="url(#c'+id+')">'+art(card)+'</g><rect x="12" y="52" width="226" height="128" rx="8" fill="none" stroke="'+t.c+'" stroke-width="2"/>';
+ var bl=card.badge.length,bf=bl<=2?30:(bl===3?25:(bl===4?20:16));
+ o+='<circle cx="200" cy="181" r="31" fill="#fff" stroke="'+t.c+'" stroke-width="5"/><text x="200" y="'+(181+bf*0.35)+'" text-anchor="middle" font-size="'+bf+'" font-weight="900" fill="#10162c" class="bd">'+esc(card.badge)+'</text>';
+ o+='<text x="16" y="202" font-size="13" font-weight="800" fill="'+t.c+'" letter-spacing="1.5">'+t.name+'</text>';
+ var lines=wrap(card.text,26),fs=lines.length>4?13.5:15.5,lh=lines.length>4?17:19.5,y0=234+(4-Math.min(lines.length,4))*lh/2-(lines.length>4?8:0);
+ for(var i=0;i<lines.length;i++){o+='<text x="125" y="'+(y0+i*lh).toFixed(1)+'" text-anchor="middle" font-size="'+fs+'" font-weight="600" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
+ o+='<text x="125" y="313" text-anchor="middle" font-size="10.5" fill="#aeb8d4" class="nd">'+esc(card.ask?'Needs a new rule first':(card.needs||t.needs))+'</text>';
+ o+='<line x1="16" y1="320" x2="234" y2="320" stroke="#33406a" stroke-width="1"/>';
+ if(r){o+=gems(r,24,331)+'<text x="'+(24+r.n*17)+'" y="335" font-size="11.5" font-weight="800" fill="'+r.c+'" letter-spacing="1">'+r.name+'</text>';}
+ else{o+='<text x="18" y="335" font-size="11.5" font-weight="800" fill="'+t.c+'" letter-spacing="1">'+esc(card.part.toUpperCase())+'</text>';}
+ o+='<text x="232" y="335" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(card.id)+'</text>';
+ return o+'</svg>';
+}
+function partSVG(p,uid){
+ var k=KIND[p.kind],id=uid||p.id.replace(/[^A-Za-z0-9]/g,''),o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(p.name+', '+k.name+' '+p.part+'. HP '+p.hp+', AP '+p.ap)+'">';
+ o+=frame(id,k.colour,'#1a2240',p.kind==='lucky');
+ o+='<rect x="12" y="13" width="226" height="33" rx="8" fill="#eef1f8"/>';
+ o+='<text x="125" y="'+(29.5+nameSize(p.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(p.name)+'" font-weight="800" fill="#10162c" class="nm">'+esc(p.name)+'</text>';
+ o+='<rect x="12" y="52" width="226" height="104" rx="8" fill="#0a0f22"/><g clip-path="url(#c'+id+')">'+stars(p.id,12,52,226,104,18)+partIcon(PARTCODE[p.part],125,104,1.25,k.colour)+'</g><rect x="12" y="52" width="226" height="104" rx="8" fill="none" stroke="'+k.colour+'" stroke-width="2"/>';
+ o+='<rect x="12" y="162" width="226" height="22" rx="6" fill="'+k.colour+'"/><text x="125" y="178" text-anchor="middle" font-size="13" font-weight="900" fill="#10162c" letter-spacing="2">'+esc(k.name.toUpperCase())+'</text>';
+ o+='<rect x="12" y="190" width="110" height="58" rx="8" fill="#fff"/><rect x="128" y="190" width="110" height="58" rx="8" fill="#fff"/>';
+ o+='<path d="M30,212 c-7,-9 -19,1 -8,11 l8,8 l8,-8 c11,-10 -1,-20 -8,-11 Z" fill="#e5484d"/><text x="52" y="213" font-size="12" font-weight="800" fill="#5b6482">HP</text><text x="112" y="238" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="hp">'+p.hp+'</text>';
+ o+='<path d="M148,203 l-9,16 l7,0 l-3,13 l11,-17 l-7,0 Z" fill="#f59e0b"/><text x="168" y="213" font-size="12" font-weight="800" fill="#5b6482">AP</text><text x="228" y="238" text-anchor="end" font-size="34" font-weight="900" fill="#10162c" class="ap">'+p.ap+'</text>';
+ var lines=wrap(p.text,28);
+ for(var i=0;i<lines.length;i++){o+='<text x="125" y="'+(272+(3-lines.length)*8+i*18)+'" text-anchor="middle" font-size="14" font-weight="600" fill="#f3f5fb" class="tx">'+esc(lines[i])+'</text>';}
+ o+='<line x1="16" y1="320" x2="234" y2="320" stroke="#33406a" stroke-width="1"/><text x="18" y="335" font-size="11.5" font-weight="800" fill="#c9d2ea" letter-spacing="1">'+esc(p.part.toUpperCase())+'</text><text x="232" y="335" text-anchor="end" font-size="11" fill="#8f9bbd">'+esc(p.id)+'</text>';
+ return o+'</svg>';
+}
+
+/* DRAW-END */
+/* ---------- the battle table ---------- */
+var B=GMQBattle;B.load(DATA);
+var el=function(id){return document.getElementById(id);};
+var KEY='gmq_battle_v1',FAST=/[?&]fast/.test(location.search);
+var KINDKEYS=['standard','guardian','striker','lucky'];
+var U={S:null,opts:B.defaults(),showSums:false,phase:'setup',sel:-1,cpuLead:-1,feed:[],kinds:['standard','standard','standard','standard','standard'],foeMode:'same',busy:false,pick:null,ask:null,seed:0};
+var LOSTWORD={'Weapons System':'cannot attack','Engine Core':'lose a card','Navigation':'lose a card','Shield Generator':'no defence cards','Power Module':'no repairs'};
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify({S:U.S,opts:U.opts,showSums:U.showSums,kinds:U.kinds,foeMode:U.foeMode}));}catch(e){}}
+function loadSaved(){try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.opts){U.opts=d.opts;U.showSums=!!d.showSums;U.kinds=d.kinds||U.kinds;U.foeMode=d.foeMode||'same';if(d.S&&!d.S.over){d.S.cur=null;U.S=d.S;return true;}}}catch(e){}return false;}
+function cardInner(c,uid){return cardSVG(c,uid).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');}
+
+/* ---------- the picture: both ships, their parts, their shields, the two cards ---------- */
+function tile(side,ix,x,y,tw,th){
+ var S=U.S,p=S.P[side].parts[ix],k=KIND[p.kind],lost=p.hp<=0,cls='tile';
+ if(U.pick&&U.pick.side===side&&U.pick.among.indexOf(ix)>=0){cls+=' can';if(U.pick.chosen.indexOf(ix)>=0)cls+=' sel';}
+ var o='<g class="'+cls+'" data-side="'+side+'" data-ix="'+ix+'" transform="translate('+x.toFixed(1)+','+y+')">';
+ o+='<rect class="fr glow" width="'+tw.toFixed(1)+'" height="'+th+'" rx="16" fill="#141b33" stroke="'+k.colour+'" stroke-width="5"/>';
+ o+=partIcon(PARTCODE[p.part],tw/2,66,0.95,k.colour);
+ o+='<text x="12" y="24" font-size="15" font-weight="800" fill="'+k.colour+'" letter-spacing="1">'+esc(k.name.toUpperCase())+'</text>';
+ if(p.lvl>1)o+='<rect x="'+(tw-52).toFixed(1)+'" y="8" width="44" height="26" rx="8" fill="#f97316"/><text x="'+(tw-30).toFixed(1)+'" y="27" text-anchor="middle" font-size="18" font-weight="900" fill="#fff">L2</text>';
+ o+='<text x="'+(tw/2).toFixed(1)+'" y="134" text-anchor="middle" font-size="'+(tw<170?25:29)+'" font-weight="800" fill="#fff" class="pn">'+esc(B.SHORT[p.part])+'</text>';
+ o+='<path d="M24,166 c-8,-10 -22,1 -9,13 l9,9 l9,-9 c13,-12 -1,-23 -9,-13 Z" fill="#e5484d"/><text x="46" y="188" font-size="20" font-weight="800" fill="#aeb8d4">HP</text>';
+ o+='<text x="'+(tw-14).toFixed(1)+'" y="196" text-anchor="end" font-size="56" font-weight="900" fill="#fff" class="hp">'+p.hp+'</text>';
+ o+='<path d="M22,214 l-10,18 l8,0 l-4,15 l13,-20 l-8,0 Z" fill="#f59e0b"/><text x="46" y="240" font-size="20" font-weight="800" fill="#aeb8d4">AP</text>';
+ o+='<text x="'+(tw-14).toFixed(1)+'" y="244" text-anchor="end" font-size="38" font-weight="900" fill="#ffd84a" class="ap">'+p.ap+'</text>';
+ if(lost){o+='<rect x="3" y="3" width="'+(tw-6).toFixed(1)+'" height="'+(th-6)+'" rx="13" fill="#0b0f1f" opacity=".93"/><text x="'+(tw/2).toFixed(1)+'" y="92" text-anchor="middle" font-size="'+(tw<170?23:26)+'" font-weight="800" fill="#8f9bbd">'+esc(B.SHORT[p.part])+'</text><text x="'+(tw/2).toFixed(1)+'" y="146" text-anchor="middle" font-size="44" font-weight="900" fill="#f87171">LOST</text><text x="'+(tw/2).toFixed(1)+'" y="182" text-anchor="middle" font-size="'+(tw<170?17:20)+'" font-weight="700" fill="#fca5a5">'+LOSTWORD[p.part]+'</text>';}
+ return o+'</g>';
+}
+function header(side,y,W){
+ var S=U.S,pl=S.P[side],on=B.shieldWorks(S,pl),bw=W*0.44,bx=W-20-bw,o='';
+ o+='<text x="20" y="'+(y+40)+'" font-size="34" font-weight="900" fill="'+(side?'#fca5a5':'#93c5fd')+'">'+(side?'THE ENEMY':'YOUR SHIP')+'</text>';
+ if(U.showSums){o+='<text x="246" y="'+(y+40)+'" font-size="24" font-weight="800" fill="#aeb8d4" class="shipap">Ship AP '+(B.has(pl,'Weapons System')?B.shipAP(pl):0)+'</text>';}
+ o+='<rect x="'+bx.toFixed(1)+'" y="'+(y+6)+'" width="'+bw.toFixed(1)+'" height="50" rx="14" fill="#141b33" stroke="'+(on?'#3b82f6':'#4b5563')+'" stroke-width="4"/>';
+ if(on){o+='<rect x="'+(bx+4).toFixed(1)+'" y="'+(y+10)+'" width="'+(Math.max(0,Math.min(1,pl.shield/100))*(bw-8)).toFixed(1)+'" height="42" rx="11" fill="#2563eb" opacity=".75"/>';}
+ o+='<text x="'+(bx+18).toFixed(1)+'" y="'+(y+42)+'" font-size="28" font-weight="800" fill="#fff" class="sh'+side+'">Main Shield '+(pl.shield>0?(on?pl.shield:pl.shield+' (off)'):'broken')+'</text>';
+ return o;
+}
+function drawBoard(){
+ var st=el('stage'),w=st.clientWidth,h=st.clientHeight,S=U.S;if(!w||!h||!S)return;
+ var H=1000,W=Math.max(860,Math.min(2100,Math.round(1000*w/h))),o='<rect width="'+W+'" height="'+H+'" fill="#0b1020"/>'+stars('board',0,0,W,H,70);
+ var tw=(W-40-4*14)/5,th=256,i;
+ o+=header(1,18,W);for(i=0;i<5;i++){o+=tile(1,i,20+i*(tw+14),92,tw,th);}
+ /* the middle: the two cards on the table */
+ var ch=262,cw=ch*250/350,cur=S.cur,shown=[null,null],last=S.log.length?S.log[S.log.length-1]:null;
+ if(cur){shown=[cur.card[0],cur.card[1]];}else if(U.phase==='pick'&&U.cpuLead>=0){shown=[null,S.P[1].hand[U.cpuLead]];}else if((U.phase==='roundend'||U.phase==='over')&&last){shown=last.card;}
+ var cx=[W/2-cw-16,W/2+16];
+ for(i=0;i<2;i++){
+  o+='<text x="'+(cx[i]+cw/2).toFixed(1)+'" y="376" text-anchor="middle" font-size="20" font-weight="800" fill="'+(i?'#fca5a5':'#93c5fd')+'">'+(i?'The enemy\'s card':'Your card')+'</text>';
+  if(shown[i]){o+='<g transform="translate('+cx[i].toFixed(1)+',384) scale('+(ch/350).toFixed(4)+')" class="tablecard" data-card="'+shown[i]+'">'+cardInner(B.card(shown[i]),'T'+i)+'</g>';
+   if(cur&&cur.stopped[i])o+='<g transform="translate('+(cx[i]+cw/2).toFixed(1)+',515)"><rect x="-86" y="-26" width="172" height="52" rx="10" fill="#070b18" stroke="#14b8a6" stroke-width="4"/><text y="10" text-anchor="middle" font-size="28" font-weight="900" fill="#5eead4">STOPPED</text></g>';}
+  else{o+='<rect x="'+cx[i].toFixed(1)+'" y="384" width="'+cw.toFixed(1)+'" height="'+ch+'" rx="14" fill="#101733" stroke="#33406a" stroke-width="3" stroke-dasharray="10 8"/><text x="'+(cx[i]+cw/2).toFixed(1)+'" y="530" text-anchor="middle" font-size="64" font-weight="900" fill="#33406a">?</text>';}
+ }
+ o+='<text x="20" y="430" font-size="44" font-weight="900" fill="#e8ecf5">Round '+Math.min(S.round,S.opts.roundLimit)+'</text>';
+ var av=cur&&cur.snap?cur.atk:((U.phase==='roundend'||U.phase==='over')&&last?last.atk:null);
+ if(av){o+='<text x="20" y="560" font-size="26" font-weight="800" fill="#93c5fd" class="youhit">Your attack: '+av[0]+'</text><text x="'+(W-20)+'" y="560" text-anchor="end" font-size="26" font-weight="800" fill="#fca5a5" class="theyhit">Their attack: '+av[1]+'</text>';}
+ for(i=0;i<5;i++){o+=tile(0,i,20+i*(tw+14),656,tw,th);}
+ o+=header(0,924,W);
+ var b=el('board');b.setAttribute('viewBox','0 0 '+W+' '+H);b.innerHTML=o;
+}
+
+/* ---------- the desk: words, boxes and buttons ---------- */
+function say(t,small){el('say').innerHTML=esc(t)+(small?'<small>'+esc(small)+'</small>':'');}
+function msg(t){el('msg').textContent=t||'';}
+function feed(lines){lines.forEach(function(l){U.feed.push(l);});var a=U.feed.slice(-4),h='';a.forEach(function(l){h+='<div>'+esc(l)+'</div>';});el('feed').innerHTML=h;}
+function setRound(){var S=U.S;el('round').textContent=S?('Round '+Math.min(S.round,S.opts.roundLimit)+(U.showSums?' · sums shown':'')):'';}
+function drawHand(){
+ var S=U.S,h=el('hand');h.innerHTML='';
+ if(U.phase!=='pick'){h.style.display='none';return;}
+ h.style.display='';
+ S.P[0].hand.forEach(function(id,i){
+  var c=B.card(id),b=document.createElement('button');b.type='button';b.setAttribute('data-h',i);b.setAttribute('data-id',id);
+  var dead=c.ops.every(function(o){return !B.opWorks(S,S.P[0],o);});
+  b.className=(i===U.sel?'sel':'')+(dead?' no':'');b.innerHTML=cardSVG(c,'H'+i);
+  b.addEventListener('click',function(){U.sel=i;renderPick();});
+  h.appendChild(b);
+ });
+}
+function renderPick(){
+ var S=U.S,w=el('work');msg('');
+ var lead=S.opts.guard==='lead';
+ if(lead&&S.leader===1&&U.cpuLead<0){U.cpuLead=B.cpuPick(S,1,null);}
+ if(lead&&S.leader===1)say('The enemy leads with '+B.card(S.P[1].hand[U.cpuLead]).name+'.','Choose your answer.');
+ else say('Choose a card.',lead?'You lead this round. The enemy will see your card first.':'The enemy chooses at the same time.');
+ if(U.sel<0){w.innerHTML='<p style="color:#aeb8d4;font-size:15px;margin:6px 0">Tap a card below to read it.</p>';}
+ else{
+  var c=B.card(S.P[0].hand[U.sel]),note='';
+  c.ops.forEach(function(o){if(!B.opWorks(S,S.P[0],o)){note='Your '+B.SHORT[B.needOf(S,o.op)]+' is lost. '+(c.ops.length>1?'Part of this card':'This card')+' would do nothing.';}});
+  if(c.type==='guard')note=S.opts.guard==='blind'?'It only works if the enemy plays a Spy this round.':(S.opts.guard==='swap'?'Keep it in your hand: you can swap it in when a Spy is turned over.':'It only works against a Spy.');
+  w.innerHTML='<div class="picked"><div class="big">'+cardSVG(c,'P')+'</div><div class="side"><div style="font-size:15px;line-height:1.35;color:#c9d2ea;margin-bottom:8px">'+esc(note)+'</div><button class="btn go" id="playit" type="button">Play this card</button></div></div>';
+  el('playit').addEventListener('click',playCard);
+ }
+ drawHand();drawBoard();setRound();
+}
+function startPick(){hidePad();U.phase='pick';U.sel=-1;U.cpuLead=-1;U.pick=null;U.feed=[];el('feed').innerHTML='';save();renderPick();}
+
+/* ---------- a round, one step at a time ---------- */
+function later(fn){if(FAST){fn();}else{U.busy=true;setTimeout(function(){U.busy=false;fn();},U.showSums?260:520);}}
+function playCard(){
+ var S=U.S,h=U.sel,c;if(h<0||U.phase!=='pick')return;
+ if(S.opts.guard==='lead'){c=S.leader===1?U.cpuLead:B.cpuPick(S,1,S.P[0].hand[h]);}else{c=B.cpuPick(S,1,null);}
+ U.phase='resolve';U.sel=-1;U.cpuLead=-1;el('work').innerHTML='';drawHand();
+ B.startRound(S,h,c);U.queue=B.steps(S);U.qi=0;
+ feed(['You play '+B.card(S.cur.card[0]).name+'. The enemy plays '+B.card(S.cur.card[1]).name+'.']);
+ var mine=B.canSwap(S,0),theirs=B.canSwap(S,1);
+ function go(yes){
+  var before=S.cur.card.slice();B.swapBoth(S,[yes,true]);
+  if(S.cur.card[1]!==before[1])feed(['The enemy swaps in '+B.card(S.cur.card[1]).name+'.']);
+  if(S.cur.card[0]!==before[0])feed(['You swap in '+B.card(S.cur.card[0]).name+'.']);
+  U.queue=B.steps(S);drawBoard();later(nextStep);
+ }
+ drawBoard();
+ if(mine>=0){say('The enemy played a Spy!','Swap in your '+B.card(S.P[0].hand[mine]).name+'? Your '+B.card(S.cur.card[0]).name+' goes back to your hand.');
+  el('work').innerHTML='<div class="row"><button class="btn go" id="swy" type="button">Yes, stop the Spy</button><button class="btn" id="swn" type="button">No</button></div>';
+  el('swy').addEventListener('click',function(){el('work').innerHTML='';go(true);});el('swn').addEventListener('click',function(){el('work').innerHTML='';go(false);});}
+ else{say('The cards are turned over.');go(false);}
+}
+function dry(st,ch){var C=JSON.parse(JSON.stringify(U.S));return B.run(C,st,ch);}
+function nextStep(){
+ var S=U.S;if(U.qi>=U.queue.length){return endRound();}
+ var st=U.queue[U.qi],req=B.need(S,st);
+ if(req&&req.who===0){return askChoice(st,req);}
+ doStep(st,req?B.cpuChoose(S,req):null);
+}
+function doStep(st,ch){
+ var S=U.S,R=dry(st,ch),asks=U.showSums?[]:R.sums.filter(function(s){
+  if(s.what==='attack')return s.side===0;
+  if(s.what==='through')return true;
+  if(s.what==='shield')return s.kind==='land'||s.side===0;
+  return s.side===0||s.kind==='spy';
+ });
+ function finish(){
+  var real=B.run(S,st,ch);if(S.cur){S.cur.lines=S.cur.lines.concat(real.lines);}
+  feed(real.lines);U.qi++;U.pick=null;drawBoard();
+  if(st.k==='end'){return endRound();}
+  if(real.lines.length){later(nextStep);}else{nextStep();}
+ }
+ var groups=[];asks.forEach(function(s){var g=groups[groups.length-1];if(g&&s.what==='hp'&&g[0].what==='hp'&&g[0].kind===s.kind&&g[0].side===s.side){g.push(s);}else{groups.push([s]);}});
+ function ask(i){if(i>=groups.length){finish();}else{askSums(st,groups[i],function(){ask(i+1);});}}
+ ask(0);
+}
+function endRound(){
+ var S=U.S;el('work').innerHTML='';msg('');hidePad();
+ if(S.over){U.phase='over';save();say(S.over.why,S.over.winner===0?'Well flown.':(S.over.winner===1?'Try again?':''));
+  el('work').innerHTML='<div class="row"><button class="btn go" id="again" type="button">New battle</button><button class="btn" id="seelog" type="button">See the log</button></div>';
+  el('again').addEventListener('click',openSetup);el('seelog').addEventListener('click',openLog);drawBoard();setRound();return;}
+ U.phase='roundend';save();say('The round is over.','Round '+S.round+' is next.');
+ el('work').innerHTML='<div class="row"><button class="btn go" id="nextr" type="button">Next round</button></div>';
+ el('nextr').addEventListener('click',startPick);drawBoard();setRound();
+}
+
+/* ---------- choices the player makes on the picture ---------- */
+function partName(side,ix){return B.SHORT[U.S.P[side].parts[ix].part];}
+function askChoice(st,req){
+ var S=U.S,w=el('work'),c=B.card(S.cur.card[0]);msg('');U.req=req;
+ if(req.type==='targets'||req.type==='part'){
+  var n=req.type==='targets'?req.count:1;
+  U.pick={side:req.side,among:req.among,chosen:[],n:n};
+  if(req.type==='targets')say('Your Spy does '+req.n+' damage.','Tap '+(n===1?'one enemy part':n+' enemy parts')+' on the picture.');
+  else say(c.name+'.','Tap the part to '+req.verb+'.');
+  w.innerHTML='<div class="row"><button class="btn go" id="cgo" type="button" disabled>Go</button></div>';
+  el('cgo').addEventListener('click',function(){var ch=req.type==='targets'?U.pick.chosen.slice():U.pick.chosen[0],e=B.validate(S,req,ch);if(e){msg(e);return;}U.pick=null;w.innerHTML='';doStep(st,ch);});
+  drawBoard();return;
+ }
+ if(req.type==='amounts'){
+  var split=!req.limit;
+  if(split)say('The enemy\'s '+req.total+' hits your ship.','Share it out between your parts. A part can take more than it has.');
+  else say(c.name+': share '+req.total+' HP.','Give each part some. No part can pass its full HP.');
+  var rows=req.among.map(function(ix){var p=S.P[0].parts[ix];return {key:ix,label:B.SHORT[p.part]+' (has '+p.hp+(split?'':', full '+p.max)+')',all:split};});
+  boxes(rows,split?'Your numbers must add up to '+req.total+'.':'',function(vals){var ch=[0,0,0,0,0];req.among.forEach(function(ix){ch[ix]=vals[ix]||0;});var e=B.validate(S,req,ch);if(e){return e;}w.innerHTML='';hidePad();doStep(st,ch);return '';},req.total);
+  return;
+ }
+ if(req.type==='move'){
+  U.pick={side:0,among:req.among,chosen:[],n:2};
+  say(c.name+'.','Tap the part to take HP from. Then tap the part to give it to.');
+  w.innerHTML='<div class="row"><button class="btn" id="mno" type="button">Move nothing</button></div>';
+  el('mno').addEventListener('click',function(){U.pick=null;w.innerHTML='';doStep(st,{n:0});});
+  U.pick.done=function(){
+   var f=U.pick.chosen[0],t=U.pick.chosen[1];
+   say('Move HP from '+partName(0,f)+' to '+partName(0,t)+'.','How much? '+req.max+' or less.');
+   boxes([{key:'n',label:'HP to move'}],'',function(vals){var ch={from:f,to:t,n:vals.n||0},e=B.validate(S,req,ch);if(e){return e;}U.pick=null;w.innerHTML='';hidePad();doStep(st,ch);return '';});
+  };
+  drawBoard();return;
+ }
+}
+function onTile(side,ix){
+ var P=U.pick;if(!P||P.side!==side||P.among.indexOf(ix)<0)return;
+ var at=P.chosen.indexOf(ix);
+ if(at>=0){P.chosen.splice(at,1);}else{if(P.chosen.length>=P.n){P.chosen.shift();}P.chosen.push(ix);}
+ var go=el('cgo');if(go){go.disabled=P.chosen.length!==P.n;}
+ drawBoard();
+ if(P.done&&P.chosen.length===P.n){P.done();}
+}
+
+/* ---------- number boxes and the number pad (no keyboard, so nothing is covered) ---------- */
+var PADKEYS=['1','2','3','4','5','6','7','8','9','0','del'];
+function hidePad(){U.ask=null;el('padwrap').innerHTML='';}
+function boxes(rows,note,onCheck,allTotal){
+ var w=el('work'),h='';
+ rows.forEach(function(r,i){h+='<div class="q"><label>'+esc(r.label)+'</label>'+(r.all?'<button class="btn small" type="button" data-all="'+r.key+'">All here</button>':'')+'<div class="box'+(i===0?' on':'')+'" data-key="'+r.key+'" role="textbox" aria-label="'+esc(r.label)+'"></div></div>';});
+ if(note)h+='<div style="font-size:14px;color:#aeb8d4;margin:2px 0">'+esc(note)+'</div>';
+ var ph='<div id="pad">';PADKEYS.forEach(function(k){ph+='<button type="button" data-k="'+k+'">'+(k==='del'?'⌫':k)+'</button>';});ph+='<button type="button" class="w" data-k="check" id="check">Check</button></div>';
+ w.innerHTML=h;w.scrollTop=0;el('padwrap').innerHTML=ph;
+ var bx=w.querySelectorAll('.box'),cur=0,vals={};
+ function show(){for(var i=0;i<bx.length;i++){var k=bx[i].getAttribute('data-key');bx[i].textContent=vals[k]===undefined?'':vals[k];bx[i].className='box'+(i===cur?' on':'');}}
+ for(var i=0;i<bx.length;i++){(function(i){bx[i].addEventListener('click',function(){cur=i;show();});})(i);}
+ var alls=w.querySelectorAll('[data-all]');
+ for(i=0;i<alls.length;i++){alls[i].addEventListener('click',function(){var k=this.getAttribute('data-all');rows.forEach(function(r){vals[r.key]=String(r.key)===k?String(allTotal):'0';});show();});}
+ el('pad').addEventListener('click',function(ev){
+  var k=ev.target.getAttribute('data-k');if(!k)return;var key=bx[cur].getAttribute('data-key'),v=vals[key]===undefined?'':String(vals[key]);
+  if(k==='check'){var out={},blank=false;rows.forEach(function(r){if(vals[r.key]===undefined||vals[r.key]===''){blank=true;}out[r.key]=parseInt(vals[r.key]||'0',10);});
+   if(blank&&!allTotal&&rows.length){msg('Fill in every box.');return;}
+   var e=onCheck(out,bx);msg(e||'');return;}
+  if(k==='del'){v=v.slice(0,-1);}else if(v.length<3){v=(v==='0'?'':v)+k;}
+  vals[key]=v;msg('');show();
+ });
+ U.ask={rows:rows,sum:rows.length&&rows[0].answer!==undefined};show();
+}
+function askSums(st,list,done){
+ var S=U.S,c0=B.card(S.cur.card[0]),first=list[0],head='',small='',tries=0;
+ function partOf(side,label){var ps=S.P[side].parts;for(var i=0;i<ps.length;i++){if(B.SHORT[ps[i].part]===label)return ps[i];}return null;}
+ var rows=list.map(function(s,i){
+  var lab='',p;
+  if(s.what==='attack'){lab='Your attack';}
+  else if(s.what==='through'){lab='What gets through?';}
+  else if(s.what==='shield'&&s.kind==='land'){lab=(s.side?'Their':'Your')+' Main Shield has '+s.before+'. What is left?';}
+  else if(s.what==='shield'){lab='Your Main Shield has '+s.before+'. What is it now?';}
+  else{p=partOf(s.side,s.label);
+   if(s.kind==='spy'||s.kind==='land')lab=(s.side?'Their ':'Your ')+s.label+' has '+s.before+'. It takes '+(-s.change)+'.';
+   else if(s.kind==='repair')lab='Your '+s.label+' has '+s.before+'. Add '+s.change+'. Full is '+p.max+'.';
+   else if(s.kind==='round')lab='Your '+s.label+' has '+s.before+'. Full is '+p.max+'.';
+   else lab='Your '+s.label+' has '+s.before+'. '+(s.change<0?'Take away '+(-s.change):'Add '+s.change)+'.';}
+  return {key:'a'+i,label:lab,answer:s.answer};
+ });
+ if(first.what==='attack'){head='Work out your attack.';small='Add up the AP of your working parts.'+({add:' Then add your card.',perpart:' Then add 5 for each working part.',double:' Then double it.',round100:' Then round it up to the next hundred.',plain:''}[first.kind]||'');}
+ else if(first.what==='through'){head=first.side?'You attack for '+first.before+'. The enemy blocks '+(-first.change)+'.':'The enemy attacks for '+first.before+'. You block '+(-first.change)+'.';}
+ else if(first.what==='shield'&&first.kind==='land'){head=first.side?'Your '+(-first.change)+' hits their Main Shield.':'The enemy\'s '+(-first.change)+' hits your Main Shield.';}
+ else if(first.what==='shield'){head=c0.name+'.';small=first.kind==='percard'?'You hold '+B.otherCards(S,0)+' other cards. 3 for each.':'Add '+first.change+' to your Main Shield.';if(S.opts.shieldCap)small+=' It cannot pass 100.';}
+ else if(first.kind==='spy'){head=first.side?'Your Spy strikes.':'The enemy\'s Spy strikes your ship.';}
+ else if(first.kind==='land'){head='Your parts take the hit.';small='What HP is left on each?';}
+ else if(first.kind==='round'){head=c0.name+'.';small='Round each one up to the next ten. Never past full.';}
+ else{head=c0.name+'.';small='What is the HP now?';}
+ say(head,small);
+ var HINT={attack:'Add the AP of every working part first. Then your card.',through:'Take the block away from the attack.',land:'If the attack is bigger than the shield, the shield breaks: 0 is left.',spy:'Take the damage away. A part cannot go below 0.',repair:'A part cannot go above its full HP.',round:'The next ten up. But never past full.',shield:'The shield cannot pass 100.',percard:'First 3 for each card. Then add it to the shield.',move:'One part goes down. The other goes up.'};
+ boxes(rows,'',function(vals,bx){
+  var wrong=0;rows.forEach(function(r,i){var ok=vals[r.key]===r.answer;bx[i].className='box '+(ok?'ok':'bad');if(!ok)wrong++;});
+  if(!wrong){el('work').innerHTML='';hidePad();done();return '';}
+  tries++;
+  var k=first.what==='attack'?'attack':(first.what==='through'?'through':(first.kind==='land'&&first.what==='hp'?'spy':first.kind));
+  return tries>1&&HINT[k]?'Not yet. '+HINT[k]:'Not yet. Try again.';
+ });
+}
+
+/* ---------- the other screens ---------- */
+function show(id,on){el(id).className='ov'+(on?' open':'');}
+function drawSetup(){
+ var h='';U.kinds.forEach(function(k,i){var p=DATA.parts.filter(function(x){return x.part===B.PARTS[i]&&x.kind===k;})[0];h+='<button type="button" data-i="'+i+'">'+partSVG(p,'S'+i)+'</button>';});
+ el('myship').innerHTML=h;
+ var bs=el('myship').children;for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){var j=+this.getAttribute('data-i');U.kinds[j]=KINDKEYS[(KINDKEYS.indexOf(U.kinds[j])+1)%4];drawSetup();});}
+ var f='';[['same','The same kinds as yours'],['random','Drawn at random']].forEach(function(m){f+='<button class="btn small'+(U.foeMode===m[0]?' go':'')+'" type="button" data-m="'+m[0]+'">'+m[1]+'</button>';});
+ el('foemode').innerHTML=f;var fs=el('foemode').children;for(i=0;i<fs.length;i++){fs[i].addEventListener('click',function(){U.foeMode=this.getAttribute('data-m');drawSetup();});}
+ el('ncards').textContent=DATA.cards.length+(U.opts.upgrades?DATA.upgrades.length:0);
+}
+function openSetup(){show('rules',false);show('logv',false);show('help',false);drawSetup();show('setup',true);}
+function newBattle(){
+ var seed=U.seed||Math.floor(Math.random()*2147483000)+1,r=rnd(seed+17),foe=U.foeMode==='same'?U.kinds.slice():[0,1,2,3,4].map(function(){return KINDKEYS[Math.floor(r()*4)];});
+ U.S=B.newBattle(U.opts,U.kinds,foe,seed);show('setup',false);startPick();
+}
+function drawRules(){
+ var h='';B.SWITCHES.forEach(function(s){h+='<div class="sw"><b>'+esc(s.label)+'</b><small>'+esc(s.from)+'</small><div class="opts">';s.values.forEach(function(v,i){h+='<button type="button" data-key="'+s.key+'" data-i="'+i+'" class="'+(U.opts[s.key]===v[0]?'on':'')+'">'+esc(v[1])+'</button>';});h+='</div></div>';});
+ el('switches').innerHTML=h;
+ var bs=el('switches').querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){var k=this.getAttribute('data-key'),s=B.SWITCHES.filter(function(x){return x.key===k;})[0];U.opts[k]=s.values[+this.getAttribute('data-i')][0];drawRules();});}
+ el('sumsw').innerHTML='<button type="button" id="sumoff" class="'+(U.showSums?'':'on')+'">Off: the player does the maths</button><button type="button" id="sumon" class="'+(U.showSums?'on':'')+'">On: the page does the maths</button>';
+ el('sumoff').addEventListener('click',function(){U.showSums=false;drawRules();save();drawBoard();setRound();});
+ el('sumon').addEventListener('click',function(){U.showSums=true;drawRules();save();drawBoard();setRound();});
+}
+function openLog(){
+ var S=U.S,h='';if(!S||!S.log.length){h='<p>No round has been played yet.</p>';}
+ else{S.log.forEach(function(L){h+='<div class="lg"><b>Round '+L.round+'.</b> You: '+esc(B.card(L.card[0]).name)+'. The enemy: '+esc(B.card(L.card[1]).name)+'.<br>'+L.lines.map(esc).join('<br>')+'</div>';});if(S.over)h+='<div class="lg"><b>'+esc(S.over.why)+'</b></div>';}
+ el('loglist').innerHTML=h;show('logv',true);
+}
+el('board').addEventListener('click',function(ev){var t=ev.target;while(t&&t!==this){if(t.getAttribute&&t.getAttribute('class')&&/\btile\b/.test(t.getAttribute('class'))){onTile(+t.getAttribute('data-side'),+t.getAttribute('data-ix'));return;}t=t.parentNode;}});
+el('sgo').addEventListener('click',newBattle);
+el('sstd').addEventListener('click',function(){U.kinds=['standard','standard','standard','standard','standard'];drawSetup();});
+el('srand').addEventListener('click',function(){U.kinds=U.kinds.map(function(){return KINDKEYS[Math.floor(Math.random()*4)];});drawSetup();});
+el('srules').addEventListener('click',function(){drawRules();show('rules',true);});
+el('brules').addEventListener('click',function(){drawRules();show('rules',true);});
+el('rclose').addEventListener('click',function(){show('rules',false);drawSetup();});
+el('rnew').addEventListener('click',openSetup);
+el('blog').addEventListener('click',openLog);
+el('lclose').addEventListener('click',function(){show('logv',false);});
+el('bhelp').addEventListener('click',function(){show('help',true);});
+el('hclose').addEventListener('click',function(){show('help',false);});
+el('bnew').addEventListener('click',function(){if(!U.S||U.S.over||window.confirm('Leave this battle and start a new one?')){openSetup();}});
+window.addEventListener('resize',function(){drawBoard();});
+window.GMQB={U:U,B:B,idle:function(){return !U.busy;},setSeed:function(n){U.seed=n;}};
+if(loadSaved()){show('setup',false);startPick();say('Welcome back.','Round '+U.S.round+'. Choose a card.');}else{openSetup();}
+
+})();
+</script>
+</body>
+</html>

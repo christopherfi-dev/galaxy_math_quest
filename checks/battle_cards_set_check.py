@@ -250,6 +250,18 @@ want('no two common Spy cards together destroy a full-HP Standard Arsenal', comm
 want('the lost-part card never returns a part above its full HP', all(o['n'] <= min(p['hp'] for p in parts) for c in cards for o in c['ops'] if o['op'] == 'revive'), True)
 want('no single Spy card destroys a full-HP Standard Arsenal', [c['name'] for c in cards if c['type'] == 'spy' and c['ops'][0]['n'] >= by['Weapons System']['standard']['hp']], [])
 
+# ---------- 8. the battle page carries the same cards and the same drawing code ----------
+BATTLE = os.path.join(HERE, '..', 'prototypes', 'card_battle.html')
+if os.path.exists(BATTLE):
+    bh = open(BATTLE, encoding='utf-8').read()
+    grab = lambda t, pat: re.search(pat, t, re.S).group(0)
+    want('the battle page has the same card list as the cards page', grab(bh, r'<script id="carddata" type="application/json">.*?</script>') == grab(html, r'<script id="carddata" type="application/json">.*?</script>'), True)
+    want('the battle page draws the cards with the same code', grab(bh, r'/\* DRAW-BEGIN.*?/\* DRAW-END \*/') == grab(html, r'/\* DRAW-BEGIN.*?/\* DRAW-END \*/'), True)
+    LIVEB = os.path.join(HERE, '..', 'docs', 'battle', 'index.html')
+    if os.path.exists(LIVEB): want('docs/battle/index.html is the same as the battle prototype', open(LIVEB, encoding='utf-8').read() == bh, True)
+    for name, text in (('cards page', html), ('battle page', bh)):
+        want('the ' + name + ' loads nothing from outside (no http link, no script file, no image file)', re.findall(r'(?:src|href)="(?!index\.html|cards\.html)[^"#]+"|url\((?!#)|@import|fetch\(|XMLHttpRequest', text.replace('xmlns="http://www.w3.org/2000/svg"', '')), [])
+
 # ---------- 8. the page on the site is the same file ----------
 if os.path.exists(LIVE): want('docs/battle/cards.html is the same as the prototype', open(LIVE, encoding='utf-8').read() == html, True)
 else: print('     docs/battle/cards.html is not there yet')
