@@ -475,3 +475,11 @@ These are Marc's words, tidied. They are not on the form above.
   - Algora is the big world thread's name, not Marc's: its design note (section 11) lists the name as one of six choices that are his. The main thread first misread the message as Marc naming the planet and wrote that into the handoffs; corrected the same day.
   - The thread had already worked through the night on branch `claude/inspiring-albattani-umveps`: Planet Algora in Galaxy Patternox, a 128 × 96 map, the first region (the Mender Meadow) built and playable, the size test page, three independent reviews, and the next region (the Reach) designed, not built. It has no permission yet to push to the main branch.
   - Asked of the main thread: an analysis of it, and what more the thread can do tonight.
+- **Class worlds and a shared space (Marc, 2026-11-22).** "I was talking with grok abt this", with another AI's answer pasted in, then: "Analysis?" Its idea: each class (or grade) gets its own copy of the planets, where children see each other's traces and the AI adds new small places; a wider layer for space travel, coordinate sharing, card battles and hidden planets, shared across classes and later schools; one cadet record for both; a planet of 50 to 100 quests, many AI-filled from the kit.
+  - Answered in `proposals/GMQ_Server_Layers_Analysis_v1_2026-11-22.md`: the split is sound and fits the MUD vision. What it leaves out:
+    - children's safety and privacy across classes and schools
+    - each child must still do the maths after another child changed a place
+    - competition that rewards speed
+    - AI-made quests need the same checks and a teacher's approval
+    - cost
+  - Recommended next: run the class server that is already built (version 0.1, never run) with his class.
