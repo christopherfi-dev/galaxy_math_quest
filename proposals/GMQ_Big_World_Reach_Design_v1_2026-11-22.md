@@ -54,10 +54,12 @@ It shows all three moves: a kind that cannot fit, a kind that fits but runs out,
 ### What the child looks at and does
 
 - **The picture is the harbour:** the rafts left of each kind, in rows, each with its number on its sail. Three channels, each with its town's name, its order tag and its line of rafts. The water gate with three lamps.
-- **On the desk, one town at a time:** "Mud Town wants 72 baskets. Rafts of: 7, 8, 9." Tap a kind. "How many rafts of 8?" Type the number.
+- **On the desk, one town at a time:** "Mud Town wants 72 baskets. Send rafts that carry: 7, 8, 9." Tap a kind. "How many rafts that carry 8?" Type the number.
+- **Never "rafts of 8":** a reviewer showed it can be read as eight rafts.
 - The rafts move from the harbour into that town's channel as the child types.
-- **Asking for more rafts than there are** is refused at once: "Only 3 rafts of 8 are left in the harbour."
-- **"Send the fleet":** each town's lamp turns green or red. The game does not say "too few" or "too many".
+- **Asking for more rafts than there are** is refused at once: "Only 3 rafts that carry 8 are left in the harbour."
+- **"Send the fleet":** each town's lamp turns green with a tick, or red with a cross. The words name the town. The game does not say "too few" or "too many".
+- **After two tries where a green line is the fault,** the keeper says: "A green lamp can still be in the way." She gives no number.
 - **Nothing sails until all three lamps are green.** So no line a child sets can ever make the job impossible. That was version 2's blocker.
 - **The thinking:** for each town, which kinds can make its order with full rafts? "What times 8 makes 72? Does anything times 7?" And a lamp can be green and still be in the way: its line may use rafts another town needs.
 
@@ -79,11 +81,12 @@ It shows all three moves: a kind that cannot fit, a kind that fits but runs out,
 | Kinds of raft | three different numbers from 4, 6, 7, 8, 9 |
 | Rafts of one kind | 1 to 9. A harbour holds 18 on average, 27 at most |
 | Orders | three different numbers from 12 to 81. Never 24 |
-| A plan that serves all three towns | always exists. Exactly one for 98.8% of children; two for the rest |
-| Towns whose order two kinds can carry | 1.6 of 3 on average |
+| A plan that serves all three towns | always exists. Exactly one for 98.7% of children; two for the rest |
+| A rule of thumb | never works: no right plan has three lines of the same length, and none uses every raft |
+| Towns whose order two kinds can carry | 1.57 of 3 on average |
 | Towns with two ways the harbour has rafts for | 1.1 of 3 on average |
 | A trap | always: a line right for one town that no full plan uses |
-| Every fact | inside 10 × 10. 72% of the lines in a right plan use a 7, 8 or 9 |
+| Every fact | inside 10 × 10. 71% of the lines in a right plan use a 7, 8 or 9 |
 
 **It is hard on purpose.** One right plan, and the hard times tables. That is your decision 2.
 
@@ -96,11 +99,11 @@ Your lantern is the main thread's to build. This one has the same shape, with ot
 
 | Step | Where | What happens | The maths |
 |---|---|---|---|
-| 1 | The Meadow's well | "Far down, something glints. Too deep to reach. A rope with a hook could do it. But how deep is the well?" | |
+| 1 | The Meadow's well | "Far down, something glints. The bucket could never lift it, and the winch's old rope is thin. A strong new rope with a hook could. But how long must it be?" | |
 | 2 | The well's winch | The child turns the handle and counts the turns. Each turn lowers the bucket 3 arm-lengths. Tally marks on the picture are the child's turns. Nothing says how deep | a count |
-| 3 | The net mender, in the harbour | "How deep is the well?" Then: "One bundle of long reeds makes 9 arm-lengths of rope. How many bundles must I have?" | 3 × 6 = 18. Then ? × 9 = 18 |
-| 4 | The reed cutter, back in the Meadow | "2 bundles? I tie 10 reeds in a bundle. How many reeds must I cut?" | 2 × 10 |
-| 5 | The net mender | She twists the rope | |
+| 3 | The net weaver, in the harbour | "How deep is the well?" The child's notebook is in the picture: the tally marks, and "one turn: 3 arm-lengths". Then: "One bundle of long reeds makes 9 arm-lengths of rope. How many bundles do I need?" | 3 × 6 = 18. Then ? × 9 = 18 |
+| 4 | The reed cutter, back in the Meadow | "2 bundles? I tie 10 reeds in a bundle. How many reeds do I need to cut?" Two ties wait on the grass, each with a tag: 10 | 2 × 10 |
+| 5 | The net weaver | She twists the rope | |
 | 6 | The well | The rope brings up a Makers' box with two wheels | |
 | 7 | Inside: one real problem | A rule in two steps: × ? then + ?. The child tests it with 1 to 10 pebbles and sets both wheels. A wrong pair is shown wrong by a test | a rule in two steps |
 | | | **An epic card: Deep Finder.** And a note: "The Gate's code is five rules in a row. Each people keeps one." | |
@@ -182,4 +185,4 @@ Your lantern is the main thread's to build. This one has the same shape, with ot
 | 2 | No ship part, no mini quest, no surprise | Navigation; the well quest; a loose cog on the walk (in the Meadow) |
 
 **Not answered:** the reviewer's point that trying lines one town at a time finds every fit without planning. It is true. Decision 3 is the choice.
-**Not reviewed again as a note.** The built pages go to a reviewer as pictures.
+**Not reviewed again as a note.** The built pages went to a reviewer as 48 pictures: no blocker, 14 major, 25 minor. What changed is in the morning report, section 6.
