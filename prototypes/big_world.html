@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<!-- Nothing leaves the iPad: this rule stops the page from loading or sending anything at all. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<!-- Nothing leaves the iPad. This rule lets the page load one thing only: the game's two fonts (Andika, Chakra Petch). Without the internet it uses the iPad's own font. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Chakra+Petch:wght@500;700&display=swap">
 <title>Planet Algora</title>
 <!--
   Galaxy Math Quest: THE BIG WORLD.  One planet to explore from above.   [Handoff: HANDOFF_Big_World_2026-11-22.md]
   Planet Algora, Galaxy Patternox. Design: proposals/GMQ_Big_World_Design_v1_2026-11-22.md.
-  One file. No library, no pictures, no network. Everything is drawn by code.
+  One file. No library, no pictures. Everything is drawn by code. The only thing it fetches is the game's two fonts.
   It keeps its own save (gmq-bigworld-v1). It never writes the game's save.
 
   HOW IT IS LAID OUT, for the next person or AI:
@@ -73,6 +74,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .word.thing { border-color: #6fd08a; }
 #cmdrow { display: flex; gap: 6px; flex: 0 0 auto; }
 #cmd { flex: 1; min-width: 0; font: inherit; font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 8px 10px; border: 2px solid #4a5d80; border-radius: 10px; background: #132035; color: #e8eef8; -webkit-user-select: text; user-select: text; }
+#kb { flex: 0 0 auto; display: flex; flex-direction: column; gap: 4px; } #kb .kr { display: flex; gap: 3px; justify-content: center; } #kb button { flex: 1 1 0; min-width: 0; min-height: 40px; font: 700 1.05rem 'Chakra Petch', 'Trebuchet MS', sans-serif; border-radius: 8px; border: 0; background: #24345c; color: #fff; padding: 0; touch-action: manipulation; } #kb .kwide { flex: 5 1 0; font-size: .9rem; } #kb .kdel { flex: 1.6 1 0; color: #ff9486; } #kb .kx { flex: 1.6 1 0; background: #1c2c46; color: #a9b9d0; }
+#desk.typing #words, #desk.typing #log { display: none; }
+.word.item { border-color: #ffd25e; }
 #cmd::placeholder { text-transform: none; font-weight: 400; letter-spacing: 0; color: #7f90aa; font-family: 'Andika', 'Trebuchet MS', sans-serif; }
 /* a task, or a list, on the desk: in place of the word rows */
 #task { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; border: 2px solid #ffb23e; border-radius: 14px; padding: 9px 11px; }
@@ -113,14 +117,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
     <div id="log"></div>
     <div id="words"></div>
     <div id="task" hidden></div>
-    <div id="cmdrow"><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="none" placeholder="tap words, or tap the picture" aria-label="What you do"><button class="btn" id="go">Go</button></div>
+    <div id="cmdrow"><input id="cmd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="50" placeholder="type here, or tap words" aria-label="What you do"><button class="btn" id="go">Do it</button></div>
+    <div id="kb" hidden role="group" aria-label="Small keyboard"></div>
   </div>
 </div>
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
 const PLANET = 'Planet Algora';          /* [Proposal] the name is Marc's to choose. It is used from here only. */
-const VERSION = 'big world 3';
+const VERSION = 'big world 4';
 const KEY = 'gmq-bigworld-v1', GAMEKEY = 'gmq-station-sketch-v5';      /* its own save. The game's save is read for the cadet's name only, and never written. */
 
 /*MAP-BEGIN (painted by checks/bigworld_map_build.js; change that file, not these letters)*/
@@ -131,94 +136,94 @@ const MAP = [
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~.^^.^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
 '~~~~~~~~~~~~~~~~~~~~~~~~~Dddd^^^.~~~~~~~~~~~~~~~...^^^pppppp~~~~~~~~~~~~~~~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
-'~~~~~~~~~~~~~~~~~~~~~~~dddDdd^^^..~~~~~~~~~~.......^^^pppp^^pp~~~~~~~^^~~~~~~~~~~~~~~pp^^^..^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
-'~~~~~~~~~~~~~dDdddd~~dddddDddd^^....~~~~~...........^^pppp^^ppp^~~~~pp^pp^ppp~~~~~~~pppp^^..^^cccc#cccccccccr~~~~~~~~~~~~~~~~~~~',
-'~~~~~~~~~~~~DdddddDdddddDddddd^^....................^^pppp^p^^^ppp^^pppppppp^^^^^pp^pppp^^..^^cccc#cccccccccccrcc#~~~~~~~~~~~~~~',
-'~~~~~~~~~~~dddddDdddddDdddddDd^^....................^^ppppppp^^^^^ppppppppppppppppp^^ppp^^..^^cccc#ccccrccccccccc##~~~~~~~~~~~~~',
-'~~~~~~~~~~DdddddDdddddDdddddDd^^t....t....t.........^^^ppp^ppp^pppppppppppppppppp^^ppppp^^..^^cccc#cccccrcccccccc###~~~~~~~~~~~~',
-'~~~~~~~~~ddDdddddDdddddDdddddD^^t..t.t..t.t..t......^^^ppp^p^p^pppppppppppppppppp^^ppppp^^..^^######cccccccccccccc#cr~~~~~~~~~~~',
-'~~~~~~~~dddddDdddddDdddddDdddd^^.t....t....t.........^^ppp^pp^^ppppppppppppppppp^p^ppppp^^..^^ccccc##ccccccccc###ccccc~~~~~~~~~~',
-'~~~~~~~~DdddddDdddddDdddddDddd^^.t..t.t..t.t.........^^pppppp^^pppppppppppppppppp^^^pppp^^..^^ccccc#ccccccccccc##ccccccc~~~~~~~~',
-'~~~~~~~dDdddddDdddddDdddddDddd^^..t....t....t........^^ppppp^^ppppppppppppppppp^p^pppppp^^..^^ccccc#cccccccccccc#cccccccc~~~~~~~',
-'~~~~~~~dddddDdddddDdddddDddddd^^t.t..t.t..t.t........^^ppppp^pp^ppppppppppppp^^^^^^ppppp^^..^^ccccc#cccrcccccccc##ccccccccccc~~~',
-'~~~~~~~dddDdddddDdddddDdddddDd^^...t....t....t.......^^ppp^pp^^^^^^^ppppp^p^p^pp^^pppppp^^..^^^cccc#ccccccccccccc####ccccccccc~~',
-'~~~~~~~dddDdddddDdddddDdddddDd^^.t.t..t.t..t.t.......^^pppppp^^p^^pppppp^^pp^^^ppp^^pppp^^..^^^cccc#ccccRRRRRRRRRcccc#ccccccrc~~',
-'~~~~~~~ddddDdddddDdddddDddddd^^t....t....t...........^^pppppppp^^^^pppp^^^pp^^^^^p^^pppp^^..c^^cccc#cccrRRRRRRRRRccccc#cccccccc~',
-'~~~~~~~DdddddDdddddDdddddDdd^^^t..t.t..t.t..t........^^pppp^^p^p^ppp^pp^^ppppp^^^^p^^ppp^^..c^^cccc#ccccRRRRRRRRRccccc#crcccccc~',
-'~~~~~~~dDdddddDdddd^^^^^^^^^^^^.t....t....t..........^^ppp^ppp^^p^pppp^^p^p^^^^p^p^^pppp^^..c^^cccc#ccccRRRRRRRRRccrccccccccccc~',
-'~~~~~~~^^^^^^^^^^^^^^^^^^^^^ddd.t..t.t..t.t..t.......^^ppp^^^^^p^p^^pp~~p^^p^^^^^p^ppppp^^..c^^cccc#ccccRRRRRRRRRccrcc#cccccccc~',
-'~~~~~~~^^^^^^^^^^^^^ddddddddddd..t....t....t........^^^ppppppppppppppp~~ppppppppppppppp^^^..c^^cccc#ccccRRRRRRRRRcccc#ccccccccc~',
+'~~~~~~~~~~~~~~~~~~~~~~~dddDdd^^^..~~~~~~~~~~.......^^^ppppp^pp~~~~~~~p^~~~~~~~~~~~~~~pp^^^..^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~dDdddd~~dddddDddd^^....~~~~~...........^^pppp^p^p^p~~~~^^^p^^^^p~~~~~~~pppp^^..^^cccc#ccrccccccc~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~DdddddDdddddDddddd^^....................^^ppppp^^p^pppppppppppppp^ppppp^^ppp^^..^^cccc#ccccccrccccccc#~~~~~~~~~~~~~~',
+'~~~~~~~~~~~dddddDdddddDdddddDd^^....................^^ppppp^^^^^pppppppppppppp^^^^^^pppp^^..^^cccc#cccccccccccccc##~~~~~~~~~~~~~',
+'~~~~~~~~~~DdddddDdddddDdddddDd^^t....t....t.........^^^ppp^p^^^^pppppppppppppppppppp^ppp^^..^^cccc#ccccrrcccccccc###~~~~~~~~~~~~',
+'~~~~~~~~~ddDdddddDdddddDdddddD^^t..t.t..t.t..t......^^^ppp^p^ppppppppppppppppppp^p^^^ppp^^..^^######cccccrcccccccc#cc~~~~~~~~~~~',
+'~~~~~~~~dddddDdddddDdddddDdddd^^.t....t....t.........^^ppp^^^^^ppppppppppppppppp^pp^pppp^^..^^ccrcc##ccccccccc###ccrcc~~~~~~~~~~',
+'~~~~~~~~DdddddDdddddDdddddDddd^^.t..t.t..t.t.........^^ppppp^pppppppppppppppppppp^^^^ppp^^..^^rcccc#ccccccccccc##cccccrc~~~~~~~~',
+'~~~~~~~dDdddddDdddddDdddddDddd^^..t....t....t........^^pppp^pp^^ppppppppppppppp^p^p^^ppp^^..^^ccccc#cccccccccccc#rccccccc~~~~~~~',
+'~~~~~~~dddddDdddddDdddddDddddd^^t.t..t.t..t.t........^^ppp^^^p^^pppppppppppppp^^p^pp^ppp^^..^^ccccc#ccccccrccccc##ccccccccccc~~~',
+'~~~~~~~dddDdddddDdddddDdddddDd^^...t....t....t.......^^pppppp^p^pp^pppppppp^^p^p^^pp^ppp^^..^^^cccc#ccccccccrcccc####ccccccccc~~',
+'~~~~~~~dddDdddddDdddddDdddddDd^^.t.t..t.t..t.t.......^^pppp^p^^^ppppppp^p^pp^p^ppp^^pppp^^..^^^cccc#ccccRRRRRRRRRcccc#cccccccc~~',
+'~~~~~~~ddddDdddddDdddddDddddd^^t....t....t...........^^ppp^ppp^p^pppppp^ppp^^ppp^p^^^ppp^^..c^^cccc#ccccRRRRRRRRRccccc#cccrcccc~',
+'~~~~~~~DdddddDdddddDdddddDdd^^^t..t.t..t.t..t........^^ppp^p^^pp^ppp^pp^pppp^p^^pppppppp^^..c^^cccc#ccccRRRRRRRRRccccc#cccccccc~',
+'~~~~~~~dDdddddDdddd^^^^^^^^^^^^.t....t....t..........^^ppp^p^^p^p^^^ppppp^^p^p^ppp^ppppp^^..c^^ccrc#ccccRRRRRRRRRccrccccccccccc~',
+'~~~~~~~^^^^^^^^^^^^^^^^^^^^^ddd.t..t.t..t.t..t.......^^ppp^pp^pp^pp^^p~~^p^p^pp^pp^ppppp^^..c^^cccc#ccccRRRRRRRRRccccc#cccccccc~',
+'~~~~~~~^^^^^^^^^^^^^ddddddddddd..t....t....t........^^^ppppppppppppppp~~ppppppppppppppp^^^..c^^cccc#ccccRRRRRRRRRcccc#rcccccccc~',
 '~~~~~~~.t..t.t..t.t..t.t..t.t..t.t..t.t..t.t........^^^p^^^^^^p^^^^^pp~~pppp^^^^^^ppppp^^...c^^cccc#ccccRRRRRRRRRcccccccccccccc~',
-'~~~~~~~..t....t....t....t....t....t....t....t........^^^^^^^^^^^^^^.p.~~....^^^^^^^^^^^^^...c^^cccc#ccccccccccc#cccccccccccccc~~',
-'~~~~~~.t.t..t.t..t.t..t.t..t.t..t.t..t.t..t.t........^^^^...^^^^....ps~~s.......^^^^^^^^^...^^^cccccccrccccrcc#ccccccccccccccc~~',
+'~~~~~~~..t....t....t....t....t....t....t....t........^^^^^^^^^^^^^^.p.~~....^^^^^^^^^^^^^...c^^cccc#rcccccccccc#cccccccccccccc~~',
+'~~~~~~.t.t..t.t..t.t..t.t..t.t..t.t..t.t..t.t........^^^^...^^^^....ps~~s.......^^^^^^^^^...^^^ccccccccccccccc#ccrccrccccccccc~~',
 '~~~~~~....t....t....t....t....t....t....t....t........^^^...........ps~~s.............^^....^^cccccccccccccccc#cccccccccccccc~~~',
-'~~~~~~~.t.t..t.t..t.t..t.t..t.t..t.t..t.:::::t.........^^.........T.s~~~s........TT..^^^....^^ccccccccccccccrc#cccccccccccccc~~~',
-'~~~~~~~....t....t....t....t....t....t...:t..............T...........s~~~s...T........^^^....^^ccccc#ccccccccc#ccccccccccrcccc~~~',
-'~~~~~~~..t.t.......t.t..t.t..t.t..t.t..t:t..t........................s~~ssss................^^ccccc#ccccccc#ccccccccccccccccc~~~',
-'~~~~~~~t..............t....t....t....t..:.t...........T............ss~~~~~~~ssT.....T...T...^^cccccccccccc#cccccrccrcccc~~~~~~~~',
-'~~~~~~~t..t.....:.....t..t.t..t.t..t.t..:.t.^^...................ss~~~~~~~~~~~sT.T..........^^cccccccccccccccccccrccccc~~~~~~~~~',
-'~~~~~~..t.......:......t....t....t......:..t^^...............TTss~~~~~~~~~~~~~~~ss.T........^^cccc#cccccc#cccccccccccccc~~~~~~~~',
-'~~~~~~t.t..t.t..:....t.t..t.t..t........:t.t^^^............sT~~~~~~~~~~~~~~~~~~~~~sT........^^rccc#cccccc#cccrccccrccccccc~~~~~~',
-'~~~~~~...t....t.:..t....t....t..........:...^^^.........TTs~~~~~~~~~~~~~~~~~~~~~~~~~s.......^^crcr#cccccc#ccccccccccccccccc~~~~~',
-'~~~~~..t.t..t.t.:t.t..t.t..t.t....:::::::.t.t^^..........T~~~~~~~~~~~~~~~~~~~~~ss~~~~ss..T..^^crccc#ccccc#cccccccccccccrccc~~~~~',
-'~~~~~.....t....t:...t....t....t...:.....t....^^.........s~~~~~~~~~~~~~~~~~~~~~s.s~~~~~~s.T..^^cccccc#ccc##cccrrcccccccrrccc~~~~~',
-'~~~~~...t.t..t.t:::::::::::::::::::.....t..t.^^^........s~~~~sss~~~~~~~~~~~~~~~sT~~~~~~~s..^^^ccccccccccc######cccccrcccccc~~~~~',
-'~~~~~~t....t....t....:....t....t.........t....^^.......s~~~~~s.s~~~~~~~~~~~~~~~~~~~~~~~~s..^^cccccccccccc##cccc#ccccccc####~~~~~',
+'~~~~~~~.t.t..t.t..t.t..t.t..t.t..t.t..t.:::::t.........^^.........T.T~~~s..........T.^^^....^^ccccccccccccrccc#cccrccccrccccc~~~',
+'~~~~~~~....t....t....t....t....t....t...:t..........................s~~~sT.....T...T.^^^....^^ccccc#ccccccccc#ccccccccccccrcc~~~',
+'~~~~~~~..t.t.......t.t..t.t..t.t..t.t..t:t..t........................T~~ssss.......T........^^ccccr#ccccccc#ccccccccccccccccc~~~',
+'~~~~~~~t..............t....t....t....t..:.t..................T...T.ss~~~~~~~TT..............^^cccccccccccc#ccccccccrcccc~~~~~~~~',
+'~~~~~~~t..t.....:.....t..t.t..t.t..t.t..:.t.^^...................Ts~~~~~~~~~~~ss..........T.^^cccccccrccccccccccccccccc~~~~~~~~~',
+'~~~~~~..t.......:......t....t....t......:..t^^.........T....Tssss~~~~~~~~~~~~~~~sTT.........^^ccrc#cccccc#cccccccccccccc~~~~~~~~',
+'~~~~~~t.t..t.t..:....t.t..t.t..t........:t.t^^^.........T..ss~~~~~~~~~~~~~~~~~~~~~ss........^^cccc#cccccc#cccccccccccccccc~~~~~~',
+'~~~~~~...t....t.:..t....t....t..........:...^^^...........s~~~~~~~~~~~~~~~~~~~~~~~~~T.......^^cccc#cccccc#ccccccccccccccccc~~~~~',
+'~~~~~..t.t..t.t.:t.t..t.t..t.t....:::::::.t.t^^..........s~~~~~~~~~~~~~~~~~~~~~ss~~~~ss.....^^crccc#ccrcc#ccccccccccccccccc~~~~~',
+'~~~~~.....t....t:...t....t....t...:.....t....^^.........s~~~~~~~~~~~~~~~~~~~~~s.s~~~~~~s....^^cccccc#ccc##cccrccccccccccccc~~~~~',
+'~~~~~...t.t..t.t:::::::::::::::::::.....t..t.^^^........s~~~~sss~~~~~~~~~~~~~~~TT~~~~~~~T..^^^cccccrccccc######cccccccrcccc~~~~~',
+'~~~~~~t....t....t....:....t....t.........t....^^.......s~~~~~s.s~~~~~~~~~~~~~~~~~~~~~~~~s..^^cccccccccccc##cccc#cccrccc####~~~~~',
 '~~~~~~t..t.t..t.t..t.:..t.t..t.t..t.t..t.t..t.^^.......s~~~~~sss~~~~~~~~~~~~~~~~~~~~~~~~s..^^cccccccccccc#ccccc##ccccc#####~~~~~',
-'~~~~~~~t....t....t...:t....t....t....t....t...^^^......T~~~~~~~~~~~~~~~sssss~~~~~~~~~~~~sT.^^ccccccccccccc#cccc#ccccccc####~~~~~',
-'~~~~~~~t..t.t..t.t..t:t..t.t..t.t..t.t..t.t..t.^^......s~~~~~~~~~~~~~~s....s~~~~~~~~~~~~s..^^ccccccccccccr#ccc#cccccccccc#r~~~~~',
-'~~~~~~~.t....t.......:.t....t....t....t....t...^^......s~~~~~~~~~~~~~sT.....s~~~~~~~~~~s...^^ccccccccrcccc####cccccccccccrc~~~~~',
-'~~~~~~~~t..t.t.......:....t.t..t.t..t.t..t.t...^^.......s~~~~~~~~~~~~~s....s~~~~~~~~~~~sss.^cccccccccccccccrccrrccccccccccc~~~~~',
-'~~~~~~~~.t....t......:.......t....t....t....t.^^........s~~~~~~~~~~~~~~sTss~~~~~~~~~~~s~~~s.cccccccrccccccccccccccccccccccc~~~~~',
-'~~~~~~~~.t..t.t......:.....t.t..t.t..t.t..t.t.^^........s~~~~~~~~~~~~~~~~~~~~~~~~ssssss~~~~.cccccrcccccccccccccccccccccccc~~~~~~',
-'~~~~~~~~..t....t.....:........t....t....t....t^^......T..s~~~~~~~~~~~~~~~~~~~~~~s......s~~~~~ccccccccccccccccccccccccccccc~~~~~~',
-'~~~~~~~~t.t..t.t.....::::::.t.t..t.t.......t.t^^.........s~~~~~~~~~~~~~~~~~~~~~~~s......ss~~~~cccccccccccrcccccccrcccccccc~~~~~~',
-'~~~~~~~....t....t.........:....t.........t....^^........T.s~~~~~~~~~~~~~~~~~~~~~~s........s~~~~~cccccccccccccccccccccccccc~~~~~~',
-'~~~~~~~..t.t..t.t..t.t..t.:..t.t..t......t..t.^^......T....s~~~~~~~~~~~~~~~~~~~~~s....T.....c~~~~ccrrccccccccccccccccccccc~~~~~~',
-'~~~~~~.t....t....t....t...:t....t.........t...#^......T.T..ss~~~~~~~~~~~~~~~~~~~s....T......cc~~~~cccccccccccccccccccccccc~~~~~~',
-'~~~~~..t..t.t..t.t..t.t..t:t..t.t..t.t..t.t..t#..........ss~~~s~~~~~~~~~~~~~~~~s............ccc~~~~~cccccccccccccccrcccccc~~~~~~',
-'~~~~~...t....t....t....t..:.t....t....t....t..#.........s~~~~~Tsss~~~~~~~~~~~~s.T...T....T..ccccc~~~~ccccccccccccccccccccc~~~~~~',
-'~~~~~.t.t..t.t..t.t..t.t..:.t..t.t..t.t..t.t..#.......TT~~~~ss....ss~~~~~~~~~s.T....T.TT....cccccc~~~~~~~~~~~cccccccccccccc~~~~~',
-'~~~~~~...t....t....t....t.:..t....t....t....t.#......s~~~~~s........ss~~~~~ss..........T....cccccccc~~~~~~~~~~~~~~ccccccccc~~~~~',
-'~~~~~~~...................:...................#....~~~~~~~s...........sssss.....T...........ccccccccccccccc~~~~~~~~~~~~cccc~~~~~',
-'~~~~~~~###################.#######################~~~~~sss.............T........................................~~~~~~~~~~~~~~~~',
-'~~~~~~....................:......................~~~~ss...T..........T...............................................~~~~~~~~~~~',
+'~~~~~~~t....t....t...:t....t....t....t....t...^^^......T~~~~~~~~~~~~~~~sssss~~~~~~~~~~~~sT.^^cccccccccrrcc#cccc#cccccrc####~~~~~',
+'~~~~~~~t..t.t..t.t..t:t..t.t..t.t..t.t..t.t..t.^^......s~~~~~~~~~~~~~~s....s~~~~~~~~~~~~s.T^^ccrcccccccccc#ccc#ccccccccrc#c~~~~~',
+'~~~~~~~.t....t.......:.t....t....t....t....t...^^......s~~~~~~~~~~~~~s......s~~~~~~~~~~T...^^ccccccccccccc####ccccccccccrcc~~~~~',
+'~~~~~~~~t..t.t.......:....t.t..t.t..t.t..t.t...^^.......s~~~~~~~~~~~~~s....s~~~~~~~~~~~sss.^ccccccrcccccccccccccccccccccccc~~~~~',
+'~~~~~~~~.t....t......:.......t....t....t....t.^^........s~~~~~~~~~~~~~~ssss~~~~~~~~~~~s~~~s.ccccccccccccccrcccccccccccrcccc~~~~~',
+'~~~~~~~~.t..t.t......:.....t.t..t.t..t.t..t.t.^^........s~~~~~~~~~~~~~~~~~~~~~~~~sTssss~~~~.cccrcccccccccrcccccccccccccccc~~~~~~',
+'~~~~~~~~..t....t.....:........t....t....t....t^^.........s~~~~~~~~~~~~~~~~~~~~~~s......T~~~~~crccccccccccccccccccccccccccc~~~~~~',
+'~~~~~~~~t.t..t.t.....::::::.t.t..t.t.......t.t^^.........s~~~~~~~~~~~~~~~~~~~~~~~s......sT~~~~cccccccccccccccccccccccccccc~~~~~~',
+'~~~~~~~....t....t.........:....t.........t....^^..........s~~~~~~~~~~~~~~~~~~~~~~s........s~~~~~cccccccccccccccccccccccccc~~~~~~',
+'~~~~~~~..t.t..t.t..t.t..t.:..t.t..t......t..t.^^........T.Ts~~~~~~~~~~~~~~~~~~~~~s..........c~~~~ccccccccccccccccccccccccc~~~~~~',
+'~~~~~~.t....t....t....t...:t....t.........t...#^..........Tss~~~~~~~~~~~~~~~~~~~s..T........cc~~~~cccccccccccccccccccccccc~~~~~~',
+'~~~~~..t..t.t..t.t..t.t..t:t..t.t..t.t..t.t..t#..........ss~~~s~~~~~~~~~~~~~~~~T.T..........ccc~~~~~cccccrcccccccccccccccc~~~~~~',
+'~~~~~...t....t....t....t..:.t....t....t....t..#.........s~~~~~ssss~~~~~~~~~~~~sT.T...T...T..ccccc~~~~crcccccccccccrccccccc~~~~~~',
+'~~~~~.t.t..t.t..t.t..t.t..:.t..t.t..t.t..t.t..#.......ss~~~~ss....ss~~~~~~~~~s....T..T......cccccc~~~~~~~~~~~cccccccccccccc~~~~~',
+'~~~~~~...t....t....t....t.:..t....t....t....t.#......s~~~~~s...T....ss~~~~~ss...............cccccccc~~~~~~~~~~~~~~ccccccccc~~~~~',
+'~~~~~~~...................:...................#....~~~~~~~s...........sssss..............T..ccccccccccccccc~~~~~~~~~~~~cccc~~~~~',
+'~~~~~~~###################.#######################~~~~~sss..........................T...........................~~~~~~~~~~~~~~~~',
+'~~~~~~....................:......................~~~~ss............T.T.T..........T..................................~~~~~~~~~~~',
 '~~~~~~T...................:.................TT..~~~~..................................#...................................~~~~~~',
-'~~~~~.TT..T...............:...............TTmmm.~~~mmmm...............................#...wwwwwwwww.........wwwwwwwww......~~~~~',
-'~~~~~....,.........T...T..:.**.rrrr..T......mm..~~....m......m...,....mmm.mm......,...#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
-'~~~~~T.,,,,,T......::.....:***rrrrrr....:::::::~~~:::.m........m.........m..........,.#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
-'~~~~~T.,,,,,......T.:T....:.**rrrrrrr..T:...mmm.~~..:.m.......m,m,...mm...m.m.m.......#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
-'~~~~~..,,,,,T.......:.....:...r...rrrr..:...mTm.~~..:.m.....~..,,......m..,.,...,.m.,m#.######.########.########.########.~~~~~~',
-'~~~~~.....T.........:.....:.....:.rrrrr.:....m..~~..:.m.....m~m.m.,.......mm..m...,...#.ww.........wwwwwwwww.........wwww~~~~~~~',
-'~~~~~~.....T........:T....:.....:..rrr.T:...T...~~..:.m.....,.~mm,.m......m.....,.....#.ww.........wwwwwwwww.........wwww~~~~~~~',
-'~~~~~~....T.......T.:.....:,,,.T:...T...:......~~~..:.m.......,~..mm....m.......m.m..,#.ww.........wwwwwwwww.........wwww~~~~~~~',
-'~~~~~~...~~~........:::::::::::::.....T,:,.....~~..m:mmmmmm...m.~...mm.~~~~~~...,.....#.ww.........wwwwwwwww.........wwww~~~~~~~',
-'~~~~~~..~~~~~...T....:.....,,,........,,:,,....~~...:.....m.m...m~.~~~~~....m~~.,..m....######.########.########.########~~~~~~~',
-'~~~~~~...~~~~.......T:..............T.,,:,,....~~...:.....mmmm....~.mmm,m.....~~......#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
-'~~~~~~....T...:......:......T.........,,:,,....~~...:......m....m~m,.,..........~.....#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
-'~~~~~~........:.*....:.H...............,:,.T...~~...:......m...m.~..,,.m.........~~...#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
-'~~~~~~........:***....H.H...............:......~~...:......m.,..,~...,..........,.~~..#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
-'~~~~~~........:.*....:.:................:......~~...:......m.,...~...,,m............~.#.######.########.########.#######~~~~~~~~',
-'~~~~~~......T.:......:::...T..T.........:......~~...:..:...m....~~..m..,........m...,,#.ww.........wwwwwwwww.........wwww~~~~~~~',
-'~~~~~.....T...:........:....T.....:::::::::::::~~~::::::...m.m,.~mmm......m........,..#.ww.........wwwwwwwww.........wwww~~~~~~~',
-'~~~~~...*T....:::::::::::::::::::::............~~~.........m.,..~..,m......mm....,....#.ww.........wwwwwwwww.........wwwww~~~~~~',
-'~~~~~~.*.*.........:..............:..........T.~~~.........mm...~....,..m........,..,.#.ww.........wwwwwwwww.........wwwwww~~~~~',
-'~~~~~~..*.....T....:..............:............~~~......*..m....~....m..,,m..m...m.m..#.######.########.########.########.#.~~~~',
-'~~~~~~.............:..............:............~~........*.m.m.m~m..m.,...........m,..#...wwwwwwwww.........wwwwwwwww........~~~',
-'~~~~~~~......:::::::............T..............~~......mmmmmmm..~~..,....,..m.......m.#...wwwwwwwww.........wwwwwwwww........~~~',
-'~~~~~~~......:.................................~~mmmmmm.....,...m~..m..m..,,,......,..#...wwwwwwssssssssssssssssssssssssssssss~~',
-'~~~~~~~~.....:...............a.a.a.a.a.a.......~~.............m..~~,....m...m.......,.#.........ssssssss~~~sssssss~~~~~~sss~~~~~',
-'~~~~~~~~~....:.................................~~............m....~.......,.m.m.m..m..#.........ssssss~~~~~~~~~~~~~~~~~~~~~~~~~~',
-'~~~~~~~~~....................a.a.a.a.a.a.......~~...........m......~,.,.........,m....##........sssss~~~~~~~~~~~s~~~~~~~~~~~~~~~',
-'~~~~~~~~~~......,,,,,......................*.T.~~............,...,.~~....m....~~~~m,...#........ss~~~~~~~~~~~~~sss~~~~~~~~~~~~~~',
-'~~~~~~~~~~~....T,,,,,,.......a.a.a.a.a.a..***..~~..............m..,.~....,..~~~..,~~~..#........~~~~~~~s~~~~~~~ss~~ssss~~~~~~~~~',
-'~~~~~~~~~~~.....,,,,,....................T.*...~~..................m~~..,~~~..m,...m~~.#........~~~~~~ssss~~~~~~~~~sssss~~~~~~~~',
-'~~~~~~~~~~~..T..T............a.a.a.a.a.a.......~~............m..m.m,m~,~~~.............#........s~~~~sssss~~~~~~~~~sssss~~~~~~~~',
-'~~~~~~~~~~~ssssssssssssssssssssssssssssssssssss~~...........mm~~......~mm........m.....#........ss~~~~sss~~~~~~~~~~~~~~~~~~~~~~~',
-'~~~~~~~~~~~ssssssssssssssssss~~~sssssssssssss~~~~...........~~~~~....,~..m..,....,..m..##.......sss~~~~~~~~~~sss~~~~~~~~~~~~~~~~',
-'~~~~~~~~~~~~~ssssssssssssss~~~~~~~ssss~~~~~~~~~~~~~.......~~~~~~~~~~,.~mm.......,.......#.......sss~~~~~~~~~sssss~~~~~~~~~~~~~~~',
-'~~~~~~~~~~~~~~~..........~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~~~~~m.,......m.m.m..#......~~~~~~~~~~~~~~sss~~~~~~~~~~~~~~~~',
-'~~~~~~~~~~~~~~~~~~..~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.............#....~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~.TT..T...............:...............TTmmm.~~~mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm#...wwwwwwwww.........wwwwwwwww......~~~~~',
+'~~~~~....,.........T...T..:.**.rrrr..T......mm..~~....m.....,...................,.....#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
+'~~~~~T.,,,,,T......::.....:***rrrrrr....:::::::~~~:::.m......,...................*....#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
+'~~~~~T.,,,,,......T.:T....:.**rrrrrrr..T:...mmm.~~..:.m......................*...m....#...wwwwwwwww.........wwwwwwwww.....~~~~~~',
+'~~~~~..,,,,,T.......:.....:...r...rrrr..:...mTm.~~..:.m.....~.....m...S.S...........*.#.######.########.########.########.~~~~~~',
+'~~~~~.....T.........:.....:.....:.rrrrr.:....m..~~..:.m.....,~..m......:..,m......,...#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~.....T........:T....:.....:..rrr.T:...T...~~..:.m.......~..m.....:,S..m.........#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~....T.......T.:.....:,,,.T:...T...:......~~~..:.m......,.~,,*..m.:..........,...#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~...~~~........:::::::::::::.....T,:,.....~~..m:mmmmmm.....~..m...b~~~~~......,..#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~~..~~~~~...T....:.....,,,........,,:,,....~~...:.....m......~.~~~~b.....~b:::::::..######.########.########.########~~~~~~~',
+'~~~~~~...~~~~.......T:..............T.,,:,,....~~...:.....mm......~....:......b~......#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~....T...:......:......T.........,,:,,....~~...:......m.....~...,.:.....,:.~.....#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~........:.*....:.H...............,:,.T...~~...:......m*....~.....:....*.:..~~...#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~........:***....H.H...............:......~~...:......m..,,.~.....:m.....:.*.~~.m#...wwwwwwwww.........wwwwwwwww....~~~~~~~',
+'~~~~~~........:.*....:.:................:......~~...:......m.S.S.~.m..m:...mm.:.....~.#.######.########.########.#######~~~~~~~~',
+'~~~~~~......T.:......:::...T..T.........:......~~...:..:...m..:.~~.....:*,....:.S.,..m#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~.....T...:........:....T.....:::::::::::::~~~::::::...:::::b:::::::::::::::.S.m..#.ww.........wwwwwwwww.........wwww~~~~~~~',
+'~~~~~...*T....:::::::::::::::::::::............~~~.........m..:.~........m.:.m..Sm...,#.ww.........wwwwwwwww.........wwwww~~~~~~',
+'~~~~~~.*.*.........:..............:..........T.~~~.........mm,:.~..........:.......*..#.ww.........wwwwwwwww.........wwwwww~~~~~',
+'~~~~~~..*.....T....:..............:............~~~......*..m..:bb..........:...m.....,#.######.########.########.########.#.~~~~',
+'~~~~~~.............:..............:............~~........*.m....~...,....*.:..,.....m.#...wwwwwwwww.........wwwwwwwww........~~~',
+'~~~~~~~......:::::::............T..............~~......mmmmm....~~.........:......m...#...wwwwwwwww.........wwwwwwwww........~~~',
+'~~~~~~~......:.................................~~mmmmmm......m...~.........:.,.m......#...wwwwwwssssssssssssssssssssssssssssss~~',
+'~~~~~~~~.....:...............a.a.a.a.a.a.......~~...............,~~........:.m.......*#.........ssssssss~~~sssssss~~~~~~sss~~~~~',
+'~~~~~~~~~....:.................................~~.............*...~...m....:..........#.........ssssss~~~~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~....................a.a.a.a.a.a.......~~............,.....~.......:m.......mm#.........sssss~~~~~~~~~~~s~~~~~~~~~~~~~~~',
+'~~~~~~~~~~......,,,,,......................*.T.~~..................~~.,....:..~~~~..m.#.........ss~~~~~~~~~~~~~sss~~~~~~~~~~~~~~',
+'~~~~~~~~~~~....T,,,,,,.......a.a.a.a.a.a..***..~~................mm.~......:~~~...~~~.#.........~~~~~~~s~~~~~~~ss~~ssss~~~~~~~~~',
+'~~~~~~~~~~~.....,,,,,....................T.*...~~...........m......,~~...~~b........~~#.........~~~~~~ssss~~~~~~~~~sssss~~~~~~~~',
+'~~~~~~~~~~~..T..T............a.a.a.a.a.a.......~~....................~.~~~.:..........#.........s~~~~sssss~~~~~~~~~sssss~~~~~~~~',
+'~~~~~~~~~~~ssssssssssssssssssssssssssssssssssss~~.............~~......~...,:.S..m..**.#.........ss~~~~sss~~~~~~~~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~ssssssssssssssssss~~~sssssssssssss~~~~...........~~~~~m....~....:......*...#.........sss~~~~~~~~~~sss~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~ssssssssssssss~~~~~~~ssss~~~~~~~~~~~~~.......~~~~~~~~~~..~...SmS.........#.........sss~~~~~~~~~sssss~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~..........~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~~~~~....mmm...m..m#........~~~~~~~~~~~~~~sss~~~~~~~~~~~~~~~~',
+'~~~~~~~~~~~~~~~~~~..~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~...........#......~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~..~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'];
@@ -367,17 +372,53 @@ function bwStonesRaw(seed, round, k) { const r = wrng((seed >>> 0) * 31337 + rou
     while (opts.length < 3 && guard++ < 50) { const w = wrong[Math.floor(r() * wrong.length)]; if (opts.indexOf(w) < 0) opts.push(w); }
     const mixed = opts.map(v => [r(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]); rows.push({ opts: mixed, right: mixed.indexOf(right) }); prev = right; }
   return { shown, step, down, rows }; }
+/* THE FLEET (the Reach's big quest).  The missing number, many times (3.OA.4).
+   The harbour has rafts of three kinds. A kind is how many baskets a raft carries: three different numbers from 4, 6, 7, 8, 9.
+   Three towns each order a number of baskets. A raft sails full. A town's rafts are all one kind. A town gets exactly its order.
+   So for each town the child looks for a kind and a number of rafts with  rafts x kind = order.
+   Nothing sails until all three lines are right, so no choice can ever make the job impossible.
+   Kept by the rule, and checked on 20,000 children by trying every plan a child could make (checks/bigworld_reach_numbers_check.js):
+     - every order can be carried by at least one kind; at least one order can be carried by two kinds
+     - the harbour has the rafts for a plan that serves all three towns; there are 1 or 2 such plans
+     - there is a trap: a line that is right for its own town, with rafts that are there, but which no full plan uses. The child has to look ahead.
+     - every fact is inside 10 x 10; nothing over 81; no kind has more than 9 rafts; no order is 24 (the baker's example) */
+const TOWNS = ['stilt', 'reed', 'mud'];
+function bwFleetPlans(kinds, count, orders) { const opts = orders.map(o => kinds.filter(k => o % k === 0).map(k => ({ k, n: o / k }))), full = [];
+  for (const a of opts[0]) for (const b of opts[1]) for (const c of opts[2]) { const used = {}; for (const q of [a, b, c]) used[q.k] = (used[q.k] || 0) + q.n; if (kinds.every(k => (used[k] || 0) <= count[k])) full.push([a, b, c]); }
+  return { opts, full }; }
+function bwFleet(seed) {
+  for (let t = 0; t < 4000; t++) { const r = wrng((seed >>> 0) * 6151 + t * 7723 + 3), pick = a => a[Math.floor(r() * a.length)], mixed = a => a.map(v => [r(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]);
+    const kinds = mixed([4, 6, 7, 8, 9]).slice(0, 3).sort((a, b) => a - b), plan = [0, 1, 2].map(() => ({ k: pick(kinds), n: 3 + Math.floor(r() * 7) })), orders = plan.map(q => q.k * q.n);
+    if (new Set(orders).size < 3 || orders.some(o => o > 81 || o < 12 || o === 24)) continue;
+    if (orders.some(o => kinds.some(k => o % k === 0 && o / k > 10))) continue;
+    const count = {}; kinds.forEach(k => { count[k] = plan.filter(q => q.k === k).reduce((a, q) => a + q.n, 0) + Math.floor(r() * 2); if (count[k] === 0) count[k] = 2 + Math.floor(r() * 3); });
+    if (kinds.some(k => count[k] > 9)) continue;
+    const { opts, full } = bwFleetPlans(kinds, count, orders); if (full.length < 1 || full.length > 2) continue; if (!opts.some(o => o.length >= 2)) continue;
+    if (!opts.some((o, i) => o.some(q => q.n <= count[q.k] && !full.some(f => f[i].k === q.k)))) continue;
+    const ord = mixed([0, 1, 2]), order = {}; TOWNS.forEach((name, i) => { order[name] = orders[ord[i]]; });
+    return { kinds, count, order }; }
+  return null; }
+/* THE WELL (a mini quest of five steps, across the Meadow and the Reach).
+   The winch lowers `per` arm-lengths each turn; it takes `turns` turns: the well is per x turns deep.
+   A bundle of long reeds makes `each` arm-lengths of rope: the rope needs `bundles` bundles, and each x bundles is the same depth.
+   `each` is never `per` or `turns`, so the second fact is a new one, not the first one turned round.
+   The box in the well has two wheels: a number goes in, the box does  x a  then  + b.  a is 2, 3 or 4; b is 1 to 9 and not 2 (the lid's example is x 5 then + 2). */
+const WELLSETS = [[4, 6, 8, 3], [3, 8, 6, 4], [4, 9, 6, 6], [6, 6, 4, 9], [6, 6, 9, 4], [3, 6, 9, 2], [4, 10, 8, 5], [8, 5, 4, 10], [3, 10, 6, 5], [6, 4, 8, 3], [9, 4, 6, 6], [6, 5, 10, 3]];
+function bwWell(seed) { const r = wrng((seed >>> 0) * 4441 + 9), w = WELLSETS[Math.floor(r() * WELLSETS.length)], a = [2, 3, 4][Math.floor(r() * 3)], b = [1, 3, 4, 5, 6, 7, 8, 9][Math.floor(r() * 8)]; return { per: w[0], turns: w[1], depth: w[0] * w[1], each: w[2], bundles: w[3], a, b }; }
+const boxOut = (W, n) => W.a * n + W.b;
+/* A LOOSE COG (a surprise on the walk): three quick clicks. Each shows a small rule at work twice, and asks for the third. */
+function bwCog(seed, k) { const r = wrng((seed >>> 0) * 977 + k * 131 + 7), qs = []; for (let i = 0; i < 3; i++) { const times = r() < .6, n = times ? 2 + Math.floor(r() * 4) : 3 + Math.floor(r() * 7), xs = [2 + Math.floor(r() * 3), 5 + Math.floor(r() * 2), 7 + Math.floor(r() * 3)], f = x => times ? x * n : x + n; qs.push({ a: [xs[0], f(xs[0])], b: [xs[1], f(xs[1])], x: xs[2], ans: f(xs[2]) }); } return qs; }
 /*NUM-END*/
 
 /*WORLD-BEGIN  The world as data. A person or an AI adds a being, a find or a place HERE, and bwCheck() says at once if a rule is broken.
   kind: place (has an inside), machine, being (says hello, or asks), find (a thing to look at or take), gate, sign, view.
   x, y: its square. stand: where the cadet stands to use it (worked out if left off).  words: the first one is the word a child taps.
   says: what a greeter says, a line each time.  look: what looking shows.  secret: the game never asks for it.  act: it has code of its own (ACT in the engine). */
-const WALK = '.:,*swcpdR';
+const WALK = '.:,*swcpdRb';
 const REGIONS = {
   0: { id: 'sea', name: 'The sea' },
   1: { id: 'meadow', name: 'Mender Meadow', built: true, g: ['#62b05c', '#5aa856'], folk: 'the Menders: small copper folk who keep the Makers\' machines', maths: 'find the rule of a number machine (3.OA.9); plan with two or three rules in order (3.OA.8)' },
-  2: { id: 'reach', name: 'The Reach', built: false, g: ['#5fa888', '#57a080'], folk: 'the Rillfolk: river people with rafts', maths: 'the missing number (3.OA.4, 3.OA.6)' },
+  2: { id: 'reach', name: 'The Reach', built: true, g: ['#5fa888', '#57a080'], folk: 'the Rillfolk: river people with rafts', maths: 'the missing number (3.OA.4, 3.OA.6)' },
   3: { id: 'hills', name: 'The Terrace Hills', built: false, g: ['#93b455', '#8aab4e'], folk: 'the Furrows: tall farmers of the steps', maths: 'split and swap (3.OA.5)' },
   4: { id: 'woods', name: 'The Pattern Woods', built: false, g: ['#3f917c', '#3a8874'], folk: 'the Eights: the crew of the S.S. Infinity', maths: 'number patterns and codes (3.OA.9)' },
   5: { id: 'lake', name: 'The Lake of Two Suns', built: false, g: ['#6db26a', '#65aa62'], folk: 'the Twinseers: watchers of the two suns', maths: 'times and share undo each other (3.OA.6, 3.OA.7)' },
@@ -387,7 +428,7 @@ const REGIONS = {
   9: { id: 'dunes', name: 'The Growing Dunes', built: false, extra: true, g: ['#e8cd90', '#e1c588'], maths: 'Grade 4: patterns that grow (4.OA.5)' } };
 const THINGS = [
   { id: 'ship', kind: 'place', x: 13, y: 83, stand: [13, 82], name: 'your ship', words: ['ship'], act: 'ship' },
-  { id: 'sign', kind: 'sign', x: 15, y: 80, stand: [14, 80], name: 'a signpost', words: ['sign', 'signpost'], look: 'The sign says: MENDER VILLAGE, north. THE RILL, east.' },
+  { id: 'sign', kind: 'sign', x: 15, y: 80, stand: [14, 80], name: 'a signpost', words: ['sign', 'signpost'], look: 'The sign says: MENDER VILLAGE, north. THE RILL, east.', on: { push: 'The signpost wobbles, then stands straight again. It still points north and east.', take: 'The signpost is stuck fast in the ground. And others need it.', talk: 'The sign has said all it has to say.' } },
   { id: 'village', kind: 'place', x: 23, y: 71, stand: [23, 72], name: 'Mender Village', words: ['village', 'huts'], act: 'village', label: 'Mender Village' },
   { id: 'm_pond', kind: 'machine', site: 'pond', x: 14, y: 68, stand: [14, 69], name: 'the Pond Machine', words: ['machine', 'pond'], act: 'machine', label: 'Pond Machine' },
   { id: 'm_wall', kind: 'machine', site: 'wall', x: 18, y: 60, stand: [19, 60], name: 'the Wall Machine', words: ['machine', 'wall'], act: 'machine', label: 'Wall Machine' },
@@ -400,46 +441,88 @@ const THINGS = [
   { id: 'fisher', kind: 'being', x: 13, y: 66, name: 'a Mender fisher', words: ['fisher'], col: '#b86a3a', says: ['Shh. The fish are counting.', 'No bites yet. Hello anyway.'], then: { when: 'stone', says: ['The machines are humming again. It scares the fish. I do not mind.'] } },
   { id: 'listener', kind: 'being', x: 38, y: 72, name: 'a Mender with big ears', words: ['listener'], col: '#d08a4a', says: ['The Rillfolk sing at night, across the river.', 'We have not heard them since the bridge went up.', 'I miss the singing.'], then: { when: 'bridge', says: ['Listen! You can hear the Rillfolk singing again.', 'The bridge is down. I will go and see my cousin on the far side.'] } },
   { id: 'gran', kind: 'being', x: 29, y: 70, name: 'an old Mender', words: ['old', 'mender'], col: '#a8683a', says: ['My gran crossed the Rill north of the bridge. On the old stones, past the reeds.', 'She said the stones only hold if you know their rule.', 'Hello again, dear.'] },
-  { id: 'cutter', kind: 'being', x: 41, y: 61, name: 'a Mender reed cutter', words: ['cutter'], col: '#b8743a', says: ['I cut reeds for the roofs.', 'Mind the river. The old stones are just past the reeds. They tip.', 'Hello again.'] },
+  { id: 'cutter', kind: 'being', x: 41, y: 61, name: 'a Mender reed cutter', words: ['cutter'], col: '#b8743a', act: 'cutter', says: ['I cut reeds for the roofs.', 'Mind the river. The old stones are just past the reeds. They tip.', 'Hello again.'] },
   { id: 'keeper', kind: 'being', x: 41, y: 82, name: 'the orchard keeper', words: ['keeper'], col: '#c08040', act: 'keeper' },
   { id: 'rubble', kind: 'find', secret: true, x: 21, y: 57, stand: [21, 58], name: 'some rubble', words: ['rubble'], act: 'rubble', gives: 'shard' },
   { id: 'log', kind: 'find', secret: true, x: 24, y: 86, name: 'a hollow log', words: ['log'], act: 'log', gives: 'coin' },
   { id: 'spin', kind: 'find', x: 9, y: 70, name: 'something red', words: ['red', 'spinner'], act: 'spin', gives: 'spinner' },
-  { id: 'well', kind: 'find', x: 27, y: 77, name: 'a well', words: ['well'], scenery: true, look: 'You drop a pebble in. Plink. The echo comes back three times: plink, plink, plink.' },
-  { id: 'ring', kind: 'find', x: 8, y: 76, name: 'a ring of flowers', words: ['flowers', 'ring'], scenery: true, look: 'Twelve flowers in a ring. Someone planted them in threes: 3, 3, 3 and 3.' },
+  { id: 'well', kind: 'find', x: 27, y: 77, name: 'the well', words: ['well', 'winch'], act: 'well', on: { talk: 'You shout “hello” down the well. “Hello… ello… lo,” it says back.', push: 'The well is stone, as wide as a hut. It will not move.', open: 'The well has no lid. It is open already, and very deep.', take: 'You cannot carry a well. You could take water, if you had a bucket.' } },
+  { id: 'ring', kind: 'find', x: 8, y: 76, name: 'a ring of flowers', words: ['flowers', 'ring'], scenery: true, look: 'Twelve flowers in a ring. Someone planted them in threes: 3, 3, 3 and 3.', on: { take: 'Somebody planted these with care. You leave them growing.', dig: 'You will not dig up somebody\'s flowers.', push: 'You brush the flowers. Yellow dust puffs up. You sneeze.', talk: 'You say hello to the flowers. A bee answers.' } },
   { id: 'cliff', kind: 'view', x: 7, y: 79, name: 'the west cliff', words: ['cliff'], scenery: true, look: 'You look out over the sea. Far away you can just see hills of sand. They look like steps, each one bigger than the last.' },
   { id: 'lookout', kind: 'view', x: 55, y: 71, stand: [55, 72], name: 'the lookout hill', words: ['lookout', 'hill'], act: 'lookout', label: 'Lookout' },
-  { id: 'guard', kind: 'being', x: 58, y: 74, stand: [57, 74], name: 'a Rillfolk guard', words: ['guard'], col: '#4a9fd8', act: 'guard' } ];
+  { id: 'guard', kind: 'being', x: 58, y: 73, stand: [58, 74], name: 'a Rillfolk guard', words: ['guard'], col: '#4a9fd8', folk: 'rill', act: 'guard' },
+  { id: 'gate2', kind: 'gate', gate: 'reeds', x: 59, y: 74, stand: [58, 74], name: 'the reed gate', words: ['gate'], act: 'gate2' },
+  { id: 'harbour', kind: 'place', x: 62, y: 72, stand: [62, 73], name: 'the harbour', words: ['harbour', 'houses'], act: 'harbour', label: 'The harbour' },
+  { id: 'sp_stilt', kind: 'being', town: 'stilt', x: 72, y: 63, stand: [71, 63], name: 'the speaker of Stilt Town', words: ['speaker', 'stilt'], col: '#3f8fd0', folk: 'rill', act: 'speaker', label: 'Stilt Town' },
+  { id: 'sp_reed', kind: 'being', town: 'reed', x: 80, y: 74, stand: [79, 74], name: 'the speaker of Reed Town', words: ['speaker', 'reed'], col: '#5aa8c8', folk: 'rill', act: 'speaker', label: 'Reed Town' },
+  { id: 'sp_mud', kind: 'being', town: 'mud', x: 76, y: 89, stand: [75, 89], name: 'the speaker of Mud Town', words: ['speaker', 'mud'], col: '#4f86b8', folk: 'rill', act: 'speaker', label: 'Mud Town' },
+  { id: 'rafter', kind: 'being', x: 68, y: 75, stand: [68, 74], name: 'a Rillfolk child', words: ['child'], col: '#6ab8e0', folk: 'rill', says: ['I can pole a raft all by myself. Nearly.', 'Do you really come from the sky?', 'Our rafts are of three kinds. Count the number on the sail.'], then: { when: 'fleet', says: ['The fleet went out! I waved to every raft.', 'One day I will steer the biggest one.'] } },
+  { id: 'pier', kind: 'view', x: 64, y: 77, stand: [63, 77], name: 'the end of the long pier', words: ['pier', 'post'], scenery: true, look: 'From the end of the pier you can see a raft that sank long ago. Something shines under it. The water is too deep to wade.', on: { dig: 'You cannot dig in planks.', push: 'The mooring post is as thick as a tree. It does not move.', take: 'The post holds up the pier. You leave it.', use: 'You tie nothing to the post. You have no boat yet.' } },
+  { id: 'bottle', kind: 'find', secret: true, x: 74, y: 83, name: 'something in the reeds', words: ['bottle', 'reeds'], act: 'bottle', gives: 'bottle' },
+  { id: 'lift', kind: 'gate', gate: 'lift', x: 86, y: 67, stand: [85, 67], name: 'the hill lift', words: ['lift', 'cage'], act: 'lift' } ];
 /* inside the village: a side view. x is how far across the picture (0 to 1). */
-const SCENES = { village: { name: 'Mender Village', out: 'village', things: [
+const SCENES = { harbour: { name: 'The harbour', out: 'harbour', look: 'reach', things: [
+  { id: 'door', x: .07, name: 'the way out', words: ['out', 'leave'], act: 'leave' },
+  { id: 'baker', x: .23, name: 'the baker', words: ['baker'], act: 'baker' },
+  { id: 'netmender', x: .4, name: 'the net mender', words: ['mender', 'net'], act: 'netmender' },
+  { id: 'keeper2', x: .58, name: 'the harbour keeper', words: ['keeper'], act: 'keeper2' },
+  { id: 'board', x: .76, name: 'the loading board', words: ['board', 'fleet'], act: 'board' },
+  { id: 'singer', kind: 'being', x: .92, name: 'an old singer', words: ['singer'], says: ['My throat is dry. No song until the rice is out.', 'I knew a song about a bridge. I forget how it goes.'], then: { when: 'fleet', says: ['La, la! The rice is out, the tide is in. Listen: they can hear me over the river.', 'Sing with me, sky-walker!'] } } ] },
+  village: { name: 'Mender Village', out: 'village', things: [
   { id: 'door', x: .07, name: 'the way out', words: ['out', 'leave'], act: 'leave' },
   { id: 'kid', x: .25, name: 'a Mender child', words: ['child'], act: 'kid' },
   { id: 'store', x: .42, name: 'the pip store', words: ['store', 'bins'], act: 'store' },
   { id: 'elder', x: .59, name: 'Elder Rivet', words: ['elder', 'rivet'], act: 'elder' },
   { id: 'mural', x: .76, name: 'the painted board', words: ['board', 'painting'], act: 'mural' },
-  { id: 'rstone', x: .92, name: 'the Rule Stone', words: ['stone'], act: 'rstone' } ] } };
+  { id: 'rstone', x: .92, name: 'the Rule Stone', words: ['stone'], act: 'rstone', on: { take: 'The Rule Stone belongs to the Menders. You leave it on its stand.', push: 'You touch the Rule Stone. It is cold. It does not move.', talk: 'You say hello to the stone. It keeps its secret.' } } ] } };
 /* gates: squares that are shut until something opens them. built: false means the far side is not made yet. */
 const GATES = {
   bridge: { name: 'the bridge', tiles: [[47, 74], [48, 74], [49, 74]], job: 'bridge' },
   stones: { name: 'the old stepping stones', tiles: [[47, 60], [48, 60], [49, 60]], job: 'stones' },
   hedge: { name: 'the hedge gate', tiles: [[26, 55]], built: false, to: 4 },
-  reeds: { name: 'the reed gate', tiles: [[59, 74]], built: false, to: 2 } };
+  reeds: { name: 'the reed gate', tiles: [[59, 74]] },
+  lift: { name: 'the hill lift', tiles: [[86, 67]], built: false, to: 3 } };
 /* borders on the main road. Every one needs two ways across. [Source: Marc, 22 November: "or you can do different quests to get those"] */
 const BORDERS = [{ id: 'rill', name: 'the Rill', from: 1, to: 2, main: true, ways: ['bridge', 'stones'] }];
 /* jobs. main: on the main road. way: opens a gate. mini: a small quest from someone you talk to. needs: things carried. */
+/* the ship's five parts [Source: the game]. A people's big quest takes one part to Level 2. Which quest lifts which part is Marc's to change: it is this one table.
+   Only the fact is kept here ("Engine Core: Level 2"). What Level 2 does in a battle belongs to Marc and the battle thread. */
+const PARTS = { engine: 'Engine Core', nav: 'Navigation', shield: 'Shield', weapons: 'Weapons', power: 'Power' };
+const PEOPLES = [
+  { region: 1, name: 'the Menders', job: 'plates', home: 'village', part: 'engine', gift: 'The Menders fit a rule governor to your ship\'s Engine Core. It hums in step now.' },
+  { region: 2, name: 'the Rillfolk', job: 'fleet', home: 'harbour', part: 'nav', gift: 'The Rillfolk fit a star compass to your ship. It always knows the way home.' } ];
 const JOBS = {
   plates: { name: 'New plates for the four machines', main: true, region: 1, asker: 'elder', needs: [], card: 'Rule Finder', maths: '3.OA.9: find the rule of a number machine from tests the child chooses' },
-  bridge: { name: 'Exactly the right pips on the bridge pan', way: 'bridge', region: 1, asker: 'elder', needs: [], card: 'Bridge Bringer', maths: '3.OA.8 and 3.OA.7: reach a number with three rules in the right order; say each result before the machine runs' },
+  bridge: { name: 'Exactly the right pips on the bridge pan', way: 'bridge', region: 1, asker: 'elder', needs: [], uses: ['plates'], card: 'Bridge Bringer', maths: '3.OA.8 and 3.OA.7: reach a number with three rules in the right order; say each result before the machine runs' },
   stones: { name: 'Cross the old stepping stones', way: 'stones', region: 1, asker: 'post', needs: [], card: 'Stone Stepper', maths: '3.OA.9: go on with a number pattern' },
   spinner: { name: 'The lost spinner', mini: true, region: 1, asker: 'kid', needs: ['spinner'], card: 'Kind Finder' },
   coin: { name: 'The lucky coin', mini: true, region: 1, asker: 'keeper', needs: ['coin'], card: 'Lucky Coin' },
-  shard: { name: 'The black shard', mini: true, region: 1, asker: 'elder', needs: ['shard'], card: 'Sharp Eyes' } };
+  shard: { name: 'The black shard', mini: true, region: 1, asker: 'elder', needs: ['shard'], card: 'Sharp Eyes' },
+  fleet: { name: 'Load the fleet for three towns', main: true, region: 2, asker: 'keeper2', needs: ['tag_stilt', 'tag_reed', 'tag_mud'], card: 'Fleet Planner', maths: '3.OA.4: the missing number, many times: rafts x kind = order, with rafts that run out' },
+  letter: { name: 'A message in a bottle', mini: true, region: 2, asker: 'bottle', needs: ['bottle'], card: 'River Post' },
+  /* a mini quest of the lantern shape [Source: Marc, 22 November]: a place closed for a reason you can see; a thing that must be made; a material from somewhere else;
+     the makers' maths done by the child; back to the place; inside, one real problem; an epic card. Every step has its line for the Needs list. */
+  well: { name: 'The thing in the well', mini: true, epic: true, region: 1, asker: 'well', needs: ['reeds', 'rope'], card: 'Deep Finder', maths: '3.OA.3 and 3.OA.4 in the making; inside, a rule in two steps',
+    steps: [ { at: 'well', need: 'The well in the Meadow: something glints at the bottom. A rope with a hook could reach it. How deep is it?' },
+             { at: 'netmender', need: 'The net mender, in the harbour over the river, twists rope. Tell her how deep the well is.' },
+             { at: 'cutter', need: 'The reed cutter in the Meadow: long reeds, in bundles, for the net mender.' },
+             { at: 'netmender', need: 'Take the bundles of reeds to the net mender.' },
+             { at: 'well', need: 'Lower the rope into the well.' },
+             { at: 'well', need: 'The Makers\' box from the well: open its two wheels.' } ] } };
 const ITEMS = {
-  notebook: { name: 'a notebook', from: 'elder' },
-  pouch: { name: 'the pip pouch', from: 'elder' },
-  spinner: { name: 'a red spinner', from: 'spin', use: 'spinner' },
-  coin: { name: 'a Maker\'s coin', from: 'log', secret: true, use: 'coin' },
-  shard: { name: 'a thick black shard', from: 'rubble', secret: true, use: 'shard' } };
+  notebook: { name: 'a notebook', words: ['notebook', 'notes'], from: 'elder', quiet: true },
+  pouch: { name: 'the pip pouch', words: ['pouch', 'pips'], from: 'elder' },
+  spinner: { name: 'a red spinner', words: ['spinner'], from: 'spin', use: 'spinner', to: ['kid'], nouse: 'You give the spinner a flick. It whirrs. Somebody must miss it.' },
+  coin: { name: 'a Maker\'s coin', words: ['coin'], from: 'log', secret: true, use: 'coin', to: ['keeper'], nouse: 'You turn the coin over. A tiny machine is stamped on it. It is somebody\'s lucky coin.' },
+  shard: { name: 'a thick black shard', words: ['shard'], from: 'rubble', secret: true, use: 'shard', to: ['elder'], nouse: 'The shard is heavy and cold. It does nothing here.' },
+  tag_stilt: { name: 'Stilt Town\'s order tag', words: ['tag', 'order'], from: 'sp_stilt', use: 'fleet', to: ['board', 'keeper2'], nouse: 'The tag belongs on the loading board, in the harbour.' },
+  tag_reed: { name: 'Reed Town\'s order tag', words: ['tag', 'order'], from: 'sp_reed', use: 'fleet', to: ['board', 'keeper2'], nouse: 'The tag belongs on the loading board, in the harbour.' },
+  tag_mud: { name: 'Mud Town\'s order tag', words: ['tag', 'order'], from: 'sp_mud', use: 'fleet', to: ['board', 'keeper2'], nouse: 'The tag belongs on the loading board, in the harbour.' },
+  raft: { name: 'a raft of your own', words: ['raft'], from: 'keeper2', keep: true, quiet: true },
+  makernote: { name: 'the Makers\' note', words: ['note'], from: 'well', keep: true, quiet: true },
+  bottle: { name: 'a bottle with a note in it', words: ['bottle', 'note'], from: 'bottle', secret: true, use: 'letter', to: ['kid'], nouse: 'The note says: “To my friend Pim, over the river.” It is not for anyone here.' },
+  reeds: { name: 'bundles of long reeds', words: ['reeds', 'bundles'], from: 'cutter', use: 'well', to: ['netmender'], nouse: 'Long reeds, tied in bundles. Somebody who twists rope could use them.' },
+  rope: { name: 'a long rope with a hook', words: ['rope', 'hook'], from: 'netmender', use: 'well', to: ['well'], nouse: 'A good rope. It wants something deep to go down.' } };
 /* The check. It walks the map the way a child can, and reads the tables above. It returns a list of faults; an empty list means every rule holds.
    Kept by this check:  every thing can be reached  ·  nothing that is not built can be reached  ·  every border on the main road has two ways, and each way alone gets across
    ·  no main job and no way across needs a secret, and no secret holds help for one  ·  every find has a use, helps a job, or is scenery  ·  no job waits on a place that is not built. */
@@ -447,26 +530,33 @@ function bwCheck() { const bad = [], key = (x, y) => y * MAPW + x, T = (x, y) =>
   const solid = {}, gateOf = {}; THINGS.forEach(t => { if (solid[key(t.x, t.y)]) bad.push(`two things on one square: ${t.id} and ${solid[key(t.x, t.y)]}`); solid[key(t.x, t.y)] = t.id; });
   Object.keys(GATES).forEach(g => GATES[g].tiles.forEach(([x, y]) => { gateOf[key(x, y)] = g; }));
   const flood = open => { const got = new Uint8Array(MAPW * MAPH), ship = THINGS.find(t => t.id === 'ship'), q = [ship.stand]; got[key(q[0][0], q[0][1])] = 1;
-    for (let h = 0; h < q.length; h++) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const x = q[h][0] + dx, y = q[h][1] + dy, k = key(x, y); if (got[k] || solid[k]) continue; const g = gateOf[k]; if (g ? open.indexOf(g) < 0 : WALK.indexOf(T(x, y)) < 0) continue; got[k] = 1; q.push([x, y]); } return got; };
+    for (let h = 0; h < q.length; h++) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const x = q[h][0] + dx, y = q[h][1] + dy, k = key(x, y); if (got[k] || (solid[k] && !gateOf[k])) continue; const g = gateOf[k]; if (g ? open.indexOf(g) < 0 : WALK.indexOf(T(x, y)) < 0) continue; got[k] = 1; q.push([x, y]); } return got; };
   const stand = t => t.stand || bwStand(t), ids = {}; THINGS.forEach(t => { if (ids[t.id]) bad.push(`two things called ${t.id}`); ids[t.id] = t; });
-  Object.keys(SCENES).forEach(s => SCENES[s].things.forEach(t => { ids[t.id] = t; }));
-  const none = flood([]), builtGates = Object.keys(GATES).filter(g => GATES[g].built !== false), all = flood(builtGates), LAND = (x, y) => x >= 50 && x <= 58 && y >= 59 && y <= 80;
+  Object.keys(SCENES).forEach(s => SCENES[s].things.forEach(t => { ids[t.id] = t; if ((t.says || []).concat(t.then ? t.then.says : []).some(q => q.length > 120)) bad.push(`${t.id}: a line is too long to read`); if (t.then && ['stone', 'bridge', 'fleet'].indexOf(t.then.when) < 0) bad.push(`${t.id}: its later lines wait on "${t.then.when}", which nothing sets`); }));
+  const regOf = id => { const t = THINGS.find(q => q.id === id); if (t) return Rg(t.x, t.y); const sc = Object.keys(SCENES).find(q => SCENES[q].things.some(o => o.id === id)), out = sc && THINGS.find(q => q.id === SCENES[sc].out); return out ? Rg(out.x, out.y) : 0; };
+  const none = flood([]), builtGates = Object.keys(GATES).filter(g => GATES[g].built !== false), all = flood(builtGates), LAND = (x, y) => !!(REGIONS[Rg(x, y)] && REGIONS[Rg(x, y)].built);
   THINGS.forEach(t => { const s = stand(t); if (!s) { bad.push(`${t.id}: no square to stand on`); return; } if (WALK.indexOf(T(s[0], s[1])) < 0 || solid[key(s[0], s[1])]) bad.push(`${t.id}: its standing square ${s} cannot be walked on`); if (Math.abs(s[0] - t.x) + Math.abs(s[1] - t.y) !== 1) bad.push(`${t.id}: its standing square is not beside it`);
-    if (Rg(t.x, t.y) === 1) { if (!none[key(s[0], s[1])]) bad.push(`${t.id}: cannot be reached from the ship`); } else for (const b of BORDERS) for (const w of b.ways) if (!flood([w])[key(s[0], s[1])]) bad.push(`${t.id}: cannot be reached when only ${w} is open`); });
-  for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) { if (!all[key(x, y)]) continue; if (Rg(x, y) !== 1 && !LAND(x, y)) { bad.push(`square ${x},${y} in region ${Rg(x, y)} can be reached, and that region is not built`); y = MAPH; break; } }
+    if (Rg(t.x, t.y) === 1) { if (!none[key(s[0], s[1])]) bad.push(`${t.id}: cannot be reached from the ship`); } else for (const b of BORDERS) for (const w of b.ways) if (!flood(builtGates.filter(g => b.ways.indexOf(g) < 0 || g === w))[key(s[0], s[1])]) bad.push(`${t.id}: cannot be reached when ${w} is the only way open over ${b.name}`); });
+  for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) { if (!all[key(x, y)]) continue; if (!LAND(x, y)) { bad.push(`square ${x},${y} in region ${Rg(x, y)} can be reached, and that region is not built`); y = MAPH; break; } }
   for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) if (none[key(x, y)] && Rg(x, y) !== 1) { bad.push(`square ${x},${y} is outside the Meadow and can be reached with every gate shut`); y = MAPH; break; }
   BORDERS.forEach(b => { if (b.main && b.ways.length < 2) bad.push(`border ${b.id}: only one way across`); b.ways.forEach(w => { if (!GATES[w]) bad.push(`border ${b.id}: no gate ${w}`); else if (!JOBS[GATES[w].job] || JOBS[GATES[w].job].way !== w) bad.push(`gate ${w}: no job opens it`); }); if (new Set(b.ways.map(w => JOBS[GATES[w].job] && JOBS[GATES[w].job].maths)).size < b.ways.length) bad.push(`border ${b.id}: its ways are the same maths`); });
   Object.keys(JOBS).forEach(j => { const job = JOBS[j], asker = ids[job.asker]; if (!asker) bad.push(`job ${j}: nobody called ${job.asker} gives it`); if (!REGIONS[job.region] || !REGIONS[job.region].built) bad.push(`job ${j}: waits on a region that is not built`);
-    job.needs.forEach(n => { const it = ITEMS[n]; if (!it) { bad.push(`job ${j}: needs ${n}, which does not exist`); return; } if ((job.main || job.way) && it.secret) bad.push(`job ${j} is on the main road and needs a secret (${n})`); if (!ids[it.from]) bad.push(`item ${n}: comes from ${it.from}, which does not exist`); }); });
-  Object.keys(ITEMS).forEach(n => { const it = ITEMS[n]; if (!ids[it.from]) bad.push(`item ${n}: comes from nowhere`); if (it.use && !(JOBS[it.use] && JOBS[it.use].needs.indexOf(n) >= 0)) bad.push(`item ${n}: its use ${it.use} does not need it`); if (it.helps && !JOBS[it.helps]) bad.push(`item ${n}: helps a job that does not exist`); if (it.secret && it.helps && JOBS[it.helps] && (JOBS[it.helps].main || JOBS[it.helps].way)) bad.push(`item ${n} is a secret and helps with a main job: help with the maths must be open to every child`); });
-  THINGS.forEach(t => { if (t.kind === 'find' && !t.scenery && !(t.gives && ITEMS[t.gives] && (ITEMS[t.gives].use || ITEMS[t.gives].helps))) bad.push(`find ${t.id}: leads nowhere and is not marked scenery`); if (t.secret && Object.keys(JOBS).some(j => (JOBS[j].main || JOBS[j].way) && JOBS[j].asker === t.id)) bad.push(`${t.id} is a secret and gives a main job`); if ((t.says || []).concat(t.then ? t.then.says : []).some(s => s.length > 120)) bad.push(`${t.id}: a line is too long to read`); if (t.then && ['stone', 'bridge'].indexOf(t.then.when) < 0) bad.push(`${t.id}: its later lines wait on "${t.then.when}", which nothing sets`); });
+    job.needs.forEach(n => { const it = ITEMS[n]; if (!it) { bad.push(`job ${j}: needs ${n}, which does not exist`); return; } if ((job.main || job.way) && it.secret) bad.push(`job ${j} is on the main road and needs a secret (${n})`); if (job.main && ids[it.from] && regOf(it.from) && regOf(it.from) !== job.region) bad.push(`big quest ${j} needs ${n}, which comes from another region`); if (!ids[it.from]) bad.push(`item ${n}: comes from ${it.from}, which does not exist`); }); });
+  Object.keys(ITEMS).forEach(n => { const it = ITEMS[n]; if (!ids[it.from]) bad.push(`item ${n}: comes from nowhere`); if (it.use && !(JOBS[it.use] && JOBS[it.use].needs.indexOf(n) >= 0)) bad.push(`item ${n}: its use ${it.use} does not need it`); if (!it.use && !it.helps && !it.keep && ['notebook', 'pouch'].indexOf(n) < 0) bad.push(`item ${n}: nothing uses it`); if (it.helps && !JOBS[it.helps]) bad.push(`item ${n}: helps a job that does not exist`); if (it.secret && it.helps && JOBS[it.helps] && (JOBS[it.helps].main || JOBS[it.helps].way)) bad.push(`item ${n} is a secret and helps with a main job: help with the maths must be open to every child`); });
+  THINGS.forEach(t => { if (t.kind === 'find' && !t.scenery && !(t.gives && ITEMS[t.gives] && (ITEMS[t.gives].use || ITEMS[t.gives].helps)) && !Object.keys(JOBS).some(j => JOBS[j].asker === t.id)) bad.push(`find ${t.id}: leads nowhere and is not marked scenery`); if (t.secret && Object.keys(JOBS).some(j => (JOBS[j].main || JOBS[j].way) && JOBS[j].asker === t.id)) bad.push(`${t.id} is a secret and gives a main job`); if ((t.says || []).concat(t.then ? t.then.says : []).some(s => s.length > 120)) bad.push(`${t.id}: a line is too long to read`); if (t.then && ['stone', 'bridge', 'fleet'].indexOf(t.then.when) < 0) bad.push(`${t.id}: its later lines wait on "${t.then.when}", which nothing sets`); });
+  /* THE LAW OF THE ROAD: leave any one people's big quest undone, and every people can still be reached.
+     A way across that leans on a people's quest (uses) or on a tool that quest gives (tool) is shut while that quest is undone. A tool is never one of a border's two ways. */
+  PEOPLES.forEach(pp => { if (!JOBS[pp.job]) return; const open = builtGates.filter(g => { const j = JOBS[GATES[g].job]; return !j || !((j.uses || []).indexOf(pp.job) >= 0 || (j.tool && ITEMS[j.tool] && ITEMS[j.tool].from === pp.job)); }), got = flood(open);
+    PEOPLES.forEach(q => { const home = ids[q.home]; if (!home || !REGIONS[q.region].built) return; const st = stand(home); if (!got[key(st[0], st[1])]) bad.push(`the law of the road: with ${pp.name}' quest undone, ${q.name} cannot be reached`); }); });
+  BORDERS.forEach(b => b.ways.forEach(w => { const j = GATES[w] && JOBS[GATES[w].job]; if (j && j.tool) bad.push(`border ${b.id}: the way ${w} needs a tool (${j.tool}). A tool is never one of a border's two ways`); }));
+  Object.keys(JOBS).forEach(j => { const job = JOBS[j]; if (job.main && job.planet) bad.push(`big quest ${j} needs another planet`); if (job.epic && job.main) bad.push(`${j}: a main job cannot be a mini quest`); (job.steps || []).forEach((st, i) => { if (!st.need) bad.push(`mini quest ${j}: step ${i + 1} has no line for the Needs list`); if (st.at && !ids[st.at]) bad.push(`mini quest ${j}: step ${i + 1} is at ${st.at}, which does not exist`); }); });
   return bad; }
 function bwStand(t) { const T = (x, y) => x < 0 || y < 0 || x >= MAPW || y >= MAPH ? '~' : MAP[y][x]; for (const [dx, dy] of [[0, 1], [-1, 0], [1, 0], [0, -1]]) { const x = t.x + dx, y = t.y + dy; if (WALK.indexOf(T(x, y)) >= 0 && !THINGS.some(o => o.x === x && o.y === y)) return [x, y]; } return null; }
 /*WORLD-END*/
 
 /* ================= THE ENGINE ================= */
 const cv = $('cv'), cx = cv.getContext('2d'), INK = '#0e1626';
-let vw = 0, vh = 0, tNow = 0, S = null, NUM = null;
+let vw = 0, vh = 0, tNow = 0, S = null, NUM = null, FLEET = null, WELL = null;
 const key = (x, y) => y * MAPW + x, clamp = (v, a, b) => Math.max(a, Math.min(b, v)), esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const seen = new Uint8Array(MAPW * MAPH), TH = {}, SOLID = {}, GATEOF = {};
 THINGS.forEach(t => { if (!t.stand) t.stand = bwStand(t); TH[t.id] = t; SOLID[key(t.x, t.y)] = t; });
@@ -485,6 +575,7 @@ function load() { try { const j = JSON.parse(localStorage.getItem(KEY)); if (j &
 const flag = k => !!S.flags[k], setFlag = k => { S.flags[k] = 1; };
 const has = it => S.bag.indexOf(it) >= 0;
 function report(what, maths, result) { S.log.push({ t: Math.round((Date.now() - S.t0) / 60000), what, maths: maths || '', result: result || '' }); if (S.log.length > 300) S.log.shift(); }
+function upgrade(job) { const pp = PEOPLES.find(q => q.job === job); if (!pp) return ''; S.parts = S.parts || {}; if (S.parts[pp.part]) return ''; S.parts[pp.part] = 2; report('Ship upgrade: ' + PARTS[pp.part] + ' is now Level 2', 'from ' + pp.name, 'kept'); return pp.gift + ' ' + PARTS[pp.part] + ': Level 2.'; }
 function giveCard(job) { const j = JOBS[job]; if (S.cards.some(c => c.job === job)) return false; S.cards.push({ job, name: j.card, t: Date.now() }); report('Card: ' + j.card, '', 'earned'); return true; }
 function need(id, text, later) { if (S.needs.some(n => n.id === id)) return; S.needs.push({ id, text, done: false, later: !!later }); $('b_needs').classList.add('new'); }
 function needDone(id) { const n = S.needs.find(n => n.id === id); if (n) n.done = true; }
@@ -495,7 +586,7 @@ const platesDone = () => SITES.filter(s => M(s).ok).length;
 /* ---- the map: what is where, where the cadet can walk, what has been seen */
 const tileAt = (x, y) => x < 0 || y < 0 || x >= MAPW || y >= MAPH ? '~' : MAP[y][x], regAt = (x, y) => x < 0 || y < 0 || x >= MAPW || y >= MAPH ? 0 : +REG[y][x];
 const gateOpen = g => !!S.gates[g];
-function walkable(x, y) { const k = key(x, y); if (x < 0 || y < 0 || x >= MAPW || y >= MAPH || SOLID[k]) return false; const g = GATEOF[k]; return g ? gateOpen(g) : WALK.indexOf(MAP[y][x]) >= 0; }
+function walkable(x, y) { const k = key(x, y); if (x < 0 || y < 0 || x >= MAPW || y >= MAPH) return false; const g = GATEOF[k]; if (g) return gateOpen(g); return !SOLID[k] && WALK.indexOf(MAP[y][x]) >= 0; }      /* a gate's square is shut or open; the thing that stands for the gate goes away when it opens */
 function see() { const R = 6, x0 = Math.round(P.px), y0 = Math.round(P.py); let ch = false; for (let y = y0 - R; y <= y0 + R; y++) for (let x = x0 - R; x <= x0 + R; x++) if (x >= 0 && y >= 0 && x < MAPW && y < MAPH && Math.hypot(x - x0, y - y0) <= R + .5 && !seen[key(x, y)]) { seen[key(x, y)] = 1; ch = true; } if (ch) bigDirty = true; }
 /* the path finder: breadth first, through squares the child has seen. It ends on the reachable square nearest the tap. */
 function pathTo(tx, ty) { const sx = Math.round(P.px), sy = Math.round(P.py), from = new Int32Array(MAPW * MAPH).fill(-2), q = [key(sx, sy)]; from[q[0]] = -1; let best = q[0], bd = Math.hypot(sx - tx, sy - ty);
@@ -503,7 +594,7 @@ function pathTo(tx, ty) { const sx = Math.round(P.px), sy = Math.round(P.py), fr
   const out = []; for (let k = best; from[k] >= 0; k = from[k]) out.unshift([k % MAPW, Math.floor(k / MAPW)]); return out; }
 function goTo(tx, ty, then) { P.route = pathTo(tx, ty); P.then = then || null; if (!P.route.length && then && Math.round(P.px) === tx && Math.round(P.py) === ty) { P.then = null; then(); } return P.route.length; }
 function goThing(t, then) { const s = t.stand; goTo(s[0], s[1], () => { const dx = t.x - s[0], dy = t.y - s[1]; P.dir = dx > 0 ? 'right' : dx < 0 ? 'left' : dy < 0 ? 'up' : 'down'; then(); }); if (P.route.length === 0 && !(Math.round(P.px) === s[0] && Math.round(P.py) === s[1])) note('You cannot get there yet.'); }
-const thingSeen = t => !!seen[key(t.x, t.y)] && !(t.id === 'spin' && (has('spinner') || flag('spinGiven'))) ;
+const thingSeen = t => !!seen[key(t.x, t.y)] && !(t.id === 'spin' && (has('spinner') || flag('spinGiven'))) && !(t.id === 'gate2' && gateOpen('reeds')) && !(t.id === 'bottle' && (has('bottle') || flag('bottleGiven')));
 function nearThings() { const x0 = Math.round(P.px), y0 = Math.round(P.py); return THINGS.filter(t => thingSeen(t) && Math.max(Math.abs(t.x - x0), Math.abs(t.y - y0)) <= 3).sort((a, b) => Math.hypot(a.x - x0, a.y - y0) - Math.hypot(b.x - x0, b.y - y0)); }
 const hereName = () => S.at !== 'map' ? SCENES[S.at].name : (REGIONS[regAt(Math.round(P.px), Math.round(P.py))] || REGIONS[1]).name;
 
@@ -544,6 +635,17 @@ function mender(X, Y, r, col, t, kind) { const bobv = Math.sin(tNow * 2.2 + t) *
   if (kind === 'elder') { cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.moveTo(X - r * .46, y + r * .08); cx.quadraticCurveTo(X, y + r * .7, X + r * .46, y + r * .08); cx.quadraticCurveTo(X, y + r * .26, X - r * .46, y + r * .08); cx.fill(); ol(1.5); }
   else if (kind === 'rill') { cx.fillStyle = shadeC(col, .8); cx.beginPath(); cx.moveTo(X - r * .2, y - r * .9); cx.lineTo(X, y - r * 1.4); cx.lineTo(X + r * .25, y - r * .9); cx.closePath(); cx.fill(); ol(1.5); cx.strokeStyle = INK; cx.lineWidth = 1.8; cx.beginPath(); cx.arc(X, y + r * .04, r * .2, .3, Math.PI - .3); cx.stroke(); }
   else { cx.strokeStyle = INK; cx.lineWidth = 1.8; cx.beginPath(); cx.arc(X, y + r * .04, r * .2, .3, Math.PI - .3); cx.stroke(); } }
+function rillfolk(X, Y, r, col, t, kind) { const bobv = Math.sin(tNow * 1.8 + t) * r * .05, y = Y + bobv; cx.lineJoin = 'round';
+  cx.fillStyle = 'rgba(0,0,0,.26)'; cx.beginPath(); cx.ellipse(X, Y + r * 1.0, r * .62, r * .18, 0, 0, 7); cx.fill();
+  cx.fillStyle = '#f08a2c'; for (const sg of [-1, 1]) { cx.beginPath(); cx.moveTo(X + sg * r * .12, Y + r * .78); cx.lineTo(X + sg * r * .62, Y + r * 1.02); cx.lineTo(X + sg * r * .08, Y + r * 1.02); cx.closePath(); cx.fill(); ol(1.4); }
+  cx.fillStyle = shadeC(col, .8); for (const sg of [-1, 1]) { cx.beginPath(); cx.moveTo(X + sg * r * .5, y + r * .05); cx.lineTo(X + sg * r * .95, y + r * .34 + Math.sin(tNow * 3 + t + sg) * r * .06); cx.lineTo(X + sg * r * .5, y + r * .42); cx.closePath(); cx.fill(); ol(1.4); }
+  cx.fillStyle = col; cx.beginPath(); cx.moveTo(X, y - r * 1.2); cx.bezierCurveTo(X + r * .9, y - r * .5, X + r * .78, y + r * .9, X, y + r * .9); cx.bezierCurveTo(X - r * .78, y + r * .9, X - r * .9, y - r * .5, X, y - r * 1.2); cx.fill(); ol(2);
+  cx.fillStyle = 'rgba(255,255,255,.22)'; cx.beginPath(); cx.ellipse(X, y + r * .45, r * .36, r * .34, 0, 0, 7); cx.fill();
+  for (const sg of [-1, 1]) { cx.fillStyle = '#fff'; circ(X + sg * r * .24, y - r * .2, r * .19); cx.fill(); ol(1.2); cx.fillStyle = INK; circ(X + sg * r * .24 + r * .03, y - r * .18, r * .09); cx.fill(); }
+  cx.strokeStyle = INK; cx.lineWidth = 1.8; cx.beginPath(); cx.arc(X, y + r * .08, r * .18, .3, Math.PI - .3); cx.stroke();
+  if (kind === 'cap') { cx.fillStyle = '#16264a'; cx.beginPath(); cx.arc(X, y - r * .78, r * .42, Math.PI, 0); cx.closePath(); cx.fill(); ol(1.5); cx.fillRect(X - r * .5, y - r * .8, r * 1.0, r * .09); }
+  if (kind === 'hat') { cx.fillStyle = '#f4f7fb'; rr(X - r * .34, y - r * 1.5, r * .68, r * .62, r * .2); cx.fill(); ol(1.5); }
+  if (kind === 'old') { cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.moveTo(X - r * .3, y + r * .22); cx.lineTo(X, y + r * .72); cx.lineTo(X + r * .3, y + r * .22); cx.closePath(); cx.fill(); ol(1.4); } }
 function shadeC(hex, f) { const n = parseInt(hex.slice(1), 16), c = i => clamp(Math.round(((n >> i) & 255) * f), 0, 255); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 /* a pip (gold) or a test pebble (grey) */
 function pip(x, y, r, gold) { cx.fillStyle = gold ? '#ffd25e' : '#aab4c4'; circ(x, y, r); cx.fill(); ol(Math.max(1, r * .22)); cx.fillStyle = 'rgba(255,255,255,.55)'; circ(x - r * .3, y - r * .3, r * .28); cx.fill(); }
@@ -563,9 +665,10 @@ function twoSuns(w, hz) { const g = cx.createRadialGradient(w * .76, hz * .3, 0,
 /* ---- drawing the map: only the squares on the screen */
 const V = { ts: 48, cols: 0, rows: 0, ox: 0, oy: 0 };
 function geo() { V.ts = clamp(Math.min(vw / 12.5, vh / 8.2), 36, 66); V.cols = vw / V.ts; V.rows = vh / V.ts; V.ox = clamp(cam.x - V.cols / 2, 0, Math.max(0, MAPW - V.cols)); V.oy = clamp(cam.y - V.rows / 2, 0, Math.max(0, MAPH - V.rows)); }
-const TALL = 'TtarH^#mD';
+const TALL = 'TtarH^#mDS';
 function ground(t, x, y, px, py, ts) { const R = REGIONS[regAt(x, y)] || REGIONS[1], g = R.g || REGIONS[1].g, base = (x + y) % 2 ? g[0] : g[1];
   if (t === '~') { cx.fillStyle = (x + y) % 2 ? '#2f6fd0' : '#2c69c6'; cx.fillRect(px, py, ts + 1, ts + 1); cx.strokeStyle = 'rgba(255,255,255,.5)'; cx.lineWidth = 2; for (let k = 0; k < 2; k++) { const o = ((tNow * .45 + k * .5 + y * .37 + x * .11) % 1) * ts; cx.beginPath(); cx.moveTo(px + o, py + ts * (.3 + k * .4)); cx.lineTo(px + Math.min(ts, o + ts * .28), py + ts * (.3 + k * .4)); cx.stroke(); } if ((x * 7 + y * 13) % 11 === 0) { cx.fillStyle = (x + y) % 2 ? 'rgba(255,225,140,.7)' : 'rgba(200,235,255,.7)'; circ(px + ts * .6, py + ts * .55, ts * (.04 + .03 * Math.sin(tNow * 2 + x))); cx.fill(); } return; }
+  if (t === 'b') { cx.fillStyle = '#2f6fd0'; cx.fillRect(px, py, ts + 1, ts + 1); cx.fillStyle = '#a8713f'; cx.fillRect(px - 1, py + ts * .08, ts + 2, ts * .84); cx.strokeStyle = '#6b4424'; cx.lineWidth = 2; for (let k = 1; k < 4; k++) { cx.beginPath(); cx.moveTo(px + ts * k / 4, py + ts * .08); cx.lineTo(px + ts * k / 4, py + ts * .92); cx.stroke(); } cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(px - 1, py + ts * .08, ts + 2, ts * .84); return; }
   cx.fillStyle = t === ':' ? '#e2cf9a' : t === 's' ? ((x + y) % 2 ? '#ead9a6' : '#e4d29c') : t === 'c' || t === 'p' || t === 'd' ? base : t === 'D' ? '#d8b878' : t === 'R' ? '#9a94ac' : t === 'w' ? '#d9c25a' : base; cx.fillRect(px, py, ts + 1, ts + 1);
   if (t === ':') { cx.fillStyle = '#cdb97f'; cx.fillRect(px + ts * (.2 + ((x * 5 + y * 3) % 4) * .12), py + ts * (.3 + ((x + y * 7) % 3) * .2), ts * .14, ts * .09); cx.fillRect(px + ts * (.55 + ((x * 3 + y) % 3) * .1), py + ts * (.62 + ((x + y) % 2) * .14), ts * .1, ts * .07); }
   else if (t === ',') { cx.strokeStyle = '#2f7f3f'; cx.lineWidth = Math.max(1.5, ts * .05); cx.lineCap = 'round'; for (let k = 0; k < 5; k++) { const bx = px + ts * (.12 + k * .19), by = py + ts * (.5 + ((k * 7 + x) % 3) * .2), sway = Math.sin(tNow * 1.6 + x + k) * ts * .05; cx.beginPath(); cx.moveTo(bx, by); cx.lineTo(bx + sway, by - ts * .34); cx.stroke(); } cx.lineCap = 'butt'; }
@@ -582,6 +685,7 @@ function tall(t, x, y, px, py, ts) {
   else if (t === '^') { cx.fillStyle = '#8f8aa8'; cx.beginPath(); cx.moveTo(px + ts * .02, py + ts * .98); cx.lineTo(px + ts * .4, py + ts * .06); cx.lineTo(px + ts * .62, py + ts * .5); cx.lineTo(px + ts * .78, py + ts * .26); cx.lineTo(px + ts * .99, py + ts * .98); cx.closePath(); cx.fill(); ol(1.6); cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.moveTo(px + ts * .31, py + ts * .3); cx.lineTo(px + ts * .4, py + ts * .06); cx.lineTo(px + ts * .5, py + ts * .28); cx.closePath(); cx.fill(); }
   else if (t === '#') { cx.fillStyle = '#8b8798'; cx.fillRect(px, py + ts * .12, ts + 1, ts * .8); cx.strokeStyle = INK; cx.lineWidth = 1.6; cx.strokeRect(px, py + ts * .12, ts + 1, ts * .8); cx.strokeStyle = '#6d6a7a'; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(px, py + ts * .52); cx.lineTo(px + ts, py + ts * .52); cx.moveTo(px + ts * (x % 2 ? .35 : .65), py + ts * .12); cx.lineTo(px + ts * (x % 2 ? .35 : .65), py + ts * .52); cx.moveTo(px + ts * (x % 2 ? .65 : .35), py + ts * .52); cx.lineTo(px + ts * (x % 2 ? .65 : .35), py + ts * .92); cx.stroke(); cx.fillStyle = '#5a9a4a'; if ((x * 3 + y) % 4 === 0) { circ(px + ts * .3, py + ts * .16, ts * .09); cx.fill(); } }
   else if (t === 'H') { shadow2(px, py, ts, .44); cx.fillStyle = '#e6dcc2'; rr(px + ts * .1, py + ts * .36, ts * .8, ts * .56, 4); cx.fill(); ol(1.8); cx.fillStyle = '#c9793a'; cx.beginPath(); cx.arc(px + ts * .5, py + ts * .4, ts * .5, Math.PI, 0); cx.closePath(); cx.fill(); ol(1.8); cx.fillStyle = '#6b4a22'; rr(px + ts * .4, py + ts * .6, ts * .2, ts * .32, 3); cx.fill(); cx.fillStyle = '#ffd25e'; circ(px + ts * .5, py + ts * .06, ts * .07); cx.fill(); ol(1); }
+  else if (t === 'S') { shadow2(px, py, ts, .4); cx.strokeStyle = '#6b4a22'; cx.lineWidth = Math.max(3, ts * .07); for (const a of [.24, .76]) { cx.beginPath(); cx.moveTo(px + ts * a, py + ts * .5); cx.lineTo(px + ts * a, py + ts * .95); cx.stroke(); } cx.fillStyle = '#dfe9ee'; rr(px + ts * .12, py + ts * .2, ts * .76, ts * .42, 4); cx.fill(); ol(1.8); cx.fillStyle = '#3f8fd0'; cx.beginPath(); cx.moveTo(px + ts * .04, py + ts * .24); cx.lineTo(px + ts * .5, py - ts * .12); cx.lineTo(px + ts * .96, py + ts * .24); cx.closePath(); cx.fill(); ol(1.8); cx.fillStyle = '#ffd25e'; rr(px + ts * .42, py + ts * .34, ts * .16, ts * .18, 2); cx.fill(); }
   else if (t === 'm') { cx.strokeStyle = '#4f8f4a'; cx.lineWidth = Math.max(2, ts * .06); cx.lineCap = 'round'; for (let k = 0; k < 4; k++) { const bx = px + ts * (.16 + k * .22), sway = Math.sin(tNow * 1.3 + x + k * 2) * ts * .04; cx.beginPath(); cx.moveTo(bx, py + ts * .95); cx.lineTo(bx + sway, py + ts * .2); cx.stroke(); cx.fillStyle = '#7a5a2a'; rr(bx + sway - ts * .045, py + ts * .14, ts * .09, ts * .22, 3); cx.fill(); } cx.lineCap = 'butt'; }
   else if (t === 'D') { cx.strokeStyle = '#b8944e'; cx.lineWidth = 2; cx.beginPath(); cx.arc(px + ts * .5, py + ts * 1.1, ts * .7, Math.PI * 1.2, Math.PI * 1.8); cx.stroke(); } }
 /* things on the map */
@@ -595,7 +699,11 @@ function drawThing(t, X, Y, ts) { const id = t.id;
   else if (id === 'pan') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - ts * .06, Y - ts * .7, ts * .12, ts * 1.1); cx.strokeStyle = INK; cx.lineWidth = 1.5; cx.strokeRect(X - ts * .06, Y - ts * .7, ts * .12, ts * 1.1); cx.strokeStyle = '#8d8f96'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X, Y - ts * .66); cx.lineTo(X + ts * .34, Y - ts * .66); cx.lineTo(X + ts * .34, Y - ts * .1); cx.stroke(); cx.fillStyle = gateOpen('bridge') ? '#ffd25e' : '#b9853a'; cx.beginPath(); cx.ellipse(X + ts * .34, Y - ts * .04, ts * .26, ts * .09, 0, 0, 7); cx.fill(); ol(1.6); }
   else if (id === 'post') { cx.fillStyle = '#9a94ac'; rr(X - ts * .16, Y - ts * .6, ts * .32, ts * .98, 4); cx.fill(); ol(1.8); cx.strokeStyle = '#5d5870'; cx.lineWidth = 1.5; for (let k = 0; k < 3; k++) { cx.beginPath(); cx.moveTo(X - ts * .08, Y - ts * .4 + k * ts * .2); cx.lineTo(X + ts * .08, Y - ts * .4 + k * ts * .2); cx.stroke(); } }
   else if (id === 'hedge') { cx.fillStyle = '#2f7f3f'; rr(X - ts * .5, Y - ts * .45, ts, ts * .9, 8); cx.fill(); ol(2); for (const [a, b] of [[-.25, -.2], [.2, -.1], [-.05, .15], [.28, .22], [-.3, .2]]) { cx.fillStyle = '#4fae5a'; circ(X + ts * a, Y + ts * b, ts * .12); cx.fill(); } cx.fillStyle = '#ff8fb0'; circ(X + ts * .1, Y - ts * .25, ts * .05); cx.fill(); }
-  else if (t.kind === 'being') mender(X, Y + ts * .02, ts * .3, t.col || '#c9793a', t.x * 3 + t.y, id === 'guard' ? 'rill' : '');
+  else if (id === 'harbour') rillfolk(X, Y - ts * .02, ts * .3, '#2f7fc0', 4, 'cap');
+  else if (t.kind === 'being') (t.folk === 'rill' ? rillfolk : mender)(X, Y + ts * .02, ts * .3, t.col || '#c9793a', t.x * 3 + t.y, '');
+  else if (id === 'pier') { cx.fillStyle = '#6b4a22'; rr(X - ts * .12, Y - ts * .5, ts * .24, ts * .8, 4); cx.fill(); ol(1.8); cx.strokeStyle = '#d9c9a0'; cx.lineWidth = 2.5; cx.beginPath(); cx.ellipse(X, Y - ts * .2, ts * .16, ts * .06, 0, 0, 7); cx.stroke(); }
+  else if (id === 'bottle') { cx.fillStyle = '#4fae8a'; rr(X - ts * .08, Y, ts * .16, ts * .26, 4); cx.fill(); ol(1.3); cx.fillStyle = '#a8713f'; cx.fillRect(X - ts * .03, Y - ts * .07, ts * .06, ts * .08); if (Math.sin(tNow * 3) > .5) { cx.fillStyle = '#fff'; circ(X + ts * .03, Y + ts * .06, ts * .03); cx.fill(); } }
+  else if (id === 'lift') { cx.strokeStyle = '#d9c9a0'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X, Y - ts * .7); cx.lineTo(X, Y - ts * .3); cx.stroke(); cx.fillStyle = '#a8713f'; rr(X - ts * .3, Y - ts * .3, ts * .6, ts * .62, 4); cx.fill(); ol(1.8); cx.strokeStyle = '#6b4424'; cx.lineWidth = 2; for (let k = 1; k < 4; k++) { cx.beginPath(); cx.moveTo(X - ts * .3 + ts * .15 * k, Y - ts * .3); cx.lineTo(X - ts * .3 + ts * .15 * k, Y + ts * .32); cx.stroke(); } }
   else if (id === 'rubble') { for (const [a, b, q] of [[-.2, .1, .14], [.12, .16, .11], [.02, -.06, .1], [.26, -.02, .07]]) { cx.fillStyle = '#8b8798'; rr(X + ts * a - ts * q, Y + ts * b - ts * q * .6, ts * q * 2, ts * q * 1.2, 2); cx.fill(); ol(1.3); } if (!has('shard')) { cx.fillStyle = '#2b2b30'; rr(X - ts * .1, Y - ts * .02, ts * .22, ts * .14, 2); cx.fill(); ol(1.2); } }
   else if (id === 'log') { cx.fillStyle = '#8a5f34'; rr(X - ts * .42, Y - ts * .08, ts * .84, ts * .36, ts * .16); cx.fill(); ol(1.8); cx.fillStyle = '#3b2a12'; cx.beginPath(); cx.ellipse(X + ts * .32, Y + ts * .1, ts * .09, ts * .15, 0, 0, 7); cx.fill(); ol(1.3); if (!has('coin') && !flag('coinGiven') && Math.sin(tNow * 3) > .6) { cx.fillStyle = '#fff3c4'; circ(X + ts * .32, Y + ts * .08, ts * .03); cx.fill(); } }
   else if (id === 'spin') { cx.fillStyle = '#e8483a'; cx.beginPath(); for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + tNow * .3, q = ts * (i % 2 ? .1 : .2); cx[i ? 'lineTo' : 'moveTo'](X + Math.cos(a) * q, Y + ts * .2 + Math.sin(a) * q * .7); } cx.closePath(); cx.fill(); ol(1.4); }
@@ -607,7 +715,7 @@ function drawGate(g, px, py, ts, x, y) {
   if (g === 'bridge') { if (gateOpen(g)) { cx.fillStyle = '#a8713f'; cx.fillRect(px - 1, py + ts * .1, ts + 2, ts * .8); cx.strokeStyle = '#6b4424'; cx.lineWidth = 2; for (let k = 0; k < 4; k++) { cx.beginPath(); cx.moveTo(px + ts * k / 4, py + ts * .1); cx.lineTo(px + ts * k / 4, py + ts * .9); cx.stroke(); } cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(px, py + ts * .1); cx.lineTo(px + ts, py + ts * .1); cx.moveTo(px, py + ts * .9); cx.lineTo(px + ts, py + ts * .9); cx.stroke(); }
     else if (x === 47) { cx.fillStyle = '#a8713f'; cx.beginPath(); cx.moveTo(px - 2, py + ts * .9); cx.lineTo(px - 2, py + ts * .1); cx.lineTo(px + ts * .42, py - ts * .5); cx.lineTo(px + ts * .5, py + ts * .28); cx.closePath(); cx.fill(); ol(2); } }
   else if (g === 'stones') { cx.fillStyle = gateOpen(g) ? '#b9b2d6' : '#8f8aa8'; cx.beginPath(); cx.ellipse(px + ts * .5, py + ts * .52, ts * .32, ts * .24, 0, 0, 7); cx.fill(); ol(1.6); cx.fillStyle = 'rgba(255,255,255,.25)'; cx.beginPath(); cx.ellipse(px + ts * .42, py + ts * .46, ts * .14, ts * .08, 0, 0, 7); cx.fill(); }
-  else if (g === 'reeds') { cx.fillStyle = '#7a5a2a'; for (let k = 0; k < 4; k++) cx.fillRect(px + ts * (.1 + k * .24), py + ts * .1, ts * .1, ts * .85); cx.fillRect(px, py + ts * .3, ts, ts * .1); cx.fillRect(px, py + ts * .65, ts, ts * .1); } }
+  else if (g === 'reeds' && !gateOpen(g)) { cx.fillStyle = '#7a5a2a'; for (let k = 0; k < 4; k++) cx.fillRect(px + ts * (.1 + k * .24), py + ts * .1, ts * .1, ts * .85); cx.fillRect(px, py + ts * .3, ts, ts * .1); cx.fillRect(px, py + ts * .65, ts, ts * .1); } }
 function drawMap(dt) { geo(); const ts = V.ts, x0 = Math.floor(V.ox), y0 = Math.floor(V.oy), x1 = Math.min(MAPW - 1, Math.ceil(V.ox + V.cols)), y1 = Math.min(MAPH - 1, Math.ceil(V.oy + V.rows)), X = x => Math.round((x - V.ox) * ts), Y = y => Math.round((y - V.oy) * ts);
   cx.fillStyle = '#1a2046'; cx.fillRect(0, 0, vw, vh);
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (!seen[key(x, y)]) continue; const t = MAP[y][x], px = X(x), py = Y(y), g = GATEOF[key(x, y)]; ground(TALL.indexOf(t) >= 0 ? '.' : t, x, y, px, py, ts); if (g) drawGate(g, px, py, ts, x, y); }
@@ -615,13 +723,13 @@ function drawMap(dt) { geo(); const ts = V.ts, x0 = Math.floor(V.ox), y0 = Math.
   for (let y = y0; y <= Math.min(MAPH - 1, y1 + 1); y++) { for (let x = x0; x <= x1; x++) { if (!seen[key(x, y)]) continue; const t = MAP[y][x]; if (TALL.indexOf(t) >= 0) tall(t, x, y, X(x), Y(y), ts); const th = SOLID[key(x, y)]; if (th && thingSeen(th)) drawThing(th, X(x) + ts / 2, Y(y) + ts / 2, ts); }
     if (y === py0) drawAstro(X(P.px) + ts / 2, Y(P.py) + ts / 2 - ts * .1, ts * 1.3, P.route.length > 0, P.dir, P.step); }
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (seen[key(x, y)]) continue; const px = X(x), py = Y(y), e = (x > 0 && seen[key(x - 1, y)]) || (x < MAPW - 1 && seen[key(x + 1, y)]) || (y > 0 && seen[key(x, y - 1)]) || (y < MAPH - 1 && seen[key(x, y + 1)]); cx.fillStyle = e ? '#2a3260' : '#1a2046'; cx.fillRect(px, py, ts + 1, ts + 1); if ((x + y) % 2 === 0) { cx.fillStyle = 'rgba(190,200,255,.07)'; cx.beginPath(); cx.ellipse(px + ts * (.6 + .3 * Math.sin(tNow * .3 + x * 1.7 + y)), py + ts * (.5 + .2 * Math.cos(tNow * .25 + y * 1.3 + x)), ts * .8, ts * .3, 0, 0, 7); cx.fill(); } }
-  for (const t of THINGS) { if (!t.label || !thingSeen(t) || t.x < x0 - 1 || t.x > x1 + 1 || t.y < y0 - 1 || t.y > y1 + 1) continue; const lx = X(t.x) + ts / 2, ly = Y(t.y) - ts * (t.kind === 'machine' ? .62 : t.id === 'village' ? .72 : .5), done = t.kind === 'machine' ? M(t.site).ok : t.gate ? gateOpen(t.gate) : false; if (t.kind === 'machine' && !M(t.site).seenIt) continue; pill((done ? '✓ ' : '') + t.label, lx, ly);
+  for (const t of THINGS) { if (!t.label || !thingSeen(t) || t.x < x0 - 1 || t.x > x1 + 1 || t.y < y0 - 1 || t.y > y1 + 1) continue; const lx = X(t.x) + ts / 2, ly = Y(t.y) - ts * (t.kind === 'machine' ? .62 : t.id === 'village' ? .72 : t.kind === 'being' ? .62 : .5), done = t.kind === 'machine' ? M(t.site).ok : t.gate ? gateOpen(t.gate) : false; if (t.kind === 'machine' && !M(t.site).seenIt) continue; pill((done ? '✓ ' : '') + t.label, lx, ly);
     if (bang(t)) { const by = Y(t.y) - ts * 1.25 - Math.abs(Math.sin(tNow * 3)) * 5; cx.fillStyle = '#ffd25e'; circ(lx, by, Math.max(9, ts * .24)); cx.fill(); ol(2); text('!', lx, by + 1, Math.max(12, ts * .34), INK); } }
   if (P.route.length) { const [tx, ty] = P.route[P.route.length - 1]; cx.strokeStyle = 'rgba(255,255,255,.75)'; cx.lineWidth = 2; cx.setLineDash([5, 5]); circ(X(tx) + ts / 2, Y(ty) + ts / 2, ts * .3); cx.stroke(); cx.setLineDash([]); } }
 /* a "!" floats over the village while the elder has something new to say. Never over a secret. */
-function bang(t) { if (t.id !== 'village') return false; const n = platesDone(); return !flag('metElder') || (n >= 1 && !flag('gotPouch')) || (n === 4 && !flag('stoneLit')); }
+function bang(t) { if (t.id === 'harbour') return (gateOpen('bridge') || gateOpen('stones')) && (!flag('metKeeper')); if (t.id !== 'village') return false; const n = platesDone(); return !flag('metElder') || (n >= 1 && !flag('gotPouch')) || (n === 4 && !flag('stoneLit')); }
 function stepWalk(dt) { if (!P.route.length) { P.idle += dt; return; } const [tx, ty] = P.route[0], dx = tx - P.px, dy = ty - P.py, d = Math.hypot(dx, dy), st = 5.4 * dt; P.step += dt; P.idle = 0; if (Math.abs(dx) > Math.abs(dy)) P.dir = dx > 0 ? 'right' : 'left'; else if (dy) P.dir = dy > 0 ? 'down' : 'up';
-  if (d <= st) { P.px = tx; P.py = ty; P.route.shift(); see(); if (!P.route.length) { save(); drawWords(); setPlace(); const th = P.then; P.then = null; if (th) th(); } else if (P.route.length % 4 === 0) { drawWords(); setPlace(); } } else { P.px += dx / d * st; P.py += dy / d * st; } }
+  if (d <= st) { P.px = tx; P.py = ty; P.route.shift(); see(); S.steps = (S.steps || 0) + 1; if (cogDue()) return cogOut(); if (!P.route.length) { save(); drawWords(); setPlace(); const th = P.then; P.then = null; if (th) th(); } else if (P.route.length % 4 === 0) { drawWords(); setPlace(); } } else { P.px += dx / d * st; P.py += dy / d * st; } }
 
 /* ---- the big map: the whole planet. The land's shape is your ship's landing photo; the mist lifts where you have walked. */
 let bigCv = null, bigDirty = true;
@@ -641,12 +749,15 @@ function drawBig() { const g = bigGeo(), s = g.s; if (bigDirty || !bigCv || bigC
 /* ---- a place from the side: the village */
 function drawScene(dt) { const w = vw, h = vh, hz = h * .56, gy = h * .84, sc = SCENES[S.at], r = Math.max(16, Math.min(w, h) * .075);
   if (SC.to !== null) { const d = SC.to - SC.x, st = dt * .32; SC.step += dt; SC.dir = d > 0 ? 'right' : 'left'; if (Math.abs(d) <= st) { SC.x = SC.to; SC.to = null; const th = SC.then; SC.then = null; save(); if (th) th(); } else SC.x += Math.sign(d) * st; }
+  if (sc.look === 'reach') reachBack(w, h, hz, gy, r); else {
   const bands = ['#3b78c9', '#5b97d9', '#86b8e6', '#b5d6ee', '#ffe2ad']; bands.forEach((b, i) => { cx.fillStyle = b; cx.fillRect(0, hz * i / bands.length, w, hz / bands.length + 1); }); twoSuns(w, hz);
   cx.fillStyle = '#4f9a6a'; cx.beginPath(); cx.moveTo(0, hz); for (let i = 0; i <= 12; i++) cx.lineTo(w * i / 12, hz - h * (.04 + ((i * 5) % 4) * .03)); cx.lineTo(w, hz); cx.closePath(); cx.fill();
   cx.fillStyle = '#62b05c'; cx.fillRect(0, hz, w, h - hz); cx.fillStyle = '#e2cf9a'; cx.fillRect(0, gy - h * .02, w, h * .09); cx.fillStyle = '#58a554'; cx.fillRect(0, gy + h * .07, w, h);
   for (const [fx, sz] of [[.16, 1], [.5, 1.25], [.84, 1]]) { const X = w * fx, bw = r * 3.4 * sz, bh = r * 2.2 * sz, by = gy - h * .02; cx.fillStyle = '#e6dcc2'; rr(X - bw / 2, by - bh, bw, bh, 6); cx.fill(); ol(2); cx.fillStyle = '#c9793a'; cx.beginPath(); cx.arc(X, by - bh, bw * .56, Math.PI, 0); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#ffd25e'; circ(X, by - bh - bw * .56, r * .22); cx.fill(); ol(1.5); cx.fillStyle = '#6b4a22'; rr(X - bw * .12, by - bh * .62, bw * .24, bh * .62, 4); cx.fill(); ol(1.5); cx.fillStyle = '#9fd6ff'; for (const sg of [-1, 1]) { circ(X + sg * bw * .3, by - bh * .55, r * .26); cx.fill(); ol(1.5); } }
+  }
   for (const t of sc.things) { const X = w * t.x, base = gy + h * .02;
-    if (t.id === 'door') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - r * .1, base - r * 2.2, r * .2, r * 2.2); cx.fillStyle = '#e6dcc2'; cx.beginPath(); cx.moveTo(X - r * 1.1, base - r * 1.9); cx.lineTo(X + r * .7, base - r * 2.2); cx.lineTo(X + r * .7, base - r * 1.4); cx.lineTo(X - r * 1.1, base - r * 1.4); cx.closePath(); cx.fill(); ol(1.8); text('← OUT', X - r * .15, base - r * 1.72, r * .42, '#6b4a22'); }
+    if (reachThing(t, X, base, r)) { /* drawn */ }
+    else if (t.id === 'door') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - r * .1, base - r * 2.2, r * .2, r * 2.2); cx.fillStyle = '#e6dcc2'; cx.beginPath(); cx.moveTo(X - r * 1.1, base - r * 1.9); cx.lineTo(X + r * .7, base - r * 2.2); cx.lineTo(X + r * .7, base - r * 1.4); cx.lineTo(X - r * 1.1, base - r * 1.4); cx.closePath(); cx.fill(); ol(1.8); text('← OUT', X - r * .15, base - r * 1.72, r * .42, '#6b4a22'); }
     else if (t.id === 'kid') mender(X, base - r * .62, r * .62, '#e09a55', 1, '');
     else if (t.id === 'store') { for (let i = 0; i < 3; i++) { const bx = X + (i - 1) * r * 1.25; cx.fillStyle = '#8a5f34'; rr(bx - r * .52, base - r * 1.25, r * 1.04, r * 1.25, 5); cx.fill(); ol(2); cx.fillStyle = '#3b2a12'; cx.beginPath(); cx.ellipse(bx, base - r * 1.25, r * .52, r * .16, 0, 0, 7); cx.fill(); ol(1.5); if (i === 2 || flag('stoneLit')) for (let k = 0; k < (flag('stoneLit') ? 4 : 3); k++) pip(bx - r * (flag('stoneLit') ? .33 : .22) + k * r * .22, base - r * (flag('stoneLit') ? 1.3 : 1.2), r * (flag('stoneLit') ? .11 : .09), true); } }
     else if (t.id === 'elder') mender(X, base - r * 1.02, r * 1.02, '#b86a2a', 2, 'elder');
@@ -655,9 +766,67 @@ function drawScene(dt) { const w = vw, h = vh, hz = h * .56, gy = h * .84, sc = 
     if (w < 620) pill(t.words[0], X, base + r * .62 + (sc.things.indexOf(t) % 2 ? 22 : 0)); else pill(t.name, X, base + r * .62); }
   drawAstro(w * SC.x, gy - r * .36, r * 2.1, SC.to !== null, SC.dir, SC.step); }
 
+function reachBack(w, h, hz, gy, r) { ['#3b78c9', '#5b97d9', '#86b8e6', '#b5d6ee', '#d8ecf4'].forEach((b, i) => { cx.fillStyle = b; cx.fillRect(0, hz * i / 5, w, hz / 5 + 1); }); twoSuns(w, hz);
+  cx.fillStyle = '#4f8f4a'; for (let i = 0; i < 40; i++) { const x = (i * 97 % 100) / 100 * w; cx.fillRect(x, hz - h * (.03 + (i % 4) * .012), 3, h * .06); } cx.fillStyle = '#2f6fd0'; cx.fillRect(0, hz, w, h - hz);
+  cx.strokeStyle = 'rgba(255,255,255,.45)'; cx.lineWidth = 2; for (let i = 0; i < 12; i++) { const yy = hz + (h - hz) * (i + .5) / 12, o = ((tNow * .2 + i * .37) % 1) * w; cx.beginPath(); cx.moveTo(o, yy); cx.lineTo(o + w * .06, yy); cx.stroke(); }
+  for (const [fx, sz] of [[.18, 1], [.5, 1.2], [.84, 1]]) { const X = w * fx, bw = r * 3.2 * sz, bh = r * 1.9 * sz, by = gy - h * .1; cx.strokeStyle = '#6b4a22'; cx.lineWidth = Math.max(4, r * .14); for (const a of [-.36, .36]) { cx.beginPath(); cx.moveTo(X + bw * a, by); cx.lineTo(X + bw * a, gy + h * .02); cx.stroke(); } cx.fillStyle = '#dfe9ee'; rr(X - bw / 2, by - bh, bw, bh, 6); cx.fill(); ol(2); cx.fillStyle = '#3f8fd0'; cx.beginPath(); cx.moveTo(X - bw * .62, by - bh); cx.lineTo(X, by - bh - bw * .36); cx.lineTo(X + bw * .62, by - bh); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#ffd25e'; for (const sg of [-1, 1]) { rr(X + sg * bw * .26 - r * .2, by - bh * .7, r * .4, r * .45, 3); cx.fill(); ol(1.5); } }
+  cx.fillStyle = '#a8713f'; cx.fillRect(0, gy - h * .02, w, h * .1); cx.strokeStyle = INK; cx.lineWidth = 2; cx.strokeRect(-2, gy - h * .02, w + 4, h * .1); cx.strokeStyle = '#6b4424'; for (let i = 1; i < 16; i++) { cx.beginPath(); cx.moveTo(w * i / 16, gy - h * .02); cx.lineTo(w * i / 16, gy + h * .08); cx.stroke(); } }
+function reachThing(t, X, base, r) { const id = t.id;
+  if (id === 'baker') { cx.fillStyle = '#b9543a'; rr(X - r * 1.5, base - r * 1.7, r * .9, r * 1.7, 6); cx.fill(); ol(2); cx.fillStyle = '#2b1a12'; cx.beginPath(); cx.arc(X - r * 1.05, base - r * .7, r * .3, Math.PI, 0); cx.lineTo(X - r * .75, base - r * .3); cx.lineTo(X - r * 1.35, base - r * .3); cx.closePath(); cx.fill(); cx.fillStyle = '#ffb23e'; circ(X - r * 1.05, base - r * .5, r * .12 + Math.sin(tNow * 6) * r * .02); cx.fill(); rillfolk(X, base - r * .8, r * .78, '#5aa8c8', 1, 'hat'); }
+  else if (id === 'netmender') { cx.strokeStyle = '#d9c9a0'; cx.lineWidth = 1.5; for (let i = 0; i < 5; i++) { cx.beginPath(); cx.moveTo(X - r * 1.4 + i * r * .3, base - r * 2.2); cx.lineTo(X - r * 1.7 + i * r * .42, base - r * .5); cx.stroke(); cx.beginPath(); cx.moveTo(X - r * 1.6, base - r * 2 + i * r * .34); cx.lineTo(X - r * .1, base - r * 2 + i * r * .34); cx.stroke(); } rillfolk(X, base - r * .8, r * .78, '#4f9fb8', 2, ''); if (has('rope')) { } }
+  else if (id === 'keeper2') rillfolk(X, base - r * 1.0, r * 1.0, '#2f7fc0', 3, 'cap');
+  else if (id === 'singer') rillfolk(X, base - r * .76, r * .74, '#8fa8b8', 5, 'old');
+  else if (id === 'board') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - r * 1.2, base - r * 1.2, r * .16, r * 1.2); cx.fillRect(X + r * 1.04, base - r * 1.2, r * .16, r * 1.2); cx.fillStyle = '#8a5f34'; rr(X - r * 1.4, base - r * 3, r * 2.8, r * 2, 6); cx.fill(); ol(2); TOWNS.forEach((tw, i) => { const hx = X + (i - 1) * r * .85; cx.fillStyle = '#3b2a12'; circ(hx, base - r * 2.55, r * .07); cx.fill(); if ((S.tags || {})[tw] === 'hung') { cx.fillStyle = '#fff7dc'; rr(hx - r * .3, base - r * 2.45, r * .6, r * .5, 3); cx.fill(); ol(1.5); text(String(FLEET.order[tw]), hx, base - r * 2.2, r * .3, INK); } cx.fillStyle = flag('fleetDone') ? '#6fd08a' : '#4a4f66'; circ(hx, base - r * 1.5, r * .13); cx.fill(); ol(1.5); }); }
+  else return false; return true; }
+
 /* ---- sound: small beeps made here, no files. Off with the Sound button on the ship panel. */
 let AC = null;
 function beep(f, d, type) { if (!S || !S.sound) return; try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); const o = AC.createOscillator(), g = AC.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(.06, AC.currentTime); g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + d); o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime + d); } catch (e) {} }
+/*MUSIC-BEGIN  [Source: Marc, 22 November: "Each world or each place get their own music." Brief 2: "a tune for each region, made in code".]
+  Our own tunes: no music files, nothing copied. Written in the game's own form (TUNES in the game file, version 88):
+  bpm counts eighth notes; pcs are the pitch classes of the tune's key (for the check); a voice has w (wave), v (loudness), pl (plucked: it fades fast),
+  or tick (a click) with hz; s holds one token for each eighth: a note like C4 or F#5, "-" holds, "." rests, "x" clicks, "|" is a bar line.
+  Off until someone taps "Music" on the ship panel (many iPads in one room). Softer while a task is open or words wait to be read. */
+const TUNES = {
+  sky: { bpm: 64, pcs: [9, 11, 0, 2, 4, 5, 7], v: [
+    { w: 'sine', v: .04, s: 'E5 - - - A5 - - - | G5 - - - E5 - - - | C5 - - - D5 - E5 - | A4 - - - - - - -' },
+    { w: 'triangle', v: .02, s: 'A3 - E4 - A3 - E4 - | C4 - G4 - C4 - G4 - | F3 - C4 - G3 - D4 - | A3 - E4 - A3 - - -' },
+    { w: 'sine', v: .045, s: 'A2 - - - - - - - | C3 - - - - - - - | F2 - - - G2 - - - | A2 - - - - - - -' }] },
+  meadow: { bpm: 104, pcs: [0, 2, 4, 5, 7, 9, 11], v: [
+    { w: 'triangle', v: .034, s: 'E5 G5 C6 G5 A5 - G5 - | F5 A5 C6 A5 G5 - E5 - | D5 F5 A5 F5 E5 G5 C6 - | B5 A5 G5 F5 E5 - . .' },
+    { w: 'sine', v: .05, s: 'C3 - G3 - C3 - G3 - | F3 - C3 - C3 - G3 - | D3 - A3 - C3 - E3 - | G2 - G3 - C3 - - -' },
+    { tick: 1, hz: 2100, v: .009, s: 'x . . x . . x . | x . . x . . x . | x . . x . . x . | x . x . x . . .' }] },
+  village: { bpm: 88, pcs: [5, 7, 9, 10, 0, 2, 4], v: [
+    { w: 'triangle', v: .02, pl: 1, s: 'F4 A4 C5 A4 F4 A4 C5 A4 | Bb4 D5 F5 D5 Bb4 D5 F5 D5 | G4 Bb4 D5 Bb4 C5 E5 G5 E5 | F4 A4 C5 F5 C5 A4 F4 .' },
+    { w: 'sine', v: .034, s: 'C5 - - - A4 - - - | D5 - - - Bb4 - - - | Bb4 - - - C5 - - - | A4 - - - F4 - - -' },
+    { w: 'sine', v: .05, s: 'F2 - - - - - - - | Bb2 - - - - - - - | G2 - - - C3 - - - | F2 - - - - - - -' }] },
+  reach: { bpm: 84, pcs: [2, 4, 5, 7, 9, 10, 0], v: [
+    { w: 'triangle', v: .032, s: 'A4 - D5 - F5 E5 D5 - | C5 - E5 - G5 F5 E5 - | Bb4 - D5 - F5 - A5 - | G5 - E5 - D5 - - -' },
+    { w: 'sine', v: .022, pl: 1, s: 'D3 A3 D4 A3 D3 A3 D4 A3 | C3 G3 C4 G3 C3 G3 C4 G3 | Bb2 F3 Bb3 F3 Bb2 F3 Bb3 F3 | A2 E3 A3 E3 D3 A3 D4 .' },
+    { w: 'sine', v: .045, s: 'D2 - - - - - - - | C2 - - - - - - - | Bb1 - - - - - - - | A1 - - - D2 - - -' }] },
+  deep: { bpm: 56, pcs: [4, 5, 7, 9, 11, 0, 2], v: [
+    { w: 'sine', v: .04, s: 'E4 - - - - - F4 - | E4 - - - - - - - | G4 - - - F4 - - - | E4 - - - - - - -' },
+    { w: 'sine', v: .05, s: 'E2 - - - - - - - | E2 - - - - - - - | C2 - - - D2 - - - | E2 - - - - - - -' },
+    { tick: 1, hz: 1400, v: .012, s: '. . . x . . . . | . . . . . . x . | . . x . . . . . | . . . . . x . .' }] } };
+const MUS = { on: false, vol: .6, g: null, timer: null, tune: null, step: 0, pass: 0, next: 0, count: 0, cache: {}, duck: 1 };
+function musParse(id) { if (MUS.cache[id]) return MUS.cache[id]; const T = TUNES[id], B = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const voices = T.v.map(vc => { const toks = vc.s.split(/\s+/).filter(x => x && x !== '|'), ev = []; toks.forEach((tk, i) => { if (tk === '-') { if (ev.length && ev[ev.length - 1].end === i) { ev[ev.length - 1].len++; ev[ev.length - 1].end = i + 1; } } else if (tk === 'x') ev.push({ at: i, len: 1, end: i + 1, click: 1 }); else if (tk !== '.') { const m = /^([A-G])([#b]?)(\d)$/.exec(tk); if (m) ev.push({ at: i, len: 1, end: i + 1, hz: 440 * Math.pow(2, ((+m[3] + 1) * 12 + B[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) - 69) / 12) }); } }); return { vc, ev, n: toks.length }; });
+  return (MUS.cache[id] = { voices, n: voices[0].n, sd: 60 / T.bpm / 2 }); }
+function musPick() { if (!S || S.intro < 9 || BIG) return 'sky'; if (TASK && (TASK.kind === 'box' || TASK.kind === 'well')) return 'deep'; if (S.at !== 'map') return 'village'; return regAt(Math.round(P.px), Math.round(P.py)) === 2 ? 'reach' : 'meadow'; }
+function musNote(vc, e, t, sd) { const g = AC.createGain(), d = e.len * sd; MUS.count++; g.connect(MUS.g);
+  if (e.click) { const o = AC.createOscillator(); o.type = 'square'; o.frequency.setValueAtTime(vc.hz, t); g.gain.setValueAtTime(vc.v, t); g.gain.exponentialRampToValueAtTime(.0001, t + .05); o.connect(g); o.start(t); o.stop(t + .06); return; }
+  const o = AC.createOscillator(); o.type = vc.w || 'sine'; o.frequency.setValueAtTime(e.hz, t); g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(vc.v, t + .02); if (vc.pl) g.gain.exponentialRampToValueAtTime(.0001, t + Math.min(d, .35)); else { g.gain.setValueAtTime(vc.v, t + Math.max(.03, d - .06)); g.gain.linearRampToValueAtTime(.0001, t + d); } o.connect(g); o.start(t); o.stop(t + d + .02); }
+function musTick() { if (!MUS.on || !AC || !MUS.g) return; if (document.hidden || AC.state !== 'running') { MUS.next = AC.currentTime + .1; return; }
+  const want = musPick(); if (want !== MUS.tune) { MUS.tune = want; MUS.step = 0; MUS.pass = 0; MUS.next = AC.currentTime + .12; }
+  const duck = (TASK || reading() || (window.speechSynthesis && speechSynthesis.speaking)) ? .4 : 1; if (duck !== MUS.duck) { MUS.duck = duck; MUS.g.gain.setTargetAtTime(MUS.vol * duck, AC.currentTime, .3); }
+  const T = musParse(MUS.tune); while (MUS.next < AC.currentTime + .4) { T.voices.forEach((v, vi) => { if (vi === 0 && MUS.pass % 3 === 2) return; for (const e of v.ev) if (e.at === MUS.step) musNote(v.vc, e, MUS.next, T.sd); }); MUS.next += T.sd; MUS.step++; if (MUS.step >= T.n) { MUS.step = 0; MUS.pass++; } } }      /* every third time round the melody rests, so a short loop tires less */
+function musStart() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) { return; } if (!MUS.g) { MUS.g = AC.createGain(); MUS.g.connect(AC.destination); } MUS.g.gain.setTargetAtTime(MUS.vol * MUS.duck, AC.currentTime, .2); MUS.tune = null; MUS.next = AC.currentTime + .1; if (!MUS.timer) MUS.timer = setInterval(musTick, 120); }
+function musStop() { if (MUS.timer) { clearInterval(MUS.timer); MUS.timer = null; } if (MUS.g && AC) { try { MUS.g.gain.setTargetAtTime(.0001, AC.currentTime, .08); } catch (e) {} } MUS.tune = null; }
+function musSet(on) { MUS.on = !!on; try { localStorage.setItem('gmq-bigworld-music', on ? 'on' : 'off'); } catch (e) {} if (on) musStart(); else musStop(); }
+function musWake() { if (!MUS.on) return; if (!MUS.timer) musStart(); else if (AC && AC.state === 'suspended') { try { AC.resume(); } catch (e) {} } }      /* an iPad lets sound start only after a tap */
+try { MUS.on = localStorage.getItem('gmq-bigworld-music') === 'on'; } catch (e) {}
+document.addEventListener('pointerdown', musWake, true);
+/*MUSIC-END*/
 function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .9; speechSynthesis.speak(u); } catch (e) {} }
 function hush() { try { speechSynthesis.cancel(); } catch (e) {} }
 
@@ -673,41 +842,98 @@ function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.le
 function setPlace() { const t = PIC && PIC.title ? PIC.title : BIG ? PLANET : hereName(); if ($('place').textContent !== t) $('place').textContent = t; const sb = $('stonesbar'); if (S && flag('metElder')) { sb.hidden = false; sb.innerHTML = 'Rule Stones <b>' + '●'.repeat(S.lit) + '○'.repeat(5 - S.lit) + '</b>'; } else sb.hidden = true; }
 
 /* ---- the desk: words to tap. A doing word, then a thing. No keyboard is needed. [Source: Marc, 17 November] */
-const VERBS = ['look', 'talk', 'take', 'go'];
-let verb = '', TASK = null, PANEL = '';
+/* A TYPED WORLD.  [Source: Marc, 22 November: "it needs to allow typing and actions like the previous one. That was the point. We want a game where
+   they can explore and do things and interact with the environment in different ways."]
+   A child may TYPE a command, or TAP it: a doing word, then a thing. The doing words are the game's own (VERBS in the game file), so a child who knows
+   the station knows Algora. Every thing answers every doing word: it does something, or it says why not. [Brief 2, section 2: "a world that answers back"] */
+const VERBS = { look: ['look', 'l', 'examine', 'x', 'read', 'see', 'check', 'inspect', 'search', 'watch'], take: ['take', 'get', 'grab', 'pick', 'lift'], open: ['open', 'unlock'], push: ['push', 'pull', 'move', 'shove', 'slide', 'roll', 'kick'],
+  use: ['use', 'put', 'fix', 'mend', 'press', 'turn', 'start', 'play', 'ring', 'drop', 'throw', 'tie', 'lower'], give: ['give', 'show', 'hand', 'offer', 'bring'], go: ['go', 'walk', 'run', 'enter', 'climb', 'leave'], talk: ['talk', 'say', 'hello', 'hi', 'ask', 'greet'],
+  dig: ['dig'], bag: ['bag', 'inventory', 'i', 'carry'], help: ['help'], hint: ['hint', 'stuck', 'clue', 'lost', 'nudge'], map: ['map'], needs: ['needs', 'list', 'jobs', 'quests'], silly: ['jump', 'dance', 'spin', 'sing', 'wave', 'sleep', 'sit', 'shout', 'swim'] };
+const CHIPS = ['look', 'talk', 'take', 'use', 'give', 'push', 'dig', 'go'], FILL = ['the', 'a', 'an', 'to', 'on', 'at', 'with', 'in', 'into', 'my', 'up', 'it', 'of', 'for', 'from', 'please'];
+const verbOf = w => Object.keys(VERBS).find(v => VERBS[v].indexOf(w) >= 0) || '';
+let verb = '', held = '', TASK = null, PANEL = '';
+const carried = () => S.bag.filter(i => ITEMS[i] && !ITEMS[i].quiet);
 function hereThings() { return S.at === 'map' ? nearThings() : SCENES[S.at].things; }
-function drawWords() { const W = $('words'), busy = reading() || !!TASK || !!PANEL || !!PIC || BIG; $('task').hidden = !(TASK || PANEL); W.hidden = !!(TASK || PANEL); $('cmdrow').hidden = !!(TASK || PANEL); $('desk').classList.toggle('busy', !!(TASK || PANEL));
+function drawWords() { const W = $('words'); $('task').hidden = !(TASK || PANEL); W.hidden = !!(TASK || PANEL); $('cmdrow').hidden = !!(TASK || PANEL); $('desk').classList.toggle('busy', !!(TASK || PANEL)); if (TASK || PANEL || reading() || PIC || BIG) kbHide();
   if (W.hidden) return; if (reading() || PIC || BIG || S.intro < 9) { W.innerHTML = `<div class="wrow"><span class="wlab">${reading() ? (PHONE() ? '' : 'Read the words on the picture. Then tap ' + (READ.i < READ.q.length - 1 ? 'Next.' : 'OK.')) : BIG ? 'Tap the map to close it.' : ''}</span></div>`; return; }
-  const things = hereThings(), seenW = {}; let h = '<div class="wrow"><span class="wlab">Do</span>' + VERBS.map(v => `<button class="word verb${verb === v ? ' on' : ''}" data-verb="${v}">${v}</button>`).join('') + '</div>';
-  if (verb === 'go') h += '<div class="wrow"><span class="wlab">Where</span>' + (S.at === 'map' ? ['north', 'south', 'east', 'west'].map(d => `<button class="word" data-dir="${d}">${d}</button>`).join('') + '<button class="word thing" data-dir="ship">ship</button>' + (thingSeen(TH.village) ? '<button class="word thing" data-dir="village">village</button>' : '') : '<button class="word thing" data-thing="door">out</button>') + '</div>';
-  else h += '<div class="wrow"><span class="wlab">' + (things.length ? 'Here' : 'Nothing is close. Tap the picture to walk.') + '</span>' + things.map(t => { let w = t.words[0]; if (seenW[w] && t.words[1]) w = t.words[1]; seenW[w] = 1; return `<button class="word thing" data-thing="${t.id}">${esc(w)}</button>`; }).join('') + '</div>';
+  const things = hereThings(), seenW = {}; let h = '<div class="wrow"><span class="wlab">Do</span>' + CHIPS.map(v => `<button class="word verb${verb === v ? ' on' : ''}" data-verb="${v}">${v}</button>`).join('') + '</div>';
+  if (verb === 'go') h += '<div class="wrow"><span class="wlab">Where</span>' + (S.at === 'map' ? ['north', 'south', 'east', 'west'].map(d => `<button class="word" data-dir="${d}">${d}</button>`).join('') + THINGS.filter(t => t.kind === 'place' && thingSeen(t)).map(t => `<button class="word thing" data-dir="${t.words[0]}">${t.words[0]}</button>`).join('') : '<button class="word thing" data-thing="door">out</button>') + '</div>';
+  else { if ((verb === 'use' || verb === 'give') && !held) h += '<div class="wrow"><span class="wlab">' + (carried().length ? cap(verb) + ' what? Something you carry:' : 'You carry nothing to ' + verb + ' yet.') + '</span>' + carried().map(i => `<button class="word item" data-item="${i}">${esc(ITEMS[i].words[0])}</button>`).join('') + '</div>';
+    h += '<div class="wrow"><span class="wlab">' + (held ? cap(verb) + ' the ' + esc(ITEMS[held].words[0]) + (verb === 'give' ? ' to whom?' : ' on what?') : things.length ? 'Here' : 'Nothing is close. Tap the picture to walk.') + '</span>' + things.map(t => { let w = t.words[0]; if (seenW[w] && t.words[1]) w = t.words[1]; seenW[w] = 1; return `<button class="word thing" data-thing="${t.id}">${esc(w)}</button>`; }).join('') + '</div>'; }
   W.innerHTML = h; }
-function runThing(t, v) { if (reading() || TASK) return; v = v || ''; const name = t.words[0]; note('', (v || (t.act === 'leave' ? 'go' : t.says || t.act === 'kid' || t.act === 'elder' || t.act === 'keeper' || t.act === 'guard' ? 'talk' : 'look')) + ' ' + name); verb = ''; $('cmd').value = ''; drawWords();
-  if (S.at === 'map') goThing(t, () => act(t, v)); else { const tx = clamp(t.x + (t.id === 'door' ? .09 : -.09), .05, .95); SC.to = tx; SC.then = () => { SC.dir = t.x > SC.x ? 'right' : 'left'; act(t, v); }; if (Math.abs(SC.x - tx) < .005) { SC.to = null; const th = SC.then; SC.then = null; th(); } } }
-function act(t, v) { beep(440, .05); const talky = t.kind === 'being' || ['kid', 'elder', 'keeper', 'guard'].indexOf(t.act) >= 0;
-  if (v === 'talk' && !talky) return tell(['You say hello. Nothing answers.']);
-  if (v === 'take' && !(t.gives && ITEMS[t.gives])) return tell(['You cannot take that.']);
-  if (t.act && ACT[t.act]) return ACT[t.act](t, v);
-  if (t.says) { const later = t.then && (t.then.when === 'stone' ? flag('stoneLit') : t.then.when === 'bridge' ? !!S.gates.bridge : false), list = later ? t.then.says : t.says, k = later ? t.id + '_then' : t.id, i = (S.said[k] || 0) % list.length; S.said[k] = (i + 1) % list.length; return tell([list[i]], null, cap(t.name)); }      /* what the child did changes what people say */
-  if (t.look) return tell([t.look]);
-  tell(['Nothing happens.']); }
+const isTalky = t => t.kind === 'being' || ['kid', 'elder', 'keeper', 'guard', 'baker', 'netmender', 'keeper2'].indexOf(t.act) >= 0;
+function runThing(t, v, item) { if (reading() || TASK) return; v = v || ''; item = item || held; const say0 = v || (t.act === 'leave' ? 'go' : isTalky(t) ? 'talk' : 'look'); note('', say0 + (item && (say0 === 'use' || say0 === 'give') ? ' ' + ITEMS[item].words[0] + (say0 === 'give' ? ' to ' : ' on ') : ' ') + t.words[0]); verb = ''; held = ''; $('cmd').value = ''; kbHide(); drawWords();
+  if (S.at === 'map') goThing(t, () => act(t, v, item)); else { const tx = clamp(t.x + (t.id === 'door' ? .09 : -.09), .05, .95); SC.to = tx; SC.then = () => { SC.dir = t.x > SC.x ? 'right' : 'left'; act(t, v, item); }; if (Math.abs(SC.x - tx) < .005) { SC.to = null; const th = SC.then; SC.then = null; th(); } } }
+/* which doing words mean "the usual thing" for each kind of thing. Any other doing word gets an answer of its own: what happens, or why not. */
+const NAT = { ship: ['look', 'use', 'open', 'go', 'talk'], village: ['look', 'go', 'open', 'use', 'talk'], leave: ['go', 'look', 'use', 'open'], elder: ['talk'], kid: ['talk'], keeper: ['talk'], guard: ['talk'], mural: ['look', 'use'], rstone: ['look'], store: ['look', 'open'],
+  well: ['look', 'use', 'push', 'open'], cutter: ['talk'], harbour: ['look', 'go', 'open', 'use', 'talk'], speaker: ['talk'], gate2: ['look', 'open', 'push', 'use', 'go'], bottle: ['look', 'take', 'open', 'use'], lift: ['look', 'use', 'open', 'push', 'go'], baker: ['talk'], netmender: ['talk'], keeper2: ['talk'], board: ['look', 'use'],
+  machine: ['look', 'use', 'open'], pan: ['look', 'use'], post: ['look', 'use', 'go'], hedge: ['look', 'push', 'open', 'talk', 'use'], rubble: ['look', 'take', 'dig', 'push', 'use'], log: ['look', 'take', 'push', 'open', 'use'], spin: ['look', 'take', 'use'], lookout: ['look', 'use', 'go'] };
+const describe = t => t.desc || (t.folk === 'rill' || ['baker', 'netmender', 'keeper2', 'singer'].indexOf(t.id) >= 0 ? 'One of the Rillfolk: tall and smooth, like a drop of water, with a fin on top and wide orange feet.' : t.id === 'guard' ? 'One of the Rillfolk: blue, with a fin on top, and wet feet.' : t.id === 'elder' ? 'Elder Rivet. An old Mender with a white beard. His lid has a dent in it.' : t.id === 'kid' ? 'A small Mender. His lid is too big for him.' : 'A Mender: a small copper person, round like a pot, with a lid for a hat.');
+function flavour(t, v) { const N = cap(t.name), being = isTalky(t), mach = t.kind === 'machine';
+  if (v === 'talk') return `You say hello to ${t.name}. Only the wind answers.`;
+  if (v === 'take') return being ? `${N} is not yours to take!` : mach ? 'It is taller than you, and bolted to its stone.' : `You cannot carry ${t.name}.`;
+  if (v === 'push') return being ? 'That would be rude. You keep your hands to yourself.' : mach ? 'You push. It does not move. It is bolted to its stone.' : `You push ${t.name}. It does not move.`;
+  if (v === 'open') return being ? 'A person does not open.' : `${N} has nothing to open.`;
+  if (v === 'dig') return being ? 'Not right at their feet!' : 'You should not dig just here.';
+  if (v === 'use') return `You are not sure how to use ${t.name}. Try looking at it.`;
+  if (v === 'go') return `You are already at ${t.name}.`;
+  return 'Nothing happens.'; }
+function act(t, v, item) { beep(440, .05); const talky = isTalky(t); v = v || (t.act === 'leave' ? 'go' : talky ? 'talk' : 'look');
+  if (v === 'give' && !item) return tell(['Give what? Tap “give”, then something you carry.']);
+  if (item && (v === 'give' || v === 'use')) return useItem(item, t, v);
+  if (talky && v === 'look') return tell([describe(t)]);
+  const nat = NAT[t.act] || (t.says ? ['talk'] : ['look']);
+  if (nat.indexOf(v) >= 0) { if (t.act && ACT[t.act]) return ACT[t.act](t, v); if (t.says) { const later = t.then && (t.then.when === 'stone' ? flag('stoneLit') : t.then.when === 'bridge' ? !!S.gates.bridge : t.then.when === 'fleet' ? flag('fleetDone') : false), list = later ? t.then.says : t.says, k = later ? t.id + '_then' : t.id, i = (S.said[k] || 0) % list.length; S.said[k] = (i + 1) % list.length; return tell([list[i]], null, cap(t.name)); }      /* what the child did changes what people say */
+    if (t.look) return tell([t.look]); }
+  const own = t.on && t.on[v]; if (own) return typeof own === 'string' ? tell([own]) : ACT[own.act](t, v);
+  tell([flavour(t, v)]); }
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
-function command(raw) { const words = raw.toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter(Boolean); if (!words.length || reading() || TASK) return; let v = VERBS.indexOf(words[0]) >= 0 ? words.shift() : '';
-  if (words[0] === 'map') return toggleBig(); if (words[0] === 'needs') return openPanel('needs');
-  if (v === 'go' || (!v && ['north', 'south', 'east', 'west'].indexOf(words[0]) >= 0)) return goDir(words[0]);
-  const things = hereThings(), t = things.find(o => words.some(w => o.words.indexOf(w) >= 0)) || (S.at === 'map' ? THINGS.find(o => thingSeen(o) && words.some(w => o.words.indexOf(w) >= 0)) : null);
-  if (!t) { note('There is no "' + words.join(' ') + '" here.', raw); $('cmd').value = ''; verb = ''; drawWords(); return; } runThing(t, v); }
-function goDir(d) { verb = ''; $('cmd').value = ''; note('', 'go ' + d); if (S.at !== 'map') { if (d === 'out' || d === 'ship') return runThing(SCENES[S.at].things[0], ''); return drawWords(); }
-  if (d === 'ship') return goThing(TH.ship, () => {}); if (d === 'village') return goThing(TH.village, () => {});
+/* using or giving something the cadet carries. A thing that is for someone goes to them; anything else gets a plain answer. */
+function useItem(item, t, v) { const it = ITEMS[item], N = cap(t.name);
+  if (item === 'notebook') return openPanel('needs');
+  if (it.to && it.to.indexOf(t.id) >= 0 && ACT[t.act]) return ACT[t.act](t, v, item);
+  if (item === 'pouch') return (t.kind === 'machine' || t.id === 'pan') ? ACT[t.act](t, 'use') : tell([isTalky(t) ? `${N} shakes their head. “Those are the Menders' pips. Keep them safe.”` : 'Pips are for machines and for the bridge pan.']);
+  tell([isTalky(t) ? `${N} looks at ${it.name} and hands it back. “Not for me.”` : (it.nouse || `${cap(it.name)} does not help with ${t.name}.`)]); }
+/* digging where the cadet stands. Mostly it is just the ground; that is still an answer. A few places hide something. */
+const DIGS = { '.': ['You dig a little hole. Dark soil, and one worm.', 'Soil and roots. Nothing else. You fill the hole in.'], ',': ['Grass roots, as thick as string. Hard digging.'], '*': ['You will not dig up flowers.'], ':': ['The path is packed hard. Your fingers hurt.'], 's': ['Wet sand. A tiny crab runs off sideways.', 'Sand, and a white shell. You leave it for the crab.'], 'w': ['Not in a field of someone\'s rice.'], 'c': ['Red dust.'], 'p': ['Stone. No digging here.'], 'd': ['Sand runs back into the hole as fast as you dig.'], 'R': ['Stone floor.'] };
+function digHere() { note('', 'dig'); verb = ''; held = ''; $('cmd').value = ''; if (S.at !== 'map') return tell(['Not in the middle of the village!']); const x = Math.round(P.px), y = Math.round(P.py), spot = (typeof DIGSPOTS !== 'undefined' ? DIGSPOTS : []).find(d => Math.abs(d.x - x) + Math.abs(d.y - y) <= 1 && (!d.when || d.when()));
+  if (spot) return spot.dig(); const list = DIGS[tileAt(x, y)] || DIGS['.'], i = (S.said._dig || 0) % list.length; S.said._dig = (S.said._dig || 0) + 1; beep(200, .08, 'square'); tell([list[i]]); }
+const SILLY = { jump: 'You jump. On Algora you come down slowly.', dance: 'You dance. A bird laughs somewhere.', spin: 'You spin round. Two suns, two suns, two suns.', sing: 'You sing. Far away, something hums the same tune back.', wave: 'You wave. Your two shadows wave too.', sleep: 'No time to sleep. The Gate is still broken.', sit: 'You sit for a moment. The grass is warm.', shout: 'You shout. The hills shout back, twice.', swim: 'Not in a space suit!' };
+function lookAround() { if (S.at !== 'map') return ['You are in ' + SCENES[S.at].name.replace(/^The /, 'the ') + '.', 'Here: ' + SCENES[S.at].things.map(t => t.name).join(', ') + '.']; const x = Math.round(P.px), y = Math.round(P.py), near = nearThings().map(t => t.name), ways = [['north', 0, -1], ['east', 1, 0], ['south', 0, 1], ['west', -1, 0]].filter(d => walkable(x + d[1], y + d[2])).map(d => d[0]), g = { '.': 'grass', ',': 'tall grass', '*': 'flowers', ':': 'a path', 's': 'sand', 'b': 'a plank bridge' }[tileAt(x, y)] || 'the ground';
+  return ['You are in ' + hereName().replace(/^The /, 'the ') + ', standing on ' + g + '. Two suns are in the sky.', near.length ? 'Near you: ' + near.join(', ') + '.' : 'Nothing is close by.', ways.length ? 'You can walk ' + ways.join(', ') + '.' : 'You cannot walk anywhere from here.']; }
+function whereNext() { const open = S.needs.filter(n => !n.done && !n.later); return !flag('metElder') ? 'The sign by your ship points north, to the village. Somebody there may know what is wrong.' : open.length ? 'Your Needs list holds what is still open. The first: ' + open[0].text : 'Nothing is waiting. Walk somewhere you have not been. Talk to someone new.'; }
+function command(raw) { const words = String(raw).toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter(Boolean); if (!words.length || reading() || TASK) return; kbHide();
+  let v = verbOf(words[0]); if (v) words.shift(); const rest = words.filter(w => FILL.indexOf(w) < 0), done = () => { $('cmd').value = ''; verb = ''; held = ''; drawWords(); };
+  if (v === 'map' || rest[0] === 'map') { done(); return toggleBig(); } if (v === 'needs' || v === 'bag') { done(); return openPanel('needs'); }
+  if (v === 'help') { done(); note('', 'help'); return tell(['You can type, or tap words.', 'First a doing word: look, talk, take, use, give, push, dig, go.', 'Then a thing: “look well”. “talk elder”. “give coin”. “go north”.', 'Stuck? Type “hint”.']); }
+  if (v === 'hint') { done(); note('', 'hint'); return tell([whereNext()]); }
+  if (v === 'silly') { done(); note('', raw.trim()); return tell([SILLY[String(raw).toLowerCase().trim().split(/\s+/)[0]] || 'You feel a little silly. Nobody minds.']); }
+  if (v === 'dig' && !rest.length) return digHere();
+  if (v === 'look' && !rest.length) { done(); note('', 'look'); return tell(lookAround()); }
+  if (S.at !== 'map' && ((v === 'go' && (!rest.length || rest[0] === 'out')) || (!v && rest[0] === 'out'))) return runThing(SCENES[S.at].things[0], 'go');
+  if (v === 'go' || (!v && ['north', 'south', 'east', 'west'].indexOf(rest[0]) >= 0)) { const d = rest[0] || ''; if (['north', 'south', 'east', 'west', 'out'].indexOf(d) >= 0 || !rest.length) return goDir(d || 'north'); }
+  const things = hereThings(), find = list => list.find(o => rest.some(w => o.words.indexOf(w) >= 0)), item = (v === 'use' || v === 'give') ? carried().concat(S.bag).find(i => ITEMS[i] && rest.some(w => ITEMS[i].words.indexOf(w) >= 0)) : '';
+  let t = find(things.filter(o => !item || rest.some(w => o.words.indexOf(w) >= 0 && ITEMS[item].words.indexOf(w) < 0))) || (S.at === 'map' ? find(THINGS.filter(thingSeen)) : null);
+  if (item && !t) { const near = things.filter(isTalky)[0] || things[0]; if (!near) { done(); note(`You hold up ${ITEMS[item].name}. Nobody is near.`, raw); return; } t = near; }
+  if (!t) { done(); note(rest.length ? `You see no “${rest.join(' ')}” here. Tap “look” to see what is near.` : v ? `${cap(v)} what?` : 'Try a doing word first: look, talk, take, use, give, push, dig, go.', raw); return; }
+  runThing(t, v, item); }
+function goDir(d) { verb = ''; held = ''; $('cmd').value = ''; note('', 'go ' + d); if (S.at !== 'map') { if (d === 'out' || d === 'ship') return runThing(SCENES[S.at].things[0], 'go'); note('You are inside. Type “go out” to leave.'); return drawWords(); }
+  const place = THINGS.find(t => t.kind === 'place' && thingSeen(t) && t.words.indexOf(d) >= 0); if (place) return goThing(place, () => {});
   const v = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] }[d]; if (!v) return drawWords(); let x = Math.round(P.px), y = Math.round(P.py), n = 0; while (n < 4 && walkable(x + v[0], y + v[1])) { x += v[0]; y += v[1]; n++; } if (!n) note('You cannot go ' + d + ' from here.'); else { P.route = []; let cx0 = Math.round(P.px), cy0 = Math.round(P.py); for (let i = 0; i < n; i++) { cx0 += v[0]; cy0 += v[1]; P.route.push([cx0, cy0]); } P.then = null; } drawWords(); }
+/* the small letter keys. On a touch screen the box takes no iPad keyboard (it would push the picture up); these keys sit on the desk instead. */
+const KB = { touch: ('ontouchstart' in window) || navigator.maxTouchPoints > 0, open: false };
+function kbBuild() { $('kb').innerHTML = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'].map((r, i) => `<div class="kr">${r.split('').map(k => `<button type="button" data-k="${k}">${k}</button>`).join('')}${i === 2 ? '<button type="button" class="kdel" data-k="del" aria-label="rub out">⌫</button>' : ''}</div>`).join('') + '<div class="kr"><button type="button" class="kx" data-k="hide" aria-label="Hide the keys">✕</button><button type="button" class="kwide" data-k="space">space</button></div>'; if (KB.touch) $('cmd').setAttribute('inputmode', 'none'); }
+function kbShow() { if (!KB.touch || KB.open || reading() || TASK || PANEL || PIC || BIG) return; KB.open = true; $('kb').hidden = false; $('desk').classList.add('typing'); }
+function kbHide() { if (!KB.open) return; KB.open = false; $('kb').hidden = true; $('desk').classList.remove('typing'); try { $('cmd').blur(); } catch (e) {} }
+function kbKey(k) { const c = $('cmd'); if (k === 'hide') return kbHide(); let v = c.value; if (k === 'del') v = v.slice(0, -1); else if (k === 'space') { if (v && !/ $/.test(v)) v += ' '; } else if (v.length < 50) v += k; c.value = v; verb = ''; held = ''; beep(k === 'del' ? 300 : 620, .03); }
 
 /* ---- a task, or a list, on the desk. Words, boxes and buttons only: the picture shows the task. */
 const BOX = { on: '', v: {} };
 function padHtml() { return '<div id="pad">' + ['1', '2', '3', '4', '5', 'del', '6', '7', '8', '9', '0', 'clr'].map(k => `<button data-k="${k}">${k === 'del' ? '⌫' : k === 'clr' ? 'C' : k}</button>`).join('') + '</div>'; }
 const boxHtml = id => `<button class="box${BOX.on === id ? ' on' : ''}" data-box="${id}">${esc(BOX.v[id] || '')}</button>`;
 const boxNum = id => BOX.v[id] ? parseInt(BOX.v[id], 10) : null;
-function padKey(k) { const id = BOX.on; if (!id) return; let v = BOX.v[id] || ''; if (k === 'del') v = v.slice(0, -1); else if (k === 'clr') v = ''; else if (v.length < 3) v = (v + k).replace(/^0+(\d)/, '$1'); BOX.v[id] = v; const el = document.querySelector(`[data-box="${id}"]`); if (el) el.textContent = v; beep(600, .03); if (TASK) TASK.msg = ''; const m = document.querySelector('#task .msg'); if (m) m.textContent = ''; }
-function closeTask() { TASK = null; PIC = null; S.open = null; BOX.on = ''; BOX.v = {}; drawWords(); setPlace(); save(); }
+function padKey(k) { const id = BOX.on; if (!id) return; setTimeout(() => { if (TASK && TASKS[TASK.kind] && TASKS[TASK.kind].typed) TASKS[TASK.kind].typed(); }, 0); let v = BOX.v[id] || ''; if (k === 'del') v = v.slice(0, -1); else if (k === 'clr') v = ''; else if (v.length < 3) v = (v + k).replace(/^0+(\d)/, '$1'); BOX.v[id] = v; const el = document.querySelector(`[data-box="${id}"]`); if (el) el.textContent = v; beep(600, .03); if (TASK) TASK.msg = ''; const m = document.querySelector('#task .msg'); if (m) m.textContent = ''; }
+function closeTask() { if (TASK && TASK.kind === 'cog' && !TASK.won) S.cogAt = (S.steps || 0) + 50; TASK = null; PIC = null; S.open = null; BOX.on = ''; BOX.v = {}; drawWords(); setPlace(); save(); }
 function drawTask() { const T = $('task'); T.classList.toggle('istask', !PANEL && !!TASK); if (PANEL) { T.innerHTML = panelHtml(); if (T.scrollHeight > T.clientHeight + 6) T.insertAdjacentHTML('afterbegin', '<p class="dim">▼ There is more. Slide the list up.</p>'); return; } if (!TASK) { T.innerHTML = ''; return; } if (reading()) { T.innerHTML = PHONE() ? '' : `<h3>${esc(TASK.title || '')}</h3><p class="dim">Read the words on the picture. Then tap ${READ.i < READ.q.length - 1 ? 'Next' : 'OK'}.</p>`; return; } T.innerHTML = TASKS[TASK.kind].html(); }
 const btn = (id, label, cls, off) => `<button class="btn ${cls || ''}" data-b="${id}"${off ? ' disabled' : ''}>${label}</button>`;
 function notesHtml(site) { const n = S.notes[site] || []; return `<div class="notes"><b>My notes:</b> ${n.length ? n.map(r => `<span>${r[0]} → ${r[1] === null ? 'handed back' : r[1]}</span>`).join('') : '<i class="dim">nothing written yet</i>'}</div>`; }
@@ -743,6 +969,58 @@ const TASKS = {
   /* THE OLD STEPPING STONES. A number pattern (3.OA.9). The second way over the Rill. */
   stones: { html() { const st = bwStones(S.seed, S.st.round), row = st.rows[S.st.row]; return `<h3>The old stepping stones</h3><p class="q">The post's drums say: <b>${st.shown.join(', ')}</b> …</p><p class="q">Step on the stone that comes next. Tap it on the picture, or here:</p><div class="brow">${row.opts.map((v, i) => `<button class="word" data-b="s${i}">${v}</button>`).join('')}</div><p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('carving', 'Look at the old rope', 'quiet')}${btn('nudge', 'Nudge', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div>`; },
     press(b) { if (b === 'leave') { S.st.row = 0; return closeTask(); } if (b === 'nudge') return nudge('stones'); if (b === 'carving') return showStoneExample(() => { PIC = stonesPic(); drawTask(); }); if (/^s\d$/.test(b)) stepStone(+b[1]); } },
+  /* THE FLEET. For each town: a kind of raft, and how many. Nothing sails until all three lamps are green, so no line can ever spoil the job for good. */
+  fleet: { html() { const F = S.fleet, tw = F.tab, pl = F.plan[tw], hung = S.tags[tw] === 'hung', nm = { stilt: 'Stilt Town', reed: 'Reed Town', mud: 'Mud Town' };
+      return `<h3>The loading board</h3><div class="brow">${TOWNS.map(t => `<button class="word${t === tw ? ' on' : ''}" data-tab="${t}">${nm[t].replace(' Town', '')}${F.lamps ? `<span style="color:${F.lamps[t] ? '#2f9a4f' : '#e8483a'}"> ●</span>` : ''}</button>`).join('')}</div>` +
+        (hung ? `<div class="field"><span><b>${nm[tw]}</b> wants <b>${FLEET.order[tw]}</b> baskets. Rafts of:</span><div class="signs">${FLEET.kinds.map(k => `<button class="word${pl.k === k ? ' on' : ''}" data-b="k${k}">${k}</button>`).join('')}</div></div><div class="field"><span>How many rafts${pl.k ? ' of ' + pl.k : ''}?</span>${boxHtml('n')}</div>${padHtml()}` : `<p class="q">No order tag from <b>${nm[tw]}</b> hangs on the board. Somebody must fetch it from the town.</p>`) +
+        `<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('send', 'Send the fleet', 'warm')}${btn('nudge', 'Nudge', 'quiet')}${btn('rules', 'The rules', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div>`; },
+    typed() { const F = S.fleet, pl = F.plan[F.tab], n = boxNum('n') || 0; if (!pl.k) { if (n) { TASK.msg = 'First tap a kind of raft.'; BOX.v.n = ''; drawTask(); } return; } const left = FLEET.count[pl.k] - TOWNS.filter(t => t !== F.tab && F.plan[t].k === pl.k).reduce((a, t) => a + F.plan[t].n, 0);
+      if (n > left) { TASK.msg = left > 0 ? `Only ${left} rafts of ${pl.k} are left in the harbour.` : `No rafts of ${pl.k} are left in the harbour.`; pl.n = 0; BOX.v.n = ''; beep(180, .12, 'square'); } else { pl.n = n; TASK.msg = ''; } F.lamps = null; save(); drawTask(); },
+    press(b) { const F = S.fleet, pl = F.plan[F.tab], nm = { stilt: 'Stilt Town', reed: 'Reed Town', mud: 'Mud Town' }; if (b === 'leave') return closeTask(); if (b === 'nudge') return nudge('fleet'); if (b === 'rules') return fleetRules(() => {});
+      if (/^k\d$/.test(b)) { pl.k = +b.slice(1); pl.n = 0; BOX.v.n = ''; BOX.on = 'n'; F.lamps = null; TASK.msg = ''; beep(560, .03); save(); return drawTask(); }
+      if (b === 'send') { const noTag = TOWNS.filter(t => S.tags[t] !== 'hung'), unset = TOWNS.filter(t => !F.plan[t].k || !F.plan[t].n);
+        if (noTag.length) { TASK.msg = `The keeper shakes her head. “I have no order from ${noTag.map(t => nm[t]).join(' or ')}.”`; return drawTask(); }
+        if (unset.length) { TASK.msg = `${nm[unset[0]]} has no line of rafts yet.`; F.tab = unset[0]; BOX.v.n = ''; return drawTask(); }
+        F.sends++; F.lamps = {}; TOWNS.forEach(t => { F.lamps[t] = F.plan[t].k * F.plan[t].n === FLEET.order[t]; }); const reds = TOWNS.filter(t => !F.lamps[t]).length;
+        report('The fleet, try ' + F.sends + ': ' + TOWNS.map(t => `${nm[t]} ${F.plan[t].n} rafts of ${F.plan[t].k}`).join('; '), 'orders ' + TOWNS.map(t => FLEET.order[t]).join(', '), reds ? reds + ' lamp' + (reds > 1 ? 's' : '') + ' red' : 'all three green');
+        if (reds) { beep(180, .2, 'square'); TASK.msg = `The water gate stays shut. ${reds === 1 ? 'One lamp is' : reds + ' lamps are'} red.`; save(); return drawTask(); }
+        setFlag('fleetDone'); S.lit = (S.lit || 0) + 1; needDone('fleet'); giveCard('fleet'); const up = upgrade('fleet'); S.bag.push('raft'); bigDirty = true; beep(700, .25); if (PIC) PIC.sail = .001; save();
+        return tell(['All three lamps are green! The water gate swings open.', 'The fleet sails out on the tide: three lines of rafts, every one full.', 'The harbour keeper lifts the Rillfolk\'s Rule Stone. It glows blue. Its light flies to the mountain. That is ' + S.lit + ' of five.', up, 'And a raft of your own. “The channels to the north are still shut. One day it will carry you far.”'], () => closeTask(), 'The harbour keeper'); } } },
+  /* THE WELL: turn the winch and count. The game never says how deep. */
+  well: { html() { const W = S.well; return `<h3>The well</h3><p class="q">Each turn of the winch lowers the bucket <b>${WELL.per}</b> arm-lengths.</p><p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('turn', 'Turn the handle', 'warm')}${btn('up', 'Wind it back up', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div><p class="dim">Count your turns. The tally marks on the picture are yours.</p>`; },
+    press(b) { const W = S.well; if (b === 'leave') return closeTask(); if (b === 'up') { W.turns = 0; TASK.msg = 'You wind the bucket back to the top.'; save(); return drawTask(); }
+      if (b === 'turn') { if (W.turns >= WELL.turns) { TASK.msg = 'The rope goes slack. The bucket is already on the bottom.'; return drawTask(); } W.turns++; beep(260 + W.turns * 20, .08, 'square'); if (W.turns === WELL.turns) { TASK.msg = 'Clunk. The bucket touches the bottom.'; if (!W.hit) { W.hit = true; if (W.step < 2) { W.step = 2; needText('well', JOBS.well.steps[1].need); } report('Measured the well with its winch', `${WELL.turns} turns of ${WELL.per} arm-lengths`, ''); } } else TASK.msg = 'Creak. The bucket goes down.'; save(); return drawTask(); } } },
+  /* THE NET MENDER: how deep, then how many bundles. The makers never do the sum for the child. */
+  rope: { html() { return TASK.phase === 1 ? `<h3>The net mender</h3><p class="q">“How deep is the well, in arm-lengths?”</p><div class="field"><span>Deep:</span>${boxHtml('d')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('ok', 'Tell her', 'warm')}${btn('nudge', 'Nudge', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div>`
+        : `<h3>The net mender</h3><p class="q">“${WELL.depth} arm-lengths. One bundle of long reeds makes <b>${WELL.each}</b> arm-lengths of rope. How many bundles must I have?”</p><div class="field"><span>Bundles:</span>${boxHtml('b')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('ok', 'Tell her', 'warm')}${btn('nudge', 'Nudge', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div>`; },
+    press(b) { const W = S.well; if (b === 'leave') return closeTask(); if (b === 'nudge') return nudge(TASK.phase === 1 ? 'deep' : 'bundles');
+      if (b === 'ok' && TASK.phase === 1) { const d = boxNum('d'); if (!d) { TASK.msg = 'Tap a number first.'; return drawTask(); } if (d !== WELL.depth) { W.missD = (W.missD || 0) + 1; beep(180, .15, 'square'); TASK.msg = '“Hmm. That does not sound right. Turn the winch again, and count. Every turn is the same.”'; report('The well: said it is ' + d + ' deep', '', 'not right'); save(); return drawTask(); } W.told = 1; TASK.phase = 2; TASK.msg = ''; BOX.v = {}; BOX.on = 'b'; report('The well: ' + WELL.turns + ' turns of ' + WELL.per + ' = ' + d, 'said to the net mender', 'right'); beep(660, .1); save(); return drawTask(); }
+      if (b === 'ok') { const n = boxNum('b'); if (!n) { TASK.msg = 'Tap a number first.'; return drawTask(); } if (n !== WELL.bundles) { W.missB = (W.missB || 0) + 1; beep(180, .15, 'square'); TASK.msg = `She lays the bundles end to end in her head. “That does not come to ${WELL.depth}.”`; report('The rope: said ' + n + ' bundles of ' + WELL.each, 'for ' + WELL.depth, 'not right'); save(); return drawTask(); }
+        W.step = 3; needText('well', JOBS.well.steps[2].need + ' (' + WELL.bundles + ' bundles.)'); report('The rope: ' + n + ' bundles of ' + WELL.each + ' = ' + WELL.depth, '', 'right'); beep(660, .1); save(); TASK.title = 'The net mender';
+        return tell([`“${WELL.bundles} bundles. Good.”`, '“The longest reeds grow over the river, by the old stepping stones. Ask the Menders\' reed cutter. Bring them to me.”'], () => closeTask(), 'The net mender'); } } },
+  /* THE REED CUTTER: bundles of ten */
+  reedcut: { html() { return `<h3>The reed cutter</h3><p class="q">“${WELL.bundles} bundles of long reeds? I tie <b>10</b> reeds in a bundle. How many reeds must I cut?”</p><div class="field"><span>Reeds:</span>${boxHtml('r')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('ok', 'Tell him', 'warm')}${btn('leave', 'Leave', 'quiet')}</div>`; },
+    press(b) { const W = S.well; if (b === 'leave') return closeTask(); const n = boxNum('r'); if (!n) { TASK.msg = 'Tap a number first.'; return drawTask(); } if (n !== WELL.bundles * 10) { beep(180, .15, 'square'); TASK.msg = '“No. Ten reeds in every bundle. Count again.”'; report('The reeds: said ' + n, WELL.bundles + ' bundles of 10', 'not right'); save(); return drawTask(); }
+      W.step = 4; S.bag.push('reeds'); needText('well', JOBS.well.steps[3].need); report('The reeds: ' + WELL.bundles + ' bundles of 10 = ' + n, '', 'right'); beep(660, .1); save(); TASK.title = 'The reed cutter'; tell([`“${n} reeds. Swish, swish.” He cuts, and ties them up.`, `You carry ${WELL.bundles} bundles of long reeds.`], () => closeTask(), 'The reed cutter'); } },
+  /* THE MAKERS' BOX: a rule in two steps. The one real problem inside the mini quest; it gives an epic card. */
+  box: { html() { const nt = S.notes.box || [], last = S.well.last; return TASK.phase === 'set' ? `<h3>The Makers' box</h3><p class="q${TASK.msg ? ' pq' : ''}">Turn the two wheels to the box's rule.</p><div class="field"><span>×</span>${boxHtml('a')}<span>then +</span>${boxHtml('b')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('fit', 'Set the wheels', 'warm')}${btn('back', 'More tests first', 'quiet')}${btn('nudge', 'Nudge', 'quiet')}</div>${notesHtml('box')}`
+        : `<h3>The Makers' box</h3><p class="q${TASK.msg ? ' pq' : ''}">Drop a number of pebbles in the slot. See what the box shows.</p><div class="field"><span>Pebbles in (1 to 10):</span>${boxHtml('in')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('drop', 'Drop them in', '')}${last && !inNotes('box', last) ? btn('write', 'Write it down', 'quiet') : ''}${btn('nudge', 'Nudge', 'quiet')}${btn('set', 'I know both wheels', 'warm')}${btn('lid', 'The lid', 'quiet')}${btn('leave', 'Leave', 'quiet')}</div>${notesHtml('box')}`; },
+    press(b) { const W = S.well; if (b === 'leave') return closeTask(); if (b === 'nudge') return nudge('box'); if (b === 'lid') return showLid(() => { PIC = boxPic(); drawTask(); });
+      if (b === 'drop') { const n = boxNum('in'); if (!n || n < 1 || n > 10) { TASK.msg = 'Tap a number from 1 to 10 first.'; return drawTask(); } W.last = [n, boxOut(WELL, n)]; W.tests = (W.tests || 0) + 1; TASK.msg = `${n} went in. The box shows ${W.last[1]}.`; beep(420, .08); save(); return drawTask(); }
+      if (b === 'write') { const N = S.notes.box || (S.notes.box = []); if (W.last && !inNotes('box', W.last)) N.push(W.last.slice()); if (N.length > 12) N.shift(); save(); return drawTask(); }
+      if (b === 'set') { TASK.phase = 'set'; TASK.msg = ''; BOX.v = {}; BOX.on = 'a'; return drawTask(); } if (b === 'back') { TASK.phase = 'test'; TASK.msg = ''; BOX.v = {}; BOX.on = 'in'; return drawTask(); }
+      if (b === 'fit') { const a = boxNum('a'), c = boxNum('b'); if (!a || c === null) { TASK.msg = 'Tap a number for each wheel.'; return drawTask(); } W.tries = (W.tries || 0) + 1;
+        if (a === WELL.a && c === WELL.b) { W.step = 7; needDone('well'); S.cards.push({ job: 'well', name: JOBS.well.card, epic: true, t: Date.now() }); S.bag.push('makernote'); report('The Makers\' box: × ' + a + ' then + ' + c, (W.tests || 0) + ' tests', 'opened on try ' + W.tries + '. An EPIC card: ' + JOBS.well.card); beep(700, .3); save(); if (PIC) PIC.open = true; TASK.title = 'The Makers\' box';
+          return tell(['Click. Click. The lid opens.', 'Inside lies a strip of metal with five small holes, and a note in tiny letters.', '“The Gate\'s code is five rules in a row. Each people keeps one.”', 'You keep the note. And you have won an EPIC card: Deep Finder.'], () => closeTask()); }
+        let n = 0; for (const q of [5, 4, 6, 3, 7, 2, 8, 9, 10, 1]) if (a * q + c !== boxOut(WELL, q)) { n = q; break; } W.last = [n, boxOut(WELL, n)]; beep(180, .15, 'square'); report('The Makers\' box: tried × ' + a + ' then + ' + c, '', 'not the rule'); save(); TASK.title = 'The Makers\' box';
+        return tell([`You set the wheels: × ${a}, then + ${c}.`, `The box takes ${n} pebbles. Your wheels say ${a * n + c}. The box shows ${boxOut(WELL, n)}.`, 'The wheels spin back. Not the rule yet.'], () => { TASK.phase = 'test'; TASK.msg = `The box's own test: ${n} in, ${boxOut(WELL, n)} shown.`; BOX.v = {}; BOX.on = 'in'; drawTask(); }); } } },
+  /* A LOOSE COG: three quick clicks */
+  cog: { html() { const q = TASK.qs[TASK.i]; return `<h3>A loose cog</h3><p class="q">The cog clicks: <b>${q.a[0]} → ${q.a[1]}</b>. Then <b>${q.b[0]} → ${q.b[1]}</b>. Then <b>${q.x} → ?</b></p><div class="field"><span>Click ${TASK.i + 1} of 3:</span>${boxHtml('c')}</div>${padHtml()}<p class="msg">${esc(TASK.msg || '')}</p><div class="brow">${btn('ok', 'Catch!', 'warm')}${btn('leave', 'Let it go', 'quiet')}</div>`; },
+    press(b) { if (b === 'leave') { note('The cog rolls off into the grass. It may come back.'); return closeTask(); } const q = TASK.qs[TASK.i], n = boxNum('c'); if (n === null) { TASK.msg = 'Tap a number first.'; return drawTask(); }
+      if (n !== q.ans) { beep(180, .15, 'square'); report('A loose cog: ' + q.x + ' → ' + n, 'after ' + q.a.join(' → ') + ' and ' + q.b.join(' → '), 'missed'); note('Your hand closes on air. The cog rolls off into the grass. It may come back.'); return closeTask(); }
+      beep(600 + TASK.i * 80, .1); TASK.i++; BOX.v = {}; if (TASK.i < 3) { TASK.msg = 'Right! It slows down.'; return drawTask(); }
+      TASK.won = true; S.cogs = (S.cogs || 0) + 1; S.cogAt = S.steps + 90 + S.cogs * 40; S.cards.push({ job: 'cog' + S.cogs, name: 'Cog Catcher', t: Date.now() }); report('Caught a loose cog', 'three quick rules, all right', 'a card: Cog Catcher'); save(); TASK.title = 'A loose cog';
+      tell(['Got it! The cog sits still in your hands.', 'A Mender runs up, oils it, and carries it back to its machine. “Thank you, sky-walker!”', 'You have won a card: Cog Catcher.'], () => closeTask()); } },
   fresh: { html() { return `<h3>Elder Rivet</h3><p class="q">“Pips are never lost. My helpers fetch them back out of the machines. Your pouch holds <b>${S.pouch}</b>. Start again with ${NUM.start}?”</p><div class="brow">${btn('yes', `A fresh pouch of ${NUM.start}`, 'warm')}${btn('no', 'No, thank you', 'quiet')}</div>`; },
     press(b) { if (b === 'yes') { S.pouch = NUM.start; S.runs = 0; S.resets = (S.resets || 0) + 1; report('A fresh pouch from Elder Rivet', '', `${NUM.start} pips`); note(`Elder Rivet gives you a fresh pouch: ${NUM.start} pips.`); } closeTask(); } },
   reset: { html() { return `<h3>Start again?</h3><p class="q">This wipes everything you did on ${PLANET}. Ask your teacher first.</p><div class="brow">${btn('yes', 'Yes, wipe it all', 'warm')}${btn('no', 'No, keep it', 'quiet')}</div>`; },
@@ -751,8 +1029,12 @@ const TASKS = {
 const NUDGES = {
   rule: ['Try more than one number. One test can fit two different rules.', 'Try two numbers next to each other, like 4 and then 5. How much does OUT change?', 'Does it hand some numbers back? Find numbers it will take. What is the same about them?', 'Elder Rivet\'s painted board, in the village, shows how he found a rule. Look at it again.'],
   pouch: ['Write your pips down after each run. The order of the machines matters.', 'Think backwards. What could go into the last machine, to come out as the pan\'s number?', 'A bad number in your pouch? Elder Rivet has a fresh pouch for you.'],
+  fleet: ['Take one town. Try each kind of raft. Which kinds can make its order exactly, with full rafts?', 'Write down every way for every town. Then look at how many rafts each way needs.', 'A lamp can be green and still be in the way. Its line may use rafts another town needs.'],
+  deep: ['How far does the bucket go down in one turn? How many turns did you count?', 'Turn the winch again and make a mark for every turn.'],
+  bundles: ['One bundle reaches so far. Two bundles reach twice as far. How many until the rope is long enough?'],
+  box: ['Drop in 1 pebble. Then 2. Then 3. How much does the number grow each time?', 'The amount it grows by is the first wheel. What is left over when you put in 1?', 'Look at the lid again. It shows how another box was solved.'],
   stones: ['Look at the three numbers on the post. How far is it from the first to the second?', 'Is it just as far from the second to the third? That is the rule. Do it again from the last number.'] };
-function nudge(kind) { const list = NUDGES[kind], all = S.nudges || (S.nudges = {}), n = all[kind] || 0; all[kind] = n + 1; report('Asked for a nudge: ' + (kind === 'rule' ? 'finding a rule' : kind === 'pouch' ? 'the pouch and the pan' : 'the stepping stones'), 'nudge ' + (n % list.length + 1) + ' of ' + list.length, ''); tell([list[n % list.length]], null, 'A nudge'); }
+function nudge(kind) { const list = NUDGES[kind], all = S.nudges || (S.nudges = {}), n = all[kind] || 0; all[kind] = n + 1; report('Asked for a nudge: ' + ({ rule: 'finding a rule', pouch: 'the pouch and the pan', stones: 'the stepping stones', fleet: 'the fleet', deep: 'the well\'s depth', bundles: 'the rope', box: 'the Makers\' box' }[kind] || kind), 'nudge ' + (n % list.length + 1) + ' of ' + list.length, ''); tell([list[n % list.length]], null, 'A nudge'); }
 const inNotes = (site, r) => (S.notes[site] || []).some(q => q[0] === r[0] && q[1] === r[1]);
 function openMachine(site, quiet) { const m = M(site); TASK = { kind: 'machine', site, phase: m.ok && S.pouch !== null && !S.gates.bridge ? 'real' : 'test', msg: '', title: cap(siteName(site)) }; BOX.v = {}; BOX.on = TASK.phase === 'real' ? 'out' : 'in'; MA.done = null; MA.show = null; MA.fallen = null; PIC = machinePic(site); S.open = { kind: 'machine', site }; drawWords(); drawTask(); setPlace(); save(); }
 /* A Mender fits the child's plate and tests it in front of them. A wrong plate is shown wrong by a test, never just called wrong:
@@ -868,6 +1150,55 @@ function vistaPic() { return { title: 'The lookout hill', draw(w, h) { const hz 
     cx.strokeStyle = '#4f8f4a'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { const X = w * (.44 + i * .041), Y = h * (.79 - (i % 3) * .012); cx.beginPath(); cx.moveTo(X, Y); cx.lineTo(X + 2, Y - h * .03); cx.stroke(); }
     /* the hill you stand on, to the left, clear of the reading card */
     cx.fillStyle = '#62b05c'; cx.beginPath(); cx.moveTo(0, h * .66); cx.quadraticCurveTo(w * .18, h * .56, w * .4, h * .8); cx.lineTo(w, h * .8); cx.lineTo(w, h); cx.lineTo(0, h); cx.closePath(); cx.fill(); ol(2); drawAstro(w * .14, h * .64, Math.min(w, h) * .17, false, 'up', 0); } }; }
+function hangTags() { let n = 0; TOWNS.forEach(tw => { const i = S.bag.indexOf('tag_' + tw); if (i >= 0) { S.bag.splice(i, 1); S.tags[tw] = 'hung'; n++; } }); const hung = TOWNS.filter(q => S.tags[q] === 'hung').length; if (n) { needText('tags', `Fetch the order tags from Stilt Town, Reed Town and Mud Town, and hang them on the loading board (${hung} of 3 hung).`); if (hung === 3) needDone('tags'); note(n === 1 ? 'You hang the order tag on the board.' : 'You hang the order tags on the board.'); save(); } return n; }
+function fleetRules(then) { tell(['My harbour has three kinds of raft. The number on a raft\'s sail says how many baskets it carries.', 'Rule one: a raft sails full. A raft that is part empty tips over.', 'Rule two: a town\'s rafts are tied in one line, nose to tail. So all of one town\'s rafts are the same kind. Two towns may use the same kind.', 'Rule three: send each town exactly its order. More would rot on the dock.', 'The water gate has a lamp for each town. It opens when all three are green. Until then, nothing sails, and you can change every line.'], () => { setFlag('sawRules'); then(); }, 'The harbour keeper'); }
+/* FINISHED EXAMPLE 4: the baker's trays. About loaves, with 24, 5, 6 and 8. No child has an order of 24. It shows all three moves: a kind that cannot fit, a kind that fits but runs out, a kind that works. */
+function bakerPic() { return { title: 'The baker\'s oven', inset: '#7a3a2a', draw(w, h) { const st = READ.i, u = Math.min(w, h * 1.4), fs = Math.max(13, u * .04); cx.fillStyle = '#f3e7cf'; rr(w * .04, h * .03, w * .92, h * .78, 12); cx.fill(); ol(3);
+    text('24 loaves', w / 2, h * .1, fs * 1.2, '#6b4a22'); for (let i = 0; i < 24; i++) { const X = w * (.5 - .345 + (i % 12) * .0627), Y = h * (.17 + Math.floor(i / 12) * .055); cx.fillStyle = '#c98a4a'; cx.beginPath(); cx.ellipse(X, Y, u * .02, u * .013, 0, 0, 7); cx.fill(); ol(1.2); }
+    const rows = [['trays for 5', '4 trays: 20.  5 trays: 25.', 'no number of full trays', st >= 1, false], ['trays for 6', '4 × 6 = 24', 'but only 3 trays', st >= 2, false], ['trays for 8', '3 × 8 = 24', '3 trays: yes!', st >= 3, true]];
+    rows.forEach((rw, i) => { if (!rw[3]) return; const y = h * (.34 + i * .135); cx.fillStyle = rw[4] ? '#dff2d8' : '#f6dcd6'; rr(w * .08, y - h * .05, w * .84, h * .11, 8); cx.fill(); ol(2); text(rw[0], w * .11, y, fs * .9, INK, 'left'); text(rw[1], w * .5, y, fs * .9, INK, 'center'); text(rw[2], w * .89, y, fs * .78, rw[4] ? '#1c7c3a' : '#b3261e', 'right', FONT_B); }); } }; }
+function showBaker(then) { const back = PIC; PIC = bakerPic(); setPlace(); tell(['I bake 24 loaves. I have trays for 5, trays for 6 and trays for 8. A tray goes in full, or it burns.', 'Trays for 5? 4 trays hold 20. 5 trays hold 25. No number of full trays makes 24.', 'Trays for 6? 4 times 6 is 24. But I have only 3 trays for 6.', 'Trays for 8? 3 times 8 is 24. And I have 3 of them. So: 3 trays of 8.', 'Your rafts are my trays. Your orders are my loaves.'], () => { setFlag('sawBaker'); PIC = back; setPlace(); if (then) then(); }, 'The baker'); }
+/* the fleet: the harbour's rafts in rows by kind; each town's line of rafts in its channel; the water gate with three lamps */
+function fleetPic() { return { title: 'The loading board', sail: 0, draw(w, h, dt) { const F = S.fleet, nm = { stilt: 'Stilt Town', reed: 'Reed Town', mud: 'Mud Town' }, top = 58; cx.fillStyle = '#2f6fd0'; cx.fillRect(0, 0, w, h); cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { const yy = h * (i + .5) / 14, o = ((tNow * .15 + i * .37) % 1) * w; cx.beginPath(); cx.moveTo(o, yy); cx.lineTo(o + w * .05, yy); cx.stroke(); }
+    if (this.sail > 0 && this.sail < 1) this.sail = Math.min(1, this.sail + dt * .35);
+    const rowH = (h - top - 8) / 3, lx = w * .02, lw = w * .4, rs = Math.min(lw / 5.6, rowH / 2.6), raft = (X, Y, k, sz) => { cx.fillStyle = '#a8713f'; rr(X - sz * .46, Y + sz * .1, sz * .92, sz * .3, 3); cx.fill(); ol(1.5); cx.strokeStyle = '#6b4a22'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X, Y + sz * .1); cx.lineTo(X, Y - sz * .42); cx.stroke(); cx.fillStyle = '#fff7dc'; rr(X - sz * .3, Y - sz * .62, sz * .6, sz * .56, 3); cx.fill(); ol(1.5); text(String(k), X, Y - sz * .33, sz * .4, INK); };
+    /* the harbour: what is left of each kind */
+    cx.fillStyle = '#a8713f'; cx.fillRect(0, top - 6, lx + lw, 6); FLEET.kinds.forEach((k, r) => { const used = TOWNS.reduce((a, t) => a + (F.plan[t].k === k ? F.plan[t].n : 0), 0), left = flag('fleetDone') ? 0 : FLEET.count[k] - used, y0 = top + rowH * r; cx.fillStyle = 'rgba(6,9,18,.35)'; rr(lx, y0 + 3, lw, rowH - 6, 8); cx.fill(); text('rafts of ' + k, lx + lw / 2, y0 + rs * .34, Math.max(11, rs * .32), '#fff', 'center', FONT_B); for (let i = 0; i < left; i++) raft(lx + rs * (.6 + (i % 5) * 1.05), y0 + rs * (1.0 + Math.floor(i / 5) * .95), k, rs); });
+    /* the three channels, each with its town's order tag and its line of rafts */
+    const cx0 = w * .46, cw = w * .44; TOWNS.forEach((t, r) => { const y0 = top + rowH * r, pl = F.plan[t], hung = S.tags[t] === 'hung', lit = F.lamps ? F.lamps[t] : null; cx.fillStyle = '#5fa888'; cx.fillRect(cx0, y0, cw + w * .1, 5); cx.fillRect(cx0, y0 + rowH - 5, cw + w * .1, 5);
+      cx.fillStyle = '#8a5f34'; rr(cx0 + 4, y0 + 8, Math.min(cw * .5, 150), rs * .62, 5); cx.fill(); ol(1.5); text(nm[t], cx0 + 4 + Math.min(cw * .5, 150) / 2, y0 + 8 + rs * .31, Math.max(11, rs * .3), '#fff7dc');
+      if (hung) { const tx = cx0 + Math.min(cw * .5, 150) + 14; cx.fillStyle = '#fff7dc'; rr(tx, y0 + 6, rs * 1.1, rs * .66, 4); cx.fill(); ol(1.5); text(String(FLEET.order[t]), tx + rs * .55, y0 + 6 + rs * .33, rs * .38, INK); }
+      const n = pl.k ? pl.n : 0, per = Math.max(5, Math.min(10, n)), sz = Math.min(rs, cw / (per + .6)), off = this.sail * w * .6; for (let i = 0; i < n; i++) raft(cx0 + sz * (.6 + i) + off, y0 + rowH * .66, pl.k, sz);
+      /* the lamp */ const gx = w * .955; cx.fillStyle = '#6b4a22'; cx.fillRect(gx - 4, y0 + 4, 8, rowH - 8); cx.fillStyle = lit === null ? '#3a4058' : lit ? '#6fd08a' : '#e8483a'; circ(gx, y0 + rowH * .5, Math.max(8, rs * .28)); cx.fill(); ol(2); if (this.sail <= 0) { cx.fillStyle = '#6b4a22'; cx.fillRect(gx - w * .03, y0 + rowH * .2, 5, rowH * .6); } }); } }; }
+/* the well, from the side and cut open: the winch, the rope, the bucket going down. The tally marks are the child's turns. Nothing says how deep. */
+function wellPic() { return { title: 'The well', draw(w, h) { const W = S.well, gy = h * .3, u = Math.min(w, h), wx = w * .42, ww = u * .2; backdrop(w, h, gy); cx.fillStyle = '#6b5a48'; cx.fillRect(0, gy + u * .02, w, h); cx.fillStyle = '#16264a'; cx.fillRect(wx - ww / 2, gy, ww, h); cx.fillStyle = '#9a94ac'; cx.fillRect(wx - ww / 2 - u * .03, gy - u * .04, u * .03, h); cx.fillRect(wx + ww / 2, gy - u * .04, u * .03, h); cx.strokeStyle = INK; cx.lineWidth = 2; cx.strokeRect(wx - ww / 2 - u * .03, gy - u * .04, u * .03, h); cx.strokeRect(wx + ww / 2, gy - u * .04, u * .03, h);
+    cx.strokeStyle = '#6b4a22'; cx.lineWidth = Math.max(4, u * .014); cx.beginPath(); cx.moveTo(wx - ww * .62, gy); cx.lineTo(wx - ww * .62, gy - u * .2); cx.lineTo(wx + ww * .62, gy - u * .2); cx.lineTo(wx + ww * .62, gy); cx.stroke(); cx.fillStyle = '#8a5f34'; rr(wx - ww * .3, gy - u * .23, ww * .6, u * .06, 6); cx.fill(); ol(2); const ha = W.turns * 1.3; cx.strokeStyle = INK; cx.lineWidth = 4; cx.beginPath(); cx.moveTo(wx + ww * .62, gy - u * .2); cx.lineTo(wx + ww * .62 + Math.cos(ha) * u * .07, gy - u * .2 + Math.sin(ha) * u * .07); cx.stroke(); cx.fillStyle = '#e8483a'; circ(wx + ww * .62 + Math.cos(ha) * u * .07, gy - u * .2 + Math.sin(ha) * u * .07, u * .016); cx.fill(); ol(1.5);
+    const depth = h - gy - u * .12, by = gy - u * .1 + depth * (W.turns / WELL.turns) + u * .08; inkLine([[wx, gy - u * .17], [wx, by]], '#d9c9a0', 3); cx.fillStyle = '#8a5f34'; rr(wx - u * .035, by, u * .07, u * .06, 4); cx.fill(); ol(2);
+    cx.fillStyle = '#ffd25e'; circ(wx + ww * .2, h - u * .05, u * .014 + Math.sin(tNow * 4) * u * .004); cx.fill();
+    /* the child's tally */ cx.fillStyle = '#efe6cc'; rr(w * .64, gy + u * .08, Math.min(w * .32, u * .5), u * .2, 8); cx.fill(); ol(2); text('my turns', w * .64 + Math.min(w * .32, u * .5) / 2, gy + u * .115, Math.max(11, u * .028), '#6b4a22', 'center', FONT_B); for (let i = 0; i < W.turns; i++) { const X = w * .64 + u * .03 + i * u * .028 + Math.floor(i / 5) * u * .02; inkLine([[X, gy + u * .15], [X, gy + u * .24]], INK, 3); }
+    text('one turn: ' + WELL.per + ' arm-lengths', w * .64 + Math.min(w * .32, u * .5) / 2, gy + u * .32, Math.max(11, u * .028), '#fff3c4', 'center', FONT_B); drawAstro(w * .16, gy - u * .02, u * .17, false, 'right', 0); } }; }
+function ropePic() { return { title: 'The net mender', draw(w, h) { const u = Math.min(w, h), hz = h * .3; reachBack(w, h, hz, h * .86, u * .07); cx.fillStyle = '#efe6cc'; rr(w * .06, h * .3, w * .88, h * .42, 10); cx.fill(); ol(3); const y = h * .44;
+    cx.fillStyle = '#7fae5a'; for (let i = 0; i < 7; i++) cx.fillRect(w * .1 + i * u * .012, y - u * .09, u * .008, u * .18); cx.fillStyle = '#6b4a22'; cx.fillRect(w * .1 - u * .01, y - u * .01, u * .1, u * .025); text('1 bundle', w * .1 + u * .04, y + u * .14, Math.max(11, u * .03), '#6b4a22', 'center', FONT_B);
+    inkLine([[w * .25, y], [w * .31, y]], INK, 3); const x0 = w * .35, x1 = w * .88; inkLine([[x0, y], [x1, y]], '#b98a4a', Math.max(6, u * .02)); for (let i = 0; i <= WELL.each; i++) { const X = x0 + (x1 - x0) * i / WELL.each; inkLine([[X, y - u * .035], [X, y + u * .035]], INK, 2.5); } text('arm-lengths of rope', (x0 + x1) / 2, y + u * .1, Math.max(11, u * .03), '#6b4a22', 'center', FONT_B);
+    if (S.well.told) text('the well: ' + WELL.depth + ' arm-lengths deep', w / 2, h * .64, Math.max(12, u * .034), INK, 'center', FONT_B); } }; }
+function cutPic() { return { title: 'The reed cutter', draw(w, h) { const u = Math.min(w, h), hz = h * .4; backdrop(w, h, hz); const n = WELL.bundles, per = Math.min(n, 5), sw = Math.min(w * .16, u * .2); for (let i = 0; i < n; i++) { const X = w * .5 + ((i % per) - (per - 1) / 2) * sw, Y = h * (.56 + Math.floor(i / per) * .24); cx.fillStyle = '#7fae5a'; for (let k = 0; k < 6; k++) cx.fillRect(X - sw * .2 + k * sw * .07, Y - sw * .5, sw * .045, sw * .9); cx.fillStyle = '#6b4a22'; cx.fillRect(X - sw * .26, Y - sw * .05, sw * .52, sw * .1); cx.fillStyle = '#fff7dc'; rr(X - sw * .2, Y + sw * .12, sw * .4, sw * .24, 3); cx.fill(); ol(1.5); text('10', X, Y + sw * .245, sw * .17, INK); } mender(w * .1, h * .82, u * .07, '#b8743a', 3, ''); } }; }
+/* the Makers' box, and its lid (FINISHED EXAMPLE 5: another box, x 5 then + 2) */
+function boxPic() { return { title: 'The Makers\' box', open: false, draw(w, h) { const u = Math.min(w, h), W = S.well, bw = Math.min(w * .6, u * .8), bx = w / 2 - bw / 2, by = h * .32, bh = bw * .56; cx.fillStyle = '#3a3550'; cx.fillRect(0, 0, w, h); cx.fillStyle = '#5d5870'; cx.fillRect(0, h * .8, w, h * .2);
+    cx.fillStyle = '#5f8f7a'; rr(bx, by, bw, bh, 12); cx.fill(); ol(3); cx.fillStyle = '#4a7262'; rr(bx, by - bh * .16, bw, bh * .22, 10); cx.fill(); ol(3); if (this.open) { cx.fillStyle = '#ffd25e'; rr(bx + bw * .1, by - bh * .5, bw * .8, bh * .3, 8); cx.fill(); ol(2); text('five rules in a row', w / 2, by - bh * .35, bh * .12, INK, 'center', FONT_B); }
+    cx.fillStyle = '#16264a'; rr(bx + bw * .08, by + bh * .16, bw * .22, bh * .12, 4); cx.fill(); drum(bx + bw * .19, by + bh * .56, bw * .09, 'IN', W.last ? W.last[0] : null); drum(bx + bw * .81, by + bh * .56, bw * .09, 'SHOWS', W.last ? W.last[1] : null);
+    [['×', boxNum('a'), .42], ['+', boxNum('b'), .58]].forEach(([sg, v, fx]) => { const X = bx + bw * fx, Y = by + bh * .5; cx.fillStyle = '#b9853a'; cx.beginPath(); for (let i = 0; i < 16; i++) { const an = i / 16 * 6.283 + tNow * .2, q = bw * (i % 2 ? .06 : .075); cx[i ? 'lineTo' : 'moveTo'](X + Math.cos(an) * q, Y + Math.sin(an) * q); } cx.closePath(); cx.fill(); ol(2); text(sg + ' ' + (TASK && TASK.phase === 'set' && v !== null ? v : '?'), X, Y + 1, bw * .045, INK); }); text('first', bx + bw * .42, by + bh * .82, bw * .034, '#e8f5e0', 'center', FONT_B); text('then', bx + bw * .58, by + bh * .82, bw * .034, '#e8f5e0', 'center', FONT_B); } }; }
+function openBox() { const open = () => { TASK = { kind: 'box', phase: 'test', msg: '', title: 'The Makers\' box' }; BOX.v = {}; BOX.on = 'in'; PIC = boxPic(); S.open = { kind: 'box' }; drawWords(); drawTask(); setPlace(); save(); }; if (!flag('sawLid')) return showLid(open); open(); }
+function lidPic() { return { title: 'The lid of the box', inset: '#3a3550', draw(w, h) { const st = READ.i, u = Math.min(w, h * 1.4), fs = Math.max(13, u * .042); cx.fillStyle = '#9fb8a8'; rr(w * .06, h * .04, w * .88, h * .74, 12); cx.fill(); ol(3); text('ANOTHER BOX, LONG AGO', w / 2, h * .12, fs * .8, '#2a4034');
+    [[1, 7], [2, 12], [3, 17]].forEach((pr, i) => { if (st < 1) return; const y = h * (.24 + i * .12); text(pr[0] + '  in', w * .3, y, fs, INK); inkLine([[w * .42, y], [w * .52, y]], INK, 2.5); text('shows  ' + pr[1], w * .66, y, fs, INK); if (st >= 2 && i > 0) text('+5', w * .88, y - h * .06, fs * .8, '#1c7c3a'); });
+    if (st >= 2) text('each one more in: 5 more shown. First wheel: × 5', w / 2, h * .6, fs * .72, '#1c7c3a', 'center', FONT_B); if (st >= 3) text('1 × 5 is 5. It shows 7. Second wheel: + 2', w / 2, h * .69, fs * .72, '#1c7c3a', 'center', FONT_B); } }; }
+function showLid(then) { PIC = lidPic(); setPlace(); tell(['Tiny pictures are scratched on the lid. They show another box, long ago.', '1 pebble in: it showed 7. 2 in: 12. 3 in: 17.', 'Each time one more went in, it showed 5 more. So the first wheel was × 5.', '1 times 5 is 5. But it showed 7. That is 2 more. So the second wheel was + 2.', 'This box has its own two wheels. Find them.'], () => { setFlag('sawLid'); if (then) then(); }); }
+/* A SURPRISE ON THE WALK.  [Source: Marc, 18 November: "suddenly something pops up". Brief 2: "a loose machine part that rolls away".]
+   Not a creature, and not in tall grass. A cog shaken loose from a machine rolls out; three quick rules catch it. It comes only after the elder has been met,
+   never beside a person or a place, never twice close together, and at most five times. */
+function cogDue() { if (!flag('metElder') || S.at !== 'map' || TASK || PIC || reading() || (S.cogs || 0) >= 5) return false; if (S.cogAt === undefined) S.cogAt = S.steps + 45; if (S.steps < S.cogAt) return false; const x = Math.round(P.px), y = Math.round(P.py); return regAt(x, y) === 1 && '.,*'.indexOf(tileAt(x, y)) >= 0 && !THINGS.some(t => Math.max(Math.abs(t.x - x), Math.abs(t.y - y)) <= 3); }
+function cogOut() { P.route = []; P.then = null; S.cogAt = S.steps + 100000; PIC = cogPic(); setPlace(); beep(900, .1, 'square'); const qs = bwCog(S.seed, (S.cogs || 0) + (S.cogTry = (S.cogTry || 0) + 1) * 7); tell(['Clank! A loose cog rolls out of the grass, clicking.', 'It shook loose from a machine. It is rolling for the river!', 'It clicks a small rule as it rolls. Say what comes next, three times, and you will have it.'], () => { TASK = { kind: 'cog', qs, i: 0, msg: '', title: 'A loose cog' }; BOX.v = {}; BOX.on = 'c'; PIC = cogPic(); drawWords(); drawTask(); }); }
+function cogPic() { return { title: 'A loose cog', draw(w, h) { const hz = h * .4, u = Math.min(w, h), q = TASK && TASK.kind === 'cog' ? TASK.qs[TASK.i] : null, X = w * (.3 + .05 * Math.sin(tNow * 1.5)), Y = h * .7, R = u * .13; backdrop(w, h, hz); cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(X, Y + R * 1.05, R, R * .2, 0, 0, 7); cx.fill(); cx.fillStyle = '#ffd25e'; cx.beginPath(); for (let i = 0; i < 20; i++) { const an = i / 20 * 6.283 + tNow * 3, r2 = R * (i % 2 ? .78 : 1); cx[i ? 'lineTo' : 'moveTo'](X + Math.cos(an) * r2, Y + Math.sin(an) * r2); } cx.closePath(); cx.fill(); ol(3); cx.fillStyle = '#6b4a22'; circ(X, Y, R * .22); cx.fill(); ol(2);
+    if (q) { const bx = w * .5, bw = Math.min(w * .46, u * .7), fs = Math.max(15, bw * .1); [[q.a[0] + '  →  ' + q.a[1], .2], [q.b[0] + '  →  ' + q.b[1], .36], [q.x + '  →  ?', .52]].forEach(([tx, fy], i) => { cx.fillStyle = i === 2 ? '#fff3c4' : '#fff'; rr(bx, h * fy - fs * .8, bw, fs * 1.6, fs * .5); cx.fill(); ol(2.5); text(tx, bx + bw / 2, h * fy + 1, fs, INK); }); } } }; }
 /* the first pages: why the cadet is here. Told before any maths. */
 function introPic() { return { title: 'Galaxy Patternox', draw(w, h) { const s = READ.i; cx.fillStyle = '#070a1c'; cx.fillRect(0, 0, w, h); for (let i = 0; i < 70; i++) { cx.fillStyle = `rgba(220,230,255,${.3 + .5 * ((i * 37) % 10) / 10})`; cx.fillRect((i * 173) % w, (i * 97) % h, 2, 2); }
     const u = Math.min(w, h);
@@ -886,28 +1217,63 @@ const ACT = {
   elder() { const n = platesDone(), who = 'Elder Rivet';
     if (!flag('metElder')) return tell(['Sky-walker! Welcome. I am Elder Rivet.', 'The Makers built machines for us, long ago. Each machine follows one rule.', 'When the Gate broke, every rule plate burnt black. Now nobody knows the rules.', 'One machine ate some of our pips! We do not dare to use them.', 'Four machines stand in our meadow. Find each rule. Make each one a new plate.', 'First look at my painted board. It shows how I once found a rule.'], () => { setFlag('metElder'); S.bag.push('notebook'); need('plates', 'Elder Rivet: new plates for the four machines (0 of 4 made).'); report('Met Elder Rivet', 'the job: find the rule of each machine', ''); showMural(() => { note('You have a notebook now. The machines are by the pond, on the hill, by the old wall and in the orchard.'); }); }, who);
     if (n >= 1 && !flag('gotPouch')) return tell(['You found a rule! Now I can trust you with these.', `Here are our last ${NUM.start} pips. Gold ones. Real ones.`, 'The bridge over the Rill went up when the Gate broke. Our friends the Rillfolk are on the far side.', `The bridge has a lock: its pan. It comes down for exactly ${NUM.target} pips. Not one more. Not one less.`, `The Makers made it so. Only someone who knows the machines can turn ${NUM.start} pips into ${NUM.target}.`, 'Use only a machine with a true plate. And our law: say what will come out before you pull the lever.'], () => { setFlag('gotPouch'); S.pouch = NUM.start; S.runs = 0; S.bag.push('pouch'); need('pan', `The bridge pan: exactly ${NUM.target} pips. You have a pouch of pips.`); report('Elder Rivet gave the pip pouch', `${NUM.start} pips; the pan wants ${NUM.target}`, ''); }, who);
-    if (n === 4 && !flag('stoneLit')) return tell(['All four plates are true! We can use our machines again.', 'Look: our Rule Stone is glowing. A rule was used to help someone. That is what lights it.', 'Its light flies to the Gate on the mountain. That is one of five.', 'The other four are with the other peoples of Algora. The Rillfolk are the nearest: over the river.'], () => { setFlag('stoneLit'); S.lit = 1; needDone('plates'); giveCard('plates'); beep(700, .25); report('The Menders\' Rule Stone is lit', 'all four rules found', 'Rule Stones: 1 of 5'); setPlace(); }, who);
+    if (n === 4 && !flag('stoneLit')) return tell(['All four plates are true! We can use our machines again.', 'Look: our Rule Stone is glowing. A rule was used to help someone. That is what lights it.', 'Its light flies to the Gate on the mountain. That is one of five.', 'The other four are with the other peoples of Algora. The Rillfolk are the nearest: over the river.', 'And for you: ' + PEOPLES[0].gift + ' ' + PARTS.engine + ': Level 2.'], () => { setFlag('stoneLit'); S.lit = (S.lit || 0) + 1; needDone('plates'); giveCard('plates'); upgrade('plates'); beep(700, .25); report('The Menders\' Rule Stone is lit', 'all four rules found', 'Rule Stones: 1 of 5'); setPlace(); }, who);
     if (has('shard') && !flag('shardSeen')) return tell(['What is that? Let me see.', 'This is no machine\'s plate. It is far too thick.', 'It is a piece of the Gate\'s own plate. It flew all this way on the day the Gate broke.', 'Keep it safe. One day you may stand at the Gate.'], () => { setFlag('shardSeen'); giveCard('shard'); need('shard', 'A piece of the Gate\'s own plate: it belongs at the Gate.', true); report('Showed Elder Rivet the black shard', '', 'it is a piece of the Gate\'s plate'); }, who);
     if (flag('gotPouch') && !S.gates.bridge && S.pouch !== NUM.start) { TASK = { kind: 'fresh', title: 'Elder Rivet' }; drawWords(); return drawTask(); }
     tell([n < 4 ? `You have made ${n} of the 4 plates. ${4 - n} to go.` : S.gates.bridge || S.gates.stones ? 'The Rillfolk are over the river. They keep the second Rule Stone.' : 'The bridge pan still waits for its pips. Or ask about the old stones.'], null, who); },
   store() { tell([flag('stoneLit') ? 'Three big bins. Pips are piling up in all of them. The machines are at work again.' : 'Three big bins for pips. Two are empty. One has a few pips at the bottom.']); },
   mural() { if (!flag('metElder')) return tell(['A painted board. A blue pump, and some numbers. You do not know what it means yet.']); showMural(); },
-  rstone() { tell(flag('stoneLit') ? ['The Rule Stone glows gold. Its light points north, to the mountain.'] : ['A dark stone on a stand. Four signs are cut into it: + − × ÷', flag('metElder') ? 'It is dark. Elder Rivet says a Rule Stone lights when its rule is used to help someone.' : 'It is dark and cold.']); },
-  kid() { const who = 'Pim';
+  rstone(t, v) { tell(flag('stoneLit') ? ['The Rule Stone glows gold. Its light points north, to the mountain.'] : ['A dark stone on a stand. Four signs are cut into it: + − × ÷', flag('metElder') ? 'It is dark. Elder Rivet says a Rule Stone lights when its rule is used to help someone.' : 'It is dark and cold.']); },
+  kid(t, v, item) { const who = 'Pim';
+    if (has('bottle') && (item === 'bottle' || !has('spinner'))) { return tell(['A bottle? With a note? For ME?', '“From Wim, of Mud Town.” Wim! We have not written since the bridge went up!', 'Thank you, sky-walker! I will write back today.'], () => { S.bag.splice(S.bag.indexOf('bottle'), 1); setFlag('bottleGiven'); needDone('letter'); giveCard('letter'); report('Carried a note in a bottle to Pim', 'from Mud Town, over the river', 'a card: River Post'); }, who); }
     if (flag('spinGiven')) return tell([['Whee! Look at it spin!', 'The big kids cross the river north of the bridge. On the old stones.', 'I can count to 100 by fives. Want to hear?'][(S.said.kid = ((S.said.kid || 0) + 1) % 3)]], null, who);
     if (has('spinner')) return tell(['Hello! I am Pim. Oh! That is my spinner! You found it!', 'Thank you! Want a secret? The big kids cross the river north of the bridge. On the old stones, past the reeds.'], () => { S.bag.splice(S.bag.indexOf('spinner'), 1); setFlag('spinGiven'); needDone('spinner'); giveCard('spinner'); report('Gave Pim the lost spinner', '', 'a clue: the old stones'); }, who);
     setFlag('askedSpin'); need('spinner', 'Pim, in the village: a lost red spinner. Somewhere by the pond.'); tell(['Hello! I am Pim.', 'I lost my spinner by the pond. It is red. Have you seen it?'], null, who); },
   spin(t, v) { if (has('spinner') || flag('spinGiven')) return; tell(['A red spinner lies in the grass. A toy.', 'You pick it up. Somebody must miss it.'], () => { S.bag.push('spinner'); report('Found a red spinner by the pond', '', ''); }); },
-  rubble() { if (has('shard')) return tell(['Only stones now.']); tell(['Bits of stone, fallen from the old wall. Something black lies among them.', 'A shard of burnt metal, as thick as your hand. Far too thick for a machine\'s plate.', 'You keep it. Someone in the village may know what it is.'], () => { S.bag.push('shard'); report('Found a thick black shard in the rubble', '', 'a secret'); }); },
-  log() { if (has('coin') || flag('coinGiven')) return tell(['A hollow log. Empty now.']); tell(['A hollow log. Something shines inside.', 'You reach in. A coin! A tiny machine is stamped on it.'], () => { S.bag.push('coin'); report('Found a Maker\'s coin in the hollow log', '', 'a secret'); }); },
+  rubble(t, v) { if (has('shard')) return tell(['Only stones now.']); tell([v === 'dig' || v === 'push' ? 'You move the stones aside, one by one. Something black lies under them.' : 'Bits of stone, fallen from the old wall. Something black lies among them.', 'A shard of burnt metal, as thick as your hand. Far too thick for a machine\'s plate.', 'You keep it. Someone in the village may know what it is.'], () => { S.bag.push('shard'); report('Found a thick black shard in the rubble', '', 'a secret'); }); },
+  log(t, v) { if (has('coin') || flag('coinGiven')) return tell([v === 'push' ? 'You roll the log over. Nothing else falls out.' : 'A hollow log. Empty now.']); tell(v === 'push' ? ['You roll the hollow log. Something rattles inside, and drops out.', 'A coin! A tiny machine is stamped on it.'] : ['A hollow log. Something shines inside.', 'You reach in. A coin! A tiny machine is stamped on it.'], () => { S.bag.push('coin'); report('Found a Maker\'s coin in the hollow log', '', 'a secret'); }); },
   keeper() { const who = 'The orchard keeper';
     if (flag('coinGiven')) return tell([['Four rows of six. All there.', 'That coin was my grandfather\'s.', 'The fruit is nearly ripe.'][(S.said.keeper = ((S.said.keeper || 0) + 1) % 3)]], null, who);
     if (has('coin')) return tell(['My lucky coin! After all these years!', 'You find things. So look in the rubble by the old wall, near the Wall Machine. Something black fell there on the day the Gate broke.'], () => { S.bag.splice(S.bag.indexOf('coin'), 1); setFlag('coinGiven'); needDone('coin'); giveCard('coin'); report('Gave the orchard keeper the lucky coin', '', 'a clue: the rubble by the old wall'); }, who);
     const i = S.said.keeper || 0; S.said.keeper = (i + 1) % 2; if (i === 1) need('coin', 'The orchard keeper: a lucky coin that rolled into something hollow.'); tell([['Four rows of six trees. I count them every day.', 'My lucky coin rolled away years ago. Into something hollow, I think.'][i]], null, who); },
   hedge() { need('hedge', 'The hedge in the old wall: a knock it knows.', true); tell(['A thick hedge fills the gap in the old wall. It rustles, as if it is listening.', 'A small sign: KNOCK THE WAY THE WOODS COUNT.', 'You do not know that knock yet.']); },
-  guard() { const who = 'A Rillfolk guard', i = S.said.guard || 0; S.said.guard = Math.min(2, i + 1) === 2 && i === 2 ? 1 : i + 1; if (i >= 1) need('road', 'The Rillfolk road east: washed out. Come back another day.', true);
-    tell([[S.gates.bridge ? 'A sky-walker! You brought the bridge down! The Rillfolk thank you.' : 'A sky-walker! You crossed the old stones! Nobody has done that for years.', 'The road east is washed out. Our road crew is at work. Come back another day.', 'Climb the little hill. You can see far from there.'][Math.min(i, 2)]], null, who); },
+  guard() { const who = 'A Rillfolk guard', i = S.said.guard || 0; S.said.guard = i + 1;
+    if (!gateOpen('reeds')) return tell([S.gates.bridge ? 'A sky-walker! You brought the bridge down! The Rillfolk thank you.' : 'A sky-walker! You crossed the old stones! Nobody has done that for years.', 'The road east is mended. And the harbour keeper needs every hand she can get.', 'I will open the gate for you. The harbour is just past it.'], () => { S.gates.reeds = 1; bigDirty = true; needDone('road'); report('The Rillfolk guard opened the reed gate', '', 'the Reach is open'); beep(520, .15); }, who);
+    tell([['The harbour is just past the gate. Look for the houses on legs.', 'Climb the little hill. You can see far from there.', 'Mind the channels. The planks are slippery.'][i % 3]], null, who); },
   lookout() { PIC = vistaPic(); setPlace(); tell(['From the hill you can see far.', 'To your right, the east: reeds and water, and houses on legs. That is the Reach.', 'Ahead, to the north: a great lake. It shines blue on one side and gold on the other.', 'Past the lake stands a mountain. On top is a ring of stone, as tall as a tower. It flickers. The Gate.', 'Four more peoples live out there. Each one keeps a Rule Stone.'], () => { PIC = null; setFlag('vista'); report('Looked out from the lookout hill', '', ''); setPlace(); }); },
+  gate2() { tell(['A gate of tied reeds, shut with a loop of rope.', 'The Rillfolk guard beside it holds the rope. You should talk to the guard.']); },
+  harbour() { S.at = 'harbour'; SC.x = .15; SC.to = null; SC.dir = 'right'; FADE = 1; beep(420, .08); setPlace(); drawWords(); save(); if (!flag('sawHarbour')) { setFlag('sawHarbour'); tell(['The harbour. Houses on legs stand over the water.', 'Rafts are tied up in rows. A big wooden board hangs by the water gate.']); } },
+  keeper2(t, v, item) { const who = 'The harbour keeper', hung = TOWNS.filter(q => S.tags[q] === 'hung').length;
+    if (!flag('metKeeper')) return tell(['A sky-walker! I am the harbour keeper. We need every hand.', 'Everything here moves by raft. The high water is coming. After it, no raft can sail for a long time.', 'Three towns have sent for baskets of river rice: Stilt Town, Reed Town and Mud Town.', 'The Makers built us a board that worked out every load. When the Gate broke, it went dark. Now nobody can load the fleet.', 'Go to each town. Its speaker will give you an order tag. Hang the tags on my board. Then load the fleet.'], () => { setFlag('metKeeper'); need('fleet', 'The harbour keeper: load the fleet so all three towns get their rice.'); need('tags', 'Fetch the order tags from Stilt Town, Reed Town and Mud Town, and hang them on the loading board (0 of 3 hung).'); report('Met the harbour keeper', 'the job: load the fleet for three towns', ''); }, who);
+    if (item && /^tag_/.test(item)) { hangTags(); return tell(['The keeper hangs the tag on the board. “Good.”'], null, who); }
+    if (flag('fleetDone')) return tell([['The rice is out. Three towns will eat this season, thanks to you.', 'Your raft is tied at the end of the pier. The north channels will open one day.'][(S.said.keeper2 = ((S.said.keeper2 || 0) + 1) % 2)]], null, who);
+    hangTags(); tell([hung < 3 ? `The board has ${TOWNS.filter(q => S.tags[q] === 'hung').length} of 3 order tags. The towns are north, east and south of here.` : 'All three tags hang on the board. Now load the fleet. Mind the rules.'], null, who); },
+  speaker(t, v, item) { const tw = t.town, o = FLEET.order[tw], who = cap(t.name), nm = t.label;
+    if (flag('fleetDone')) { const i = (S.said[t.id] || 0) % 2; S.said[t.id] = i + 1; return tell([[`The rice came! Exactly ${o} baskets. Thank you, sky-walker!`, `${nm} will eat this season.`][i]], null, who); }
+    if (!flag('metKeeper')) return tell([`Welcome to ${nm}. We are waiting for rice. The harbour keeper knows more than I do.`], null, who);
+    if (!S.tags[tw]) return tell([`${nm} needs ${o} baskets of river rice before the high water.`, 'Here is our order tag. Hang it on the loading board in the harbour.'], () => { S.tags[tw] = 'carried'; S.bag.push('tag_' + tw); report('Took ' + nm + '\'s order tag', o + ' baskets', ''); }, who);
+    tell([S.tags[tw] === 'carried' ? `Our tag says ${o}. Please take it to the harbour.` : `Our tag hangs on the board: ${o} baskets. We are waiting.`], null, who); },
+  board(t, v, item) { if (!flag('metKeeper')) return tell(['A big wooden board with three hooks. Over the water gate are three lamps, all dark.', 'The harbour keeper is watching you. You should talk to her first.']);
+    if (flag('fleetDone')) return tell(['The loading board. Three green lamps. The harbour is empty: the fleet is at sea.']);
+    hangTags(); const open = () => { TASK = { kind: 'fleet', msg: '', title: 'The loading board' }; BOX.v = { n: S.fleet.plan[S.fleet.tab].n ? String(S.fleet.plan[S.fleet.tab].n) : '' }; BOX.on = 'n'; PIC = fleetPic(); S.open = { kind: 'fleet' }; drawWords(); drawTask(); setPlace(); save(); };
+    if (!flag('sawRules')) return fleetRules(() => showBaker(open)); open(); },
+  baker() { showBaker(() => {}); },
+  bottle() { if (has('bottle') || flag('bottleGiven')) return; tell(['A green bottle, stuck in the reeds. There is a note inside.', 'The note says: “To my friend Pim, over the river. I miss you. From Wim, of Mud Town.”', 'You keep the bottle. Pim lives in the Menders\' village.'], () => { S.bag.push('bottle'); need('letter', 'A bottle with a note for Pim, in the Menders\' village.'); report('Found a bottle with a note in the reeds', '', 'a secret'); }); },
+  lift() { need('lift', 'The lift under the hill wall: it rises on the right count.', true); tell(['A wooden cage hangs on a rope against the hill wall. High above are fields in steps.', 'A sign: IT RISES ON THE RIGHT COUNT.', 'The rope is slack. Nobody is up there to pull. Not yet.']); },
+  netmender(t, v, item) { const W = S.well, who = 'The net mender';
+    if (item === 'reeds' || (W.step === 4 && has('reeds'))) return tell(['“Long reeds! Just right.”', 'She twists them, fast as a fish. Bundle by bundle the rope grows. She ties a hook on the end.', `“${WELL.depth} arm-lengths. Not one more, not one less. Take it to your well.”`], () => { S.bag.splice(S.bag.indexOf('reeds'), 1); S.bag.push('rope'); W.step = 5; needText('well', JOBS.well.steps[4].need); report('The net mender made the rope', WELL.bundles + ' bundles of ' + WELL.each, ''); }, who);
+    if (W.step === 5 || has('rope')) return tell(['“The rope is yours. A well is waiting for it.”'], null, who);
+    if (W.step >= 1 && W.step <= 2) { if (!W.hit) return tell(['“A rope for a well? How deep is it?”', '“You do not know? Go and turn its winch. Count the turns until the bucket lands.”'], null, who); TASK = { kind: 'rope', phase: W.told ? 2 : 1, msg: '', title: 'The net mender' }; BOX.v = {}; BOX.on = W.told ? 'b' : 'd'; PIC = ropePic(); drawWords(); return drawTask(); }
+    if (W.step === 3) return tell([`“I need ${WELL.bundles} bundles of long reeds. The Menders\' reed cutter has them, over the river.”`], null, who);
+    tell([['I mend nets and I twist rope. A knot is a number, you know.', 'A rope is only as good as its shortest reed.', 'Need a rope? Tell me how long.'][(S.said.netmender = ((S.said.netmender || 0) + 1) % 3)]], null, who); },
+  cutter(t, v, item) { const W = S.well; if (W.step === 3 && !has('reeds')) { TASK = { kind: 'reedcut', msg: '', title: 'The reed cutter' }; BOX.v = {}; BOX.on = 'r'; PIC = cutPic(); drawWords(); return drawTask(); }
+    const list = W.step >= 4 ? ['Good reeds, those. Mind you keep them dry.', 'Hello again.'] : t.says, k = 'cutter' + (W.step >= 4 ? '_b' : ''), i = (S.said[k] || 0) % list.length; S.said[k] = i + 1; tell([list[i]], null, cap(t.name)); },
+  well(t, v, item) { const W = S.well;
+    if (W.step >= 7) return tell(['The well is just a well again. You drop a pebble in. Plink, plink, plink.']);
+    if (W.step === 6) return openBox();
+    if (item === 'rope' || has('rope')) return tell(['You tie the rope to the winch and lower the hook. Down, down, down.', 'The hook catches on something heavy. You wind it up.', 'A metal box, green with age! A Makers\' box. It has a slot, and two wheels on its lid.'], () => { S.bag.splice(S.bag.indexOf('rope'), 1); W.step = 6; needText('well', JOBS.well.steps[5].need); report('Pulled a Makers\' box out of the well', 'with the rope', ''); openBox(); });
+    if (W.step === 0) return tell(['A deep well. You drop a pebble in. Plink. The echo comes back three times: plink, plink, plink.', 'Far down, something glints. It is not water.', 'Too deep to reach. A rope with a hook could do it. But how deep is the well? The winch could tell you.'], () => { W.step = 1; need('well', JOBS.well.steps[0].need); report('Saw something glint in the well', '', 'a mini quest begins'); });
+    TASK = { kind: 'well', msg: '', title: 'The well' }; PIC = wellPic(); drawWords(); drawTask(); setPlace(); },
   machine(t) { const m = M(t.site);
     if (!flag('metElder')) return tell(['A brass machine, taller than you. Its plate is burnt black.', 'A Mender waves you away. “Do not touch it! Ask Elder Rivet first. In the village.”']);
     if (!m.seenIt) { m.seenIt = true; MA.done = null; MA.show = null; PIC = machinePic(t.site); setPlace(); return tell([`${cap(t.name)}. Brass, with a big hopper on top.`, 'Its rule plate is burnt black.', 'A tray of grey test pebbles sits beside it. They stay here.', t.site === 'wall' ? 'Bits of stone and metal lie along the old wall, to the east.' : ''], () => openMachine(t.site)); }
@@ -924,37 +1290,39 @@ const ACT = {
 function openPanel(p) { if (reading() || TASK) return; PANEL = PANEL === p ? '' : p; if (p === 'needs') $('b_needs').classList.remove('new'); $('b_needs').classList.toggle('on', PANEL === 'needs'); $('b_ship').classList.toggle('on', PANEL === 'ship' || PANEL === 'report'); drawWords(); drawTask(); }
 function panelHtml() {
   if (PANEL === 'needs') { const open = S.needs.filter(n => !n.done && !n.later), later = S.needs.filter(n => !n.done && n.later), done = S.needs.filter(n => n.done), carry = S.bag.map(i => i === 'pouch' ? (S.pouch === null ? '' : `the pip pouch (${S.pouch} pips)`) : ITEMS[i].name).filter(Boolean);
-    return `<h3>What I still need</h3><ul class="list"><li><b>My mission:</b> mend the Gate, so Patternox is open to everyone.<small>Rule Stones lit: ${S.lit} of 5</small></li></ul>${open.length || later.length || done.length ? '' : '<p class="dim">Nothing else yet. Talk to people. Look at things.</p>'}<ul class="list">${open.map(n => `<li>${esc(n.text)}</li>`).join('')}${later.map(n => `<li>${esc(n.text)}<small>for another day</small></li>`).join('')}${done.map(n => `<li class="done">${esc(n.text)}</li>`).join('')}</ul><p class="q"><b>I carry:</b> ${carry.length ? esc(carry.join(', ')) : 'nothing yet'}</p>${Object.keys(S.notes).filter(s => S.notes[s].length).map(s => `<p class="dim">${esc(cap(siteName(s)))}</p>${notesHtml(s)}`).join('')}<div class="brow">${btn('close', 'Close', 'quiet')}</div>`; }
+    return `<h3>What I still need</h3><ul class="list"><li><b>My mission:</b> mend the Gate, so Patternox is open to everyone.<small>Rule Stones lit: ${S.lit} of 5</small></li></ul>${open.length || later.length || done.length ? '' : '<p class="dim">Nothing else yet. Talk to people. Look at things.</p>'}<ul class="list">${open.map(n => `<li>${esc(n.text)}</li>`).join('')}${later.map(n => `<li>${esc(n.text)}<small>for another day</small></li>`).join('')}${done.map(n => `<li class="done">${esc(n.text)}</li>`).join('')}</ul><p class="q"><b>I carry:</b> ${carry.length ? esc(carry.join(', ')) : 'nothing yet'}</p>${Object.keys(S.notes).filter(s => S.notes[s].length).map(s => `<p class="dim">${esc(s === 'box' ? 'The Makers\' box' : cap(siteName(s)))}</p>${notesHtml(s)}`).join('')}<div class="brow">${btn('close', 'Close', 'quiet')}</div>`; }
   if (PANEL === 'report') return `<h3>Mission report</h3><p class="dim">For your teacher: what you did, the maths, and how it went.</p><ul class="list">${S.log.length ? S.log.slice().reverse().map(l => `<li>${esc(l.what)}<small>${esc([l.maths, l.result, 'minute ' + l.t].filter(Boolean).join(' · '))}</small></li>`).join('') : '<li>Nothing yet.</li>'}</ul><div class="brow">${btn('ship', 'Back', 'quiet')}</div>`;
   const atShip = S.at === 'map' && Math.abs(Math.round(P.px) - 13) + Math.abs(Math.round(P.py) - 82) <= 1;
-  return `<h3>Your ship</h3><p class="q">${atShip ? 'Your ship waits here. Everything you do is saved by itself.' : 'Your ship is in the meadow where you landed.'}</p><div class="brow">${atShip || S.at !== 'map' ? '' : btn('home', 'Go back to my ship', 'warm')}${btn('report', 'Mission report', 'quiet')}${btn('sound', 'Sound: ' + (S.sound ? 'on' : 'off'), 'quiet')}</div><p class="q"><b>Cards won on Algora:</b> ${S.cards.length ? esc(S.cards.map(c => c.name).join(', ')) : 'none yet'}</p><div class="brow">${btn('close', 'Close', 'quiet')}${btn('reset', 'Start again', 'quiet')}</div><p class="dim">Rule Stones lit: ${S.lit} of 5. Only the Mender Meadow and the Reach's landing are built so far. More of Algora is coming. (${VERSION})</p>`; }
-function panelPress(b) { if (b === 'close') return openPanel(PANEL); if (b === 'report' || b === 'ship') { PANEL = b; return drawTask(); } if (b === 'sound') { S.sound = !S.sound; save(); beep(600, .08); return drawTask(); }
+  return `<h3>Your ship</h3><p class="q">${atShip ? 'Your ship waits here. Everything you do is saved by itself.' : 'Your ship is in the meadow where you landed.'}</p><div class="brow">${atShip || S.at !== 'map' ? '' : btn('home', 'Go back to my ship', 'warm')}${btn('report', 'Mission report', 'quiet')}${btn('sound', 'Sound: ' + (S.sound ? 'on' : 'off'), 'quiet')}${btn('music', 'Music: ' + (MUS.on ? 'on' : 'off'), 'quiet')}</div><p class="q"><b>Ship parts:</b> ${Object.keys(PARTS).map(k => PARTS[k] + ' ' + ((S.parts || {})[k] ? '<b>Level 2</b>' : 'Level 1')).join(', ')}</p><p class="q"><b>Cards won on Algora:</b> ${S.cards.length ? S.cards.map(c => c.epic ? '<b>' + esc(c.name) + ' (EPIC)</b>' : esc(c.name)).join(', ') : 'none yet'}</p><div class="brow">${btn('close', 'Close', 'quiet')}${btn('reset', 'Start again', 'quiet')}</div><p class="dim">Rule Stones lit: ${S.lit} of 5. The Mender Meadow and the Reach are built. More of Algora is coming. (${VERSION})</p>`; }
+function panelPress(b) { if (b === 'close') return openPanel(PANEL); if (b === 'report' || b === 'ship') { PANEL = b; return drawTask(); } if (b === 'sound') { S.sound = !S.sound; save(); beep(600, .08); return drawTask(); } if (b === 'music') { musSet(!MUS.on); return drawTask(); }
   if (b === 'home') { openPanel(PANEL); FADE = 1; P.route = []; P.then = null; P.px = 13; P.py = 82; P.dir = 'down'; cam.x = 13.5; cam.y = 82.5; see(); note('You follow your own tracks back to the ship.'); save(); drawWords(); return setPlace(); }
   if (b === 'reset') { PANEL = ''; $('b_ship').classList.remove('on'); TASK = { kind: 'reset', title: 'Start again?' }; drawWords(); return drawTask(); } }
 function toggleBig() { if (reading() || TASK || PIC) return; BIG = !BIG; $('b_map').classList.toggle('on', BIG); if (BIG) { PANEL = ''; $('b_needs').classList.remove('on'); $('b_ship').classList.remove('on'); } drawWords(); drawTask(); setPlace(); }
 
 /* ---- taps and keys */
 function stageTap(e) { const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; if (reading()) return; if (BIG) return toggleBig(); if (PIC) { if (PIC.tap) PIC.tap(x, y); return; } if (TASK) return; if (PANEL) openPanel(PANEL);
-  if (S.at !== 'map') { const sc = SCENES[S.at], fx = x / vw; let best = null; for (const t of sc.things) if (Math.abs(t.x - fx) < .075 && (!best || Math.abs(t.x - fx) < Math.abs(best.x - fx))) best = t; if (best) return runThing(best, verb); SC.to = clamp(fx, .05, .95); SC.then = null; return; }
-  geo(); const tx = Math.floor(V.ox + x / V.ts), ty = Math.floor(V.oy + y / V.ts); if (tx < 0 || ty < 0 || tx >= MAPW || ty >= MAPH) return; let t = seen[key(tx, ty)] ? SOLID[key(tx, ty)] : null; if (!t && seen[key(tx, ty)]) { const g = GATEOF[key(tx, ty)]; if (g && !gateOpen(g)) t = THINGS.find(o => o.gate === g); if (!t && MAP[ty][tx] === 'H') t = TH.village; if (!t && Math.abs(tx - 13) <= 1 && ty === 83) t = TH.ship; } if (t && thingSeen(t)) return runThing(t, verb); verb = ''; beep(500, .03); goTo(tx, ty); drawWords(); }
+  if (S.at !== 'map') { const sc = SCENES[S.at], fx = x / vw; let best = null; for (const t of sc.things) if (Math.abs(t.x - fx) < .075 && (!best || Math.abs(t.x - fx) < Math.abs(best.x - fx))) best = t; if (best) return runThing(best, verb, held); kbHide(); SC.to = clamp(fx, .05, .95); SC.then = null; return; }
+  geo(); const tx = Math.floor(V.ox + x / V.ts), ty = Math.floor(V.oy + y / V.ts); if (tx < 0 || ty < 0 || tx >= MAPW || ty >= MAPH) return; let t = seen[key(tx, ty)] ? SOLID[key(tx, ty)] : null; if (!t && seen[key(tx, ty)]) { const g = GATEOF[key(tx, ty)]; if (g && !gateOpen(g)) t = THINGS.find(o => o.gate === g); if (!t && MAP[ty][tx] === 'H') t = TH.village; if (!t && Math.abs(tx - 13) <= 1 && ty === 83) t = TH.ship; } if (t && thingSeen(t)) return runThing(t, verb, held); if (verb === 'dig') { goTo(tx, ty, digHere); return drawWords(); } verb = ''; held = ''; kbHide(); beep(500, .03); goTo(tx, ty); drawWords(); }
 cv.addEventListener('pointerdown', e => { e.preventDefault(); stageTap(e); });
 $('readok').onclick = readOk; $('readsay').onclick = () => { if (reading()) speak(READ.q[READ.i]); };
 $('read').addEventListener('pointerdown', e => e.stopPropagation());
 $('b_map').onclick = toggleBig; $('b_needs').onclick = () => { if (BIG) toggleBig(); openPanel('needs'); }; $('b_ship').onclick = () => { if (BIG) toggleBig(); openPanel('ship'); };
-$('words').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.verb) { verb = verb === b.dataset.verb ? '' : b.dataset.verb; $('cmd').value = verb ? verb + ' ' : ''; beep(560, .03); return drawWords(); } if (b.dataset.dir) return goDir(b.dataset.dir); if (b.dataset.thing) { const t = hereThings().find(o => o.id === b.dataset.thing); if (t) runThing(t, verb); } });
-$('task').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.k) return padKey(b.dataset.k); if (b.dataset.box) { BOX.on = b.dataset.box; return drawTask(); } if (b.dataset.sign) { TASK.sign = b.dataset.sign; TASK.msg = ''; beep(560, .03); return drawTask(); } if (b.disabled) return; if (b.dataset.b) { if (PANEL) return panelPress(b.dataset.b); if (TASK) TASKS[TASK.kind].press(b.dataset.b); } });
+$('words').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.verb) { verb = verb === b.dataset.verb ? '' : b.dataset.verb; held = ''; $('cmd').value = verb ? verb + ' ' : ''; beep(560, .03); if (verb === 'dig' && !hereThings().length) return digHere(); return drawWords(); } if (b.dataset.item) { held = b.dataset.item; $('cmd').value = verb + ' ' + ITEMS[held].words[0] + ' '; beep(560, .03); return drawWords(); } if (b.dataset.dir) return goDir(b.dataset.dir); if (b.dataset.thing) { const t = hereThings().find(o => o.id === b.dataset.thing); if (t) runThing(t, verb, held); } });
+$('kb').addEventListener('pointerdown', e => { e.preventDefault(); }); $('kb').addEventListener('click', e => { const b = e.target.closest('button'); if (b) kbKey(b.dataset.k); });
+$('cmd').addEventListener('focus', kbShow); $('cmd').addEventListener('pointerdown', kbShow);
+$('task').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.k) return padKey(b.dataset.k); if (b.dataset.box) { BOX.on = b.dataset.box; return drawTask(); } if (b.dataset.sign) { TASK.sign = b.dataset.sign; TASK.msg = ''; beep(560, .03); return drawTask(); } if (b.dataset.tab) { S.fleet.tab = b.dataset.tab; BOX.v.n = S.fleet.plan[b.dataset.tab].n ? String(S.fleet.plan[b.dataset.tab].n) : ''; TASK.msg = ''; beep(560, .03); return drawTask(); } if (b.disabled) return; if (b.dataset.b) { if (PANEL) return panelPress(b.dataset.b); if (TASK) TASKS[TASK.kind].press(b.dataset.b); } });
 $('go').onclick = () => command($('cmd').value); $('cmd').addEventListener('keydown', e => { if (e.key === 'Enter') command($('cmd').value); });
-window.addEventListener('keydown', e => { if (e.target === $('cmd')) return; if (reading() && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return readOk(); } if (TASK && BOX.on && /^[0-9]$/.test(e.key)) return padKey(e.key); if (TASK && e.key === 'Backspace') return padKey('del'); const d = { ArrowUp: 'north', ArrowDown: 'south', ArrowRight: 'east', ArrowLeft: 'west' }[e.key]; if (d && !TASK && !reading() && !PIC && !BIG && S.at === 'map') { e.preventDefault(); const v = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] }[d], x = Math.round(P.px) + v[0], y = Math.round(P.py) + v[1]; if (!P.route.length && walkable(x, y)) { P.route = [[x, y]]; P.then = null; } } });
+window.addEventListener('keydown', e => { if (e.target === $('cmd')) return; if (!TASK && !PANEL && !reading() && !PIC && !BIG && /^[a-z]$/i.test(e.key) && !e.metaKey && !e.ctrlKey) { $('cmd').focus(); return; } if (reading() && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return readOk(); } if (TASK && BOX.on && /^[0-9]$/.test(e.key)) return padKey(e.key); if (TASK && e.key === 'Backspace') return padKey('del'); const d = { ArrowUp: 'north', ArrowDown: 'south', ArrowRight: 'east', ArrowLeft: 'west' }[e.key]; if (d && !TASK && !reading() && !PIC && !BIG && S.at === 'map') { e.preventDefault(); const v = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] }[d], x = Math.round(P.px) + v[0], y = Math.round(P.py) + v[1]; if (!P.route.length && walkable(x, y)) { P.route = [[x, y]]; P.then = null; } } });
 window.addEventListener('resize', size);
 
 /* ---- what a future AI may be told about this place: facts only, from the tables above and the save. [CLAUDE.md: the constraint architecture] */
 function bwSlice() { const r = regAt(Math.round(P.px), Math.round(P.py)), R = REGIONS[r] || REGIONS[1], near = hereThings().map(t => t.name); return ['PLACE: ' + hereName() + ', ' + PLANET + ', Galaxy Patternox', 'FOLK: ' + (R.folk || ''), 'NEAR: ' + (near.join('; ') || 'nothing'), 'CARRIES: ' + (S.bag.map(i => ITEMS[i].name).join('; ') || 'nothing') + (S.pouch !== null ? ` (${S.pouch} pips)` : ''), 'NEEDS: ' + (S.needs.filter(n => !n.done).map(n => n.text).join(' | ') || 'none'), `FACTS: plates made ${platesDone()} of 4; bridge ${S.gates.bridge ? 'down' : 'up'}; old stones ${S.gates.stones ? 'crossed' : 'not crossed'}; Rule Stones lit ${S.lit} of 5`, 'NEVER SAY: any machine\'s rule, the number that will come out, or which stone is next'].join('\n'); }
 
 /* ---- start, and the frame loop */
-function boot() { S = load() || fresh(); if (!S.st) S.st = { round: 0, row: 0 }; NUM = bwNumbers(S.seed); unpackSeen(S.seen); P.px = S.x; P.py = S.y; P.dir = S.dir || 'down'; cam.x = S.x + .5; cam.y = S.y + .5; SC.x = S.sx || .13; see(); size(); setPlace(); drawLog(); drawWords(); drawTask();
+function boot() { kbBuild(); S = load() || fresh(); if (!S.st) S.st = { round: 0, row: 0 }; S.parts = S.parts || {}; if (S.flags.stoneLit && !S.parts.engine) S.parts.engine = 2;      /* a save from before upgrades */ NUM = bwNumbers(S.seed); FLEET = bwFleet(S.seed); WELL = bwWell(S.seed); S.tags = S.tags || {}; S.fleet = S.fleet || { plan: {}, sends: 0, lamps: null, tab: 'stilt' }; TOWNS.forEach(t => { S.fleet.plan[t] = S.fleet.plan[t] || { k: 0, n: 0 }; }); S.well = S.well || { step: 0, turns: 0, hit: false, told: 0 }; S.steps = S.steps || 0; unpackSeen(S.seen); P.px = S.x; P.py = S.y; P.dir = S.dir || 'down'; cam.x = S.x + .5; cam.y = S.y + .5; SC.x = S.sx || .13; see(); size(); setPlace(); drawLog(); drawWords(); drawTask();
   const faults = bwCheck(); if (faults.length) console.error('bwCheck: ' + faults.join(' | '));
   if (S.intro < 9) { PIC = introPic(); setPlace(); tell(['The wormhole to Galaxy Patternox is broken. It flickers.', 'A small ship can slip through a flicker. A big ship cannot.', 'A call comes through the flicker: “This is the S.S. Infinity. We are lost in Patternox. The Gate\'s code is broken. Please help.”', 'Past the wormhole is one planet with two suns: ' + PLANET + '.', 'Your mission: find out why the Gate broke. Mend it. Then Patternox is open to everyone.', 'You land in a green meadow. Tap the picture to walk. Tap a word to do something.'], () => { S.intro = 9; PIC = null; report('Landed on ' + PLANET, '', ''); setPlace(); drawWords(); save(); }, 'Mission'); }
-  else if (S.open) { const o = S.open; if (o.kind === 'machine' && TH['m_' + o.site]) openMachine(o.site); else if (o.kind === 'pan' && !S.gates.bridge && S.pouch !== null) { TASK = { kind: 'pan', msg: '', title: 'The bridge pan' }; PIC = panPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'stones' && !S.gates.stones) { TASK = { kind: 'stones', msg: '', title: 'The old stepping stones' }; PIC = stonesPic(); drawWords(); drawTask(); setPlace(); } else S.open = null; }
+  else if (S.open) { const o = S.open; if (o.kind === 'machine' && TH['m_' + o.site]) openMachine(o.site); else if (o.kind === 'pan' && !S.gates.bridge && S.pouch !== null) { TASK = { kind: 'pan', msg: '', title: 'The bridge pan' }; PIC = panPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'fleet' && !flag('fleetDone')) { TASK = { kind: 'fleet', msg: '', title: 'The loading board' }; BOX.v = { n: S.fleet.plan[S.fleet.tab].n ? String(S.fleet.plan[S.fleet.tab].n) : '' }; BOX.on = 'n'; PIC = fleetPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'box' && S.well.step === 6) { TASK = { kind: 'box', phase: 'test', msg: '', title: 'The Makers\' box' }; BOX.v = {}; BOX.on = 'in'; PIC = boxPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'stones' && !S.gates.stones) { TASK = { kind: 'stones', msg: '', title: 'The old stepping stones' }; PIC = stonesPic(); drawWords(); drawTask(); setPlace(); } else S.open = null; }
   requestAnimationFrame(loop); }
 let last = 0;
 function loop(ts) { const dt = Math.min(.05, last ? (ts - last) / 1000 : .016); last = ts; tNow += dt; if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();

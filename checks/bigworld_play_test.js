@@ -19,11 +19,18 @@
 //  11b what the child did changes the place: the pip store fills, the Rule Stone glows, a Mender hears the Rillfolk sing again
 //  12  the small quests and the secrets: Pim's spinner; the coin, the keeper's clue, the shard, the elder's story. No secret gives help with a rule.
 //  12b a nudge comes only when asked, gives no number, and is written in the report
+//  11c THE REACH: the guard opens the reed gate; the harbour; the keeper's story; the rules and the baker's example; three towns and their order tags;
+//      the fleet: more rafts than there are, a wrong line (one red lamp, nothing sails), closing and opening mid-plan, the right plan; the Rule Stone, the card,
+//      the raft and the ship's Navigation at Level 2; people say new things
+//  12c THE WELL (a mini quest of five steps over two regions): the winch, the net mender (how deep, how many bundles), the reed cutter, the rope,
+//      the Makers' box with its lid example, wrong wheels shown wrong, the right wheels: an epic card
+//  1b  TYPING: the small keys on the desk and a real keyboard; push, take, dig, dance, help, hint, and a word the game does not know
+//  +   a loose cog may roll out on any walk; the test catches it. Music is off at first, plays when switched on, stops when switched off.
 //  13  a second child crosses by the old stones only: a splash gives a new pattern; five right stones get across
 //  14  closing in the middle of the stones and opening again
 //  15  the big map, the Needs list, the ship panel, the report, "Go back to my ship"
 // On all three screens (1180 x 745, 820 x 1180, 390 x 760): nothing scrolls, nothing spills, every button of every task is on the screen,
-// the reading card is inside the picture, the picture has at least 45% of the screen. The page asks the network for nothing.
+// the reading card is inside the picture, the picture has at least 45% of the screen. The page asks the network for nothing but the game's two fonts.
 //
 // Run:  node checks/bigworld_play_test.js [--shots folder] [--only phone]     (--only plays the screens whose name holds that word)
 const { chromium } = require('playwright');
@@ -50,6 +57,7 @@ async function tapSquare(p, x, y) { const g = await p.evaluate(() => { const c =
   const px = (x + .5 - cam.ox) * cam.ts, py = (y + .5 - cam.oy) * cam.ts, cx = Math.max(6, Math.min(g.c.w - 6, px)), cy = Math.max(52, Math.min(g.c.h - 6, py));
   await p.mouse.click(g.c.l + cx, g.c.t + cy); return px >= 0 && py >= 0 && px <= g.c.w && py <= g.c.h; }
 async function walkTo(p, x, y) { for (let i = 0; i < 70; i++) { let s = await st(p); if (s.S.at === 'map' && !s.reading && !s.task && s.x === x && s.y === y) return true;
+    if (s.task && s.task.kind === 'cog') { for (let k = 0; k < 3; k++) { const q = (await st(p)).task; if (!q || q.kind !== 'cog') break; const c = q.qs[q.i], plus = c.b[1] - c.a[1] === c.b[0] - c.a[0], ans = plus ? c.x + (c.a[1] - c.a[0]) : c.x * (c.a[1] / c.a[0]); await pad(p, ans); await press(p, 'ok'); } const got = await readAll(p); if (/Cog Catcher/.test(got.join(' '))) p.cogs = (p.cogs || 0) + 1; continue; }      // a loose cog: three quick rules
     if (s.reading || s.task || s.panel || s.S.at !== 'map') {      // a tap on the way opened something: read it, leave it, step aside with the "go" words, and go on
       if (s.reading) await readAll(p); s = await st(p); if (s.task) await p.click('#task [data-b="leave"]').catch(() => {}); if (s.panel) await p.click('#task [data-b="close"]').catch(() => {}); s = await st(p); if (s.S.at !== 'map') { await p.click('#words [data-thing="door"]'); await idle(p); }
       s = await st(p); const dir = Math.abs(x - s.x) > Math.abs(y - s.y) ? (x > s.x ? 'east' : 'west') : (y > s.y ? 'south' : 'north'); await p.click('#words [data-verb="go"]'); await p.click(`#words [data-dir="${dir}"]`).catch(() => {}); await idle(p); continue; }
@@ -76,8 +84,8 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
   for (const b of L.btns) say(b.r[5] >= 34, `${where}: the button "${b.t}" is only ${Math.round(b.r[5])}px tall`); }
 
 (async () => {
-  const b = await chromium.launch();
-  for (const [w, h, name, seed] of [[1180, 745, 'iPad sideways', 7], [820, 1180, 'iPad upright', 23], [390, 760, 'phone', 41]].filter(q => q[2].indexOf(ONLY) >= 0)) {
+  const b = await chromium.launch(); let played = 0;
+  for (const [w, h, name, seed] of [[1180, 745, 'iPad sideways', 7], [820, 1180, 'iPad upright', 23], [390, 760, 'phone', 41]].filter(q => q[2].toLowerCase().indexOf(ONLY.toLowerCase()) >= 0)) { played++;
     console.log(`--- ${name} (${w} x ${h}), child ${seed}`);
     const p = await open(b, w, h, seed);
     const tag = SHOTS ? `${w}x${h}_` : '';
@@ -89,6 +97,19 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     const intro = await readAll(p); say(intro.length === 6 && /broken/.test(intro[0]) && /S\.S\. Infinity/.test(intro[2]) && /mission/i.test(intro[4]), `${name}: the story pages are not as written`); say(!intro.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the story`);
     s = await st(p); say(!s.reading && s.x === 13 && s.y === 82 && s.place === 'Mender Meadow', `${name}: after the story the cadet is not at the ship in the Mender Meadow`); await layout(p, `${name}, the map`); await shot(p, tag + '02_map');
 
+    // 1b. TYPING. The small keys on the desk, then "Do it". Then a real keyboard. Words the game knows, and one it does not.
+    say(await p.evaluate(() => MUS.on === false && MUS.count === 0), `${name}: music is on, or has played, before anyone tapped Music`);
+    await p.click('#cmd'); await p.waitForTimeout(80); say(await p.evaluate(() => !document.getElementById('kb').hidden), `${name}: the small keys did not open`); await layout(p, `${name}, the small keys`);
+    for (const ch of 'look sign') await p.click(ch === ' ' ? '#kb [data-k="space"]' : `#kb [data-k="${ch}"]`); await shot(p, tag + '02b_typing'); await p.click('#go'); await p.waitForTimeout(60); await idle(p); await p.waitForTimeout(60); let tp = await readAll(p); say(/MENDER VILLAGE/.test(tp.join(' ')), `${name}: typing "look sign" on the small keys did not read the sign: ${tp.join(' / ')}`);
+    const type = async t => { await p.click('#cmd'); await p.keyboard.type(t); await p.keyboard.press('Enter'); await p.waitForTimeout(60); await idle(p); await p.waitForTimeout(60); const pages = await readAll(p); return pages.join(' / ') || (await st(p)).desk.replace(/\n/g, ' / '); };
+    tp = await type('push the sign'); say(/wobbles/.test(tp), `${name}: "push the sign" gave: ${tp}`);
+    tp = await type('take sign'); say(/stuck fast/.test(tp), `${name}: "take sign" gave: ${tp}`);
+    tp = await type('look'); say(/You are in the Mender Meadow/.test(tp) && /You can walk/.test(tp), `${name}: "look" alone gave: ${tp}`);
+    tp = await type('dig'); say(/soil|roots|path|worm/i.test(tp), `${name}: "dig" gave: ${tp}`);
+    tp = await type('dance'); say(/dance/.test(tp), `${name}: "dance" gave: ${tp}`);
+    tp = await type('xyzzy'); say(/You see no/.test(tp), `${name}: a word the game does not know gave: ${tp}`);
+    tp = await type('help'); say(/doing word/.test(tp), `${name}: "help" gave: ${tp}`);
+    tp = await type('hint'); say(/village/.test(tp), `${name}: "hint" before the elder should point to the village: ${tp}`);
     // 2. a machine before the elder
     await useThing(p, 'm_pond'); s = await st(p); say(s.reading && !s.task, `${name}: a machine opened before the elder was met`); let pg = await readAll(p); say(pg.some(t => /Elder Rivet first/.test(t)), `${name}: the machine did not send the cadet to the elder`);
     // 3. the pan before the pouch
@@ -162,21 +183,62 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     // 11. over the bridge
     say(await walkTo(p, 52, 74), `${name}: could not walk over the bridge`); await shot(p, tag + '17_far_bank'); await useThing(p, 'guard'); pg = await readAll(p); say(/bridge down/.test(pg.join(' ')), `${name}: the guard does not know about the bridge`); await word(p, 'guard'); await readAll(p);
     await useThing(p, 'lookout'); s = await st(p); say(s.pic === 'The lookout hill', `${name}: the lookout shows no picture`); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '18_lookout'); await layout(p, `${name}, the lookout`); await readAll(p);
-    await walkTo(p, 70, 74); s = await st(p); say(s.x <= 58, `${name}: the cadet got past the reed gate, to ${s.x},${s.y}`);
+    // 11c. THE REACH. The guard opened the reed gate. The harbour, the keeper's story, the rules and the baker's example, three towns, the fleet.
+    s = await st(p); say(s.S.gates.reeds === 1, `${name}: the guard did not open the reed gate`);
+    const FL = await p.evaluate(() => FLEET), WL = await p.evaluate(() => WELL), TW = ['stilt', 'reed', 'mud'];
+    await useThing(p, 'harbour'); s = await st(p); say(s.S.at === 'harbour' && s.place === 'The harbour', `${name}: the harbour did not open`); await readAll(p); await p.waitForTimeout(500); await shot(p, tag + '26_harbour'); await layout(p, `${name}, the harbour`);
+    await word(p, 'board'); pg = await readAll(p); say(/talk to her first/.test(pg.join(' ')) && !(await st(p)).task, `${name}: the loading board opened before the keeper told the story`);
+    await word(p, 'keeper2'); pg = await readAll(p); s = await st(p); say(pg.length === 5 && s.S.flags.metKeeper && s.S.needs.some(n => n.id === 'fleet') && s.S.needs.some(n => n.id === 'tags'), `${name}: the harbour keeper's story, or its lines on the Needs list`); say(!pg.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the keeper's story`);
+    await word(p, 'board'); pg = await readAll(p); say(pg.length === 10 && /Rule one/.test(pg[1]) && /24 loaves/.test(pg[5]), `${name}: the rules and then the baker's example should come before the fleet (${pg.length} pages)`); s = await st(p); say(s.task && s.task.kind === 'fleet' && /No order tag/.test(s.tasktext), `${name}: the board should say no tag hangs yet`); await layout(p, `${name}, the fleet with no tags`);
+    await press(p, 'send'); s = await st(p); say(/no order from/.test(s.task.msg), `${name}: sending with no tags`); await press(p, 'leave'); await word(p, 'door');
+    for (const tw of TW) { await useThing(p, 'sp_' + tw); pg = await readAll(p); say(pg.some(t => t.indexOf(String(FL.order[tw])) >= 0), `${name}: the speaker of ${tw} did not say the order`); if (tw === 'stilt') await shot(p, tag + '27_town'); }
+    s = await st(p); say(TW.every(tw => s.S.bag.indexOf('tag_' + tw) >= 0), `${name}: the three order tags are not carried`);
+    await useThing(p, 'bottle'); await readAll(p); s = await st(p); say(s.S.bag.indexOf('bottle') >= 0 && s.S.needs.some(n => n.id === 'letter'), `${name}: the bottle in the reeds`);
+    await useThing(p, 'harbour'); await word(p, 'board'); s = await st(p); say(s.task && s.task.kind === 'fleet' && TW.every(tw => s.S.tags[tw] === 'hung') && !s.S.bag.some(i => /^tag_/.test(i)), `${name}: the tags were not hung on the board`); await layout(p, `${name}, the fleet`);
+    // this test's own search for a plan that serves all three towns
+    const fits = tw => FL.kinds.filter(k => FL.order[tw] % k === 0).map(k => ({ k, n: FL.order[tw] / k })); let full = null; for (const a of fits('stilt')) for (const b2 of fits('reed')) for (const c of fits('mud')) { const used = {}; for (const q of [a, b2, c]) used[q.k] = (used[q.k] || 0) + q.n; if (!full && FL.kinds.every(k => (used[k] || 0) <= FL.count[k])) full = [a, b2, c]; }
+    say(!!full, `${name}: this test finds no plan for the fleet`);
+    const line = async (tw, k, n) => { await p.click(`#task [data-tab="${tw}"]`); await p.click(`#task [data-b="k${k}"]`); await pad(p, n); await p.waitForTimeout(60); };
+    await line('stilt', FL.kinds[0], 10); s = await st(p); say(/left in the harbour/.test(s.task.msg) && s.S.fleet.plan.stilt.n === 0, `${name}: more rafts than the harbour has were accepted`);
+    await line('stilt', full[0].k, full[0].n); await line('reed', full[1].k, full[1].n - 1); await line('mud', full[2].k, full[2].n); await shot(p, tag + '28_fleet'); await layout(p, `${name}, the fleet with a plan`);
+    s = await st(p); say(s.tasktext.indexOf('●') < 0, `${name}: lamps show before the fleet is sent`);
+    await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S()); s = await st(p); say(s.task && s.task.kind === 'fleet' && s.S.fleet.plan.mud.n === full[2].n && s.S.fleet.plan.stilt.k === full[0].k, `${name}: after closing and opening, the fleet's plan is not back`);
+    await press(p, 'send'); s = await st(p); say(/One lamp is red/.test(s.task.msg) && !s.S.flags.fleetDone && s.S.fleet.lamps.reed === false && s.S.fleet.lamps.stilt === true, `${name}: a wrong line should leave the gate shut with one red lamp: ${s.task.msg}`); say(s.task.msg.indexOf(String(full[1].n)) < 0 || full[1].n === 1, `${name}: the red lamp's words give the answer`); await shot(p, tag + '29_fleet_red');
+    await line('reed', full[1].k, full[1].n); s = await st(p); say(s.S.fleet.lamps === null, `${name}: the lamps should go dark when the plan changes`); await press(p, 'send'); s = await st(p); say(s.reading && s.S.flags.fleetDone, `${name}: the right plan did not open the water gate`); await p.waitForTimeout(1300); await shot(p, tag + '30_fleet_sails'); pg = await readAll(p);
+    s = await st(p); say(/Navigation: Level 2/.test(pg.join(' ')) && s.S.parts.nav === 2 && s.S.parts.engine === 2 && s.S.lit === 2 && s.S.cards.some(c => c.job === 'fleet') && s.S.bag.indexOf('raft') >= 0 && !s.task, `${name}: after the fleet: the stone, the card, the raft, the ship's Navigation`);
+    await word(p, 'singer'); pg = await readAll(p); say(/La, la/.test(pg.join(' ')), `${name}: the old singer does not sing after the fleet has sailed`); await word(p, 'door');
+    await useThing(p, 'sp_mud'); pg = await readAll(p); say(/rice came/.test(pg.join(' ')), `${name}: Mud Town does not say the rice came`);
     // Pim's spinner
-    await useThing(p, 'village'); await word(p, 'kid'); pg = await readAll(p); s = await st(p); say(s.S.flags.spinGiven && s.S.cards.some(c => c.job === 'spinner') && /old stones/.test(pg.join(' ')), `${name}: Pim did not take the spinner and give the clue`); await word(p, 'door');
+    await useThing(p, 'village'); await word(p, 'kid'); pg = await readAll(p); s = await st(p); say(s.S.flags.spinGiven && s.S.cards.some(c => c.job === 'spinner') && /old stones/.test(pg.join(' ')), `${name}: Pim did not take the spinner and give the clue`);
+    await word(p, 'kid'); pg = await readAll(p); s = await st(p); say(s.S.flags.bottleGiven && s.S.cards.some(c => c.job === 'letter') && /Wim/.test(pg.join(' ')), `${name}: Pim did not take the bottle from over the river`); await word(p, 'door');
+    // 12c. THE WELL: a mini quest of the lantern shape. A place closed for a reason you can see; a thing that must be made; a material from elsewhere; the makers' maths; back; one real problem inside; an epic card.
+    await useThing(p, 'well'); pg = await readAll(p); s = await st(p); say(s.S.well.step === 1 && s.S.needs.some(n => n.id === 'well') && /glints/.test(pg.join(' ')), `${name}: the well does not start its quest`);
+    await word(p, 'well'); s = await st(p); say(s.task && s.task.kind === 'well', `${name}: the winch did not open`); await layout(p, `${name}, the well`); for (let i = 0; i < WL.turns; i++) await press(p, 'turn'); s = await st(p); say(/Clunk/.test(s.task.msg) && s.S.well.hit && s.S.well.turns === WL.turns, `${name}: the bucket did not land after ${WL.turns} turns`); say(!new RegExp('\\b' + WL.depth + '\\b').test(s.tasktext) || WL.depth === WL.per, `${name}: the well says how deep it is`); await shot(p, tag + '31_well'); await press(p, 'turn'); s = await st(p); say(/slack/.test(s.task.msg), `${name}: one turn too many`); await press(p, 'leave');
+    s = await st(p); say(/net mender/.test(s.S.needs.find(n => n.id === 'well').text), `${name}: the Needs list does not send the child to the net mender`);
+    await useThing(p, 'harbour'); await word(p, 'netmender'); s = await st(p); say(s.task && s.task.kind === 'rope' && s.task.phase === 1, `${name}: the net mender did not ask how deep`); await layout(p, `${name}, the net mender`); await shot(p, tag + '32_rope');
+    await pad(p, WL.depth + 1); await press(p, 'ok'); s = await st(p); say(/does not sound right/.test(s.task.msg) && s.task.phase === 1, `${name}: a wrong depth was taken`); await pad(p, WL.depth); await press(p, 'ok'); s = await st(p); say(s.task.phase === 2, `${name}: the right depth was refused`);
+    await pad(p, WL.bundles + 1); await press(p, 'ok'); s = await st(p); say(/does not come to/.test(s.task.msg) && s.task.msg.indexOf(' ' + WL.bundles + ' ') < 0, `${name}: wrong bundles were taken, or the answer was told`); await pad(p, WL.bundles); await press(p, 'ok'); pg = await readAll(p); s = await st(p); say(/reed cutter/.test(pg.join(' ')) && s.S.well.step === 3, `${name}: the net mender did not send the child for reeds`); await word(p, 'door');
+    await useThing(p, 'cutter'); s = await st(p); say(s.task && s.task.kind === 'reedcut', `${name}: the reed cutter did not ask`); await layout(p, `${name}, the reed cutter`); await shot(p, tag + '33_cutter'); await pad(p, WL.bundles * 10 + 10); await press(p, 'ok'); s = await st(p); say(/Ten reeds/.test(s.task.msg), `${name}: wrong reeds were taken`); await pad(p, WL.bundles * 10); await press(p, 'ok'); await readAll(p); s = await st(p); say(s.S.bag.indexOf('reeds') >= 0 && s.S.well.step === 4, `${name}: the reeds were not given`);
+    await useThing(p, 'harbour'); await word(p, 'netmender'); pg = await readAll(p); s = await st(p); say(s.S.bag.indexOf('rope') >= 0 && s.S.bag.indexOf('reeds') < 0 && s.S.well.step === 5, `${name}: the rope was not made`); await word(p, 'door');
+    await useThing(p, 'well'); pg = await readAll(p); s = await st(p); say(s.task && s.task.kind === 'box' && /another box/.test(pg.join(' ')) && s.S.bag.indexOf('rope') < 0, `${name}: the rope did not bring up the box, or the lid's example did not come first`); await layout(p, `${name}, the Makers' box`);
+    await pad(p, 1); await press(p, 'drop'); s = await st(p); say(s.task.msg === `1 went in. The box shows ${WL.a + WL.b}.`, `${name}: the box's test: ${s.task.msg}`); await press(p, 'write'); await pad(p, 2); await press(p, 'drop'); await shot(p, tag + '34_box');
+    const wheels = async (a, b2) => { await press(p, 'set'); await p.click('#task [data-box="a"]'); await pad(p, a); await p.click('#task [data-box="b"]'); await pad(p, b2); await press(p, 'fit'); return readAll(p); };
+    pg = await wheels(WL.a, WL.b + 1); say(pg.length === 3 && /Not the rule yet/.test(pg[2]) && pg.join(' ').indexOf('+ ' + WL.b + '.') < 0, `${name}: wrong wheels were not shown wrong: ${pg.join(' / ')}`);
+    pg = await wheels(WL.a, WL.b); s = await st(p); say(/EPIC/.test(pg.join(' ')) && s.S.cards.some(c => c.job === 'well' && c.epic) && s.S.well.step === 7 && s.S.needs.find(n => n.id === 'well').done && !s.task, `${name}: the box did not open with an epic card`);
     // 15. the big map, the Needs list, the ship
     await p.click('#b_map'); await p.waitForTimeout(200); s = await st(p); say(s.big, `${name}: the big map did not open`); await shot(p, tag + '19_big_map'); await layout(p, `${name}, the big map`); await p.click('#b_map');
     await p.click('#b_needs'); s = await st(p); say(s.panel === 'needs' && /What I still need/.test(s.tasktext) && /hedge|Rillfolk road/.test(s.tasktext), `${name}: the Needs list`); await shot(p, tag + '20_needs'); await p.click('#b_needs');
-    await p.click('#b_ship'); await layout(p, `${name}, the ship panel`); await press(p, 'report'); s = await st(p); say(/Mission report/.test(s.tasktext) && /Rule Stone/.test(s.tasktext) && s.S.log.length >= 12, `${name}: the mission report is thin (${s.S.log.length} lines)`); await shot(p, tag + '21_report'); await press(p, 'ship'); await press(p, 'home'); await p.waitForTimeout(600); s = await st(p); say(s.x === 13 && s.y === 82 && !s.panel, `${name}: "Go back to my ship" did not`);
+    await p.click('#b_ship'); await layout(p, `${name}, the ship panel`); s = await st(p); say(/Engine Core Level 2/.test(s.tasktext) && /Navigation Level 2/.test(s.tasktext) && /Shield Level 1/.test(s.tasktext) && /EPIC/.test(s.tasktext), `${name}: the ship panel does not show the two upgrades and the epic card`);
+    await press(p, 'music'); await p.waitForTimeout(900); say(await p.evaluate(() => MUS.on && MUS.count > 0), `${name}: Music on plays nothing`); const tune = await p.evaluate(() => MUS.tune); await press(p, 'music'); await p.waitForTimeout(200); const cnt = await p.evaluate(() => MUS.count); await p.waitForTimeout(500); say(await p.evaluate(c => !MUS.on && MUS.count === c, cnt), `${name}: Music off still plays`); say(tune === 'meadow' || tune === 'reach' || tune === 'village', `${name}: the tune here is "${tune}"`);
+    await press(p, 'report'); s = await st(p); say(/Mission report/.test(s.tasktext) && /Rule Stone/.test(s.tasktext) && s.S.log.length >= 12, `${name}: the mission report is thin (${s.S.log.length} lines)`); await shot(p, tag + '21_report'); await press(p, 'ship'); await press(p, 'home'); await p.waitForTimeout(600); s = await st(p); say(s.x === 13 && s.y === 82 && !s.panel, `${name}: "Go back to my ship" did not`);
     say((s.S.rattles || 0) + (s.S.miss || 0) >= 1 && s.S.log.some(l => /not right/.test(l.result)), `${name}: the report does not hold the wrong tries`);
-    say(!p.errs.length, `${name}: errors: ${p.errs.join(' | ')}`); say(p.reqs.every(u => u.split('?')[0] === URL), `${name}: the page asked the network for something`);
+    say(!p.errs.length, `${name}: errors: ${p.errs.join(' | ')}`); say(p.reqs.every(u => u.split('?')[0] === URL || /^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(u)), `${name}: the page asked the network for something that is not the game's two fonts: ${p.reqs.filter(u => u.split('?')[0] !== URL && !/^https:\/\/fonts\./.test(u)).join(', ')}`);
     await p.context().close();
   }
 
   // 13, 14. a second child: the old stones only
   console.log('--- the old stones, iPad sideways and phone');
-  for (const [w, h, name, seed] of [[1180, 745, 'stones, iPad sideways', 101], [390, 760, 'stones, phone', 202]].filter(q => q[2].indexOf(ONLY) >= 0)) { const p = await open(b, w, h, seed); const tag = SHOTS ? `${w}x${h}_` : '';
+  for (const [w, h, name, seed] of [[1180, 745, 'stones, iPad sideways', 101], [390, 760, 'stones, phone', 202]].filter(q => q[2].toLowerCase().indexOf(ONLY.toLowerCase()) >= 0)) { played++; const p = await open(b, w, h, seed); const tag = SHOTS ? `${w}x${h}_` : '';
     await readAll(p); await useThing(p, 'cutter'); let pg0 = await readAll(p); say(/reeds/.test(pg0.join(' ')), `${name}: the reed cutter says nothing about reeds`); await useThing(p, 'post'); let s = await st(p); say(s.reading && s.pic === 'The old post', `${name}: the finished example (the old rope) did not come first`); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '22_stones_example'); let pg = await readAll(p); say(/go down/.test(pg.join(' ')), `${name}: the example does not say a pattern can go down`);
     s = await st(p); say(s.task && s.task.kind === 'stones', `${name}: the stones did not open`); await layout(p, name); await shot(p, tag + '23_stones');
     const rounds = await p.evaluate(seed => [0, 1, 2].map(r => window.__bw.stones(seed, r)), seed);
@@ -194,6 +256,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     say(!p.errs.length, `${name}: errors: ${p.errs.join(' | ')}`); await p.context().close(); }
 
   await b.close();
+  if (!played) { console.log(`FAILED: --only "${ONLY}" matches no screen, so nothing was played. The screens are: iPad sideways, iPad upright, phone.`); process.exit(1); }
   console.log(bad.length ? `FAILED: ${bad.length} faults\n  ` + bad.join('\n  ') : `ok: the big world plays through ${ONLY ? 'on the screens named "' + ONLY + '"' : 'on three screens'}, by taps only: the story, the elder, four machines, the pouch and the pan, the bridge, the far bank, the small quests, the old stones, closing and opening again`);
   process.exit(bad.length ? 1 : 0);
 })();

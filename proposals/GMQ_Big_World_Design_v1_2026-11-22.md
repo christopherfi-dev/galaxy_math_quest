@@ -9,10 +9,14 @@ Everything is **[Proposal]** unless it says [Source] or [built].
 |---|---|
 | The map of the whole planet, and the engine that walks it | **built**, as its own page: `docs/bigworld/index.html` |
 | Region 1, the Mender Meadow | **designed in full and built** (section 4) |
-| Regions 2 to 7 | **outlines only** (section 5). Each needs its own design note, a full open problem, a finished example and number checks before it is built |
+| Region 2, the Reach | **built,** the second night, on Brief 2. Its own note: `GMQ_Big_World_Reach_Design_v1_2026-11-22.md` |
+| Region 3, the Terrace Hills | **designed, not built.** Its own note: `GMQ_Big_World_Hills_Design_v1_2026-11-22.md` |
+| Regions 4 to 7 | **outlines only** (section 5). Each needs its own design note, a full open problem, a finished example and number checks before it is built |
 | Regions 8 and 9 (extra lands) | a name and a maths idea. Nothing else |
 
-Nothing in the game was touched. A child cannot reach regions 2 to 9 yet.
+Nothing in the game was touched. A child cannot reach regions 3 to 9 yet.
+
+**Added the second night (Brief 2):** Algora is a typed world, like the game: a child types or taps, and every thing answers every doing word. Each people's big quest lifts one ship part to Level 2. Mini quests have your lantern's shape and end in an epic card. A loose cog rolls out on the walk. Five tunes. The law of the road is in the page's check. See the report.
 
 ![The map of Planet Algora](GMQ_Big_World_Map_v1_2026-11-22.png)
 
@@ -84,8 +88,8 @@ Nothing in the game was touched. A child cannot reach regions 2 to 9 yet.
 | | Region | Who lives there | The maths idea | State |
 |---|---|---|---|---|
 | 1 | **Mender Meadow** | the Menders: small copper folk who keep the machines | Find a machine's rule. Plan with rules in order | **built** |
-| 2 | **The Reach** | the Rillfolk: river people with rafts | The missing number | landing only |
-| 3 | **The Terrace Hills** | the Furrows: tall farmers | Split and swap | outline |
+| 2 | **The Reach** | the Rillfolk: river people with rafts | The missing number | **built** |
+| 3 | **The Terrace Hills** | the Furrows: tall farmers | Split and swap | designed |
 | 4 | **The Pattern Woods** | the Eights: the crew of the S.S. Infinity | Number patterns | outline |
 | 5 | **The Lake of Two Suns** | the Twinseers | Times and share undo each other | outline |
 | 6 | **The Canyon and the Old Works** | nobody now | Two machines in a row | outline; an extra layer, not on the main road |
@@ -210,9 +214,9 @@ flowchart LR
 
 **These are not designs yet.** Each line below says what the full design must still decide. I have written them so that no two peoples share a problem.
 
-### 2. The Rillfolk: the missing number (the next to build, if you agree)
+### 2. The Rillfolk: the missing number [built]
 
-**This one now has its own full design note:** `GMQ_Big_World_Reach_Design_v1_2026-11-22.md`, with a number rule checked on 20,000 children. The lines below are the short form.
+**Built the second night.** Its own note says what is built and why: `GMQ_Big_World_Reach_Design_v1_2026-11-22.md`. The lines below are the short form. (The warm-up dials named below were dropped: a reviewer showed they changed nothing.)
 
 - **Their trouble:** every dock has a load dial: rafts × baskets on each raft = baskets. One window on each dial burnt out. The crews load wrong.
 - **Warm-up:** mend three dials, which show last season's load. ? × 7 = 63. 5 × ? = 30. 3 × 6 = ?
@@ -224,6 +228,8 @@ flowchart LR
 - **They give:** a raft. A tool: short cuts on the lake and the coast.
 
 ### 3. The Furrows: split and swap
+
+**This one now has its own design note:** `GMQ_Big_World_Hills_Design_v1_2026-11-22.md`. The lines below are the first short form.
 
 - **Their trouble:** they know only the easy facts: ones, twos, fives and tens. Their big-fact wheel burnt out. They cannot count a field of 7 rows of 8.
 - **The open problem:** the picture is the field. The child fences it into parts the Furrows can count. For 7 × 8 there is more than one way:
@@ -340,7 +346,7 @@ I read each standard again. The first draft's table was too sure.
 - **A splash wipes the whole pattern.** A child four stones across loses it all. That is the price of stopping guessing.
 - **"Hands them back"** may read as "the rule is: nothing changes". The words say "It cannot follow its rule with 3".
 - **Words that may need you,** above all for children still learning English: hopper, rattles, pips, exactly, pebbles, plate.
-- **Typing is off on this page.** Every command is a tap. The game's own letter keys are not copied yet.
+- **Typing is on since the second night.** The game's doing words, and small letter keys on the desk. Watch whether children type at all, or only tap.
 
 **About the whole planet**
 - **Walking.** 75 screens is a long way on foot once several regions exist.

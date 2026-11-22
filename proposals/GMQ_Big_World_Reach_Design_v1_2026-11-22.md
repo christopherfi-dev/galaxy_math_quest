@@ -1,238 +1,185 @@
-# The Reach: design for region 2 of Planet Algora
+# The Reach: region 2 of Planet Algora, as built
 
-**Date:** 22 November 2026. **For:** Marc. **From:** the big world thread.
-**Nothing here is built.** Everything is **[Proposal]** unless it says [Source] or [built].
-Read `GMQ_Big_World_Design_v1_2026-11-22.md` first. This note fills in its outline for the Reach.
+**Date:** 22 November 2026, night. **For:** Marc. **From:** the big world thread.
+**This is version 3.** Versions 1 and 2 were designs. Two independent reviewers each found blockers. This version is what is built, on your word to push on (Brief 2).
+Everything is **[Proposal]** unless it says [Source] or [built].
 
-**Why this note exists:** the Meadow was built before you saw its design, because you said to work on. For the Reach I stopped at the design. **Please read it before I build.**
-
-**This is the second version, written the same night.** An independent reviewer found two blockers in the first:
-- A kind child would share the rafts between all three towns. That plan fed nobody, and nothing had told the child why.
-- The fleet problem needed almost no Grade 3 maths. "Send the two smallest towns" always worked.
-
-So the fleet problem is new. What changed is in section 10.
+**Your decisions are in section 8.** For each one I used my own recommendation, as the brief says. Every one can be changed.
 
 ---
 
-## 1. The story, told before any maths
+## 1. The story, told before any maths [built]
 
-The cadet crosses the Rill and meets the Rillfolk: river people who live in houses on legs.
+The guard on the far bank opens the reed gate: "The harbour keeper needs every hand she can get."
 
-Told by the harbour keeper, in four short pages:
+In the harbour, the keeper says, in five short pages:
 
-1. "Everything here moves by raft. The high water is coming. After it, no raft can sail for a season."
-2. "Three towns have sent for baskets of river rice: Stilt Town, Reed Town and Mud Town."
-3. "Each town's dock has a load dial. Our crews load by it. When the Gate broke, a window burnt out on every dial. Now the crews load wrong."
-4. "Go to each town. Mend its dial. Read its order. Then come back and load the fleet."
+1. "A sky-walker! I am the harbour keeper. We need every hand."
+2. "Everything here moves by raft. The high water is coming. After it, no raft can sail for a long time."
+3. "Three towns have sent for baskets of river rice: Stilt Town, Reed Town and Mud Town."
+4. "The Makers built us a board that worked out every load. When the Gate broke, it went dark. Now nobody can load the fleet."
+5. "Go to each town. Its speaker will give you an order tag. Hang the tags on my board. Then load the fleet."
 
-**What is wrong:** three dials with a burnt window, and three orders nobody can load.
-**What the cadet fixes:** the dials. Then the cadet plans the whole fleet.
-
----
-
-## 2. Part 1: three towns, three dials (the warm-up)
-
-The child walks to each town. They are places on the map, a short walk apart.
-
-- **What the child looks at:** the town's dock fills the picture. The load dial has three windows:
-
-  **RAFTS × BASKETS ON EACH RAFT = BASKETS**
-
-  The dial still shows **last season's load.** One window is burnt.
-- **The three dials ask in three ways,** mixed for each child:
-
-| Dial | It shows | The child finds |
-|---|---|---|
-| rafts | ? × 7 = 63 | how many rafts |
-| each | 5 × ? = 30 | how many baskets on each raft |
-| total | 3 × 6 = ? | how many baskets |
-
-- **What the child does:** types the missing number on the game's number keys. One box.
-- **A wrong number:** the dial springs back. "The dial does not hold. That is not last season's load." Nothing else is said: not "too big", not "too small".
-- **Why last season:** so that no dial can give this season's answer away. The number check tests that.
-- **Then the child reads the town's order board:** this season's order, in baskets. "Stilt Town: 36 baskets." It goes on the Needs list.
-- **Baskets are drawn stacked in tens,** so an order can be read, but nothing can be counted off as an answer.
+**What is wrong:** the loading board went dark with the Gate. Nobody can work out the loads.
+**What the cadet does:** fetches three order tags, then plans the whole fleet.
 
 ---
 
-## 3. Part 2: the fleet (the open problem that lights the Rule Stone)
+## 2. The big quest: the fleet [built]
 
-### The purpose and the bare facts
+### First, three towns
 
-The keeper says, before the child plans. Each rule has its reason:
+- The towns are places on the map: north, east and south of the harbour, over plank bridges.
+- Each town's speaker says the order in baskets and hands over a tag. The child carries it back and hangs it on the board.
+- **The "last season" dials of version 2 are gone.** The reviewer showed they changed nothing and could mislead.
 
-- "My harbour has three kinds of raft. A 4-raft carries 4 baskets. A 6-raft carries 6. A 7-raft carries 7." (The kinds differ for each child.)
-- "**A raft sails full.** A raft that is part empty tips over in the channel."
-- "**A town's rafts are all one kind.** They are tied nose to tail, and only the same kind ties together."
-- "**Send each town exactly its order.** Less, and somebody goes without. More rots on the dock."
-- "Load the fleet so all three towns get their rice."
+### The rules, in the keeper's words, each with its reason
 
-No steps are given.
+- "My harbour has three kinds of raft. The number on a raft's sail says how many baskets it carries."
+- "Rule one: a raft sails full. A raft that is part empty tips over."
+- "Rule two: a town's rafts are tied in one line, nose to tail. So all of one town's rafts are the same kind. Two towns may use the same kind."
+- "Rule three: send each town exactly its order. More would rot on the dock."
+- "The water gate has a lamp for each town. It opens when all three are green. Until then, nothing sails, and you can change every line."
 
-### What the child looks at
+### The finished example: the baker's trays
 
-The harbour fills the picture.
-- The rafts are tied up in three rows, one row for each kind. Each raft has its number on its sail. No kind has more than 9 rafts, in fives, so they can be counted.
-- Three channels lead away, one to each town. A board by each channel shows that town's order, **only if the child has been there and read it.**
+About loaves, before the board opens the first time:
+- "I bake 24 loaves. I have trays for 5, trays for 6 and trays for 8. A tray goes in full, or it burns."
+- "Trays for 5? 4 trays hold 20. 5 trays hold 25. No number of full trays makes 24."
+- "Trays for 6? 4 times 6 is 24. But I have only 3 trays for 6."
+- "Trays for 8? 3 times 8 is 24. And I have 3 of them. So: 3 trays of 8."
 
-### What the child does
+It shows all three moves: a kind that cannot fit, a kind that fits but runs out, a kind that works. No child has an order of 24.
 
-For each town, on the desk: tap a kind of raft, and type how many. Then "Send the fleet".
+### What the child looks at and does
 
-- As the child fills a town's line, that many rafts of that kind move to the town's channel in the picture. The child can see what is left of each kind. That is counting what is there. No sum is shown.
-- **The thinking:** for each town, which kind fits? "What times 6 makes 36?" "Does anything times 7 make 36?" That is the missing number, many times.
-- **And the towns cannot be done one at a time.** For every child there is a choice that is right for one town by itself, but uses the rafts another town needs.
+- **The picture is the harbour:** the rafts left of each kind, in rows, each with its number on its sail. Three channels, each with its town's name, its order tag and its line of rafts. The water gate with three lamps.
+- **On the desk, one town at a time:** "Mud Town wants 72 baskets. Rafts of: 7, 8, 9." Tap a kind. "How many rafts of 8?" Type the number.
+- The rafts move from the harbour into that town's channel as the child types.
+- **Asking for more rafts than there are** is refused at once: "Only 3 rafts of 8 are left in the harbour."
+- **"Send the fleet":** each town's lamp turns green or red. The game does not say "too few" or "too many".
+- **Nothing sails until all three lamps are green.** So no line a child sets can ever make the job impossible. That was version 2's blocker.
+- **The thinking:** for each town, which kinds can make its order with full rafts? "What times 8 makes 72? Does anything times 7?" And a lamp can be green and still be in the way: its line may use rafts another town needs.
 
-### One cadet, as a picture of it
+### What happens when the gate opens
 
-4-rafts: 3 of them. 6-rafts: 7. 7-rafts: 6. Orders: Stilt Town 36, Reed Town 42, Mud Town 12.
-
-| Town | Ways to carry its order | |
-|---|---|---|
-| Stilt, 36 | 6 rafts of 6. (9 rafts of 4 would do, but there are only 3.) Nothing times 7 makes 36 | |
-| Reed, 42 | 7 rafts of 6, or 6 rafts of 7 | a real choice |
-| Mud, 12 | 3 rafts of 4, or 2 rafts of 6 | a real choice |
-
-- **The trap:** send Reed Town 7 rafts of 6. That is right for Reed Town. But it takes every 6-raft, and Stilt Town cannot be loaded at all.
-- **The plan that works:** Stilt 6 rafts of 6. Reed 6 rafts of 7. Mud 3 rafts of 4.
-
-### What happens when the fleet sails
-
-- Each town that got exactly its order: its people cheer on the dock.
-- Each town that did not: "The order is not right." Its rafts come back. The game does not say "too few" or "too many".
-- A raft kind the child asked for more of than the harbour has: the keeper holds up her hands. "I do not have that many."
-- **The child plans again.** As many times as it takes. Each sailing is written in the mission report: the plan, and which towns it served.
-- **The stone lights when all three towns have their order.**
-
-### What changes afterwards
-
-- The three towns fill with rice sacks. The harbour's rafts are gone to sea.
-- The old singer sings again. The Mender with big ears, across the river, hears it [built: he already says so once the bridge is down].
-- The keeper gives the raft.
-
-### How long
-
-A guess: 30 to 40 minutes. Three walks, three dials, and a plan that usually takes more than one try.
+- The fleet sails. The Rillfolk's Rule Stone lights: two of five.
+- **The ship's Navigation goes to Level 2:** "The Rillfolk fit a star compass to your ship." [Source: Marc, 22 November: big quests upgrade ship parts.]
+- A card, and a raft of the child's own. The raft is for later: the north channels are still shut.
+- The towns' speakers, the child on the raft and the old singer all say new things. The singer sings, and the Mender with big ears, over the river, already said he missed that song.
 
 ---
 
-## 4. The finished example
+## 3. The numbers, on 20,000 children
 
-Shown by the baker in the harbour village, before the first dial. About **loaves and trays**.
-
-- "I bake 24 loaves. I have trays for 6 and trays for 5."
-- "Trays for 5? 4 trays hold 20. 5 trays hold 25. Nothing times 5 makes 24."
-- "Trays for 6? 4 times 6 is 24. So 4 trays of 6."
-- Picture: the oven wall, the loaves in rows. The trays appear only on the last page.
-
-It shows both moves: the missing number, and "this kind does not fit". No child gets an order of 24. The number check tests that.
-
-The example can be looked at again from any dock. It cannot be skipped the first time.
-
----
-
-## 5. The numbers, checked on 20,000 children
-
-`checks/bigworld_reach_numbers_check.js`. The rule is in that file until the Reach is built. The check does its own search of every plan a child could make.
+`checks/bigworld_reach_numbers_check.js` reads the rule out of the page and does its own search of every line a child could set.
 
 | | |
 |---|---|
 | Kinds of raft | three different numbers from 4, 6, 7, 8, 9 |
-| Rafts of one kind | 1 to 9 |
-| Orders | three different numbers, 12 to 81. Never 24 |
-| Every order | can be carried by at least one kind |
-| A real choice | at least one order can be carried by two kinds (on average 1.6 of the 3 towns) |
-| A plan that serves all three | always exists. For 99 children in 100 there is exactly one; for the rest, two |
-| A trap | always: a choice that fits one town alone and spoils the plan |
-| Every fact | inside 10 × 10. Nothing over 81 |
-| The dials | last season's numbers. Never a town's order, never its answer |
+| Rafts of one kind | 1 to 9. A harbour holds 18 on average, 27 at most |
+| Orders | three different numbers from 12 to 81. Never 24 |
+| A plan that serves all three towns | always exists. Exactly one for 98.8% of children; two for the rest |
+| Towns whose order two kinds can carry | 1.6 of 3 on average |
+| Towns with two ways the harbour has rafts for | 1.1 of 3 on average |
+| A trap | always: a line right for one town that no full plan uses |
+| Every fact | inside 10 × 10. 72% of the lines in a right plan use a 7, 8 or 9 |
+
+**It is hard on purpose.** One right plan, and the hard times tables. That is your decision 2.
 
 ---
 
-## 6. The maths, against the standards
+## 4. A mini quest of the lantern shape: the thing in the well [built]
+
+[Source: Marc, 22 November: "cave needs lantern... needs special soft sand... Take it to the lantern makers. Use math to help build it. Take lantern back to cave. Gold epic card as reward inside after solving a problem."]
+Your lantern is the main thread's to build. This one has the same shape, with other things. It crosses the Meadow and the Reach.
+
+| Step | Where | What happens | The maths |
+|---|---|---|---|
+| 1 | The Meadow's well | "Far down, something glints. Too deep to reach. A rope with a hook could do it. But how deep is the well?" | |
+| 2 | The well's winch | The child turns the handle and counts the turns. Each turn lowers the bucket 3 arm-lengths. Tally marks on the picture are the child's turns. Nothing says how deep | a count |
+| 3 | The net mender, in the harbour | "How deep is the well?" Then: "One bundle of long reeds makes 9 arm-lengths of rope. How many bundles must I have?" | 3 × 6 = 18. Then ? × 9 = 18 |
+| 4 | The reed cutter, back in the Meadow | "2 bundles? I tie 10 reeds in a bundle. How many reeds must I cut?" | 2 × 10 |
+| 5 | The net mender | She twists the rope | |
+| 6 | The well | The rope brings up a Makers' box with two wheels | |
+| 7 | Inside: one real problem | A rule in two steps: × ? then + ?. The child tests it with 1 to 10 pebbles and sets both wheels. A wrong pair is shown wrong by a test | a rule in two steps |
+| | | **An epic card: Deep Finder.** And a note: "The Gate's code is five rules in a row. Each people keeps one." | |
+
+- **Every step has its own line on the Needs list,** and the line changes as the child moves on.
+- **The makers never do the sum.** A wrong answer gets "That does not come to 18", never the right number.
+- **The rope's fact is a new one,** not the winch's fact turned round. The number check tests that.
+- **Finished example for the box:** scratched on its lid: another box, long ago. 1 in showed 7. 2 in showed 12. 3 in showed 17. So × 5, then + 2. No child's box has that rule.
+- **The box is a stretch:** a rule in two steps is past Grade 3. It is a mini quest, off the main road, and it has nudges.
+
+**Two smaller things in the Reach:**
+- **A bottle in the reeds** (a secret): a note from a Rillfolk child to Pim, over the river. Carry it to Pim: a card.
+- **The sunk raft,** seen from the long pier: "Something shines under it. The water is too deep to wade." It needs a way to dive. For later.
+
+---
+
+## 5. The maths, against the standards
 
 | What the child does | Standard | How sure |
 |---|---|---|
-| ? × 7 = 63; 5 × ? = 30; 3 × 6 = ? | 3.OA.4: the unknown in all three places | sure |
-| "What times 6 makes 36? Does anything times 7?" | 3.OA.4, with 3.OA.7 (facts within 100) | sure |
+| "What times 8 makes 72? Does anything times 7?" for three towns | 3.OA.4, with 3.OA.7 | sure |
 | Rafts and baskets as equal groups | 3.OA.3 | sure |
-| Planning three towns at once | no content standard. It is problem solving | not claimed |
-
-3.OA.4 is in the game once today, at Xylophora's Solar Factory [Source: the AERO map].
-
----
-
-## 7. People, finds, the card and the AI's facts
-
-| Who or what | Kind | What happens |
-|---|---|---|
-| The harbour keeper | gives the job; gives the raft | The story, the rules, the fleet, the Rule Stone |
-| The baker | tells | The finished example |
-| A dock hand in each town | has a need | The dial, and the order board |
-| A net mender, a child on a raft, an old singer | say hello | The singer sings once the fleet has sailed |
-| The Rillfolk guard [built] | tells | "The road is open again." |
-| A message in a bottle, in the reeds | secret | A note from a Rillfolk child to a friend in the Meadow. Carry it to Pim. It links two regions; it helps no maths |
-| A sunk raft, seen from the long pier | secret, a pointer | Something shines under it. It needs a way to dive: for later |
-
-- **The card** for the job: a name of yours. I would call it "Fleet Planner". Card rules are yours.
-- **Facts the AI may be told:** the place; who is near; which dials are mended; which orders the child has read; how many times the fleet has sailed; which towns are served.
-- **Never to be said:** a dial's missing number; which kind fits an order; how many rafts.
-- **A Nudge button,** as in the Meadow. For example: "Pick one town. Try each kind of raft. Which kinds can make its order exactly?" and "Is there a town with only one way? Do that one first."
+| Planning three towns with rafts that run out | no content standard: problem solving | not claimed |
+| The well: turns × arm-lengths; ? × 9 = 18; bundles × 10 | 3.OA.3, 3.OA.4, 3.NBT.3 | sure |
+| The box: a rule in two steps | past Grade 3 | a stretch, off the main road |
 
 ---
 
-## 8. The map, the borders and the raft
+## 6. The law of the road, now in the page's check [built]
 
-- **The Reach is already painted** on the map. The three towns and the harbour go on it, a short walk apart. The map check will measure the walks.
-- **The reed gate** [built, shut] opens when this region is built.
-- **The raft is a tool.** By the law of the road, a tool is never one of a border's two ways. It opens short cuts on the lake and the coast.
-  - **[Conflict, my own notes]** The first version of the main note's table listed the raft as the second way across the Lake. That broke the law. The main note is corrected: the Lake's two ways are the ferry and a low-tide causeway.
-- **When this is built,** the page's check gets the law of the road: leave the Rillfolk's job undone, and every other people can still be reached.
-- **Saving:** after every dial, every order read, and every sailing. A lesson that ends in the middle of a plan loses only the boxes not yet sent.
+- **Leave the Menders' quest undone:** the Rillfolk can still be reached, by the stepping stones. **Leave the Rillfolk's undone:** the Menders can.
+- The check fails if a tool is ever one of a border's two ways, if a big quest needs a thing from another region, or if a mini quest step has no line for the Needs list.
+- Fifteen broken copies of the world are fed to the check. It catches each one.
 
 ---
 
-## 9. What could prove this wrong, and your decisions
+## 7. What could prove this wrong
 
-**What could prove it wrong**
-- **It may be too hard.** One plan in most cases, a trap, and three towns at once. The Nudge names the way in ("a town with only one way first"). If most children need it, the harbour could have more rafts, so two or three plans work.
-- **Or guessed.** A wrong dial costs nothing. With one box, a child can keep trying numbers. See decision 2.
-- **Sailing again is free.** A child could send plans at random. With three kinds and up to ten rafts for three towns, chance is slow, but it is not thinking.
-- **Counting rafts on a small screen.** Up to 9 of a kind, in fives. A miscount sends a wrong plan.
-- **Four story pages, then the baker, before the first dial.** That is a lot of reading for a child still learning English. "Read to me" is there.
-- **Words that may need you:** harbour, channel, dial, order, nose to tail.
-- **No child has to choose who goes without.** The first version had that. This one is a puzzle with an answer. That is safer, and it gives up your rule 4 ("your decision must matter"). See decision 1.
-- **Nobody has seen it.** No picture exists yet.
+- **Too hard.** One plan, hard tables, a trap. Watch whether a child finds the idea "write down every way for every town". The second nudge says it.
+- **Lamps one at a time.** A child can try lines for one town until its lamp is green. With rafts of 7 that is: 7, 14, 21... by trying. It is slow, and it is skip counting. But it is not planning.
+- **Sail numbers are small** when a line has 9 or 10 rafts, above all on a phone.
+- **Six pages of rules and example** before the board opens the first time. "Read to me" is there. "The rules" button brings them back.
+- **Words that may need you:** harbour, fleet, order, tag, nose to tail, high water, winch, arm-length, bundle.
+- **The well quest is a lot of walking:** the well, the harbour, the reeds, the harbour, the well. About a minute of walking in all. Your lantern crosses planets; this crosses a river.
+- **No child has played any of it.**
 
-**Your decisions**
+---
 
-| | Decision | Options, with costs | I would choose |
+## 8. Your decisions. I used my own recommendation for each.
+
+| | Decision | What is built | The other way, and its cost |
 |---|---|---|---|
-| 1 | Can every town be served? | **Yes** (this note): a puzzle with one right plan; nobody goes without; nothing is left worse off. **No:** too few rafts for all three, and the child chooses who is served. A real decision that stays, as on Voltara; but the maths gets thinner, and a child may fail for being kind | yes |
-| 2 | A wrong dial | Free (this note). Or the dock hand must fetch a tool: a short wait. Or three tries, then the baker's example comes back | free, and watch |
-| 3 | A town that is wrong when the fleet sails | "The order is not right" (this note): no hint. Or "too few" / "too many": kinder, but it turns the plan into higher and lower | no hint |
-| 4 | A town the child never visited | Its board is blank and the fleet cannot serve it (this note). Or the keeper tells the order: less walking, less of a world | blank |
-| 5 | Sailing again | Free (this note). Or each sailing costs a tide: a wait that grows | free, and watch the report |
-| 6 | The towns' names, and the card's | Stilt Town, Reed Town, Mud Town, "Fleet Planner"; or yours | |
-| 7 | Build it? | After you have played the Meadow. Or change the Meadow first | after you have played the Meadow |
+| 1 | Can every town be served? | Yes. A puzzle with a right plan | Too few rafts, and the child chooses who goes without. A real choice that stays; but a kind child can fail it, and the maths gets thinner |
+| 2 | How hard are the numbers? | Kinds from 4, 6, 7, 8, 9. One right plan for nearly every child | Add 5s and more spare rafts: easier, quicker, less to think about |
+| 3 | What a wrong line shows | A red lamp for that town. No "too few" or "too many" | One lamp for the whole fleet: no trying town by town, but a child cannot tell which line to check |
+| 4 | A town the child never visited | Its tag is not on the board, and the fleet will not sail | The keeper tells the order: less walking, less of a world |
+| 5 | Sending again | Free | Each try costs a tide: a wait that grows |
+| 6 | Which ship part | Navigation, from the Rillfolk. Engine Core, from the Menders | Any other match. It is one table in the page |
+| 7 | Is an upgrade lasting? | Yes: it is kept in the save and shown on the ship panel | **[Conflict]** The battle thread has Level 2 upgrade cards that last one battle. Your words today sound lasting. Which? |
+| 8 | Names | Stilt Town, Reed Town, Mud Town. Cards: Fleet Planner, Deep Finder (epic), River Post | Yours |
+| 9 | The mini quest's inside problem | A rule in two steps, past Grade 3 | A Grade 3 problem: safer, but less of a prize |
 
 ---
 
-## 10. What the reviewer found, and what changed
+## 9. What the reviewers found, and what changed
 
-| The reviewer's fault | What I did |
-|---|---|
-| **The all-or-nothing rule was never told.** A kind plan fed nobody | The three rules are the keeper's own words now, each with its reason |
-| **The fleet needed no Grade 3 maths** | New problem: three kinds of raft, orders in baskets. The missing number, many times, with a trap |
-| The "total" dial gave the town's need away | Dials show last season's load. The check tests that none shows this season's |
-| The fleet screen was not specified | Section 3 says what moves, what is counted and what is never shown |
-| "The report tells you whether they checked the sum" | Removed. The game cannot know that. The report shows each plan sent |
-| "Short / left over" was a higher-and-lower game, and read backwards | Gone. A wrong dial or a wrong town gets no direction |
-| Standards claimed too surely; 3.OA.8 wrong; the unknown group size never asked | Section 6. The "each" dial asks it |
-| Decisions made silently; no costs; no card; no facts for the AI | Sections 7 and 9 |
-| The raft and the law of the road | Marked as a conflict in my own notes, and the main note corrected |
-| The check allowed a fleet of 7; missed other ways to 24 | A new rule and a new check. No order is 24 at all |
-| Risks missing | Added to section 9 |
-| Unclear words | Rewritten. "Asker, giver, teller" are said in plain words |
+| Reviewer | Fault | What I did |
+|---|---|---|
+| 1 | A kind plan (share the rafts) fed nobody, and nobody had said why | The three rules are the keeper's words, each with a reason |
+| 1 | The fleet needed no Grade 3 maths | New problem: kinds of raft; the missing number many times |
+| 2 | **A town served early could make the job impossible** | Nothing sails until all three lamps are green |
+| 2 | "A town with only one way" could be read two ways | That nudge is gone. The nudges ask for every way for every town |
+| 2 | The "last season" dials changed nothing and could mislead | Removed |
+| 2 | "Type how many": rafts or baskets? May two towns share a kind? | The desk says "How many rafts of 8?" Rule two says two towns may share a kind |
+| 2 | When does the keeper refuse too many rafts? | At once, as the child types |
+| 2 | The baker never showed "it fits, but there are not enough" | Added: trays for 6, but only 3 of them |
+| 2 | Difficulty was decided silently | Section 3 gives the figures. Decision 2 |
+| 2 | The check's search stopped at 12 rafts | It searches to 20 now |
+| 2 | No ship part, no mini quest, no surprise | Navigation; the well quest; a loose cog on the walk (in the Meadow) |
 
-**Not reviewed again:** this second version has been checked by the number check and by me. No reviewer has read it.
+**Not answered:** the reviewer's point that trying lines one town at a time finds every fit without planning. It is true. Decision 3 is the choice.
+**Not reviewed again as a note.** The built pages go to a reviewer as pictures.

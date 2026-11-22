@@ -69,7 +69,7 @@ line([[53, 2], [70, 3], [88, 2]], 2.6, '^');
 line([[2, 55], [14, 55], [25, 55]], 1, '#', '.d'); line([[27, 55], [38, 55], [46, 55]], 1, '#', '.d');                                                      // the Makers' old wall: the north edge of the Meadow. The gap at 26 is the hedge gate.
 line([[46, 49], [46, 55]], 1, '#', '.'); line([[46, 55], [51, 55]], 1, '#', '.'); line([[44, 30], [47, 40], [46, 49]], 2.2, '^', '.');                                                                // the ridge between the woods and the lake
 line([[0, 21], [12, 21], [22, 20], [30, 19], [31, 10], [30, 2]], 1.8, '^', '.d');                                                                           // the cliffs round the Growing Dunes
-line([[86, 57], [86, 66]], 1, '#', '.'); line([[86, 68], [86, 80], [88, 92]], 1, '#', '.');                                                                // the hill wall: the gap at 67 is the lift
+line([[86, 57], [86, 66]], 1, '#', '.'); line([[86, 68], [86, 93]], 1, '#', '.sm,*');                                                                // the hill wall: the gap at 67 is the lift
 line([[92, 4], [93, 20], [92, 34], [91, 41]], 2.2, '^', 'c.p');                                                                                            // the canyon's west rim
 
 // ---- 6. the Mender Meadow (region 1), square by square. Everything a child meets on the first day.
@@ -99,7 +99,7 @@ for (const [x, y] of [[46, 59], [46, 73], [13, 83], [12, 83], [14, 83], [14, 68]
 road([[50, 74], [55, 74], [55, 72]], ':', '.'); set(49, 74, '~'); set(48, 74, '~'); set(47, 74, '~'); set(47, 60, '~'); set(48, 60, '~'); set(49, 60, '~');
 road([[50, 60], [52, 60], [52, 74]], ':', '.');
 blob(55, 71, 1.8, 1.4, '.', 0); line([[51, 66], [58, 66], [59, 70], [59, 79], [50, 80], [48, 80]], 1, 'm', '.,*T'); line([[50, 58], [54, 58], [54, 66]], 1, 'm', '.,*T'); set(52, 66, ':');                                                       // reeds ring the landing: the road east is not open yet
-set(59, 74, 'm'); scatter(51, 67, 58, 79, '*', .06, '.');
+scatter(51, 67, 58, 79, '*', .06, '.');
 
 // ---- 7. the other regions: their look only. Each one is finished when it is built.
 // the Pattern Woods: trees in rows that follow a rule, with glades
@@ -107,8 +107,7 @@ for (let y = 9; y <= 53; y++) for (let x = 6; x <= 45; x++) if (R[y][x] === 4 &&
 for (const [x, y, rx, ry] of [[20, 44, 5, 3.4], [36, 34, 4.5, 3.4], [16, 30, 4, 3], [38, 47, 3, 2.4]]) blob(x, y, rx, ry, '.', .25, 't');
 road([[26, 54], [26, 46], [21, 46], [21, 44]], ':', '.t'); road([[21, 44], [21, 36], [34, 36], [34, 34]], ':', '.t'); road([[34, 34], [40, 34], [40, 26], [44, 26]], ':', '.t^'); road([[21, 36], [16, 36], [16, 30]], ':', '.t');
 // the Reach: channels and reed beds
-line([[60, 62], [66, 68], [64, 78], [70, 88], [72, 95]], 1.4, '~', '.'); line([[66, 68], [76, 66], [84, 72]], 1.4, '~', '.'); line([[70, 88], [80, 84], [85, 86]], 1.2, '~', '.');
-scatter(60, 59, 85, 91, 'm', .16, '.'); scatter(60, 59, 85, 91, ',', .1, '.');
+// (built: see section 7b, below the other regions)
 // the Terrace Hills: fields in steps
 for (let y = 58; y <= 80; y++) for (let x = 88; x <= 122; x++) if (R[y][x] === 3 && M[y][x] === '.') { if ((y - 58) % 5 === 4 && x % 9 !== 4) M[y][x] = '#'; else if ((y - 58) % 5 < 4 && (Math.floor(x / 9) + Math.floor((y - 58) / 5)) % 2 === 0) M[y][x] = 'w'; }
 // the lake shore
@@ -121,6 +120,23 @@ blob(71, 11, 10, 5.5, 'p', .12); road([[71, 16], [71, 19]], 'p'); scatter(58, 5,
 blob(71, 11, 8.5, 4.4, 'p', .1); road([[69, 16], [69, 21]], 'p', 'p^.~'); road([[69, 21], [68, 21], [68, 25]], 'p', 'p^.~s');
 // the Growing Dunes
 for (let y = 4; y <= 20; y++) for (let x = 4; x <= 29; x++) if (M[y][x] === 'd' && (x + Math.round(Math.sin(y * .9) * 2)) % 6 === 0) M[y][x] = 'D';
+
+// ---- 7b. the Reach (region 2), square by square: channels, plank bridges, three towns on legs, the harbour
+line([[60, 62], [66, 68], [64, 78], [70, 88], [72, 95]], 1.4, '~', '.'); line([[66, 68], [76, 66], [84, 72]], 1.4, '~', '.'); line([[70, 88], [80, 84], [85, 86]], 1.2, '~', '.');
+// a road that becomes a plank bridge (b) wherever it meets water
+function roadB(pts) { for (let i = 0; i < pts.length - 1; i++) { let [x, y] = pts[i]; const [bx, by] = pts[i + 1], put = () => set(x, y, get(x, y) === '~' || get(x, y) === 'b' ? 'b' : ':'); put(); while (x !== bx) { x += Math.sign(bx - x); put(); } while (y !== by) { y += Math.sign(by - y); put(); } } }
+set(59, 74, ':');                                                     // the reed gate's square
+roadB([[60, 74], [79, 74]]);                                          // the gate, the harbour, the bridge over the first channel, on to Reed Town
+roadB([[62, 74], [62, 73]]);                                          // up to the harbour houses
+roadB([[71, 74], [71, 63]]);                                          // north, over the second channel, to Stilt Town
+roadB([[75, 74], [75, 89]]);                                          // south, over the third channel, to Mud Town
+roadB([[62, 74], [62, 77], [64, 77]]);                                // the long pier
+roadB([[78, 74], [78, 67], [85, 67]]);                                // east to the lift under the hill wall
+for (const [x, y] of [[61, 72], [63, 72], [70, 62], [72, 62], [73, 64], [80, 73], [80, 75], [81, 74], [76, 90], [77, 88], [74, 90]]) set(x, y, 'S');      // houses on legs
+line([[55, 58], [85, 58]], 1, 'm', '.,*T:');                          // reeds close the north side for now
+scatter(60, 59, 85, 91, 'm', .07, '.'); scatter(60, 59, 85, 91, ',', .05, '.'); scatter(60, 59, 85, 91, '*', .025, '.');
+for (const [x, y] of [[62, 72], [62, 73], [72, 63], [71, 63], [80, 74], [79, 74], [76, 89], [75, 89], [68, 75], [74, 83], [85, 67], [84, 67], [69, 73], [60, 73], [60, 75]]) if ('m,*'.indexOf(get(x, y)) >= 0) set(x, y, '.');      // squares where a thing or a being stands
+set(64, 77, 'b'); set(63, 77, 'b');
 
 // ---- 8. tidy: no land letter may be left in region 0, and the edge is sea
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (M[y][x] !== '~' && !R[y][x]) { let got = 0; for (let d = 1; d <= 4 && !got; d++) for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d], [d, d], [-d, -d], [d, -d], [-d, d]]) if (!got && inb(x + dx, y + dy) && R[y + dy][x + dx]) got = R[y + dy][x + dx]; if (got) R[y][x] = got; else M[y][x] = '~'; }

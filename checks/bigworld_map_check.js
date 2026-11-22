@@ -7,8 +7,10 @@
 //   2  the map is 128 x 96, every row is full, every letter is one the page knows how to draw
 //   3  bwCheck() finds no fault:
 //        every thing can be reached; nothing that is not built can be reached; every border on the main road has two ways,
-//        and each way alone gets across; no main job needs a secret; every find has a use or is scenery; no job waits on a place not built
-//   4  the check CAN fail: ten broken copies of the world are fed to it, and it must catch each one
+//        and each way alone gets across; no main job needs a secret; every find has a use or is scenery; no job waits on a place not built;
+//        the law of the road (leave any one people's quest undone: every people can still be reached); a tool is never a border's way;
+//        no big quest needs a thing from another region; every mini quest step has its line for the Needs list; every item is used
+//   4  the check CAN fail: fifteen broken copies of the world are fed to it, and it must catch each one
 //   5  every line a being says is short; every thing has a word to tap; no two things near each other share their first word... except the four machines, which are far apart
 //   6  the walks are short: from the ship, every thing in the Meadow is within 75 steps, and no thing is more than 16 steps from the next nearest thing
 //
@@ -16,7 +18,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm'), { execFileSync } = require('child_process');
 const file = path.resolve(__dirname, '..', 'prototypes', 'big_world.html'), page = fs.readFileSync(file, 'utf8');
 const cut = (a, b) => { const i = page.indexOf(a), j = page.indexOf(b); if (i < 0 || j < 0) { console.log(`FAILED: no ${a} .. ${b} in the page`); process.exit(1); } return page.slice(i, j + b.length); };
-const SRC = cut('/*MAP-BEGIN', '/*MAP-END*/') + '\n' + cut('/*WORLD-BEGIN', '/*WORLD-END*/') + '\n;Object.assign(this, { MAP, REG, MAPW, MAPH, WALK, REGIONS, THINGS, SCENES, GATES, BORDERS, JOBS, ITEMS, bwCheck, bwStand });';
+const SRC = cut('/*MAP-BEGIN', '/*MAP-END*/') + '\n' + cut('/*WORLD-BEGIN', '/*WORLD-END*/') + '\n;Object.assign(this, { MAP, REG, MAPW, MAPH, WALK, REGIONS, THINGS, SCENES, GATES, BORDERS, JOBS, ITEMS, PEOPLES, bwCheck, bwStand });';
 const world = () => { const box = {}; vm.createContext(box); vm.runInContext(SRC, box); box.THINGS.forEach(t => { if (!t.stand) t.stand = box.bwStand(t); }); return box; };
 const bad = [], say = (ok, what) => { if (!ok) bad.push(what); };
 
@@ -25,7 +27,7 @@ const built = execFileSync('node', [path.resolve(__dirname, 'bigworld_map_build.
 say(built === cut('/*MAP-BEGIN', '/*MAP-END*/'), 'the map in the page is not what checks/bigworld_map_build.js paints. Run the builder, or put the change into it.');
 
 // 2. shape and letters
-const W = world(), KNOWN = '~.:,*swcpdRTtarH^#mD';
+const W = world(), KNOWN = '~.:,*swcpdRTtarH^#mDbS';
 say(W.MAPW === 128 && W.MAPH === 96 && W.MAP.length === 96 && W.REG.length === 96, `the map is ${W.MAPW} x ${W.MAPH} with ${W.MAP.length} rows`);
 W.MAP.forEach((r, y) => { say(r.length === 128, `row ${y} is ${r.length} long`); for (const c of r) if (KNOWN.indexOf(c) < 0) say(false, `row ${y} has the letter "${c}", which the page cannot draw`); });
 W.REG.forEach((r, y) => { say(r.length === 128 && /^[0-9]+$/.test(r), `region row ${y} is wrong`); });
@@ -41,7 +43,12 @@ const breaks = [
   ['two ways with the same maths', w => { w.JOBS.stones.maths = w.JOBS.bridge.maths; }, /same maths/],
   ['a hole in the old wall', w => { w.MAP[55] = w.MAP[55].slice(0, 30) + '.' + w.MAP[55].slice(31); }, /can be reached/],
   ['a thing in the water', w => { const t = w.THINGS.find(t => t.id === 'well'); t.x = 10; t.y = 67; t.stand = [10, 68]; }, /cannot be walked on|cannot be reached/],
-  ['a find that leads nowhere', w => { delete w.THINGS.find(t => t.id === 'well').scenery; }, /leads nowhere/],
+  ['a find that leads nowhere', w => { delete w.THINGS.find(t => t.id === 'ring').scenery; }, /leads nowhere/],
+  ['the law of the road: both ways over the river lean on the Menders\' quest', w => { w.JOBS.stones.uses = ['plates']; }, /law of the road/],
+  ['a tool as one of a border\'s two ways', w => { w.JOBS.stones.tool = 'raft'; }, /A tool is never/],
+  ['a big quest that needs a thing from another region', w => { w.JOBS.plates.needs.push('rope'); }, /another region|does not need it/],
+  ['a mini quest step with no line for the Needs list', w => { delete w.JOBS.well.steps[2].need; }, /no line for the Needs list/],
+  ['an item nothing uses', w => { delete w.ITEMS.rope.use; }, /nothing uses it/],
   ['a job in a region that is not built', w => { w.JOBS.coin.region = 3; }, /not built/],
   ['an item from nowhere', w => { w.ITEMS.coin.from = 'nobody'; }, /does not exist|from nowhere/],
   ['a secret that holds maths help for a main job', w => { w.ITEMS.shard.helps = 'plates'; }, /help with the maths must be open/],
