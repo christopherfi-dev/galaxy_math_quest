@@ -3,6 +3,8 @@
 **Date:** 22 November 2026. **For:** Marc. **From:** the battle thread.
 **You asked for analysis.** Nothing here is built. Every option is yours to choose. [Proposal throughout]
 
+**Read section 10 first.** It is your second idea, sent a few minutes after the first, and I think it is the best answer. Sections 3 to 8 are what I wrote before it. Section 5 has a mistake of mine, marked.
+
 ---
 
 ## 1. Your question
@@ -80,7 +82,9 @@ Your idea: a lower dodge makes the ship's own attack miss, but the part a higher
 - **It does not work for a card that multiplies,** as you saw yourself. A doubled 55 has no "ship part" and "card part". Both epic attack cards in the set work on the AP: Doubling Drive and Hundred Cannon.
 - **So it would need two rules:** one for adders, one for multipliers. And the child would have to keep two numbers apart in every attack.
 
-**I would not split the attack.** All or nothing, by kind. A higher attack card hits with everything. It is one rule, and it gives the answer you wanted for the multiplier case anyway.
+> **Correction, the same day.** I was wrong that a multiplier cannot be split. The page already writes every attack as ship plus card: "110 = 55 + 55" for Doubling Drive, "100 = 55 + 45" for Hundred Cannon. So the card's part is always a number the child can see. Section 10 uses that.
+
+**(What I wrote first:) I would not split the attack.** All or nothing, by kind. A higher attack card hits with everything. It is one rule, and it gives the answer you wanted for the multiplier case anyway.
 
 ---
 
@@ -127,3 +131,57 @@ If an epic attack should feel epic, the lever is the shield rule, not the shield
 - **Computer players do not bluff.** A child who goes second may hold an epic attack card just to beat a shield card. That is good play. It could also make going first feel bad. Watch for it.
 - **The trial's last column is a blunt measure.** "Hurts no part" counts a hit on a standing shield as no hurt.
 - **A price on dodging may feel like a punishment** to a child who only wanted to be safe. Only play will show.
+
+---
+
+## 10. Your second idea: the shield carries a kind
+
+> "Or any newly rebuilt shield could be labeled as common or rare, and still blocks the AP. Special attacks could still damage the ship parts."
+
+**How I read it**
+
+- A shield that a card puts back up is **common, rare or epic, like the card that made it.**
+- **It always stops the ship's own attack** (the AP).
+- **The part that a higher attack card adds goes through** to the parts. A rare or epic attack card is the "special attack".
+- An attack card of the shield's own kind, or lower, is stopped whole, as now.
+
+**An example.** Your shield is broken. You play Dust Screen (common): a green shield of 8 goes up. The enemy plays Twin Tens (rare): its attack is 75, shown at the top as "55 + 20".
+- The 55 goes into your green shield. The shield breaks and soaks it up.
+- The 20 is rare, so it goes through. You share 20 out between your parts.
+
+**Why I think this is better than my "kind beats kind"**
+
+1. **A child can see it.** The bubble can be drawn green, purple or gold. A purple attack card goes through a green bubble. No rule to remember: look at the two colours.
+2. **A shield card is never wasted.** It always stops the ship's guns. My version needed "too late" to save the card.
+3. **The numbers on attack cards start to matter.** Until now a hit either lands or it does not. Here "+20" means 20 gets through.
+4. **It uses what is already on the screen:** "75 = 55 + 20".
+5. **It is the same idea as your dodge sentence:** "It may miss the AP, but the gold attack card can still hit." One law for both:
+
+> **A lower shield or dodge stops the ship's own attack. The part a higher attack card adds still gets through.**
+
+**A rough trial** (2,000 battles each, two computer players, outside the page)
+
+| | Today | Your idea |
+|---|---|---|
+| **A battle lasts (random play / clever play)** | 11 / 14 rounds | 11 / 14 rounds |
+| **A special attack goes through a weaker shield** | never | about once every one or two battles |
+| **How much goes through, each time** | | about 31 points |
+| **A rare attack card hurts a part** | 36 to 41 times in 100 | 44 to 46 |
+| **An epic attack card hurts a part** | 38 to 47 times in 100 | 47 to 55 |
+| **Battles that got stuck** | 0 | 0 |
+
+- **Battle length does not move.**
+- **Rare and epic attack cards become a little stronger,** which is what you were after.
+- The computer does not yet aim a special attack at a weak shield. A child would. So expect more than the trial shows.
+
+**Small things it needs you to settle**
+
+1. **The shield you start with** (100): I gave it no kind, so it stops everything. Right?
+2. **Shield Reborn** makes an epic shield. Nothing gets through it. Right?
+3. **Adding to a shield that is still up** (Shield Spark on a rare shield): the shield keeps its kind. Right?
+4. **A block card played while your shield is still up** (it only blocks): against a higher attack card it blocks nothing, as your rule says now. Or should it, too, block the ship's part and let the card's part through?
+5. **Dodge cards at common and rare** (section 4): the same law would apply. Do you want them, and with the "you do not fire" price?
+
+**What could prove it wrong:** it asks a child to read "55 + 20" and know which part went where. The page can show it: one laser into the bubble, a second one through it. I have not built that.
+
+**My advice now:** build section 10 in place of sections 3 and 8. Say the word.
