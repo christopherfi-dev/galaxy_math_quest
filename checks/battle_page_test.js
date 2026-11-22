@@ -206,6 +206,28 @@ async function act(page, name, flags) {
     await page.locator('#lclose').tap();
     await page.locator('#again').tap();
     pass(name + ': New battle goes back to the first screen', await page.locator('#setup.open').count() === 1);
+    // ---- the other two ways to play the Guard, a few rounds each (the sums are still shown)
+    if (name === 'ipad_sideways') {
+      for (const [mode, idx] of [['lead', 2], ['blind', 1]]) {
+        await page.locator('#srules').tap();
+        await page.locator('#switches button[data-key="guard"][data-i="' + idx + '"]').tap();
+        await page.locator('#rnew').tap();
+        await page.evaluate(() => window.GMQB.setSeed(4711));
+        await page.locator('#sgo').tap();
+        let sawLead = false, g = 0;
+        while (g++ < 400) {
+          st = await state(page);
+          if (st.over || st.round > 5) break;
+          if (/leads with/.test(st.say) || /You lead/.test(st.say)) sawLead = true;
+          if (st.phase === 'pick' && /leads with/.test(st.say)) pass(name + ': when the enemy leads, its card is on the table before you choose', /The enemy's card/.test(st.boardText) && await page.locator('#board .tablecard').count() === 1);
+          await act(page, name, flags);
+        }
+        st = await state(page);
+        pass(name + ': a battle with the Guard "' + mode + '" plays on', st.round > 5 || !!st.over, 'round ' + st.round);
+        if (mode === 'lead') pass(name + ': in "one leads" the page says who leads', sawLead);
+        await page.locator('#bnew').tap();
+      }
+    }
     pass(name + ': no script errors', errors.length === 0, errors.slice(0, 3).join(' | '));
     await ctx.close();
   }
