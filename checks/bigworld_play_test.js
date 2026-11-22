@@ -25,11 +25,12 @@
 // On all three screens (1180 x 745, 820 x 1180, 390 x 760): nothing scrolls, nothing spills, every button of every task is on the screen,
 // the reading card is inside the picture, the picture has at least 45% of the screen. The page asks the network for nothing.
 //
-// Run:  node checks/bigworld_play_test.js [--shots folder]
+// Run:  node checks/bigworld_play_test.js [--shots folder] [--only phone]     (--only plays the screens whose name holds that word)
 const { chromium } = require('playwright');
 const path = require('path'), fs = require('fs');
 const FILE = process.argv.find(a => /\.html$/.test(a)) || path.resolve(__dirname, '..', 'prototypes', 'big_world.html');
 const URL = 'file://' + path.resolve(FILE);
+const ONLY = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : '';      // --only phone : play one screen only
 const SHOTS = process.argv.includes('--shots') ? process.argv[process.argv.indexOf('--shots') + 1] : null;
 const bad = [], say = (ok, what) => { if (!ok) { bad.push(what); console.log('  FAULT: ' + what); } };
 const ruleOut = (rule, v, cap) => { const n = rule.n; cap = cap || 1e9; return rule.op === 'times' ? (v > 0 && v * n <= cap ? v * n : null) : rule.op === 'plus' ? (v + n <= cap ? v + n : null) : rule.op === 'minus' ? (v >= n ? v - n : null) : (v > 0 && v % n === 0 ? v / n : null); };
@@ -76,7 +77,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
 
 (async () => {
   const b = await chromium.launch();
-  for (const [w, h, name, seed] of [[1180, 745, 'iPad sideways', 7], [820, 1180, 'iPad upright', 23], [390, 760, 'phone', 41]]) {
+  for (const [w, h, name, seed] of [[1180, 745, 'iPad sideways', 7], [820, 1180, 'iPad upright', 23], [390, 760, 'phone', 41]].filter(q => q[2].indexOf(ONLY) >= 0)) {
     console.log(`--- ${name} (${w} x ${h}), child ${seed}`);
     const p = await open(b, w, h, seed);
     const tag = SHOTS ? `${w}x${h}_` : '';
@@ -116,6 +117,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     const wrong = { op: 'plus', n: ruleOut(rule, 3) - 3 }; pg = await plate(p, wrong); await shot(p, tag + '08_plate_wrong'); say(pg.length === 3 && /Not the rule yet/.test(pg[2]), `${name}: a wrong plate was not shown wrong: ${pg.join(' / ')}`); say(!pg.join(' ').includes(SIGN[rule.op] + ' ' + rule.n), `${name}: the right rule was said after a wrong plate`);
     { const m = /drops in (\d+) test pebbles\. Your plate says (\d+) will come out\. Out come (\d+)/.exec(pg[1] || ''); say(m && +m[2] === ruleOut(wrong, +m[1]) && +m[3] === ruleOut(rule, +m[1]) && m[2] !== m[3], `${name}: the test that shows the plate wrong is not right: ${pg[1]}`); }
     s = await st(p); say(s.task.phase === 'test' && !s.S.mach[first].ok && s.S.mach[first].tries === 1, `${name}: after a wrong plate the machine should be back at tests`);
+    { const md = await p.evaluate(() => window.__bw.MA.done), m = /(\d+) in, (\d+) out/.exec(s.task.msg || ''); say(md && m && md.n === +m[1] && md.out === +m[2], `${name}: after a wrong plate the machine's drums do not show the test the words speak of (${JSON.stringify(md)} against "${s.task.msg}")`); }
     // 7. close the page in the middle, and open it again
     await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S());  s = await st(p); say(s.task && s.task.kind === 'machine' && s.task.site === first && (s.S.notes[first] || []).length === 1 && !s.reading, `${name}: after closing and opening, the machine and the notes are not back`); say(s.S.seed === seed, `${name}: the child's numbers changed after opening again`);
     // 8. the right plate
@@ -138,7 +140,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     await useThing(p, 'pan'); pg = await readAll(p); say(pg.length === 4 && /order/i.test(pg[3]), `${name}: the carving (the second finished example) did not show before the pan`); s = await st(p); say(s.task && s.task.kind === 'pan', `${name}: the pan task did not open`); await shot(p, tag + '11_pan'); await layout(p, `${name}, the pan`);
     await press(p, 'pour'); s = await st(p); say(/springs back/.test(s.task.msg) && !s.S.gates.bridge && s.S.pouch === NUM.start, `${name}: the pan took the wrong number of pips`); await press(p, 'leave');
     // a wrong guess: the machine does not run, and does not tell
-    let pouch = NUM.start; await useThing(p, 'm_' + siteOf(way[0])); s = await st(p); say(s.task.phase === 'real' && !/Test pebbles/.test(s.tasktext), `${name}: a true machine with a pouch should ask for real pips, with no test tray`); const out0 = ruleOut(NUM.rule[way[0]], pouch, 100);
+    let pouch = NUM.start; await useThing(p, 'm_' + siteOf(way[0])); s = await st(p); say(s.task.phase === 'real' && !/Test pebbles/.test(s.tasktext), `${name}: a true machine with a pouch should ask for real pips, with no test tray`); say((await p.evaluate(() => window.__bw.MA.done)) === null, `${name}: a machine opened for real pips still shows an old test on its drums`); const out0 = ruleOut(NUM.rule[way[0]], pouch, 100);
     say(s.tasktext.indexOf(' ' + out0 + ' ') < 0 || out0 === NUM.target || out0 === pouch, `${name}: the desk shows what will come out`); await layout(p, `${name}, real pips`); await shot(p, tag + '12_real_pips');
     await press(p, 'pour'); s = await st(p); say(/First say/.test(s.task.msg), `${name}: pouring with no guess`);
     await pad(p, out0 + 1); await press(p, 'pour'); await p.waitForTimeout(100); s = await st(p); say(s.S.pouch === pouch && s.S.runs === 0 && /not what the plate says/.test(s.task.msg) && s.task.msg.indexOf(String(out0)) < 0, `${name}: a wrong guess ran the machine, or gave the answer away`);
@@ -174,7 +176,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
 
   // 13, 14. a second child: the old stones only
   console.log('--- the old stones, iPad sideways and phone');
-  for (const [w, h, name, seed] of [[1180, 745, 'stones, iPad sideways', 101], [390, 760, 'stones, phone', 202]]) { const p = await open(b, w, h, seed); const tag = SHOTS ? `${w}x${h}_` : '';
+  for (const [w, h, name, seed] of [[1180, 745, 'stones, iPad sideways', 101], [390, 760, 'stones, phone', 202]].filter(q => q[2].indexOf(ONLY) >= 0)) { const p = await open(b, w, h, seed); const tag = SHOTS ? `${w}x${h}_` : '';
     await readAll(p); await useThing(p, 'cutter'); let pg0 = await readAll(p); say(/reeds/.test(pg0.join(' ')), `${name}: the reed cutter says nothing about reeds`); await useThing(p, 'post'); let s = await st(p); say(s.reading && s.pic === 'The old post', `${name}: the finished example (the old rope) did not come first`); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '22_stones_example'); let pg = await readAll(p);
     s = await st(p); say(s.task && s.task.kind === 'stones', `${name}: the stones did not open`); await layout(p, name); await shot(p, tag + '23_stones');
     const rounds = await p.evaluate(seed => [0, 1, 2].map(r => window.__bw.stones(seed, r)), seed);
@@ -192,6 +194,6 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     say(!p.errs.length, `${name}: errors: ${p.errs.join(' | ')}`); await p.context().close(); }
 
   await b.close();
-  console.log(bad.length ? `FAILED: ${bad.length} faults\n  ` + bad.join('\n  ') : 'ok: the big world plays through on three screens, by taps only: the story, the elder, four machines, the pouch and the pan, the bridge, the far bank, the small quests, the old stones, closing and opening again');
+  console.log(bad.length ? `FAILED: ${bad.length} faults\n  ` + bad.join('\n  ') : `ok: the big world plays through ${ONLY ? 'on the screens named "' + ONLY + '"' : 'on three screens'}, by taps only: the story, the elder, four machines, the pouch and the pan, the bridge, the far bank, the small quests, the old stones, closing and opening again`);
   process.exit(bad.length ? 1 : 0);
 })();
