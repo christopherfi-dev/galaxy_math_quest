@@ -67,6 +67,64 @@ Here is how I read the problem.
 
 ---
 
+## 1c. Your idea: a shield card puts the shield back up
+
+You said: *"anytime you play a shield card, it puts your ship's shield back up... which then blocks you from the enemy's attack for that one time."* You asked me to run it first.
+
+**Why it works as you hoped.** Your rule is "nothing carries over". So a shield of any size soaks one whole hit. A card that puts up a shield of 8 saves the ship from a hit of 60, once.
+
+**Two ways to read "shield card".** In my set, the cards with a shield on them are the block cards. The cards that add to the Main Shield have a heart. So I tried both.
+
+| | The page today | **A.** Any card that adds to the Main Shield | **B.** Those, and any block card |
+|---|---|---|---|
+| **Cards in a deck of 45 that can do it** | 1 | 5 | 15 |
+| **Random play: a battle lasts** | 9 rounds | 9 rounds | 11 rounds |
+| **Random play: longest** | 13 | 13 | 19 |
+| **Clever play: a battle lasts** | 9 rounds | 10 rounds | 14 rounds |
+| **Clever play: 9 battles in 10 are over by** | round 10 | round 12 | round 17 |
+| **Clever play: longest** | 13 | 17 | 23 |
+| **A shield comes back, in one battle** | less than once | 2 or 3 times | 5 to 10 times |
+| **Nobody wins** | 0 | 0 | 0 |
+| **The leader of the last round wins** | 60 in 100 | 56 or 57 | 53 or 54 |
+
+2,000 battles for each box, two computer players, Standard ships.
+
+**What I see in the numbers**
+
+- **No battle got stuck.** None came near the limit of 60 rounds. I had feared two players would shield for ever. They do not: a shield card played is an attack card not played, and a ship that loses the right part can no longer do it.
+- **It does what you want.** A ship that is losing gets a way back, several times in a battle.
+- **It gives the split a real choice.** This answers my worry in section 4. A block card needs the Shield Generator. A card that adds to the shield needs the Power Module. So "which part do I give up?" now matters. I told the computer to keep its Shield Generator under B, and that alone moved the middle battle from 12 rounds to 14.
+- **It softens the edge of leading the last round:** from 60 in 100 to about 54.
+
+**What it costs**
+
+1. **Under B, battles are half as long again.** 14 rounds with clever play, and some over 20. A round is watched for 10 to 15 seconds, plus the choosing.
+2. **Once the shield is down, the number on a shield card stops mattering.** A shield of 8 and a shield of 25 both soak one whole hit. So a common card does the work of a rare one.
+3. **Some cards' words would be wrong.** "Add 10 HP to your Main Shield, if it is still up." I have not changed any card. If you rule for this, I rewrite them.
+
+**If you choose B, one more thing** [Proposal]: the cards that add to the Main Shield should then carry a shield, not a heart. Then the rule a child sees is simple: "a card with a shield on it puts my shield up."
+
+**What could prove this wrong:** the computer plays a shield card when it has one. A child may save them all for the end and make a battle very long. Only play will show.
+
+**Try it yourself:** press **Rules**, find "A broken Main Shield can be put back up by", choose, then "New battle with these rules". Nothing changes for anyone until you choose. The page still starts on "Shield Reborn only".
+
+Your block rule still holds under B: a common block card does nothing against a rare attack card, shield or no shield.
+
+---
+
+## 1d. Sound
+
+You said: *"Sound or haptics good."*
+
+- **The battle now has sound:** a laser, a hit, a shield taking a hit, a part bursting, a Spy, a police siren, a repair, a block, a shield going up, a tap, and a short tune for winning or losing.
+- **The page makes every sound itself,** from plain tones and noise. No sound file is loaded. Nothing comes from outside.
+- **A button at the top says "Sound on" or "Sound off".** The iPad remembers it. It starts on. [My choice. Say if it should start off, for a room of 14.]
+- **A buzz:** the page asks for one on a hit. An iPad's browser does not give web pages a buzz, as far as I know, so on your iPads expect none. Other tablets may buzz.
+- **I have not heard any of it.** I cannot. I chose each sound by its numbers. The test only proves that the page asks for the right sound at the right moment, with no error. You will know in five seconds if they are right. Tell me which are wrong and how.
+- **If you hear nothing:** check the iPad is not on silent. Web pages are quiet when it is.
+
+---
+
 ## 2. What is on the screen
 
 | | |
@@ -114,7 +172,7 @@ These are the things that could prove this design wrong.
    - Watch for: do they choose a card quickly, or stare? Do they read "if lost"? Do they smile at the laser?
 2. **The split may not be much of a choice.** This comes from the rules, not from the screen. [Your decision]
    - Your rule: "the defender decides how to split each attack across their parts." [Source: rules sheet 4]
-   - The sheet does not say if a part may be sent more than the HP it has. The page lets it. [My guess. It matches "nothing carries over" for the shield.]
+   - A part may be sent more than the HP it has. [Source: rules sheet 4, your example: "the whole 80 can go onto one part with 5 HP left. That part is lost, and the other 75 points are lost with it."]
    - So the best answer to a hit of 65 is always the same: **put all 65 on your least useful part.** One part is lost, and 50 points of the hit vanish.
    - The new screen makes this easy to see: one tap after another on the same part, "it will be lost".
    - A child who finds it will do it every time. Then the one job you kept is no longer a decision.
@@ -129,7 +187,7 @@ These are the things that could prove this design wrong.
 
    - These three numbers are a rough trial, not a tested rule. B and C are not in the page. Say the word and I add them as switches, with tests.
 3. **A round is watched for about 10 to 15 seconds.** That may feel right, or slow by round 8. A "fast" switch is easy.
-4. **There is no sound.** A space battle wants sound. A room of 14 iPads may not. [Your decision]
+4. **I have not heard the sounds** (section 1d). They may be wrong, or too much for a room of 14.
 5. **On a phone the cards are small.** It is built for the iPad.
 6. **The computer player is not a child.** The numbers in section 7 come from one way of playing.
 
@@ -151,7 +209,7 @@ Open **Rules** on the page. A change starts with the next battle.
 | **"Cannot defend"** (Shield Generator lost) | defence cards stop; defence cards and the Main Shield stop | rules sheet 5 |
 | **A repair may lift a part above its full HP** | no; yes | my guess |
 | **The Main Shield may pass 100** | no; yes | my guess |
-| **A broken Main Shield can be rebuilt by** | Shield Reborn only; any shield card | my guess |
+| **A broken Main Shield can be put back up by** | Shield Reborn only; any card that adds to the Main Shield; those and any block card | the first is my guess; the others are **your idea of 22 November**, to try (section 1c) |
 | **Cards that add to the Main Shield count as** | repair; defence | my guess |
 | **Level 2 upgrade cards are in the decks** | yes; no | my guess |
 | **A battle ends with no winner after** | 60 rounds; 30 rounds | my guess |
@@ -191,14 +249,13 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 ### Still for you to rule on
 
 1. **The split** (section 4, point 2).
-2. **Sound,** or no sound.
+2. **Your shield idea** (section 1c): leave it off, A, or B.
 3. **My three readings of your turn-order ruling** (section 1b).
 
 ---
 
 ## 8. What is not built
 
-- **Sound.**
 - **Two children on one iPad.**
 - **Levels 3 to 10.**
 - **Fun battles and challenge battles.**
@@ -206,7 +263,9 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,045 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,070 checks, all pass. It checks:
+  - the sound button: off, remembered, on again; at real speed a laser, a Spy, a block, a burst and a win each ask for their sound, with no error; with the sound off, nothing is asked for;
+  - your shield idea, with the switch on: the opened card says the shield will come back and soak the hit, and it does;
   - "epic" on every card and in every message, never "gold";
   - the ship that hits first is marked;
   - two ships, five parts on each, none over another;

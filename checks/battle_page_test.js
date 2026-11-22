@@ -48,6 +48,7 @@ async function state(page) {
       myatk: r(q('myatk')), myatkText: q('myatk').textContent, eatkNum: q('eatk').querySelector('b') ? q('eatk').querySelector('b').textContent : '', eatkText: q('eatk').textContent, stage: r(q('stagewrap')), tray: r(q('tray')), btns: r(q('btns')),
       shipText: [0, 1].map(i => q('ship' + i) ? Array.from(q('ship' + i).children).filter(e => e.tagName === 'text').map(e => e.textContent).join(' ') : ''), turn: S ? B.turnOrder(S) : false,
       goldSeen: all('svg text').map(e => e.textContent).concat([q('msg').textContent, q('note') ? q('note').textContent : '', q('fore') ? q('fore').textContent : '']).concat(all('.tag').map(e => e.textContent)).filter(x => /gold/i.test(x)),
+      sound: q('bsound') ? q('bsound').textContent : '', soundBox: r(q('bsound')), soundSaved: (function () { try { return localStorage.getItem('gmq_battle_sound'); } catch (e) { return 'error'; } })(),
       inputs: all('input,textarea,select').length, roundText: q('round').textContent, lastRound: S && S.log.length ? S.log[S.log.length - 1].round : 0,
       vw: innerWidth, vh: innerHeight, docH: document.documentElement.scrollHeight, docW: document.documentElement.scrollWidth
     };
@@ -210,6 +211,17 @@ async function act(page, name, flags, size) {
     pass(name + ': the HP numbers are large enough to read', [0, 1].every(s => st.pods[s].every(p => p.hpBox.h >= hpPx)), String(Math.round(st.pods[0][0].hpBox.h)));
     pass(name + ': the "if lost" words are large enough to read', st.pods[0].every(p => p.ruleBox.h >= rulePx), String(Math.round(st.pods[0][0].ruleBox.h)));
     await shot(page, name + '_2_choose_an_order');
+    // ---- the sound button
+    pass(name + ': the sound button is at the top, inside the screen, and sound starts on', st.sound === 'Sound on' && inScreen(st.soundBox, st), st.sound);
+    await page.locator('#bsound').tap();
+    let so = await state(page);
+    pass(name + ': a tap turns the sound off, and the iPad remembers it', so.sound === 'Sound off' && so.soundSaved === 'off', so.sound + ' ' + so.soundSaved);
+    await page.reload();
+    so = await state(page);
+    pass(name + ': after closing and opening the page, the sound is still off, and the battle is still there', so.sound === 'Sound off' && so.round === 1 && so.hand.length === 5, so.sound);
+    await page.locator('#bsound').tap();
+    so = await state(page);
+    pass(name + ': a second tap turns the sound on again', so.sound === 'Sound on' && so.soundSaved === 'on', so.sound + ' ' + so.soundSaved);
 
     // ---- play as a child
     const flags = {};
@@ -300,6 +312,31 @@ async function act(page, name, flags, size) {
       pass(name + ': played anyway, the common card blocks nothing and the log says why', L.block[0] === 0 && L.through[0] === L.atk[1] && /is common\. It cannot block a rare attack card/.test(L.lines), JSON.stringify(L).slice(0, 200));
       await idle(page);
       await page.locator('#bnew').tap();
+
+      // ---- Marc's idea of 22 November, as a switch: a shield card puts a broken Main Shield back up
+      for (const [idx, cardId, upN, what] of [[1, 'R05', 10, 'a card that adds to the Main Shield'], [2, 'D01', 8, 'a block card']]) {
+        await page.locator('#srules').tap();
+        await page.locator('#switches button[data-key="shieldRebuild"][data-i="' + idx + '"]').tap();
+        await page.locator('#rnew').tap();
+        await page.evaluate(() => window.GMQB.setSeed(5));
+        await page.locator('#sgo').tap();
+        await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;S.P[0].shield=0;put(S.P[1],"A01",0);put(S.P[0],"' + cardId + '",0);U.cpuLead=0;})()');
+        await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+        const b4 = await state(page);
+        await page.locator('.hc.mine').nth(0).tap();
+        st = await state(page);
+        pass(name + ': with the switch on, ' + what + ' says it will put the broken shield back up, and that the hit will be soaked', st.fore.indexOf('This card puts your Main Shield back up: ' + upN + '.') >= 0 && /It will break, and soak up the whole hit/.test(st.fore), st.fore);
+        await shot(page, name + '_9b_shield_back_up_' + idx);
+        await page.locator('#playit').tap();
+        let g3 = 0; while (g3++ < 60) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
+        const up = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { was: l.snap.shield[0], hit: l.through[0] }; });
+        pass(name + ': played, it puts up a shield of ' + upN + ', which soaks the whole hit and breaks; no part is touched', up.was === upN && up.hit > upN && st.shield[0] === 0 && JSON.stringify(st.hp[0]) === JSON.stringify(b4.hp[0]), JSON.stringify([up, st.shield[0], st.hp[0]]));
+        await idle(page);
+        await page.locator('#bnew').tap();
+      }
+      await page.locator('#srules').tap();
+      await page.locator('#switches button[data-key="shieldRebuild"][data-i="0"]').tap();
+      await page.locator('#rclose').tap();
     }
 
     // ---- movement, at real speed
@@ -362,6 +399,14 @@ async function act(page, name, flags, size) {
       await p2.waitForTimeout(500);
       await shot(p2, name + '_14_you_win');
     }
+    // ---- sound, at real speed
+    const sn = await p2.evaluate(() => { const s = window.GMQB.SND; return { n: s.n, err: s.err, log: s.log.slice(), made: !!s.ac }; });
+    pass(name + ': at real speed the page makes its sounds, with no error', sn.n >= 8 && sn.err === '' && sn.made, JSON.stringify([sn.n, sn.err, sn.made]));
+    pass(name + ': a laser, a Spy, a block, a burst and a win each have a sound', ['laser', 'spy', 'wall', 'boom', 'win'].every(x => sn.log.indexOf(x) >= 0), sn.log.join(','));
+    await p2.locator('#bsound').tap();
+    const sn2 = await p2.evaluate(() => { const s = window.GMQB.SND, n = s.n; window.GMQB.snd('laser'); return { before: n, after: s.n }; });
+    pass(name + ': with the sound off, nothing is played', sn2.after === sn2.before, JSON.stringify(sn2));
+    await p2.locator('#bsound').tap();
     pass(name + ': no script errors at real speed', errors2.length === 0, errors2.slice(0, 3).join(' | '));
     await p2.close();
 

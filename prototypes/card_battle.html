@@ -17,7 +17,9 @@ button{font-family:inherit}
 .atk.foe{border-color:#f87171;color:#fca5a5}
 #round{font-weight:900;font-size:17px;white-space:nowrap}
 #btns{margin-left:auto;display:flex;gap:5px}
-.sb{font-size:13px;font-weight:700;border-radius:8px;border:1px solid #3a4874;background:#1c2748;color:#e8ecf5;padding:7px 10px;cursor:pointer}
+.sb{font-size:13px;font-weight:700;border-radius:8px;border:1px solid #3a4874;background:#1c2748;color:#e8ecf5;padding:7px 10px;cursor:pointer;white-space:nowrap}
+.sb.on{border-color:#4ade80}
+.sb.off{color:#8f9bbd;text-decoration:line-through}
 #msg{flex:0 0 auto;font-size:20px;line-height:1.2;font-weight:800;height:50px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 6px}
 #stagewrap{flex:1 1 auto;min-height:0;position:relative;border-radius:14px;overflow:hidden;background:#070b18}
 #sky,#stage{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -89,7 +91,7 @@ button{font-family:inherit}
 .keyrow svg{width:64px;height:64px}
 @media(max-width:600px){
  .ship{grid-template-columns:repeat(3,minmax(0,1fr))}
- #topbar{gap:5px}#btns{gap:3px}
+ #topbar{gap:4px 5px;flex-wrap:wrap}#btns{gap:3px}
  .hc .tag{font-size:8.5px;padding:1px 4px;border-width:1px;top:30%}.hc .who{font-size:8px}
  .atk{padding:2px 7px;font-size:9px}.atk b{font-size:20px}.atk small{display:none}
  #round{font-size:11px}.sb{padding:5px 4px;font-size:10.5px}#app{padding-left:5px;padding-right:5px}
@@ -106,7 +108,7 @@ button{font-family:inherit}
     <div class="atk" id="myatk"></div>
     <div id="round"></div>
     <div class="atk foe" id="eatk"></div>
-    <div id="btns"><button class="sb" id="bhelp" type="button">How</button><button class="sb" id="brules" type="button">Rules</button><button class="sb" id="blog" type="button">Log</button><button class="sb" id="bnew" type="button">New</button></div>
+    <div id="btns"><button class="sb" id="bsound" type="button">Sound on</button><button class="sb" id="bhelp" type="button">How</button><button class="sb" id="brules" type="button">Rules</button><button class="sb" id="blog" type="button">Log</button><button class="sb" id="bnew" type="button">New</button></div>
   </div>
   <div id="msg"></div>
   <div id="stagewrap"><svg id="sky" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"></svg><svg id="stage" xmlns="http://www.w3.org/2000/svg"></svg></div>
@@ -165,6 +167,8 @@ button{font-family:inherit}
     <li><b>Power Module:</b> you cannot heal: heart cards do nothing.</li>
     <li><b>Engine</b> or <b>Navigation:</b> you lose 1 card.</li>
   </ul>
+  <h3>Sound</h3>
+  <p>The button at the top turns the sound on and off. The iPad remembers it.</p>
   <div class="row"><button class="btn go" id="hclose" type="button">Back</button></div>
 </div></div>
 
@@ -282,7 +286,7 @@ var SWITCHES=[
  {key:'cannotDefend',label:'Shield Generator lost: "cannot defend"',from:'rules sheet 5',values:[['cards','Defence cards stop working'],['cardsAndShield','Defence cards and the Main Shield stop']]},
  {key:'repairCap',label:'A repair may lift a part above its full HP',from:'a guess',values:[[true,'No'],[false,'Yes']]},
  {key:'shieldCap',label:'The Main Shield may pass 100',from:'a guess',values:[[true,'No'],[false,'Yes']]},
- {key:'shieldRebuild',label:'A broken Main Shield can be rebuilt by',from:'a guess',values:[['reborn','Shield Reborn only'],['any','any shield card']]},
+ {key:'shieldRebuild',label:'A broken Main Shield can be put back up by',from:'the first is a guess; the others are Marc\'s idea of 22 November, to try',values:[['reborn','Shield Reborn only'],['any','any card that adds to the Main Shield'],['blocks','any card that adds to the Main Shield, and any block card (it puts up a shield of its own number)']]},
  {key:'shieldIsHealing',label:'Cards that add to the Main Shield count as',from:'a guess',values:[[true,'repair (need the Power Module)'],[false,'defence (need the Shield Generator)']]},
  {key:'upgrades',label:'Level 2 upgrade cards are in the decks',from:'a guess',values:[[true,'Yes'],[false,'No']]},
  {key:'roundLimit',label:'A battle ends with no winner after',from:'a guess',values:[[60,'60 rounds'],[30,'30 rounds']]},
@@ -347,7 +351,7 @@ function isGuard(id){return CARD[id].type==='guard';}
 /* startRound: S.cur holds the round in progress. picks are hand positions. */
 function startRound(S,pick0,pick1){
  var c=[S.P[0].hand[pick0],S.P[1].hand[pick1]];
- S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],noStrike:[false,false],lostNow:[[],[]],pending:[],lines:[],step:0};
+ S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],noStrike:[false,false],raised:[0,0],lostNow:[[],[]],pending:[],lines:[],step:0};
  return S.cur;
 }
 /* swap mode: may player i swap a Guard in for the card they put down? */
@@ -478,6 +482,7 @@ function run0(S,st,ch){
     else if(q.op==='atk_double'){bonus+=ap;how='double';}
     else if(q.op==='atk_round100'){bonus+=(100-ap%100)%100;how='round100';}
     else if(/^block/.test(q.op)&&outranked(S,cur.card[i],cur.card[1-i])){R.lines.push((i?'The enemy\'s ':'Your ')+c.name+' is '+KINDWORD[c.rarity]+'. It cannot block '+AKIND[CARD[cur.card[1-i]].rarity]+' attack card.');}
+    else if((q.op==='block'||q.op==='block_per_card')&&S.opts.shieldRebuild==='blocks'&&me.shield<=0){var up=q.op==='block'?q.n:q.n*otherCards(S,i);if(up>0){me.shield=S.opts.shieldCap?Math.min(100,up):up;cur.raised[i]=me.shield;R.lines.push((i?'The enemy\'s ':'Your ')+c.name+' puts '+(i?'its':'your')+' Main Shield back up: '+me.shield+'.');}}
     else if(q.op==='block'){blk+=q.n;}
     else if(q.op==='block_per_card'){blk+=q.n*otherCards(S,i);}
     else if(q.op==='block_all'){blk=-1;}
@@ -510,7 +515,7 @@ function run0(S,st,ch){
    draw(S,me);
   }
   var b0=beaten(S.P[0]),b1=beaten(S.P[1]);
-  S.log.push({round:S.round,card:cur.card.slice(),stopped:cur.stopped.slice(),atk:cur.atk.slice(),bonus:cur.bonus.slice(),block:cur.block.slice(),through:cur.through.slice(),noStrike:cur.noStrike.slice(),leader:S.leader,snap:cur.snap,lost:cur.lostNow,lines:cur.lines.concat(R.lines)});
+  S.log.push({round:S.round,card:cur.card.slice(),stopped:cur.stopped.slice(),atk:cur.atk.slice(),bonus:cur.bonus.slice(),block:cur.block.slice(),through:cur.through.slice(),noStrike:cur.noStrike.slice(),raised:cur.raised.slice(),leader:S.leader,snap:cur.snap,lost:cur.lostNow,lines:cur.lines.concat(R.lines)});
   if(b0&&b1)S.over={winner:-1,why:'Both ships are beaten in the same round. Nobody wins.'};
   else if(b1)S.over={winner:0,why:'All five enemy parts are at 0. You win.'};
   else if(b0)S.over={winner:1,why:'All five of your parts are at 0. The enemy wins.'};
@@ -525,6 +530,8 @@ function canHurt(S,i){var pl=S.P[i];if(has(pl,'Weapons System'))return true;var 
 
 /* ---------- the computer player: simple and honest. It sees its own hand and the table, never the other hand. ---------- */
 var VALUE={'Weapons System':5,'Power Module':3,'Engine Core':2,'Navigation':2,'Shield Generator':1};
+/* when a block card can put the shield back up, the Shield Generator is worth keeping */
+function worth(S,name){return (name==='Shield Generator'&&S.opts.shieldRebuild==='blocks')?4:VALUE[name];}
 function cpuPick(S,i,seen){
  var me=S.P[i],foe=S.P[1-i],best=-1,bestScore=-1e9,myAP=shipAP(me),foeAP=has(foe,'Weapons System')?shipAP(foe):0;
  me.hand.forEach(function(id,h){
@@ -538,6 +545,7 @@ function cpuPick(S,i,seen){
    else if(o.op==='atk_double')v=myAP?8+myAP*0.6:0;
    else if(o.op==='atk_round100')v=myAP?8+((100-myAP%100)%100)*0.6:0;
    else if(/^block/.test(o.op)&&seen&&outranked(S,id,seen))v=0;
+   else if((o.op==='block'||o.op==='block_per_card')&&S.opts.shieldRebuild==='blocks'&&me.shield<=0)v=foeAP?10+foeAP*0.7:0;
    else if(o.op==='block')v=foeAP?6+Math.min(o.n,foeAP)+(seen&&CARD[seen].type==='attack'?8:0):0;
    else if(o.op==='block_per_card')v=foeAP?6+Math.min(o.n*otherCards(S,i),foeAP):0;
    else if(o.op==='block_all')v=foeAP?10+foeAP*0.7:0;
@@ -548,7 +556,7 @@ function cpuPick(S,i,seen){
    else if(o.op==='round_up10'){var g2=0;me.parts.forEach(function(p){if(p.hp>0&&p.hp<p.max&&p.hp%10)g2+=Math.min(p.max,Math.ceil(p.hp/10)*10)-p.hp;});v=g2?4+g2*1.2:0;}
    else if(o.op==='move_hp'){var w2=part(me,'Weapons System');v=(w2.hp>0&&w2.hp<w2.max)?10:1;}
    else if(o.op==='revive'){var dead=me.parts.filter(function(p){return p.hp<=0;});v=dead.length?40+(has(me,'Weapons System')?0:40):0;}
-   else if(o.op==='shield_add'||o.op==='shield_per_card'){var n=o.op==='shield_add'?o.n:o.n*otherCards(S,i);v=(me.shield>0||S.opts.shieldRebuild==='any')?5+Math.min(n,S.opts.shieldCap?100-me.shield:n)*0.8:0;}
+   else if(o.op==='shield_add'||o.op==='shield_per_card'){var n=o.op==='shield_add'?o.n:o.n*otherCards(S,i);v=me.shield>0?5+Math.min(n,S.opts.shieldCap?100-me.shield:n)*0.8:(S.opts.shieldRebuild!=='reborn'?(foeAP?10+foeAP*0.7:5):0);}
    else if(o.op==='shield_rebuild')v=5+Math.min(o.n,S.opts.shieldCap?100-me.shield:o.n)*(me.shield>0?0.5:1.2);
    else if(o.op==='upgrade'){var up=part(me,c.part);v=(up.hp>0&&up.lvl<2)?16:0;}
    else if(o.op==='guard')v=(seen&&isSpy(seen)&&!guardTooLow(S,id,seen))?200:(S.opts.guard==='blind'?7:0.5);
@@ -564,15 +572,15 @@ function cpuChoose(S,req){
  function order(list,fn){return list.slice().sort(function(a,b){return fn(b)-fn(a);});}
  if(req.type==='targets'&&S.opts.cpu==='gentle'){return shuffle(S,req.among.slice()).slice(0,req.count);}
  if(req.type==='part'&&S.opts.cpu==='gentle'){return req.among[Math.floor(rand(S)*req.among.length)];}
- if(req.type==='targets'){return order(req.among,function(ix){var p=pl.parts[ix];return VALUE[p.part]*100+p.ap-(p.hp>req.n?p.hp:0);}).slice(0,req.count);}
- if(req.type==='part'){return order(req.among,function(ix){var p=pl.parts[ix];return VALUE[p.part]*100+(p.max-p.hp);})[0];}
+ if(req.type==='targets'){return order(req.among,function(ix){var p=pl.parts[ix];return worth(S,p.part)*100+p.ap-(p.hp>req.n?p.hp:0);}).slice(0,req.count);}
+ if(req.type==='part'){return order(req.among,function(ix){var p=pl.parts[ix];return worth(S,p.part)*100+(p.max-p.hp);})[0];}
  if(req.type==='amounts'){
   var out=[0,0,0,0,0],left=req.total;
-  if(req.limit){order(req.among,function(ix){return VALUE[pl.parts[ix].part];}).forEach(function(ix){var t=Math.min(left,roomOf(S,pl.parts[ix]));out[ix]=t;left-=t;});return out;}
+  if(req.limit){order(req.among,function(ix){return worth(S,pl.parts[ix].part);}).forEach(function(ix){var t=Math.min(left,roomOf(S,pl.parts[ix]));out[ix]=t;left-=t;});return out;}
   /* a split: soak it with no part lost if that is possible; if not, give up the part that matters least */
   var cap=0;req.among.forEach(function(ix){cap+=pl.parts[ix].hp-1;});
-  if(left<=cap){order(req.among,function(ix){return -VALUE[pl.parts[ix].part]*100+pl.parts[ix].hp;}).forEach(function(ix){var t=Math.min(left,pl.parts[ix].hp-1);out[ix]=t;left-=t;});return out;}
-  var give=order(req.among,function(ix){var p=pl.parts[ix];return -VALUE[p.part]*100-p.ap-p.hp*0.1;})[0];out[give]=left;return out;
+  if(left<=cap){order(req.among,function(ix){return -worth(S,pl.parts[ix].part)*100+pl.parts[ix].hp;}).forEach(function(ix){var t=Math.min(left,pl.parts[ix].hp-1);out[ix]=t;left-=t;});return out;}
+  var give=order(req.among,function(ix){var p=pl.parts[ix];return -worth(S,p.part)*100-p.ap-p.hp*0.1;})[0];out[give]=left;return out;
  }
  if(req.type==='move'){
   var w=-1;req.among.forEach(function(ix){if(pl.parts[ix].part==='Weapons System')w=ix;});
@@ -733,6 +741,37 @@ function tween(ms,fn){return new Promise(function(res){if(FAST){fn(1);res();retu
 function say(t){el('msg').textContent=t||'';}
 function cardInner(c,uid){return cardSVG(c,uid).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');}
 
+/* ---------- sound ----------
+   Marc, 22 November: "Sound or haptics good." Every sound is made here from plain tones and noise: no file is loaded.
+   A buzz is asked for as well, for tablets that have one (an iPad's browser does not). */
+var SND={on:true,n:0,log:[],err:'',ac:null},SKEY='gmq_battle_sound';
+try{SND.on=localStorage.getItem(SKEY)!=='off';}catch(e){}
+var BUZZ={hit:30,boom:[40,30,90],shield:15,win:[30,40,30,40,120],lose:150};
+function audio(){if(!SND.ac){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;SND.ac=new C();}if(SND.ac.state==='suspended'&&SND.ac.resume)SND.ac.resume();return SND.ac;}
+function tone(type,f0,f1,dur,vol,at){var ac=SND.ac,t=ac.currentTime+(at||0),o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f1),t+dur);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+dur+0.03);}
+function hiss(dur,vol,f0,f1,at){var ac=SND.ac,t=ac.currentTime+(at||0),n=Math.floor(ac.sampleRate*dur),b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0),i;for(i=0;i<n;i++)d[i]=Math.random()*2-1;var src=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();src.buffer=b;f.type='lowpass';f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(Math.max(30,f1),t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);src.connect(f);f.connect(g);g.connect(ac.destination);src.start(t);}
+function snd(name){
+ if(FAST||!SND.on)return;SND.n++;if(SND.log.length<400)SND.log.push(name);
+ try{if(navigator.vibrate&&BUZZ[name])navigator.vibrate(BUZZ[name]);}catch(e){}
+ try{
+  if(!audio())return;
+  if(name==='laser'){tone('sawtooth',1300,170,0.3,0.16);tone('square',880,110,0.22,0.07);}
+  else if(name==='shield'){tone('sine',540,250,0.36,0.2);tone('triangle',810,400,0.3,0.09);}
+  else if(name==='hit'){hiss(0.26,0.3,1900,280);tone('square',150,60,0.2,0.16);}
+  else if(name==='boom'){hiss(0.75,0.42,1300,70);tone('sine',115,34,0.65,0.32);}
+  else if(name==='spy'){tone('triangle',480,720,0.1,0.14);tone('triangle',600,900,0.1,0.14,0.16);tone('triangle',760,1140,0.12,0.14,0.32);}
+  else if(name==='siren'){tone('square',660,660,0.17,0.1);tone('square',880,880,0.17,0.1,0.19);tone('square',660,660,0.17,0.1,0.38);tone('square',880,880,0.17,0.1,0.57);}
+  else if(name==='heal'){tone('sine',523,523,0.14,0.16);tone('sine',659,659,0.14,0.16,0.12);tone('sine',784,784,0.2,0.16,0.24);}
+  else if(name==='wall'){tone('square',230,200,0.26,0.12);tone('triangle',690,650,0.32,0.12);}
+  else if(name==='up'){tone('sine',240,820,0.42,0.18);tone('triangle',360,1230,0.42,0.07);}
+  else if(name==='tap'){tone('triangle',720,480,0.07,0.12);}
+  else if(name==='tick'){tone('square',940,900,0.035,0.05);}
+  else if(name==='win'){tone('triangle',523,523,0.16,0.18);tone('triangle',659,659,0.16,0.18,0.15);tone('triangle',784,784,0.16,0.18,0.3);tone('triangle',1047,1047,0.5,0.2,0.45);}
+  else if(name==='lose'){tone('triangle',392,392,0.22,0.16);tone('triangle',330,330,0.22,0.16,0.22);tone('triangle',262,262,0.22,0.16,0.44);tone('triangle',196,180,0.6,0.18,0.66);}
+ }catch(e){SND.err=String(e);}
+}
+function drawSound(){var b=el('bsound');if(!b)return;b.className='sb'+(SND.on?' on':' off');b.setAttribute('aria-pressed',SND.on?'true':'false');b.textContent=SND.on?'Sound on':'Sound off';}
+
 /* ---------- what a card would do, worked out by the page ---------- */
 /* a card's own numbers, as the ship stands now */
 function plain(side,id){
@@ -752,8 +791,21 @@ function ahead(h){
   var T=JSON.parse(JSON.stringify(S)),q,i,st,req;T.cur=null;B.startRound(T,h,U.cpuLead);q=B.steps(T);
   for(i=0;i<q.length;i++){st=q[i];if(st.k==='land'||st.k==='end')break;if(st.k==='spy'&&st.a===0)continue;req=B.need(T,st);T.opts.cpu=(req&&req.who===0)?'clever':S.opts.cpu;B.run(T,st,req?B.cpuChoose(T,req):null);}
   if(!T.cur||!T.cur.snap)return null;
-  return {foe:T.cur.atk[1],mine:T.cur.atk[0],bonus:T.cur.bonus[0],blk:T.cur.block[0],through:T.cur.through[0],shield:T.P[0].shield,on:B.shieldWorks(T,T.P[0]),alive:B.aliveIdx(T.P[0]).length};
+  return {foe:T.cur.atk[1],mine:T.cur.atk[0],bonus:T.cur.bonus[0],blk:T.cur.block[0],through:T.cur.through[0],up:(S.P[0].shield<=0&&T.P[0].shield>0)?T.P[0].shield:0,shield:T.P[0].shield,on:B.shieldWorks(T,T.P[0]),alive:B.aliveIdx(T.P[0]).length};
  }catch(e){return null;}
+}
+/* the shield this card would put up on your broken Main Shield, with the rule that is switched on; 0 if none */
+function upBy(id){
+ var S=U.S,pl=S.P[0],c=B.card(id),mode=S.opts.shieldRebuild,n=0;if(pl.shield>0)return 0;
+ c.ops.forEach(function(o){
+  if(!B.opWorks(S,pl,o))return;
+  if(o.op==='shield_rebuild')n+=o.n;
+  else if(mode!=='reborn'&&o.op==='shield_add')n+=o.n;
+  else if(mode!=='reborn'&&o.op==='shield_per_card')n+=o.n*B.otherCards(S,0);
+  else if(mode==='blocks'&&o.op==='block')n+=o.n;
+  else if(mode==='blocks'&&o.op==='block_per_card')n+=o.n*B.otherCards(S,0);
+ });
+ return S.opts.shieldCap?Math.min(100,n):n;
 }
 function foretell(h){
  var S=U.S,id=S.P[0].hand[h],c=B.card(id),me=plain(0,id),A=ahead(h),t=[];
@@ -764,8 +816,9 @@ function foretell(h){
    if(A.blk<0)t.push('The enemy\'s hit is '+A.foe+sp+'. This card blocks all of it.');
    else if(A.blk>0)t.push('The enemy\'s hit is '+A.foe+sp+'. This card blocks '+Math.min(A.blk,A.foe)+': '+(A.through>0?A.through+' gets through.':'nothing gets through.'));
    else t.push('The enemy\'s hit is '+A.foe+sp+'.');
+   if(A.up)t.push('This card puts your Main Shield back up: '+A.up+'.');
    if(A.through>0){
-    if(A.on&&A.through>A.shield)t.push('Your Main Shield has '+A.shield+'. It will break, and soak up the whole hit.');
+    if(A.on&&A.through>A.shield)t.push((A.up?'':'Your Main Shield has '+A.shield+'. ')+'It will break, and soak up the whole hit.');
     else if(A.on)t.push('Your Main Shield goes from '+A.shield+' to '+(A.shield-A.through)+'.');
     else t.push(A.alive>1?'You have no shield: you will choose the parts that take it.':'You have no shield: your last part takes it.');
    }
@@ -773,7 +826,9 @@ function foretell(h){
   if(A.mine>0)t.push('Your attack: '+(A.bonus?(A.mine-A.bonus)+' + '+A.bonus+' = ':'')+A.mine+'.');
  }else{
   if(me.isA&&me.atk>0&&me.bonus>0)t.push('Your attack will be '+me.ap+' + '+me.bonus+' = '+me.atk+'.');
-  if(me.isB&&me.blk>0)t.push('It blocks '+me.blk+' of the enemy\'s attack.');
+  var up=upBy(id);
+  if(up)t.push('It puts your Main Shield back up: '+up+'. A shield of any size soaks up one whole hit.');
+  else if(me.isB&&me.blk>0)t.push('It blocks '+me.blk+' of the enemy\'s attack.');
  }
  return t;
 }
@@ -918,6 +973,7 @@ function handNote(h){
   if(seen&&B.outranked(S,c.id,seen)){note='The enemy\'s order is '+B.KINDWORD[B.card(seen).rarity]+'. A '+B.KINDWORD[c.rarity]+' card cannot block it.';tag='cannot block';}
   else if(S.opts.kindBlock&&!seen&&c.rarity!=='epic'&&!note)note='A '+B.KINDWORD[c.rarity]+' card cannot block '+(c.rarity==='common'?'a rare or an epic':'an epic')+' attack card.';
  }
+ if(!note&&S.P[0].shield<=0&&S.opts.shieldRebuild!=='reborn'&&upBy(c.id)&&c.ops[0].op!=='shield_rebuild')note='A rule you switched on: this card also puts a broken Main Shield back up.';
  return {note:note,tag:tag};
 }
 function drawTray(){
@@ -945,7 +1001,7 @@ function openPop(h){
  var S=U.S,c=B.card(S.P[0].hand[h]),n=handNote(h),p=el('pop');U.sel=h;
  p.innerHTML='<div class="big">'+cardSVG(c,'P')+'</div><div class="side"><div class="note" id="note">'+esc(n.note)+'</div><div class="fore" id="fore">'+foretell(h).map(function(x){return '<p>'+esc(x)+'</p>';}).join('')+'</div><button class="btn go" id="playit" type="button">Give this order</button><button class="btn" id="popx" type="button">Back</button></div>';
  p.className='open';
- el('playit').addEventListener('click',function(){p.className='';playCard();});
+ el('playit').addEventListener('click',function(){p.className='';snd('tap');playCard();});
  el('popx').addEventListener('click',function(){p.className='';U.sel=-1;});
 }
 function zoom(id){var p=el('pop');p.innerHTML='<div class="big">'+cardSVG(B.card(id),'Z')+'</div><div class="side"><button class="btn" id="popx" type="button">Back</button></div>';p.className='open';el('popx').addEventListener('click',function(){p.className='';});}
@@ -995,7 +1051,7 @@ function endRound(){
  if(S.over){U.phase='over';save();say(S.over.why);U.anim=true;tray('<div class="row"></div>');
   finale().then(function(){U.anim=false;
   tray('<div class="row"><button class="btn go" id="again" type="button">New battle</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){el('again').addEventListener('click',openSetup);el('seelog').addEventListener('click',openLog);});
-  render();if(S.over.winner===0){var bn=el('banner'),bb=bn?bn.getBBox():null;if(bb){[0.15,0.5,0.85].forEach(function(f,i){setTimeout(function(){debris({x:bb.x+bb.width*f,y:bb.y+bb.height/2},14,'#ffd84a');},i*220);});}}});return;}
+  render();snd(S.over.winner===0?'win':'lose');if(S.over.winner===0){var bn=el('banner'),bb=bn?bn.getBBox():null;if(bb){[0.15,0.5,0.85].forEach(function(f,i){setTimeout(function(){debris({x:bb.x+bb.width*f,y:bb.y+bb.height/2},14,'#ffd84a');},i*220);});}}});return;}
  U.phase='roundend';save();
  tray('<div class="row"><button class="btn go" id="nextr" type="button">Next round</button></div>',function(){el('nextr').addEventListener('click',startPick);});
  render();
@@ -1038,7 +1094,7 @@ function finale(){
  var S=U.S,sides=[0,1].filter(function(i){return B.aliveIdx(S.P[i]).length===0;}),chain=wait(0);
  if(FAST||!sides.length)return chain;
  U.finale=true;
- sides.forEach(function(sd){[0,1,2,3,4].forEach(function(k){chain=chain.then(function(){var p=podXY(sd,SLOT[k]);boom(p,120,'#fb923c');debris(p,10,'#fdba74');quake();return wait(190);});});});
+ sides.forEach(function(sd){[0,1,2,3,4].forEach(function(k){chain=chain.then(function(){var p=podXY(sd,SLOT[k]);boom(p,120,'#fb923c');debris(p,10,'#fdba74');quake();snd('boom');return wait(190);});});});
  return chain.then(function(){return wait(500);}).then(function(){U.finale=false;});
 }
 function shake(side,ix){if(FAST)return;var e=el('pod'+side+ix);if(!e)return;var base=e.getAttribute('transform');tween(340,function(t){e.setAttribute('transform',base+' translate('+(Math.sin(t*28)*7*(1-t)).toFixed(1)+',0)');});}
@@ -1055,7 +1111,7 @@ function animate(st,R){
   then(function(){say(lines.join(' '));var hit=-1;for(var i=0;i<2;i++){if(S.cur&&S.cur.stopped[i])hit=i;}
    if(hit<0)return wait(1000);
    var a=U.L.ship[1-hit],b=U.L.ship[hit],m={x:(a.cx+b.cx)/2,y:(a.cy+b.cy)/2-40};
-   return flyIcon({x:a.cx,y:a.cy-60},m,COPSHIP,700,60).then(function(){floatText(m,'STOP!','#93c5fd',54);refresh();return wait(1000);});});
+   snd('siren');return flyIcon({x:a.cx,y:a.cy-60},m,COPSHIP,700,60).then(function(){floatText(m,'STOP!','#93c5fd',54);refresh();return wait(1000);});});
   return chain;
  }
  if(st.k==='attack'){
@@ -1063,23 +1119,24 @@ function animate(st,R){
    for(var i=0;i<2;i++){if(S.cur&&S.cur.atk[i]>0){var p=turret(i);floatText({x:p.x,y:i===1?p.y+(U.L.land?84:60):p.y-34},String(S.cur.atk[i]),i?'#fca5a5':'#93c5fd',52);}}
    return wait(1300);});
   if(lines.length>2)then(function(){say(lines.slice(2).join(' '));
-   for(var i=0;i<2;i++){var bk=S.cur?S.cur.block[i]:0;if(bk!==0&&S.cur.atk[1-i]>0)wall(i,bk<0?'ALL BLOCKED':'BLOCK '+Math.min(bk,S.cur.atk[1-i]));}
+   for(var i=0;i<2;i++){var bk=S.cur?S.cur.block[i]:0;if(bk!==0&&S.cur.atk[1-i]>0){wall(i,bk<0?'ALL BLOCKED':'BLOCK '+Math.min(bk,S.cur.atk[1-i]));snd('wall');}
+    if(S.cur&&S.cur.raised[i]>0){flash(i);floatText({x:U.L.ship[i].cx,y:U.L.ship[i].cy-120},'SHIELD UP '+S.cur.raised[i],'#bfdbfe',44);snd('up');}}
    return wait(1500);});
   return chain;
  }
  R.sums.forEach(function(s){
   then(function(){
    var isSh=s.what==='shield',ix=isSh?-1:ixOf(s.side,s.label),target=isSh?facing(s.side):podXY(s.side,ix),from,txt;
-   if(s.kind==='spy'){from={x:U.L.ship[1-s.side].cx,y:U.L.ship[1-s.side].cy-40};say((s.side?'Your':'The enemy\'s')+' Spy slips past the shield...');
-    return flyIcon(from,target,SPYPOD,1100,U.L.land?230:40).then(function(){boom(target,60,'#c4b5fd');shake(s.side,ix);if(s.answer===0)debris(target,12,'#fdba74');floatText(target,'−'+(-s.change),'#ddd6fe');say((s.side?'Your':'The enemy\'s')+' Spy hits '+(s.side?'their ':'your ')+s.label+': '+s.before+' to '+s.answer+'.');return wait(700);});}
-   if(s.kind==='land'){from=turret(1-s.side);var broke=isSh&&s.answer===0&&-s.change>s.before;say(s.side?'Your laser fires!':'The enemy\'s laser fires!');
-    boom(from,30,'#fff');return bolt(from,target,s.side?'#38bdf8':'#fb7185',460).then(function(){boom(target,isSh?90:70,s.side?'#7dd3fc':'#fda4af');if(isSh){flash(s.side);}else{shake(s.side,ix);quake();if(s.answer===0)debris(target,12,'#fdba74');}
+   if(s.kind==='spy'){from={x:U.L.ship[1-s.side].cx,y:U.L.ship[1-s.side].cy-40};say((s.side?'Your':'The enemy\'s')+' Spy slips past the shield...');snd('spy');
+    return flyIcon(from,target,SPYPOD,1100,U.L.land?230:40).then(function(){boom(target,60,'#c4b5fd');shake(s.side,ix);snd(s.answer===0?'boom':'hit');if(s.answer===0)debris(target,12,'#fdba74');floatText(target,'−'+(-s.change),'#ddd6fe');say((s.side?'Your':'The enemy\'s')+' Spy hits '+(s.side?'their ':'your ')+s.label+': '+s.before+' to '+s.answer+'.');return wait(700);});}
+   if(s.kind==='land'){from=turret(1-s.side);var broke=isSh&&s.answer===0&&-s.change>s.before;say(s.side?'Your laser fires!':'The enemy\'s laser fires!');snd('laser');
+    boom(from,30,'#fff');return bolt(from,target,s.side?'#38bdf8':'#fb7185',460).then(function(){boom(target,isSh?90:70,s.side?'#7dd3fc':'#fda4af');if(isSh){flash(s.side);snd(broke?'boom':'shield');}else{shake(s.side,ix);quake();snd(s.answer===0?'boom':'hit');if(s.answer===0)debris(target,12,'#fdba74');}
      floatText(target,broke?'SHIELD DOWN':'−'+(-s.change),'#fecaca',broke?44:50);
      say(isSh?((s.side?'Their':'Your')+' Main Shield: '+s.before+' to '+s.answer+'.'+(broke?' It breaks, and soaks up the whole hit.':'')):((s.side?'Their ':'Your ')+s.label+' takes '+(-s.change)+': '+s.before+' to '+s.answer+'.'));return wait(750);});}
    from=podXY(s.side,ixOf(s.side,'Power'));txt=(s.answer-s.before>=0?'+':'−')+Math.abs(s.answer-s.before);
    if(isSh)target={x:U.L.ship[s.side].cx,y:U.L.ship[s.side].cy-150};
    say((s.side?'Their ':'Your ')+(isSh?'Main Shield':s.label)+': '+s.before+' to '+s.answer+'.');
-   return flyIcon(from,target,HEARTS,520,60).then(function(){floatText(target,txt,'#86efac');return wait(650);});
+   snd(isSh&&s.before<=0?'up':'heal');return flyIcon(from,target,HEARTS,520,60).then(function(){floatText(target,txt,'#86efac');return wait(650);});
   });
   then(function(){refresh();});
  });
@@ -1143,7 +1200,7 @@ function onPod(side,ix){
   if(A.among.indexOf(ix)<0||!A.cells.length)return;
   var k=A.sel||0,v=A.cells[k],p=U.S.P[0].parts[ix];
   if(A.limit&&allocSum(ix)+v>B.roomOf(U.S,p)){A.err=partName(0,ix)+' cannot take '+v+' more. Break the block, or choose another part.';drawAlloc();return;}
-  A.cells.splice(k,1);(A.placed[ix]=A.placed[ix]||[]).push(v);A.order.push(ix);A.sel=0;A.err='';drawStage();drawAlloc();return;
+  A.cells.splice(k,1);(A.placed[ix]=A.placed[ix]||[]).push(v);A.order.push(ix);A.sel=0;A.err='';snd('tick');drawStage();drawAlloc();return;
  }
  if(!P||P.side!==side||P.among.indexOf(ix)<0)return;
  var at=P.chosen.indexOf(ix);
@@ -1197,7 +1254,10 @@ el('hclose').addEventListener('click',function(){show('help',false);});
 el('hclose2').addEventListener('click',function(){show('help',false);});
 el('bnew').addEventListener('click',function(){if(!U.S||U.S.over||window.confirm('Leave this battle and start a new one?')){openSetup();}});
 window.addEventListener('resize',function(){if(!U.anim)render();});
-window.GMQB={U:U,B:B,idle:function(){return !U.anim;},setSeed:function(n){U.seed=n;},plain:plain,theirs:theirs};
+el('bsound').addEventListener('click',function(){SND.on=!SND.on;try{localStorage.setItem(SKEY,SND.on?'on':'off');}catch(e){}drawSound();if(SND.on)snd('tap');});
+['touchend','click'].forEach(function(ev){document.addEventListener(ev,function(){if(SND.on&&!FAST){try{audio();}catch(e){}}},true);});
+drawSound();
+window.GMQB={SND:SND,snd:snd,U:U,B:B,idle:function(){return !U.anim;},setSeed:function(n){U.seed=n;},plain:plain,theirs:theirs};
 if(loadSaved()){show('setup',false);startPick();}else{openSetup();}
 
 })();
