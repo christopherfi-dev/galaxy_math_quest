@@ -39,9 +39,10 @@ Here is how I read the problem.
 | **Five parts on each ship** | Each is a place on the hull, from the engine at the back to the weapons at the front. Each shows its picture, its AP and its HP. |
 | **"If lost"** | Under each of your parts is its rule from your board: "if lost: cannot attack". A lost part goes dark, smokes, and says LOST with its rule. |
 | **The Main Shield** | A glowing bubble round the ship, with "MAIN SHIELD 45" on it. It cracks as it gets weak. It is gone when it breaks. |
-| **Your attack** | Top left corner: "YOUR ATTACK 55". With a card: "60", and "55 + 5" beside it. The enemy's is next to it. |
-| **Your cards** | Five, large, along the bottom while you choose. On an iPad held sideways each is about 175 points wide. Tap one to see it bigger and read it. Then "Give this order". |
-| **The enemy's order** | When the enemy goes first, its card lies beside your hand, marked "THE ENEMY'S ORDER". |
+| **Your attack** | Top left corner: "YOUR ATTACK 55". With a card: "60", and "55 + 5" beside it. The enemy's is next to it. When the enemy goes first with an attack card, its number already has the card in it. |
+| **Your cards** | Five, large, along the bottom while you choose. On an iPad held sideways each is about 170 points wide. Tap one to see it bigger and read it. Then "Give this order". |
+| **What a card would do** | The opened card says it in words, with the sums done: "The enemy's hit is 60. This card blocks 25: 35 gets through. Your Main Shield has 30. It will break, and soak up the whole hit." |
+| **The enemy's order** | When the enemy goes first, its card stands to the right of your hand, under its ship, in a red box marked "THE ENEMY'S ORDER". Above the ships its words are about the enemy: "Add 5 to its attack this round." |
 | **Movement** | The stars drift. The ships float. A laser fires from the gun. A shield flashes when it is hit. A part shakes when it is hit, and bursts when it is lost. A Spy flies across in a little pod. A police ship comes out and says STOP. Hearts fly to a part that is repaired. A block card puts a shield in front of the ship. The damage floats up as a number. A beaten ship blows up, part by part. |
 | **Holding still** | The ships stop floating whenever you have to tap a part. |
 
@@ -60,7 +61,7 @@ Here is how I read the problem.
 9. **With no shield, you choose which parts take the hit.**
    - The blocks are in a row. One is lit.
    - Tap a part: it takes the lit block. Over the part you see "−20" and "leaves 5", or "it will be lost".
-   - "Break", "Undo" and "Start again" are there.
+   - "Break a block", "Undo" and "Take all back" are there.
    - "Take the hit" lights up when every block is placed. Then the lasers fire at the parts you chose.
 10. **"Next round."**
 
@@ -168,14 +169,16 @@ Two Standard ships, your rules, the default switches. The rules engine did not c
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 807 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 927 checks, all pass. It checks:
   - two ships, five parts on each, none over another;
   - under each of your parts, its "if lost" rule from your board;
   - your shield as a bubble with its number; your attack in the top corner;
   - every card of the hand large, inside the screen, below the ships;
   - the enemy's order shown when the enemy goes first, and not before you choose when both go together;
+  - the number at the top: with the enemy's card in it when the enemy goes first, and what each ship can do now after a round;
+  - what an opened card foretold, against what then happened: the enemy's hit, what gets through a block, what is left of your shield, your attack;
   - no box to type in, ever;
-  - the blocks always add up to the hit; Undo, Break and Start again; the button stays off until every block is placed; each part loses exactly what was sent to it;
+  - the blocks always add up to the hit; Undo, Break a block and Take all back; the button stays off until every block is placed; each part loses exactly what was sent to it;
   - every HP on the screen against the rules engine, every round;
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
@@ -183,7 +186,35 @@ Two Standard ships, your rules, the default switches. The rules engine did not c
 - **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 24,576 combinations of switches, then 24,000 more battles. 28.9 million checks, all pass. The engine did not change today.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
-- **Independent review of the pictures:** started, not back yet when this was written. Its findings come in the next version.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.
 - **Did not run:** the game's play tests. Nothing in the game was touched.
 - **Not tested at all:** a real iPad, a real finger, a real child.
+
+## 10. The independent review
+
+A second reviewer saw only the pictures and your rules sheet. It did not see the code or my notes.
+
+**What it found, and I fixed**
+
+1. **The number at the top did not have the enemy's card in it.** The enemy showed "+5" and the top still said 55. Now it says 60, and "55 + 5".
+2. **After a round, the top showed the attack that was fired, not what the ship can do now.** A ship with no Weapons still said 55. Now it says "NO ATTACK".
+3. **An opened card did not say what would happen.** The child had to work out that a shield of 30 breaks under a hit of 60. Now the card says it. Card Wall ("4×") shows its worked number.
+4. **The enemy's order said "your attack".** A child reads that as their own. Above the ships it now says "its attack".
+5. **The enemy's order looked like a sixth card of the hand.** It now stands apart on the right, under the enemy ship, in a red box.
+6. **iPad upright: the guns pointed away from each other.** Upright, each gun now stands on the hull and points at the other ship. "THE ENEMY" no longer sits beside your order. "YOU WIN!" no longer touches the shield.
+7. **The bubble looked the same at 100, 45 and 30.** It now gets thinner and dimmer as it weakens, as well as cracking.
+8. **Words that could be read two ways:** "keep" is now "save it"; "Break" is "Break a block"; "Start again" is "Take all back"; "L2" is "LEVEL 2".
+9. **The laser was thin.** It is thicker, and the words say "The enemy's laser fires!".
+
+**What it found, and I did not change** [each is yours, or a judgement of mine]
+
+1. **Draw each part as a piece of the ship,** not a box on the hull (an engine with a flame, a dish, a cannon, one big heart number). I agree this would feel more like a ship. It is a redrawing job, and I would rather you saw this version first.
+2. **Give the enemy a face and a "Fire!" moment.** A character is yours to invent.
+3. **Shield Reborn and Quarter Dome are heart cards that mend the shield.** Is a card that adds to the Main Shield a repair or a defence? It is a switch (section 5), set to repair.
+4. **Hit and Hide blocks as well as attacks, but shows only a gun.**
+5. **All attack cards share one picture.** So do all block cards and all repair cards. That was your wish: one clear symbol for each kind.
+6. **"if lost" and "AP" are small on the iPad** (about 10 points). They fit the part. Larger words need larger parts.
+7. **The lower third of the screen is empty after a round.** Only "Next round" is there.
+8. **Both attacks are fired at the same moment.** So the enemy's number at the top can still say 55 just after your hit destroyed one of its parts. It is right by the rule, and it can look wrong.
+9. **Three names for one card:** Station Guard on the card, POLICE as its kind, "policeman" in the help.
+10. **The first screen says a deck is 45 cards.** That is right for one Spy card: 37 cards, 1 Spy, 2 policemen, 5 upgrades.

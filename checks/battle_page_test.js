@@ -35,7 +35,9 @@ async function state(page) {
       alloc: A ? { among: A.among.slice(), total: A.total, limit: A.limit, cells: A.cells.slice(), sel: A.sel || 0, placed: A.among.map(ix => (A.placed[ix] || []).reduce((a, b) => a + b, 0)), err: A.err || '' } : null,
       swap: !!q('swy'), nextr: !!q('nextr'), again: !!q('again'), cgo: q('cgo') ? !q('cgo').disabled : null, mno: !!q('mno'), mv: all('.mv').length, play: r(q('playit')), bigCard: r(document.querySelector('#pop.open .big svg')),
       fire: q('fire') ? { box: r(q('fire')), off: q('fire').disabled } : null, cells: all('.cell').map(e => Object.assign(r(e), { v: +e.textContent, lit: /\bnext\b/.test(e.className) })),
-      msg: q('msg').textContent, note: q('note') ? q('note').textContent : '', hint: q('ahint') ? q('ahint').textContent : '',
+      msg: q('msg').textContent, note: q('note') ? q('note').textContent : '', fore: q('fore') ? Array.from(q('fore').children).map(x => x.textContent).join(' ') : '',
+      apNow: S ? S.P.map(p => B.has(p, 'Weapons System') ? B.shipAP(p) : 0) : [], eFore: S && U.phase === 'pick' && S.opts.guard === 'lead' && S.leader === 1 && U.cpuLead >= 0 ? window.GMQB.plain(1, S.P[1].hand[U.cpuLead]) : null,
+      lastLog: S && S.log.length ? { round: S.log[S.log.length - 1].round, atk: S.log[S.log.length - 1].atk, through: S.log[S.log.length - 1].through } : null, hint: q('ahint') ? q('ahint').textContent : '',
       hand: S ? S.P[0].hand.slice() : [], hp: S ? S.P.map(p => p.parts.map(x => x.hp)) : [], ap: S ? S.P.map(p => p.parts.map(x => x.ap)) : [], shield: S ? S.P.map(p => p.shield) : [],
       names: S ? S.P[0].parts.map(x => B.SHORT[x.part]) : [], shieldOn: S ? S.P.map(p => B.shieldWorks(S, p)) : [],
       cards: all('.hc.mine').map(e => Object.assign(r(e), { id: e.getAttribute('data-id'), tag: e.querySelector('.tag') ? e.querySelector('.tag').textContent : '' })),
@@ -43,7 +45,7 @@ async function state(page) {
       order: [0, 1].map(i => q('order' + i) ? q('order' + i).getAttribute('data-id') : null), eLead: S && U.cpuLead >= 0 ? S.P[1].hand[U.cpuLead] : null,
       pods: [pods(0), pods(1)], bub: [!!q('bub0'), !!q('bub1')], shl: [txt(q('shl0'), '.sht'), txt(q('shl1'), '.sht')], shlBox: [r(q('shl0')), r(q('shl1'))],
       still: [0, 1].map(i => q('ship' + i) ? !/\bbob\b/.test(q('ship' + i).getAttribute('class')) : null), banner: q('banner') ? q('banner').textContent : null,
-      myatk: r(q('myatk')), myatkText: q('myatk').textContent, eatkText: q('eatk').textContent, stage: r(q('stagewrap')), tray: r(q('tray')), btns: r(q('btns')),
+      myatk: r(q('myatk')), myatkText: q('myatk').textContent, eatkNum: q('eatk').querySelector('b') ? q('eatk').querySelector('b').textContent : '', eatkText: q('eatk').textContent, stage: r(q('stagewrap')), tray: r(q('tray')), btns: r(q('btns')),
       inputs: all('input,textarea,select').length, roundText: q('round').textContent, lastRound: S && S.log.length ? S.log[S.log.length - 1].round : 0,
       vw: innerWidth, vh: innerHeight, docH: document.documentElement.scrollHeight, docW: document.documentElement.scrollWidth
     };
@@ -87,19 +89,36 @@ async function act(page, name, flags, size) {
       flags.enemyLed = true;
       if (size.w > size.h) pass(name + ': when the enemy goes first, its order lies beside your hand, as large as your cards', st.foecard && st.foecard.id === st.eLead && Math.abs(st.foecard.w - st.cards[0].w) < 3 && inScreen(st.foecard, st), JSON.stringify(st.foecard));
       else pass(name + ': when the enemy goes first, its order is shown over its ship', st.order[1] === st.eLead && !!st.eLead, String(st.order[1]));
+      pass(name + ': when the enemy goes first with an attack card, the number at the top already has the card in it', !st.eFore || st.eFore.atk === 0 || st.eatkNum === String(st.eFore.atk), st.eatkNum + ' against ' + JSON.stringify(st.eFore));
+      pass(name + ': and the words above the ships say that attack', !st.eFore || !st.eFore.isA || st.eFore.atk === 0 || st.msg.indexOf('Its attack is now ' + st.eFore.atk + '.') >= 0, st.msg);
       if (!flags.shotLed) { flags.shotLed = true; await shot(page, name + '_3_enemy_goes_first'); }
     }
+    pass(name + ': your attack at the top is the AP of your working parts', st.apNow[0] > 0 ? new RegExp('(YOUR ATTACK|YOU)\\s*' + st.apNow[0] + '$').test(st.myatkText.trim()) : /NO ATTACK/.test(st.myatkText), st.myatkText + ' against ' + st.apNow[0]);
     if (/You go first/.test(st.msg)) { flags.youLed = true; pass(name + ': when you go first, no enemy order is shown', !st.foecard && !st.order[1]); }
     let i = st.cards.findIndex(c => !c.tag); if (i < 0) i = 0;
     await page.locator('.hc.mine').nth(i).tap();
     const b = await state(page);
     pass(name + ': a tapped card opens large, with "Give this order" on the screen', inScreen(b.play, b) && inScreen(b.bigCard, b) && b.bigCard.w >= Math.min(260, b.vw * 0.6), JSON.stringify(b.bigCard));
-    if (!flags.shotPop) { flags.shotPop = true; await shot(page, name + '_4_card_opened'); }
+    if (!flags.shotPop && b.fore) { flags.shotPop = true; await shot(page, name + '_4_card_opened'); }
+    flags.fore = { round: st.round, text: b.fore, shield: st.shield[0] };
+    if (b.fore) flags.fores = (flags.fores || 0) + 1;
     await page.locator('#playit').tap();
     return 'played';
   }
   if (st.swap) { await page.locator('#swy').tap(); return 'swap'; }
-  if (st.nextr) { await page.locator('#nextr').tap(); return 'next'; }
+  if (st.nextr) {
+    // what the opened card foretold, against what happened
+    const F = flags.fore, L = st.lastLog;
+    if (F && L && F.round === L.round && F.text && !/if your Spy/.test(F.text)) {
+      let m = /enemy's hit is (\d+)/.exec(F.text); if (m) pass(name + ': the opened card foretold the enemy\'s hit', +m[1] === L.atk[1], F.text + ' | ' + JSON.stringify(L));
+      m = /: (\d+) gets through/.exec(F.text); if (m) pass(name + ': it foretold what gets through a block', +m[1] === L.through[0], F.text + ' | ' + JSON.stringify(L));
+      m = /goes from (\d+) to (\d+)/.exec(F.text); if (m) pass(name + ': it foretold what the hit leaves of your shield', +m[2] === st.shield[0], F.text + ' | ' + st.shield[0]);
+      if (/It will break/.test(F.text)) pass(name + ': it foretold that your shield breaks', st.shield[0] === 0, String(st.shield[0]));
+      m = /Your attack(?: will be)?:? .*?(\d+)\.$/.exec(F.text); if (m) pass(name + ': it foretold your attack', +m[1] === L.atk[0], F.text + ' | ' + JSON.stringify(L));
+    }
+    pass(name + ': after a round, the attack at the top is what each ship can do now', (st.apNow[0] > 0 ? st.myatkText.indexOf(String(st.apNow[0])) >= 0 : /NO ATTACK/.test(st.myatkText)) && (st.apNow[1] > 0 ? st.eatkText.indexOf(String(st.apNow[1])) >= 0 : /NO ATTACK/.test(st.eatkText)), st.myatkText + ' | ' + st.eatkText + ' | ' + JSON.stringify(st.apNow));
+    await page.locator('#nextr').tap(); return 'next';
+  }
   if (st.phase === 'alloc' && st.alloc) {
     const A = st.alloc, sum = a => a.reduce((x, y) => x + y, 0);
     pass(name + ': the blocks add up to the hit', sum(A.cells) + sum(A.placed) === A.total, JSON.stringify(A));
@@ -129,7 +148,7 @@ async function act(page, name, flags, size) {
         await shot(page, name + '_6_blocks_placed');
         await page.locator('#reset').tap();
         a = await state(page);
-        pass(name + ': Start again gives every block back', JSON.stringify(a.alloc.cells) === JSON.stringify(A.cells) && sum(a.alloc.placed) === 0);
+        pass(name + ': Take all back gives every block back', JSON.stringify(a.alloc.cells) === JSON.stringify(A.cells) && sum(a.alloc.placed) === 0);
       }
     }
     const want = await page.evaluate(() => window.GMQB.B.cpuChoose(window.GMQB.U.S, window.GMQB.U.alloc.req));
@@ -215,7 +234,8 @@ async function act(page, name, flags, size) {
     await idle(page);
     st = await state(page);
     pass(name + ': the player sent a hit to their parts', (flags.splits || 0) >= 1, String(flags.splits));
-    pass(name + ': Undo, Break and Start again were tried', !!flags.blockPlay);
+    pass(name + ': Undo, Break a block and Take all back were tried', !!flags.blockPlay);
+    pass(name + ': opened cards said what they would do', (flags.fores || 0) >= 3, String(flags.fores));
     pass(name + ': the lead passed from one player to the other', !!flags.enemyLed && !!flags.youLed);
     pass(name + ': the battle reaches an end', !!st.over, 'round ' + st.round);
     if (st.over) {
