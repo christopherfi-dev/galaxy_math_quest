@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 87</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 88</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -638,6 +638,77 @@ function beep(f, d, type) {
     g.gain.exponentialRampToValueAtTime(.0001, AC.currentTime + d); o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime + d); } catch (e) {}
 }
 const chime = () => { beep(660, .12); setTimeout(() => beep(880, .14), 110); setTimeout(() => beep(1320, .2), 230); };
+
+/* =====================================================================
+   MUSIC.   [Source: Marc, 2026-11-22: "Do music... Each world or each place get their own music ..for now." A child asked for it.]
+   [Proposal] Our own tunes, written here and played by the game: no music files, nothing copied. One short loop for each world, and one for
+   the dark cave and the workshop. Quiet. Off until someone taps "Music" (14 iPads in one room), and remembered on that iPad.
+   Softer while a task box is open, while words wait to be read, or while "Read to me" speaks: the maths and the words come first.
+   A tune: bpm (eighth notes), pcs (the pitch classes of its key, for the check), and voices. A voice: w (wave), v (loudness), pl (plucked:
+   it fades fast), tick (a click: hz, and drop for a drip), s (one token for each eighth: a note like C4 or F#5, "-" holds, "." rests, "x" clicks, "|" is a bar line).
+   ===================================================================== */
+const TUNES = {
+  title: { bpm: 76, pcs: [0, 2, 4, 5, 7, 9, 11], v: [
+    { w: 'triangle', v: .035, s: 'E5 - G5 - C6 - B5 A5 | G5 - - - E5 - D5 - | E5 - G5 - A5 - G5 E5 | D5 - - - - - . .' },
+    { w: 'sine', v: .05, s: 'C3 - - - G3 - - - | A2 - - - E3 - - - | F2 - - - C3 - - - | G2 - - - - - - -' }] },
+  station: { bpm: 92, pcs: [2, 4, 5, 7, 9, 10, 0], v: [
+    { w: 'triangle', v: .018, pl: 1, s: 'D4 A4 F4 A4 D4 A4 F4 A4 | C4 G4 E4 G4 C4 G4 E4 G4 | Bb3 F4 D4 F4 Bb3 F4 D4 F4 | C4 G4 E4 G4 C4 G4 E4 G4' },
+    { w: 'sine', v: .03, s: 'F5 - - - E5 - D5 - | E5 - - - - - G5 - | F5 - - - D5 - - - | E5 - - - C5 - - -' },
+    { w: 'sine', v: .05, s: 'D2 - - - - - - - | C2 - - - - - - - | Bb1 - - - - - - - | C2 - - - - - - -' }] },
+  space: { bpm: 60, pcs: [9, 11, 0, 2, 4, 5, 7], v: [
+    { w: 'sine', v: .035, s: 'A4 - - - - - - - | C5 - - - B4 - - - | E5 - - - - - - - | G4 - - - F4 - E4 -' },
+    { w: 'triangle', v: .02, s: 'E3 - - - - - - - | A3 - - - - - - - | G3 - - - - - - - | B3 - - - - - - -' },
+    { w: 'sine', v: .045, s: 'A2 - - - - - - - | F2 - - - - - - - | C3 - - - - - - - | E2 - - - - - - -' }] },
+  voltara: { bpm: 112, pcs: [7, 9, 11, 0, 2, 4, 6], v: [
+    { w: 'triangle', v: .035, s: 'G4 B4 D5 B4 C5 - A4 - | B4 D5 G5 D5 E5 - D5 - | C5 E5 D5 C5 B4 - G4 - | A4 B4 C5 A4 G4 - - -' },
+    { w: 'sine', v: .05, s: 'G2 - D3 - C3 - D3 - | G2 - D3 - C3 - G2 - | C3 - G2 - G2 - E2 - | D3 - D2 - G2 - - -' }] },
+  worlds: { bpm: 120, pcs: [5, 7, 9, 10, 0, 2, 4], v: [
+    { w: 'square', v: .014, s: 'F4 A4 C5 A4 Bb4 - G4 - | A4 C5 F5 - E5 - C5 - | D5 C5 Bb4 A4 G4 - C5 - | A4 - F4 - F4 - - -' },
+    { w: 'sine', v: .05, s: 'F2 - C3 - Bb2 - C3 - | F2 - A2 - C3 - - - | Bb2 - - - C3 - - - | F2 - C3 - F2 - - -' },
+    { tick: 1, hz: 1800, v: .01, s: 'x . . . x . . . | x . . . x . . . | x . . . x . . . | x . . . x . x .' }] },
+  chrono: { bpm: 96, pcs: [4, 6, 7, 9, 11, 0, 2, 3], v: [
+    { w: 'triangle', v: .035, pl: 1, s: 'E5 . B4 . G5 . | F#5 . D5 . A5 . | G5 . E5 . B5 . | A5 G5 F#5 E5 D#5 .' },
+    { w: 'sine', v: .045, s: 'E3 - - - - - | D3 - - - - - | C3 - - - - - | B2 - - - - -' },
+    { tick: 1, hz: 2600, v: .012, s: 'x . x . x . | x . x . x . | x . x . x . | x . x . x .' }] },
+  cave: { bpm: 70, pcs: [2, 4, 5, 7, 9, 10, 0], v: [
+    { w: 'sine', v: .035, pl: 1, s: 'D5 . . . . . A4 . | . . F4 . . . . . | E4 . . . . . G4 . | . . A4 . . . . .' },
+    { w: 'sine', v: .05, s: 'D2 - - - - - - - | Bb1 - - - - - - - | C2 - - - - - - - | A1 - - - - - - -' },
+    { tick: 1, hz: 1500, drop: 700, v: .02, s: 'x . . . . . . . | . . . x . . . . | . . . . . x . . | . x . . . . . .' }] },
+  xylo: { bpm: 104, pcs: [0, 2, 4, 7, 9], v: [
+    { w: 'sine', v: .045, pl: 1, s: 'C5 D5 E5 G5 E5 D5 C5 . | A4 C5 D5 E5 D5 C5 A4 . | G4 A4 C5 D5 E5 G5 E5 D5 | C5 . A4 . C5 . . .' },
+    { w: 'triangle', v: .04, pl: 1, s: 'C3 . G2 . C3 . G2 . | A2 . E2 . A2 . E2 . | G2 . D3 . G2 . D3 . | C3 . G2 . C3 . . .' }] },
+  star: { bpm: 84, pcs: [11, 1, 2, 4, 6, 7, 9], v: [
+    { w: 'sine', v: .035, s: 'B4 - - - D5 - C#5 - | B4 - F#4 - - - - - | G4 - - - B4 - A4 - | F#4 - - - - - - -' },
+    { w: 'triangle', v: .014, pl: 1, s: 'F#4 F#4 F#4 F#4 F#4 F#4 F#4 F#4 | D4 D4 D4 D4 D4 D4 D4 D4 | E4 E4 E4 E4 E4 E4 E4 E4 | C#4 C#4 C#4 C#4 C#4 C#4 C#4 C#4' },
+    { w: 'sine', v: .045, s: 'B2 - - - - - - - | G2 - - - - - - - | E2 - - - - - - - | F#2 - - - - - - -' }] },
+  len: { bpm: 100, pcs: [10, 0, 2, 3, 5, 7, 9], v: [
+    { w: 'triangle', v: .035, s: 'Bb4 - Bb4 - D5 - F5 - | Eb5 - D5 - C5 - - - | C5 - C5 - Eb5 - G5 - | F5 - Eb5 - D5 - - -' },
+    { w: 'sine', v: .05, s: 'Bb2 - F2 - Bb2 - F2 - | Eb2 - Bb2 - F2 - - - | C3 - G2 - C3 - G2 - | F2 - C3 - Bb2 - - -' },
+    { tick: 1, hz: 1600, v: .01, s: 'x . . . x . . . | x . . . x . . . | x . . . x . . . | x . . . x . x x' }] } };
+const MUS = { on: getKeep('gmq-music') === 'on', vol: .6, g: null, timer: null, tune: null, step: 0, pass: 0, next: 0, want: 0, count: 0, cache: {} };      /* vol: under the game's own beeps. pass: every third time round the melody rests, so a short loop tires less */
+function musParse(id) { if (MUS.cache[id]) return MUS.cache[id]; const T = TUNES[id], B = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const voices = T.v.map(v => { const tk = v.s.split(/\s+/).filter(t => t && t !== '|'), at = tk.map(t => { const m = /^([A-G])(#|b)?(\d)$/.exec(t); return m ? 12 * (+m[3] + 1) + B[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) : t === 'x' ? 'x' : null; });
+    return Object.assign({}, v, { n: tk.length, tk, ev: at.map((m, i) => { if (m === null) return null; let len = 1; while (tk[i + len] === '-') len++; return { m, len }; }) }); });
+  return (MUS.cache[id] = { n: voices[0].n, voices }); }
+function musPick() { if (typeof S === 'undefined' || !S) return 'title'; const m = S.mode; if (m === 'intro' || m === 'arrive') return 'title'; if (m === 'chrono') return S.c && (S.c.at === 'cave' || S.c.at === 'shop') ? 'cave' : 'chrono';
+  return m === 'planet' ? 'voltara' : m === 'world' ? 'worlds' : TUNES[m] ? m : 'station'; }
+function musNote(v, e, t, sd) { const g = AC.createGain(), d = e.len * sd; MUS.count++;
+  if (v.tick) { const o = AC.createOscillator(); o.type = v.drop ? 'sine' : 'square'; o.frequency.setValueAtTime(v.hz, t); if (v.drop) o.frequency.exponentialRampToValueAtTime(v.drop, t + .08); g.gain.setValueAtTime(v.v, t); g.gain.exponentialRampToValueAtTime(.0001, t + (v.drop ? .12 : .03)); o.connect(g); g.connect(MUS.g); o.start(t); o.stop(t + .15); return; }
+  const o = AC.createOscillator(); o.type = v.w; o.frequency.value = 440 * Math.pow(2, (e.m - 69) / 12); const a = v.pl ? .006 : .03;
+  g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(v.v, t + a); if (v.pl) g.gain.exponentialRampToValueAtTime(.0001, t + Math.min(d, .6) + .1); else { g.gain.setValueAtTime(v.v, t + Math.max(a, d - .08)); g.gain.exponentialRampToValueAtTime(.0001, t + d + .1); }
+  o.connect(g); g.connect(MUS.g); o.start(t); o.stop(t + d + .15); }
+function musTick() { if (!MUS.on || !AC || !MUS.g) return; if (document.hidden || AC.state !== 'running') { MUS.next = AC.currentTime + .1; return; }
+  const id = musPick(); if (id !== MUS.tune) { MUS.tune = id; MUS.step = 0; MUS.pass = 0; MUS.next = Math.max(MUS.next, AC.currentTime + .08); }
+  const T = TUNES[id], P = musParse(id), sd = 60 / T.bpm / 2, busy = (typeof widget !== 'undefined' && widget) || READ.open; let talk = false; try { talk = speechSynthesis.speaking; } catch (e) {}
+  MUS.want = busy || talk ? .3 : 1; MUS.g.gain.setTargetAtTime(MUS.want * MUS.vol, AC.currentTime, .25);
+  if (MUS.next < AC.currentTime) MUS.next = AC.currentTime + .05;
+  while (MUS.next < AC.currentTime + .25) { const i = MUS.step % P.n, rest = MUS.pass % 3 === 2 && P.voices.length > 1; P.voices.forEach((v, k) => { const e = v.ev[i]; if (e && !(rest && k === 0)) musNote(v, e, MUS.next, sd); }); MUS.step = (i + 1) % P.n; if (!MUS.step) MUS.pass++; MUS.next += sd; } }
+function musStart() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) { return; }
+  if (!MUS.g) { MUS.g = AC.createGain(); MUS.g.gain.value = .0001; MUS.g.connect(AC.destination); } MUS.tune = null; MUS.next = AC.currentTime + .1; if (!MUS.timer) MUS.timer = setInterval(musTick, 60); musTick(); }
+function musStop() { if (MUS.timer) { clearInterval(MUS.timer); MUS.timer = null; } if (MUS.g && AC) { try { MUS.g.gain.setTargetAtTime(.0001, AC.currentTime, .08); } catch (e) {} } MUS.tune = null; }
+function musWake() { if (!MUS.on) return; if (!MUS.timer) musStart(); else if (AC && AC.state === 'suspended') { try { AC.resume(); } catch (e) {} } }      /* an iPad lets sound start only after a tap */
+['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, musWake, true));
+document.addEventListener('visibilitychange', () => { if (!AC) return; try { if (document.hidden) { if (AC.state === 'running') AC.suspend(); } else if (MUS.on || soundOn) AC.resume(); } catch (e) {} });
 
 /* =====================================================================
    WORDS: the log, the command line, verbs and the bag
@@ -5349,6 +5420,7 @@ function goStation() { S.mode = 'station'; S.ended = false; S.beat = 0; if (S.tu
 $('tovolt').onclick = $('t_volt').onclick = goVoltara; $('t_stn').onclick = goStation; $('t_space').onclick = goSpace; $('t_chr').onclick = goChronosia; $('t_xyl').onclick = goXylophora; $('t_len').onclick = goLengthar; $('t_std').onclick = goStardust;
 window.addEventListener('resize', size); window.addEventListener('resize', fitSoon); window.addEventListener('orientationchange', fitSoon);
 document.querySelectorAll('#menu .mbtn').forEach(b => b.addEventListener('click', () => menuOpen(MENU.open === b.dataset.m ? null : b.dataset.m)));
+$('mus').textContent = 'Music: ' + (MUS.on ? 'on' : 'off'); $('mus').onclick = () => { MUS.on = !MUS.on; setKeep('gmq-music', MUS.on ? 'on' : 'off'); $('mus').textContent = 'Music: ' + (MUS.on ? 'on' : 'off'); if (MUS.on) musStart(); else musStop(); };
 $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); $('snd').onclick = () => { soundOn = !soundOn; $('snd').textContent = 'Sound: ' + (soundOn ? 'on' : 'off'); if (soundOn) beep(660, .1); };
 setTimeout(() => { drawMenu(); fit(); }, 0);
 if (window.ResizeObserver) new ResizeObserver(() => { if (cv.clientWidth !== vw || cv.clientHeight !== vh) size(); }).observe(cv);
