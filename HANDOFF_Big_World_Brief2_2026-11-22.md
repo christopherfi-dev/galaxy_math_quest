@@ -152,4 +152,5 @@ Work as long as you can. **Quality first:** if only one region can be done well 
   5. One past it, if the child wants.
   - Kind consequences; nothing earned is lost; the answer is never shown; a child who is stuck twice gets help finishing, and the mission report says which skill broke.
 - **The engine is in the repository:** `engines/math-skills/current-v1.1/api/constraints/math-skills.txt` (its rules) and `skills/skill_map.csv` (1,835 skills by band, area and galaxy: the ladder for "one or two levels down").
+- **Where:** [Source: Marc] "for quests outside of the initial space station, it's OK for the students to fail and be invested in this world and see something happen." All of Algora is outside the station, so all of its quests may let a mistake happen.
 - **The Reach's fleet:** replace "The order is not right" with what the town got and what it lacked, shown in the picture.

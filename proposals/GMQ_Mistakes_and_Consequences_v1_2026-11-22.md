@@ -13,6 +13,10 @@ Everything is **[Proposal]** unless it says [Source].
 
 > "There might be some... the student does bad math... they choose the wrong size for the house, then they find out a little bit later that it was too small, that they did not cut or use enough."
 
+**Where it applies** [Source: Marc, 22 November]: "for quests outside of the initial space station, it's OK for the students to fail and be invested in this world and see something happen."
+- **Every quest after the KIS Station.** The station is where children learn how to play.
+- [Proposal, my reading] The station keeps its gentler help.
+
 ## 2. The Math Skills engine already does this. It is in the repository.
 
 **Where:** `engines/math-skills/`
@@ -40,8 +44,9 @@ Its student records and its keys were left out on purpose.
 - **This is the hard part.** A failure that does not show its cause is just "wrong" with extra steps.
   - The big world's first reviewer found exactly this blocker: a kind child's plan failed "for a reason nobody told them".
 
-**B. Kind, and nothing is lost.**
-- The villagers patch the dam with you. The rafts come back. Nobody is hurt, and nothing the child earned is taken away.
+**B. Something really happens, and the child can always recover.**
+- [Source: Marc] Children should "be invested in this world and see something happen." So the world may change because of the mistake: a field floods, a town waits a day for its rice.
+- [Proposal] Nothing the child earned is taken away. The villagers help patch the dam, and the child can always put it right.
 - They are 8 years old. The consequence teaches; it does not punish.
 
 **C. A short delay, linked back.**

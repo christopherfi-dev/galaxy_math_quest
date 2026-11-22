@@ -527,3 +527,6 @@ These are Marc's words, tidied. They are not on the form above.
   - The Math Skills engine is in the repository: `engines/math-skills/` (v1.1 and the 11 November server copy, its constraint file v4.1 and 48 skill files; student records and keys left out). Its skill list is in `skills/skill_map.csv`.
   - Written up as `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md`: five rules for a world, mapped to the engine's probe, step below, teaching, mastery gate and FAILED-FOUNDATIONAL. Added to the big world brief (section 7).
   - Asked: if his zip holds more than the repository (a write-up of the thinking, research, a newer version), he can share it, without student records or keys.
+- **Failing is OK after the station (Marc, 2026-11-22, evening).** "Because that's the other thing does not for quests outside of the initial space station, it's OK for the students to fail and be invested in this world and see something happen."
+  - Read as: in every quest after the KIS Station, a mistake may play out and change the world; the station, where children learn to play, keeps its gentler help (the main thread's reading, to confirm).
+  - Added to `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md` (where it applies; rule B now says something really happens, and the child can always recover) and to the big world brief, section 7.
