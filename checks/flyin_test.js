@@ -2,7 +2,7 @@
 //
 // It checks:
 //   1. on three screens (iPad sideways, iPad upright, a phone) and on the older iPad sideways: the page starts, plays, and ends by itself
-//      on time (within 10.5 seconds at the 10-second speed, and within 15.5 at the usual 15-second speed); the last picture is the meadow (sky above, river in the middle, grass below, the ship standing at the left)
+//      on time (within 10.5 seconds at the 10-second speed, and within 13 at the usual 13-second speed); the last picture is the meadow (sky above, river in the middle, grass below, the ship standing at the left)
 //   2. a tap skips it at every second of the scene, at once, and the meadow picture is then shown
 //   3. with WebGL 2 taken away it ends at once and says the game goes straight to the landing
 //   4. a set-up that takes more than one second ends at once in the same way ("it never blocks the game")
@@ -41,9 +41,9 @@ const FILE = path.resolve(__dirname, '..', 'prototypes', 'voltara_flyin.html'), 
     say(Math.abs(s.cw / s.ch - s.bw / s.bh) < .02, `${tag}: the picture is stretched (${s.cw}x${s.ch} dots in a ${s.bw}x${s.bh} box)`);
     meadow(await look(p), tag); say(p.reqs.length === 1, `${tag}: the page asked for ${p.reqs.length} things`); say(!p.errs.length, `${tag}: errors: ${p.errs.slice(0, 3).join(' | ')}`); await p.close(); }
 
-  // 1b. the usual speed: 15 seconds, and it still ends by itself; a tap skips it early and late
-  { const p = await open(1080, 700); const ok = await done(p, 18000), s = await state(p); say(ok && s.why === 'end' && s.took >= 14.4 && s.took <= 15.5, `the usual speed: ${s.why} after ${s.took} s (15 expected)`); say(/15-second speed/.test(s.say), `the usual speed: it says "${s.say}"`); meadow(await look(p), 'the usual speed'); await p.close(); }
-  for (const at of [1, 12.5]) { const p = await open(748, 640); await p.waitForTimeout(at * 1000); await p.mouse.click(300, 250); const ok = await done(p, 1000), s = await state(p); say(ok && s.why === 'skip', `the usual speed, tap at ${at} s: ${s.state}, ${s.why}`); meadow(await look(p), `the usual speed, tap at ${at} s`); await p.close(); }
+  // 1b. the usual speed: about 13 seconds (Marc's choice), and it still ends by itself; a tap skips it early and late
+  { const p = await open(1080, 700); const ok = await done(p, 18000), s = await state(p); say(ok && s.why === 'end' && s.took >= 11.9 && s.took <= 13, `the usual speed: ${s.why} after ${s.took} s (12.5 expected)`); say(/13-second speed/.test(s.say), `the usual speed: it says "${s.say}"`); meadow(await look(p), 'the usual speed'); await p.close(); }
+  for (const at of [1, 10.5]) { const p = await open(748, 640); await p.waitForTimeout(at * 1000); await p.mouse.click(300, 250); const ok = await done(p, 1000), s = await state(p); say(ok && s.why === 'skip', `the usual speed, tap at ${at} s: ${s.state}, ${s.why}`); meadow(await look(p), `the usual speed, tap at ${at} s`); await p.close(); }
 
   // 2. a tap skips it, at every second
   for (const at of [.15, 1, 2, 3, 4, 5, 5.5, 6, 7, 8, 9]) { const p = await open(748, 640, '?pace=1'); await p.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 3000 }).catch(() => {});

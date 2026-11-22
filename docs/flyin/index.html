@@ -12,7 +12,7 @@
   Shot list and notes: proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md.   Checked by checks/flyin_test.js.
   Address words for testing:  ?t=7 holds the picture at 7 seconds   ?q=0..3 fixes the picture size (0 is the sharpest)
                               ?short=1 plays the short one          ?bare=1 hides the bar under the picture
-                              ?pace=1 plays it in 10 seconds (1.5, the usual, takes 15; 2 takes 20)   ?view=outside shows the ship from outside
+                              ?pace=1 plays it in 10 seconds (1.25, the usual, takes about 13; 2 takes 20)   ?view=outside shows the ship from outside
 -->
 <style>
 html, body { margin: 0; height: 100%; background: #04060e; color: #e8eef8; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; -webkit-text-size-adjust: 100%; }
@@ -38,7 +38,7 @@ button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; b
    The arrival at Planet Voltara. One entry point:  GMQFlyin.play(canvas, opts, done)
      canvas  a canvas of its own, laid over the game's picture (the game's own canvas is 2D and cannot be shared)
      opts    { view: 'outside'  the ship is seen from outside all the way. Left out: first person, from the cockpit, and the ship is seen only once it has landed
-               pace: 1.5        how slowly it plays: 1 is the 10-second scene, 1.5 (the usual) takes 15 seconds, 2 takes 20
+               pace: 1.25       how slowly it plays: 1 is the 10-second scene, 1.25 (the usual, Marc's choice) takes 12.5 seconds, 2 takes 20
                short: true      the two-second one, for later landings (it is slowed by pace too)
                fade: true       in the last half second the canvas fades out, to show what lies under it (the game's meadow)
                hold: true       keep the last picture alive after the end (this page uses it; the game would not)
@@ -271,7 +271,7 @@ var GMQFlyin = (function () {
     var gl = g.gl, SP = g.SP, V = g.V, nq = 0, O = [], nInf = 0, cw = 0, ch = 0, asp = 1, W = 1, H = 1, m = 1;
     var cy = EYE, cz = 0, cxs = 0, sth = 0, cth = 1, srl = 0, crl = 1, px = 0, py = 0, pz = 0, first = opts.view !== 'outside';
     var auto = opts.q == null && opts.t == null && !g.cap, stuck = 0, base = 0, baseQ = 0, q = opts.q != null ? opts.q : g.q, late = false, ring = new Float32Array(16), rn = 0, quiet = 8, last = -1, nf = 0, sum = 0, worst = 0, drops = 0;
-    var KK = 0, pace = Math.max(.5, Math.min(4, +opts.pace || 1.5)), begin = opts.short ? LEN - SHORT : 0, clock = opts.clock || 0, spx = opts.sp ? opts.sp[0] : .27, spy = opts.sp ? opts.sp[1] : .42, shipO = null, legsO = null, flameO = null, tmp = [0, 0, 0, 0];
+    var KK = 0, pace = Math.max(.5, Math.min(4, +opts.pace || 1.25)), begin = opts.short ? LEN - SHORT : 0, clock = opts.clock || 0, spx = opts.sp ? opts.sp[0] : .27, spy = opts.sp ? opts.sp[1] : .42, shipO = null, legsO = null, flameO = null, tmp = [0, 0, 0, 0];
     g.onlost = function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('lost'); };
 
     function vtx(i, x, y, w, u, v, c) { V[i] = x; V[i + 1] = y; V[i + 2] = w; V[i + 3] = u; V[i + 4] = v; V[i + 5] = c[0]; V[i + 6] = c[1]; V[i + 7] = c[2]; V[i + 8] = c[3]; }
@@ -462,7 +462,7 @@ var GMQFlyin = (function () {
 /* ---------- this page: it plays the fly-in, then says what the game would do next ---------- */
 (function () {
   'use strict';
-  var $ = function (id) { return document.getElementById(id); }, Q = new URLSearchParams(location.search), cv = $('cv'), ctl = null, PACES = [1, 1.25, 1.5, 1.75, 2, 2.5, 3], pace = +Q.get('pace') || 1.5;
+  var $ = function (id) { return document.getElementById(id); }, Q = new URLSearchParams(location.search), cv = $('cv'), ctl = null, PACES = [1, 1.25, 1.5, 1.75, 2, 2.5, 3], pace = +Q.get('pace') || 1.25;
   if (Q.has('bare')) document.body.className = 'bare';
   var WHY = { end: 'The game starts here: the Landing Meadow.', skip: 'Skipped. The game starts here: the Landing Meadow.', hidden: 'The page was hidden, so the fly-in stopped. The game starts here.',
     nowebgl: 'No fly-in on this device (no WebGL 2). The game goes straight to the landing.', slowstart: 'The fly-in took too long to get ready. The game goes straight to the landing.', lost: 'The picture stopped. The game goes straight to the landing.' };
