@@ -51,7 +51,9 @@ It is built as **its own page first** (`docs/bigworld/index.html`), so it never 
   - Lessons end. The save must put a child back exactly where they were.
 - **The surprise he likes** (18 November): walking somewhere and something unexpected happens.
 
-## 3. Which planet: Marc's choice. Ask him first.
+## 3. Which planet
+
+**Update, 22 November:** the big world thread chose option A: **Algora**, a new planet in Galaxy Patternox. The name and the planet are its proposals. Its design note (section 11) lists them among the choices that are Marc's. (The main thread first wrote that Marc had named it. That was a misreading, now corrected.)
 
 The main thread's analysis:
 
@@ -152,10 +154,13 @@ All of it is in the main thread's file, `prototypes/kis_station_sketch.html`. **
 
 ## 7. The phases. Stop at each one and report to Marc.
 
+### The first night: done
+
+The thread worked through the first night on 22 November: the size test, the design note, the first region (the Mender Meadow), three reviews, and the next region's design. See `proposals/GMQ_Big_World_Report_2026-11-22.md` on its branch.
+
 ### Phase 0: ask, and measure (small)
 
 1. **Ask Marc:**
-   - A or B (section 3)?
    - Should the Clockmaker be there?
    - Grade 4 extra lands now, or later?
    - What do the children call him, for words on the page?
