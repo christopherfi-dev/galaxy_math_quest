@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- One file. It loads nothing and sends nothing: this rule forbids it. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<title>Voltara fly-in</title>
+<!--
+  Galaxy Math Quest: the arrival at Planet Voltara, as its own page (Phase 1 of HANDOFF_Voltara_Flyin_2026-11-21.md).
+  The game file is not touched. The piece the game would use is GMQFlyin, between the two marked lines below.
+  Shot list and notes: proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md.   Checked by checks/flyin_test.js.
+  Address words for testing:  ?t=7 holds the picture at 7 seconds   ?q=0..3 fixes the picture size (0 is the sharpest)
+                              ?short=1 plays the two-second one     ?bare=1 hides the bar under the picture
+-->
+<style>
+html, body { margin: 0; height: 100%; background: #04060e; color: #e8eef8; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; -webkit-text-size-adjust: 100%; }
+#stage { position: fixed; inset: 0; display: flex; flex-direction: column; }
+#pic { position: relative; flex: 1; min-height: 0; background: #04060e; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: manipulation; }
+#hint { position: absolute; right: .7em; bottom: .7em; background: rgba(6, 9, 18, .78); border-radius: .5em; padding: .25em .7em; font-weight: 700; pointer-events: none; }
+#bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35em .9em; padding: .5em max(.8em, env(safe-area-inset-right)) max(.5em, env(safe-area-inset-bottom)) max(.8em, env(safe-area-inset-left)); background: #0a0e1a; border-top: 1px solid #33476a; font-size: clamp(14px, calc(1.6vmin + 7px), 20px); }
+#say { font-weight: 700; }
+#stat { flex-basis: 100%; font-size: .78em; color: #a9b9d0; }
+button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; border: 0; border-radius: .5em; padding: .3em .8em; }
+.bare #bar, .bare #hint { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="pic"><canvas id="cv"></canvas><div id="hint">Tap to skip</div></div>
+  <div id="bar"><span id="say">Arriving at Planet Voltara…</span><button id="again" type="button">Watch again</button><button id="short" type="button">The short one</button><span id="stat"></span></div>
+</div>
+
+<script>
+/* ===== GMQ FLY-IN: start =====
+   The arrival at Planet Voltara. One entry point:  GMQFlyin.play(canvas, opts, done)
+     canvas  a canvas of its own, laid over the game's picture (the game's own canvas is 2D and cannot be shared)
+     opts    { short: true      the two-second one, for later landings
+               fade: true       in the last half second the canvas fades out, to show what lies under it (the game's meadow)
+               hold: true       keep the last picture alive after the end (this page uses it; the game would not)
+               q: 0..3          fix the picture size; left out, it starts sharp and drops by itself when frames come slow
+               t: seconds       hold the picture at one moment (for review pictures)
+               lit: {R,C,I}     how much of each street is lit, 0 to 1 (a saved city); tower: true lights the Power Plaza tower }
+     done    called once, with why it ended: 'end', 'skip', 'nowebgl', 'slowstart', 'hidden' or 'lost'
+   It never blocks: a tap skips it, no WebGL 2 ends it at once, and a timer ends it even if the browser stops drawing.
+   It makes no sound, reads no saved state and writes none. Nothing is made anew in a frame: everything is set up once.
+   How it is drawn: the planet from orbit is one small shader, with the colours of the game's voltaraBall. The landing is the
+   game's own meadow picture (vSky, vFar, farCity, drawMeadow, frontMeadow), painted once into one texture as flat cards and
+   stood up in 3D like a paper theatre. The camera comes down to the exact view the game draws, so the last frame is that picture. */
+var GMQFlyin = (function () {
+  'use strict';
+  var LEN = 9.5, FADE = .5, TS = 5.5, SHORT = 2;           // seconds: the scene; the hand-over fade; when the clouds hide the change from space to sky; the short one
+  var HZ = .56, GY = .86, F = 1, EYE = 3, PAR = -.37;      // the meadow as the game draws it: horizon and ground rows, the lens, eye height, and the cadet standing at .13
+  var INK = '#0e1626', SCALES = [1.5, 1.25, 1, .75], MAXQ = 440, AW = 2048, AH = 1024;
+  var CITYP = [.44, -.44];                                  // where the city is on the ball from orbit, in the night
+  var NEB = [[.22, .3, '#7a3fd0', .42], [.8, .26, '#4a2f9e', .36], [.82, .76, '#1f5fd0', .44], [.2, .8, '#1f9e6a', .38], [.5, .12, '#d0503f', .36], [.5, .56, '#c98a2f', .3], [.6, .9, '#a02f7a', .4]];
+  var SKY = ['#2c2a8f', '#6a4fd0', '#c26fe8', '#ff8fb1', '#ffb86b', '#ffe58a', '#c8f5c9'];
+  var G = null, ERR = '';
+
+  function hex(h) { var n = parseInt(h.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; }
+  function tint(h, a) { var c = hex(h); a = a == null ? 1 : a; return [c[0] * a, c[1] * a, c[2] * a, a]; }      // colours are kept ready-multiplied by how solid they are
+  function v3(h) { var c = hex(h); return 'vec3(' + c[0].toFixed(3) + ',' + c[1].toFixed(3) + ',' + c[2].toFixed(3) + ')'; }
+  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function ss(a, b, x) { x = clamp((x - a) / (b - a)); return x * x * (3 - 2 * x); }
+  var WHITE = [1, 1, 1, 1];
+
+  /* ---------- the three small programs for the graphics chip ---------- */
+  var VS = '#version 300 es\nin vec3 aP; in vec2 aU; in vec4 aC; out vec2 vU; out vec4 vC; void main(){ vU = aU; vC = aC; gl_Position = vec4(aP.xy, 0., aP.z); }';
+  var FS_CARD = '#version 300 es\nprecision highp float; uniform sampler2D uS; in vec2 vU; in vec4 vC; out vec4 o; void main(){ o = texture(uS, vU) * vC; }';
+  // the ground: every point works out which row of the game's meadow picture it belongs to, and takes that row's colour
+  var FS_GROUND = ['#version 300 es', 'precision highp float;', 'uniform float uA, uT, uK;', 'in vec2 vU; in vec4 vC; out vec4 o;',
+    'float h2(vec2 p){ p = fract(p * vec2(.1031, .1030)); p += dot(p, p.yx + 33.33); return fract((p.x + p.y) * p.y); }',
+    'float RS(float hi, float lo, float x){ return 1. - smoothstep(lo, hi, x); }',
+    'float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f); return mix(mix(h2(i), h2(i + vec2(1, 0)), f.x), mix(h2(i + vec2(0, 1)), h2(i + vec2(1, 1)), f.x), f.y); }',
+    'void main(){',
+    '  float z = max(vU.y, .05), v = vU.y > .5 ? ' + HZ + ' + ' + (F * EYE).toFixed(2) + ' / z : 3., u = .5 + ' + F.toFixed(1) + ' * vU.x / (z * uA), e = fwidth(v) + .0004;',
+    '  vec3 c = mix(' + v3('#49a888') + ', ' + v3('#3a8f76') + ', clamp((v - ' + HZ + ') / .1, 0., 1.));',
+    '  c = mix(c, vec3(.66, .9, .76), smoothstep(250., 2600., z));',                                                         // far away the land pales into the sky
+    '  vec2 tq = vU / 8., ti = floor(tq); float th = h2(ti + 3.), tr = .12 + .2 * h2(ti + 9.);',                                 // seen from the air only: glowing trees dotted over the far bank
+    '  c += uK * step(46., z) * RS(900., 300., z) * step(.74, th) * RS(260., 180., z) * vec3(.16, .46, .36) * RS(tr, tr * .3, length(tq - ti - .3 - .4 * vec2(h2(ti + 1.), h2(ti + 2.))));',
+    '  c = mix(c, ' + v3('#143a33') + ', smoothstep(-e, e, v - .66));',
+    '  float top = .633 + .007 * sin(u * 9. + uT), bot = .735 + .007 * sin(u * 7. - uT);',
+    '  vec3 rv = mix(' + v3('#59c4f0') + ', ' + v3('#2f7fd0') + ', clamp((v - .63) / .11, 0., 1.));',
+    '  vec2 gq = vec2(vU.x * 1.1, z * .55 + uT * .1), gi = floor(gq); float gh = h2(gi);',                                    // glints on the Sparkling River
+    '  rv += vec3(.55) * step(.82, gh) * max(0., sin(uT * 3. + gh * 60.)) * RS(.3, .1, length(gq - gi - .5));',
+    '  c = mix(c, rv, smoothstep(-e, e, v - top) * RS(e, -e, v - bot));',
+    '  c = mix(c, mix(' + v3('#2f8468') + ', ' + v3('#17443c') + ', clamp((v - .74) / .26, 0., 1.)), smoothstep(-e, e, v - .748 - .006 * sin(u * 11.)));',
+    '  vec2 lp = vec2((u - .5) / .52, (v - ' + (GY + .03) + ') / .03);',
+    '  c = mix(c, vec3(.745, .922, .784), .16 * step(dot(lp, lp), 1.));',
+    '  o = vec4(c * (1. + uK * .2 * RS(700., 90., z) * (n2(vU * .045) - .5)), 1.);', '}'].join('\n');
+  // space and the planet from orbit: the same colours and curved bands as the game's voltaraBall, and it can be flown into
+  var FS_PLANET = ['#version 300 es', 'precision highp float;', 'uniform vec2 uRes, uC;', 'uniform float uR, uT, uZ, uH;', 'in vec2 vU; in vec4 vC; out vec4 o;',
+    'const vec3 BAND[8] = vec3[8](' + ['#ff8fb8', '#ffb37a', '#ffe58a', '#a8e6b0', '#8fc9ff', '#b9a3ff', '#ff8fb8', '#ffb37a'].map(v3).join(',') + ');',
+    'const vec3 NP[7] = vec3[7](' + NEB.map(function (n) { return 'vec3(' + n[0] + ',' + (1 - n[1]).toFixed(2) + ',' + n[3] + ')'; }).join(',') + ');',
+    'const vec3 NC[7] = vec3[7](' + NEB.map(function (n) { return v3(n[2]); }).join(',') + ');',
+    'float h2(vec2 p){ p = fract(p * vec2(.1031, .1030)); p += dot(p, p.yx + 33.33); return fract((p.x + p.y) * p.y); }',
+    'float RS(float hi, float lo, float x){ return 1. - smoothstep(lo, hi, x); }',
+    'float h3(vec3 p){ p = fract(p * .1031); p += dot(p, p.zyx + 31.32); return fract((p.x + p.y) * p.z); }',
+    'float n3(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);',
+    '  return mix(mix(mix(h3(i), h3(i + vec3(1,0,0)), f.x), mix(h3(i + vec3(0,1,0)), h3(i + vec3(1,1,0)), f.x), f.y),',
+    '             mix(mix(h3(i + vec3(0,0,1)), h3(i + vec3(1,0,1)), f.x), mix(h3(i + vec3(0,1,1)), h3(i + vec3(1,1,1)), f.x), f.y), f.z); }',
+    'void main(){',
+    '  vec2 fc = gl_FragCoord.xy, uv = fc / uRes; float m = min(uRes.x, uRes.y), M = max(uRes.x, uRes.y);',
+    '  vec2 p = (fc - uC) / uR; float d = length(p), px = 1.5 / uR;',
+    '  vec3 col = mix(vec3(5., 8., 20.), vec3(14., 9., 34.), (uv.x + 1. - uv.y) * .5) / 255.;',
+    '  for (int i = 0; i < 7; i++) { float q = length((uv - NP[i].xy) * uRes) / (NP[i].z * M); col += NC[i] * (q < .5 ? mix(.34, .12, q * 2.) : mix(.12, 0., clamp(q * 2. - 1., 0., 1.))); }',
+    '  vec2 sc = fc / (m * .04), si = floor(sc); float sh = h2(si);',
+    '  if (sh > .78) { vec2 sp = si + .2 + .6 * vec2(h2(si + 7.3), h2(si + 3.1)); col += vec3(1., .94, .86) * (.35 + .5 * sin(uT * 1.5 + sh * 90.)) * RS(.1, .03, length(sc - sp)); }',
+    '  col += vec3(1., .667, .882) * .6 * clamp(1. - (d - .92) / .48, 0., 1.) * step(.92, d);',
+    '  for (int k = 0; k < 2; k++) { float md = k == 0 ? 1.45 : 1.75, an = uT * .15 + (k == 0 ? 0. : 2.6), mr = k == 0 ? .09 : .055;',
+    '    vec2 mp = vec2(cos(an) * md, -sin(an) * md * .35), mq = p - mp; float ml = length(mq);',
+    '    if (ml < mr + px && !(sin(an) < 0. && length(mp) < 1.)) { vec3 mc = k == 0 ? vec3(.91, .878, 1.) : vec3(1., .851, .769); mc = mix(mc, vec3(.03, .016, .157), .5 * step(0., dot(mq, vec2(.6, -.8)))); col = mix(col, mc, RS(mr + px, mr - px, ml)); } }',
+    '  if (d < 1. + px) {',
+    '    vec3 n = vec3(p, sqrt(max(0., 1. - d * d)));',
+    '    vec3 q = vec3(n.x, n.y * .969 - n.z * .247, n.y * .247 + n.z * .969);',
+    '    float lon = atan(q.x, q.z) + uT * .1, cl = sqrt(max(0., 1. - q.y * q.y));',
+    '    float bx = p.x / 1.25, f = clamp(4. * (1. - p.y - .62 * (1. - sqrt(max(0., 1. - bx * bx))) + .012 * sin(uT * .3 + p.x * 2.)) - .25, 0., 7.999), fi = floor(f);',
+    '    int i = int(fi);',
+    '    vec3 pc = mix(BAND[i], BAND[min(i + 1, 7)], smoothstep(1. - 5. * px, 1., f - fi));',
+    '    float dd = length(p - vec2(-.5, .38));',
+    '    float sa = dd < 1.325 ? mix(0., .5, clamp((dd - .8) / .525, 0., 1.)) : mix(.5, .95, clamp((dd - 1.325) / .525, 0., 1.));',
+    '    vec3 s = vec3(sin(lon) * cl, q.y, cos(lon) * cl);',
+    '    float cn = n3(s * vec3(2.6, 7.5, 2.6) + 3.7) + .5 * n3(s * vec3(5.5, 15., 5.5) + 1.3);',
+    '    float pink = step(.5, n3(s * 1.7 + 9.));',
+    '    float cm = .8 * smoothstep(.98, 1.04, cn);',
+    '    pc = mix(pc, mix(vec3(1.), vec3(1., .804, .91), pink), cm);',
+    '    sa = mix(sa, min(.9, sa * 1.95), uZ);',                                                       // close up, the night is deeper
+    '    pc = mix(pc, vec3(.039, .02, .188), sa);',
+    '    if (uZ > 0.) {',                                                                              // down there in the night: glowing trees, the river, and the city with its lights going out
+    '      vec2 cq = (p - vec2(' + CITYP[0] + ', ' + CITYP[1] + ')) / vec2(.13, .075), bg = (cq * .5 + .5) * vec2(9., 5.), bi = floor(bg), bf = fract(bg);',
+    '      float dark = clamp(smoothstep(.25, .5, sa) * (1. - cm * 1.25), 0., 1.) * uZ, bh = h2(bi + 21.);',
+    '      float inb = step(0., bi.x) * step(bi.x, 8.) * step(0., bi.y) * step(bi.y, 4.), rim = min(1., step(bi.x, .5) + step(7.5, bi.x) + step(bi.y, .5) + step(3.5, bi.y));',
+    '      float edge = max(abs(bf.x - .5), abs(bf.y - .5)), blk = inb * step(.42 * rim, bh) * RS(.43, .39, edge), town = RS(1.12, 1.02, max(abs(cq.x), abs(cq.y)));',
+    '      float ry = p.y - (' + CITYP[1] + ' - .125 + .012 * sin(p.x * 36.) + .02 * sin(p.x * 11.)), rw = RS(.016, .012, abs(ry));',
+    '      vec2 g = p * 100., gi = floor(g); float gh = h2(gi), wood = n3(vec3(p * 11., 2.)), gr = .16 + .24 * h2(gi + 5.);',
+    '      float tr = step(1.02 - .5 * wood, gh) * RS(gr, gr * .35, length(g - gi - .3 - .4 * vec2(h2(gi + 3.), h2(gi + 8.))));',
+    '      pc += dark * (1. - town) * (1. - rw) * vec3(.0, .11, .08) * smoothstep(.45, .75, wood);',
+    '      pc += dark * (1. - town) * (1. - rw) * vec3(.25, .95, .68) * tr * (.6 + .4 * sin(uT * 2. + gh * 50.));',
+    '      vec2 rg = p * 300., ri = floor(rg); float rh = h2(ri);',
+    '      pc = mix(pc, vec3(.16, .42, .78) + vec3(.9) * step(.84, rh) * max(0., sin(uT * 4. + rh * 40.)) * RS(.4, .15, length(rg - ri - .5)), dark * rw * .9);',
+    '      pc = mix(pc, vec3(.045, .035, .14), dark * town * .8);',
+    '      pc = mix(pc, ' + v3('#2a2560') + ', dark * blk);',
+    '      pc = mix(pc, .75 * (bi.x < 3. ? ' + v3('#ff8f6b') + ' : bi.x < 6. ? ' + v3('#35d0c4') + ' : ' + v3('#f0c23b') + '), dark * blk * step(.78, bf.y));',     // Home Street, Market Street, Factory Row
+    '      float off = 3.05 + 1.25 * bh, on = step(uT, off) * (uT > off - .5 ? step(.45, fract(uT * 9. + bh * 7.)) : 1.);',                                        // each block has its own moment to go dark
+    '      vec2 wp = vec2((bf.x - .17) / .66 * 3., (bf.y - .16) / .56 * 2.), wq = abs(fract(wp) - .5);',
+    '      float win = step(0., wp.x) * step(wp.x, 3.) * step(0., wp.y) * step(wp.y, 2.) * RS(.34, .26, max(wq.x, wq.y));',
+    '      pc = mix(pc, mix(' + v3('#141136') + ', ' + v3('#fff0a8') + ', on), dark * blk * win);',
+    '      pc += dark * blk * on * vec3(.5, .42, .2) * RS(.6, .0, edge) * .5;',
+    '    }',
+    '    vec2 lg = p * 20., li = floor(lg); float lh = h2(li + 11.), la = atan(-p.y, p.x);',
+    '    if (lh > .7 && la > .2 && la < 1.3 && d > .6 && d < .93) pc += (1. - uZ) * vec3(1., .88, .55) * (.5 + .4 * sin(uT * 2. + lh * 70.)) * RS(.2, .08, length(lg - li - .25 - .5 * vec2(h2(li + 5.), h2(li + 17.))));',
+    '    float ra = mod(la + 6.2832, 6.2832);',
+    '    if (ra > 2.5 && ra < 4.9) pc = mix(pc, vec3(1., .882, .961), .65 * smoothstep(.975, .99, d));',
+    '    col = mix(col, pc, RS(1. + px, 1. - px, d));',
+    '  }',
+    '  o = vec4(mix(col, vec3(1., .86, .93), uH), 1.);', '}'].join('\n');
+
+  /* ---------- set up once: the context, the programs, and every painted card in one texture ---------- */
+  function prepare(cv, o) {
+    o = o || {};
+    var key = JSON.stringify([o.lit || 0, !!o.tower]);
+    if (G && G.cv === cv && !G.lost && G.key === key) return G;
+    var t0 = performance.now(), gl = null;
+    try { gl = cv.getContext('webgl2', { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance' }); } catch (e) { gl = null; }
+    if (!gl || (gl.isContextLost && gl.isContextLost())) return null;
+    function prog(fs) { var p = gl.createProgram(); [[gl.VERTEX_SHADER, VS], [gl.FRAGMENT_SHADER, fs]].forEach(function (a) { var s = gl.createShader(a[0]); gl.shaderSource(s, a[1]); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || 'shader'); gl.attachShader(p, s); });
+      gl.bindAttribLocation(p, 0, 'aP'); gl.bindAttribLocation(p, 1, 'aU'); gl.bindAttribLocation(p, 2, 'aC'); gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || 'link');
+      var u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS); for (var i = 0; i < n; i++) { var nm = gl.getActiveUniform(p, i).name; u[nm] = gl.getUniformLocation(p, nm); } return { p: p, u: u }; }
+    var g = { cv: cv, gl: gl, key: key, q: 0, lost: false };
+    g.card = prog(FS_CARD); g.ground = prog(FS_GROUND); g.planet = prog(FS_PLANET);
+    g.V = new Float32Array(MAXQ * 36); g.vb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, g.vb); gl.bufferData(gl.ARRAY_BUFFER, g.V.byteLength, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 36, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 36, 12); gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 4, gl.FLOAT, false, 36, 20);
+    var ix = new Uint16Array(MAXQ * 6); for (var i = 0; i < MAXQ; i++) ix.set([i * 4, i * 4 + 1, i * 4 + 2, i * 4, i * 4 + 2, i * 4 + 3], i * 6);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, ix, gl.STATIC_DRAW);
+    g.SP = paint(o);
+    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture()); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, g.SP._cv); gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LOD, 3);
+    g.SP._cv.width = g.SP._cv.height = 1; g.SP._cv = null;                                         // the painting canvas is not needed again
+    gl.disable(gl.DEPTH_TEST); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.clearColor(.172, .165, .561, 1);
+    gl.finish(); g.ms = performance.now() - t0;
+    cv.addEventListener('webglcontextlost', function (e) { e.preventDefault(); g.lost = true; if (g.onlost) g.onlost(); });
+    G = g; return g;
+  }
+
+  // Every card is painted once, with the game's own shapes and colours. Sizes here are in texture dots.
+  function paint(o) {
+    var ac = document.createElement('canvas'); ac.width = AW; ac.height = AH; var c = ac.getContext('2d'), SP = { _cv: ac }, X0 = 2, Y0 = 2, rowH = 0;
+    function sprite(name, w, h, fn) { w = Math.ceil(w); h = Math.ceil(h); if (X0 + w + 2 > AW) { X0 = 2; Y0 += rowH + 4; rowH = 0; }
+      c.save(); c.beginPath(); c.rect(X0, Y0, w, h); c.clip(); c.translate(X0, Y0); fn(w, h); c.restore();
+      SP[name] = [(X0 + .5) / AW, (Y0 + .5) / AH, (X0 + w - .5) / AW, (Y0 + h - .5) / AH, w, h]; X0 += w + 4; if (h > rowH) rowH = h; SP._full = Y0 + rowH > AH; }
+    function circ(x, y, r) { c.beginPath(); c.arc(x, y, r, 0, 7); }
+    function ell(x, y, rx, ry, rot, a0, a1) { c.beginPath(); c.ellipse(x, y, rx, ry, rot || 0, a0 || 0, a1 == null ? 7 : a1); }
+    function ol(w) { c.strokeStyle = INK; c.lineWidth = w || 2; c.stroke(); }
+    function rgba(h, a) { var k = hex(h); return 'rgba(' + Math.round(k[0] * 255) + ',' + Math.round(k[1] * 255) + ',' + Math.round(k[2] * 255) + ',' + a + ')'; }
+    function tree(name, th, frac, leanPx, fruit) { var lean = leanPx * th / (frac * 600), k = th / (frac * 600);       // alienTree, with its ink lines scaled to the painted size
+      sprite(name, th * .84 + 10, th * 1.16 + 8, function (w, h) { var X = w / 2 - lean / 2, gy = h - 3, top = gy - th, tx = X + lean, i, b;
+        c.lineCap = 'round'; c.strokeStyle = INK; c.lineWidth = th * .095 + 4 * k; c.beginPath(); c.moveTo(X, gy); c.quadraticCurveTo(X - lean * .6, gy - th * .5, tx, top + th * .28); c.stroke();
+        c.strokeStyle = '#6a4466'; c.lineWidth = th * .095; c.stroke(); c.strokeStyle = '#8a5c84'; c.lineWidth = th * .03; c.beginPath(); c.moveTo(X - th * .01, gy - th * .05); c.quadraticCurveTo(X - lean * .6, gy - th * .5, tx - th * .01, top + th * .3); c.stroke();
+        c.strokeStyle = '#6a4466'; c.lineWidth = th * .045; [-1, 1].forEach(function (sg) { c.beginPath(); c.moveTo(X - lean * .2 + (tx - X) * .55, gy - th * .52); c.quadraticCurveTo(tx + sg * th * .16, top + th * .4, tx + sg * th * .26, top + th * .26); c.stroke(); }); c.lineCap = 'butt';
+        var blobs = [[-.2, .3, .15], [.2, .3, .15], [-.1, .16, .16], [.11, .15, .16], [0, .04, .15], [0, .27, .16]];
+        [[INK, 0, 0, 1, 2.5 * k], ['#17806f', 0, 0, 1, 0], ['#2fc7a3', -.12, -.16, .8, 0], ['#8ff5d6', -.3, -.36, .36, 0]].forEach(function (L) { c.fillStyle = L[0]; for (i = 0; i < 6; i++) { b = blobs[i]; circ(tx + b[0] * th + b[2] * th * L[1], top + b[1] * th + b[2] * th * L[2], b[2] * th * L[3] + L[4]); c.fill(); } });
+        for (i = 0; i < 7; i++) { var lx = tx + (i - 3) * th * .11, ly = top + th * (.46 + (i % 3) * .05); c.strokeStyle = 'rgba(200,255,235,.5)'; c.lineWidth = Math.max(1, k); c.beginPath(); c.moveTo(lx, top + th * .36); c.lineTo(lx, ly); c.stroke(); c.fillStyle = 'rgba(190,255,230,.85)'; ell(lx, ly + th * .02, th * .016, th * .028); c.fill(); }
+        if (fruit) for (i = 0; i < 5; i++) { var fx = tx + (i - 2) * th * .13, fy = top + th * (.34 + (i % 2) * .08); c.fillStyle = 'hsl(' + (i * 72 + 20) + ' 95% 62%)'; circ(fx, fy, th * .05); c.fill(); ol(1.5 * k); c.fillStyle = 'rgba(255,255,255,.7)'; circ(fx - th * .016, fy - th * .018, th * .016); c.fill(); }
+      }); SP[name].lean = lean; SP[name].th = th; }
+    function fluff(name, c1, c2) { sprite(name, 238, 154, function () { var X = 119, Y = 77, r = 60; c.fillStyle = c2; circ(X, Y + r * .25, r); c.fill(); circ(X + r * 1.15, Y + r * .4, r * .78); c.fill(); circ(X - r * 1.15, Y + r * .42, r * .74); c.fill(); c.fillStyle = c1; circ(X, Y, r); c.fill(); circ(X + r * 1.1, Y + r * .2, r * .76); c.fill(); circ(X - r * 1.1, Y + r * .24, r * .72); c.fill(); circ(X + r * .35, Y - r * .55, r * .7); c.fill(); c.fillStyle = 'rgba(255,255,255,.55)'; circ(X - r * .2, Y - r * .35, r * .4); c.fill(); }); }
+
+    // row 1: the tall tree, the Power Plaza tower, the sky, the rainbow, the ringed giant, two clouds
+    tree('tree4', 340, .46, 14, false);
+    sprite('tower', 96, 400, function () { var k = 1.3, half = 28, th = 288, r = 12.6, j; c.translate(48, (r + 4) * k); c.scale(k, k); c.strokeStyle = INK; c.lineWidth = 5; c.beginPath(); c.moveTo(-half, th); c.lineTo(0, 0); c.lineTo(half, th); c.stroke(); c.strokeStyle = '#c9d2df'; c.lineWidth = 3; c.stroke();
+      for (j = 1; j < 4; j++) { var yy = th - th * j / 4, ww = half * (1 - j / 4); c.beginPath(); c.moveTo(-ww, yy); c.lineTo(ww, yy); c.stroke(); } c.fillStyle = o.tower ? '#fff3a6' : '#6b7689'; circ(0, 0, r); c.fill(); ol(2); });
+    sprite('sky', 16, 400, function (w, h) { var g = c.createLinearGradient(0, 0, 0, h); SKY.forEach(function (k, i) { g.addColorStop(i / (SKY.length - 1), k); }); c.fillStyle = g; c.fillRect(0, 0, w, h); });
+    sprite('rainbow', 488, 244, function () { ['#ff6b6b', '#ffb347', '#fff275', '#7bd88f', '#6db3ff', '#b28dff'].forEach(function (k, i) { c.strokeStyle = rgba(k, .6); c.lineWidth = 5.2; c.beginPath(); c.arc(244, 244, 400 * (.6 - i * .015), Math.PI, 2 * Math.PI); c.stroke(); }); });
+    sprite('giant', 336, 206, function () { var gx = 168, gy = 103, gr = 100; c.strokeStyle = 'rgba(255,240,210,.55)'; c.lineWidth = gr * .1; ell(gx, gy, gr * 1.7, gr * .4, -.35, Math.PI * .98, Math.PI * 2.02); c.stroke();
+      c.save(); circ(gx, gy, gr); c.clip(); c.fillStyle = '#ffd9b0'; c.fillRect(gx - gr, gy - gr, gr * 2, gr * 2); ['#ffc7a0', '#f7a6c0', '#ffe0b8', '#e9a0d0'].forEach(function (k, i) { c.fillStyle = k; c.fillRect(gx - gr, gy - gr * .7 + i * gr * .42, gr * 2, gr * .2); });
+      var gs = c.createRadialGradient(gx - gr * .4, gy - gr * .4, gr * .2, gx, gy, gr * 1.1); gs.addColorStop(0, 'rgba(60,30,120,0)'); gs.addColorStop(1, 'rgba(60,30,120,.6)'); c.fillStyle = gs; c.fillRect(gx - gr, gy - gr, gr * 2, gr * 2); c.restore();
+      c.strokeStyle = 'rgba(255,240,210,.8)'; c.lineWidth = gr * .1; ell(gx, gy, gr * 1.7, gr * .4, -.35, .02 * Math.PI, Math.PI * .98); c.stroke(); });
+    fluff('pink', '#ffc4de', '#e58fc0'); fluff('blue', '#dcebff', '#a9c4f0');
+    // row 2: three more trees, the ship, a dark plant close to the eye, a white cloud, the islands, small things
+    tree('tree1', 200, .22, 8, false); tree('tree2', 220, .26, -10, false); tree('tree3', 260, .32, -12, true);
+    sprite('ship', 184, 272, function () { var L = 250; c.translate(92, 136); c.rotate(-Math.PI / 2); c.lineJoin = 'round';        // the game's rocket(), nose up
+      c.fillStyle = '#4b566b'; [-.055, .055].forEach(function (yy) { c.beginPath(); c.roundRect(-L * .53, L * (yy - .04), L * .1, L * .08, 4); c.fill(); ol(3.3); });
+      c.fillStyle = '#d2553a'; [-1, 1].forEach(function (sg) { c.beginPath(); c.moveTo(L * .08, sg * L * .08); c.lineTo(-L * .3, sg * L * .35); c.lineTo(-L * .45, sg * L * .35); c.lineTo(-L * .36, sg * L * .08); c.closePath(); c.fill(); ol(4.4); });
+      c.fillStyle = '#eef2f7'; c.beginPath(); c.moveTo(L * .5, 0); c.quadraticCurveTo(L * .34, -L * .115, L * .14, -L * .115); c.lineTo(-L * .4, -L * .1); c.lineTo(-L * .46, -L * .06); c.lineTo(-L * .46, L * .06); c.lineTo(-L * .4, L * .1); c.lineTo(L * .14, L * .115); c.quadraticCurveTo(L * .34, L * .115, L * .5, 0); c.fill(); ol(4.4);
+      c.fillStyle = '#f08a2c'; c.fillRect(-L * .06, -L * .106, L * .05, L * .212); c.fillStyle = '#d2553a'; c.fillRect(-L * .45, -L * .012, L * .22, L * .024);
+      c.fillStyle = '#2d6fb4'; ell(L * .27, 0, L * .085, L * .055); c.fill(); ol(3.3); c.fillStyle = 'rgba(255,255,255,.65)'; ell(L * .3, -L * .02, L * .03, L * .014); c.fill(); });
+    sprite('plant', 350, 204, function () { c.fillStyle = '#0d2b27'; for (var j = -2; j <= 2; j++) { var X = 175, B = 204, L = 200; c.beginPath(); c.moveTo(X - 5, B); c.quadraticCurveTo(X + j * L * .22, B - L * .7, X + j * L * .42, B - L * (1 - Math.abs(j) * .16)); c.quadraticCurveTo(X + j * L * .26, B - L * .5, X + 5, B); c.fill(); } });
+    fluff('puff', '#ffffff', '#f6d7e8');
+    [0, 1].forEach(function (n) { sprite('isle' + n, 106, 116, function () { var r = 48; c.translate(53, 36); c.fillStyle = '#4a3a86'; c.beginPath(); c.moveTo(-r, 0); c.lineTo(r, 0); c.lineTo(r * .3, r * 1.1); c.lineTo(-r * .4, r * .8); c.closePath(); c.fill(); ol(1.8); c.fillStyle = '#3fb88f'; c.beginPath(); c.roundRect(-r * 1.05, -r * .22, r * 2.1, r * .3, r * .15); c.fill(); ol(1.8);
+      c.fillStyle = 'rgba(150,255,230,.88)'; c.beginPath(); c.moveTo(r * .2, -r * .2); c.lineTo(r * .34, -r * .7); c.lineTo(r * .5, -r * .2); c.fill(); c.strokeStyle = 'rgba(200,240,255,.7)'; c.lineWidth = 2; c.setLineDash([4, 5]); c.lineDashOffset = n * 4; c.beginPath(); c.moveTo(-r * .5, r * .1); c.lineTo(-r * .5, r * 1.6); c.stroke(); c.setLineDash([]); }); });
+    sprite('legs', 166, 62, function () { c.strokeStyle = INK; c.lineWidth = 10; c.beginPath(); [-1, 1].forEach(function (sg) { c.moveTo(83 + sg * 35, 6); c.lineTo(83 + sg * 75, 58); }); c.stroke(); });
+    sprite('flame', 50, 64, function () { [-13.75, 13.75].forEach(function (yy) { c.fillStyle = 'rgba(255,170,60,.95)'; c.beginPath(); c.moveTo(25 + yy - 8.75, 0); c.lineTo(25 + yy, 60); c.lineTo(25 + yy + 8.75, 0); c.fill(); c.fillStyle = '#fff3b0'; c.beginPath(); c.moveTo(25 + yy - 4.5, 0); c.lineTo(25 + yy, 27.5); c.lineTo(25 + yy + 4.5, 0); c.fill(); }); });
+    sprite('rock', 56, 48, function () { var rs = 24; c.fillStyle = '#8b93a5'; ell(28, 26, rs, rs * .8); c.fill(); ol(2); c.fillStyle = 'rgba(40,45,60,.4)'; c.beginPath(); c.arc(28, 26, rs * .75, .3, 2.6); c.fill(); c.fillStyle = 'rgba(255,255,255,.35)'; circ(28 - rs * .35, 26 - rs * .35, rs * .18); c.fill(); });
+    sprite('fly', 56, 44, function () { var z = 20; c.translate(28, 20); c.fillStyle = '#fff'; [-1, 1].forEach(function (sg) { ell(sg * z * .55, -z * .25, z * .6, z * .5, sg * .5); c.fill(); ol(1.6); ell(sg * z * .4, z * .3, z * .4, z * .34, -sg * .5); c.fill(); ol(1.6); }); c.fillStyle = INK; c.beginPath(); c.roundRect(-2, -z * .5, 4, z, 2); c.fill(); });
+    sprite('disc', 64, 64, function () { c.fillStyle = '#fff'; circ(32, 32, 30); c.fill(); });
+    sprite('glow', 64, 64, function () { var g = c.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, 64, 64); });
+    sprite('white', 8, 8, function () { c.fillStyle = '#fff'; c.fillRect(0, 0, 8, 8); });
+    sprite('spark', 32, 32, function () { var z = 14; c.translate(16, 16); c.fillStyle = '#fff'; c.beginPath(); c.moveTo(0, -z); c.lineTo(z * .3, -z * .3); c.lineTo(z, 0); c.lineTo(z * .3, z * .3); c.lineTo(0, z); c.lineTo(-z * .3, z * .3); c.lineTo(-z, 0); c.lineTo(-z * .3, -z * .3); c.fill(); });
+    sprite('streak', 64, 16, function () { c.strokeStyle = 'rgba(255,255,255,.45)'; c.lineWidth = 3; c.beginPath(); c.moveTo(4, 11); c.quadraticCurveTo(32, 2, 60, 11); c.stroke(); });
+    sprite('lily', 64, 28, function () { c.fillStyle = '#fff'; ell(32, 14, 28, 10); c.fill(); ol(2); });
+    [['tuftD', '#22654f'], ['tuftL', '#4fb58c']].forEach(function (k) { sprite(k[0], 32, 32, function () { c.strokeStyle = k[1]; c.lineWidth = 4; c.beginPath(); c.moveTo(8, 28); c.lineTo(4, 12); c.moveTo(16, 28); c.lineTo(16, 6); c.moveTo(24, 28); c.lineTo(30, 12); c.stroke(); }); });
+    sprite('shroom', 32, 32, function () { c.fillStyle = '#e8e0ff'; c.fillRect(13, 14, 6, 14); c.fillStyle = 'rgba(150,255,235,.92)'; ell(16, 12, 12, 8, 0, Math.PI, 2 * Math.PI); c.fill(); });
+    // row 3: the city across the river, and the far mountains
+    sprite('city', 1000, 200, function () { var SX = 1980, SY = 1150, base = 196, lit = o.lit || {};
+      'RCI'.split('').forEach(function (k, i) { var f = lit[k] || 0; for (var b = 0; b < 4; b++) { var bw = .033 * SX, bh = (.07 + ((b * 7 + i * 3) % 5) * .024) * SY, X = ([.1, .27, .44][i] + b * .039 - .095) * SX, Y = base - bh;
+        c.fillStyle = f > 0 ? '#3d3684' : '#2a2560'; c.fillRect(X, Y, bw, bh + 2); c.strokeStyle = INK; c.lineWidth = 3; c.strokeRect(X, Y, bw, bh + 2); c.fillStyle = ['#ff8f6b', '#35d0c4', '#f0c23b'][i]; c.fillRect(X - 2, Y, bw + 4, 7);
+        for (var r = 0; r < 3; r++) for (var q = 0; q < 2; q++) { c.fillStyle = ((b * 6 + r * 2 + q) * 7 % 24) < f * 24 ? '#fff0a8' : '#141136'; c.fillRect(X + bw * (.2 + q * .4), Y + bh * (.18 + r * .26), bw * .22, bh * .14); } } }); });
+    sprite('hills', 1024, 110, function (w, h) { [['#8a6fd6', .13, .02, 5.2], ['#6a54b8', .09, 0, 8.3]].forEach(function (L) { c.fillStyle = L[0]; c.beginPath(); c.moveTo(0, h); for (var x = 0; x <= w; x += 8) { var u = -.05 + 1.1 * x / w; c.lineTo(x, h - 667 * (L[2] + L[1] * (.55 + .45 * Math.abs(Math.sin(u * L[3] + 1)) * (.7 + .3 * Math.sin(u * L[3] * 2.7))))); } c.lineTo(w, h); c.fill(); }); });
+    return SP;
+  }
+
+  /* ---------- play ---------- */
+  function play(cv, opts, done) {
+    opts = opts || {};
+    var g = null, ended = false, timer = 0;
+    function finish(why) { if (ended) return; ended = true; tHold = performance.now(); run = !!opts.hold && why !== 'nowebgl' && why !== 'slowstart' && why !== 'lost'; clearTimeout(timer); cv.removeEventListener('pointerdown', onTap); document.removeEventListener('visibilitychange', onHide); if (!run) cancelAnimationFrame(raf); if (done) done(why); }
+    function onTap(e) { e.preventDefault(); finish('skip'); }
+    function onHide() { if (document.hidden) finish('hidden'); }
+    var run = false, raf = 0, T0 = -1, tHold = 0;
+    try { g = prepare(cv, opts); } catch (e) { g = null; ERR = String(e && e.message || e); }
+    if (!g) { finish('nowebgl'); return { skip: function () {}, stop: function () {}, stats: function () { return null; } }; }
+    if (g.ms > 1000 && opts.t == null && !g.played) { g.played = true; finish('slowstart'); return { skip: function () {}, stop: function () {}, stats: function () { return { setup: g.ms }; } }; }
+    g.played = true;
+    var gl = g.gl, SP = g.SP, V = g.V, nq = 0, O = [], nInf = 0, cw = 0, ch = 0, asp = 1, W = 1, H = 1, m = 1;
+    var cy = EYE, cz = 0, sth = 0, cth = 1, px = 0, py = 0, pz = 0;
+    var auto = opts.q == null && opts.t == null, q = opts.q != null ? opts.q : g.q, ring = new Float32Array(16), rn = 0, quiet = 8, last = -1, nf = 0, sum = 0, worst = 0, drops = 0;
+    var begin = opts.short ? LEN - SHORT : 0, shipO = null, legsO = null, flameO = null;
+    g.onlost = function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('lost'); };
+
+    function vtx(i, x, y, w, u, v, c) { V[i] = x; V[i + 1] = y; V[i + 2] = w; V[i + 3] = u; V[i + 4] = v; V[i + 5] = c[0]; V[i + 6] = c[1]; V[i + 7] = c[2]; V[i + 8] = c[3]; }
+    function proj(X, Y, Z, inf) { var dy = Y - (inf ? EYE : cy), dz = Z - (inf ? 0 : cz), yc = dy * cth - dz * sth; pz = dy * sth + dz * cth; px = 2 * F * X / asp; py = (1 - 2 * HZ) * pz + 2 * F * yc; }
+    function wq(o) {                                                    // a card standing in the world
+      if (nq >= MAXQ) return; var s = o.sp, i = nq * 36, c = o.c;
+      proj(o.x0, o.y1, o.z, o.inf); var z1 = pz; vtx(i, px, py, pz, s[0], s[1], c); proj(o.x1, o.y1, o.z, o.inf); vtx(i + 9, px, py, pz, s[2], s[1], c);
+      proj(o.x1, o.y0, o.z, o.inf); vtx(i + 18, px, py, pz, s[2], s[3], c); proj(o.x0, o.y0, o.z, o.inf); vtx(i + 27, px, py, pz, s[0], s[3], c);
+      if (z1 > .02 || pz > .02) nq++;
+    }
+    function sq(s, x, y, hw, hh, rot, c) {                              // a card flat on the screen, in picture points, turned by rot
+      if (nq >= MAXQ) return; var i = nq * 36, co = Math.cos(rot), si = Math.sin(rot), k;
+      for (k = 0; k < 4; k++) { var dx = (k === 0 || k === 3 ? -hw : hw), dy = (k < 2 ? -hh : hh); vtx(i + k * 9, 2 * (x + dx * co - dy * si) / W - 1, 1 - 2 * (y + dx * si + dy * co) / H, 1, k === 0 || k === 3 ? s[0] : s[2], k < 2 ? s[1] : s[3], c); }
+      nq++;
+    }
+
+    // Where everything stands. Each thing is given by its place in the game's finished meadow picture (in picture points) and its distance.
+    function lay() {
+      W = cw; H = ch; asp = W / H; m = Math.min(W, H); O = [];
+      var w = W, h = H, hz = h * HZ, gy = h * GY, i;
+      function put(o, x, y, ww, hh) { var k = o.z / (F * h); o.x0 = (x - w / 2) * k; o.x1 = (x + ww - w / 2) * k; o.y1 = EYE + (hz - y) * k; o.y0 = EYE + (hz - y - hh) * k; return o; }
+      function R(sp, x, y, ww, hh, z, c, fn, inf) { var o = put({ sp: SP[sp], z: z, c: c || WHITE, fn: fn, inf: !!inf }, x, y, ww, hh); O.push(o); return o; }
+      function depth(y) { return F * EYE * h / Math.max(1, y - hz); }      // how far away a spot on the ground is, from its row in the picture
+      // the sky and what hangs in it: endlessly far, so only looking up or down moves it
+      R('white', -w, -h * 3, w * 3, h * 3 + 1, 1e5, tint(SKY[0]), null, 1); R('sky', -w, 0, w * 3, hz + 2, 1e5, null, null, 1);
+      for (i = 0; i < 40; i++) (function (i) { var sx = (i * 97.31) % 1, sy = (i * 61.73 + i * i * .0131) % 1, c = [1, 1, 1, 1]; R('white', sx * w, sy * h * .2, 2, 2, 1e5, c, function (o, t) { var a = (.5 + .5 * Math.sin(t * 2 + i * 1.7)) * .8; c[0] = c[1] = c[2] = c[3] = a; }, 1); })(i);
+      var gr = m * .15, gx = w * .8 - PAR * w * .01;
+      R('giant', gx - 1.68 * gr, h * .19 - 1.03 * gr, 3.36 * gr, 2.06 * gr, 1e5, null, null, 1);
+      R('disc', w * .56 - gr * .22 * 32 / 30, h * .09 - gr * .22 * 32 / 30, gr * .44 * 32 / 30, gr * .44 * 32 / 30, 1e5, tint('#ffffff', .92), null, 1);
+      R('rainbow', w * .36 - .61 * h, hz + h * .14 - .61 * h, 1.22 * h, .61 * h, 1e5, null, null, 1);
+      for (i = 0; i < 6; i++) (function (i) { var r = h * .034 * (1 + (i % 3) * .35); R(i % 2 ? 'pink' : 'blue', 0, 0, 1, 1, 1e5, null, function (o, t) { var X = ((i * .21 + t * .005 * (1 + i % 2)) % 1.24 - .12) * w, Y = h * (.07 + (i * 37 % 22) / 100); put(o, X - r * 1.983, Y - r * 1.283, r * 3.967, r * 2.567); }, 1); })(i);
+      nInf = O.length;
+      // far things, then nearer and nearer
+      var mx = -PAR * w * .03, sh = -PAR * w * .04;
+      R('hills', -.05 * w + mx, hz - .165 * h, 1.1 * w, .165 * h + 1, 1500);
+      [[.7, .36, .05], [.93, .43, .035]].forEach(function (I, n) { var r = I[2] * w; R('isle' + n, 0, 0, 1, 1, 900, null, function (o, t) { put(o, I[0] * w + mx * 1.4 - 1.104 * r, I[1] * h + Math.sin(t * .6 + I[0] * 9) * 4 - .75 * r, 2.208 * r, 2.417 * r); }); });
+      R('city', .095 * w + sh, hz - 196 / 1150 * h, .505 * w, 200 / 1150 * h, 320);
+      R('tower', .655 * w + sh - .0369 * w, hz - .38075 * h, .0738 * w, .3846 * h, 300);
+      if (opts.tower) R('glow', .655 * w + sh - h * .08, hz - .36 * h - h * .08, h * .16, h * .16, 299, [1, .94, .59, 0]);
+      for (i = 0; i < 9; i++) { var br = (h * .022 + (i % 3) * 3) * 32 / 30; R('disc', (i * .123 + .03) * w - br, hz + h * .012 - br, br * 2, br * 2, 250, tint(i % 2 ? '#2f8a6c' : '#57b894')); }
+      // the Sparkling River: diamonds, ripples and lily pads
+      for (i = -26; i < 48; i++) (function (i) { var X = (i * .0457 + .012) * w, Y = h * (.65 + (((i * 29) % 70 + 70) % 70) / 1000), c = [1, 1, 1, 1]; R('spark', 0, 0, 1, 1, depth(Y), c, function (o, t) { var a = Math.max(0, Math.sin(t * 3 + i * 1.7)), z = (2 + a * 4) * 1.15; c[0] = c[1] = c[2] = c[3] = a; put(o, X - z, Y - z, z * 2, z * 2); }); })(i);
+      for (i = 0; i < 9; i++) (function (i) { var Y = h * (.652 + (i * 31 % 70) / 1000); R('streak', 0, 0, 1, 1, depth(Y), null, function (o, t) { put(o, ((i * .137 + t * .02) % 1.1 - .05) * w - w * .002, Y - 5, w * .044, 8); }); })(i);
+      [[.4, '#ff9ec4'], [.55, '#8ff5d6'], [.72, '#ff9ec4']].forEach(function (L) { R('lily', 0, 0, 1, 1, depth(h * .705), tint(L[1]), function (o, t) { put(o, L[0] * w - h * .0251, h * .705 + Math.sin(t + L[0] * 9) * 2 - h * .0112, h * .0503, h * .0224); }); });
+      // grass tufts, flowers and glowing mushrooms
+      for (i = 0; i < 70; i++) { var tu = (i * .6180339) % 1, tv = (i * .37) % 1, kind = i % 5, TX = tu * w, TY = h * (.77 + tv * .2); if (Math.abs(TY - gy - h * .03) < h * .025 && kind) continue; var dz = depth(TY);
+        if (kind < 3) R(kind ? 'tuftL' : 'tuftD', TX - 8, TY - 14, 16, 16, dz); else if (kind === 3) { R('disc', TX - 3.4, TY - 7.4, 6.8, 6.8, dz, tint(['#ff9ec4', '#fff275', '#b9a3ff'][Math.floor(tu * 30) % 3])); R('disc', TX - 1.3, TY - 5.3, 2.6, 2.6, dz); } else R('shroom', TX - 8, TY - 14, 16, 16, dz); }
+      // the four trees of the meadow, each with its glow; then more trees to the sides, which only the high view sees
+      function tr(name, X, base, thPx, seed) { var s = SP[name], k = thPx / s.th, z = depth(base), tx = X + s.lean * k, c = [0, 0, 0, 0];
+        R('glow', tx - thPx * .62, base - thPx * .82 - thPx * .62, thPx * 1.24, thPx * 1.24, z, c, function (o, t) { var a = .34 + .14 * Math.sin(t * 2 + seed); c[0] = .47 * a; c[1] = a; c[2] = .82 * a; });
+        R(name, X - (s[4] / 2 - s.lean / 2) * k, base - (s[5] - 3) * k, s[4] * k, s[5] * k, z); }
+      tr('tree1', .52 * w, gy - h * .02, h * .22, 1); tr('tree2', .985 * w, gy - h * .01, h * .26, 2); tr('tree3', .2 * w, gy, h * .32, 3); tr('tree4', .77 * w, gy, h * .46, 4);
+      for (i = 0; i < 18; i++) { var ez = [-30, -22, -15, -9, -3, 2, 6, 9, 12, 14, 48, 56, 66, 80, 95, 115, 140, 170][i], side = i % 2 ? 1 : -1, hw = Math.max(ez, 0) * asp / (2 * F), ex = side * (hw * 1.12 + 3.5 + ((i * 7.31) % 1) * (ez > 40 ? 60 : 16)), eth = (ez > 40 ? 4.2 : 3) + (i % 3) * .7, en = ['tree1', 'tree2', 'tree4'][i % 3], es = SP[en], ek = eth / es.th;
+        O.push({ sp: SP.glow, z: ez, c: [.16, .34, .28, 0], x0: ex - eth * .62, x1: ex + eth * .62, y0: eth * .82 - eth * .62, y1: eth * .82 + eth * .62 }); O.push({ sp: es, z: ez, c: WHITE, x0: ex - es[4] * ek / 2, x1: ex + es[4] * ek / 2, y0: 0, y1: es[5] * ek }); }
+      // the ship: its legs, its flame and its body. They come down together and stand where the game stands the ship.
+      var sL = Math.max(54, h * .15), sx = w * .07, s = sL / 250, zs = depth(gy);
+      legsO = R('legs', sx - 83 * s, gy - 56 * s, 166 * s, 62 * s, zs); flameO = R('flame', sx - 25 * s, gy - .06 * sL - 2 * s, 50 * s, 64 * s, zs, [1, 1, 1, 1]); shipO = R('ship', sx - 92 * s, gy - .56 * sL - 136 * s, 184 * s, 272 * s, zs);
+      [legsO, flameO, shipO].forEach(function (o) { o.b0 = o.y0; o.b1 = o.y1; o.a0 = o.x0; o.a1 = o.x1; o.zf = zs; o.key = 5.5; }); flameO.len = flameO.b1 - flameO.b0;
+      var rs = Math.max(18, h * .045); R('rock', .91 * w - rs * 1.167, gy - rs * .55 - rs * 1.083, rs * 2.333, rs * 2, zs);
+      [[.47, 0, '#4f8dff'], [.3, 2.2, '#ff8fd0']].forEach(function (B) { var z = Math.max(9, h * .026); R('fly', 0, 0, 1, 1, zs, tint(B[2]), function (o, t) { var fl = .25 + .75 * Math.abs(Math.sin(t * 11 + B[1])), bx = w * (B[0] + .03 * Math.sin(t * 1.3 + B[1])), by = h * (.67 + .04 * Math.sin(t * 2.1 + B[1])) + (B[1] ? -h * .08 : 0); put(o, bx - z * 1.4 * fl, by - z, z * 2.8 * fl, z * 2.2); }).key = 5.4; });
+      // close to the eye: big dark plants, and fireflies
+      [[-.02, 1], [.23, .6], [.78, .7], [1.03, 1.1]].forEach(function (P) { var L = h * .2 * P[1], X = P[0] * w - PAR * w * .22; R('plant', X - .875 * L, h + 4 - 1.02 * L, 1.75 * L, 1.02 * L, 5); });
+      for (i = 0; i < 14; i++) (function (i) { var c = [0, 0, 0, 0], r = (2 + (i % 3)) * 2.2; R('glow', 0, 0, 1, 1, 4.5, c, function (o, t) { var t2 = (t * .05 + i * .0714) % 1, a = Math.sin(t2 * Math.PI) * .7, X = ((i * .173 + Math.sin(t * .4 + i) * .01) % 1) * w, Y = gy + h * .1 - t2 * h * .5; c[0] = .63 * a; c[1] = a; c[2] = .88 * a; put(o, X - r, Y - r, r * 2, r * 2); }); })(i);
+      var far = O.slice(0, nInf), near = O.slice(nInf); near.sort(function (a, b) { return (b.key || b.z) - (a.key || a.z); }); O = far.concat(near);
+    }
+
+    function size() { var sc = Math.min(window.devicePixelRatio || 1, SCALES[q]), w = Math.max(2, Math.round(cw * sc)), h = Math.max(2, Math.round(ch * sc)); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } gl.viewport(0, 0, w, h); }
+    function fit() { var w = cv.clientWidth || 2, h = cv.clientHeight || 2; if (w !== cw || h !== ch) { cw = w; ch = h; lay(); size(); } }
+
+    function draw(T, t) {          // T: where the scene is, 0 to LEN.   t: a clock that keeps running, for twinkles
+      var i, a, pw = cv.width, ph = cv.height, n0, n1, n2;
+      nq = 0;
+      sq(SP.white, W / 2, H / 2, W / 2, H / 2, 0, WHITE);                                       // card 0: the whole screen, for the planet
+      // clouds to fly through, and the white inside of a cloud: they hide the change from space to sky
+      var veil = Math.max(1 - Math.abs(T - TS) / .62, opts.short ? 1 - (T - begin) / .45 : 0);
+      if (T < TS) {
+        // ---- space: Voltara ahead, growing, and the camera dives at its night side ----
+        var R0 = m * .33, s1 = clamp((T - 1.5) / (TS - 1.5)), e = .1 * ss(0, 1.6, T) + .68 * ss(1.4, 3.2, T) + .22 * ss(3, TS, T), Rr = R0 * Math.exp(Math.log(15) * e), ec = ss(1.4, 3.1, T);
+        var bx = (-.06 * W / R0) * (1 - ec) + CITYP[0] * ec, by = CITYP[1] * ec, k = pw / W;
+        // the ship flies ahead of us, into the planet
+        var es = ss(.2, 2.9, T), tx = W / 2 + (W * .04 + R0 * .2) * 1, ty = H / 2 + R0 * .25, sx0 = W * .17, sy0 = H * .76, sxx = sx0 + (tx - sx0) * es, syy = sy0 + (ty - sy0) * es, L = m * .2 * (1 - .9 * es), sa = 1 - ss(2.5, 2.9, T), rot = Math.atan2(ty - sy0, tx - sx0) + Math.PI / 2, fl = 1 + Math.sin(t * 40) * .2, sk = L / 250;
+        if (sa > 0) { var c1 = [sa, sa, sa, sa]; sq(SP.flame, sxx - Math.sin(rot) * (L * .5 + 32 * sk * fl), syy + Math.cos(rot) * (L * .5 + 32 * sk * fl), 25 * sk, 32 * sk * fl, rot, c1); sq(SP.ship, sxx, syy, 92 * sk, 136 * sk, rot, c1); }
+        n0 = nq;
+      } else {
+        // ---- the sky of Voltara: down over the Sparkling River to the Landing Meadow ----
+        var p = clamp((T - TS) / (LEN - TS)), kk = 1 - p, th = -.85 * Math.pow(kk, 1.3);
+        cy = EYE + 52 * Math.pow(kk, 2.3); cz = -30 * kk * kk; sth = Math.sin(th); cth = Math.cos(th);
+        var alt = (cy - EYE) * .9, sz = cz + shipO.zf - 3.2 * kk, kx = (1 - .72 * Math.pow(kk, 1.2)) * sz / shipO.zf;      // the ship: a little ahead of the camera and below it, landing as the camera settles
+        [legsO, flameO, shipO].forEach(function (o) { var mid = (o.a0 + o.a1) / 2 * kx, hw = (o.a1 - o.a0) / 2; o.z = sz; o.x0 = mid - hw; o.x1 = mid + hw; o.y0 = o.b0 + alt; o.y1 = o.b1 + alt; });
+        a = alt > .04 ? 1 : 0; flameO.c[0] = flameO.c[1] = flameO.c[2] = flameO.c[3] = a; flameO.y0 = flameO.y1 - flameO.len * (1 + Math.sin(t * 40) * .2) * Math.min(1, .4 + alt * .25);
+        // card 1: the ground, a great flat sheet
+        var gi = nq * 36, gc = [[-9000, -600], [9000, -600], [9000, 12000], [-9000, 12000]]; for (i = 0; i < 4; i++) { proj(gc[i][0], 0, gc[i][1], 0); vtx(gi + i * 9, px, py, pz, gc[i][0], gc[i][1], WHITE); } nq++;
+        for (i = 0; i < O.length; i++) { if (i === nInf) n1 = nq; var o = O[i]; if (o.fn) o.fn(o, t); wq(o); }
+        n0 = nq;
+      }
+      for (i = 0; i < 14; i++) { var st = 4.4 + i * .115, pp = (T - st) / 1.15; if (pp <= 0 || pp >= 1) continue; var an = i * 2.4, dist = m * (.13 + 1.0 * Math.pow(pp, 2.2)), r = m * (.05 + .62 * pp * pp), al = ss(0, .14, pp) * (1 - ss(.72, 1, pp)), cc = [al, al, al, al];
+        sq(SP[['puff', 'pink', 'blue'][i % 3]], W / 2 + Math.cos(an) * dist * Math.max(1, asp), H / 2 + Math.sin(an) * dist * Math.max(1, 1 / asp), r * 1.983, r * 1.283, 0, cc); }
+      if (veil > 0) { a = Math.min(1, veil * 1.25); sq(SP.white, W / 2, H / 2, W / 2, H / 2, 0, [a, .87 * a, .94 * a, a]); }
+      n2 = nq;
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, V, 0, nq * 36);
+      if (T < TS) {
+        gl.disable(gl.BLEND); gl.useProgram(g.planet.p); var u = g.planet.u;
+        gl.uniform2f(u.uRes, pw, ph); gl.uniform2f(u.uC, (W / 2 - bx * Rr) * k, (H / 2 - by * Rr) * k); gl.uniform1f(u.uR, Rr * k); gl.uniform1f(u.uT, T); gl.uniform1f(u.uZ, ss(.7, 2, Rr / m)); gl.uniform1f(u.uH, .7 * ss(4.5, TS, T));
+        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+        gl.enable(gl.BLEND); gl.useProgram(g.card.p); gl.drawElements(gl.TRIANGLES, (n2 - 1) * 6, gl.UNSIGNED_SHORT, 12);
+      } else {
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.enable(gl.BLEND); gl.useProgram(g.card.p); gl.drawElements(gl.TRIANGLES, (n1 - 2) * 6, gl.UNSIGNED_SHORT, 24);
+        gl.disable(gl.BLEND); gl.useProgram(g.ground.p); gl.uniform1f(g.ground.u.uA, asp); gl.uniform1f(g.ground.u.uT, t); gl.uniform1f(g.ground.u.uK, clamp(kk * 2.2)); gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 12);
+        gl.enable(gl.BLEND); gl.useProgram(g.card.p); gl.drawElements(gl.TRIANGLES, (n2 - n1) * 6, gl.UNSIGNED_SHORT, n1 * 12);
+      }
+    }
+
+    function frame(now) {
+      if (!run) return; raf = requestAnimationFrame(frame);
+      if (T0 < 0) T0 = now; var t = ended ? LEN + FADE : (now - T0) / 1000 + begin, dt = last < 0 ? 16.7 : now - last; last = now;
+      fit();
+      if (!ended) {
+        if (t >= LEN + FADE) { if (opts.fade) cv.style.opacity = 0; draw(LEN, t); finish('end'); return; }
+        if (++nf > 3) { sum += dt; if (dt > worst) worst = dt; ring[rn++ & 15] = dt;                 // slow frames: draw the next ones with fewer dots
+          if (auto && --quiet < 0 && rn >= 16) { var avg = 0; for (var i = 0; i < 16; i++) avg += ring[i]; var nx = q + 1; while (nx < SCALES.length && SCALES[nx] >= (window.devicePixelRatio || 1)) nx++; if (avg / 16 > 22 && nx < SCALES.length) { q = g.q = nx; drops++; size(); quiet = 14; rn = 0; } } }
+        if (opts.fade && t > LEN) cv.style.opacity = String(1 - (t - LEN) / FADE);
+      }
+      draw(Math.min(t, LEN), ended ? (performance.now() - tHold) / 1000 + LEN : t);
+    }
+
+    if (opts.fade) cv.style.opacity = 1;
+    fit();
+    if (opts.t != null) { draw(Math.min(opts.t, LEN), opts.t); return { skip: function () {}, stop: function () {}, redraw: function () { fit(); draw(Math.min(opts.t, LEN), opts.t); }, stats: function () { return { setup: g.ms, level: q }; } }; }
+    run = true; cv.addEventListener('pointerdown', onTap); document.addEventListener('visibilitychange', onHide);
+    timer = setTimeout(function () { finish('end'); }, ((opts.short ? SHORT : LEN) + FADE) * 1000 + 450);      // the scene ends on time even if the browser stops drawing
+    raf = requestAnimationFrame(frame);
+    return { skip: function () { onTap({ preventDefault: function () {} }); }, stop: function () { run = false; cancelAnimationFrame(raf); if (!ended) finish('skip'); },
+      stats: function () { return { setup: g.ms, full: !!SP._full, level: q, scale: Math.min(window.devicePixelRatio || 1, SCALES[q]), drops: drops, fps: nf > 4 && sum ? 1000 * (nf - 3) / sum : 0, worst: worst, frames: nf }; } };
+  }
+  return { play: play, prepare: function (cv, o) { try { return !!prepare(cv, o); } catch (e) { ERR = String(e && e.message || e); return false; } }, error: function () { return ERR; }, LEN: LEN + FADE };
+})();
+/* ===== GMQ FLY-IN: end ===== */
+
+/* ---------- this page: it plays the fly-in, then says what the game would do next ---------- */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); }, Q = new URLSearchParams(location.search), cv = $('cv'), ctl = null;
+  if (Q.has('bare')) document.body.className = 'bare';
+  var WHY = { end: 'The game starts here: the Landing Meadow.', skip: 'Skipped. The game starts here: the Landing Meadow.', hidden: 'The page was hidden, so the fly-in stopped. The game starts here.',
+    nowebgl: 'No fly-in on this device (no WebGL 2). The game goes straight to the landing.', slowstart: 'The fly-in took too long to get ready. The game goes straight to the landing.', lost: 'The picture stopped. The game goes straight to the landing.' };
+  function go(short) {
+    if (ctl) ctl.stop();
+    document.body.dataset.state = 'playing'; document.body.dataset.why = ''; $('say').textContent = 'Arriving at Planet Voltara…'; $('stat').textContent = ''; $('hint').style.display = '';
+    var o = { hold: true, short: !!short }; if (Q.has('q')) o.q = Math.max(0, Math.min(3, +Q.get('q') | 0)); if (Q.has('t')) o.t = +Q.get('t'); if (Q.has('lit')) { o.lit = { R: 1, C: 1, I: 1 }; o.tower = true; }
+    var began = performance.now(), mine = ctl = GMQFlyin.play(cv, o, function (why) {
+      document.body.dataset.took = ((performance.now() - began) / 1000).toFixed(2); $('hint').style.display = 'none'; $('say').textContent = WHY[why] || why; document.body.dataset.state = 'done'; document.body.dataset.why = why;
+      setTimeout(function () { if (mine !== ctl) return; var s = mine.stats(); if (!s) { $('stat').textContent = GMQFlyin.error().slice(0, 200); return; } $('stat').textContent = (s.fps ? 'Speed: ' + Math.round(s.fps) + ' frames a second. Slowest frame ' + Math.round(s.worst) + ' ms. ' : '') + (s.scale ? 'Picture size ' + s.scale + ' (it dropped ' + s.drops + ' time' + (s.drops === 1 ? '' : 's') + '). ' : '') + 'Set-up took ' + Math.round(s.setup) + ' ms.'; }, 0);
+    });
+    if (o.t != null) { document.body.dataset.state = 'held'; $('hint').style.display = 'none'; $('say').textContent = 'Held at ' + o.t + ' seconds.'; }
+  }
+  $('again').addEventListener('click', function () { go(false); }); $('short').addEventListener('click', function () { go(true); });
+  window.addEventListener('resize', function () { if (ctl && ctl.redraw) ctl.redraw(); });
+  go(Q.has('short'));
+})();
+</script>
+</body>
+</html>
