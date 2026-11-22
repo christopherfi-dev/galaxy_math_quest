@@ -3,11 +3,11 @@
 // It reads the number rules straight out of the page (between NUM-BEGIN and NUM-END in prototypes/big_world.html),
 // so it checks the game as built, not a copy.
 //
-// THE MACHINES AND THE POUCH (Tindle Meadow)
+// THE MACHINES AND THE POUCH (Mender Meadow)
 //   - every child gets four machines: one times, one add, one take away, one share. Every rule's number is in its list.
 //   - no child's machine has a rule used in a finished example (x 4, + 6, x 10, + 1)
-//   - a rule can be told from every other rule a child could write on a plate, using test stones 1 to 20:
-//     for every wrong plate there is a number of test stones, from 2 to 12, where the plate and the machine disagree
+//   - a rule can be told from every other rule a child could write on a plate, using test pebbles 1 to 20:
+//     for every wrong plate there is a number of test pebbles, from 2 to 12, where the plate and the machine disagree
 //   - two tests are needed: for every machine there is a single test that fits two different plates
 //   - the pan's number is from 20 to 90. It cannot be made in fewer than 3 machine runs. It can be made in 3.
 //     (This check does its own search. It does not trust the page's.)
@@ -39,7 +39,7 @@ for (let seed = 1; seed <= N; seed++) {
   say(!(g.rule.times.n === 4 || g.rule.plus.n === 6 || g.rule.times.n === 10 || g.rule.plus.n === 1), `seed ${seed}: a machine has a rule from a finished example`);
   const sites = SITES.map(s => g.at[s].op).sort().join(); say(sites === OPS.slice().sort().join(), `seed ${seed}: the four sites do not hold one machine of each kind`);
   stat.where[SITES.map(s => g.at[s].op[0]).join('')] = 1;
-  // a wrong plate can always be shown wrong with 2 to 12 test stones; and one test alone never settles it
+  // a wrong plate can always be shown wrong with 2 to 12 test pebbles; and one test alone never settles it
   for (const rule of rules) { for (const p of allPlates) { if (p.op === rule.op && p.n === rule.n) continue; let found = false; for (let n = 2; n <= 12 && !found; n++) if (ruleOut(p, n) !== ruleOut(rule, n)) found = true; say(found, `seed ${seed}: plate ${p.op} ${p.n} cannot be told from ${rule.op} ${rule.n}`); }
     let twin = false; for (let n = 1; n <= 20 && !twin; n++) { const out = ruleOut(rule, n); if (out === null) continue; if (allPlates.some(p => !(p.op === rule.op && p.n === rule.n) && ruleOut(p, n) === out)) twin = true; } say(twin, `seed ${seed}: ${rule.op} ${rule.n} can be found from one test`); if (twin) stat.twoTests++; }
   // the pouch: my own search

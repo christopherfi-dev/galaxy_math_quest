@@ -2,7 +2,7 @@
 //
 // The map of Planet Algora is 128 squares wide and 96 tall. It is two layers of letters:
 //   MAP: what stands on each square (grass, water, a tree, a path ...)
-//   REG: which region the square belongs to (0 sea, 1 Tindle Meadow, 2 the Reach ...)
+//   REG: which region the square belongs to (0 sea, 1 Mender Meadow, 2 the Reach ...)
 // This file paints both from a short list of shapes, the same way every time (no chance in it),
 // and writes them into prototypes/big_world.html between the marks MAP-BEGIN and MAP-END.
 // The page never makes its own map: it reads the letters. A person or an AI can change a letter by hand,
@@ -44,7 +44,7 @@ blob(111, 88, 16, 8, '~', .35); for (const [x, y, r] of [[103, 87, 2.4], [110, 9
 region(0, 0, 127, 95, 1);                    // everything is the Meadow until told otherwise
 region(0, 0, 50, 54, 4);                     // the Pattern Woods, north-west
 region(51, 0, 91, 57, 5);                    // the Lake of Two Suns, the middle
-region(51, 58, 85, 95, 2);                   // the Reach, south
+region(50, 58, 85, 95, 2);                   // the Reach, south: it starts on the Rill's east bank
 region(86, 55, 127, 95, 3);                  // the Terrace Hills, south-east
 region(92, 0, 127, 54, 6);                   // the Canyon and the Old Works, north-east
 region(54, 0, 88, 22, 7);                    // Gate Mountain, north
@@ -72,7 +72,7 @@ line([[0, 21], [12, 21], [22, 20], [30, 19], [31, 10], [30, 2]], 1.8, '^', '.d')
 line([[86, 57], [86, 66]], 1, '#', '.'); line([[86, 68], [86, 80], [88, 92]], 1, '#', '.');                                                                // the hill wall: the gap at 67 is the lift
 line([[92, 4], [93, 20], [92, 34], [91, 41]], 2.2, '^', 'c.p');                                                                                            // the canyon's west rim
 
-// ---- 6. the Tindle Meadow (region 1), square by square. Everything a child meets on the first day.
+// ---- 6. the Mender Meadow (region 1), square by square. Everything a child meets on the first day.
 rect(4, 88, 46, 90, 's', '.');                                                                                                                              // the south beach
 blob(10, 67, 2.4, 2, '~', .1);                                                                                                                              // the pond
 rect(21, 69, 25, 73, '.');                                                                                                                                  // the village green
@@ -94,7 +94,7 @@ for (const [x, y] of [[13, 82], [12, 82], [14, 82], [13, 81], [13, 83], [12, 81]
 blob(45, 60, 2.2, 3, 'm', .2, '.'); road([[34, 74], [40, 74]], ':', '.'); road([[40, 74], [40, 60], [45, 60]], ':', '.m,T*');                                                                       // the reeds, and the old track to the stepping stones
 set(46, 60, ':', '.m'); set(46, 74, ':', '.');
 rect(28, 80, 40, 88, '.', 'T*,'); for (let oy = 0; oy < 4; oy++) for (let ox = 0; ox < 6; ox++) set(29 + ox * 2, 81 + oy * 2, 'a');
-for (const [x, y] of [[46, 59], [46, 73], [13, 83], [12, 83], [14, 83], [14, 68], [18, 60], [33, 62], [34, 79], [15, 80], [20, 78], [13, 66], [9, 70], [38, 72], [29, 70], [41, 82], [24, 86], [27, 77], [21, 57], [7, 79], [8, 76], [25, 72], [21, 71]]) set(x, y, '.');   // squares where a thing or a being stands
+for (const [x, y] of [[46, 59], [46, 73], [13, 83], [12, 83], [14, 83], [14, 68], [18, 60], [33, 62], [34, 79], [15, 80], [20, 78], [13, 66], [9, 70], [38, 72], [29, 70], [41, 82], [24, 86], [27, 77], [21, 57], [7, 79], [8, 76], [25, 72], [21, 71], [41, 61], [41, 62]]) set(x, y, '.');   // squares where a thing or a being stands
 // the far bank: the Reach's landing. A small piece of region 2 that is built now.
 road([[50, 74], [55, 74], [55, 72]], ':', '.'); set(49, 74, '~'); set(48, 74, '~'); set(47, 74, '~'); set(47, 60, '~'); set(48, 60, '~'); set(49, 60, '~');
 road([[50, 60], [52, 60], [52, 74]], ':', '.');
@@ -123,6 +123,7 @@ blob(71, 11, 8.5, 4.4, 'p', .1); road([[69, 16], [69, 21]], 'p', 'p^.~'); road([
 for (let y = 4; y <= 20; y++) for (let x = 4; x <= 29; x++) if (M[y][x] === 'd' && (x + Math.round(Math.sin(y * .9) * 2)) % 6 === 0) M[y][x] = 'D';
 
 // ---- 8. tidy: no land letter may be left in region 0, and the edge is sea
+for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (M[y][x] !== '~' && !R[y][x]) { let got = 0; for (let d = 1; d <= 4 && !got; d++) for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d], [d, d], [-d, -d], [d, -d], [-d, d]]) if (!got && inb(x + dx, y + dy) && R[y + dy][x + dx]) got = R[y + dy][x + dx]; if (got) R[y][x] = got; else M[y][x] = '~'; }
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { if (x === 0 || y === 0 || x === W - 1 || y === H - 1) M[y][x] = '~'; if (M[y][x] === '~' && R[y][x] && ![[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(d => inb(x + d[0], y + d[1]) && M[y + d[1]][x + d[0]] !== '~')) R[y][x] = 0; }
 
 const rows = M.map(r => r.join('')), regs = R.map(r => r.join(''));
