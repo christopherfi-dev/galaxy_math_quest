@@ -83,3 +83,9 @@ Each one ends with `RESULT: PASS` or `RESULT: FAIL`. The play tests need Node an
 | `miniquest_numbers_check.py`, `miniquest_numbers2_check.py`, `card_odds_check.py`, `scenario_bank_check.py` | Earlier proposals |
 
 The server tests never touch your live site. They start PHP's own small server in a scratch folder on the machine they run on.
+
+## The battle thread's checks
+
+| File | What it checks |
+|---|---|
+| `battle_cards_review_check.py` | The review of the old cards (`proposals/GMQ_Cards_Review_v1_2026-11-22.csv`): every count in the note worked out again from the spreadsheet, the three totals for a ship of five Standard parts, each printed description against each set of numbers, and how many cards each of the three rarity options would move. `python3 checks/battle_cards_review_check.py`; the last line is `ALL OK`. |
