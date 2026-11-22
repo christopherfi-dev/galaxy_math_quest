@@ -230,6 +230,85 @@ Then I design, on paper first, with a review before any building.
 
 ---
 
+## 12. Your belief, the evidence, and where I push back
+
+[Source: Marc, 22 November, late] "Most things do become patterns... we need a lot about patterns and making tables and making visual presentations to always show them, because that leads to the other math." You asked me to research it and push back.
+
+### Where the research agrees with you
+
+| Your claim | What I found |
+|---|---|
+| Patterns lead to other maths | 517 children were followed from age 4 to age 11. What they knew about patterns at 4 predicted their maths in Grade 5. What they knew about shapes did not. [Rittle-Johnson and others, 2016] |
+| Teaching patterns helps | First graders taught patterns for 15 minutes, three days a week, for six months did better in maths than children taught other things. Children were assigned by chance. [Kidd, Pasnak and others, 2014] |
+| It works in Grade 3 | Third graders had 23 lessons on rules, tables and the equals sign. They beat the other classes, and used better methods. The first study was small: 39 children against 67. A larger one later agreed. [Blanton and others, 2015] |
+| Tables and pictures help | A United States government guide for Grades 4 to 8 recommends them. A table or a diagram links what is in the problem to the sum that solves it |
+
+So the core of what you believe has support.
+
+### Where I push back
+
+**1. The strong evidence is for young children and simple patterns.**
+- Most of it is ages 4 to 7, and repeating patterns.
+- Much of the teaching evidence comes from one research group.
+- In 2008 a United States national panel said patterns are "not a topic of major importance".
+- **For Grade 3, what has support is one step: from "what comes next" to "what links the day to the number".** More "what comes next" has none that I found.
+
+**2. "The times table is patterns, because it is skip counting." Half.**
+- Skip counting is a pattern. Yes.
+- But researchers treat it as a step on the way, and some children never leave it. They can say 3, 6, 9, 12 and not know that it also tells *how many threes*.
+- Knowing times tables means seeing groups of groups. That is more than a list.
+- **And my fleet does not use the pattern at all.** It asks: what times 8 is 72? A child who knows the fact types it. A child who does not, guesses. Nobody looks at a table and notices anything.
+- For the times table to be pattern work, the child must look, notice, and say why. "Every answer in the 4s is even. Why?" That is Grade 3's own standard (3.OA.9).
+- So I would not let the fleet off as "patterns".
+
+**3. "Always make a table." A table can stop the thinking.**
+- A teacher named Dave Hewitt called it a "train spotters' paradise": children look down the column, spot "+3", and rush on. They no longer think about the thing the numbers came from.
+- The table must stay tied to the picture. And the question must be one the column cannot answer: the 24th, or "which day?", or "why?"
+
+**4. "Most things become patterns." Seeing a pattern is not knowing why.**
+- A pattern from three cases can be false.
+- So two things belong beside every pattern: "why does it go on?" and "is it a pattern yet?"
+
+**5. Pictures help when the child makes them.**
+- Being shown a picture is weaker than building one.
+- More ways of showing are not always better. Each new way must be learned, and the child must be helped to link them.
+
+### Your belief, sharpened [Proposal]
+
+> Patterns, tables and pictures lead to the other maths **when the child makes them, links them to each other, and says why.**
+
+### What could prove me wrong
+
+- I read summaries and abstracts tonight, not the full papers.
+- I could not read Hewitt's article itself, only its first lines.
+- You have watched Grade 3 children for years. I have not watched one.
+
+---
+
+## 13. Exemplars: your plan to log in and let a Claude session look
+
+It would help. Three cautions first.
+
+1. **Their tasks are paid for, and they own them. Our folder and website are public.** So the session should bring back ideas, not text: no task wording, no student work, no pictures. Nothing of theirs goes into this folder.
+2. **Their rules may not allow a program to click through the library.** I do not know their terms. A safer way: you filter the library by patterns and algebra, open the tasks you like, and the session reads only the pages you open.
+3. **This session cannot use your browser.** It runs in the cloud. A session on your own computer can. Never type the password into a chat.
+
+### A brief you can paste to that session
+
+> Look only at the pages I open. For each Exemplars task in Grades 2 to 5 that is about patterns, rules, tables or things that grow or repeat, write one row, in your own words:
+> - title, grade
+> - what grows, shrinks or repeats, and by how much
+> - the kind of pattern: repeating; two things at once; the same step; shrinking; more each time; doubling; a growing shape; two things that change together; a cycle; two rules; other
+> - what is asked: the next one, a far one (which?), a backwards one, a comparison, "why"
+> - what the child is expected to make: a table, a drawing, a number line, a model
+> - anything unusual
+>
+> Do not copy any sentence of a task. Do not copy student work or pictures. Save the table on my computer only.
+
+Then paste the table to me.
+
+---
+
 ## Sources
 
 - [Exemplars: K to 5 sample tasks](https://exemplars.com/sample-performance-tasks/math-samples-k-5)
@@ -248,3 +327,11 @@ Then I design, on paper first, with a review before any building.
 - [Mathnasium: patterns on a hundred chart](https://www.mathnasium.com/math-centers/lajolla/news/hundred-chart-number-patterns)
 - [Kennedy Center: composing and clapping rhythms, Grades 3 to 5](https://www.kennedy-center.org/education/resources-for-educators/classroom-resources/lessons-and-activities/lessons/3-5/composing-and-clapping-rhythms/)
 - [Stanford DREME: seeing patterns in music](https://dreme.stanford.edu/?p=3240)
+- [Rittle-Johnson and others: early maths knowledge and later achievement (Vanderbilt news)](https://news.vanderbilt.edu/2016/12/06/early-math-knowledge-related-to-later-achievement/)
+- [Kidd, Pasnak and others: instructing first-grade children on patterning](https://nssa.stanford.edu/studies/instructing-first-grade-children-patterning-improves-reading-and-mathematics)
+- [Blanton and others, 2015: an early algebra intervention in third grade](https://nctm.org/Publications/Journal-for-Research-in-Mathematics-Education/2015/Vol46/Issue1/The-Development-of-Children_s-Algebraic-Thinking_-The-Impact-of-a-Comprehensive-Early-Algebra-Intervention-in-Third-Grade)
+- [Does early algebra matter? Grades 3 to 5](https://cadrek12.org/resources/does-early-algebra-matter-effectiveness-early-algebra-intervention-grades-3-5)
+- [Institute of Education Sciences: Improving Mathematical Problem Solving in Grades 4 Through 8](https://ies.ed.gov/ncee/wwc/practiceguide/16)
+- [Victoria Department of Education: additive and multiplicative thinking](https://www.education.vic.gov.au/Documents/school/teachers/teachingresources/discipline/maths/assessment/additivemulti.pdf)
+- [Jacob and Willis: the development of multiplicative thinking](https://merga.net.au/wp-content/uploads/DOCS/common/Uploaded%20files/Annual%20Conference%20Proceedings/2003%20Annual%20Conference%20Proceedings/RR_jacob.pdf)
+- [Dave Hewitt: Train Spotters' Paradise (on NRICH)](https://nrich.maths.org/node/56112)
