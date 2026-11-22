@@ -304,8 +304,8 @@ var GMQFlyin = (function () {
       A('city', .095 * w + sh, hz, 320);
       // the Power Plaza tower (the game's towerDraw): two legs, three rungs and a lamp
       var tX = .655 * w + sh, tth = h * .36, half = w * .028, top = hz - tth, tr0 = Math.max(6, half * .45), TZ = 300, lite = hex('#c9d2df').concat(1), ink = tint(INK);
-      line(tX - half, hz, tX, top, 2.5, TZ, ink); line(tX, top, tX + half, hz, 2.5, TZ, ink); line(tX - half, hz, tX, top, 1.5, TZ, lite); line(tX, top, tX + half, hz, 1.5, TZ, lite);
-      for (i = 1; i < 4; i++) { var yy = hz - tth * i / 4, ww = half * (1 - i / 4); line(tX - ww, yy, tX + ww, yy, 1.5, TZ, lite); }
+      line(tX - half, hz, tX, top, 5, TZ, ink); line(tX, top, tX + half, hz, 5, TZ, ink); line(tX - half, hz, tX, top, 3, TZ, lite); line(tX, top, tX + half, hz, 3, TZ, lite);
+      for (i = 1; i < 4; i++) { var yy = hz - tth * i / 4, ww = half * (1 - i / 4); line(tX - ww, yy, tX + ww, yy, 3, TZ, lite); }
       disc(tX, top, tr0 + 1, TZ, ink); disc(tX, top, tr0 - 1, TZ, tint(opts.tower ? '#fff3a6' : '#6b7689'));
       if (opts.tower) (function () { var c = [0, 0, 0, 0]; R('glow', tX - tr0 * 5, top - tr0 * 5, tr0 * 10, tr0 * 10, TZ, c, function (o, t) { var a = .55 + .2 * Math.sin(t * 3); c[0] = a; c[1] = .94 * a; c[2] = .59 * a; }); })();
       for (i = 0; i < 9; i++) disc((i * .123 + .03) * w, hz + h * .012, h * .022 + (i % 3) * 3, 250, tint(i % 2 ? '#2f8a6c' : '#57b894'));
