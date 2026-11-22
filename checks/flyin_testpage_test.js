@@ -57,7 +57,8 @@ const read = p => p.evaluate(() => { const t = id => document.getElementById(id)
   for (const [ua, touch, brw, sys] of [
     ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15', 5, 'Safari 17.5', 'iPad, iPadOS 17.5 (Safari has the same number)'],
     ['Mozilla/5.0 (iPad; CPU OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Mobile/15E148 Safari/604.1', 5, 'Safari 15.6', 'iPad, iPadOS 15.8'],
-    ['Mozilla/5.0 (iPad; CPU OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.54 Mobile/15E148 Safari/604.1', 5, 'Chrome 126 for iPad', 'iPad, iPadOS 17.5'],
+    ['Mozilla/5.0 (iPad; CPU OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.54 Mobile/15E148 Safari/604.1', 5, 'Chrome 126', 'iPad, iPadOS 17.5'],
+    ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/158.0.8127.35 Mobile/15E148 Safari/604.1', 5, 'Chrome 158', 'iPhone, iOS 18.7'],
     ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15', 0, 'Safari 26.0', 'Mac']]) {
     const p = await open(820, 1180, { userAgent: ua }, `Object.defineProperty(Navigator.prototype, 'maxTouchPoints', { get: () => ${touch} });`); await p.waitForTimeout(300); const r = await read(p);
     say(r.brw === brw && r.sys === sys, `iPad words: expected "${brw}" / "${sys}", got "${r.brw}" / "${r.sys}"`); await p.close(); }

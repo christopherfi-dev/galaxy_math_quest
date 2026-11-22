@@ -108,8 +108,8 @@ button { font: inherit; font-weight: 700; color: #08121f; background: #6db3ff; b
     else if (/Macintosh/.test(ua)) sys = 'Mac';
     else if (/Windows/.test(ua)) sys = 'Windows';
     else if (/Linux/.test(ua)) sys = 'Linux';
-    if ((m = ua.match(/CriOS\/(\d+)/))) brw = 'Chrome ' + m[1] + ' for iPad';
-    else if ((m = ua.match(/FxiOS\/(\d+)/))) brw = 'Firefox ' + m[1] + ' for iPad';
+    if ((m = ua.match(/CriOS\/(\d+)/))) brw = 'Chrome ' + m[1];
+    else if ((m = ua.match(/FxiOS\/(\d+)/))) brw = 'Firefox ' + m[1];
     else if ((m = ua.match(/Edg(?:iOS|A)?\/(\d+)/))) brw = 'Edge ' + m[1];
     else if ((m = ua.match(/Version\/(\d+(?:\.\d+)?)[^ ]* (?:Mobile\/\S+ )?Safari/))) brw = 'Safari ' + m[1];
     else if ((m = ua.match(/Chrome\/(\d+)/))) brw = 'Chrome ' + m[1];
