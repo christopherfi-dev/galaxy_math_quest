@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 84</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><span class="note" id="t_ver">Sketch version 85</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -400,7 +400,8 @@ const ODDS = [['common', 70], ['rare', 25], ['gold', 5]];
 /* [Marc, 2026-11-21, agreed] the top card is called "epic", his word ("Common, rare, epic"). Saved games store it as 'gold', so only the name a child reads changes.
    The Lucky Draw ship parts keep "gold". */
 const CARDNAME = { common: 'common', rare: 'rare', gold: 'epic' }, aCard = r => `${r === 'gold' ? 'an' : 'a'} ${CARDNAME[r] || r} card`;
-const TOTAL_SECRETS = 25;   // 18 on the station, 7 on Voltara
+const TOTAL_SECRETS = 24;   // 18 on the station, 6 on Voltara. Nomad Hollow is where the quest goes, so it is not a secret (version 85).
+const secCount = () => S.secrets.filter(id => id !== 'hollow').length;
 /* the alien artifacts in the Engine Bay: four colours, and a shape for each so colour is never the only clue */
 const GEMC = [['red', '#ff7a6b', 'diamond'], ['blue', '#6db3ff', 'round'], ['green', '#6fd08a', 'triangle'], ['gold', '#ffd25e', 'square']];
 const DSLOT = [[3, 14], [5, 14], [7, 14], [9, 14], [3, 16], [5, 16], [8, 16], [10, 15]];   // where the practice drones hover
@@ -712,7 +713,7 @@ function fit() { deskSet(); const c = document.querySelector('.console'); if (!c
   const top = c.getBoundingClientRect().top + window.scrollY, room = Math.max(300, Math.min(window.innerHeight * .82, window.innerHeight - top - FIT.ctl - 26)), want = Math.round(widget ? Math.max(room, Math.min(window.innerHeight * .82, window.innerWidth * 1.5)) : room);      /* a task needs the room it had before; the word rows are not used while one is open */ if (Math.abs((parseFloat(c.style.height) || 0) - want) > 2) { c.style.minHeight = '0'; c.style.height = want + 'px'; if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); } }      /* the number pad and the small keys follow, or they would sit on top of what just moved */
 function fitSoon() { if (FIT.t) return; FIT.t = requestAnimationFrame(() => { FIT.t = 0; try { fit(); } catch (e) {} }); }
 function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
-  $('status').innerHTML = `<span class="chip${S.secrets.length ? ' on' : ''}">Secrets ${S.secrets.length} of ${TOTAL_SECRETS}</span>` +
+  $('status').innerHTML = `<span class="chip${secCount() ? ' on' : ''}">Secrets ${secCount()} of ${TOTAL_SECRETS}</span>` +
     `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.xy ? `<span class="chip${xCount() ? ' on' : ''}">Xylophora ${xCount()} of 5</span>` : ''}${S.sd ? `<span class="chip${sCount() ? ' on' : ''}">Stardust ${sCount()} of 5</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. ${REALON.on ? 'Purple tasks are done in real life, with your teacher.' : 'Every task is played here.'}</p>` +
@@ -749,7 +750,7 @@ function drawBag() {
 function mark() { const v = $('cmd').value.trim().split(' ')[0].toLowerCase(); $('verbs').querySelectorAll('.word').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
 function secret(id, text) {
   if (S.secrets.includes(id)) return; S.secrets.push(id); if (S.tut < 3) S.tut = 3; save(); drawStatus(); chime(); sparkle = { t: 1.2, x: P.x, y: P.y };
-  say(`${text} Secret ${S.secrets.length} of ${TOTAL_SECRETS}.`);
+  say(`${text} Secret ${secCount()} of ${TOTAL_SECRETS}.`);
 }
 function give(item) { if (!S.inv.includes(item)) S.inv.push(item); save(); drawBag(); beep(740, .1); floatText = { t: 1.4, text: '+ ' + ITEMS[item] }; }
 
@@ -2166,7 +2167,7 @@ function drawCargo() {        // the cargo pile and the big scale, drawn in the 
 function showEnding() {
   const rows = S.log.map(l => `<tr><td>${l.what}</td><td>${l.skill}</td><td>${l.result || (l.tries === l.need ? 'No mistakes ✓' : l.tries + ' tries')}</td></tr>`).join('');
   const t = $('report'); t.hidden = false; t.innerHTML = `<h3>Mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p><b>Secrets found: ${S.secrets.length} of ${TOTAL_SECRETS}.</b> ${S.secrets.length < TOTAL_SECRETS ? 'Eighteen are on the station. Seven are on Voltara.' : 'You found them all!'}</p>
+    <p><b>Secrets found: ${secCount()} of ${TOTAL_SECRETS}.</b> ${secCount() < TOTAL_SECRETS ? 'Eighteen are on the station. Six are on Voltara.' : 'You found them all!'}</p>
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
   $('again').onclick = restart;
 }
@@ -2943,7 +2944,7 @@ function planetState() { const v = V(), d = lastDay(); if (!d) return v.plan ? '
 const num = n => n.toLocaleString('en');
 function vWin(flag, text, gold) { closeToy(); if (flag) V()[flag] = true; save(); drawStatus(); chime(); card(gold ? 'gold' : undefined); say(text); }
 const VSEE = { river: 'The river sparkles like diamonds. A Gumblefish giggles in the water.', plaza: 'A wide plaza. A tall tower stands dark. A notice flaps on a post.', homes: 'Round houses and tall thin ones. Not one window is lit.', shops: 'Shops, a theatre and a big wheel. All of it is still.',
-  works: 'Factories and a silent solar plant.', hall: 'Three councillors look up. They seem tired, and glad to see you.', tunnel: 'Cold air. A thick cable hums on the wall.', hollow: 'Shelves of rock, and on them... tiny houses, each with one tiny light.' };
+  works: 'Factories and a silent solar plant.', hall: 'Three councillors look up. They seem tired, and glad to see you.', tunnel: 'Cold air. A thick cable hums on the wall.', hollow: 'A hidden town, deep under the hill! Shelves of rock, and on them... tiny houses, each with one tiny light.' };
 /* MUD RATS: an ambush in a dark street.
    [Source: Marc, 2026-11-18: "you're walking into the dark neighborhood and suddenly something pops up, and it says a band of mud rats attack you from the dark.
     You have one minute to defeat them all or you run back to your ship."]
@@ -2967,7 +2968,7 @@ function ratsEnd(win, lead) { const w = widget, v = V(), secs = w.t0 ? Math.max(
   S.log.push({ what: `Voltara: mud rats on ${CITY[w.k].street}`, skill: HAZ[w.lvl].skill, result: win ? `beaten: ${w.n} sums in ${secs} s, ${w.miss} slips` : `ran away: ${w.i || 0} of ${w.n} in ${secs} s` });
   if (win) { v.ratBeat = v.ratBeat || {}; v.ratBeat[w.k] = v.day; chime(); const got = creditWin(); save(); drawStatus(); return say(`The last mud rat squeaks and runs off into the dark. The band is beaten! ${got} Light this street, and the rats will not come back.`, null, 'rats beaten'); }
   vGo('meadow', .22); drawStatus(); say(`${lead} There are too many mud rats! You run all the way back to your ship. Catch your breath. The rats will rest for a while.`, null, 'rats ran'); }
-function vGo(sc, x) { V().sc = sc; RATS.due = ratsMay(sc) ? tNow + 1.6 : 0; PL.x = x; PL.to = null; PL.then = null; PL.fade = 1; V().been = V().been || []; save(); beep(420, .08); if (sc === 'hollow' && !S.secrets.includes('hollow')) secret('hollow', 'A hidden town, deep under the hill! Tiny lights fill the dark.'); }
+function vGo(sc, x) { V().sc = sc; RATS.due = ratsMay(sc) ? tNow + 1.6 : 0; PL.x = x; PL.to = null; PL.then = null; PL.fade = 1; V().been = V().been || []; save(); beep(420, .08); }
 
 /* ---------- things in each place ---------- */
 const VT = {
@@ -3015,7 +3016,7 @@ const VDO = {
   fountain: { look: () => V().plan ? (S.secrets.includes('coin') ? 'The fountain sparkles.' : 'The fountain runs again. Something shines in the water.') : 'A dry fountain. The pump has no power.',
     take: () => { if (!V().plan) return 'It is dry. Nothing is here.'; if (S.secrets.includes('coin')) return 'Only water now.'; secret('coin', 'You reach in. A lucky Voltara coin! You keep it.'); card(); }, use: () => VDO.fountain.take() },
   hall: { look: 'The Energy Council Hall. Its door is open.', go: () => { const nw = !(V().been || []).includes('hall'); vGo('hall', .1); if (nw) { V().been.push('hall'); save(); } return 'You step into the Council Hall.' + (nw ? ' ' + VSEE.hall : ''); }, open: () => VDO.hall.go(), use: () => VDO.hall.go() },
-  hatch: { look: 'A hatch in the ground. A low hum comes from under it. A cable runs down.', open: () => { vGo('tunnel', .08); return (has('stone') ? 'You climb down. Your glow stone lights the way. ' : 'You climb down. It is pitch dark. You cannot see the way on. ') + VSEE.tunnel; }, go: () => VDO.hatch.open(), use: () => VDO.hatch.open() },
+  hatch: { look: 'A hatch in the ground. A low hum comes from under it. A cable runs down.', open: () => { vGo('tunnel', .08); return (has('stone') ? 'You climb down. Your glow stone lights the way. ' : 'You climb down. It is pitch dark. Keep one hand on the humming cable, and you can follow it east. ') + VSEE.tunnel; }, go: () => VDO.hatch.open(), use: () => VDO.hatch.open() },
   exit: { look: 'The door back to the plaza.', go: () => { vGo('plaza', .8); return 'You step out into the plaza.'; }, open: () => VDO.exit.go(), use: () => VDO.exit.go() },
   map: { look: () => V().plan ? `A map of the city. ${V().plan.filter(i => i < 21).length} places are lit. ${21 - V().plan.filter(i => i < 21).length} are dark. ${planetState()}` : 'A map of the city: three streets and 21 places. Not one light is on.' },
   table: { look: () => V().plan ? `The plan table. It is day ${V().day}. The tower holds ${num(V().supply)}. ${V().planDay === V().day ? `Today's plan uses ${num(used())}.` : 'Today has no plan yet.'}` : 'The plan table. A small tower of light floats over it.',
@@ -3023,7 +3024,7 @@ const VDO = {
       if (!v.short) { startShort(); return 'Numbers float up over the table.'; } startPlan(); return v.final ? 'The places float over the table. Nomad Hollow is among them now.' : 'All 21 places float over the table.'; }, open: () => VDO.table.use() },
   council: { look: 'Three councillors. They look tired and kind.', talk: () => { const v = V(); if (!v.met) { v.met = true; give('ckey'); save(); drawStatus(); return 'The Council says: you came! Our city is dark. ' + councilSays(); } if (v.houses && !v.final) { startChoice(); return 'The Council listens.'; } return 'The Council says: ' + councilSays(); }, use: () => VDO.council.talk() },
   log: { look: () => `The tower log. It is day ${V().day}. The tower holds ${num(V().supply)}.${lastDay() ? ' ' + planetState() : ''}`, use: () => { const v = V(); if (v.planDay !== v.day) return `It is day ${v.day}. The tower holds ${num(v.supply)}. Make today's plan at the table first. The log reports in the morning.`; startLog(); return 'Night passes. You read the morning report.'; }, open: () => VDO.log.use() },
-  cable: { look: () => has('stone') ? 'A thick cable. It hums. A thin wire is clipped to it and runs east.' : 'You feel a cable. It hums. It is too dark to see more.', take: 'It is bolted to the wall.', push: 'It hums a little louder.' },
+  cable: { look: () => has('stone') ? 'A thick cable. It hums. A thin wire is clipped to it and runs east.' : 'You feel a thick cable. It hums, and it runs east into the dark. With one hand on it, you can follow it.', take: 'It is bolted to the wall.', push: 'It hums a little louder.' },
   tinydoor: { look: 'The tiny door, from the inside. It leads up to the meadow.' },
   elder: { look: 'A Number Nomad, no taller than your thumb. It has a long silver beard.', talk: () => { if (V().final) return powered(21) ? 'The elder says: thank you, neighbour. We have light, and we have mended one of your panels.' : 'The elder says: our lights are out. We understand. Energy is short. But it is very dark down here.'; if (V().houses) return 'The elder says: a cosmic storm stranded us here, long ago. We only wanted a little light. Please tell the Council.'; startHouses(); return 'The elder says: you found us! Please, count our homes before you judge us.'; }, use: () => VDO.elder.talk() },
   houses: { look: () => V().final && !powered(21) ? 'Tiny houses on shelves of rock. Their lights are out.' : 'Tiny houses on shelves of rock. Each has one tiny light. They sit in neat rows.', take: 'You would never take someone\'s home.', use: () => VDO.elder.talk() },
@@ -3037,7 +3038,7 @@ function spotDo(p, verb, it) { const on = powered(p.i), hurt = lastDay() && last
 function planetHint() { const v = V(); return !v.crossed ? (!v.fed ? (has('burst') ? 'Give the FlavorBurst to the Gumblefish at the river.' : 'The Gumblefish at the river is hungry. Take a FlavorBurst from the tree by your ship.') : 'Talk to the Gumblefish. Hop across the stones.')
   : !v.met ? 'Walk east to the Power Plaza. Go into the Council Hall and talk to the Council.' : !v.count ? 'Open the energy tower in the plaza. Count what is in it.'
   : !vDone('survey') ? `Use the board at the west end of ${CITY['RCI'.split('').find(c => !v.need[c])].street}.` : !v.plan ? 'Go to the Council Hall. Use the plan table.' : !v.lost ? 'Night must pass. Read the tower log in the Council Hall for the morning report.'
-  : !v.houses ? (!has('stone') ? 'The tunnel under Factory Row is dark. Dig by the tall tree in the meadow for a glow stone.' : V().sc === 'hollow' ? 'Talk to the elder.' : 'Open the hatch at the east end of Factory Row. Follow the cable east.')
+  : !v.houses ? (V().sc === 'hollow' ? 'Talk to the elder.' : V().sc === 'tunnel' && !has('stone') ? 'Keep one hand on the humming cable and walk east. It is slow in the dark. A glow stone would light the way: the butterfly knows where one is.' : 'Open the hatch at the east end of Factory Row. Follow the cable east.')
   : !v.final ? 'Go to the Council Hall. Tell the Council what you found.' : v.planDay !== v.day ? 'A new day. Go to the Council Hall and make today\'s plan. Nomad Hollow is on the table now.' : 'Read the tower log to see how the day went. Or fly on from your ship.'; }
 function vCross() { PL.to = PL.x < .5 ? .84 : .16; return 'You hop across the stones.'; }
 
@@ -3072,19 +3073,20 @@ function actPlanet(text, out) {
   const run = () => { let r; if (best.spot) r = spotDo(best.spot, v, item); else { const d = VDO[best.id] || {}, h = d[v === 'go' ? (d.go ? 'go' : 'look') : v]; r = typeof h === 'function' ? h(item) : h; if (r === undefined && h !== undefined) return; r = r || (v === 'eat' ? 'You cannot eat that.' : NOPE[v]) || 'Nothing happens.'; } if (r !== undefined && r !== true) say(r); };
   if (best.x == null) return run();
   let tx = best.x + (Math.abs(PL.x - best.x) < .03 ? 0 : -.035 * (PL.x < best.x ? 1 : -1)); if (sc === 'river' && !v0.crossed) tx = Math.min(tx, .19); if (sc === 'river' && v0.crossed && tx > .22 && tx < .78) tx = PL.x < .5 ? .19 : .81;
-  if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); PL.to = tx; PL.then = run;
+  PL.to = tx; PL.then = run;
 }
 function vWalkOut(d) { strayed(); const sc = V().sc, to = VSC[sc][d]; if (!to) return sc === 'meadow' && d === 'w' ? 'Thick glowing woods. You cannot go that way.' : 'You cannot go that way.';
   if (sc === 'river' && d === 'e' && !V().crossed) { PL.to = .19; return V().fed ? 'The stones wait. Talk to the Gumblefish to cross.' : 'The river is too wide and deep. You need a way across.'; }
-  if (sc === 'tunnel' && d === 'e' && !has('stone')) return 'It is pitch dark. You cannot see the way. You need a light.';
-  PL.to = d === 'e' ? 1.02 : -.02; PL.then = () => { vGo(to, d === 'e' ? (to === 'hall' ? .1 : .05) : (sc === 'hall' ? .8 : .95)); const nw = !V().been.includes(to) && !(to !== 'hall' && VSC[to].k && V().plan); if (!V().been.includes(to)) { V().been.push(to); save(); } say(`You reach ${VSC[to].at}.${nw && VSEE[to] ? ' ' + VSEE[to] : ''}`); }; return `You walk ${d === 'e' ? 'east' : 'west'}.`; }
+  /* [Marc, 2026-11-22, agreed: V2 in GMQ_Secrets_Balance_v1] the glow stone helps, and is never needed: in the dark the cadet follows the cable, slowly */
+  const feel = sc === 'tunnel' && !has('stone') ? 'You keep one hand on the humming cable and shuffle ' + (d === 'e' ? 'east' : 'west') + ' in the dark. It is slow. ' : '';
+  PL.to = d === 'e' ? 1.02 : -.02; PL.then = () => { vGo(to, d === 'e' ? (to === 'hall' ? .1 : .05) : (sc === 'hall' ? .8 : .95)); const nw = !V().been.includes(to) && !(to !== 'hall' && VSC[to].k && V().plan); if (!V().been.includes(to)) { V().been.push(to); save(); } say(`You reach ${VSC[to].at}.${nw && VSEE[to] ? ' ' + VSEE[to] : ''}`); }; return feel || `You walk ${d === 'e' ? 'east' : 'west'}.`; }
 function tapPlanet(e) {
   const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, draft = $('cmd').value.trim().toLowerCase(), sc = V().sc;
   if (widget) return say('Finish this first. Or tap Leave.');
   if (x > .93 && VSC[sc].e) return say(vWalkOut('e')); if (x < .07 && VSC[sc].w) return say(vWalkOut('w'));
   const near = vThings().filter(t => t.x != null && Math.abs(t.x - x) < (t.spot ? .045 : .06) && y > .2).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0], id = near || (y < .14 && !VSC[sc].inside ? { words: ['sky'] } : null);
   if (id) return act(`${/^(look|take|open|push|use|talk|eat)$/.test(draft) ? draft : id.tap || 'look'} ${id.spot ? id.spot.name.toLowerCase() : id.words[0]}`);
-  let tx = Math.max(.03, Math.min(.97, x)); if (sc === 'river' && !V().crossed) tx = Math.min(tx, .19); if (sc === 'river' && V().crossed && tx > .22 && tx < .78) return say(vCross()); if (sc === 'tunnel' && !has('stone')) tx = Math.min(tx, .2); strayed(); PL.to = tx; PL.then = null;
+  let tx = Math.max(.03, Math.min(.97, x)); if (sc === 'river' && !V().crossed) tx = Math.min(tx, .19); if (sc === 'river' && V().crossed && tx > .22 && tx < .78) return say(vCross()); strayed(); PL.to = tx; PL.then = null;
 }
 
 /* ---------- the maths that opens the way. Each one starts by showing the idea. ---------- */
@@ -3388,9 +3390,9 @@ function drawHollow(w, h, hz, gy, par) { const g = cx.createRadialGradient(w * .
   const ex = w * .2; cx.fillStyle = '#e8e0ff'; cx.fillRect(ex - 4, gy - h * .06, 8, h * .06); cx.fillStyle = '#ff9ec4'; cx.beginPath(); cx.ellipse(ex, gy - h * .06, w * .028, h * .022, 0, Math.PI, 0); cx.fill(); ol(2);
   const er = Math.max(5, h * .014), ey = gy - h * .085 - er; cx.fillStyle = '#8ff5d6'; circ(ex, ey, er); cx.fill(); ol(1.5); cx.fillStyle = '#e8eef8'; cx.beginPath(); cx.moveTo(ex - er * .5, ey + er * .3); cx.lineTo(ex, ey + er * 2); cx.lineTo(ex + er * .5, ey + er * .3); cx.fill(); cx.fillStyle = INK; circ(ex - er * .3, ey - er * .1, 1.5); cx.fill(); circ(ex + er * .3, ey - er * .1, 1.5); cx.fill(); }
 const VDRAW = { meadow: drawMeadow, river: drawRiverScene, plaza: drawPlaza, homes: drawStreet, shops: drawStreet, works: drawStreet, hall: drawHall, tunnel: drawTunnel, hollow: drawHollow };
-function drawPlanet(dt) { ratsTick();
+function drawPlanet(dt) { ratsTick(); const slowDark = V().sc === 'tunnel' && !has('stone');
   const w = vw, h = Math.max(220, vh), hz = h * .56, gy = h * .86;
-  if (PL.to != null) { const d = PL.to - PL.x, st = .3 * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
+  if (PL.to != null) { const d = PL.to - PL.x, st = (slowDark ? .13 : .3) * dt; PL.step += dt; PL.idle = 0; if (d) PL.face = d > 0 ? 1 : -1; if (Math.abs(d) <= st) { PL.x = PL.to; PL.to = null; const f = PL.then; PL.then = null; if (f) f(); } else PL.x += Math.sign(d) * st; } else PL.idle = (PL.idle || 0) + dt;
   const v = V(), sc = v.sc, par = PL.x - .5;      // read the place only after the step: a step can carry you into the next place
   VDRAW[sc](w, h, hz, gy, par);
   if (v.smoke && sc !== 'hall' && sc !== 'tunnel' && sc !== 'hollow') { const g = cx.createLinearGradient(0, 0, 0, gy), al = Math.min(.62, .12 + v.smoke / 260); g.addColorStop(0, `rgba(84,62,44,${al})`); g.addColorStop(.7, `rgba(96,76,58,${al * .7})`); g.addColorStop(1, 'rgba(96,76,58,0)'); cx.fillStyle = g; cx.fillRect(0, 0, w, gy); }   /* smoke from the Factory: the more days it ran, the browner the sky */
@@ -3399,7 +3401,7 @@ function drawPlanet(dt) { ratsTick();
   if (sc === 'meadow') frontMeadow(w, h, hz, gy, par);
   if (sc === 'tunnel') { const X = PL.x * w, Y = gy - s * .5, R = has('stone') ? Math.max(w, h) * .95 : h * .13, g = cx.createRadialGradient(X, Y, R * .25, X, Y, R); g.addColorStop(0, has('stone') ? 'rgba(150,255,230,.1)' : 'rgba(0,0,0,0)'); g.addColorStop(1, has('stone') ? 'rgba(2,2,8,.8)' : 'rgba(2,2,8,.97)'); cx.fillStyle = g; cx.fillRect(0, 0, w, vh); }
   if (!widget) { const worn = VSC[sc].k && streetNames(w, CITY[VSC[sc].k].places.length); for (const t of vThings()) { if (t.x == null || Math.abs(PL.x - t.x) > (t.spot ? .07 : .11) || (t.spot && worn) || (t.id === 'board' && V().met && !V().need[VSC[sc].k])) continue; pill(t.label, Math.max(50, Math.min(w - 50, t.x * w)), t.spot ? gy + h * .045 : sc === 'hall' && t.id === 'council' ? gy - h * .42 : gy - h * .27 - (t.id === 'tree' ? h * .28 : t.id === 'tower' ? h * .2 : 0)); }
-    cx.font = `700 ${Math.max(12, Math.min(16, w * .02))}px "Chakra Petch", sans-serif`; for (const [d, X, al] of [['e', w - 10, 'right'], ['w', 10, 'left']]) { const to = VSC[sc][d]; if (!to || (sc === 'river' && d === 'e' && !v.crossed) || (sc === 'tunnel' && d === 'e' && !has('stone'))) continue; const t = d === 'e' ? `${VSC[to].name} »` : `« ${VSC[to].name}`, tw = cx.measureText(t).width + 16; cx.fillStyle = 'rgba(6,9,18,.82)'; rr(d === 'e' ? X - tw : X, gy + h * .055, tw, 24, 7); cx.fill(); cx.fillStyle = '#ffcf5a'; cx.textAlign = al; cx.textBaseline = 'middle'; cx.fillText(t, d === 'e' ? X - 8 : X + 8, gy + h * .055 + 13); cx.textBaseline = 'alphabetic'; }
+    cx.font = `700 ${Math.max(12, Math.min(16, w * .02))}px "Chakra Petch", sans-serif`; for (const [d, X, al] of [['e', w - 10, 'right'], ['w', 10, 'left']]) { const to = VSC[sc][d]; if (!to || (sc === 'river' && d === 'e' && !v.crossed)) continue; const t = d === 'e' ? `${VSC[to].name} »` : `« ${VSC[to].name}`, tw = cx.measureText(t).width + 16; cx.fillStyle = 'rgba(6,9,18,.82)'; rr(d === 'e' ? X - tw : X, gy + h * .055, tw, 24, 7); cx.fill(); cx.fillStyle = '#ffcf5a'; cx.textAlign = al; cx.textBaseline = 'middle'; cx.fillText(t, d === 'e' ? X - 8 : X + 8, gy + h * .055 + 13); cx.textBaseline = 'alphabetic'; }
     // a strip map: where you are on Voltara
     const order = ['meadow', 'river', 'plaza', 'homes', 'shops', 'works'], small = w < 520, mw = small ? w * .3 : Math.min(w * .5, 230), mx = w - mw - 12, myy = 16; cx.fillStyle = 'rgba(6,9,18,.75)'; rr(mx - 8, myy - 10, mw + 16, small ? 20 : 30, 8); cx.fill(); cx.strokeStyle = '#59657a'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(mx + 6, myy); cx.lineTo(mx + mw - 6, myy); cx.stroke();
     order.forEach((o, i) => { const X = mx + 6 + (mw - 12) * i / 5, here = o === sc || (sc === 'hall' && o === 'plaza') || ((sc === 'tunnel' || sc === 'hollow') && o === 'works'); cx.fillStyle = here ? '#ffb23e' : '#6d8fc0'; circ(X, myy, here ? 6 : 4); cx.fill(); if (here && !small) { cx.fillStyle = '#fff'; cx.font = '700 10px "Chakra Petch", sans-serif'; cx.textAlign = i > 3 ? 'right' : i < 2 ? 'left' : 'center'; cx.fillText(VSC[sc].name.toUpperCase(), X, myy + 16); } }); cx.textAlign = 'left'; }

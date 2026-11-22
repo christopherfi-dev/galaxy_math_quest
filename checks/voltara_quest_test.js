@@ -124,9 +124,13 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     { const dk = await p.evaluate(() => lastDay().dark.join(', ')); if (dk !== 'Schools, Bus Stop, Recycling Plant, Gas Station') bad.push(name + ': the night should have left four harms: ' + dk); }
     expect(await say('look zoo'), /uses 30 energy\. Lit, it makes 30 people happy\..*lights are on/, 'a lit place tells its values'); expect(await say('look schools'), /Dark, it makes 60 people unhappy.*Last night: The schools stayed shut/, 'a dark place tells what happened');
     await walk('east', 2); expect(await at(), /works/, 'Factory Row'); expect(await say('look solar'), /uses 250 energy.*gives 600 energy tomorrow/, 'the solar plant tells what it gives'); expect(await say('look factory'), /gives 500 energy tomorrow\. But its smoke/, 'the Factory tells its trade-off');
-    expect(await say('open hatch'), /pitch dark/, 'the tunnel without a light'); expect(await say('go east'), /pitch dark|need a light/, 'the dark stops you');
-    expect(await say('hint'), /glow stone/, 'the hint sends you for a light');
-    // ---- all the way back to the meadow for the glow stone. The world stays walkable.
+    // [Marc, 2026-11-22, agreed: V2] the glow stone helps, and is never needed: in the dark the cadet follows the humming cable, slowly
+    expect(await say('open hatch'), /pitch dark\. Keep one hand on the humming cable/, 'the tunnel without a light'); expect(await say('look cable'), /With one hand on it, you can follow it/, 'the cable, felt in the dark');
+    expect(await say('hint'), /humming cable.*glow stone would light the way/, 'the hint: follow the cable; a light would help');
+    await say('go east'); expect(await p.evaluate(() => lines.slice(-4).map(l => l.text || '').join(' | ')), /shuffle east in the dark\. It is slow/, 'the dark slows you, and does not stop you'); expect(await at(), /hollow/, 'Nomad Hollow, reached in the dark');
+    if (!(await p.evaluate(() => !S.secrets.includes('hollow') && secCount() === S.secrets.length))) bad.push(name + ': Nomad Hollow is not a secret');
+    await say('go west'); expect(await at(), /tunnel/, 'back in the tunnel, from the lit hollow');
+    // ---- all the way back to the meadow for the glow stone anyway, and the other secrets. The world stays walkable.
     await say('go west'); await walk('west', 5); expect(await at(), /meadow/, 'back at the meadow'); await say('look tree'); expect(await say('dig'), /glow stone/, 'dig up the glow stone'); expect(await say('push rock'), /tiny door/, 'the rock'); expect(await say('open door'), /tiny voices/, 'the tiny door'); await say('take fruit');
     await walk('east', 3); expect(await say('give fruit to zebra'), /happy dance/, 'feed the zebra'); await say('go east'); expect(await say('ride wheel'), /ride the big wheel/, 'ride the wheel, lit by the plan');
     await say('go east'); await say('open hatch'); expect(await at(), /tunnel/, 'the tunnel'); await shot('12_tunnel'); await say('go east'); expect(await at(), /hollow/, 'the hidden town'); await p.waitForTimeout(400); await shot('13_hollow');
@@ -169,9 +173,9 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     // ---- come back: Voltara is as you left it
     await say('land'); { const back = await p.evaluate(() => ({ mode: S.mode, day: V().day, supply: V().supply, smoke: V().smoke, hist: V().hist.length })); if (back.mode !== 'planet' || back.day !== 6 || back.supply !== 1170 || back.smoke !== 60 || back.hist !== 5) bad.push(name + ': coming back should find Voltara as you left it: ' + JSON.stringify(back)); }
     await say('fly'); await p.click('#try'); await p.waitForTimeout(300);
-    const st = await p.evaluate(() => ({ steps: STEPS.filter(s => vDone(s[0])).length, secrets: S.secrets.filter(s => ['fruit', 'stone', 'door', 'hollow', 'coin', 'zebra', 'wheel'].includes(s)).length, gold: S.cards.filter(c => c.r === 'gold').length, cards: S.cards.length, mode: S.mode, side: document.documentElement.scrollWidth > innerWidth + 1, mission: $('mission').innerText.includes('9 of 9') }));
-    if (st.steps !== 9 || st.secrets !== 7 || st.gold < 1 || st.mode !== 'space' || st.side || !st.mission) bad.push(name + ': end state ' + JSON.stringify(st));
-    console.log(`${name}: ${st.steps} of 9 mission steps, ${st.secrets} of 7 Voltara secrets, ${st.cards} cards, gold: ${st.gold > 0}, flew away: ${st.mode === 'space'}`);
+    const st = await p.evaluate(() => ({ steps: STEPS.filter(s => vDone(s[0])).length, secrets: S.secrets.filter(s => ['fruit', 'stone', 'door', 'coin', 'zebra', 'wheel'].includes(s)).length, gold: S.cards.filter(c => c.r === 'gold').length, cards: S.cards.length, mode: S.mode, side: document.documentElement.scrollWidth > innerWidth + 1, mission: $('mission').innerText.includes('9 of 9') }));
+    if (st.steps !== 9 || st.secrets !== 6 || st.gold < 1 || st.mode !== 'space' || st.side || !st.mission) bad.push(name + ': end state ' + JSON.stringify(st));
+    console.log(`${name}: ${st.steps} of 9 mission steps, ${st.secrets} of 6 Voltara secrets, ${st.cards} cards, gold: ${st.gold > 0}, flew away: ${st.mode === 'space'}`);
     await ctx.close();
   }
   for (const t of bad) console.log('  PROBLEM', t);

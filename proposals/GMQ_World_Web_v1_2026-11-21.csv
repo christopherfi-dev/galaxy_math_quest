@@ -25,15 +25,15 @@ chrono_land,landing on Chronosia,land,chronosia,built,,Fly to Galaxy Metrica.,,v
 xylo_land,landing on Xylophora,land,xylophora,built,,Fly to Galaxy Metrica.,,voltara_land,,no,,,[built],
 sd_land,boarding the mission ship,land,stardust,built,,Fly to Galaxy Databa.,,voltara_land,,no,,,[built],
 butterfly,butterfly,person,voltara,built,"greeter, teller",Talk to it in the meadow.,,voltara_land,Tells you to dig by the tall tree.,no,,,[built],
-glow_stone,glow stone,item,voltara,built,,Dig by the tall tree.,,voltara_land,Voltara: lights the tunnel under Factory Row.,no,,,[built],yes
+glow_stone,glow stone,item,voltara,built,,Dig by the tall tree.,,voltara_land,"Voltara: lights the tunnel, and shows the thin wire clipped to the cable. A helper: the tunnel can be crossed slowly in the dark without it (version 85).",no,,helper,[built],yes
 burst,FlavorBurst,item,voltara,built,,Take one from the fruit tree.,,voltara_land,Voltara: feeds the Gumblefish and the zebra.,no,,,[built],
 gumblefish,Gumblefish,person,voltara,built,asker,Talk to it at the river.,Add 2-digit numbers (shells); number hops (stones),burst,Its shells; then the stepping stones across the river.,no,,,[built],
 zebra,six-legged zebra,find,voltara,built,,Give it a FlavorBurst.,,burst,A card.,no,,,[built],yes
 tinydoor,tiny door behind the rock,find,voltara,built,,Push the loose rock.,,voltara_land,The Nomads' door. Locked from inside.,no,,pointer,[built],yes
 council,Energy Council,person,voltara,built,"asker, giver",Talk to them in the Council Hall.,,voltara_land,Gives the crystal key. The energy crisis.,no,,,[built],
 ckey,crystal key,item,voltara,built,,From the Council.,,council,Voltara: opens the energy tower.,no,,,[built],
-tunnel,tunnel under Factory Row,place,voltara,built,,Open the humming hatch.,,glow_stone,The way to the Nomads.,no,,,[built],
-hollow,Nomad Hollow,place,voltara,built,,Follow the cable east through the tunnel.,,tunnel,The Number Nomads' hidden town.,no,,,[built],yes
+tunnel,tunnel under Factory Row,place,voltara,built,,"Open the humming hatch. In the dark, follow the humming cable slowly (version 85).",,voltara_land,The way to the Nomads.,no,,,[built],
+hollow,Nomad Hollow,place,voltara,built,,Follow the cable east through the tunnel.,,tunnel,The Number Nomads' hidden town.,no,,,[built],
 elder,Nomad elder,person,voltara,built,asker,Talk to the elder in the Hollow.,,hollow,The Nomads need light.,no,,,[built],
 voltara_quest,the city's power plan,job,voltara,built,,"Count the tower, then plan the power day by day.","Add and subtract within 1,000; equal groups",ckey;elder,The city and the Nomads have light.,yes,,,[built],
 coin,lucky Voltara coin,find,voltara,built,,Reach into the fountain once it runs again.,,voltara_quest,You keep it. Nothing else.,no,,,[built],yes

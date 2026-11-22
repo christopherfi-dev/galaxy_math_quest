@@ -150,6 +150,14 @@ I counted from the game's code. "Leads somewhere" means a helper, a place, a clu
 
 ## 6. Voltara: the glow stone, and Nomad Hollow
 
+**Decided 22 November: V2** (Marc: "I agree with your recommendations"). **Built in version 85, on the preview link:**
+- In the dark, the cadet keeps one hand on the humming cable and shuffles east, at less than half speed.
+- With the glow stone, the tunnel is lit, the walk is quick, and the thin wire clipped to the cable shows. That wire is a clue to where the energy goes.
+- Reaching Nomad Hollow is no longer counted as a secret. Its words stay ("A hidden town, deep under the hill!"). The count is now 24: 18 on the station, 6 on Voltara.
+- The world web check now finds no job and no landing that needs a secret, anywhere in the game.
+
+The options as they were laid out:
+
 The butterfly tells you to dig by the tall tree, and the hint repeats it. So the glow stone is not hidden. But it is counted as a secret, and the quest cannot go on without it.
 
 | | Option | What a child meets | Cost |
