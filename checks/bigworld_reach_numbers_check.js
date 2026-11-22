@@ -9,6 +9,7 @@
 //     - no fit needs more than 10 rafts (every fact inside 10 x 10); no order over 81, under 12, or 24 (the baker's example)
 //     - the harbour has the rafts for 1 or 2 plans that serve all three towns, never none and never more
 //     - a trap: a line right for its own town, with rafts that are there, that no full plan uses
+//     - no right plan has three lines of the same length, and no right plan uses every raft in the harbour
 //     - no kind has more than 9 rafts
 //     - the page's own list of plans agrees with this file's
 //   Nothing sails until all three lines are right, so no line a child sets can ever make the job impossible. (That is in the page's code, not a number rule.)
@@ -40,6 +41,8 @@ for (let seed = 1; seed <= N; seed++) { const g = bwFleet(seed); if (!g) { say(f
   say(bwFleetPlans(K, g.count, orders).full.length === fullPlans.length, `seed ${seed}: the page counts another number of plans`);
   let trap = 0, real = 0; fits.forEach((f, i) => { let here = 0; f.forEach(q => { if (q.n > g.count[q.k]) return; here++; if (!fullPlans.some(pl => pl[i].k === q.k)) trap++; }); if (here >= 2) real++; });
   say(trap >= 1, `seed ${seed}: no trap`);
+  // a plan must not fall to a rule of thumb: 'the same number for every town', or 'use every raft'   [the reviewer of the Reach's pictures, child 7]
+  fullPlans.forEach(pl => { say(!(pl[0].n === pl[1].n && pl[1].n === pl[2].n), `seed ${seed}: all three lines are the same length`); say(pl.reduce((x, q) => x + q.n, 0) < K.reduce((x, k) => x + g.count[k], 0), `seed ${seed}: a right plan uses every raft in the harbour`); });
   fullPlans[0].forEach(q => { stat.lines++; if (q.k >= 7 || q.n >= 7) stat.hard++; });
   const total = K.reduce((t, k) => t + g.count[k], 0); stat.rafts += total; stat.maxRafts = Math.max(stat.maxRafts, total); stat.kinds[K.join('-')] = 1; stat.choices += fits.filter(f => f.length >= 2).length; stat.real += real; stat.maxOrder = Math.max(stat.maxOrder, ...orders);
   // the well
