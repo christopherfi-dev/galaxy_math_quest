@@ -51,14 +51,11 @@ It is built as **its own page first** (`docs/bigworld/index.html`), so it never 
   - Lessons end. The save must put a child back exactly where they were.
 - **The surprise he likes** (18 November): walking somewhere and something unexpected happens.
 
-## 3. Which planet: **decided. A new world, Algora, in Galaxy Patternox.**
+## 3. Which planet
 
-[Source: Marc, 2026-11-22, after the main thread recommended option A: "Can you [make] the new world - Algora. Or something?"]
-- **The name is his:** Algora. "Or something?" means he may still change it. Use Algora until he does.
-- **Read as option A below:** a new planet in Galaxy Patternox, the galaxy of rules, and the final planet. If his first message to you says otherwise, follow him.
-- **What the name can carry** [Proposal]: it sounds like *algebra* and *agora*, an old word for a town's meeting place. A planet where groups of aliens meet, trade and live by rules fits both.
+**Update, 22 November:** the big world thread chose option A: **Algora**, a new planet in Galaxy Patternox. The name and the planet are its proposals. Its design note (section 11) lists them among the choices that are Marc's. (The main thread first wrote that Marc had named it. That was a misreading, now corrected.)
 
-The main thread's analysis, kept for the record:
+The main thread's analysis:
 
 | | Option | For | Against |
 |---|---|---|---|
@@ -157,34 +154,13 @@ All of it is in the main thread's file, `prototypes/kis_station_sketch.html`. **
 
 ## 7. The phases. Stop at each one and report to Marc.
 
-### Tonight: what you can do before Marc wakes up
+### The first night: done
 
-Marc asked what the thread can do in one night. Work in this order, and do not wait for answers you can default.
-
-**Defaults for the open questions,** each a [Proposal] that Marc can change in the morning:
-
-| Question | Default tonight |
-|---|---|
-| Which planet | Algora, a new planet in Patternox (decided) |
-| The Clockmaker | Keep him out of the first draft. Offer him in the design note as an option. |
-| Grade 4 extra lands | Later. Leave room for them on the map. |
-| What the children call Marc | Use no teacher name on the page. |
-
-**The night's work:**
-1. **The size test** (Phase 0): measured on the three screen sizes, with the numbers written down. It is on the site, ready for Marc to try on the old iPad in the morning.
-2. **The design note** (Phase 1), with a picture of the map. An independent reviewer reads it. Fix what it finds.
-3. **A first draft you can walk in** (the start of Phase 2), labelled "draft, for Marc to redirect":
-   - the scrolling map, mist, tap-to-walk, the map the child can open, and "what I still need"
-   - one region with its group of aliens, their problem, a finished example, its gate, and one side-view inside
-   - its number rule checked on thousands of seeds, a play test, and pictures at three sizes
-4. **The morning report:** the links, the pictures, and what is decided versus proposed. Put Marc's decisions in one short list at the end.
-
-**Stop before:** a second region, the link into the main game, or anything in section 10's "never touch" list.
-- One region done well is worth more than three rushed. [Source: Marc: "Focusing on speed over quality and depth breaks everything."]
+The thread worked through the first night on 22 November: the size test, the design note, the first region (the Mender Meadow), three reviews, and the next region's design. See `proposals/GMQ_Big_World_Report_2026-11-22.md` on its branch.
 
 ### Phase 0: ask, and measure (small)
 
-1. **Ask Marc** (tonight, use the defaults above instead of waiting):
+1. **Ask Marc:**
    - Should the Clockmaker be there?
    - Grade 4 extra lands now, or later?
    - What do the children call him, for words on the page?
