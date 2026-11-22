@@ -48,9 +48,13 @@ Here is how I read the problem.
 - **You were right, and the page was wrong in two ways.** A block card played against a higher attack card did nothing at all. And every common or rare block card carried a warning, even when no higher card was in play.
 - **Now a lower shield card always stops the ship's regular AP.** Only the part that the higher card adds gets past it. This is the same law as section 1f, now for every shield card:
   - **Your shield is broken:** the card puts up a shield of its own kind. The ship's AP goes into it. The higher card's part goes through.
-  - **Your shield is still up:** the card takes its number off the ship's AP, whatever card the other player used. Ten-Tile Wall against Hundred Cannon (100 = 55 + 45): 10 is blocked, 90 goes on.
+  - **Your shield is still up:** the card takes its number off the ship's AP. Ten-Tile Wall (common) against Twin Tens (rare, 75 = 55 + 20): 10 is blocked, 65 goes on.
 - **The warnings are gone.** No card is marked "cannot block". The opened card says what it will do, in numbers.
-- **What is left of "a common card cannot block a rare attack card":** a lower card can never block the part the higher card adds. It only matters when the block is bigger than the ship's own attack. Example: a ship with only its Weapons (AP 20) plays Doubling Drive (20 + 20). Quarter Wall (25) stops the 20, and the card's 20 gets through.
+- **The exception, in your words: "Unless the gold card is multiplying the normal AP attack."** A card that works on the AP itself leaves no regular AP for a lower shield to stop. The whole attack is the card's, and all of it gets past.
+  - Doubling Drive (110) against a rare shield of 20 that a card put up: all 110 goes through to the parts. The shield is not touched.
+  - Hundred Cannon (100) against Ten-Tile Wall with your shield still up: the wall stops none of it. The opened card says so: "Its epic card works on the whole attack, so this card stops none of it."
+  - **My reading, for you to confirm:** both epic attack cards count, because both work on the AP itself. Doubling Drive doubles it. Hundred Cannon rounds it up to the next hundred. Cards that add a number (+5 to +20, and All Hands Fire) do not count: only the number they add gets past.
+  - The shield you start with, an epic shield (Shield Reborn) and Vanishing Act still stop these two cards.
 - **Your saved settings were cleared once more,** so that your phone and iPad start on these rules.
 
 ---
@@ -180,7 +184,7 @@ You said: *"the epic attack, like the add 40 to your attack... The +40 gets thro
 |---|---|---|
 | **A battle lasts (random play / clever play)** | 11 / 14 rounds | 11 / 14 rounds |
 | **An attack goes through a shield** | never | about once every one or two battles |
-| **How much goes through, each time** | | about 32 points |
+| **How much goes through, each time** | | about 50 points (it was about 32 before the exception for multiplying cards) |
 | **Battles that got stuck** | 0 | 0 |
 
 **Five readings I had to make** [each is yours to change]
@@ -374,7 +378,8 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 1,987 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,010 checks, all pass. It checks:
+  - the exception for a card that multiplies the AP: the opened card says the whole attack goes through, you are asked to place all of it, and the lower shield is not touched;
   - no card is ever marked "cannot block"; no ship is marked as hitting first; "How" says both attacks land together;
   - the opened card at six real screen sizes, with the browser's own bars taken off (two iPhones upright, two phones sideways, iPad both ways): the picture, "Give this order" and "Back" are inside the screen for every card in the hand, and the button works;
   - a shield with a kind: the bubble wears its colour and name; the opened card says what will go through; you are asked to place exactly that; the shield soaks the ship's own attack;
@@ -396,7 +401,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 129 million checks, all pass. It tests each of your rulings of 22 November by hand: both attacks landing together (and turn order with its switch on), a lower block card still stopping the ship's own AP, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 135 million checks, all pass. It tests each of your rulings of 22 November by hand: both attacks landing together (and turn order with its switch on), a lower block card still stopping the ship's own AP, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.

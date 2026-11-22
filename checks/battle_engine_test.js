@@ -43,8 +43,9 @@ function play(opts, k0, k1, sd, keep) {
       // Marc, 22 November: a lower card cannot block a higher attack card
       if (opts.kindBlock && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d])) {
         if (!opts.shieldKind) ok(L.block[i] === 0, 'with the old rule switched on, a lower block card does not block a higher attack card at all', B.card(L.card[i]).name + ' against ' + B.card(L.card[d]).name);
-        else ok(L.block[i] >= 0 && L.block[i] <= Math.max(0, L.atk[d] - L.bonus[d]), 'a lower block card blocks no more than the ship\'s own attack: never the part a higher attack card adds', JSON.stringify([L.block[i], L.atk[d], L.bonus[d]]));
+        else ok(L.block[i] >= 0 && L.block[i] <= Math.max(0, L.atk[d] - L.special[d]), 'a lower block card blocks no more than the ship\'s own attack: never the part a higher attack card adds', JSON.stringify([L.block[i], L.atk[d], L.special[d]]));
       }
+      { const cd = B.card(L.card[d]), mult = cd.ops.some(o => o.op === 'atk_double' || o.op === 'atk_round100'); ok(L.atk[d] === 0 || L.special[d] === (mult ? L.atk[d] : L.bonus[d]), 'the card\'s part of an attack is what it adds, or the whole attack when it doubles or rounds up the AP', JSON.stringify([cd.name, L.atk[d], L.bonus[d], L.special[d]])); }
       ok(!L.capped[i] || (opts.shieldKind && opts.kindBlock && B.rank(L.card[i]) < B.rank(L.card[d])), 'a block is only held to the ship\'s own attack when the attack card is of a higher kind');
       if (!opts.kindBlock && L.snap.sg[i] && c.ops.some(o => o.op === 'block')) ok(L.block[i] > 0 || L.raised[i] > 0, 'with the rule off, any block card blocks, or puts the shield back up');
       // Marc's idea of 22 November: a block card on a broken shield puts the shield back up, when that choice is on
@@ -76,7 +77,7 @@ function play(opts, k0, k1, sd, keep) {
       const pc = L.pierce[i];
       if (pc > 0) {
         ok(opts.shieldKind && opts.kindBlock && L.snap.shieldOn[i] && L.snap.skind[i] >= 0 && B.card(L.card[d]).type === 'attack' && B.rank(L.card[d]) > L.snap.skind[i], 'an attack goes through a shield only when a card put that shield up and the attack card is of a higher kind', JSON.stringify([L.snap.skind, B.card(L.card[d]).name]));
-        ok(pc <= L.bonus[d] && pc <= thr, 'only the part the attack card adds goes through, never the ship\'s own AP', pc + ' of ' + L.bonus[d]);
+        ok(pc <= L.special[d] && pc <= thr, 'only the card\'s part goes through: what it adds, or the whole attack if it multiplies the AP', pc + ' of ' + L.special[d]);
         const held = thr - pc, took = hpAfter.reduce((s, h, x) => s + (L.snap.hp[i][x] - h), 0);
         ok(me.shield === (held > L.snap.shield[i] ? 0 : L.snap.shield[i] - held), 'the ship\'s own AP goes into the shield, and nothing of it carries over', JSON.stringify([L.snap.shield[i], held, me.shield]));
         ok(took > 0 && took <= pc && hpAfter.every((h, x) => h <= L.snap.hp[i][x]), 'what goes through lands on the parts, and no more than that', took + ' of ' + pc);
@@ -227,17 +228,17 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
     return S.log[0];
   }
   // Marc, 22 November (evening): a lower shield card still stops the ship's regular AP; only the part a higher card adds gets past it
-  let L = duel('A12', 'D02'); ok(L.atk[0] === 100 && L.block[1] === 10 && L.through[1] === 90, 'Ten-Tile Wall (common) against Hundred Cannon (epic, 55 + 45): it still blocks 10 of the ship\'s own 55', JSON.stringify([L.atk, L.block, L.through]));
-  L = duel('A12', 'D06'); ok(L.block[1] === 20 && L.through[1] === 80, 'Meteor Net (rare) against Hundred Cannon (epic): it still blocks 20');
+  // "unless the gold card is multiplying the normal AP attack": then the whole attack is the card's, and a lower card stops none of it
+  let L = duel('A12', 'D02'); ok(L.atk[0] === 100 && L.special[0] === 100 && L.block[1] === 0 && L.capped[1] && L.through[1] === 100, 'Ten-Tile Wall (common) against Hundred Cannon (epic, works on the AP itself): it stops none of the 100', JSON.stringify([L.atk, L.block, L.through]));
+  L = duel('A11', 'D06'); ok(L.atk[0] === 110 && L.block[1] === 0 && L.through[1] === 110, 'Meteor Net (rare) against Doubling Drive (epic, doubles the AP): it stops none of the 110');
   L = duel('A08', 'D02'); ok(L.block[1] === 10 && L.through[1] === 65, 'Ten-Tile Wall (common) against Twin Tens (rare): it still blocks 10');
   L = duel('A08', 'D06'); ok(L.block[1] === 20 && L.through[1] === 55, 'a rare block card blocks a rare attack card');
   L = duel('A01', 'D06'); ok(L.block[1] === 20 && L.through[1] === 40, 'a rare block card blocks a common attack card');
   L = duel('A01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 50, 'a common block card blocks a common attack card');
   L = duel('R01', 'D02'); ok(L.block[1] === 10 && L.through[1] === 45, 'any block card blocks a plain attack, when no attack card is played');
   L = duel('A12', 'D09'); ok(L.atk[0] === 100 && L.through[1] === 0, 'the epic block card blocks an epic attack card whole');
-  L = duel('A12', 'A10'); ok(L.block[1] === 10 && L.atk[1] === 65, 'Hit and Hide (rare) against an epic attack card: its block of 10 still comes off the ship\'s own attack, and it still adds 10');
-  // the cap: a block bigger than the ship's own attack cannot eat into what the higher card adds
-  L = duel('A11', 'D07', S => { S.P[0].parts.forEach((q, x) => { if (x !== 3) q.hp = 0; }); }); ok(L.atk[0] === 40 && L.bonus[0] === 20 && L.block[1] === 20 && L.capped[1] && L.through[1] === 20, 'a ship with only its Weapons (AP 20) plays Doubling Drive (epic): Quarter Wall (rare, 25) stops the ship\'s own 20, and the card\'s 20 gets through', JSON.stringify([L.atk, L.bonus, L.block, L.through]));
+  L = duel('A12', 'A10'); ok(L.block[1] === 0 && L.atk[1] === 65, 'Hit and Hide (rare) against Hundred Cannon (epic): its block stops nothing, and it still adds 10 to its own attack');
+  L = duel('A08', 'A10'); ok(L.block[1] === 10 && L.through[1] === 65, 'Hit and Hide (rare) against Twin Tens (rare): blocks its 10');
   // the old rule, kept on the switch
   L = duel('A12', 'D02', null, { shieldKind: false }); ok(L.block[1] === 0 && L.through[1] === 100, 'with the old rule switched on: a common block card does not block an epic attack card at all');
   L = duel('A08', 'D02', null, { shieldKind: false }); ok(L.block[1] === 0 && L.through[1] === 75, 'with the old rule switched on: a common block card does not block a rare attack card at all');
@@ -267,9 +268,9 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   S = one({}, 'D01', 'A08'); ok(S.log[0].raised[0] === 8 && S.log[0].snap.skind[0] === 0 && S.log[0].pierce[0] === 20 && S.P[0].shield === 0 && lostHP(S) === 20, 'Dust Screen (common) against Twin Tens (rare, +20): the shield of 8 soaks the ship\'s 55, and exactly 20 goes through to the parts', JSON.stringify([S.log[0].raised, S.log[0].pierce, S.P[0].shield, lostHP(S)]));
   S = one({}, 'D01', 'A01'); ok(S.log[0].pierce[0] === 0 && lostHP(S) === 0, 'Dust Screen (common) against Spark Shot (common): stopped whole');
   S = one({}, 'D06', 'A08'); ok(S.log[0].snap.skind[0] === 1 && S.log[0].pierce[0] === 0 && lostHP(S) === 0, 'Meteor Net (rare) against Twin Tens (rare): stopped whole');
-  S = one({}, 'D06', 'A11'); ok(S.log[0].pierce[0] === 55 && S.P[0].shield === 0 && lostHP(S) <= 55 && lostHP(S) > 0, 'Meteor Net (rare) against Doubling Drive (epic, 55 + 55): the shield soaks the ship\'s 55, and the card\'s 55 goes through', JSON.stringify([S.log[0].pierce, lostHP(S)]));
+  S = one({}, 'D06', 'A11'); ok(S.log[0].pierce[0] === 110 && S.P[0].shield === 20 && lostHP(S) > 0, 'a rare shield of 20 against Doubling Drive (epic, doubles the AP): the whole 110 goes through, and the shield is not touched', JSON.stringify([S.log[0].pierce, S.P[0].shield, lostHP(S)]));
   S = one({}, 'R15', 'A12'); ok(S.log[0].snap.skind[0] === 2 && S.log[0].pierce[0] === 0 && lostHP(S) === 0, 'Shield Reborn makes an epic shield: nothing goes through it, not even Hundred Cannon');
-  S = one({}, 'R05', 'A12'); ok(S.log[0].snap.skind[0] === 0 && S.log[0].pierce[0] === 45 && lostHP(S) > 0, 'Shield Spark (common) against Hundred Cannon (epic, 55 + 45): 45 goes through', JSON.stringify(S.log[0].pierce));
+  S = one({}, 'R05', 'A12'); ok(S.log[0].snap.skind[0] === 0 && S.log[0].pierce[0] === 100 && S.P[0].shield === 10 && lostHP(S) > 0, 'a common shield of 10 against Hundred Cannon (epic, works on the AP itself): the whole 100 goes through', JSON.stringify([S.log[0].pierce, S.P[0].shield]));
   (function () { const T = B.newBattle(Object.assign({}, D, { guard: 'blind' }), STD, STD, 79); const pick = ['R01', 'A11'].map((id, i) => { const p = T.P[i]; let x = p.hand.indexOf(id); if (x < 0) { const dd = p.deck.indexOf(id); p.deck.splice(dd, 1); p.deck.push(p.hand[0]); p.hand[0] = id; x = 0; } return x; }); B.startRound(T, pick[0], pick[1]); B.steps(T).forEach(st => { const req = B.need(T, st); B.run(T, st, req ? B.cpuChoose(T, req) : null); }); ok(T.log[0].pierce[0] === 0 && T.P[0].shield === 0 && T.P[0].parts.every(q => q.hp === q.max), 'the shield a battle starts with has no kind: Doubling Drive (110) breaks it and is soaked up whole', JSON.stringify([T.log[0].pierce, T.P[0].shield])); })();
   S = one({ shieldRebuild: 'blocks' }, 'D09', 'A01'); ok(whole(S) && S.log[0].raised[0] === 0 && S.log[0].through[0] === 0, 'Vanishing Act still blocks everything and puts up no shield');
 })();

@@ -176,7 +176,7 @@ button{font-family:inherit}
     <li>Both ships attack. Your attack is the AP of all your working parts, plus your card. The page adds it up.</li>
     <li id="hturn">Both attacks land together.</li>
     <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
-    <li><b>A shield that a card puts up has the colour of that card:</b> green, purple or gold. It always stops the other ship's own attack. But if the other player's attack card is of a higher kind, the part that card adds goes through to your parts. A block card works the same way: it takes its number off the ship's own attack, whatever card the other player used. The shield you start with stops everything.</li>
+    <li><b>A shield that a card puts up has the colour of that card:</b> green, purple or gold. It always stops the other ship's own attack. But if the other player's attack card is of a higher kind, the part that card adds goes through to your parts. If that higher card doubles the attack, or rounds it up, the whole attack goes through. A block card works the same way: it takes its number off the ship's own attack, whatever card the other player used. The shield you start with stops everything.</li>
     <li><b>A broken shield can come back.</b> Play a shield card: a new shield goes up, as strong as the number on the card. Even a small one soaks up one whole attack. In your hand, such a card is marked "shield back".</li>
     <li>With no shield, <b>you choose which of your parts take the hit</b>. The view moves in on your ship. The hit comes as blocks of ten, five and one. Tap a part to send it the lit block: its HP goes down as you tap. Tap another block to light it. "Break a block" makes the lit block into smaller ones. If a tap would destroy a part, the page asks first: tap again to give that part up.</li>
   </ol>
@@ -367,7 +367,7 @@ function shieldKindOf(pl){return (pl.skind===undefined||pl.skind===null||pl.shie
 function pierce(S,d){
  var a=1-d,me=S.P[d];if(!S.opts.shieldKind||!S.opts.kindBlock||!S.cur||!shieldWorks(S,me))return 0;
  var k=shieldKindOf(me),ca=S.cur.card[a];if(k<0||CARD[ca].type!=='attack'||rank(ca)<=k)return 0;
- return Math.max(0,Math.min(S.cur.bonus[a],S.cur.through[d]));
+ return Math.max(0,Math.min(S.cur.special[a],S.cur.through[d]));
 }
 function turnOrder(S){return S.opts.bothFall==='turn'&&S.opts.guard==='lead';}
 function rank(id){var r=RANK[CARD[id].rarity];return r===undefined?0:r;}
@@ -381,7 +381,7 @@ function isGuard(id){return CARD[id].type==='guard';}
 /* startRound: S.cur holds the round in progress. picks are hand positions. */
 function startRound(S,pick0,pick1){
  var c=[S.P[0].hand[pick0],S.P[1].hand[pick1]];
- S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],noStrike:[false,false],raised:[0,0],pierce:[0,0],capped:[false,false],lostNow:[[],[]],pending:[],lines:[],step:0};
+ S.cur={card:c,pick:[pick0,pick1],stopped:[false,false],atk:[0,0],bonus:[0,0],block:[0,0],through:[0,0],noStrike:[false,false],raised:[0,0],pierce:[0,0],capped:[false,false],special:[0,0],lostNow:[[],[]],pending:[],lines:[],step:0};
  return S.cur;
 }
 /* swap mode: may player i swap a Guard in for the card they put down? */
@@ -519,14 +519,15 @@ function run0(S,st,ch){
     else if(q.op==='block_per_card'){blk+=q.n*otherCards(S,i);}
     else if(q.op==='block_all'){blk=-1;}
    });
-   if(!has(me,'Weapons System')){cur.atk[i]=0;cur.bonus[i]=0;R.lines.push((i?'The enemy has':'You have')+' no Weapons: no attack.');}
-   else{cur.atk[i]=ap+bonus;cur.bonus[i]=bonus;R.lines.push((i?'The enemy attacks':'You attack')+' for '+cur.atk[i]+'.');sum(i,'attack','attack',ap,bonus,cur.atk[i],how||'plain');}
+   if(!has(me,'Weapons System')){cur.atk[i]=0;cur.bonus[i]=0;cur.special[i]=0;R.lines.push((i?'The enemy has':'You have')+' no Weapons: no attack.');}
+   else{cur.atk[i]=ap+bonus;cur.bonus[i]=bonus;cur.special[i]=(how==='double'||how==='round100')?cur.atk[i]:bonus;   /* a card that multiplies the AP leaves no regular AP: the whole attack is the card's */
+    R.lines.push((i?'The enemy attacks':'You attack')+' for '+cur.atk[i]+'.');sum(i,'attack','attack',ap,bonus,cur.atk[i],how||'plain');}
    cur.block[i]=blk;cur.ap=cur.ap||[0,0];cur.ap[i]=ap;
   }
   cur.snap={hp:[S.P[0].parts.map(function(q){return q.hp;}),S.P[1].parts.map(function(q){return q.hp;})],shield:[S.P[0].shield,S.P[1].shield],shieldOn:[shieldWorks(S,S.P[0]),shieldWorks(S,S.P[1])],skind:[shieldKindOf(S.P[0]),shieldKindOf(S.P[1])],wep:[has(S.P[0],'Weapons System'),has(S.P[1],'Weapons System')],sg:[has(S.P[0],'Shield Generator'),has(S.P[1],'Shield Generator')],pm:[has(S.P[0],'Power Module'),has(S.P[1],'Power Module')]};
   for(i=0;i<2;i++){var a=cur.atk[1-i],b=cur.block[i];
    /* Marc, 22 November: a lower block card still stops the ship's regular AP, never the part a higher attack card adds */
-   if(b!==0&&S.opts.shieldKind&&outranked(S,cur.card[i],cur.card[1-i])){var own=Math.max(0,a-cur.bonus[1-i]);if(b<0||b>own){b=own;cur.block[i]=b;cur.capped[i]=true;R.lines.push((i?'The enemy\'s ':'Your ')+CARD[cur.card[i]].name+' is '+KINDWORD[CARD[cur.card[i]].rarity]+'. It stops the ship\'s own attack, not what the '+KINDWORD[CARD[cur.card[1-i]].rarity]+' card adds.');}}
+   if(b!==0&&S.opts.shieldKind&&outranked(S,cur.card[i],cur.card[1-i])){var own=Math.max(0,a-cur.special[1-i]);if(b<0||b>own){b=own;cur.block[i]=b;cur.capped[i]=true;R.lines.push((i?'The enemy\'s ':'Your ')+CARD[cur.card[i]].name+' is '+KINDWORD[CARD[cur.card[i]].rarity]+'. '+(own>0?'It stops the ship\'s own attack, not what the '+KINDWORD[CARD[cur.card[1-i]].rarity]+' card adds.':'The '+KINDWORD[CARD[cur.card[1-i]].rarity]+' card works on the whole attack, so it stops none of it.'));}}
    cur.through[i]=b<0?0:Math.max(0,a-b);
    if(a>0&&b!==0){R.lines.push((i?'The enemy blocks ':'You block ')+(b<0?'all of it':Math.min(b,a))+': '+cur.through[i]+' gets through.');if(b>0)sum(i,'through','gets through',a,-b,cur.through[i],'block');}}
   return R;
@@ -540,7 +541,7 @@ function run0(S,st,ch){
   if(pc>0){
    /* a higher attack card against a lower shield: the ship's AP goes into the shield, the card's part goes through */
    var ac=CARD[cur.card[1-d]],ap0=inc-pc,sb0=me.shield,sk=shieldKindOf(me);
-   R.lines.push((d?'Your ':'The enemy\'s ')+ac.name+' is '+KINDWORD[ac.rarity]+'. '+(d?'Their':'Your')+' shield is '+['common','rare','epic'][sk]+'. '+pc+' goes through it.');
+   R.lines.push((d?'Your ':'The enemy\'s ')+ac.name+' is '+KINDWORD[ac.rarity]+'. '+(d?'Their':'Your')+' shield is '+['common','rare','epic'][sk]+'. '+(ap0>0?pc+' goes through it.':'It works on the whole attack: all '+pc+' goes through.'));
    if(ap0>0){if(ap0>sb0){me.shield=0;R.lines.push(whose+' Main Shield breaks. It soaks up the other '+ap0+'.');}else{me.shield=sb0-ap0;R.lines.push(whose+' Main Shield: '+sb0+' to '+me.shield+'.');}sum(d,'shield','Main Shield',sb0,-ap0,me.shield,'land');}
    cur.pierce[d]=pc;inc=pc;how='pierce';
   }
@@ -558,7 +559,7 @@ function run0(S,st,ch){
    draw(S,me);
   }
   var b0=beaten(S.P[0]),b1=beaten(S.P[1]);
-  S.log.push({round:S.round,card:cur.card.slice(),stopped:cur.stopped.slice(),atk:cur.atk.slice(),bonus:cur.bonus.slice(),block:cur.block.slice(),through:cur.through.slice(),noStrike:cur.noStrike.slice(),raised:cur.raised.slice(),pierce:cur.pierce.slice(),capped:cur.capped.slice(),leader:S.leader,snap:cur.snap,lost:cur.lostNow,lines:cur.lines.concat(R.lines)});
+  S.log.push({round:S.round,card:cur.card.slice(),stopped:cur.stopped.slice(),atk:cur.atk.slice(),bonus:cur.bonus.slice(),block:cur.block.slice(),through:cur.through.slice(),noStrike:cur.noStrike.slice(),raised:cur.raised.slice(),pierce:cur.pierce.slice(),capped:cur.capped.slice(),special:cur.special.slice(),leader:S.leader,snap:cur.snap,lost:cur.lostNow,lines:cur.lines.concat(R.lines)});
   if(b0&&b1)S.over={winner:-1,why:'Both ships are beaten in the same round. Nobody wins.'};
   else if(b1)S.over={winner:0,why:'All five enemy parts are at 0. You win.'};
   else if(b0)S.over={winner:1,why:'All five of your parts are at 0. The enemy wins.'};
@@ -859,11 +860,11 @@ function foretell(h){
    var sp=c.type==='spy'?' (if your Spy does not change it)':'';
    if(A.blk<0)t.push('The enemy\'s hit is '+A.foe+sp+'. This card blocks all of it.');
    else if(A.blk>0)t.push('The enemy\'s hit is '+A.foe+sp+'. This card blocks '+Math.min(A.blk,A.foe)+(A.capped?' of the ship\'s own attack':'')+': '+(A.through>0?A.through+' gets through.':'nothing gets through.'));
-   else t.push('The enemy\'s hit is '+A.foe+sp+'.');
+   else t.push('The enemy\'s hit is '+A.foe+sp+'.'+((A.capped&&!A.up)?' Its '+B.KINDWORD[A.fk]+' card works on the whole attack, so this card stops none of it.':''));
    if(A.up)t.push('This card puts your Main Shield back up: '+A.up+'.');
    if(A.through>0&&A.pc>0){
     var held=A.through-A.pc;
-    t.push('Your shield is '+KWORD[A.sk]+'. The enemy\'s card is '+B.KINDWORD[A.fk]+': the '+A.pc+' it adds goes through to your parts.');
+    t.push(held>0?'Your shield is '+KWORD[A.sk]+'. The enemy\'s card is '+B.KINDWORD[A.fk]+': the '+A.pc+' it adds goes through to your parts.':'Your shield is '+KWORD[A.sk]+'. The enemy\'s card is '+B.KINDWORD[A.fk]+' and works on its whole attack: all '+A.pc+' goes through to your parts.');
     if(held>0)t.push('The ship\'s own '+held+' goes into your shield'+(held>A.shield?', and breaks it.':': '+A.shield+' to '+(A.shield-held)+'.'));
    }
    else if(A.through>0){

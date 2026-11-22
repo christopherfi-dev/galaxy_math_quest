@@ -371,6 +371,37 @@ async function act(page, name, flags, size) {
       await idle(page);
       await page.locator('#bnew').tap();
 
+      // ---- "Unless the gold card is multiplying the normal AP attack": then the whole attack gets past a lower shield
+      await page.evaluate(() => window.GMQB.setSeed(5));
+      await page.locator('#sgo').tap();
+      await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;S.P[0].shield=0;put(S.P[1],"A11",0);put(S.P[0],"D06",0);U.cpuLead=0;})()');
+      await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+      await page.locator('.hc.mine').nth(0).tap();
+      st = await state(page);
+      pass(name + ': against Doubling Drive (epic), a rare shield card says the whole 110 will go through', st.fore.indexOf('This card puts your Main Shield back up: 20.') >= 0 && st.fore.indexOf('Your shield is rare. The enemy\'s card is epic and works on its whole attack: all 110 goes through to your parts.') >= 0, st.fore);
+      await shot(page, name + '_9d_multiplier_card');
+      await page.locator('#playit').tap();
+      await page.waitForFunction(() => window.GMQB.U.phase === 'alloc', null, { timeout: 8000 });
+      st = await state(page);
+      pass(name + ': you are asked to place all 110, and the purple shield stays up', st.alloc.total === 110 && st.shl[0] === 'RARE SHIELD 20' && st.bubColour[0] === '#b388ff', st.alloc.total + ' | ' + st.shl[0]);
+      let g5 = 0; while (g5++ < 80) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
+      const mul = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { pierce: l.pierce[0], special: l.special[1], atk: l.atk[1], lines: l.lines.join(' ') }; });
+      pass(name + ': played: all 110 goes through, and the shield of 20 is not touched', mul.pierce === 110 && mul.special === 110 && st.shield[0] === 20 && /all 110 goes through/.test(mul.lines), JSON.stringify([mul.pierce, st.shield[0]]));
+      await idle(page);
+      await page.locator('#bnew').tap();
+      // the same card against a shield that is still up, with a lower block card
+      await page.evaluate(() => window.GMQB.setSeed(5));
+      await page.locator('#sgo').tap();
+      await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;put(S.P[1],"A12",0);put(S.P[0],"D02",0);U.cpuLead=0;})()');
+      await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+      st = await state(page);
+      const tagM = st.cards[0].tag;
+      await page.locator('.hc.mine').nth(0).tap();
+      st = await state(page);
+      pass(name + ': against Hundred Cannon (epic), a common block card is not stamped "cannot block", and the opened card says plainly that it stops none of the 100', tagM === '' && st.fore.indexOf('The enemy\'s hit is 100. Its epic card works on the whole attack, so this card stops none of it.') >= 0, tagM + ' | ' + st.fore);
+      await page.locator('#popx').tap();
+      await page.locator('#bnew').tap();
+
       // ---- Marc's rule of 22 November: a shield card puts a broken Main Shield back up. It is how the page starts; the two narrower rules are switches.
       for (const [idx, cardId, upN, works, what] of [[0, 'R05', 10, true, 'as the page starts, a card that adds to the Main Shield'], [0, 'D01', 8, true, 'as the page starts, a block card'], [1, 'D01', 8, false, 'with the switch on "only a card that adds to the Main Shield", a block card'], [2, 'R05', 10, false, 'with the switch on "Shield Reborn only", Shield Spark']]) {
         await page.locator('#srules').tap();
