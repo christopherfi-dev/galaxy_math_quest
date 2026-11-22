@@ -6,104 +6,70 @@
 <title>GMQ practice battle</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#070b18;color:#e8ecf5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;touch-action:manipulation}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#04060f;color:#e8ecf5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;touch-action:manipulation}
 button{font-family:inherit}
-#app{position:fixed;inset:0;display:flex;flex-direction:column;padding:6px 10px calc(6px + env(safe-area-inset-bottom));gap:6px;background:radial-gradient(ellipse at 50% 40%,#131c3a 0%,#070b18 75%)}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;padding:6px 8px calc(6px + env(safe-area-inset-bottom));gap:4px;background:#04060f}
 #topbar{flex:0 0 auto;display:flex;align-items:center;gap:8px}
-.atk{display:flex;align-items:center;gap:7px;border-radius:12px;background:#1a2244;border:2px solid #f59e0b;padding:4px 12px;font-weight:800;font-size:13px;letter-spacing:.5px;color:#ffd58a;white-space:nowrap}
-.atk b{font-size:30px;line-height:1;color:#fff}
+.atk{display:flex;align-items:center;gap:7px;border-radius:12px;background:#1a2244;border:2px solid #f59e0b;padding:3px 12px;font-weight:800;font-size:12px;letter-spacing:.5px;color:#ffd58a;white-space:nowrap}
+.atk b{font-size:28px;line-height:1;color:#fff}
 .atk small{font-size:13px;color:#aeb8d4;font-weight:700}
-.atk.off{border-color:#4b5563;color:#8f9bbd}.atk.off b{color:#8f9bbd;font-size:18px}
+.atk.off{border-color:#4b5563}.atk.off b{color:#8f9bbd;font-size:17px}
+.atk.foe{border-color:#f87171;color:#fca5a5}
 #round{font-weight:900;font-size:17px;white-space:nowrap}
 #btns{margin-left:auto;display:flex;gap:5px}
 .sb{font-size:13px;font-weight:700;border-radius:8px;border:1px solid #3a4874;background:#1c2748;color:#e8ecf5;padding:7px 10px;cursor:pointer}
-#msg{flex:0 0 auto;font-size:19px;line-height:1.25;font-weight:800;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 6px}
-#enemy{flex:0 0 auto;display:flex;gap:10px;align-items:stretch}
-#eleft{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
-#ehead{display:flex;align-items:center;gap:8px}
-.who{font-weight:900;font-size:17px;color:#fca5a5;white-space:nowrap}
-.who.me{color:#93c5fd}
-.sh{position:relative;flex:1;min-width:0;height:34px;border-radius:17px;background:#141b33;border:3px solid #4b5563;overflow:hidden}
-.sh .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#1d4ed8,#38bdf8);transition:width .45s}
-.sh span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:#fff;text-shadow:0 1px 2px #000;white-space:nowrap}
-.sh.on{border-color:#38bdf8;box-shadow:0 0 14px rgba(56,189,248,.75),inset 0 0 8px rgba(56,189,248,.5)}
-.sh.big{height:44px;border-radius:22px;flex:1}
-.sh.big span{font-size:23px}
-#myhead{flex:0 0 auto;display:flex;align-items:center;gap:10px}
-.parts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.pt{position:relative;border-radius:12px;border:4px solid var(--k,#9aa6b8);background:#141b33;color:#fff;padding:5px 6px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto auto;column-gap:6px;align-items:center;text-align:left;cursor:default;min-width:0;overflow:hidden}
-.pt svg.pi{grid-row:1 / span 2;width:46px;height:46px;display:block}
-.pt .pn{grid-column:1 / span 2;font-weight:900;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.pt .hp{font-weight:900;font-size:30px;line-height:1;display:flex;align-items:center;gap:4px;justify-content:flex-end}
-.pt .ap{font-weight:900;font-size:19px;line-height:1.1;color:#ffd84a;display:flex;align-items:center;gap:4px;justify-content:flex-end}
-.pt .hp svg,.pt .ap svg{width:.7em;height:.7em;flex:0 0 auto}
-.pt .rule{grid-column:1 / span 2;font-size:12.5px;line-height:1.15;font-weight:700;color:#aeb8d4;margin-top:2px}
-.pt.lost{border-color:#4b5563;background:#0d1224}
-.pt.lost .hp,.pt.lost .ap,.pt.lost .pi,.pt.lost .pn{opacity:.35}
-.pt.lost .rule{color:#fca5a5;font-size:14px;font-weight:900}
-.pt .lv{position:absolute;top:3px;right:4px;background:#ffd23f;color:#10162c;font-size:11px;font-weight:900;border-radius:6px;padding:0 5px}
-.pt.can{cursor:pointer;box-shadow:0 0 0 3px #ffd84a,0 0 16px rgba(255,216,74,.7);animation:pulse 1.1s infinite}
-.pt.sel{box-shadow:0 0 0 4px #4ade80,0 0 18px rgba(74,222,128,.8);animation:none}
-.pt.hit{animation:shake .32s}
-.pt.glow{animation:glow .6s}
-#eparts .pt{padding:3px 5px;border-width:3px;grid-template-rows:auto auto}
-#eparts .pt svg.pi{width:32px;height:32px}
-#eparts .pt .pn{font-size:12.5px}
-#eparts .pt .hp{font-size:22px}
-#eparts .pt .ap{font-size:15px}
-#eparts .pt .rule{display:none}
-#eparts .pt.lost .rule{display:block;font-size:11.5px}
-.ec{border:0;background:none;padding:0;cursor:pointer;position:relative;margin-right:14px;display:flex;flex-direction:column;align-items:center;gap:2px}
-.ec .lab{font-size:13px;font-weight:900;color:#fca5a5;white-space:nowrap;line-height:16px}
-.ec svg{display:block;width:100%;height:auto;border-radius:12px;box-shadow:0 0 0 3px #fca5a5,0 0 18px rgba(252,165,165,.6)}
-#mid{flex:1 1 auto;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
-#hand{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;align-items:flex-end;gap:8px}
-.hc{border:0;background:none;padding:0;cursor:pointer;border-radius:12px;position:relative;transition:transform .15s}
-.hc svg{display:block;width:100%;height:auto}
-.hc.sel{transform:translateY(-8px) scale(1.04);box-shadow:0 0 0 4px #fff,0 0 24px rgba(255,255,255,.7);z-index:2}
+#msg{flex:0 0 auto;font-size:20px;line-height:1.2;font-weight:800;height:50px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 6px}
+#stagewrap{flex:1 1 auto;min-height:0;position:relative;border-radius:14px;overflow:hidden;background:#070b18}
+#sky,#stage{position:absolute;inset:0;width:100%;height:100%;display:block}
+#tray{flex:0 0 auto;height:clamp(118px,25vh,196px);min-height:118px;display:flex;align-items:center;justify-content:center;gap:8px;position:relative}
+.hc{border:0;background:none;padding:0;cursor:pointer;border-radius:10px;position:relative;flex:0 0 auto;transition:transform .12s}
+.hc svg{display:block;width:100%;height:100%}
 .hc.no svg{opacity:.4}
-.hc .tag{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-10deg);background:#7f1d1d;color:#fff;font-weight:900;font-size:13px;border-radius:8px;padding:3px 9px;white-space:nowrap;border:2px solid #fca5a5}
-#act{flex:0 0 auto;min-height:52px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;max-width:100%}
-#act .note{font-size:15px;font-weight:700;color:#ffd58a;max-width:560px;text-align:center}
-.btn{font-size:18px;font-weight:900;border-radius:12px;border:2px solid #4a5a90;background:#1c2748;color:#fff;padding:10px 20px;cursor:pointer;min-height:48px}
+.hc.dim{opacity:.35;pointer-events:none}
+.hc.foecard{box-shadow:0 0 0 3px #f87171,0 0 18px rgba(248,113,113,.7)}
+.hc .who{position:absolute;left:50%;top:-11px;transform:translateX(-50%);background:#7f1d1d;color:#fff;font-weight:900;font-size:11px;letter-spacing:.5px;border-radius:999px;padding:2px 9px;white-space:nowrap;border:2px solid #fca5a5}
+#tray .gap{flex:0 0 12px}
+.hc .tag{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-10deg);background:#7f1d1d;color:#fff;font-weight:900;font-size:12px;border-radius:8px;padding:2px 8px;white-space:nowrap;border:2px solid #fca5a5}
+.traymsg{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:100%}
+.traymsg .hint{font-size:16px;font-weight:700;color:#c3cbe0;text-align:center}
+.cells{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.cell{min-width:62px;height:54px;border-radius:12px;border:2px solid #fca5a5;background:#7f1d1d;color:#fff;font-size:26px;font-weight:900;cursor:pointer;padding:0 8px}
+.cell.one{min-width:42px;font-size:20px;height:46px}
+.cell.next{box-shadow:0 0 0 4px #ffd84a;transform:translateY(-3px)}
+.btn{font-size:18px;font-weight:900;border-radius:12px;border:2px solid #4a5a90;background:#1c2748;color:#fff;padding:9px 18px;cursor:pointer;min-height:46px}
 .btn.go{background:#16a34a;border-color:#4ade80}
 .btn.small{font-size:14px;padding:6px 10px;min-height:36px;border-width:1px}
 .btn:disabled{opacity:.4}
-#table{display:flex;align-items:center;justify-content:center;gap:16px}
-#table .tc{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
-#table .tc .lab{font-size:14px;font-weight:900}
-#table .tc svg{display:block}
-#table .vs{font-size:26px;font-weight:900;color:#5b6482}
-.stamp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg);background:#e5484d;color:#fff;border:4px solid #fff;border-radius:12px;font-weight:900;font-size:28px;padding:4px 16px;white-space:nowrap}
-.stamp.grey{background:#374151}
-#split{width:100%;display:flex;flex-direction:column;align-items:center;gap:6px}
-#split .big{font-size:22px;font-weight:900;text-align:center}
-#split .big b{font-size:34px;color:#fca5a5}
-#split .hint{font-size:15px;font-weight:700;color:#c3cbe0;text-align:center}
-#srow{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.sc{display:flex;flex-direction:column;align-items:center;gap:4px}
-.sc .box{width:100%;max-width:120px;height:50px;border-radius:10px;border:3px solid #4a5a90;background:#0d1430;color:#fff;font-size:28px;font-weight:900;text-align:center;line-height:44px;cursor:pointer}
-.sc .box.on{border-color:#ffd84a;box-shadow:0 0 0 3px rgba(255,216,74,.3)}
-.sc.none{visibility:hidden}
-#pad{display:grid;grid-template-columns:repeat(6,minmax(44px,64px));gap:6px;justify-content:center}
-#pad button{font-size:22px;font-weight:900;height:46px;border-radius:10px;border:1px solid #3a4874;background:#18213f;color:#fff;cursor:pointer}
-#pad button.w{background:#16a34a;border-color:#4ade80;font-size:16px}
-#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:15}
-.pop{font-weight:900;font-size:44px;paint-order:stroke;stroke:#070b18;stroke-width:6px;animation:rise .9s forwards}
-.beam{stroke-linecap:round;animation:beam .6s forwards}
-.fly{transition:transform .65s ease-in-out}
-@keyframes rise{0%{opacity:0;transform:translateY(8px)}15%{opacity:1}100%{opacity:0;transform:translateY(-46px)}}
-@keyframes beam{0%{opacity:0}12%{opacity:1}70%{opacity:1}100%{opacity:0}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-@keyframes glow{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px #4ade80,0 0 22px rgba(74,222,128,.9)}}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;justify-content:center}
+#pop{position:fixed;inset:0;background:rgba(4,6,15,.88);z-index:18;display:none;align-items:center;justify-content:center;gap:18px;padding:12px;flex-wrap:wrap}
+#pop.open{display:flex}
+#pop .big svg{display:block;height:min(62vh,470px);width:auto;max-width:86vw}
+#pop .side{max-width:340px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+#pop .note{font-size:17px;font-weight:700;color:#ffd58a;line-height:1.3}
+.pod{cursor:default}
+.pod.can{cursor:pointer}
+.pod.can .fr{stroke:#ffd84a;stroke-width:7;animation:pulse 1s infinite}
+.pod.sel .fr{stroke:#4ade80;stroke-width:8;animation:none}
+.flame{animation:flick .18s infinite alternate}
+.bub{animation:breathe 3s infinite ease-in-out}
+.drift{animation:drift 140s linear infinite}
+.drift.slow{animation-duration:260s;opacity:.7}
+.bob{animation:bob 4s ease-in-out infinite}
+#stagewrap.quake{animation:quake .32s linear}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(var(--w))}}
+@keyframes bob{0%,100%{transform:translateY(-4px)}50%{transform:translateY(4px)}}
+@keyframes quake{0%,100%{transform:translate(0,0)}20%{transform:translate(-5px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-3px,-2px)}80%{transform:translate(3px,2px)}}
+@media(prefers-reduced-motion:reduce){.drift,.bob,#stagewrap.quake,.bub,.flame{animation:none}}
+@keyframes flick{0%{opacity:.7;transform:scaleX(.85)}100%{opacity:1;transform:scaleX(1.1)}}
+@keyframes breathe{0%,100%{opacity:.85}50%{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .ov{position:fixed;inset:0;background:#070b18;z-index:20;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(20px + env(safe-area-inset-bottom))}
 .ov.open{display:block}
 .ov h2{font-size:21px;margin:4px 0 8px}
 .ov h3{font-size:16px;margin:14px 0 4px;color:#c9d2ea}
 .ov p,.ov li{font-size:16px;line-height:1.45;margin:6px 0}
 .ov .in{max-width:760px;margin:0 auto}
-.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.ov .row{justify-content:flex-start}
 .sw{border:1px solid #2b3658;border-radius:10px;padding:8px 10px;margin:8px 0;background:#0f1630}
 .sw b{display:block;font-size:15px}
 .sw small{color:#8f9bbd;font-size:12px}
@@ -118,25 +84,15 @@ button{font-family:inherit}
 .keyrow{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
 .keyrow div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:800;width:92px;text-align:center}
 .keyrow svg{width:64px;height:64px}
-#zoomc{position:fixed;inset:0;background:rgba(5,8,18,.92);z-index:18;display:none;align-items:center;justify-content:center}
-#zoomc.open{display:flex}
-#zoomc svg{height:min(84vh,620px);width:auto;max-width:92vw}
 @media(max-width:600px){
  .ship{grid-template-columns:repeat(3,minmax(0,1fr))}
- #app{padding:4px 6px calc(4px + env(safe-area-inset-bottom));gap:4px}
- .atk{padding:3px 8px;font-size:10px}.atk b{font-size:22px}.atk small{font-size:10px}
- #round{font-size:13px}.sb{padding:5px 7px;font-size:11.5px}
- #msg{font-size:15px;min-height:40px}
- .who{font-size:12px}.sh{height:26px}.sh span{font-size:13px}.sh.big{height:34px}.sh.big span{font-size:17px}
- .parts{gap:4px}.pt{padding:3px 3px;border-width:3px;column-gap:2px}
- .pt{display:flex;flex-direction:column;align-items:stretch}.pt svg.pi{display:none}.pt .pn{font-size:10.5px;order:-1}.pt .hp{font-size:20px;justify-content:flex-start}.pt .ap{font-size:13px;justify-content:flex-start}.pt .rule{font-size:9.5px}.pt.lost .rule{font-size:10px}
- #eparts .pt .pn{font-size:9.5px}#eparts .pt .hp{font-size:15px}#eparts .pt .ap{font-size:11px}#eparts .pt > div{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
- .ec{margin-right:6px}.ec .lab{font-size:10px;line-height:12px}
- .btn{font-size:16px;padding:8px 14px;min-height:42px}
- #split .big{font-size:17px}#split .big b{font-size:26px}#split .hint{font-size:13px}
- .sc .box{height:40px;line-height:34px;font-size:22px}#srow{gap:4px}
- #pad{grid-template-columns:repeat(6,1fr);width:100%}#pad button{height:40px}
- #act .note{font-size:13px}
+ #topbar{gap:5px}#btns{gap:3px}
+ .atk{padding:2px 7px;font-size:9px}.atk b{font-size:20px}.atk small{display:none}
+ #round{font-size:11px}.sb{padding:5px 4px;font-size:10.5px}#app{padding-left:5px;padding-right:5px}
+ #msg{font-size:15px;height:40px}
+ #tray{gap:4px;height:clamp(104px,19vh,150px)}
+ .btn{font-size:16px;padding:7px 12px;min-height:42px}
+ .cell{min-width:44px;height:40px;font-size:19px}.cell.one{min-width:32px;height:36px;font-size:16px}.traymsg .hint{font-size:13.5px}
 }
 </style>
 </head>
@@ -145,21 +101,14 @@ button{font-family:inherit}
   <div id="topbar">
     <div class="atk" id="myatk"></div>
     <div id="round"></div>
+    <div class="atk foe" id="eatk"></div>
     <div id="btns"><button class="sb" id="bhelp" type="button">How</button><button class="sb" id="brules" type="button">Rules</button><button class="sb" id="blog" type="button">Log</button><button class="sb" id="bnew" type="button">New</button></div>
   </div>
-  <div id="enemy">
-    <div id="eleft">
-      <div id="ehead"><span class="who">THE ENEMY</span><div class="sh" id="esh"><div class="fill"></div><span></span></div><div class="atk" id="eatk"></div></div>
-      <div class="parts" id="eparts"></div>
-    </div>
-  </div>
   <div id="msg"></div>
-  <div id="mid"></div>
-  <div id="myhead"><span class="who me">YOUR SHIP</span><div class="sh big" id="mysh"><div class="fill"></div><span></span></div></div>
-  <div class="parts" id="myparts"></div>
+  <div id="stagewrap"><svg id="sky" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"></svg><svg id="stage" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  <div id="tray"></div>
 </div>
-<svg id="fx" xmlns="http://www.w3.org/2000/svg"></svg>
-<div id="zoomc"></div>
+<div id="pop"></div>
 
 <div class="ov" id="setup"><div class="in">
   <h2>Practice battle</h2>
@@ -197,12 +146,12 @@ button{font-family:inherit}
   <p>The <b>rim</b> of a card is its kind: <b style="color:#7ed957">green is common</b>, <b style="color:#b388ff">purple is rare</b>, <b style="color:#ffd23f">gold is gold</b>. A common card cannot block a rare attack card. A common or a rare card cannot block a gold one.</p>
   <h3>A round</h3>
   <ol>
-    <li>One player goes first and puts down a card. The other sees it, then answers with a card. You take turns to go first.</li>
+    <li>A card is an order to your ship. One player goes first and gives an order. The other sees it, then answers. You take turns to go first.</li>
     <li>A Spy acts first. It gets past the shield. A policeman stops it.</li>
     <li>Hearts repair.</li>
     <li>Both ships attack. Your attack is the AP of all your working parts, plus your card. The page adds it up.</li>
     <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
-    <li>With no shield, <b>you choose which of your parts take the hit</b>. That is your job in a battle.</li>
+    <li>With no shield, <b>you choose which of your parts take the hit</b>. The hit comes as blocks of ten, five and one. Tap a part to send it the lit block. Tap another block to light it. "Break" makes the lit block into smaller ones.</li>
   </ol>
   <h3>A lost part</h3>
   <ul>
@@ -750,131 +699,208 @@ function partSVG(p,uid){
  return o+'</svg>';
 }
 /* DRAW-END */
-/* ---------- the battle table ----------
-   Marc, 22 November: the page does every sum. The player's one job is to share an attack out between their parts.
-   The hand is large in the middle; your shield is lit; your attack is in the top corner; your parts are along the bottom. */
+/* ---------- the battle, as a space battle ----------
+   Marc, 22 November: "That's what they should feel like... I made it a card deck because that's all I could do."
+   Two ships fill the screen. The five parts are places on the ship. The Main Shield is a bubble.
+   A card is an order to the ship. The page does every sum. The player's one job: send an incoming hit to the parts they choose. */
 var B=GMQBattle;B.load(DATA);
 var el=function(id){return document.getElementById(id);};
-var KEY='gmq_battle_v2',FAST=/[?&]fast/.test(location.search);
+var KEY='gmq_battle_v3',FAST=/[?&]fast/.test(location.search);
 var KINDKEYS=['standard','guardian','striker','lucky'];
-var U={S:null,opts:B.defaults(),phase:'setup',sel:-1,cpuLead:-1,kinds:['standard','standard','standard','standard','standard'],foeMode:'same',anim:false,pick:null,req:null,split:null,done:null,seed:0,note:''};
+var U={S:null,opts:B.defaults(),phase:'setup',sel:-1,cpuLead:-1,kinds:['standard','standard','standard','standard','standard'],foeMode:'same',anim:false,finale:false,pick:null,req:null,alloc:null,seed:0,L:null,tray:null};
 var RULE={'Weapons System':'cannot attack','Engine Core':'lose 1 card','Navigation':'lose 1 card','Shield Generator':'cannot defend','Power Module':'cannot heal'};
-var HEART='<svg viewBox="0 0 24 24"><path d="M12,21 C-6,9 3,-1 12,7 C21,-1 30,9 12,21 Z" fill="#ff4d6d"/></svg>';
-var BOLT='<svg viewBox="0 0 24 24"><path d="M14,1 L4,14 L11,14 L8,23 L20,9 L13,9 Z" fill="#f59e0b"/></svg>';
+var SLOT=[0,4,2,1,3];   /* from the back of the ship to the front: Engine, Power, Shield Generator, Navigation, Weapons */
 
 function save(){try{localStorage.setItem(KEY,JSON.stringify({S:U.S,opts:U.opts,kinds:U.kinds,foeMode:U.foeMode}));}catch(e){}}
 function loadSaved(){try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.opts){var df=B.defaults(),kk;for(kk in df){if(d.opts[kk]===undefined)d.opts[kk]=df[kk];}if(d.S&&d.S.opts){for(kk in df){if(d.S.opts[kk]===undefined){d.S=null;break;}}}U.opts=d.opts;U.kinds=d.kinds||U.kinds;U.foeMode=d.foeMode||'same';if(d.S&&!d.S.over){d.S.cur=null;U.S=d.S;return true;}}}catch(e){}return false;}
 function wait(ms){return new Promise(function(r){if(FAST){r();}else{setTimeout(r,ms);}});}
+function tween(ms,fn){return new Promise(function(res){if(FAST){fn(1);res();return;}var t0=performance.now();function f(now){var t=Math.min(1,(now-t0)/ms);fn(t);if(t<1){requestAnimationFrame(f);}else{res();}}requestAnimationFrame(f);});}
 function say(t){el('msg').textContent=t||'';}
+function cardInner(c,uid){return cardSVG(c,uid).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');}
 
-/* ---------- what is always on the screen ---------- */
-function partHTML(side,ix){
- var S=U.S,p=S.P[side].parts[ix],k=KIND[p.kind],lost=p.hp<=0,cls='pt'+(lost?' lost':'');
- if(U.pick&&U.pick.side===side&&U.pick.among.indexOf(ix)>=0){cls+=' can';if(U.pick.chosen.indexOf(ix)>=0)cls+=' sel';}
- return '<button type="button" class="'+cls+'" data-side="'+side+'" data-ix="'+ix+'" style="--k:'+k.colour+'" aria-label="'+esc((side?'Enemy ':'Your ')+p.part+', '+k.name+'. HP '+p.hp+', AP '+p.ap)+'">'
-  +'<svg class="pi" viewBox="-40 -40 80 80">'+partIcon(PARTCODE[p.part],0,0,0.95,k.colour)+'</svg>'
-  +'<div><div class="hp">'+HEART+'<span class="n">'+p.hp+'</span></div><div class="ap">'+BOLT+'<span class="n">'+p.ap+'</span></div></div>'
-  +'<div class="pn">'+esc(B.SHORT[p.part])+'</div>'
-  +'<div class="rule">'+(lost?'LOST: ':'If lost: ')+RULE[p.part]+'</div>'
-  +(p.lvl>1?'<span class="lv">L2</span>':'')+'</button>';
+/* ---------- where things are on the stage ---------- */
+function isLand(){return window.innerWidth>window.innerHeight;}
+function small(){return window.innerWidth<600;}
+function layout(){
+ var w=el('stagewrap').clientWidth||1000,h=el('stagewrap').clientHeight||600,L,H,cy;
+ if(isLand()){
+  if(U.phase==='pick'){H=Math.max(440,Math.round(1560*h/w));cy=Math.min(H-212,Math.max(196,Math.round(H*0.5)));}
+  else{H=Math.max(580,Math.round(1560*h/w));cy=Math.max(350,Math.round(H*0.6));}
+  L={land:true,W:1560,H:H,ship:[{cx:390,cy:cy},{cx:1170,cy:cy}]};}
+ else{H=Math.max(1070,Math.round(790*h/w));L={land:false,W:790,H:H,ship:[{cx:395,cy:H-216},{cx:395,cy:350}]};}
+ return L;
 }
-function drawParts(){var a='',b='';for(var i=0;i<5;i++){a+=partHTML(0,i);b+=partHTML(1,i);}el('myparts').innerHTML=a;el('eparts').innerHTML=b;}
-function drawShield(side){
- var S=U.S,pl=S.P[side],on=B.shieldWorks(S,pl),e=el(side?'esh':'mysh');
- e.className='sh'+(side?'':' big')+(on?' on':'');
- e.firstChild.style.width=(on?Math.max(0,Math.min(100,pl.shield)):0)+'%';
- e.lastChild.textContent=pl.shield>0?(on?'MAIN SHIELD '+pl.shield:'SHIELD OFF ('+pl.shield+')'):'SHIELD BROKEN';
+function dirOf(side){return side===0?1:-1;}
+function podXY(side,ix){var s=U.L.ship[side],k=SLOT.indexOf(ix);return {x:s.cx+dirOf(side)*(-232+k*116),y:s.cy+4};}
+function turret(side){var s=U.L.ship[side];return {x:s.cx+dirOf(side)*350,y:s.cy+12};}
+function facing(side){var a=U.L.ship[side],b=U.L.ship[1-side],dx=b.cx-a.cx,dy=b.cy-a.cy,d=Math.sqrt(dx*dx+dy*dy)||1,ux=dx/d,uy=dy/d,r=1/Math.sqrt((ux*ux)/(352*352)+(uy*uy)/(172*172));return {x:a.cx+ux*r,y:a.cy+4+uy*r};}
+
+/* ---------- drawing the ships ---------- */
+function pod(side,ix){
+ var S=U.S,p=S.P[side].parts[ix],k=KIND[p.kind],lost=p.hp<=0,c=podXY(side,ix),x=c.x-52,y=c.y-59,cls='pod';
+ if(U.pick&&U.pick.side===side&&U.pick.among.indexOf(ix)>=0){cls+=' can';if(U.pick.chosen.indexOf(ix)>=0)cls+=' sel';}
+ if(U.alloc&&side===0&&U.alloc.among.indexOf(ix)>=0)cls+=' can';
+ var o='<g class="'+cls+'" id="pod'+side+ix+'" data-side="'+side+'" data-ix="'+ix+'" transform="translate('+x.toFixed(0)+','+y.toFixed(0)+')">';
+ if(lost){
+  o+='<rect class="fr" width="104" height="118" rx="12" fill="#0b0f1f" stroke="#4b5563" stroke-width="4"/>';
+  o+='<circle cx="30" cy="-10" r="13" fill="#4b5563" opacity=".7"/><circle cx="52" cy="-24" r="17" fill="#374151" opacity=".6"/><circle cx="76" cy="-8" r="11" fill="#4b5563" opacity=".6"/>';
+  o+='<path d="M6,10 l16,12 l-8,10 M98,104 l-14,-10 l8,-12" fill="none" stroke="#374151" stroke-width="3"/>';
+  o+='<text x="52" y="36" text-anchor="middle" font-size="15" font-weight="800" fill="#8f9bbd">'+esc(B.SHORT[p.part])+'</text><text x="52" y="70" text-anchor="middle" font-size="26" font-weight="900" fill="#f87171">LOST</text><text x="52" y="98" text-anchor="middle" font-size="14" font-weight="800" fill="#fca5a5" class="rule">'+RULE[p.part]+'</text>';
+ }else{
+  o+='<rect class="fr" width="104" height="118" rx="12" fill="#101733" stroke="'+k.colour+'" stroke-width="4"/>';
+  o+=partIcon(PARTCODE[p.part],30,30,0.6,k.colour);
+  o+='<text x="98" y="23" text-anchor="end" font-size="12" font-weight="800" fill="#f59e0b">AP</text><text x="98" y="44" text-anchor="end" font-size="20" font-weight="900" fill="#ffd84a" class="ap">'+p.ap+'</text>';
+  o+='<text x="52" y="68" text-anchor="middle" font-size="14.5" font-weight="800" fill="#e8ecf5">'+esc(B.SHORT[p.part])+'</text>';
+  o+='<path d="M22,88 c-7,-9 -19,1 -8,11 l8,8 l8,-8 c11,-10 -1,-20 -8,-11 Z" fill="#ff4d6d"/><text x="96" y="108" text-anchor="end" font-size="32" font-weight="900" fill="#fff" class="hp">'+p.hp+'</text>';
+  if(p.lvl>1)o+='<rect x="-8" y="-10" width="34" height="20" rx="7" fill="#ffd23f"/><text x="9" y="5" text-anchor="middle" font-size="13" font-weight="900" fill="#10162c">L2</text>';
+  if(side===0)o+='<rect x="-3" y="121" width="110" height="42" rx="9" fill="#0b1020" stroke="#33415f" stroke-width="2"/><text x="52" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#8f9bbd">if lost:</text><text x="52" y="155" text-anchor="middle" font-size="15" font-weight="800" fill="#e2e8f0" class="rule">'+RULE[p.part]+'</text>';
+ }
+ if(U.alloc&&side===0){var n=allocSum(ix);if(n>0){var heal=U.alloc.limit,left=heal?Math.min(p.max,p.hp+n):Math.max(0,p.hp-n);o+='<rect x="2" y="-44" width="100" height="38" rx="10" fill="'+(heal?'#166534':'#7f1d1d')+'" stroke="'+(heal?'#86efac':'#fca5a5')+'" stroke-width="3"/><text x="52" y="-17" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" class="al">'+(heal?'+':'−')+n+'</text><rect x="0" y="-64" width="104" height="18" rx="7" fill="#0b1020" fill-opacity=".9"/><text x="52" y="-50" text-anchor="middle" font-size="13" font-weight="800" fill="'+(left===0?'#fca5a5':'#c3cbe0')+'">'+(left===0?'it will be lost':'leaves '+left)+'</text>';}}
+ return o+'</g>';
+}
+function shipSVG(side){
+ var S=U.S,pl=S.P[side],s=U.L.ship[side],d=dirOf(side),dead=B.aliveIdx(pl).length===0&&!U.finale,trim=dead?'#4b5563':(side?'#f87171':'#60a5fa'),on=B.shieldWorks(S,pl),o='<g class="'+((dead||U.phase==='alloc'||U.phase==='choose')?'':'bob')+'" id="ship'+side+'" style="animation-delay:-'+Math.round((performance.now()+side*2000)%4000)+'ms">';
+ /* the hull, drawn facing right and flipped for the enemy */
+ o+='<g transform="translate('+s.cx+','+s.cy+') scale('+d+',1)">';
+ if(B.has(pl,'Engine Core'))o+='<path class="flame" d="M-330,-18 Q-420,12 -330,42 Q-350,12 -330,-18 Z" fill="#ffb347"/><path class="flame" d="M-330,-6 Q-384,12 -330,30 Z" fill="#fff3c4"/>';
+ o+='<path d="M-300,-52 L-356,-104 L-262,-52 Z M-300,76 L-356,128 L-262,76 Z" fill="'+trim+'" opacity=".55"/>';
+ o+='<rect x="-336" y="-24" width="30" height="72" rx="6" fill="#475569"/>';
+ o+='<rect x="-312" y="-56" width="620" height="136" rx="52" fill="'+(dead?'#0e1322':'#1d2743')+'" stroke="'+trim+'" stroke-width="3"/>';
+ o+='<path d="M300,-44 Q362,12 300,68 Z" fill="#26335a" stroke="'+trim+'" stroke-width="3"/>';
+ o+='<rect x="-300" y="-56" width="596" height="14" rx="7" fill="'+trim+'" opacity=".35"/>';
+ if(B.has(pl,'Shield Generator'))o+='<path d="M-46,-56 A46,42 0 0 1 46,-56" fill="'+(on?'#38bdf8':'#64748b')+'" fill-opacity=".35" stroke="'+(on?'#38bdf8':'#64748b')+'" stroke-width="3"/>';
+ if(B.has(pl,'Navigation'))o+='<line x1="116" y1="-56" x2="116" y2="-92" stroke="#cbd5e1" stroke-width="4"/><circle cx="116" cy="-96" r="7" fill="'+trim+'"/><path d="M98,-96 A18,18 0 0 1 134,-96" fill="none" stroke="#cbd5e1" stroke-width="3"/>';
+ if(B.has(pl,'Weapons System'))o+='<rect x="286" y="2" width="66" height="20" rx="5" fill="#cbd5e1" stroke="#0b1020" stroke-width="2"/><rect x="342" y="-3" width="14" height="30" rx="4" fill="'+trim+'"/>';
+ else o+='<path d="M286,4 L318,2 L310,12 L326,22 L286,22 Z" fill="#475569"/>';
+ o+='</g>';
+ for(var i=0;i<5;i++){o+=pod(side,i);}
+ /* the Main Shield: a bubble, with its number on it */
+ var cx=s.cx,cy=s.cy+4;
+ if(on){var weak=pl.shield<=25,mid=pl.shield<=50;
+  o+='<g class="bub" id="bub'+side+'" pointer-events="none"><ellipse cx="'+cx+'" cy="'+cy+'" rx="352" ry="172" fill="#38bdf8" fill-opacity="'+(weak?0.04:0.08)+'" stroke="#38bdf8" stroke-opacity=".35" stroke-width="16"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="352" ry="172" fill="none" stroke="'+(weak?'#fbbf24':'#7dd3fc')+'" stroke-width="'+(weak?3:5)+'"'+(weak?' stroke-dasharray="26 12"':'')+'/>';
+  if(mid)o+='<path d="M'+(cx-232)+','+(cy-128)+' l18,22 l-16,10 l20,22 M'+(cx+226)+','+(cy+131)+' l-12,-16 l16,-6" fill="none" stroke="#e0f2fe" stroke-width="3"/>';
+  if(weak)o+='<path d="M'+(cx+214)+','+(cy-136)+' l-10,24 l20,8 l-12,22 M'+(cx-240)+','+(cy+126)+' l14,-14 l-18,-4" fill="none" stroke="#e0f2fe" stroke-width="3"/>';
+  o+='</g>';}
+ o+='<g id="shl'+side+'" pointer-events="none"><rect x="'+(cx-132)+'" y="'+(cy-191)+'" width="264" height="38" rx="19" fill="'+(on?'#0c4a6e':'#1f2937')+'" stroke="'+(on?'#7dd3fc':'#4b5563')+'" stroke-width="3"/><text x="'+cx+'" y="'+(cy-164)+'" text-anchor="middle" font-size="22" font-weight="900" fill="'+(on?'#fff':'#9ca3af')+'" class="sht">'+(pl.shield>0?(on?'MAIN SHIELD '+pl.shield:'SHIELD OFF ('+pl.shield+')'):'SHIELD BROKEN')+'</text></g>';
+ o+='<text x="'+(cx+d*-338)+'" y="'+(s.cy+196)+'" text-anchor="'+(side?'end':'start')+'" font-size="20" font-weight="900" fill="'+trim+'" opacity=".9">'+(side?'THE ENEMY':'YOUR SHIP')+'</text>';
+ return o+'</g>';
+}
+function tableCards(){
+ var S=U.S,cur=S.cur,last=S.log.length?S.log[S.log.length-1]:null,ids=[null,null],stopped=[false,false];
+ if(cur){ids=cur.card.slice();stopped=cur.stopped;}
+ else if(U.phase==='pick'&&U.cpuLead>=0&&!U.L.land){ids=[null,S.P[1].hand[U.cpuLead]];}
+ else if(U.phase==='roundend'&&last){ids=last.card.slice();stopped=last.stopped;}
+ return {ids:ids,stopped:stopped};
+}
+function orderSVG(side,id,stopped){
+ var s=U.L.ship[side],c=B.card(id),x=s.cx-338,y=s.cy-172-170,lines=wrap(c.text,30),o='';
+ o+='<g class="order" id="order'+side+'" data-id="'+id+'"><g transform="translate('+x+','+y+') scale(0.42)">'+cardInner(c,'O'+side)+'</g>';
+ o+='<text x="'+(x+118)+'" y="'+(y+26)+'" font-size="15" font-weight="900" fill="'+(side?'#fca5a5':'#93c5fd')+'" letter-spacing="1">'+(side?'THE ENEMY\'S ORDER':'YOUR ORDER')+'</text>';
+ o+='<text x="'+(x+118)+'" y="'+(y+58)+'" font-size="27" font-weight="900" fill="#fff">'+esc(c.name)+'</text>';
+ for(var i=0;i<Math.min(lines.length,3);i++){o+='<text x="'+(x+118)+'" y="'+(y+84+i*21)+'" font-size="17" font-weight="600" fill="#c3cbe0">'+esc(lines[i])+'</text>';}
+ if(stopped)o+='<g transform="translate('+(x+52)+','+(y+74)+') rotate(-12)"><rect x="-64" y="-20" width="128" height="40" rx="8" fill="#e5484d" stroke="#fff" stroke-width="3"/><text y="9" text-anchor="middle" font-size="24" font-weight="900" fill="#fff">STOPPED</text></g>';
+ return o+'</g>';
+}
+function drawStage(){
+ var S=U.S;if(!S)return;U.L=layout();var L=U.L,o='';drawSky();
+ o+=shipSVG(1)+shipSVG(0);
+ var t=tableCards();if(t.ids[1])o+=orderSVG(1,t.ids[1],t.stopped[1]);if(t.ids[0])o+=orderSVG(0,t.ids[0],t.stopped[0]);
+ if(U.phase==='over'&&S.over&&!U.finale){var bw=S.over.winner,bt=bw===0?'YOU WIN!':(bw===1?'THE ENEMY WINS':'NOBODY WINS'),bx=L.W/2,by=L.land?Math.max(70,L.ship[0].cy-262):Math.round((L.ship[0].cy+L.ship[1].cy)/2)+10;
+  o+='<g id="banner" pointer-events="none"><rect x="'+(bx-250)+'" y="'+(by-50)+'" width="500" height="92" rx="24" fill="#0b1020" fill-opacity=".94" stroke="'+(bw===0?'#ffd84a':(bw===1?'#f87171':'#93c5fd'))+'" stroke-width="5"/><text x="'+bx+'" y="'+(by+16)+'" text-anchor="middle" font-size="50" font-weight="900" fill="'+(bw===0?'#ffd84a':'#fff')+'">'+bt+'</text></g>';}
+ o+='<g id="fxg" pointer-events="none"></g>';
+ var st=el('stage');st.setAttribute('viewBox','0 0 '+L.W+' '+L.H);st.innerHTML=o;
+}
+function drawSky(){
+ var L=U.L,k=L.W+'x'+L.H,sk=el('sky');if(sk.getAttribute('data-k')===k)return;
+ var o='<rect width="'+L.W+'" height="'+L.H+'" fill="#070b18"/><circle cx="'+(L.W*0.5)+'" cy="'+(L.H*0.1)+'" r="'+(L.H*0.5)+'" fill="#1e2a55" opacity=".25"/>';
+ o+='<g class="drift" style="--w:-'+L.W+'px">'+stars('spaceA',0,0,L.W,L.H,90)+stars('spaceA',L.W,0,L.W,L.H,90)+'</g>';
+ o+='<g class="drift slow" style="--w:-'+L.W+'px">'+stars('spaceB',0,0,L.W,L.H,60)+stars('spaceB',L.W,0,L.W,L.H,60)+'</g>';
+ sk.setAttribute('viewBox','0 0 '+L.W+' '+L.H);sk.setAttribute('data-k',k);sk.innerHTML=o;
 }
 function drawAtk(){
  var S=U.S,cur=S.cur,last=S.log.length?S.log[S.log.length-1]:null,shown=cur&&cur.snap?cur:((U.phase==='roundend'||U.phase==='over')&&last?last:null);
  for(var i=0;i<2;i++){
-  var pl=S.P[i],e=el(i?'eatk':'myatk'),ap=B.has(pl,'Weapons System')?B.shipAP(pl):0,lab=i?'ATTACK':'YOUR ATTACK';
-  if(shown&&shown.atk[i]>0){var base=shown.atk[i]-(shown.bonus?shown.bonus[i]:0);e.className='atk';e.innerHTML=lab+' <b>'+shown.atk[i]+'</b>'+(shown.bonus&&shown.bonus[i]?'<small>'+base+' + '+shown.bonus[i]+'</small>':'');}
-  else if(ap>0&&!(shown&&shown.atk[i]===0)){e.className='atk';e.innerHTML=lab+' <b>'+ap+'</b>';}
-  else{e.className='atk off';e.innerHTML='<b>NO ATTACK</b>';}
+  var pl=S.P[i],e=el(i?'eatk':'myatk'),ap=B.has(pl,'Weapons System')?B.shipAP(pl):0,lab=small()?(i?'ENEMY':'YOU'):(i?'ENEMY ATTACK':'YOUR ATTACK');
+  if(shown&&shown.atk[i]>0){var bo=shown.bonus?shown.bonus[i]:0;e.className='atk'+(i?' foe':'');e.innerHTML=lab+' <b>'+shown.atk[i]+'</b>'+(bo?'<small>'+(shown.atk[i]-bo)+' + '+bo+'</small>':'');}
+  else if(ap>0&&!(shown&&shown.atk[i]===0)){e.className='atk'+(i?' foe':'');e.innerHTML=lab+' <b>'+ap+'</b>';}
+  else{e.className='atk off'+(i?' foe':'');e.innerHTML='<b>NO ATTACK</b>';}
  }
 }
 function shownRound(){var S=U.S;return ((U.phase==='roundend'||U.phase==='over')&&S.log.length)?S.log[S.log.length-1].round:S.round;}
-function enemyCardId(){
- var S=U.S,cur=S.cur,last=S.log.length?S.log[S.log.length-1]:null;
- if(cur)return cur.card[1];
- if(U.phase==='pick'&&U.cpuLead>=0)return S.P[1].hand[U.cpuLead];
- if((U.phase==='roundend'||U.phase==='over')&&last)return last.card[1];
- return null;
-}
-function zoom(id){var z=el('zoomc');z.innerHTML=cardSVG(B.card(id),'Z');z.className='open';}
+function render(){if(!U.S)return;el('round').textContent='Round '+shownRound();drawAtk();drawTray();if(U.phase!=='alloc')drawStage();}
 
-/* ---------- the middle of the screen ---------- */
+/* ---------- the tray: your orders, and the buttons ---------- */
 function handNote(h){
  var S=U.S,c=B.card(S.P[0].hand[h]),lead=S.opts.guard==='lead',seen=(lead&&S.leader===1&&U.cpuLead>=0)?S.P[1].hand[U.cpuLead]:null,note='',tag='';
  var dead=c.ops.every(function(o){return !B.opWorks(S,S.P[0],o);});
- c.ops.forEach(function(o){if(!B.opWorks(S,S.P[0],o)){note='Your '+B.SHORT[B.needOf(S,o.op)]+' is lost, so '+(c.ops.length>1?'part of this card':'this card')+' does nothing.';}});
+ c.ops.forEach(function(o){if(!B.opWorks(S,S.P[0],o)){note='Your '+B.SHORT[B.needOf(S,o.op)]+' is lost, so '+(c.ops.length>1?'part of this order':'this order')+' does nothing.';}});
  if(dead)tag='no effect';
  if(c.type==='guard'){
-  if(S.opts.guard==='lead'){if(seen&&B.isSpy(seen)&&!B.guardTooLow(S,c.id,seen)){note='The enemy played a Spy. This stops it.';}else if(S.leader===1){note='It only stops a Spy. The enemy did not play one.';tag='no Spy';}else{note='It only stops a Spy, and you go first. Keep it for a round when you answer.';tag='keep';}}
-  else if(S.opts.guard==='swap'){note='Keep it in your hand. You can swap it in when a Spy is turned over.';tag='keep';}
-  else{note='It only works if the enemy plays a Spy this round.';}
+  if(S.opts.guard==='lead'){if(seen&&B.isSpy(seen)&&!B.guardTooLow(S,c.id,seen)){note='The enemy sent a Spy. This stops it.';}else if(S.leader===1){note='It only stops a Spy. The enemy did not send one.';tag='no Spy';}else{note='It only stops a Spy, and you go first. Keep it for a round when you answer.';tag='keep';}}
+  else if(S.opts.guard==='swap'){note='Keep it. You can swap it in when a Spy is turned over.';tag='keep';}
+  else{note='It only works if the enemy sends a Spy this round.';}
  }
  if(c.type==='spy'&&lead&&S.leader===0)note='You go first, so the enemy may answer with a policeman.';
  if(c.ops.some(function(o){return /^block/.test(o.op);})){
-  if(seen&&B.outranked(S,c.id,seen)){note='The enemy\'s card is '+B.KINDWORD[B.card(seen).rarity]+'. A '+B.KINDWORD[c.rarity]+' card cannot block it.';tag='cannot block';}
-  else if(S.opts.kindBlock&&!seen&&c.rarity!=='epic'&&!note)note='A '+B.KINDWORD[c.rarity]+' card cannot block a '+(c.rarity==='common'?'rare or gold':'gold')+' attack card.';
+  if(seen&&B.outranked(S,c.id,seen)){note='The enemy\'s order is '+B.KINDWORD[B.card(seen).rarity]+'. A '+B.KINDWORD[c.rarity]+' card cannot block it.';tag='cannot block';}
+  else if(S.opts.kindBlock&&!seen&&c.rarity!=='epic'&&!note)note='A '+B.KINDWORD[c.rarity]+' card cannot block a '+(c.rarity==='common'?'rare or gold':'gold')+' attack.';
  }
  return {note:note,tag:tag};
 }
-function midSize(){var m=el('mid');return {w:m.clientWidth,h:m.clientHeight};}
-function drawMid(){
- var S=U.S,m=el('mid'),sz=midSize(),h='',i;
- if(U.phase==='pick'){
-  var led=enemyCardId(),n=S.P[0].hand.length+(led?1:0),ex=led?16:0,lab=led?20:0,ah=sz.h-66,w1=Math.min((sz.w-(n-1)*8-ex)/n,(ah-lab)*250/350),per=Math.ceil(n/2),w2=Math.min((sz.w-(per-1)*8-ex)/per,((ah-8-lab)/2)*250/350),w=Math.floor(Math.max(w1,w2))-1;
-  h='<div id="hand" style="max-width:'+(w2>w1?per*w+(per-1)*8+ex+2:sz.w)+'px">';
-  if(led){h+='<button type="button" class="ec" id="ecard" data-id="'+led+'" style="width:'+w+'px"><span class="lab">The enemy played</span>'+cardSVG(B.card(led),'E')+'</button>';}
-  S.P[0].hand.forEach(function(id,k){var t=handNote(k);h+='<button type="button" class="hc'+(k===U.sel?' sel':'')+(t.tag==='no effect'||t.tag==='cannot block'||t.tag==='no Spy'?' no':'')+'" data-h="'+k+'" data-id="'+id+'" style="width:'+w+'px">'+cardSVG(B.card(id),'H'+k)+(t.tag?'<span class="tag">'+t.tag+'</span>':'')+'</button>';});
-  h+='</div><div id="act">'+(U.sel>=0?'<span class="note" id="note">'+esc(handNote(U.sel).note)+'</span><button class="btn go" id="playit" type="button">Play '+esc(B.card(S.P[0].hand[U.sel]).name)+'</button>':'<span class="note" id="note">Tap a card to choose it.</span>')+'</div>';
-  m.innerHTML=h;
-  var hs=m.querySelectorAll('.hc');for(i=0;i<hs.length;i++){hs[i].addEventListener('click',function(){U.sel=+this.getAttribute('data-h');drawMid();});}
-  if(el('playit'))el('playit').addEventListener('click',playCard);
-  if(el('ecard'))el('ecard').addEventListener('click',function(){zoom(this.getAttribute('data-id'));});
-  return;
- }
- if(U.phase==='split'){drawSplit();return;}
- /* the table: both cards, face up */
- var cur=S.cur,last=S.log.length?S.log[S.log.length-1]:null,cards=cur?cur.card:(last?last.card:null),stopped=cur?cur.stopped:(last?last.stopped:[false,false]);
- var ch=Math.max(120,Math.min(sz.h-88,340)),cw=ch*250/350;if(cw*2+90>sz.w){cw=(sz.w-90)/2;ch=cw*350/250;}
- h='<div id="table">';
- if(cards){for(i=0;i<2;i++){h+=(i?'<div class="vs">VS</div>':'')+'<div class="tc" id="tc'+i+'"><div class="lab" style="color:'+(i?'#fca5a5':'#93c5fd')+'">'+(i?'The enemy':'You')+'</div><div style="width:'+cw.toFixed(0)+'px;height:'+ch.toFixed(0)+'px">'+cardSVG(B.card(cards[i]),'T'+i).replace('<svg ','<svg width="'+cw.toFixed(0)+'" height="'+ch.toFixed(0)+'" ')+'</div>'+(stopped[i]?'<div class="stamp">STOPPED</div>':'')+'</div>';}}
- h+='</div><div id="act">'+(U.actHTML||'')+'</div>';
- m.innerHTML=h;
- if(U.actBind)U.actBind();
+function drawTray(){
+ var S=U.S,t=el('tray'),h='',i;t.style.height='';
+ if(U.phase==='alloc'){t.style.height='auto';drawAlloc();drawStage();return;}
+ if(U.tray){t.innerHTML='<div class="traymsg">'+U.tray.html+'</div>';if(U.tray.bind)U.tray.bind();return;}
+ var pick=U.phase==='pick',land=isLand(),foe=(pick&&land&&U.cpuLead>=0)?S.P[1].hand[U.cpuLead]:null;
+ if(foe)h+='<button type="button" class="hc foecard" id="foecard" data-id="'+foe+'">'+cardSVG(B.card(foe),'HF')+'<span class="who">THE ENEMY\'S ORDER</span></button><span class="gap"></span>';
+ S.P[0].hand.forEach(function(id,k){var n=handNote(k),off=!pick;h+='<button type="button" class="hc mine'+(off?' dim':'')+(n.tag==='no effect'||n.tag==='cannot block'||n.tag==='no Spy'?' no':'')+'" data-h="'+k+'" data-id="'+id+'">'+cardSVG(B.card(id),'H'+k)+(n.tag&&!off?'<span class="tag">'+n.tag+'</span>':'')+'</button>';});
+ t.innerHTML=h;
+ var all=t.querySelectorAll('.hc'),n=S.P[0].hand.length||1,tw=t.clientWidth,cw;
+ if(pick&&land){
+  /* sideways: the cards are as large as six in a row allow, and the stage keeps what the two ships need */
+  var app=el('app'),free=app.clientHeight-el('topbar').offsetHeight-el('msg').offsetHeight-30-Math.ceil(el('stagewrap').clientWidth*440/1560);
+  cw=Math.floor(Math.min((tw-5*8-28)/6,(free-18)*250/350));cw=Math.max(cw,70);t.style.height=(Math.round(cw*1.4)+18)+'px';
+ }else if(pick){
+  cw=Math.floor(Math.min((tw-(n-1)*8)/Math.max(n,5),window.innerHeight*0.2*250/350));t.style.height=(Math.round(cw*1.4)+8)+'px';
+ }else{cw=Math.floor(Math.min(t.clientHeight*250/350,(tw-(n-1)*8)/n));}
+ for(i=0;i<all.length;i++){all[i].style.width=cw+'px';all[i].style.height=Math.round(cw*1.4)+'px';}
+ if(pick){var hs=t.querySelectorAll('.hc.mine');for(i=0;i<hs.length;i++){hs[i].addEventListener('click',function(){openPop(+this.getAttribute('data-h'));});}
+  var fc=el('foecard');if(fc)fc.addEventListener('click',function(){zoom(this.getAttribute('data-id'));});}
 }
-function setRound(){el('round').textContent=U.S?'Round '+shownRound():'';}
-function render(){if(!U.S)return;drawParts();drawShield(0);drawShield(1);drawAtk();setRound();drawMid();}
+function tray(html,bind){U.tray=html?{html:html,bind:bind||null}:null;drawTray();}
+function openPop(h){
+ var S=U.S,c=B.card(S.P[0].hand[h]),n=handNote(h),p=el('pop');U.sel=h;
+ p.innerHTML='<div class="big">'+cardSVG(c,'P')+'</div><div class="side"><div class="note" id="note">'+esc(n.note)+'</div><button class="btn go" id="playit" type="button">Give this order</button><button class="btn" id="popx" type="button">Back</button></div>';
+ p.className='open';
+ el('playit').addEventListener('click',function(){p.className='';playCard();});
+ el('popx').addEventListener('click',function(){p.className='';U.sel=-1;});
+}
+function zoom(id){var p=el('pop');p.innerHTML='<div class="big">'+cardSVG(B.card(id),'Z')+'</div><div class="side"><button class="btn" id="popx" type="button">Back</button></div>';p.className='open';el('popx').addEventListener('click',function(){p.className='';});}
 
 /* ---------- a round ---------- */
 function startPick(){
- var S=U.S;U.phase='pick';U.sel=-1;U.cpuLead=-1;U.pick=null;U.req=null;U.actHTML='';U.actBind=null;save();
- if(S.opts.guard==='lead'&&S.leader===1){U.cpuLead=B.cpuPick(S,1,null);say('The enemy goes first: '+B.card(S.P[1].hand[U.cpuLead]).name+'. Pick a card to answer it.');}
- else if(S.opts.guard==='lead'){say('You go first. Pick a card. The enemy will answer it.');}
- else{say('Pick a card. The enemy picks at the same time.');}
+ var S=U.S;U.phase='pick';U.sel=-1;U.cpuLead=-1;U.pick=null;U.req=null;U.alloc=null;U.tray=null;save();
+ if(S.opts.guard==='lead'&&S.leader===1){U.cpuLead=B.cpuPick(S,1,null);say('The enemy goes first: '+B.card(S.P[1].hand[U.cpuLead]).name+'. Choose your order to answer it.');}
+ else if(S.opts.guard==='lead'){say('You go first. Choose an order for your ship.');}
+ else{say('Choose an order for your ship.');}
  render();
 }
-function act(html,bind){U.actHTML=html;U.actBind=bind||null;var a=el('act');if(a){a.innerHTML=html;if(bind)bind();}}
 function playCard(){
  var S=U.S,h=U.sel,c;if(h<0||U.phase!=='pick')return;
  if(S.opts.guard==='lead'){c=S.leader===1?U.cpuLead:B.cpuPick(S,1,S.P[0].hand[h]);}else{c=B.cpuPick(S,1,null);}
- U.phase='resolve';U.sel=-1;U.cpuLead=-1;U.actHTML='';U.actBind=null;
+ U.phase='resolve';U.sel=-1;U.cpuLead=-1;U.tray=null;
  B.startRound(S,h,c);
- say(S.opts.guard!=='lead'?'You play '+B.card(S.cur.card[0]).name+'. The enemy plays '+B.card(S.cur.card[1]).name+'.':(S.leader===0?'You play '+B.card(S.cur.card[0]).name+'. The enemy answers with '+B.card(S.cur.card[1]).name+'.':'You answer '+B.card(S.cur.card[1]).name+' with '+B.card(S.cur.card[0]).name+'.'));
+ say(S.opts.guard!=='lead'||S.leader===0?'Your order: '+B.card(S.cur.card[0]).name+'. The enemy answers: '+B.card(S.cur.card[1]).name+'.':'You answer with '+B.card(S.cur.card[0]).name+'.');
  render();
  var mine=B.canSwap(S,0);
  function go(yes){
   var before=S.cur.card.slice();B.swapBoth(S,[yes,true]);
   if(S.cur.card[1]!==before[1])say('The enemy swaps in '+B.card(S.cur.card[1]).name+'.');
   if(S.cur.card[0]!==before[0])say('You swap in '+B.card(S.cur.card[0]).name+'.');
-  act('');render();runRound();
+  tray(null);render();runRound();
  }
- if(mine>=0){say('The enemy played a Spy! Swap in your '+B.card(S.P[0].hand[mine]).name+'?');
-  act('<button class="btn go" id="swy" type="button">Yes, stop the Spy</button><button class="btn" id="swn" type="button">No</button>',function(){el('swy').addEventListener('click',function(){go(true);});el('swn').addEventListener('click',function(){go(false);});});}
+ if(mine>=0){say('The enemy sent a Spy! Swap in your '+B.card(S.P[0].hand[mine]).name+'?');
+  tray('<div class="row"><button class="btn go" id="swy" type="button">Yes, stop the Spy</button><button class="btn" id="swn" type="button">No</button></div>',function(){el('swy').addEventListener('click',function(){go(true);});el('swn').addEventListener('click',function(){go(false);});});}
  else{go(false);}
 }
 function runRound(){
@@ -883,62 +909,113 @@ function runRound(){
   if(qi>=queue.length){U.anim=false;return endRound();}
   var st=queue[qi++],req=B.need(S,st);
   function go(ch){
-   U.anim=true;U.phase='resolve';U.pick=null;U.req=null;act('');
+   var had=U.pick||U.alloc;U.anim=true;U.phase='resolve';U.pick=null;U.req=null;U.alloc=null;U.tray=null;drawTray();if(had)drawStage();
    var R=B.run(S,st,ch);if(S.cur){S.cur.lines=S.cur.lines.concat(R.lines);}
    animate(st,R).then(function(){render();next();});
   }
   if(req&&req.who===0){U.anim=false;askChoice(st,req,go);}else{go(req?B.cpuChoose(S,req):null);}
  }
- wait(700).then(next);
+ wait(900).then(next);
 }
 function endRound(){
- var S=U.S;U.pick=null;U.req=null;
- if(S.over){U.phase='over';save();say(S.over.why);
-  act('<button class="btn go" id="again" type="button">New battle</button><button class="btn" id="seelog" type="button">See the log</button>',function(){el('again').addEventListener('click',openSetup);el('seelog').addEventListener('click',openLog);});
-  render();return;}
+ var S=U.S;U.pick=null;U.req=null;U.alloc=null;
+ if(S.over){U.phase='over';save();say(S.over.why);U.anim=true;tray('<div class="row"></div>');
+  finale().then(function(){U.anim=false;
+  tray('<div class="row"><button class="btn go" id="again" type="button">New battle</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){el('again').addEventListener('click',openSetup);el('seelog').addEventListener('click',openLog);});
+  render();if(S.over.winner===0){var bn=el('banner'),bb=bn?bn.getBBox():null;if(bb){[0.15,0.5,0.85].forEach(function(f,i){setTimeout(function(){debris({x:bb.x+bb.width*f,y:bb.y+bb.height/2},14,'#ffd84a');},i*220);});}}});return;}
  U.phase='roundend';save();
- act('<button class="btn go" id="nextr" type="button">Next round</button>',function(){el('nextr').addEventListener('click',startPick);});
+ tray('<div class="row"><button class="btn go" id="nextr" type="button">Next round</button></div>',function(){el('nextr').addEventListener('click',startPick);});
  render();
 }
 
-/* ---------- movement: a laser, a Spy, numbers that float up ---------- */
-function tileEl(side,ix){return document.querySelector('.pt[data-side="'+side+'"][data-ix="'+ix+'"]');}
-function ixOf(side,label){var ps=U.S.P[side].parts;for(var i=0;i<ps.length;i++){if(B.SHORT[ps[i].part]===label)return i;}return 0;}
-function mid(e){var r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};}
-function fxAdd(html,ms){var g=document.createElementNS(NS,'g');g.innerHTML=html;el('fx').appendChild(g);setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g);},ms);return g;}
-function pop(e,text,colour){if(FAST||!e)return;var p=mid(e);fxAdd('<text class="pop" x="'+p.x.toFixed(0)+'" y="'+p.y.toFixed(0)+'" text-anchor="middle" fill="'+colour+'">'+esc(text)+'</text>',950);}
-function cls(e,c,ms){if(FAST||!e)return;e.classList.add(c);setTimeout(function(){e.classList.remove(c);},ms);}
-function beam(a,b,colour){if(FAST||!a||!b)return;var p=mid(a),q=mid(b);fxAdd('<line class="beam" x1="'+p.x+'" y1="'+p.y+'" x2="'+q.x+'" y2="'+q.y+'" stroke="'+colour+'" stroke-width="22" opacity=".45"/><line class="beam" x1="'+p.x+'" y1="'+p.y+'" x2="'+q.x+'" y2="'+q.y+'" stroke="'+colour+'" stroke-width="11"/><line class="beam" x1="'+p.x+'" y1="'+p.y+'" x2="'+q.x+'" y2="'+q.y+'" stroke="#fff" stroke-width="4"/><circle class="beam" cx="'+q.x+'" cy="'+q.y+'" r="34" fill="'+colour+'"/><circle class="beam" cx="'+q.x+'" cy="'+q.y+'" r="16" fill="#fff"/>',640);}
-function flySpy(a,b){
- if(FAST||!a||!b)return wait(0);var p=mid(a),q=mid(b),g=fxAdd('<g class="fly" style="transform:translate('+p.x+'px,'+p.y+'px)">'+symSpy(0,0,0.5)+'</g>',1100),f=g.firstChild;
- return wait(40).then(function(){f.style.transform='translate('+q.x+'px,'+q.y+'px)';return wait(700);});
+/* ---------- movement on the stage ---------- */
+function fx(html){var g=document.createElementNS(NS,'g');g.innerHTML=html;var host=el('fxg');if(host)host.appendChild(g);return g;}
+function gone(g){if(g&&g.parentNode)g.parentNode.removeChild(g);}
+function floatText(p,text,colour,size){
+ if(FAST)return;var g=fx('<text class="pop" x="'+p.x.toFixed(0)+'" y="'+p.y.toFixed(0)+'" text-anchor="middle" font-size="'+(size||46)+'" font-weight="900" fill="'+colour+'" stroke="#04060f" stroke-width="7" paint-order="stroke">'+esc(text)+'</text>');
+ tween(1100,function(t){g.setAttribute('transform','translate(0,'+(-70*t).toFixed(1)+')');g.setAttribute('opacity',t<0.7?1:(1-t)/0.3);}).then(function(){gone(g);});
 }
+function boom(p,r,colour){
+ if(FAST)return wait(0);var g=fx('<circle cx="'+p.x+'" cy="'+p.y+'" r="1" fill="'+colour+'"/><circle cx="'+p.x+'" cy="'+p.y+'" r="1" fill="#fff"/>'),a=g.firstChild,b=g.lastChild;
+ return tween(420,function(t){a.setAttribute('r',(r*t).toFixed(1));a.setAttribute('opacity',(1-t).toFixed(2));b.setAttribute('r',(r*0.5*t).toFixed(1));b.setAttribute('opacity',(1-t).toFixed(2));}).then(function(){gone(g);});
+}
+function bolt(a,b,colour,ms){
+ if(FAST)return wait(0);var g=fx('<line class="beam" x1="'+a.x+'" y1="'+a.y+'" x2="'+a.x+'" y2="'+a.y+'" stroke="'+colour+'" stroke-width="16" stroke-linecap="round" opacity=".5"/><line x1="'+a.x+'" y1="'+a.y+'" x2="'+a.x+'" y2="'+a.y+'" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="'+a.x+'" cy="'+a.y+'" r="14" fill="#fff"/>'),l1=g.childNodes[0],l2=g.childNodes[1],hd=g.childNodes[2];
+ return tween(ms||420,function(t){var hx=a.x+(b.x-a.x)*t,hy=a.y+(b.y-a.y)*t,tt=Math.max(0,t-0.35),tx=a.x+(b.x-a.x)*tt,ty=a.y+(b.y-a.y)*tt;[l1,l2].forEach(function(l){l.setAttribute('x1',tx.toFixed(1));l.setAttribute('y1',ty.toFixed(1));l.setAttribute('x2',hx.toFixed(1));l.setAttribute('y2',hy.toFixed(1));});hd.setAttribute('cx',hx.toFixed(1));hd.setAttribute('cy',hy.toFixed(1));}).then(function(){gone(g);});
+}
+function flyIcon(a,b,html,ms,arc){
+ if(FAST)return wait(0);var g=fx('<g class="fly">'+html+'</g>').firstChild,mx=(a.x+b.x)/2,my=Math.min(a.y,b.y)-(arc||0);
+ return tween(ms,function(t){var u=1-t,x=u*u*a.x+2*u*t*mx+t*t*b.x,y=u*u*a.y+2*u*t*my+t*t*b.y;g.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+')');}).then(function(){gone(g.parentNode);});
+}
+function quake(){if(FAST)return;var w=el('stagewrap');w.className='';void w.offsetWidth;w.className='quake';}
+function flash(side){
+ if(FAST)return;var s=U.L.ship[side],g=fx('<ellipse cx="'+s.cx+'" cy="'+(s.cy+4)+'" rx="352" ry="172" fill="#e0f2fe" fill-opacity=".35" stroke="#fff" stroke-width="10"/>');
+ tween(480,function(t){g.setAttribute('opacity',(1-t).toFixed(2));}).then(function(){gone(g);});
+}
+function debris(p,n,colour){
+ if(FAST)return;var o='',i,a=[];for(i=0;i<n;i++){a.push({an:Math.PI*2*i/n+Math.random(),d:70+Math.random()*90,r:3+Math.random()*5});o+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+a[i].r.toFixed(1)+'" fill="'+(i%3?colour:'#fff')+'"/>';}
+ var g=fx(o);tween(700,function(t){for(var k=0;k<n;k++){var c=g.childNodes[k],e=1-(1-t)*(1-t);c.setAttribute('cx',(p.x+Math.cos(a[k].an)*a[k].d*e).toFixed(1));c.setAttribute('cy',(p.y+Math.sin(a[k].an)*a[k].d*e+40*t*t).toFixed(1));c.setAttribute('opacity',(1-t).toFixed(2));}}).then(function(){gone(g);});
+}
+function wall(side,text){
+ if(FAST)return;var f=facing(side),s=U.L.ship[side],g=fx('<circle cx="'+f.x.toFixed(0)+'" cy="'+f.y.toFixed(0)+'" r="74" fill="#4f9dff" fill-opacity=".3" stroke="#bfdbfe" stroke-width="6"/><g transform="translate('+f.x.toFixed(0)+','+f.y.toFixed(0)+') scale(0.5)">'+symShield(0,0,1)+'</g>');
+ floatText({x:f.x,y:f.y-80},text,'#bfdbfe',40);
+ tween(1300,function(t){g.setAttribute('opacity',t<0.75?1:((1-t)/0.25).toFixed(2));}).then(function(){gone(g);});
+}
+function finale(){
+ var S=U.S,sides=[0,1].filter(function(i){return B.aliveIdx(S.P[i]).length===0;}),chain=wait(0);
+ if(FAST||!sides.length)return chain;
+ U.finale=true;
+ sides.forEach(function(sd){[0,1,2,3,4].forEach(function(k){chain=chain.then(function(){var p=podXY(sd,SLOT[k]);boom(p,120,'#fb923c');debris(p,10,'#fdba74');quake();return wait(190);});});});
+ return chain.then(function(){return wait(500);}).then(function(){U.finale=false;});
+}
+function shake(side,ix){if(FAST)return;var e=el('pod'+side+ix);if(!e)return;var base=e.getAttribute('transform');tween(340,function(t){e.setAttribute('transform',base+' translate('+(Math.sin(t*28)*7*(1-t)).toFixed(1)+',0)');});}
+function ixOf(side,label){var ps=U.S.P[side].parts;for(var i=0;i<ps.length;i++){if(B.SHORT[ps[i].part]===label)return i;}return 0;}
+var SPYPOD='<g transform="scale(1.7)"><ellipse cx="0" cy="8" rx="34" ry="13" fill="#2b2f45" stroke="#c4b5fd" stroke-width="3"/><g transform="translate(0,-14) scale(0.36)">'+symSpy(0,0,1)+'</g></g>';
+var COPSHIP='<rect x="-40" y="-2" width="80" height="22" rx="11" fill="#2f55c7" stroke="#fff" stroke-width="3"/><circle cx="-18" cy="-6" r="7" fill="#e5484d"/><circle cx="18" cy="-6" r="7" fill="#38bdf8"/><text x="0" y="15" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">POLICE</text>';
+var HEARTS='<path d="M0,10 C-22,-4 -10,-18 0,-8 C10,-18 22,-4 0,10 Z" fill="#ff4d6d" stroke="#fff" stroke-width="2"/>';
+function refresh(){drawStage();drawAtk();}
 function animate(st,R){
  var S=U.S,lines=R.lines.slice(),chain=wait(0);
  function then(fn){chain=chain.then(fn);}
  if(!lines.length&&!R.sums.length)return chain;
- if(st.k==='guard'){then(function(){drawMid();say(lines.join(' '));return wait(1100);});return chain;}
+ if(st.k==='guard'){
+  then(function(){say(lines.join(' '));var hit=-1;for(var i=0;i<2;i++){if(S.cur&&S.cur.stopped[i])hit=i;}
+   if(hit<0)return wait(1000);
+   var a=U.L.ship[1-hit],b=U.L.ship[hit],m={x:(a.cx+b.cx)/2,y:(a.cy+b.cy)/2-40};
+   return flyIcon({x:a.cx,y:a.cy-60},m,COPSHIP,700,60).then(function(){floatText(m,'STOP!','#93c5fd',54);refresh();return wait(1000);});});
+  return chain;
+ }
  if(st.k==='attack'){
-  then(function(){drawAtk();say(lines.slice(0,2).join(' '));return wait(1200);});
-  if(lines.length>2)then(function(){say(lines.slice(2).join(' '));return wait(1200);});
+  then(function(){refresh();say(lines.slice(0,2).join(' '));
+   for(var i=0;i<2;i++){if(S.cur&&S.cur.atk[i]>0){var p=turret(i);floatText({x:p.x,y:(i===1&&U.L.land)?p.y+84:p.y-34},String(S.cur.atk[i]),i?'#fca5a5':'#93c5fd',52);}}
+   return wait(1300);});
+  if(lines.length>2)then(function(){say(lines.slice(2).join(' '));
+   for(var i=0;i<2;i++){var bk=S.cur?S.cur.block[i]:0;if(bk!==0&&S.cur.atk[1-i]>0)wall(i,bk<0?'ALL BLOCKED':'BLOCK '+Math.min(bk,S.cur.atk[1-i]));}
+   return wait(1500);});
   return chain;
  }
  R.sums.forEach(function(s){
   then(function(){
-   var target=s.what==='shield'?el(s.side?'esh':'mysh'):tileEl(s.side,ixOf(s.side,s.label)),txt,from;
-   if(s.kind==='spy'){from=el('tc'+(1-s.side));return flySpy(from,target).then(function(){pop(target,'−'+(-s.change),'#c4b5fd');cls(target,'hit',340);say((s.side?'Your':'The enemy\'s')+' Spy hits '+(s.side?'their ':'your ')+s.label+': '+s.before+' to '+s.answer+'.');return wait(750);});}
-   if(s.kind==='land'){from=tileEl(1-s.side,ixOf(1-s.side,'Weapons'));beam(from,target,s.side?'#38bdf8':'#fb7185');
-    txt=s.what==='shield'&&s.answer===0&&-s.change>s.before?'BREAK':'−'+(-s.change);
-    return wait(450).then(function(){pop(target,txt,'#fca5a5');cls(target,'hit',340);say(s.what==='shield'?((s.side?'Their':'Your')+' Main Shield: '+s.before+' to '+s.answer+'.'+(txt==='BREAK'?' It breaks, and soaks up the whole attack.':'')):((s.side?'Their ':'Your ')+s.label+' takes '+(-s.change)+': '+s.before+' to '+s.answer+'.'));return wait(800);});}
-   pop(target,(s.answer-s.before>=0?'+':'−')+Math.abs(s.answer-s.before),'#86efac');cls(target,'glow',620);
-   say((s.side?'Their ':'Your ')+(s.what==='shield'?'Main Shield':s.label)+': '+s.before+' to '+s.answer+'.');return wait(850);
+   var isSh=s.what==='shield',ix=isSh?-1:ixOf(s.side,s.label),target=isSh?facing(s.side):podXY(s.side,ix),from,txt;
+   if(s.kind==='spy'){from={x:U.L.ship[1-s.side].cx,y:U.L.ship[1-s.side].cy-40};say((s.side?'Your':'The enemy\'s')+' Spy slips past the shield...');
+    return flyIcon(from,target,SPYPOD,1100,U.L.land?230:40).then(function(){boom(target,60,'#c4b5fd');shake(s.side,ix);if(s.answer===0)debris(target,12,'#fdba74');floatText(target,'−'+(-s.change),'#ddd6fe');say((s.side?'Your':'The enemy\'s')+' Spy hits '+(s.side?'their ':'your ')+s.label+': '+s.before+' to '+s.answer+'.');return wait(700);});}
+   if(s.kind==='land'){from=turret(1-s.side);var broke=isSh&&s.answer===0&&-s.change>s.before;
+    boom(from,30,'#fff');return bolt(from,target,s.side?'#38bdf8':'#fb7185',460).then(function(){boom(target,isSh?90:70,s.side?'#7dd3fc':'#fda4af');if(isSh){flash(s.side);}else{shake(s.side,ix);quake();if(s.answer===0)debris(target,12,'#fdba74');}
+     floatText(target,broke?'SHIELD DOWN':'−'+(-s.change),'#fecaca',broke?44:50);
+     say(isSh?((s.side?'Their':'Your')+' Main Shield: '+s.before+' to '+s.answer+'.'+(broke?' It breaks, and soaks up the whole hit.':'')):((s.side?'Their ':'Your ')+s.label+' takes '+(-s.change)+': '+s.before+' to '+s.answer+'.'));return wait(750);});}
+   from=podXY(s.side,ixOf(s.side,'Power'));txt=(s.answer-s.before>=0?'+':'−')+Math.abs(s.answer-s.before);
+   if(isSh)target={x:U.L.ship[s.side].cx,y:U.L.ship[s.side].cy-150};
+   say((s.side?'Their ':'Your ')+(isSh?'Main Shield':s.label)+': '+s.before+' to '+s.answer+'.');
+   return flyIcon(from,target,HEARTS,520,60).then(function(){floatText(target,txt,'#86efac');return wait(650);});
   });
-  then(function(){drawParts();drawShield(0);drawShield(1);});
+  then(function(){refresh();});
  });
  then(function(){
   var extra=lines.filter(function(l){return /lose|loses|throw|nothing|Level 2|bring|no part|No /.test(l);});
-  if(!R.sums.length){say(lines.slice(-2).join(' '));return wait(lines.length?1100:0);}
-  if(extra.length){drawParts();say(extra.slice(-2).join(' '));return wait(1100);}
+  if(!R.sums.length){say(lines.slice(-2).join(' '));refresh();return wait(lines.length?1200:0);}
+  if(extra.length){refresh();say(extra.slice(-2).join(' '));
+   extra.forEach(function(l){var m=/(You lose your|The enemy loses its) (.+)\./.exec(l);if(m){var sd=/^You/.test(l)?0:1;boom(podXY(sd,ixOf(sd,m[2])),110,'#fb923c');}});
+   return wait(1200);}
   return wait(0);
  });
  return chain;
@@ -946,58 +1023,60 @@ function animate(st,R){
 
 /* ---------- the player's choices ---------- */
 function partName(side,ix){return B.SHORT[U.S.P[side].parts[ix].part];}
+function cellsOf(n){var a=[];while(n>=10){a.push(10);n-=10;}if(n>=5){a.push(5);n-=5;}while(n>0){a.push(1);n--;}return a;}
+function allocSum(ix){var a=U.alloc.placed[ix]||[],t=0;a.forEach(function(v){t+=v;});return t;}
 function askChoice(st,req,done){
- var S=U.S,c=B.card(S.cur.card[0]);U.req=req;U.done=done;
+ var S=U.S,c=B.card(S.cur.card[0]);U.req=req;
  if(req.type==='targets'||req.type==='part'){
   var n=req.type==='targets'?req.count:1;U.phase='choose';
   U.pick={side:req.side,among:req.among,chosen:[],n:n};
   say(req.type==='targets'?'Your Spy does '+req.n+' damage. Tap '+(n===1?'one enemy part.':n+' enemy parts.'):c.name+': tap the part to '+req.verb+'.');
-  act('<button class="btn go" id="cgo" type="button" disabled>Go</button>',function(){el('cgo').disabled=U.pick.chosen.length!==U.pick.n;el('cgo').addEventListener('click',function(){var ch=req.type==='targets'?U.pick.chosen.slice():U.pick.chosen[0],e=B.validate(S,req,ch);if(e){say(e);return;}done(ch);});});
+  tray('<div class="row"><button class="btn go" id="cgo" type="button" disabled>Go</button></div>',function(){el('cgo').disabled=U.pick.chosen.length!==U.pick.n;el('cgo').addEventListener('click',function(){var ch=req.type==='targets'?U.pick.chosen.slice():U.pick.chosen[0],e=B.validate(S,req,ch);if(e){say(e);return;}done(ch);});});
   render();return;
  }
  if(req.type==='amounts'){
-  U.phase='split';U.split={req:req,vals:{},cur:req.among[0],title:req.limit?c.name+': share '+req.total+' HP':'The enemy\'s attack',total:req.total,hint:req.limit?'Give some to each part you like. No part can pass its full HP.':'Share it between your parts. Your numbers must add up to '+req.total+'.',
-   check:function(vals){var ch=[0,0,0,0,0],t=0;req.among.forEach(function(ix){ch[ix]=vals[ix]||0;t+=ch[ix];});var e=B.validate(S,req,ch);if(e){return (/add up/.test(e)&&t!==req.total)?'Your numbers make '+t+'. '+(req.limit?'You have '+req.total+' to share.':'The attack is '+req.total+'.'):e;}U.split=null;done(ch);return '';}};
-  say(req.limit?c.name+'. Share the HP out.':'Your shield is down. You choose which parts take the hit.');
+  U.phase='alloc';U.alloc={req:req,among:req.among,total:req.total,limit:!!req.limit,cells:cellsOf(req.total),placed:{},order:[],done:done};
+  say(req.limit?c.name+': share '+req.total+' HP between your parts.':'Incoming hit: '+req.total+'. Your shield is down. You choose which parts take it.');
   render();return;
  }
  if(req.type==='move'){
   U.phase='choose';U.pick={side:0,among:req.among,chosen:[],n:2,done:function(){
-   var f=U.pick.chosen[0],t=U.pick.chosen[1];U.pick=null;U.phase='split';
-   U.split={req:{among:[f]},vals:{},cur:f,title:'Move HP from '+partName(0,f)+' to '+partName(0,t),total:req.max,hint:'How much? '+req.max+' or less.',
-    check:function(vals){var ch={from:f,to:t,n:vals[f]||0},e=B.validate(S,req,ch);if(e){return e;}U.split=null;done(ch);return '';}};
-   say(c.name+'.');render();}};
+   var f=U.pick.chosen[0],t=U.pick.chosen[1],opts=[];U.pick=null;
+   [1,2,3,4,5,6,7,8,9,10].forEach(function(n){if(n<=req.max&&!B.validate(S,req,{from:f,to:t,n:n}))opts.push(n);});
+   var pickN=opts.filter(function(n){return n===5||n===10||n===opts[opts.length-1];}),h='<div class="hint">Move how much HP from '+partName(0,f)+' to '+partName(0,t)+'?</div><div class="row">';
+   pickN.filter(function(n,i,a){return a.indexOf(n)===i;}).forEach(function(n){h+='<button class="btn go mv" type="button" data-n="'+n+'">'+n+'</button>';});
+   h+='<button class="btn mv" type="button" data-n="0">None</button></div>';
+   say(c.name+'.');tray(h,function(){var bs=document.querySelectorAll('.mv');for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){var n=+this.getAttribute('data-n');done(n?{from:f,to:t,n:n}:{n:0});});}});render();}};
   say(c.name+': tap the part to take HP from. Then tap the part to give it to.');
-  act('<button class="btn" id="mno" type="button">Move nothing</button>',function(){el('mno').addEventListener('click',function(){done({n:0});});});
+  tray('<div class="row"><button class="btn" id="mno" type="button">Move nothing</button></div>',function(){el('mno').addEventListener('click',function(){done({n:0});});});
   render();return;
  }
 }
-function onTile(side,ix){
- var P=U.pick;
- if(U.phase==='split'&&U.split&&side===0&&U.split.req.among.indexOf(ix)>=0){U.split.cur=ix;drawSplit();return;}
+function drawAlloc(){
+ var A=U.alloc,t=el('tray');if(A.sel===undefined||A.sel>=A.cells.length)A.sel=0;
+ var h='<div class="traymsg"><div class="hint" id="ahint">'+esc(A.err||(A.cells.length?'Tap a part to send it the lit block. Tap another block to light it. Break makes smaller blocks.':'All placed. Press '+(A.limit?'Repair':'Take the hit')+', or Undo.'))+'</div><div class="cells" id="cells">';
+ A.cells.forEach(function(v,i){h+='<button type="button" class="cell'+(v===1?' one':'')+(i===A.sel?' next':'')+'" data-i="'+i+'">'+v+'</button>';});
+ h+='</div><div class="row"><button class="btn small" id="brk" type="button"'+(A.cells.length&&A.cells[A.sel]>1?'':' disabled')+'>Break</button><button class="btn small" id="undo" type="button"'+(A.order.length?'':' disabled')+'>Undo</button><button class="btn small" id="reset" type="button">Start again</button><button class="btn go" id="fire" type="button"'+(A.cells.length?' disabled':'')+'>'+(A.limit?'Repair':'Take the hit')+'</button></div></div>';
+ t.innerHTML=h;
+ var cs=t.querySelectorAll('.cell');for(var i=0;i<cs.length;i++){cs[i].addEventListener('click',function(){A.sel=+this.getAttribute('data-i');A.err='';drawAlloc();});}
+ el('brk').addEventListener('click',function(){var v=A.cells[A.sel];if(v===10){A.cells.splice(A.sel,1,5,5);}else if(v===5){A.cells.splice(A.sel,1,1,1,1,1,1);}else{return;}A.cells.sort(function(a,b){return b-a;});A.sel=A.cells.indexOf(v===10?5:1);A.err='';drawAlloc();});
+ el('undo').addEventListener('click',function(){var last=A.order.pop();if(last===undefined)return;var v=A.placed[last].pop();A.cells.push(v);A.cells.sort(function(a,b){return b-a;});A.sel=0;A.err='';drawStage();drawAlloc();});
+ el('reset').addEventListener('click',function(){A.cells=cellsOf(A.total);A.placed={};A.order=[];A.sel=0;A.err='';drawStage();drawAlloc();});
+ el('fire').addEventListener('click',function(){var ch=[0,0,0,0,0];A.among.forEach(function(ix){ch[ix]=allocSum(ix);});var e=B.validate(U.S,A.req,ch);if(e){A.err=e;drawAlloc();return;}var d=A.done;d(ch);});
+}
+function onPod(side,ix){
+ var P=U.pick,A=U.alloc;
+ if(U.phase==='alloc'&&A&&side===0){
+  if(A.among.indexOf(ix)<0||!A.cells.length)return;
+  var k=A.sel||0,v=A.cells[k],p=U.S.P[0].parts[ix];
+  if(A.limit&&allocSum(ix)+v>B.roomOf(U.S,p)){A.err=partName(0,ix)+' cannot take '+v+' more. Break the block, or choose another part.';drawAlloc();return;}
+  A.cells.splice(k,1);(A.placed[ix]=A.placed[ix]||[]).push(v);A.order.push(ix);A.sel=0;A.err='';drawStage();drawAlloc();return;
+ }
  if(!P||P.side!==side||P.among.indexOf(ix)<0)return;
  var at=P.chosen.indexOf(ix);
  if(at>=0){P.chosen.splice(at,1);}else{if(P.chosen.length>=P.n){P.chosen.shift();}P.chosen.push(ix);}
- drawParts();var go=el('cgo');if(go){go.disabled=P.chosen.length!==P.n;}
+ drawStage();var go=el('cgo');if(go){go.disabled=P.chosen.length!==P.n;}
  if(P.done&&P.chosen.length===P.n){P.done();}
-}
-var PADKEYS=['1','2','3','4','5','6','7','8','9','0','del'];
-function drawSplit(){
- var S=U.S,sp=U.split,m=el('mid'),h='<div id="split"><div class="big">'+esc(sp.title)+': <b>'+sp.total+'</b></div><div class="hint" id="shint">'+esc(sp.err||sp.hint)+'</div><div id="srow">';
- for(var i=0;i<5;i++){
-  if(sp.req.among.indexOf(i)<0){h+='<div class="sc none"></div>';continue;}
-  h+='<div class="sc"><div class="box'+(sp.cur===i?' on':'')+'" data-ix="'+i+'" role="textbox" aria-label="'+esc(partName(0,i))+'">'+(sp.vals[i]===undefined?'':sp.vals[i])+'</div>'+(sp.req.among.length>1&&!sp.req.limit?'<button class="btn small" type="button" data-all="'+i+'">All here</button>':'')+'</div>';
- }
- h+='</div><div id="pad">';PADKEYS.forEach(function(k){h+='<button type="button" data-k="'+k+'">'+(k==='del'?'⌫':k)+'</button>';});h+='<button type="button" class="w" data-k="check" id="check">Check</button></div></div>';
- m.innerHTML=h;
- var bx=m.querySelectorAll('.box'),j;for(j=0;j<bx.length;j++){bx[j].addEventListener('click',function(){sp.cur=+this.getAttribute('data-ix');drawSplit();});}
- var al=m.querySelectorAll('[data-all]');for(j=0;j<al.length;j++){al[j].addEventListener('click',function(){var k=+this.getAttribute('data-all');sp.req.among.forEach(function(ix){sp.vals[ix]=ix===k?String(sp.total):'0';});sp.err='';drawSplit();});}
- el('pad').addEventListener('click',function(ev){
-  var k=ev.target.getAttribute('data-k');if(!k)return;var v=sp.vals[sp.cur]===undefined?'':String(sp.vals[sp.cur]);
-  if(k==='check'){var out={};sp.req.among.forEach(function(ix){out[ix]=parseInt(sp.vals[ix]||'0',10);});var e=sp.check(out);if(e){sp.err=e;drawSplit();}return;}
-  if(k==='del'){v=v.slice(0,-1);}else if(v.length<3){v=(v==='0'?'':v)+k;}
-  sp.vals[sp.cur]=v;sp.err='';drawSplit();
- });
 }
 
 /* ---------- the other screens ---------- */
@@ -1012,7 +1091,7 @@ function drawSetup(){
  el('ncards').textContent=DATA.cards.length-nsp-1+spn+U.opts.guards+(U.opts.upgrades?DATA.upgrades.length:0);
  el('nspy').textContent=spn===1?'1 Spy card':spn+' Spy cards';el('nguard').textContent=U.opts.guards===1?'1 policeman':U.opts.guards+' policemen';
 }
-function openSetup(){show('rules',false);show('logv',false);show('help',false);drawSetup();show('setup',true);}
+function openSetup(){show('rules',false);show('logv',false);show('help',false);el('pop').className='';drawSetup();show('setup',true);}
 function newBattle(){
  var seed=U.seed||Math.floor(Math.random()*2147483000)+1,r=rnd(seed+17),foe=U.foeMode==='same'?U.kinds.slice():[0,1,2,3,4].map(function(){return KINDKEYS[Math.floor(r()*4)];});
  U.S=B.newBattle(U.opts,U.kinds,foe,seed);show('setup',false);startPick();
@@ -1028,9 +1107,7 @@ function openLog(){
  el('loglist').innerHTML=h;show('logv',true);
 }
 (function(){var h='';[['attack','Attack'],['defence','Block'],['repair','Repair'],['spy','Spy'],['guard','Policeman'],['upgrade','Upgrade']].forEach(function(t){h+='<div><svg viewBox="-80 -72 190 144">'+symbol(t[0],0,0,1)+'</svg>'+t[1]+'</div>';});el('keyrow').innerHTML=h;})();
-function tapTile(ev){var t=ev.target;while(t&&t!==this){if(t.classList&&t.classList.contains('pt')){onTile(+t.getAttribute('data-side'),+t.getAttribute('data-ix'));return;}t=t.parentNode;}}
-el('myparts').addEventListener('click',tapTile);el('eparts').addEventListener('click',tapTile);
-el('zoomc').addEventListener('click',function(){this.className='';});
+el('stage').addEventListener('click',function(ev){var t=ev.target;while(t&&t!==this){var c=t.getAttribute&&t.getAttribute('class');if(c&&/\bpod\b/.test(c)){onPod(+t.getAttribute('data-side'),+t.getAttribute('data-ix'));return;}if(c&&/\border\b/.test(c)){zoom(t.getAttribute('data-id'));return;}t=t.parentNode;}});
 el('sgo').addEventListener('click',newBattle);
 el('sstd').addEventListener('click',function(){U.kinds=['standard','standard','standard','standard','standard'];drawSetup();});
 el('srand').addEventListener('click',function(){U.kinds=U.kinds.map(function(){return KINDKEYS[Math.floor(Math.random()*4)];});drawSetup();});
@@ -1046,7 +1123,7 @@ el('bhelp').addEventListener('click',function(){show('help',true);});
 el('hclose').addEventListener('click',function(){show('help',false);});
 el('hclose2').addEventListener('click',function(){show('help',false);});
 el('bnew').addEventListener('click',function(){if(!U.S||U.S.over||window.confirm('Leave this battle and start a new one?')){openSetup();}});
-window.addEventListener('resize',function(){render();});
+window.addEventListener('resize',function(){if(!U.anim)render();});
 window.GMQB={U:U,B:B,idle:function(){return !U.anim;},setSeed:function(n){U.seed=n;}};
 if(loadSaved()){show('setup',false);startPick();}else{openSetup();}
 
