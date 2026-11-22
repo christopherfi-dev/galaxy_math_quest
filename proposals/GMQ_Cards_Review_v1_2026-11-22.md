@@ -10,10 +10,10 @@ Nothing is built. Nothing in your Drive was changed. Every verdict is a [Proposa
 
 ## 1. The short answer
 
-- **Your November 2023 deck is the best of the old sets.** Its wording ("Add +10 to your AP for this attack") already fits your rules. 88 of its 141 cards work under your rules sheet as written.
+- **Your November 2023 deck is the best of the old sets.** Its wording ("Add +10 to your AP for this attack") already fits your rules. 88 of its 141 cards need no new rule.
 - **But more than half of that deck is the same few cards under different names.** 74 of the 141 cards sit in 22 groups that do exactly the same thing. Twelve cards all say "you cannot be hit this round".
-- **Common, advanced and epic do not mean anything yet.** Ten effects are printed in more than one kind. The same "cannot be hit this round" is a common, an advanced and an epic card.
-- **My verdicts for the November deck:** keep 28, remake 52, drop 61. Almost every drop is a double of a card that stays.
+- **Common, advanced and epic do not mean anything yet.** Ten effects are printed in more than one kind (nine, if the "disable a part" cards are counted apart). The same "cannot be hit this round" is a common, an advanced and an epic card.
+- **My verdicts for the November deck:** keep 28, remake 52, drop 61. 52 of the 61 drops are doubles of a card that stays.
 - **The ship parts have three sets of numbers** [Conflict]. In one of them every description fits. In the printed one, 7 of 15 do not.
 - **One thing I did not expect:** under your split rule, a big attack number buys very little. Section 5 explains. It changes what an epic card should be.
 
@@ -52,7 +52,7 @@ All read-only, from "Card Prints and Images" in your Drive.
 2. **You had already fixed the worst of July.** [Source: July list against November sheet]
    - "Next turn" became "this turn". That fits "they go same time".
    - Laser, fire and EMP attacks went. Your rules have no attack types.
-   - "+ 2 per level of Weapons System" went from 30 cards.
+   - "Per level" bonuses (such as "+ 2 per level of Weapons System") went from about 30 cards.
    - Twelve cards were left out. Three of them let a player put down extra cards in one round.
 3. **A picture for the job, a colour for the kind.** Ray gun for attack, shield for defence, heart for repair. Green bar for common, purple for advanced, gold for epic. Two things read at a glance.
 4. **The cards named after the maths.** 19 of the November cards: Addition Armament, Subtraction Shield, Division Defender, Fraction Frigate, Multiplication Munition, Rounding Rover and more. No other card game has these. Where two cards do the same thing, I kept the one whose name says the maths.
@@ -84,7 +84,7 @@ All read-only, from "Card Prints and Images" in your Drive.
 A child who earns Wormhole, Teleport and Decoy Drones has earned one card three times.
 
 ### 4.2 No clear difference between the kinds
-- **The same effect in two or three kinds:** ten cases. Asteroid Shield (advanced) and Subtraction Sovereign (epic) both block 50. Addition Avatar (advanced) and Pulsar Punch (epic) both add +50.
+- **The same effect in two or three kinds:** ten cases (nine, if the "disable a part" cards are counted apart). Asteroid Shield (advanced) and Subtraction Sovereign (epic) both block 50. Addition Avatar (advanced) and Pulsar Punch (epic) both add +50.
 - **The rarer card is the weaker one:**
   - Emergency Repairs (advanced) repairs 6. Armor Patch (common) repairs 7.
   - Quantum Quake (advanced) adds +15. Two commons add +20.
@@ -103,10 +103,12 @@ Measured against the rules sheet's Standard ship: 100 HP in all, and an attack o
 
 | | Cards | Examples |
 |---|---|---|
-| Work as written | 67 | add to attack, block, repair |
+| Need no new rule | 67 | add to attack, block, repair |
 | Work as Spy cards | 21 | damage to parts |
 | Need one ruling from you | 37 | see below |
 | Need a rule that does not exist | 16 | switch off a part, swap parts, send an attack back, extra goes |
+
+**"Need no new rule" is generous.** Even these raise small questions: does "cannot be hit" also stop a Spy? May a repair lift a part above the HP it began with?
 
 **The rulings, most cards first:**
 - **Effects that last more than one round** (10 cards). No rule says how they are tracked.
@@ -147,8 +149,10 @@ Measured against the rules sheet's Standard ship: 100 HP in all, and an attack o
 - **Any attack, however big, costs the defender one part at most.** +80 and +10 end the same way: one part gone.
 - **So a bigger number cannot be what makes an attack card epic.** Size only matters against the shield, and for whether the defender can soak a hit without losing a part.
 - **The Spy is the strong card.** Its owner chooses the parts, and it gets past the shield. "20 to all parts" does what five attacks cannot.
-- **A battle is long.** Two Standard ships with no cards: 7 rounds if each gives up a part every round, and up to 13 if both soak hits first. [My count, by search. Step C will test it on thousands of battles.]
-- **With the printed ship parts, a battle can end with nobody able to attack.** The printed Standard Shield has AP 0. If both players keep that part until last, neither ship has any attack left.
+- **A battle is long.** Two Standard ships with no cards: 7 rounds if each gives up a part every round, and about 10 if both soak hits first. [A rough count. Step C will test it on thousands of battles.]
+- **Weapons is the part that matters most.** Your board says a ship with Weapons at 0 cannot attack at all. A defender will never give Weapons up. Only a Spy can reach it. The Standard Arsenal has 10 HP, so one Spy card of 10 ends a ship's attacks.
+- **The same thinking applies to defence cards.** A block is worth most while the shield stands, or when it lets the defender soak a hit with no part lost.
+- **Two things your rules do not say yet:** what happens when both ships lose their last part in the same round, and whether damage may be put on a part that is already at 0.
 
 **What could prove this wrong:** I read "Defender chopped" as a free split, as the rules sheet does. If you meant an even split, or that the attacker picks, all of this changes.
 
@@ -195,10 +199,10 @@ The words were written for the chat table. The printed numbers came later and br
 | | Choice | What it costs |
 |---|---|---|
 | A | **Use the chat-table numbers.** | Nothing to rewrite: all the words fit. The numbers differ from the 2023 cards and site. |
-| B | **Keep the printed numbers and rewrite seven descriptions.** | The Standard stays the weakest. The rules sheet's 100 and 55 become 75 and 40. A part with AP 0 can stall a battle. |
+| B | **Keep the printed numbers and rewrite seven descriptions.** | The Standard stays the weakest. The rules sheet's 100 and 55 become 75 and 40. |
 | C | **New numbers in step B,** on one rule: the same total for every version, and the kind decides the trade. | A third set to check. But it gives each colour one meaning on every part. |
 
-**My pick: A for the numbers, and C's idea for the colours.** In the chat table the named versions already follow a pattern: "Proton" and "Neutron" versions have more HP, "Quantum" and "Pulsar" versions have more AP. Step B can show that as colours.
+**My pick: A for the numbers, and C's idea for the colours.** In the chat table the named versions mostly follow a pattern: "Proton" and "Neutron" versions have more HP, and "Quantum" versions have more AP. Step B can show that as colours.
 
 ### 6.3 Smaller ones
 - **The names of the kinds.** Every old set says Common, Advanced, Epic. You now say common, rare, epic. I use yours.
@@ -242,11 +246,11 @@ Option 2 decides the kind. Option 1's steps then apply inside it: a +30 cannot b
 **The test a child can say:** "Common: one number. Rare: a bigger number, or two things. Epic: it bends a rule."
 
 - **For:** it closes the hole in each of the other two.
-- **Against:** it moves the most old cards.
+- **Against:** it moves the most old cards. And by section 5, size cannot make an attack card epic: for attack cards the steps only part common from rare, and an epic must do something else.
 - **Cards that move:** 44 of 113. 41 go up, 3 go down.
 
 ### What all three show
-**The old deck has too few honest commons.** With the doubles gone and option 3 applied, 79 cards are left: 17 common, 27 rare, 35 epic. Your target is the other way up. So the new set needs new, plain commons. That suits the maths: commons are where the child adds and subtracts.
+**The old deck has too few honest commons.** With the doubles gone and option 3 applied, 79 cards are left (18 of them Spy cards, given a kind for the first time): 17 common, 27 rare, 35 epic. Your target is the other way up. So the new set needs new, plain commons. That suits the maths: commons are where the child adds and subtracts.
 
 The spreadsheet has a column for each option, so you can see where every card lands.
 
@@ -258,8 +262,8 @@ The spreadsheet has a column for each option, so you can see where every card la
 - **27 Spy cards. 1 Policeman** ("SECURITY: Stop the Spy", the only blue card).
 - Spy cards are 19 in every 100 cards of the deck.
 - **Spy cards have no kind.** The grey bar replaced common, advanced and epic.
-- 21 of the 27 are damage to parts. They run from 6 damage in all (Micro Missiles) to 100 (Quasar Quake).
-- 6 are not sabotage at all: three swaps and three "disable a part" cards.
+- 21 of the 27 are damage to parts. They run from 5 damage (Quantum Missile) to 100 in all (Quasar Quake).
+- 6 do something else: three swap parts, and three switch a part off.
 
 ### Why it matters [Proposal]
 By section 5, the Spy is the only card that lets the attacker choose. Without it, every battle is "the defender gives up one part a round".
@@ -296,7 +300,7 @@ By section 5, the Spy is the only card that lets the attacker choose. Without it
 | Upgrade cards (5) | 5 | 0 | 0 |
 
 **How I decided:**
-- **Keep:** the effect and the wording can go into the new set as they are. The kind may still change with your choice in section 7.
+- **Keep:** the effect and the wording can go into the new set as they are. The kind may still change with your choice in section 7. A few still need one small ruling; the reason says which.
 - **Remake:** the idea is good. The wording, the number or the kind must change, or it needs a ruling.
 - **Drop:** it is a double of a card that stays, or no rule can carry it.
 - **Where cards are doubles,** I marked one to stay. Any name in the group could be the one. Swap freely.
@@ -326,6 +330,8 @@ Then step B: about 50 new cards, drawn on a page for you to pick from.
 - **The chat table reached me through the rules file,** which was rebuilt from your 2023 chats. I have not seen the chats.
 - **The scale (100 HP, 55 AP) is the chat table's.** With the printed parts (75 HP, 40 AP) every "out of scale" card is further out.
 - **The three options in section 7 use number steps I chose.** Other steps would move other cards.
+- **Levels are left out.** Every "out of scale" is measured on Level 1 parts. If upgrade bonuses add up, big numbers may be right for later in the year.
+- **Doubles may be wanted.** In a collecting game, the same effect under five names and pictures can be the point. I marked doubles as "drop" for the battle, not for the album.
 
 ---
 
@@ -335,3 +341,4 @@ Then step B: about 50 new cards, drawn on a page for you to pick from.
 - **Ran:** a search over every defender choice for two Standard ships with no cards (section 5). It is a scratch script, not yet in `checks/`. Step C replaces it with the full battle test.
 - **Did not run:** the game's play tests. Nothing in the game was touched.
 - **A slip I caught:** my first draft of this note called the chat table "the website table". The saved 2023 site showed it was not. The names above are corrected.
+- **An independent reviewer** read this note, the spreadsheet and the rules sheet, and recounted about 60 numbers with its own code. Its corrections are in: the Weapons rule in section 5 (my first count of rounds had left it out), softer wording for "need no new rule", and six smaller counts. Not changed: a handful of rows where a November card is "remake" and a never-printed card with the same fault is "drop".
