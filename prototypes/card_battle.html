@@ -47,10 +47,22 @@ button{font-family:inherit}
 .btn.small{font-size:14px;padding:6px 10px;min-height:36px;border-width:1px}
 .btn:disabled{opacity:.4}
 .row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;justify-content:center}
-#pop{position:fixed;inset:0;background:rgba(4,6,15,.88);z-index:18;display:none;align-items:center;justify-content:center;gap:18px;padding:12px;flex-wrap:wrap}
+/* the opened card. Its two buttons are always on the screen: the words above them scroll if they are long. */
+#pop{position:fixed;inset:0;background:rgba(4,6,15,.92);z-index:18;display:none;align-items:center;justify-content:center;gap:18px;padding:12px;overflow:hidden}
 #pop.open{display:flex}
-#pop .big svg{display:block;height:min(62vh,470px);width:auto;max-width:86vw}
-#pop .side{max-width:340px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+#pop .big{flex:0 0 auto;min-width:0}
+#pop .big svg{display:block;height:min(62vh,470px);height:min(62dvh,470px);width:auto;max-width:48vw}
+#pop .side{flex:0 1 340px;min-width:0;max-height:100%;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+#pop .words{flex:0 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#pop .acts{flex:0 0 auto;display:flex;flex-direction:column;gap:10px}
+#pop .acts .btn{flex:1 1 0}
+@media(max-height:480px){#pop{padding:8px;gap:12px}#pop .acts{flex-direction:row}#pop .big svg{height:min(80vh,470px);height:min(80dvh,470px)}}
+@media(max-aspect-ratio:1/1){
+ #pop{flex-direction:column;justify-content:center;gap:10px}
+ #pop .big svg{height:min(44vh,470px);height:min(44dvh,470px);max-width:88vw}
+ #pop .side{flex:0 1 auto;width:100%;max-width:520px;min-height:0}
+ #pop .acts{flex-direction:row}
+}
 #pop .note{font-size:17px;font-weight:700;color:#ffd58a;line-height:1.3}
 #pop .note:empty{display:none}
 #pop .fore p{margin:0 0 6px;font-size:17px;font-weight:700;color:#e8ecf5;line-height:1.3}
@@ -1019,7 +1031,7 @@ function handNote(h){
  }
  if(c.type==='spy'&&lead&&S.leader===0)note='You go first, so the enemy may answer with a policeman.';
  if(c.ops.some(function(o){return /^block/.test(o.op);})){
-  if(seen&&B.outranked(S,c.id,seen)&&S.opts.shieldKind&&upBy(c.id)>0){note='The enemy\'s order is '+B.KINDWORD[B.card(seen).rarity]+'. Your '+B.KINDWORD[c.rarity]+' shield will stop its ship\'s attack, not what the card adds.';}
+  if(seen&&B.outranked(S,c.id,seen)&&S.opts.shieldKind&&upBy(c.id)>0){note='';   /* the lines below the card say it: the ship's attack is stopped, the card's part goes through */}
   else if(seen&&B.outranked(S,c.id,seen)){note='The enemy\'s order is '+B.KINDWORD[B.card(seen).rarity]+'. A '+B.KINDWORD[c.rarity]+' card cannot block it.';tag='cannot block';}
   else if(S.opts.kindBlock&&!seen&&c.rarity!=='epic'&&!note)note='A '+B.KINDWORD[c.rarity]+' card cannot block '+(c.rarity==='common'?'a rare or an epic':'an epic')+' attack card.';
  }
@@ -1052,12 +1064,12 @@ function drawTray(){
 function tray(html,bind){U.tray=html?{html:html,bind:bind||null}:null;drawTray();}
 function openPop(h){
  var S=U.S,c=B.card(S.P[0].hand[h]),n=handNote(h),p=el('pop');U.sel=h;
- p.innerHTML='<div class="big">'+cardSVG(c,'P')+'</div><div class="side"><div class="note" id="note">'+esc(n.note)+'</div><div class="fore" id="fore">'+foretell(h).map(function(x){return '<p>'+esc(x)+'</p>';}).join('')+'</div><button class="btn go" id="playit" type="button">Give this order</button><button class="btn" id="popx" type="button">Back</button></div>';
+ p.innerHTML='<div class="big">'+cardSVG(c,'P')+'</div><div class="side"><div class="words" id="words"><div class="note" id="note">'+esc(n.note)+'</div><div class="fore" id="fore">'+foretell(h).map(function(x){return '<p>'+esc(x)+'</p>';}).join('')+'</div></div><div class="acts"><button class="btn go" id="playit" type="button">Give this order</button><button class="btn" id="popx" type="button">Back</button></div></div>';
  p.className='open';
  el('playit').addEventListener('click',function(){p.className='';snd('tap');playCard();});
  el('popx').addEventListener('click',function(){p.className='';U.sel=-1;});
 }
-function zoom(id){var p=el('pop');p.innerHTML='<div class="big">'+cardSVG(B.card(id),'Z')+'</div><div class="side"><button class="btn" id="popx" type="button">Back</button></div>';p.className='open';el('popx').addEventListener('click',function(){p.className='';});}
+function zoom(id){var p=el('pop');p.innerHTML='<div class="big">'+cardSVG(B.card(id),'Z')+'</div><div class="side"><div class="acts"><button class="btn" id="popx" type="button">Back</button></div></div>';p.className='open';el('popx').addEventListener('click',function(){p.className='';});}
 
 /* ---------- a round ---------- */
 function startPick(){
