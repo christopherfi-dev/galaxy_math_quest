@@ -11,7 +11,7 @@
 |---|---|
 | **Planet Algora, to play** | https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/ |
 | The size test, for the old iPad | https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/size_test.html |
-| The same game as a private page | https://claude.ai/artifact/XxJzhCzDk2dvTwuSjgqeav (opens signed in as you) |
+| The same game as a private page | https://claude.ai/artifact/LnP7eaJwzSpwb4jXuBqz7u (opens signed in as you). The older private link still shows the first night's page |
 | A one-page sheet for testing with your children | `proposals/GMQ_Big_World_Testing_Sheet_2026-11-22.md` |
 | The planet's design, with the map | `proposals/GMQ_Big_World_Design_v1_2026-11-22.md` |
 | The Reach, as built | `proposals/GMQ_Big_World_Reach_Design_v1_2026-11-22.md` |
