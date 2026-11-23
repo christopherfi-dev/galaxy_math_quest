@@ -78,7 +78,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 |---|---|---|---|---|---|
 | **A. How many?** | In sowing week: how many of the town's plots are sown with food. The rest are sown with roof reed. | Seed takes only in the new mud, in the first week. | The food pile stops short. White month 3 is thin. Every bowl is smaller. Then it is New Year. | More food than was needed. But too few plots of reed: some roofs are not mended, and drip. | A family's garden: a few plots, food or reed for their own roof. |
 | **B. How much?** | At the Lake Market: how many strings of fish the town's boats will bring in, in all, by Last Raft. The keeper sells what is over the town's need, for lamp oil. | Only keepers may trade, and keepers leave their towns once a year, for the lake. A word given there is kept. | Said too little: she sells too few strings, and brings home too little oil. In the white months the lamps go out early. Spare fish sits in the jars. | Said too much: she sells fish the town turns out not to have. Plenty of oil. But the fish jars run out in White month 3. | A family with one boat: its catch, and oil for one lamp. |
-| **C. For how long?** | At New Year: for how many months the town hires the Furrows' carts, so the wall has stone enough. | At New Year every cart-month is promised: to a town, or to the Furrows' own terraces. There are none left to ask for later. | The carts go to another town too soon. The wall is short at one end. In White month 1 the water comes over there. The town bails out together. | The carts come for a month too many, and are paid for in food. To grow that food, plots were taken from reed. Roofs drip. | A family's doorstep wall, and a neighbour's hand cart for so many months, paid in jars of fruit. Jars paid away are jars not eaten. |
+| **C. For how long?** | At New Year: for how many months the town hires the Furrows' carts, so the wall has stone enough. | The Furrows have carts enough for what is agreed at New Year, and no more. Every cart-month is promised that day: to a town, or to their own terraces. | The carts go to another town too soon. The wall is short at one end. In White month 1 the water comes over there. The town bails out together. | The carts come for a month too many, and are paid for in food. To grow that food, plots were taken from reed. Roofs drip. | A family's doorstep wall, and a neighbour's hand cart for so many months, paid in jars of fruit. Jars paid away are jars not eaten. |
 
 **One decision for each town, each year, and in this order: A, then C, then B.** Section 3 says why, and what the keeper does about the other two.
 
@@ -146,11 +146,13 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 |---|---|---|---|
 | **A, sowing** | sows half food, half reed, because she cannot work it out | too little of one, a little too much of the other | Yes. This is why every unhelped town is a little short. **So A is always asked first.** |
 | **C, the carts** | hires the carts for all seven months | food, to pay for months she did not need | No. The pay is inside the need she tells the cadet in an A year. The wall is always finished. |
-| **B, the fish** | sells only a few strings, to be safe | too little lamp oil. The lamps go out early in the white months. | It is seen, but it is the same in every town, every year, until B is learned. It touches neither plots nor wall, so a child does not take it for their own miss. It is the reason B is worth asking. |
+| **B, the fish** | sells only a few strings, to be safe | too little lamp oil. The lamps go out early in the white months. | It is seen. So the keeper names it before the year runs (below). It touches neither plots nor wall. It is the reason B is worth asking. |
 
-- **An A year:** the carts are hired for seven months, and the lamps go out early as they always have. If the cadet's sowing is right, the food and the roofs come out right.
+- **An A year:** the carts are hired for seven months. If the cadet's sowing is right, the food and the roofs come out right.
+- **Before every A or C year runs, the keeper says so:** "I sold only a little fish at the lake. I did not dare more. So the lamps will go out early again. That is my doing, not yours." The machines traded well for sixty years. The dark evenings began when they went dark.
+- **Towns with no boats:** the Mender village sells fruit for its oil, the same safe way. The Furrows press the oil themselves, from hill nuts, and their lamps burn.
 - **A C year** comes only after A is learned. The cadet decides the months at New Year. Then the keeper sows, rightly, for the town's food and that pay.
-- **A B year** comes only after A is learned. Fish is its own pile, with its own line. The river always gives more than the town needs. If the cadet's word is right, the lamps burn all evening for the first time.
+- **A B year** comes only after A is learned. Fish is its own pile, with its own line. The river always gives more than the town needs. If the cadet's word is right, the lamps burn all evening again.
 - **When a keeper learns:** after a year that came out right. How many right years it takes is the engine's choice, not the story's. Until then she asks the same kind again, with new numbers.
 - **When she has learned it,** she does it herself and it comes out right. She asks for the next kind, or the same kind grown harder: "We are more houses this year."
 - **A town the cadet has never helped** is a little short every year, and its keeper says so. It is never a disaster, and never the best choice.
@@ -205,7 +207,7 @@ Your words: "they must analyze it and make a decision." [Source]
 
 - **When:** the Lake Market, after four count days. Only keepers may trade, and this is the one time they leave their towns.
 - **Why fish:** nobody sows fish. The boats bring what the river gives, and it is always more than the town needs. What is over can be sold.
-- **Why lamp oil:** no town can grow it. It comes from the hills, to the Market. Without it the white months are dark by supper.
+- **Why lamp oil:** the Furrows press it from hill nuts, and bring it to the Market. No river town can grow it. Without it the white months are dark by supper.
 - **The cadet reads:** this year's four cuts in the fish row of the store wall. A real table, from nothing, the same amount more each time.
 - **The question, in these words:** "How many strings will the boats bring in, in all, by Last Raft?"
 - **The keeper trades on that word.** She keeps what the town needs, and sells the rest for oil. The child is not asked for that sum. **What is traded moves on Last Raft,** so the seven cuts stay even.
@@ -348,6 +350,7 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | One reading only | Give decision A on paper to three children. Does anyone count a different number of count days? |
 | Watching the year run teaches the count | Does a child say the numbers as the pile climbs? Or look away? |
 | The story holds when a child pushes | "Why don't I mend the Gate first?" The Gate needs the Rule Stones, and a stone lights only when its people have been helped [Built]. And every plate is burnt: a mended Gate does not write new plates. "Why can't the keeper lay out pips herself?" She can, once she is shown. That is the story. "Why not wait and see how the pile grows?" Seed takes only in sowing week. "Why not ask the cart driver for one more month?" Every cart-month was promised to some town at New Year. "Why not trade again when a raft comes?" Raft crews carry. Only keepers trade, and only at the lake. "My ship landed. Why can't it fetch food?" It holds one cadet's lunch. "What do they eat before the first count day?" The river feeds them in the gold months. "Why not copy the old row?" The sun is different each year. "Why build a wall that falls?" Section 5, C. I looked for more, and may have missed some. |
+| The dark lamps are not taken for the child's miss | After a right A year, ask: "Did your plan work?" If the child points at the dark lamps and says no, the keeper's words before the year were not enough. Then the lamps should stay lit until B is asked. |
 | "Decided once" is believed | Does a child try to change the plan half way? If they are cross that they cannot, the three reasons were not told well enough. |
 | A year for each decision is not too slow | Count how long one year takes on screen. If it is over two minutes, children will stop watching. |
 | One planet's moral is not the other's | Chronosia: a people grew careless. Algora: a people forgot a skill. If they read as one story, one should change. |
@@ -415,4 +418,15 @@ A reviewer read this note with only `CLAUDE.md`, the brief, and the big world th
 | In B, a right answer could still leave roofs dripping; a small miss showed nothing; and a child could dodge it by repeating the town's need. | The river always gives more than the town needs. What is over is sold for lamp oil, which no town can grow. Too little said: dark evenings. Too much said: the fish jars run out. Repeating the need sells nothing, and the town is dark. |
 | "Five towns, three kinds" was overstated. | A in five towns, C in four, B in three. |
 | The family's hand cart had lost its pay. A keeper's "habit" after sixty years of machines. The line against the plan. | Each corrected. |
+
+**Fifth read: 0 blockers, 1 major, 3 minor.** Decision B: "FIXED." Its last word: "Is this a base to build on? Yes, once finding 35 has its one line; nothing else needs more story invented."
+
+| It found | What I changed |
+|---|---|
+| Every A or C year now ended with the lamps out early, even when the child was right. A child could take that for their own miss. | The keeper names it before the year runs: "That is my doing, not yours." A check is added to section 10. |
+| Who sells the oil? What of the towns with no boats? | The Furrows press it. The Menders sell fruit for it. |
+
+**That last fix has not been read again.**
+
+**What the reviewer could not do:** it saw only `CLAUDE.md`, the brief, the big world thread's note for me, and this note. It never saw the Algora page, and it could not test whether the three decisions carry real numbers. That is the next review: this story and the big world thread's maths, read together.
 
