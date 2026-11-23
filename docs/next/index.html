@@ -296,7 +296,8 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
-  <p class="box" id="toold">The game cannot start: this device or its network is blocking the game's code (JavaScript). On a school iPad or laptop, a school setting may block it. Ask the school's IT team to allow christopherfi-dev.github.io.</p>
+  <p class="box" id="toold" hidden>The game did not start. Its code did not finish loading, or this browser is too old to read it. Reload the page. If it keeps happening on an iPad, check that iOS is 13 or newer.</p>
+  <noscript><p class="box">The game cannot start: JavaScript is turned off or blocked on this device. On a school iPad or laptop, a school setting may block it. Ask the school's IT team to allow christopherfi-dev.github.io.</p></noscript>
   <div class="console">
     <div class="stage">
       <canvas id="cv" tabindex="0" aria-label="The game. Tap the ground to walk. Tap a thing to look at it."></canvas>
@@ -322,7 +323,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 92</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 93</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -373,10 +374,10 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   </div>
 </div>
 
-<script>/* [v92] three cases, so the words say the real reason [Marc, 2026-11-23: the message came up on a new, school-managed Chrome]: no script runs at all (the words above: blocked); this small script runs but the game's does not (the words below); the game runs (hidden). */
-document.getElementById('toold').textContent = 'The game did not start. Its code did not finish loading, or this browser is too old to read it. Reload the page. If it keeps happening on an iPad, check that iOS is 13 or newer.';</script>
+<script>/* [v93] The message waits, hidden. On slow school wifi the page's words appear long before the game's code has arrived, so the message used to flash up while the game was loading [Marc, 2026-11-23: "There's just that little pop-up that shows up, but it still runs"]. It shows only if the game has not started after 10 seconds. With no JavaScript at all, the noscript words show instead. Old browsers must read this small script too, so it is written plainly. */
+window.setTimeout(function () { if (!window.GMQ_RAN) { var m = document.getElementById('toold'); if (m) m.hidden = false; } }, 10000);</script>
 <script>
-document.getElementById('toold').hidden = true;      // this line runs only if the browser can read the whole script
+window.GMQ_RAN = true; document.getElementById('toold').hidden = true;      // this line runs only if the browser can read the whole script
 /* =====================================================================
    THE WORLD AS DATA
    ===================================================================== */
@@ -518,7 +519,8 @@ const DIRS = { north: [0, -1], n: [0, -1], up: [0, -1], south: [0, 1], s: [0, 1]
 /* =====================================================================
    STATE
    ===================================================================== */
-const KEY = 'gmq-station-sketch-v5';
+const KEY = 'gmq-station-sketch-v6';      /* [v93] Marc, 2026-11-23: "I need a link that resets everything so all students get the brand new version. All their previous progress should be erased right now." A new save key: every cadet starts fresh, and the old save is removed. */
+['gmq-station-sketch-v5'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} try { sessionStorage.removeItem(k); } catch (e) {} });
 /* small settings (reading cards, the pad's place) are kept in two places as well, so a quick reload cannot lose them */
 const setKeep = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} try { sessionStorage.setItem(k, v); } catch (e) {} };
 const getKeep = k => { let v = null; try { v = sessionStorage.getItem(k); } catch (e) {} if (v === null) { try { v = localStorage.getItem(k); } catch (e) {} } return v; };
