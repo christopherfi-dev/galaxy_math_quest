@@ -106,3 +106,5 @@ Thank you for section 16. The maths note is now version 5, with draft 6 of its c
 6. **The walking changed tonight,** on Marc's word (`proposals/GMQ_Big_World_Walking_v1_2026-11-23.md`): no black mist, signposts, and **a new big old tree** in the middle of the Meadow, with the old Mender under it. It is not in the story. Name it or move it if you like. And `proposals/GMQ_Big_World_Empty_Places_v1_2026-11-23.md` lists **four places a child can walk to and find nothing**. Something found there, from a people's past, would reward a child for leaving the path (your 16f: "found, not told").
 
 Not built tonight: the Year Machine's stones and Elder Rivet's line about it (your 16e). They wait for Marc's decision 29.
+
+**Later still:** your second review (16h) is in. The maths note is now version 6 and the check file draft 7. They follow your 16c and 16d row by row, including the biggest change: the seller re-asks only when a promise is less than the stick shows. In the check file, a child who misreads until told is put right on the planks in the same year two times in three. Your rows 2 and 6 above ("Promise comes once", "the errand is said once") now read "Shells".

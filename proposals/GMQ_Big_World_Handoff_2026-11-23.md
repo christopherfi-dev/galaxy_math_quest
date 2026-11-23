@@ -12,14 +12,14 @@ Short. Read this, then the files it names. Everything is on the main branch (`cl
 | **Built and live** | `prototypes/big_world.html` = `docs/bigworld/index.html` (**"big world 6"**): the Mender Meadow, the Reach, typing, music, the well quest, and since 23 November the walking changes below. https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/ |
 | **Walking, 23 November** | Marc played Algora and could not see far or tell where to go. Built on his word ("we can try this and see what happens"; then, at bedtime, "make it more clear for students to walk around"): no black mist on the walking screen; 16 squares across on an iPad; worn-earth paths to every person; a landmark at each (a new big old tree; the listener moved to the bridge); three signposts; a truthful sign by the ship; "go" follows a path; fixes from an independent picture review. Note: `proposals/GMQ_Big_World_Walking_v1_2026-11-23.md`. **Next: two or three children play (step 2).** Step 3, one screen at a time, only if they still get lost |
 | **Building new places has stopped** | On purpose. Five designs of mine failed review on paper. Marc said: stop inventing while building |
-| **The deciding years** | A story problem with a table, a decision, and what follows. A story thread writes the story; this thread fits the maths. **Four joint reviews. The fourth: "Both blockers from review 3 are fixed. A base to build on, for one child on one iPad: yes."** Its seven major points are answered in the check file's draft 6 and the maths note, version 5 (section 9d). **The answers are not reviewed** |
-| **The story thread** | Answered the six points and its own reviewer's four blockers (the story, section 16). **Its second reviewer is still to read the rewritten story** (its 16g). The maths note uses its 16c words as they are |
+| **The deciding years** | A story problem with a table, a decision, and what follows. A story thread writes the story; this thread fits the maths. **Four joint reviews. The fourth: "Both blockers from review 3 are fixed. A base to build on, for one child on one iPad: yes."** Its seven major points are answered in the check file's draft 6 and the maths note (section 9d). **The answers are not reviewed** |
+| **The story thread** | Answered the six points, then two reviews of its own (the story, 16b and 16h). The biggest change for the maths: the seller cannot count ahead, so he re-asks only when a promise is less than the stick shows. **The maths note is version 6 and the check file draft 7: both follow the story's 16c and 16d, row by row. The story's round 4 review has not run** |
 
 ### The very next steps, in order
 
 1. **Marc: step 2.** Two or three children play Algora. The testing sheet has rows for walking (rows 18 to 22). Change the walking again only for what they show.
-2. **When the story thread's second review is written in** (its 16g), compare its words with the maths note's quotes (section 2 and "Promise" in section 3). Bring the note in line, word for word. Run `node checks/bigworld_year_rule_check.js`.
-3. **A short fifth review** of the check file's draft 6 and the maths note's section 9d only: "are the fourth review's points answered, and did the answers break anything?"
+2. **When the story thread's round 4 review is written in** (its 16g), compare its words with the maths note's quotes (section 2, and "Shells" in section 3). Bring the note in line, word for word. Run `node checks/bigworld_year_rule_check.js`.
+3. **A short fifth joint review** of the check file's draft 7 and the maths note's section 9d: "are the fourth review's points answered; does the seller's re-ask (only under the stick) hold; did any of it break anything?"
 4. **If it says yes: build the first kind,** for one child on one iPad, in `prototypes/big_world.html`. The rule, the picker and the engine's path are written as code in the check file: move them into the page's `NUM` and `WORLD` parts. Then the page's own checks, `checks/bigworld_wander_check.js`, pictures at three sizes, the play test, and an independent review of the pictures. Build on the threads' picks where Marc has not decided, each marked.
 5. **Later, when they are written or decided:** the Year Machine's stones at the Lake Market and Elder Rivet's line about it (the story, 16e; Marc's decision 29); something found in each of the four empty places (`proposals/GMQ_Big_World_Empty_Places_v1_2026-11-23.md`), written by the story thread.
 
@@ -28,8 +28,8 @@ Short. Read this, then the files it names. Everything is on the main branch (`cl
 1. `CLAUDE.md`, and the end of `INFO_FROM_MARC.md` (Marc's words of 22 and 23 November).
 2. `proposals/GMQ_Big_World_Audit_2026-11-23.md`: an honest audit of this thread. One page.
 3. `proposals/GMQ_Algora_Story_v1_2026-11-23.md`: the story. Sections 1 to 5, and 16.
-4. `proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md` (version 5): the maths, the engine's path, all four reviews.
-5. `checks/bigworld_year_rule_check.js` (draft 6): the number rule, the picker and the engine's path, as code. None of it is in the page.
+4. `proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md` (version 6): the maths, the engine's path, all four reviews.
+5. `checks/bigworld_year_rule_check.js` (draft 7): the number rule, the picker and the engine's path, as code. None of it is in the page.
 6. `proposals/GMQ_Big_World_Walking_v1_2026-11-23.md`: what changed in walking, and what the lost-child check showed.
 7. `proposals/GMQ_Big_World_Report_2026-11-22.md`, section 10: how the page is laid out and how a change is made.
 
@@ -44,7 +44,7 @@ Short. Read this, then the files it names. Everything is on the main branch (`cl
 
 ## 4. What the two threads decided between them. Marc may overrule any of it.
 
-Nine gold months and three white. Two pots of oil back for an empty hook. The singer may sing a wrong line again. Count faults go to Promise and the song; reading faults are told again on the jetty. Promise comes once only. The trial has no class view. **Two tries at the gate, not three: its first reason was wrong** (fourth review, M5); two is still the pick, now because three runs a band out for 17 children in 6,000 who answer by chance.
+Nine gold months and three white. Two pots of oil back for an empty hook. The singer may sing a wrong line again. Count faults go to Shells and the song; reading faults get the jetty planks. Shells comes once only. The trial has no class view. **Two tries at the gate, not three: its first reason was wrong** (fourth review, M5); two is still the pick, now because three runs a band out for 17 children in 6,000 who answer by chance.
 
 ## 5. Still Marc's
 
