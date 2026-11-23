@@ -7,6 +7,9 @@
 #   3. the Hospital has exactly one floor shape with the shortest wall; the Food Store has exactly one biggest floor
 #   4. the Solar Factory fits on the Sun Ledge (10 squares by 3)
 #   5. the skin is enough for the four floors, and "how many more Homes?" has one answer, from 2 to 6
+#   RULE 2 (version 89, new games): the skin makes the WALLS. It is enough for the four shortest walls with 10 to 36 pieces to spare;
+#      "more Homes" is 3 to 6, and the skin the herder finds stays within 100 for every Home shape that fits the ground.
+#      Rule 1 above is kept for games begun before version 89, so their numbers never change.
 #   6. the three floors on the building ground fit, with a path between them
 #   7. the Leafgrove grows enough leaves for careful roofs, and one more
 #   8. the herder's field shares into four equal parts
@@ -39,17 +42,24 @@ def best_floor(P):
     w = P // 4
     return (w, P // 2 - w)
 
-def nums(seed):
+def best_wall(A): return min(2 * (w + l) for (w, l) in rects(A))
+def fact_wall(f): return min(2 * (w + l) for (w, l) in rects(f) if w <= 3 and l <= 10)
+def nums(seed, ver=1):
     r = wrng(seed)
     pk = lambda xs: xs[int(r() * len(xs))]
     v = None
-    for _ in range(200):
+    for _ in range(200 if ver == 1 else 400):
         a, b = pk(A_SET), pk(B_SET)
         c = pk([x for x in C_SET if a + x <= 13])
         d = pk([x for x in D_SET if x <= b - 2])
         S = a * b + c * d
         h, p, W, k = pk(H_SET), pk(P_SET), pk(W_SET), pk(K_SET)
         sf = best_floor(W); st = sf[0] * sf[1]; f = 3 * k; T = h + p + st + f; n = (S - T) // h
+        if ver == 2:
+            n2 = 3 + int(r() * 4); spare = S - (best_wall(h) + best_wall(p) + W + fact_wall(f))
+            if 10 <= spare <= 36:
+                v = dict(a=a, b=b, c=c, d=d, S=S, h=h, p=p, W=W, sf=sf, st=st, k=k, f=f, T=T, n=n2, spare=spare); break
+            continue
         if 2 <= n <= 6:
             v = dict(a=a, b=b, c=c, d=d, S=S, h=h, p=p, W=W, sf=sf, st=st, k=k, f=f, T=T, left=S - T, n=n, rem=(S - T) % h)
             break
@@ -125,6 +135,39 @@ for seed in range(1, N + 1):
     sets.add((a, b, c, d, h, p, W, k)); n_count[n] += 1; rem0 += (S - T) % h == 0
     if seed <= 2000: check_number = (check_number + S * 7 + h * 5 + p * 3 + W + k * 11 + n * 13 + (1 if v['fx'] else 0) + (2 if v['fy'] else 0) + fw * 17 + fh * 19 + G * 23) % 1000000007
 
+# ---- RULE 2 (version 89): the skin makes the walls
+check2, spares, n2c, thin_short = 0, collections.Counter(), collections.Counter(), 0
+for seed in range(1, N + 1):
+    v = nums(seed, 2)
+    if v is None: bad.append(f'rule 2, seed {seed}: no numbers'); continue
+    S, h, p, W, k, f, n = (v[x] for x in 'S h p W k f n'.split())
+    if len(skin_tiles(v)) != S: bad.append(f'rule 2, seed {seed}: the skin counts wrong')
+    walls = best_wall(h) + best_wall(p) + W + fact_wall(f); spare = S - walls
+    if not (10 <= spare <= 36) or spare != v['spare']: bad.append(f'rule 2, seed {seed}: skin {S}, the shortest walls need {walls}')
+    if not (3 <= n <= 6): bad.append(f'rule 2, seed {seed}: more Homes {n}')
+    hw = [(q, 2 * (q[0] + q[1])) for q in rects(p)]; bestP = min(x[1] for x in hw); hbest = [q for q, per in hw if per == bestP]
+    store = [(w, W // 2 - w, w * (W // 2 - w)) for w in range(1, W // 4 + 1)]; bestA = max(x[2] for x in store); sbest = [x for x in store if x[2] == bestA]
+    if len(hbest) != 1 or len(sbest) != 1: bad.append(f'rule 2, seed {seed}: no single best Hospital or Food Store')
+    home_shapes = [q for q in rects(h) if max(q) <= GROUND_W]
+    for q in home_shapes:
+        P = 2 * (q[0] + q[1]); nn = min(n, 100 // P)
+        if nn < 3 or nn * P > 100: bad.append(f'rule 2, seed {seed}: more Homes for a {q} Home: {nn} x {P}')
+    worst = max(2 * (q[0] + q[1]) for q in home_shapes) - best_wall(h)
+    if worst > spare: thin_short += 1
+    fr = [q for q in rects(f) if q[0] <= LEDGE_H and q[1] <= LEDGE_W]; need_home = min(leaves(*q) for q in rects(h)); home_best = [q for q in rects(h) if leaves(*q) == need_home][0]
+    key = (hbest[0], (sbest[0][0], sbest[0][1]), home_best)
+    if key not in fit_cache: fit_cache[key] = fits_ground([hbest[0], (sbest[0][0], sbest[0][1]), home_best])
+    if not fit_cache[key]: bad.append(f'rule 2, seed {seed}: the three floors do not fit the ground')
+    need = need_home + leaves(*hbest[0]) + leaves(sbest[0][0], sbest[0][1]) + min(leaves(*q) for q in fr); G = need + 1
+    fw, fh = v['field']
+    spares[spare // 10 * 10] += 1; n2c[n] += 1
+    if seed <= 2000: check2 = (check2 + S * 7 + h * 5 + p * 3 + W + k * 11 + n * 13 + (1 if v['fx'] else 0) + (2 if v['fy'] else 0) + fw * 17 + fh * 19 + G * 23) % 1000000007
+print('Rule 2 (version 89): skin to spare after the four shortest walls:', ', '.join(f'{k}-{k + 9}: {spares[k]:,}' for k in sorted(spares)))
+print('Rule 2: more Homes:', ', '.join(f'{k} in {n2c[k]:,}' for k in sorted(n2c)))
+print(f'Rule 2: the thinnest Home alone would use more than the spare skin in {thin_short:,} seeds. Then the herder finds more skin: nobody is stuck.')
+print(f'Rule 2: check number for seeds 1 to 2,000: {check2}')
+EXPECT2 = 2783623   # the play test holds the same number
+if EXPECT2 and check2 != EXPECT2: bad.append(f'rule 2: the check number is {check2}, not {EXPECT2}: the rule changed')
 print(f'{N:,} seeds. Different sets of numbers: {len(sets):,}.')
 print('More Homes:', ', '.join(f'{k} in {n_count[k]:,}' for k in sorted(n_count)))
 print(f'Skin left over after the last Home: none in {rem0:,} seeds, some in {N - rem0:,}.')

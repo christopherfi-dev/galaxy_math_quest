@@ -551,3 +551,15 @@ These are Marc's words, tidied. They are not on the form above.
     - A: keep the skin as floors, and draw the walls as thick red lines, one segment per square of edge (recommended)
     - B: the skin makes the walls
   - Waiting on his choice.
+- **The skin makes the walls (Marc, 2026-11-23).** "No they don't. The home needed six and so I made a 3 x 2 house. The perimeter of that house would be eight so you need eight pieces of skin for the wall." Then: "So she might need to lay out the area of the house first, and then have the student click and build the walls around it and they say how much is needed for the actual walls."
+  - He was right that the Home's walls were not counted: only the Hospital and the Food Store used wall panels.
+  - The main thread recomputed his example: the perimeter of a 3 by 2 house is 10 (3 + 2 + 3 + 2), not 8.
+  - Read as option B, with his order: mark the floor (area), then build its wall and say how many pieces of skin it needs (perimeter).
+  - Built in version 89 (preview only), with his rule that mistakes after the station show themselves:
+    - floors are flattened ground
+    - the wall is thick red, one piece for each square of edge
+    - too few pieces leave a gap (nothing lost); too many leave spare pieces, wasted
+    - after two misses, the Chief offers a smaller wall in the sand
+    - if the skin runs short, the herder finds more
+    - "More Homes" is the skin the herder found, divided by one Home's wall, kept within 100
+    - games begun before version 89 keep their old numbers
