@@ -60,6 +60,7 @@ Here is how I read the problem.
 - **They need the Shield Generator,** like every shield card.
 - **I added them. I did not replace two block cards,** so nothing of yours is lost. A deck is now 47 cards.
 - **They have their own picture.** [Your ruling, 23 November: "Dodge should have its own picture."] A ship slipping aside, two faint ships where it was, and a laser passing through the place it left. The card says DODGE, in teal. The "How" page lists it as a seventh symbol. On the stage, a dodge shows this picture and not a shield.
+- **Vanishing Act is a dodge card too.** [Your ruling, 23 November.] It carries the same picture and says DODGE. Its rule is unchanged: nothing gets past it, except a Spy. Its words now end "You still fire", like the other two. So there is one dodge card of each kind: common, rare and epic.
 - **For the rules a dodge card is still a shield card:** it needs the Shield Generator.
 
 **The one cost of a dodge that fires:** while your shield is still up, a dodge saves more than a block card of the same kind. Wormhole Zip saves the whole 55. Ten-Tile Wall saves 10. When your shield is broken they do the same job, because any shield card then stops the whole AP. If the dodge cards turn out too good in the first rounds, the simple cure is to make Wormhole Zip rare.
@@ -406,9 +407,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ### Still for you to rule on
 
-1. **Vanishing Act** (epic: "No attack hits you this round") still shows a shield. Should it be a dodge card too, with the dodge picture?
-
-Everything else you have answered.
+Nothing. You have answered every question I had.
 
 ---
 
@@ -421,7 +420,8 @@ Everything else you have answered.
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,021 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,022 checks, all pass. It checks:
+  - Vanishing Act says DODGE, shows the dodge picture, and says the whole attack misses;
   - a dodge card says DODGE and shows its own picture, and "How" lists seven symbols;
   - Wormhole Zip: the opened card says what will miss, what will still hit, and your own attack; played, exactly that happens, and your ship still fires;
   - the exception for a card that multiplies the AP: the opened card says the whole attack goes through, you are asked to place all of it, and the lower shield is not touched;
