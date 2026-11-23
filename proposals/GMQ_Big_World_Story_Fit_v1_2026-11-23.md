@@ -216,3 +216,76 @@ Not a design. One way to hold the constraints together, for you to judge. All [P
 1. **Each child's own year, or one year the whole class shares?** A shared year means what follows arrives when the class is ready, not when the child is.
 2. **May a child read a classmate's finished table?**
 3. **What does the town show of the class:** lamps that only go up, or nothing?
+
+---
+
+## 9. Marc's answers on the class world [Source: Marc, 23 November]
+
+> "1. Own year. Or we could say... the town always runs a simulation so they do not die... what you'll see is what would've happened? 2) No. I say they can only see which families are finished and by who. 3) The finished ones."
+
+| | Decided |
+|---|---|
+| 1 | **Each child has their own year.** |
+| 2 | **A child cannot read a classmate's table.** They see only which families are finished, and by whom |
+| 3 | **The town shows the finished ones.** |
+
+So rows a, b, c, d and g of section 8 stand. Row e becomes "the finished families". **Row f is out.**
+
+### The simulation: how I read it, and what I think [Proposal]
+
+**How I read it:** the child's year is a run of "what would have happened". The real town is shared by the class, and it is never harmed by one child's plan. Only a plan that came out right is really carried out, and that family is then shown as finished.
+
+**I think it is right, for three reasons:**
+- It answers "whose year is it?" Every child's year is their own run. The town is everyone's.
+- It is kind. Nobody's family really goes hungry.
+- It fits your answers 2 and 3: the shared world holds only finished work.
+
+**One guard it needs:** a run must not become a "check my answer" button. So the run goes to the end of the year, and then **a new problem comes, with new numbers** [Source: your answer of 23 November: "New one. Same size."]. A child cannot run, nudge the number, and run again.
+
+**One risk, plainly:** you said children should "be invested in this world and see something happen". A flood that would have happened may matter less to a child than one that did. Watch for a child who shrugs at it.
+
+**For the story thread:** who runs it? The keeper laying the year out in pips, one count day at a time, would fit "nobody has laid them out ahead in sixty years". That is theirs to shape.
+
+---
+
+## 10. "Do you see a flaw in this? Is this the cleanest solution?" [Source: Marc, 23 November]
+
+Yes, I see flaws, and there is a cleaner form. All [Proposal]. In section 9 I called the simulation "right". I had not pushed on it hard enough.
+
+### The flaws
+
+| | Flaw | A case |
+|---|---|---|
+| 1 | **A simulation undoes the story's reason for the cadet.** If the town can run a year ahead and see what would happen, it does not need anyone to predict | A child asks: "Why don't they just run it again with one more plot?" The story has no answer |
+| 2 | **The guard has no story reason.** After a miss, a new problem with new numbers must come. In a real year, time has passed: a new year, a new sun. In a simulation no time has passed, so why would the numbers change? | |
+| 3 | **It weakens your own rule.** You said "let it happen", and "see something happen". "What would have happened" is a preview | |
+| 4 | **"Finished, and by whom" is a progress board.** In a class of 14, who has *not* finished can be worked out. A child the engine has stepped down finishes later. So the step down is seen after all, by its shadow | Nine names on the street. Everyone knows the five who are missing |
+| 5 | **"Finished" has no meaning yet.** Every year brings a new problem. Is a family finished after one right year? After three in a row? | |
+| 6 | **For the main quests, the class world becomes a street of finished houses.** Children are present to each other. They do nothing together | That may be all you want here. It is less than "see how others do things" |
+
+### The cleaner form
+
+**The simulation is only needed if a child's plan touches something shared.** Take that away and it is not needed at all.
+
+| One rule for each layer | |
+|---|---|
+| **Yours:** your family, your numbers, your years. The year really happens. It is mild, and it ends at New Year (the story already says both) | No simulation. No story hole. Something really happened |
+| **Everyone's:** the street. A house stands on it when its family is finished, with the cadet's name | Your answers 2 and 3, as you gave them |
+
+### One thing I may have read wrongly
+
+| | Each child has their own family (my reading) | A pool of families, and children take turns finishing them |
+|---|---|---|
+| The simulation | not needed | needed: a failed try must not harm a family others will use |
+| Who gets which problem | every child gets every kind | whoever arrives first. A slower child finds the near families taken |
+| After a miss | next year, new numbers | new numbers with no time passed: flaw 2 |
+
+If you pictured the pool, your simulation follows from it, and so do the race and the hole. **I would choose "each child their own family".**
+
+### What I cannot make clean: flaw 4
+
+Two ways to soften it. Neither removes it.
+- A house appears only when it is finished. No empty lot ever carries a name.
+- Or every child's name is on their house from the first day, and "finished" lights a lamp. Then nobody is missing, but who is still dark can be seen.
+
+You know your 14. This one is yours.
