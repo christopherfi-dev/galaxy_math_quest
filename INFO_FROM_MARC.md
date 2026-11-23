@@ -653,3 +653,4 @@ These are Marc's words, tidied. They are not on the form above.
     - the station play-through on version 91
   - Put on the class link and the preview (version 93). The full test suite was not run (paused).
   - Note for the big world thread: Algora reads one number (the seed) from the game's old save key; it should read `gmq-station-sketch-v6` now.
+- **"JavaScript is allowed" (Marc, 2026-11-23),** after checking Chrome's site settings on his school MacBook. So the school does not block the game's code. That fits his earlier words ("The game runs"): the start-up message was only showing while the large page loaded on slow wifi. Version 93 (class link and preview) keeps it hidden unless the game has not started after 10 seconds.
