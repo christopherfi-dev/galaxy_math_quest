@@ -168,3 +168,51 @@ Every number was worked out again. None of this is a design. They are examples o
 
 - **Why not the stores:** if spare food carried over, next year's count would start with some already. That is 3x + 2, which you want later. So "this town keeps some back now" is the natural door to that level, when you choose to open it.
 - **What could prove me wrong:** children may not notice a town growing. Ask one: "Is this town different from last year?" And a child who struggles has a town that stays small: in a class that could be seen.
+
+---
+
+## 8. A class in one world: how the constraints could be threaded
+
+[Source: Marc, 23 November] "If all the students in a class are on a certain server so they can see like how others do things on that planet... For these main quests... do others come and talk to... other stores/families? ...How do we thread these constraints?"
+
+Not a design. One way to hold the constraints together, for you to judge. All [Proposal].
+
+### What you said before [Source]
+
+- 22 November: each class has its own copy of the planets, and children see each other's traces.
+- 23 November: "A hole is dug. Someone build something incorrectly, then what happens then? So we need to show it."
+- 23 November: "The amount of space where they would be building would have to be growing... the world must be big enough to allow multiple students."
+
+### The knot
+
+| | Constraint | Pulls against |
+|---|---|---|
+| 1 | Every child does their own maths | 2 |
+| 2 | Children see how others do things | 1 and 3 |
+| 3 | A mistake is carried out and seen, kindly. A step down is never announced | 2 |
+| 4 | The story: one town asks one cadet for one decision a year | 14 children and 5 towns |
+| 5 | What follows must come soon after the decision | one shared year for a whole class |
+
+### One thread through it: the town is everyone's, the family is yours
+
+| | The idea | Which constraints it holds |
+|---|---|---|
+| a | **Every child helps their own family in a town.** A street of family stores, grown by code: a new child, a new house. The story already has a family version of all three decisions | 4. And your "do others talk to other families?": yes, each to their own |
+| b | **Each child has their own numbers and their own years.** "Let the year run" is that child's year, in that child's family | 1 and 5 |
+| c | **What follows happens in your family's house.** Small bowls at your family's table. A classmate does not see it | 3 |
+| d | **Everyone works with a family, so a step down cannot be seen.** It is a smaller household, not a move from "town" to "family" | 3 |
+| e | **The town is the sum.** Each right year lights one more lamp on the town's street. The count only goes up, and has no "out of 14" | 2, without ranking |
+| f | **A classmate's finished work shows how, never what.** After a year that came out right, the child's own table stays on their family's wall. Another child can walk in and read it: "they counted 10 weeks, then 20". Their numbers are different, so the table cannot be copied as an answer | 2, safely. **Different numbers are what make showing safe** |
+| g | Code names only. The teacher sees everything | |
+
+### What this costs, and what I do not know
+
+- **The story's arc changes.** "The keeper learns" becomes "a family learns". The town's keeper needs a new part: perhaps she adds the families up. That is the story thread's.
+- **Reading a classmate's table may become copying a method without understanding it.** That is also how children learn from each other. You know which it would be in your class.
+- **No server has run yet.** All of this is for later. What is cheap now: keep every change with its owner, place and time, and test with pretend classmates.
+
+### Yours to decide
+
+1. **Each child's own year, or one year the whole class shares?** A shared year means what follows arrives when the class is ready, not when the child is.
+2. **May a child read a classmate's finished table?**
+3. **What does the town show of the class:** lamps that only go up, or nothing?
