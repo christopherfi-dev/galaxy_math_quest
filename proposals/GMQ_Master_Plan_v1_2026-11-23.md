@@ -1,6 +1,6 @@
 # Galaxy Math Quest: the whole plan
 
-**Date:** 23 November 2026. **For:** Marc, and every thread.
+**Date:** 23 November 2026 (version 94). **For:** Marc, and every thread.
 **What this is:** one list of everything:
 - what is built
 - who is doing what
@@ -30,12 +30,12 @@ Everything is **[Proposal]** unless it says [Source].
 
 | Thread | Owns | Where it is now |
 |---|---|---|
-| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 93 on the preview and on the class link (23 November, everyone started fresh). |
+| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 94 on the class link and the preview: Chronosia's story, stages 1 and 2. Next: the fly-in, then Chronosia's stages 3 and 4 together. |
 | **Big world** (Planet Algora, Galaxy Patternox) | `docs/bigworld/*` and its notes | The first region (the Mender Meadow) is built and playable. The Reach is designed. Its second brief: `HANDOFF_Big_World_Brief2_2026-11-22.md`. |
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
 | **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built: first person, 13 seconds, ready to wire in (Phase 2). See `proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 9. |
 | **Chronosia story** (writes only) | `proposals/GMQ_Chronosia_Story_*` | Started 23 November with `HANDOFF_Chronosia_Story_2026-11-23.md`: one cohesive story for Chronosia; every task passes the test "no maths as a password". The main thread builds once Marc approves. |
-|  |  | **Approved by Marc on 23 November.** The main thread builds from `proposals/GMQ_Chronosia_Story_Build_List_v1_2026-11-23.md`: stages 1 to 3 first, then the fly-in, then stages 4 to 7. |
+|  |  | **Approved by Marc on 23 November.** The main thread builds from `proposals/GMQ_Chronosia_Story_Build_List_v1_2026-11-23.md`. Stages 1 and 2 are built (version 94). Then the fly-in, then stages 3 and 4 together (so the class never gets a cave nobody can enter), then 5 to 7. |
 
 **Threads cannot talk to each other.** Marc carries messages between them. The repository is their shared memory: this plan, the handoffs, and `INFO_FROM_MARC.md`.
 
@@ -43,7 +43,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 ## 3. What the children have, and what is waiting for them
 
-**The class link (version 93, since 23 November; every cadet started fresh that day):** everything below, and versions 82 to 93.
+**The class link (version 94, 23 November):** everything below, and versions 82 to 94. **Every push now updates the class link too** [Source: Marc, 23 November: "So anything you push me push for them as well. Always."]. Version 93 began a new save, so every cadet started fresh that day.
 
 **Before that, version 81 had:**
 - the station
@@ -68,6 +68,7 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
+| 94 | Chronosia's story, stages 1 and 2: the call for help on landing; the Keeper's and the Watcher's reasons; the clocks before the quake; the day turns when the quake is held; the crack fades only when the night trips stop too; the case without dates. |
 
 ## 4. The order of work [Proposal]
 
@@ -79,9 +80,8 @@ Everything is **[Proposal]** unless it says [Source].
    - It skips itself on an iPad that cannot draw it, or that asks for less motion. The game then lands as it does today.
    - A Teacher switch can turn it off.
    - The game's tests turn it off.
-2. **Marc plays the preview** on an iPad: the fly-in, Lengthar, Chronosia's links, music, Xylophora's walls.
-3. **The class update check:** saved class games open in the new version (`checks/class_update_test.js`).
-4. **On Marc's word ("update the class link"),** the class gets everything from versions 82 onward at once. He is told first what the children will see new.
+2. **Every push reaches the class at once** (Marc, 23 November). Before each one, the class update check: saved class games open in the new version (`checks/class_update_test.js`).
+3. **Marc watches his class play** and reports what they get lost in or stuck on.
 
 ### Stage 2: Algora, the big world, as the pilot (big world thread)
 
@@ -154,7 +154,7 @@ Each note lays out the choices and recommends one.
 | # | Decision | Note |
 |---|---|---|
 | 1 | **Is a ship upgrade from a big quest lasting, or a card for one battle?** [Conflict] with the battle thread's upgrade cards | `HANDOFF_Big_World_Brief2_2026-11-22.md`, section 6 |
-| 2 | ~~Update the class link~~: done 23 November, version 93, with a fresh start for everyone. The fly-in comes in the next update. | this plan, Stage 1 |
+| 2 | ~~Update the class link~~: answered 23 November. Every push now updates the class link too. | this plan, Stage 1 |
 | 3 | The fly-in: should the child have a little control (A none, B lean, C a longer flight)? How do the children address you? | `GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 8 |
 | 4 | Algora: its six choices (the name, one planet from your two quests, five peoples and the Makers, their names, its size, any four stones), its decisions 7 to 15, and the Reach's seven | the big world design note, section 11; the Reach note, section 9 (on its branch until it is pushed) |
 | 5 | Typing on Algora, or taps only | the big world brief, section 6 |
@@ -164,7 +164,7 @@ Each note lays out the choices and recommends one.
 | 9 | Mistakes: the five rules; offer the smaller problem, or go to it; which quests first | `GMQ_Mistakes_and_Consequences_v1_2026-11-22.md`, section 7 |
 | 10 | The server: the split as the long-term shape; one class or a grade per world; when to try step 1; what children may do across classes | `GMQ_Server_Layers_Analysis_v1_2026-11-22.md`, section 5 |
 | 11 | "Start again": should it ask "Are you sure?" first | not written up yet |
-| 13 | **The lantern's recipe:** soft sand only, or soft sand and the glow stone? If the glow stone, it alone stops lighting Chronosia's passage once the lantern exists. | this plan, Stage 3 |
+| 13 | ~~**The lantern's recipe**~~: answered 23 November. Marc approved the Chronosia story (rule R18: a lantern is a glow stone behind Nomad glass), and its glow stone from a trader at Galactic Trade. So the recipe is soft sand and the glow stone, and the glow stone alone stops lighting the passage. **Tell Marc this reading;** he can still change it. | the Chronosia story note, R18 and decision 6 |
 | 12 | **Older decisions from 21 November, some answered since** | `GMQ_Decisions_Waiting_2026-11-21.md`. The main thread should mark which are answered (its first job). |
 
 ## 5b. The story test, for every task on every planet
