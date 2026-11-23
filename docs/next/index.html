@@ -322,7 +322,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 90</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 91</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -2212,7 +2212,7 @@ function startCargo() { const w = widget = { kind: 'cargo', on: new Set(S.cargoT
     <div class="field"><button class="btn" type="button" id="try">Check the load</button><button class="btn quiet" type="button" id="leave">Leave</button></div><div class="msg" id="msg" role="status"></div></div></div>`);
   $('pic').innerHTML = cargoSvg(w); $('leave').onclick = leave; const a = $('ans'), m = $('msg'), no = t => { beep(140, .2, 'square'); m.className = 'msg bad'; m.textContent = t; };
   a.oninput = () => { a.value = a.value.replace(/[^0-9]/g, '').slice(0, 2); };
-  $('pic').onclick = e => { const t = e.target.closest('[data-c],[data-h]'); if (t) cargoToggle(+(t.dataset.c ?? t.dataset.h)); };
+  $('pic').onclick = e => { const t = e.target.closest('[data-c],[data-h]'); if (t) cargoToggle(+(t.dataset.c != null ? t.dataset.c : t.dataset.h))      /* [v91] no double question mark here: iPads older than iOS 13.4 cannot read it, and then the whole game stops before it starts (Marc, 2026-11-23, a student's iPad) */; };
   $('try').onclick = () => { if (w.done) return; const n = w.on.size; if (n < 7) return no(`The hold has 7 places. ${n ? `You loaded ${n}.` : 'It is empty.'} Fill all 7.`);
     if (a.value === '') return no('Add the weights of your 7 crates. Write the total in the box.');
     w.tries++; const t = [...w.on].reduce((x, k) => x + CARGO[k][1], 0);
