@@ -580,3 +580,9 @@ These are Marc's words, tidied. They are not on the form above.
   - The main thread agreed: the question is maths as a password. Many of Chronosia's version 55 finds are built that way.
   - New rule in `HANDOFF_2026-11-20.md` section 3 and in the plan (section 5b, "the story test"): need, meaning, consequence, picture.
   - Recommended a writing-only story thread. Its handoff is `HANDOFF_Chronosia_Story_2026-11-23.md`: one cohesive story for Chronosia, every task given a verdict (keep, rework, merge, drop), an independent review, then the main thread builds what Marc approves.
+- **Cohesive and coherent (Marc, 2026-11-23).** "And make sure it's all cohesive and coherent." Added to `HANDOFF_Chronosia_Story_2026-11-23.md` as section 2b:
+  - a fact sheet first (a timeline, every character, every object, the world's rules)
+  - every line the game says on Chronosia checked against it, every chain end to end, the lantern across planets, before and after each task
+  - a table of contradictions and loose threads with fixes
+  - the story told in five sentences
+  - the reviewer hunting for contradictions

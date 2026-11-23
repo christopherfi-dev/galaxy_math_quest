@@ -46,6 +46,31 @@ The maths opens something, but it does nothing the story needs.
 - **By lantern light, you see why nobody goes deeper:** the slow river floods the passage every day. The Clockmaker scratched the times on the wall. The child works out when it is safe to walk through and back. Wrong: the water rises to your knees, and you turn back.
 - **The Clockmaker's door is a real mechanism.** The big wheel has 24 teeth and must turn exactly once; the handle's wheel has 6. How many turns of the handle? Wrong: the bolt stops short, or overshoots.
 
+## 2b. Cohesive and coherent: the whole of it [Source: Marc, 23 November: "And make sure it's all cohesive and coherent."]
+
+**Cohesive:** every part belongs to one story and leads somewhere in it.
+**Coherent:** nothing contradicts anything else. A dark cave whose writing can be read is the kind of fault to catch. Marc found that one; you find the next one.
+
+**Build a fact sheet first** (part of your note):
+- **What happened on Chronosia, in order:** a timeline, with what caused what.
+- **Every character:** who they are, what they know, what they want, where they are, and what changes for them.
+- **Every object:** where it comes from, where it goes, and what it is for.
+- **The rules of the world:** how time behaves there (the slow river, the backward mountain, the quakes); what light the dark places need; what the portal does.
+
+**Then check everything against it:**
+1. **Every line the game says on Chronosia:** quests, finds, people, hints, the map's "look", the arrival words. Read them in the game file (`CSC`, `CQ`, `FINDS.chrono`, `FCASE`, `XN`-style hints, `cHint`, `cMore`), and on the preview.
+   - Mark each line that contradicts the fact sheet, or another line.
+   - Mark each line that says something no other part uses: a loose thread.
+2. **Every chain, end to end:** each step must make sense from the one before it, in the story, not only in the code.
+3. **Across planets:** the lantern (Voltara, Xylophora, Lengthar) must tell the same story on each planet.
+4. **Across time:** what a child sees before and after each task must agree. For example, the crack in the sky, the cougar's rock and the opened cave.
+
+**In your note:**
+- one table of every contradiction or loose thread found, each with its fix
+- a short "the story in one breath": if it cannot be told in five sentences, it is not cohesive yet
+
+**The independent reviewer gets one more job:** read the fact sheet and the reworked tasks, and hunt for contradictions and loose threads. Fix until it finds none above "minor".
+
 ## 3. What to read about Chronosia
 
 **Marc's own material** [Source]:
