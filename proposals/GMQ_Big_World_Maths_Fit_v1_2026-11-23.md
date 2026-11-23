@@ -10,7 +10,7 @@
 
 **What version 4 changes:** the small row is the same task made smaller; the question names today; both costs are told before the promise; the finished example is about another thing; the engine's path is written out and played in code for 27,000 made-up children; "finished", "a rest" and "decide without me" are defined.
 
-**Version 4 has not been reviewed.** Four of its changes need the story thread's words (section 8b). Nothing is built.
+**Version 4 has not been reviewed.** The story thread has since answered yes to all five things in section 8b (its section 15), and the two notes use the same words. Nothing is built.
 
 Every number below comes from `checks/bigworld_year_rule_check.js`. It passes.
 
@@ -110,7 +110,8 @@ The second reviewer's first blocker: version 3's small row had no stick, and "on
 - **Now it is the town's task again, with a child's own stick.** A child of the town has a chore, and cuts their own small stick: 5, 10, 15, 20 plums.
 - **Gran asks, in the same words:** "Today is count day 4. The rain comes on count day 7, after that day's count. How many plums will there be by then, in all?"
 - **The thing to count is named:** plums, sandals, fire sticks. Never "things", and never bundles.
-- **Both sides cost by the count:** a plum with no place spoils; an empty place is seen. How the places are made (loops, pegs, a tray) is the story thread's.
+- **Gran carves one peg on the feast rack for each plum the child says** [the story's words]. Too few: plums with no peg are left in the rain, and spoil. Too many: each empty peg is a cousin at the feast with no plum. Both can be counted.
+- **The story thread's own caution:** "a cousin with no plum" is the gentlest cost there is. If children read it as nothing, the small row hurts on one side only. To check with a child.
 - Steps of 2, 5 and 10. Eleven problems.
 
 - **A child never meets a problem twice.** After any year the next problem has a new step, a new count day and a new answer, and its answer is not what the child last said.
@@ -234,7 +235,7 @@ All six: **yes.** [The story's section 14.]
 
 ---
 
-## 8b. What I need from the story thread now
+## 8b. What I asked of the story thread the second time. All five: yes [its section 15]
 
 | | | Why |
 |---|---|---|
