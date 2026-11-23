@@ -24,11 +24,13 @@ const { chromium } = require('playwright'); const path = require('path'); const 
   // 4. the reset
   { const c = await b.newContext(), p = await c.newPage(); await p.goto('file://' + OLD); await p.waitForTimeout(500);
     const before = await p.evaluate(() => { skipIntro(); S.secrets = ['locker']; S.cards = [{ r: 'common', n: 'Laser Cannon' }]; save(); localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-music', 'on'); return { key: KEY, has: !!localStorage.getItem(KEY) }; });
-    ok(before.key === 'gmq-station-sketch-v5' && before.has, 'the old copy should save under the old key');
+    /* [v94] The reset was a one-time step, on Marc's word of 23 November. Once the class copy saves under the new key too, an update must KEEP each child's game. */
+    const once = before.key === 'gmq-station-sketch-v5'; ok(before.has && (once || before.key === 'gmq-station-sketch-v6'), 'the old copy should save under the old key, or under the new one');
     await p.goto('file://' + NEW); await p.waitForTimeout(800);
     const after = await p.evaluate(() => ({ key: KEY, old: localStorage.getItem('gmq-station-sketch-v5'), oldS: sessionStorage.getItem('gmq-station-sketch-v5'), cards: S.cards.length, secrets: S.secrets.length, mode: S.mode, cardsSetting: localStorage.getItem('gmq-cards'), music: localStorage.getItem('gmq-music') }));
-    ok(after.key === 'gmq-station-sketch-v6', 'the new copy should save under the new key'); ok(after.old === null && after.oldS === null, 'the old save should be erased'); ok(after.cards === 0 && after.secrets === 0, 'the cadet should start fresh: ' + JSON.stringify(after));
-    ok(after.cardsSetting === 'off' && after.music === 'on', 'settings apart from the save should be kept'); console.log('after the reset:', JSON.stringify(after)); await c.close(); }
+    ok(after.key === 'gmq-station-sketch-v6', 'the new copy should save under the new key'); ok(after.old === null && after.oldS === null, 'the old save should be erased');
+    if (once) ok(after.cards === 0 && after.secrets === 0, 'the cadet should start fresh: ' + JSON.stringify(after)); else ok(after.cards === 1 && after.secrets === 1, 'the class copy already used the new key: the cadet\'s game must be kept: ' + JSON.stringify(after));
+    ok(after.cardsSetting === 'off' && after.music === 'on', 'settings apart from the save should be kept'); console.log(once ? 'after the reset:' : 'after an update (no reset):', JSON.stringify(after)); await c.close(); }
   await b.close();
   console.log(bad.length ? 'FAULTS:\n  ' + bad.join('\n  ') : 'Start and reset: every check passed.'); console.log('RESULT: ' + (bad.length ? 'FAIL' : 'PASS')); process.exit(bad.length ? 1 : 0);
 })();
