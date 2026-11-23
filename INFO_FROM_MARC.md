@@ -772,3 +772,6 @@ These are Marc's words, tidied. They are not on the form above.
   - **Decided [Source]:** Voltara's plan keeps its running totals (option A); Marc will watch for children who only click. Algora's "how much" is fine as the first big quest.
   - **Decided [Source]:** Galactic Trade is rebuilt as the market of `proposals/GMQ_Trade_Rethought_v1_2026-11-23.md` (option A), by a new thread, "to see how it works".
   - Asked: are Voltara's consequences still in the game? The main thread checks the game and answers; the handoff is `HANDOFF_Trade_2026-11-23.md`.
+- **Start of the trade thread (Marc, 2026-11-23, to the trade thread).** He passed on the main thread's brief, then asked: "Before you build, tell me what you understand your job to be... and what do you understand about what I'm trying to build here. The rationale. The pedagogy. The engagement."
+  - Read as: the brief is the main thread's words, carried by hand. His own question asks for understanding first, wider than the handoff's "three lines".
+  - Answered in chat: the job, the rationale, the maths, why a child would care, and five points of pushback, before any build.
