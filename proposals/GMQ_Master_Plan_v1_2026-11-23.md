@@ -1,6 +1,6 @@
 # Galaxy Math Quest: the whole plan
 
-**Date:** 23 November 2026 (version 96). **For:** Marc, and every thread.
+**Date:** 23 November 2026 (version 97). **For:** Marc, and every thread.
 **What this is:** one list of everything:
 - what is built
 - who is doing what
@@ -30,7 +30,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 | Thread | Owns | Where it is now |
 |---|---|---|
-| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 96 on the class link and the preview: Chronosia's story, stages 1 and 2 (v94); the Voltara fly-in (v95); the black cave and the lantern across the planets, stages 3 and 4 (v96). Next: stages 5 to 7. |
+| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 97 on the class link and the preview: Galactic Trade made clear (v97); Chronosia's story, stages 1 and 2 (v94); the Voltara fly-in (v95); the black cave and the lantern across the planets, stages 3 and 4 (v96). Next: stages 5 to 7. |
 | **Big world** (Planet Algora, Galaxy Patternox) | `docs/bigworld/*` and its notes | The first region (the Mender Meadow) is built and playable. The Reach is designed. Its second brief: `HANDOFF_Big_World_Brief2_2026-11-22.md`. |
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
 | **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built, and **wired into the game in version 95** (Phase 2, by the main thread). Its piece is copied unchanged; a new version of the piece must be copied in again by the main thread. |
@@ -43,7 +43,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 ## 3. What the children have, and what is waiting for them
 
-**The class link (version 96, 23 November):** everything below, and versions 82 to 96. **Every push now updates the class link too** [Source: Marc, 23 November: "So anything you push me push for them as well. Always."]. Version 93 began a new save, so every cadet started fresh that day.
+**The class link (version 97, 23 November):** everything below, and versions 82 to 97. **Every push now updates the class link too** [Source: Marc, 23 November: "So anything you push me push for them as well. Always."]. Version 93 began a new save, so every cadet started fresh that day.
 
 **Before that, version 81 had:**
 - the station
@@ -68,6 +68,7 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
+| 97 | Galactic Trade: a briefing first (why, and the goal); no running total; the route drawn from Voltara to each planet. |
 | 96 | The black cave and the lantern: the broken lantern, the Nomad glassmaker, soft sand on Xylophora, sand weighed in grams, a glow stone from a trader, the tide table, the gear door and the epic card, the workshop and its stair. |
 | 95 | The Voltara fly-in: a short flight down when a cadet lands, the full one the first time. A tap skips it. A Teacher switch turns it off. |
 | 94 | Chronosia's story, stages 1 and 2: the call for help on landing; the Keeper's and the Watcher's reasons; the clocks before the quake; the day turns when the quake is held; the crack fades only when the night trips stop too; the case without dates. |
@@ -183,6 +184,8 @@ Each note lays out the choices and recommends one.
 | 13 | ~~**The lantern's recipe**~~: answered 23 November. Marc approved the Chronosia story (rule R18: a lantern is a glow stone behind Nomad glass), and its glow stone from a trader at Galactic Trade. So the recipe is soft sand and the glow stone, and the glow stone alone stops lighting the passage. **Tell Marc this reading;** he can still change it. | the Chronosia story note, R18 and decision 6 |
 | 14 | **The glow stone's price at the trade beacon:** 200 gems [Proposal, version 96]. Too dear, or too cheap, for what the class earns on a trade trip? | this plan; the game's `LANPRICE` |
 | 15 | **Lengthar's measuring tape** has no use yet (the Chronosia story note, decision 6, pick A). Leave it as a prize, or design a quest that needs it? | the Chronosia story note, decision 6 |
+| 16 | **Galactic Trade, three choices** (version 97 fixed the rest): A, rounding as an estimate ("the scanner reads only roughly: about 10 light-years"), or as now; B, your Trade Data Sheet as the picture, every planet's numbers in view, rounding only for the planets chosen, or scan-first as now; C, what the gems buy: the Council's Power Module upgrade, from your Task 2 page. Picks: A estimate, B the data sheet, C yes. | this plan; your Task 2 page |
+| 17 | **Voltara's energy plan shows a running total** of the energy used as places are switched on. Your rule says never show the adding. Take it out (the child adds, then the tower checks), or keep it? Your class has played it. | the game's `startPlan` |
 | 12 | **Older decisions from 21 November, some answered since** | `GMQ_Decisions_Waiting_2026-11-21.md`. The main thread should mark which are answered (its first job). |
 
 ## 5b. The story test, for every task on every planet
