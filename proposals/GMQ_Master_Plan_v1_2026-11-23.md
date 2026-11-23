@@ -66,7 +66,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 ### Stage 1: the newest game, with the fly-in, to the class (main thread)
 
-1. **Wire the fly-in into the game,** as version 91 on the preview. The fly-in thread's section 9 says how.
+1. **Wire the fly-in into the game,** as the next version on the preview. The fly-in thread's section 9 says how.
    - It plays when a child lands on Voltara: the full scene the first time, two seconds after that.
    - A tap skips it.
    - It skips itself on an iPad that cannot draw it, or that asks for less motion. The game then lands as it does today.
@@ -74,7 +74,7 @@ Everything is **[Proposal]** unless it says [Source].
    - The game's tests turn it off.
 2. **Marc plays the preview** on an iPad: the fly-in, Lengthar, Chronosia's links, music, Xylophora's walls.
 3. **The class update check:** saved class games open in the new version (`checks/class_update_test.js`).
-4. **On Marc's word ("update the class link"),** the class gets everything from versions 82 to 91 at once. He is told first what the children will see new.
+4. **On Marc's word ("update the class link"),** the class gets everything from versions 82 onward at once. He is told first what the children will see new.
 
 ### Stage 2: Algora, the big world, as the pilot (big world thread)
 
