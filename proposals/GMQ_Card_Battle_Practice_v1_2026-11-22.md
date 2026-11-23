@@ -41,7 +41,11 @@ Here is how I read the problem.
 - **Going second gives you one thing:** you have seen the other card before you choose yours.
 - **If both ships lose their last part in the same round, nobody wins.** With today's shield rules that is 7 or 8 battles in 100. (It was 20 in 100 this morning, before shields could come back.)
 - **[Conflict]** Earlier the same day the main thread passed on a ruling in your name: "attacks land in turn order... that ship does not strike back." I followed your own words. The old way is still on a switch ("Do attacks land in turn order?"). The rules sheet needs the same change; it is the main thread's file.
-- **Still yours to rule:** is "nobody wins" right for those 7 or 8 battles in 100? Other choices: the ship with more HP left at the start of that round; one more round.
+- **You ruled on 23 November: "Nobody wins."** A tie is a tie. Your reason looks ahead:
+  - **Friendly battles** have nothing at stake.
+  - **Challenge battles:** both players agree to put up one rare or epic card each, chosen at random from their deck. The winner gets both cards, "unless they tie".
+  - So a tie has to exist, and in a tie nobody takes a card.
+  - Neither kind is built yet. The practice battle is a friendly battle against the computer. Your words are recorded for the main thread, whose rules sheet still lists this as open.
 
 **2. "Even if someone was playing a gold card, the shield should still stop the regular AP attack... it looks like the system is always warning, saying your shield will not stop anything."**
 
@@ -331,7 +335,7 @@ Open **Rules** on the page. A change starts with the next battle.
 
 ## 6. Things I had to settle to make it run [Proposal: each is yours to change]
 
-1. **Both ships lose their last part in the same round: nobody wins.** [You have not ruled on this since you ruled out turn order.]
+1. **Both ships lose their last part in the same round: nobody wins.** [Your ruling, 23 November.]
 2. **A hit may only be put on working parts.**
 3. **A block comes off the attack before it reaches the shield.**
 4. **Inside a round the order is:** the policeman, then Spies, then shield and repair cards, then both attacks at once.
@@ -361,11 +365,11 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ### Still for you to rule on
 
-1. **Both ships fall in the same round** (7 or 8 battles in 100): nobody wins, or something else? (section 1g)
-2. **The split** (section 4, point 2).
-3. **Shield cards need the Shield Generator** (section 1c). Is that right?
-4. **The sounds:** right or wrong, and on or off at the start?
-5. **Dodge cards** at common and rare: do you want them?
+1. **The split** (section 4, point 2).
+2. **Shield cards need the Shield Generator** (section 1c). Is that right?
+3. **The sounds:** right or wrong, and on or off at the start?
+4. **Dodge cards** at common and rare: do you want them?
+5. **Hundred Cannon** counts as a card that multiplies the AP (section 1g). Is that right?
 
 ---
 
@@ -373,7 +377,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 - **Two children on one iPad.**
 - **Levels 3 to 10.**
-- **Fun battles and challenge battles.**
+- **Challenge battles.** [Your words, 23 November] Both players put up one rare or epic card, chosen at random from their deck. The winner gets both. In a tie, nobody does. What is built is a friendly battle against the computer.
 - **Your own deck.** Both players have the same cards, apart from which Spy card each draws.
 
 ## 9. Checks
