@@ -309,6 +309,71 @@ Then paste the table to me.
 
 ---
 
+## 14. Your rule for mistakes: let it happen
+
+[Source: Marc, 22 November, late] "That is what our story problems can do. They have the table, they must analyze it and make a decision based on it... how much stone do we need in the 12th month if this growing pattern continues. And they make a mistake, we shouldn't say no that's not right. We should let it happen, and they will see negative consequences of it... then we step back to an easier scaffolding... a different problem, a smaller one, and they can see that it does work... then even you go back to the harder one and maybe even go one past that."
+
+It also fits what you said before: "Your decisions must matter" (17 November), and "no chance to struggle" (19 November).
+
+### The rule, as six steps
+
+1. **A story problem with a table.** The child reads the table and makes a decision. ("We need this much stone by month 12.")
+2. **The world does what the child decided.** Right or wrong. Nobody says "that is not right".
+3. **What follows can be seen.** The dam is too low and the river comes over. There is not enough food by the 3rd month.
+4. **The child chooses:** go on with the quest, or step down.
+5. **The step down is an easier problem of the same kind:** smaller, and different. It works, and the child sees it work.
+6. **Back to the hard one. Then, maybe, one past it.**
+
+### Two things this answers
+
+- **My pushback on tables** (section 12, point 3). A table read for a decision is not train spotting. The decision is the question the column cannot answer. You are right.
+- **My open question to you:** "easier numbers, or more help, for a child who struggles?" Your answer is neither. First what follows from the mistake, then a smaller problem, then back.
+
+### What is built does the opposite
+
+| Where | What the page does now |
+|---|---|
+| A machine's plate | A wrong plate falls off at once |
+| The pan on the bridge | The bridge stays up |
+| The stepping stones | A splash, and back to the bank |
+| The fleet | A red lamp. **Nothing sails until every line is right** |
+| The net weaver | "That does not come to 18" |
+| The reed cutter | "No. Ten reeds in every bundle. Count again" |
+| The Makers' box | "Not the rule yet" |
+
+- Every one of these says "wrong" at the moment of the answer, in kinder words.
+- **In the fleet I took the consequences out on purpose.** A reviewer showed that a town served early could make the job impossible. I answered by letting nothing happen until all was right. Your rule answers it the other way: let the rice go to the wrong town, show what follows, and give a way back.
+- **I also gave my reviewers a rule that was mine, not yours:** "the world never accepts wrong maths". By your rule the world does accept it, and shows what it leads to. I withdraw that rule.
+
+### What the research says
+
+- **Trying a problem before being taught, and failing, helps.** A review of 53 studies found children learn more this way than when they are taught first. Two conditions: the child must know enough to make a real try, and a clear look at what works must follow. Your step down is that second part. [Sinha and Kapur, 2021]
+- I could not find whether it holds as well for 8-year-olds. The studies run from school age to university.
+- **"Right" and "wrong" marks can feel like being judged.** One study warns of this. The evidence on kinds of feedback is mixed. [A 2024 study of children's maths feedback]
+
+### What the rule asks of any design. Questions, not answers.
+
+| | The question | Why it matters |
+|---|---|---|
+| 1 | **Can the child always come back?** | A flooded town must not end the quest. A new season, a second wall, a rescue |
+| 2 | **Does what follows come from the child's numbers?** | If every mistake gives the same flood, it is "wrong" with a picture. The dam should be short by what the child was short |
+| 3 | **Then the next try must be a different problem.** Your words: "a different problem". | If the dam is 6 too low and the same problem comes back, the child adds 6 and has learned nothing |
+| 4 | **Soon enough to link.** | If month 12 comes ten minutes later, the child will not tie the flood to the table. The child's own table should be on the screen when it happens |
+| 5 | **What is under the easy step?** | A child who fails the smaller one too needs a floor: a finished example, or a villager who does one alongside |
+| 6 | **Three sizes of every problem, for every child.** | Smaller, the one, one past. Code can make them and check them on thousands of children. The AI tells what follows; the code holds the numbers. That is your constraint design |
+| 7 | **Failing on purpose.** | A flood is fun to watch. That is fine once. Getting it right must be the better show |
+| 8 | **Lesson time.** | A mistake now costs a consequence, a smaller problem, and a return |
+| 9 | **What the report keeps.** | The first decision, what followed, whether the child stepped down, and the return. That tells you more than a score |
+
+### Four things only you can say
+
+1. **When the child goes back to the hard one, is it the same problem or a new one of the same size?** (Row 3 says new. Your call.)
+2. **Is stepping down always the child's choice?** Or does the world offer it after two failed tries?
+3. **"One past": does it earn something more,** a better card?
+4. **What is built: change it to this rule, or leave it and use the rule from here on?** Changing the fleet is the biggest piece.
+
+---
+
 ## Sources
 
 - [Exemplars: K to 5 sample tasks](https://exemplars.com/sample-performance-tasks/math-samples-k-5)
@@ -335,3 +400,6 @@ Then paste the table to me.
 - [Victoria Department of Education: additive and multiplicative thinking](https://www.education.vic.gov.au/Documents/school/teachers/teachingresources/discipline/maths/assessment/additivemulti.pdf)
 - [Jacob and Willis: the development of multiplicative thinking](https://merga.net.au/wp-content/uploads/DOCS/common/Uploaded%20files/Annual%20Conference%20Proceedings/2003%20Annual%20Conference%20Proceedings/RR_jacob.pdf)
 - [Dave Hewitt: Train Spotters' Paradise (on NRICH)](https://nrich.maths.org/node/56112)
+- [Sinha and Kapur, 2021: when problem solving followed by instruction works (summary)](https://phys.org/news/2021-09-productively-wiser.html)
+- [Fyfe and Rittle-Johnson, 2015: feedback and children's prior knowledge](https://news.vanderbilt.edu/files/FyfeRittleJohnson2015_JEP.pdf)
+- [A 2024 study of right and wrong judgments in children's maths feedback](https://pmc.ncbi.nlm.nih.gov/articles/PMC10923023)
