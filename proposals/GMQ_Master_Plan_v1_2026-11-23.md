@@ -72,6 +72,20 @@ Everything is **[Proposal]** unless it says [Source].
 | 95 | The Voltara fly-in: a short flight down when a cadet lands, the full one the first time. A tap skips it. A Teacher switch turns it off. |
 | 94 | Chronosia's story, stages 1 and 2: the call for help on landing; the Keeper's and the Watcher's reasons; the clocks before the quake; the day turns when the quake is held; the crack fades only when the night trips stop too; the case without dates. |
 
+## 3b. Next, from the afternoon of 23 November [Proposal: the main thread, as conductor]
+
+[Source: Marc, 23 November: "Can you be the conductor? ... What should be next?"] One list for every thread. Children's play decides what changes.
+
+1. **Marc, this week:**
+   - The class plays the class link (version 96: Chronosia's new story, the fly-in, the black cave and the lantern). Afterwards: how many held the seventh quake? Did anyone find the broken lantern?
+   - Two or three children play Algora for 15 minutes (https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/), with the testing sheet's walking rows (18 to 22, `proposals/GMQ_Big_World_Testing_Sheet_2026-11-22.md`).
+2. **Big world thread:** no new region. Change the walking only for what the children show. Finish the deciding years' review loop (its handoff, steps 2 and 3); build the first kind only after a joint review says yes.
+3. **Story thread:** its round 4 review of Algora; something to find in Algora's four empty places. The next region's story only after children have played the first two.
+4. **Main thread:** Chronosia's stages 5 to 7 (the guard's trail, the people and their history, the reward). Review the other threads' work as it lands.
+5. **Battle thread and fly-in thread:** wait. The battle comes into the game on Marc's word (Stage 4 below). Other planets' fly-ins after the class has reacted to Voltara's.
+
+**After the children have played Algora,** decide together: the next region, its people, and how much harder it gets.
+
 ## 4. The order of work [Proposal]
 
 ### Stage 1: the newest game, with the fly-in, to the class (main thread)
