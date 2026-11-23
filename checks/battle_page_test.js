@@ -405,9 +405,13 @@ async function act(page, name, flags, size) {
       // ---- dodge cards: Wormhole Zip (common) against a rare card that adds 20
       await page.evaluate(() => window.GMQB.setSeed(5));
       await page.locator('#sgo').tap();
-      await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;put(S.P[1],"A08",0);put(S.P[0],"D11",0);U.cpuLead=0;})()');
+      await page.evaluate('(function(){' + PUT + 'var U=window.GMQB.U,S=U.S;S.leader=1;put(S.P[1],"A08",0);put(S.P[0],"D11",0);put(S.P[0],"D09",1);U.cpuLead=0;})()');
       await page.evaluate(() => window.dispatchEvent(new Event('resize')));
       const z0 = await state(page);
+      await page.locator('.hc.mine').nth(1).tap();
+      const va = await state(page);
+      pass(name + ': Vanishing Act is a dodge card: it says DODGE, shows the dodge picture, and says the whole 75 misses you', await page.evaluate(() => { const svg = document.querySelector('#pop.open .big svg'); return !!svg && svg.querySelector('.ty').textContent === 'DODGE' && svg.querySelectorAll('.dg').length === 2; }) && va.fore.indexOf('The enemy\'s hit is 75. It misses you.') >= 0, va.fore);
+      await page.locator('#popx').tap();
       await page.locator('.hc.mine').nth(0).tap();
       st = await state(page);
       pass(name + ': Wormhole Zip says the ship\'s 55 will miss, the rare card\'s 20 will still hit, and that you still attack for 55', st.fore.indexOf('The enemy\'s hit is 75. The ship\'s own 55 misses you. What its rare card adds still hits: 20.') >= 0 && st.fore.indexOf('Your attack: 55.') >= 0 && !/do not fire/.test(st.fore), st.fore);

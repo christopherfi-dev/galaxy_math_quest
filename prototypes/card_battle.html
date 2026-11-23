@@ -177,7 +177,7 @@ button{font-family:inherit}
     <li id="hturn">Both attacks land together.</li>
     <li>An attack hits the Main Shield first. If the attack is bigger than the shield, the shield breaks and soaks up all of it.</li>
     <li><b>A shield that a card puts up has the colour of that card:</b> green, purple or gold. It always stops the other ship's own attack. But if the other player's attack card is of a higher kind, the part that card adds goes through to your parts. If that higher card doubles the attack, or rounds it up, the whole attack goes through. A block card works the same way: it takes its number off the ship's own attack, whatever card the other player used. The shield you start with stops everything.</li>
-    <li><b>Wormhole Zip and Triple Illusion</b> make the other ship's own attack miss you. You still fire. A higher attack card can still hit you with the part it adds.</li>
+    <li><b>Dodge cards</b> make the other ship's attack miss you. You still fire. Against Wormhole Zip and Triple Illusion, a higher attack card can still hit with the part it adds. Nothing gets past Vanishing Act, except a Spy.</li>
     <li><b>A broken shield can come back.</b> Play a shield card: a new shield goes up, as strong as the number on the card. Even a small one soaks up one whole attack. In your hand, such a card is marked "shield back".</li>
     <li>With no shield, <b>you choose which of your parts take the hit</b>. The view moves in on your ship. The hit comes as blocks of ten, five and one. Tap a part to send it the lit block: its HP goes down as you tap. Tap another block to light it. "Break a block" makes the lit block into smaller ones. If a tap would destroy a part, the page asks first: tap again to give that part up.</li>
   </ol>
@@ -247,7 +247,7 @@ button{font-family:inherit}
  {"id":"D07","pic":"quarter","type":"defence","rarity":"rare","name":"Quarter Wall","badge":"−25","text":"Block 25 of the attack on you. Or bring back a broken shield with 25 HP.","ops":[{"op":"block","n":25}],"maths":"their attack - 25","from":"new"},
  {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Block","badge":"−15","text":"Block 15, or bring back a broken shield with 15 HP. Repair 5 HP on one working part.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card","needs":"Needs Shield Generator and Power Module"},
  {"id":"D10","pic":"cards","type":"defence","rarity":"rare","name":"Card Wall","badge":"4×","text":"Count the other cards in your hand. Block 4 for each, or bring back a broken shield.","ops":[{"op":"block_per_card","n":4}],"maths":"4 x the cards left in your hand, then their attack - that","from":"new: the four times table, to match Nano Shield"},
- {"id":"D09","type":"defence","rarity":"epic","name":"Vanishing Act","badge":"0","text":"No attack hits you this round. A Spy still can.","ops":[{"op":"block_all"}],"maths":"none: the attack on you is 0","from":"Cloaking Device, Wormhole, Teleport and nine more"},
+ {"id":"D09","sym":"dodge","type":"defence","rarity":"epic","name":"Vanishing Act","badge":"0","text":"No attack hits you this round. A Spy still can. You still fire.","ops":[{"op":"block_all"}],"maths":"none: the attack on you is 0","from":"Cloaking Device, Wormhole, Teleport and nine more"},
  {"id":"D11","sym":"dodge","type":"defence","rarity":"common","name":"Wormhole Zip","badge":"zip","text":"Zip through a wormhole. The enemy ship's attack misses you. You still fire.","ops":[{"op":"block_dodge"}],"maths":"their ship's attack misses","from":"Marc, 22 November: Wormhole Zip. His 2023 cards Wormhole and Teleport"},
  {"id":"D12","sym":"dodge","type":"defence","rarity":"rare","name":"Triple Illusion","badge":"×3","text":"The enemy sees three ships. Its ship's attack misses you. You still fire.","ops":[{"op":"block_dodge"}],"maths":"their ship's attack misses","from":"Marc, 22 November: Triple Illusion. His 2023 card Decoy Drones"},
  {"id":"R01","pic":"patch","type":"repair","rarity":"common","name":"Quick Patch","badge":"+6","text":"Repair 6 HP on one of your working parts.","ops":[{"op":"repair_one","n":6}],"maths":"part HP + 6","from":"Emergency Repairs (6)"},
@@ -839,14 +839,14 @@ function drawSound(){var b=el('bsound');if(!b)return;b.className='sb'+(SND.on?' 
 /* ---------- what a card would do, worked out by the page ---------- */
 /* a card's own numbers, as the ship stands now */
 function plain(side,id){
- var S=U.S,pl=S.P[side],c=B.card(id),ap=B.has(pl,'Weapons System')?B.shipAP(pl):0,bonus=0,blk=0,isA=false,isB=false,away=false;
+ var S=U.S,pl=S.P[side],c=B.card(id),ap=B.has(pl,'Weapons System')?B.shipAP(pl):0,bonus=0,blk=0,isA=false,isB=false,away=false,all=false;
  c.ops.forEach(function(o){
   if(/^atk_/.test(o.op))isA=true;if(/^block/.test(o.op))isB=true;
   if(!B.opWorks(S,pl,o))return;
   if(o.op==='atk_add')bonus+=o.n;else if(o.op==='atk_per_part')bonus+=o.n*B.aliveIdx(pl).length;else if(o.op==='atk_double')bonus+=ap;else if(o.op==='atk_round100')bonus+=(100-ap%100)%100;
-  else if(o.op==='block')blk+=o.n;else if(o.op==='block_per_card')blk+=o.n*B.otherCards(S,side);else if(o.op==='block_all')blk=-1;else if(o.op==='block_dodge'){blk=-1;away=true;}
+  else if(o.op==='block')blk+=o.n;else if(o.op==='block_per_card')blk+=o.n*B.otherCards(S,side);else if(o.op==='block_all'){blk=-1;away=true;all=true;}else if(o.op==='block_dodge'){blk=-1;away=true;}
  });
- return {ap:ap,bonus:ap?bonus:0,atk:ap?ap+bonus:0,blk:blk,isA:isA,isB:isB,away:away};
+ return {ap:ap,bonus:ap?bonus:0,atk:ap?ap+bonus:0,blk:blk,isA:isA,isB:isB,away:away,all:all};
 }
 /* the enemy has put its order down: play the round on a copy, up to the moment the attacks are fired */
 function ahead(h){
@@ -898,6 +898,7 @@ function foretell(h){
   if(me.isA&&me.atk>0&&me.bonus>0)t.push('Your attack will be '+me.ap+' + '+me.bonus+' = '+me.atk+'.');
   var up=upBy(id);
   if(up)t.push('It puts your Main Shield back up: '+up+'. A shield of any size soaks up one whole hit.');
+  else if(me.all)t.push('No attack will hit you this round, whatever card the enemy plays. You still fire. A Spy can still reach you.');
   else if(me.away)t.push('The enemy ship\'s own attack will miss you. You still fire. A higher attack card can still hit with what it adds.');
   else if(me.isB&&me.blk>0)t.push('It blocks '+me.blk+' of the enemy\'s attack.');
  }
@@ -1211,7 +1212,7 @@ function animate(st,R){
    for(var i=0;i<2;i++){if(S.cur&&S.cur.atk[i]>0){var p=turret(i);floatText({x:p.x,y:i===1?p.y+(U.L.land?84:60):p.y-34},String(S.cur.atk[i]),i?'#fca5a5':'#93c5fd',52);}}
    return wait(1300);});
   if(lines.length>2)then(function(){say(lines.slice(2).join(' '));
-   for(var i=0;i<2;i++){var bk=S.cur?S.cur.block[i]:0;if(bk!==0&&S.cur.atk[1-i]>0){wall(i,S.cur.away[i]?(S.cur.through[i]>0?'DODGED '+Math.min(bk,S.cur.atk[1-i]):'MISSED!'):(bk<0?'ALL BLOCKED':'BLOCK '+Math.min(bk,S.cur.atk[1-i])),S.cur.away[i]);snd(S.cur.away[i]?'spy':'wall');}
+   for(var i=0;i<2;i++){var bk=S.cur?S.cur.block[i]:0;if(bk!==0&&S.cur.atk[1-i]>0){var dg=B.card(S.cur.card[i]).sym==='dodge';wall(i,dg?(S.cur.through[i]>0?'DODGED '+Math.min(bk,S.cur.atk[1-i]):'MISSED!'):(bk<0?'ALL BLOCKED':'BLOCK '+Math.min(bk,S.cur.atk[1-i])),dg);snd(dg?'spy':'wall');}
     if(S.cur&&S.cur.raised[i]>0){flash(i);floatText({x:U.L.ship[i].cx,y:U.L.ship[i].cy-120},'SHIELD UP '+S.cur.raised[i],'#bfdbfe',44);snd('up');}}
    return wait(1500);});
   return chain;

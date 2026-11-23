@@ -661,3 +661,6 @@ These are Marc's words, tidied. They are not on the form above.
 - **A picture for dodge cards (Marc, 2026-11-23, to the battle thread).** Asked whether the dodge cards should have a picture of their own: "I think yes? Dodge should have its own picture"
   - **Decided:** dodge cards carry their own symbol, not the shield.
   - **Done on 23 November.** Wormhole Zip and Triple Illusion show a new symbol drawn for them: a ship slipping aside, two faint ships where it was, a laser passing through the place it left. The card says DODGE in teal. For the rules they are still shield cards (they need the Shield Generator). Asked back: should Vanishing Act, the epic "no attack hits you" card, be a dodge card too?
+- **Vanishing Act is a dodge card (Marc, 2026-11-23, to the battle thread).** "Yeah. Dodge for vanishing act"
+  - **Decided:** the epic card Vanishing Act carries the dodge picture and the word DODGE. Its rule does not change: no attack hits you that round, whatever the card; a Spy still can.
+  - **Done on 23 November.** Vanishing Act shows the dodge picture and says DODGE; its words now end "You still fire". There is one dodge card of each kind: Wormhole Zip (common), Triple Illusion (rare), Vanishing Act (epic). No rule changed. The battle thread has no open question for Marc.
