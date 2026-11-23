@@ -1,6 +1,6 @@
 # Galaxy Math Quest: the whole plan
 
-**Date:** 23 November 2026 (version 94). **For:** Marc, and every thread.
+**Date:** 23 November 2026 (version 95). **For:** Marc, and every thread.
 **What this is:** one list of everything:
 - what is built
 - who is doing what
@@ -30,10 +30,10 @@ Everything is **[Proposal]** unless it says [Source].
 
 | Thread | Owns | Where it is now |
 |---|---|---|
-| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 94 on the class link and the preview: Chronosia's story, stages 1 and 2. Next: the fly-in, then Chronosia's stages 3 and 4 together. |
+| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 95 on the class link and the preview: Chronosia's story, stages 1 and 2 (v94); the Voltara fly-in (v95). Next: Chronosia's stages 3 and 4 together. |
 | **Big world** (Planet Algora, Galaxy Patternox) | `docs/bigworld/*` and its notes | The first region (the Mender Meadow) is built and playable. The Reach is designed. Its second brief: `HANDOFF_Big_World_Brief2_2026-11-22.md`. |
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
-| **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built: first person, 13 seconds, ready to wire in (Phase 2). See `proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 9. |
+| **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built, and **wired into the game in version 95** (Phase 2, by the main thread). Its piece is copied unchanged; a new version of the piece must be copied in again by the main thread. |
 | **Chronosia story** (writes only) | `proposals/GMQ_Chronosia_Story_*` | Started 23 November with `HANDOFF_Chronosia_Story_2026-11-23.md`: one cohesive story for Chronosia; every task passes the test "no maths as a password". The main thread builds once Marc approves. |
 |  |  | **Approved by Marc on 23 November.** The main thread builds from `proposals/GMQ_Chronosia_Story_Build_List_v1_2026-11-23.md`. Stages 1 and 2 are built (version 94). Then the fly-in, then stages 3 and 4 together (so the class never gets a cave nobody can enter), then 5 to 7. |
 
@@ -43,7 +43,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 ## 3. What the children have, and what is waiting for them
 
-**The class link (version 94, 23 November):** everything below, and versions 82 to 94. **Every push now updates the class link too** [Source: Marc, 23 November: "So anything you push me push for them as well. Always."]. Version 93 began a new save, so every cadet started fresh that day.
+**The class link (version 95, 23 November):** everything below, and versions 82 to 95. **Every push now updates the class link too** [Source: Marc, 23 November: "So anything you push me push for them as well. Always."]. Version 93 began a new save, so every cadet started fresh that day.
 
 **Before that, version 81 had:**
 - the station
@@ -68,13 +68,14 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
+| 95 | The Voltara fly-in: a short flight down when a cadet lands, the full one the first time. A tap skips it. A Teacher switch turns it off. |
 | 94 | Chronosia's story, stages 1 and 2: the call for help on landing; the Keeper's and the Watcher's reasons; the clocks before the quake; the day turns when the quake is held; the crack fades only when the night trips stop too; the case without dates. |
 
 ## 4. The order of work [Proposal]
 
 ### Stage 1: the newest game, with the fly-in, to the class (main thread)
 
-1. **Wire the fly-in into the game,** as the next version on the preview. The fly-in thread's section 9 says how.
+1. ~~**Wire the fly-in into the game**~~: **done, version 95.** The fly-in thread's section 9 said how.
    - It plays when a child lands on Voltara: the full scene the first time, two seconds after that.
    - A tap skips it.
    - It skips itself on an iPad that cannot draw it, or that asks for less motion. The game then lands as it does today.
