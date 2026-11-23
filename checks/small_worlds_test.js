@@ -34,7 +34,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.locator('#verbs [data-v="look"]').tap(); await p.locator('#nouns .noun', { hasText: /ship/ }).first().tap(); await p.waitForTimeout(200); await idle(); expect(await last(), /Your ship|scrap|hull/i, 'a doing word then a thing word runs the command');
     await p.locator('#nouns .noun').nth(1).tap(); await p.waitForTimeout(200); await idle(); if (!(await last())) bad.push(name + ': tapping a thing word alone should look at it');
     // ---- a small world
-    await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_space').tap(); await p.waitForTimeout(1500); await say('trade'); await p.click('#try'); await p.waitForTimeout(200);
+    await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_space').tap(); await p.waitForTimeout(1500); await say('trade'); await p.click('#try'); await p.waitForTimeout(200); await p.click('#try'); await p.waitForTimeout(200);      /* [v97] the briefing, then the idea, then the plan */
     if (await p.locator('#toy .land').count()) bad.push(name + ': no planet can be landed on before it is scanned');
     await p.click('#toy .wire[data-n="C"]'); await p.fill('#ans', '30'); await p.fill('#ans2', '1200'); await p.click('#try'); await p.waitForTimeout(200); await p.click('#toy .land[data-land="C"]'); await p.waitForTimeout(400);
     const k = await p.evaluate(() => { const k = wKit('C'), th = wThings(k); return { name: k.name, cr: k.cr.name, at: k.at, things: th.map(t => ({ id: t.id, w: t.words[0], label: t.label })), mode: S.mode, place: $('place').textContent, q: wLockQ(k, 0) }; });
