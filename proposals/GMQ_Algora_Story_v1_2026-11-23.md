@@ -2,7 +2,7 @@
 
 **Date:** 23 November 2026. **For:** Marc, and the big world thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the big world thread's.
-**Changed four times after its fifth review,** to answer the big world thread (sections 13 to 16). Three joint reviews, of this story and the maths together, have read the first kind. **Section 16 is the newest (23 November, late).** It answers the third joint review's six points, then two story reviews. It changes sections 0 to 10. Section 16g says who has read it.
+**Changed four times after its fifth review,** to answer the big world thread (sections 13 to 16). Three joint reviews, of this story and the maths together, have read the first kind. **Section 16 is the newest (23 November, late).** It answers the third joint review's six points, then three story reviews (the last: "Yes, for the lake path. I found no blocker."). It changes sections 0 to 10. Section 16g says who has read it.
 
 **Tags**
 - [Source]: your pages or your words.
@@ -50,7 +50,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 | **Market morning** | Count day 4, after the count, before the keepers leave. In every deciding year, this is when the cadet explores (section 3). |
 | **Market day in the towns** | The children's day. While the keepers are at the lake, the children play Shells with their grans (section 5). |
 | **Last Raft** | Count day 9. Rafts still sail that day. After it, none does [Built]. |
-| **The white months** | High water. Nothing comes in. The towns live on their stores. At dusk the lake wind rises, so every open fire is put out. After dark the only flames are lamps, closed in clay. The gold months' evenings are long and light; the white months' are dark by supper. |
+| **The white months** | High water. Nothing comes in. The towns live on their stores. Every dusk, all year, the lake wind rises, so every open fire is put out. After dark the only flames are lamps, closed in clay. The gold months' evenings are long and light; the white months' are dark by supper. |
 | **How long a month is in our days** | Never said. |
 
 ### The peoples and places
@@ -63,7 +63,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 | The Twinseers | the Lake of Two Suns | nothing | They watch the suns. At New Year they say how strong the gold sun is, and how high the water will come. |
 | The Eights | the Pattern Woods, by their ship | wood | Guests. The ship's crew. No plots and no store. |
 
-- **Each town has a tally keeper,** a man or a woman. **The tally keeper is the town's speaker** [Built: "the speaker of Stilt Town"]. A child talks to "the speaker", so never meets the harbour keeper or the orchard keeper [Built] by mistake. This note says "the keeper" and "she" for short.
+- **Each town has a tally keeper,** a man or a woman. **The tally keeper is the town's speaker** [Built: "the speaker of Stilt Town"]. A child talks to "the speaker", so never meets the harbour keeper or the orchard keeper [Built] by mistake. At the lake the cadet speaks only with their own town's speaker and the seller. This note says "the keeper" and "she" for short.
 - **At the lake, every count is a stick.** At home each people counts its own way: pips, songs, white stones. At the Lake Market all five read a tally stick.
 
 ### Things that grow by the same amount, from an empty store
@@ -117,7 +117,7 @@ All [Proposal] unless tagged.
 | **The Tally Time** | Each town planned by hand. In Gold month 1 a keeper drew a line on the store wall: what the town needed. Beside it she scratched her plan: so many plots, so many months of carts. Then one cut for each count day, climbing to meet the line. She made a verse for that year's count, and hummed it as she cut. | Old rows on every store wall: a line and a plan first, then cuts up to the line. And the old singer, who heard her gran hum. |
 | **The Thin Year** | One year a plan was wrong. A store ran out in White month 2. | One old row, on Mud Town's store wall, whose cuts stop short of its line. |
 | **The Makers' Time** | The best planners of every people met at the Lake Market. They built **the Year Machine** at the lake, to plan every town's year, so it could not happen again. They also built the Gate, and small machines that sort and count, one rule each [Built: the Meadow's machines]. | The Makers' coin: "That coin was my grandfather's" [Built]. The small machines [Built]. The Year Machine's black frame at the Lake Market. The harbour's loading board [Built], the Year Machine's hand: "a board that worked out every load". |
-| **Sixty years** | The Year Machine planned. At each Market it scratched every keeper's stick ahead, one count day at a time, to its mark. The keepers cut a mark each count day, and the cuts landed on the scratches. Nobody asked how it knew. Nobody scratched a plan on a wall any more. | Sixty newer rows on each wall: a line, cuts, and no plan beside them. One old stick, kept by the oil seller. |
+| **Sixty years** | The Year Machine planned. At each Market it scratched every keeper's stick ahead, one count day at a time, to its ring. The keepers made one cut each count day, and the cuts landed on the scratches. Nobody asked how it knew. Nobody scratched a plan on a wall any more. | Sixty newer rows on each wall: a line, cuts, and no plan beside them. One old stick, kept by the oil seller. |
 | **Now** | The Gate broke. The Year Machine burnt with it: only its black frame is left. The loading board went dark [Built]. Every rule plate on the small machines burnt black [Built]. | The Year Machine's black frame. Keepers who can count what has come in, and cannot say what will. |
 
 - **The old rows on the store walls carry no numbers.** Cuts, a line, a scratched plan. They show that planning was done, and how a year went. They cannot be read as this year's answer. On a wall each cut is made at the top of the pile itself, so it needs no number. A stick goes where the pile cannot, so its cuts carry numbers.
@@ -125,7 +125,7 @@ All [Proposal] unless tagged.
 - **The Meadow's machines [Built] are small.** Each follows one rule: it sorts, or counts. Mending their plates lets them work again. None of them ever planned a year. The Year Machine cannot be rebuilt: it burnt to its frame, and nobody knows how it was made.
 - **What was lost is exact.** A keeper can count what has come in. She can say what the town needs, from the Twinseers' words and her old rows. What nobody can do is work out, in the first week, what will reach that line. That is why a table is kept (the cuts), and why a child's plan is worth something.
 - **The Makers were these peoples' own great-grandparents.** (Decision 6. It changes no built words: Elder Rivet says only "long ago".)
-- **The keeper could do it, if someone showed her.** She can count. She has shells to count with. Nobody has counted on in sixty years. The cadet does it, and at the next New Year she asks: "How did you know?" The cadet's own words are the teaching [Proposal]. That is the arc: the cadet does not replace the keepers. The cadet gives the skill back.
+- **The keeper could do it, if someone showed her.** She can count. She has shells to count with. Nobody has counted on in sixty years. The cadet does it. She learns by watching the year come right. At the next New Year she asks: "How did you know?", which invites the cadet's own words [Proposal]. Nothing hangs on the answer. That is the arc: the cadet does not replace the keepers. The cadet gives the skill back.
 - **What a child should come away knowing:** a people handed their planning to a machine, and forgot how. Planning ahead is what keeps a town fed.
 
 ---
@@ -141,26 +141,31 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 | **White months 1 to 3** | High water. This year's stores were planned by the Year Machine, before the ship's crew came. So every town is a little short. | Shown, not walked: the whole Reach at night, from the water. Then New Year. |
 | **Gold month 1, New Year** | The Year Machine is gone. For the first time in sixty years, somebody must make the plan by hand. **The deciding years begin here.** | |
 
-**The Meadow's machines [Built] have no date.** They can be mended in any gold month. Mending them plans nothing: they sort and count.
+**The Meadow's machines [Built] have no date.** They can be mended in Gold month 9 of the landing year, or on any Market morning after. Mending them plans nothing: they sort and count.
 
 ### How a deciding year goes
 
 1. **New Year.** The cadet is at the store of the town that asks. The Twinseers say only "stronger" or "weaker", never a number. The speaker says: "Meet me at the town jetty on Market morning."
 2. **Market morning: count day 4, after the count, before the keepers leave.** In every deciding year, this is when the cadet explores. The store walls have four new cuts. The mats wait green in the river. Children skip in the streets. Nothing moves time on until the cadet goes to the town jetty.
 3. **At the jetty the speaker says "Come", and they cross to the lake.** At the Market the seller speaks, and the cadet reads the four cuts on the keeper's stick. Once at the lake, the cadet stays until they give a number or say "decide without me". A game closed here opens here again.
-4. **The cadet gives a number, and the keeper says it aloud.** Then the cadet says: "Let the year run." In that town's picture the count days go by, one at a time, to the raft. The pile climbs by the same amount each time. The promise was made first, so the climb gives nothing away. It shows the count the child should have made.
+4. **The cadet gives a number, and the keeper says it aloud.** The year runs at once: the cadet's "Let the year run" is the same breath as the number. In that town's picture the count days go by, one at a time, to the raft. The pile climbs by the same amount each time. The promise was made first, so the climb gives nothing away. It shows the count the child should have made.
 5. **Raft day:** the dock, then the town's lamps set out on the dock at dusk, one for each mat woven.
 6. **The white months show how it went:** the whole Reach at night, from the water, with this town in front.
 7. **New Year again.** If the year came out right, **the town has learned.** (How many right years that takes is the maths note's decision 2. Its pick is one.) The speaker asks the cadet: "How did you know?", and listens. From then on she does it herself, and the next town asks. If the year did not come out right, the same town asks again. The numbers are new, because the Twinseers have new words: a stronger sun, more reed. This is "a new problem of the same size". A harder year arrives with no number said.
 8. **Nothing is carried over.** Every year is fresh. A dark lamp ends at New Year.
 
-**What moves time on, in every deciding year:** going to the town jetty on Market morning, and "Let the year run". Nothing else.
+**What moves time on, in every deciding year:**
+- going to the town jetty on Market morning;
+- giving a number, or "decide without me", at the lake or at Gran's rack: the year then runs at once;
+- two scenes that end by themselves: New Year, which ends at Market morning, and the singer's lesson, which stops the run in the white months and lets it go on to New Year when it ends.
+
+Nothing else. Once at the lake or at Gran's rack, the cadet stays until a number or "decide without me". A game closed there opens there again.
 
 **The fleet in the deciding years:** the harbour keeper loads it the old slow way, raft by raft, the same for each town. Nobody is short by it. Only the cadet's decision can cause a miss.
 
 ### What the keeper does about the other two
 
-**So that only the cadet's decision can cause a miss,** a keeper who has not learned a thing does it the safe way. Safe means too much: more work, more pay. Only one of her safe ways leaves the town short, and that one is asked first.
+**So that only the cadet's decision can cause a miss,** a keeper who has not learned a thing does it the safe way. For sowing and carts, safe means too much: more work, more pay. For mats, safe means the last cut: too few. That is the one safe way that leaves the town short, and it is asked first. (In a step-down year the keeper's last cut darkens her town, and she says first that it is her doing.)
 
 | | Until she has learned it, the keeper... | What that costs | Is it seen as a miss? |
 |---|---|---|---|
@@ -190,10 +195,11 @@ On Market morning. The old walls, the skipping rhyme, the children's talk of She
 
 **A step down is Shells.** When the engine steps a child down, the speaker says at New Year: "Twice the lake has beaten us. On Market day the children play the lake's deal small, for shells. Stay with them this year, and learn it small. I will go to the lake alone." The cadet is sent to learn, not left behind. Section 5.
 - **On Market morning the cadet sees the speaker off at the town jetty.** In a step-down year, that is what moves time on. She says as she goes: "This year I promise only what I can see. The dark is my doing, not yours."
-- **Then Shells,** with a child of the town and their gran. The cadet gives the number at Gran's rack, and says "Let the year run" there. One run shows Gran's count day (her hooks), raft day (the keeper's last cut), and the white months.
+- **The cadet asks to go too.** The speaker: "Not this year. Learn it small first. The lake will be there next year." **"Take my number with you."** "Only a keeper makes a deal, and this year I make mine with what I can see."
+- **Then Shells,** once the keepers' boats have gone: "Shells is played when the boats have gone," says Gran, to a cadet who comes too soon. The cadet gives the number at Gran's rack, and the year runs. One run shows, in count-day order, Gran's count day (her hooks) and raft day (the keeper's last cut), then the white months.
 - **In the white months the singer teaches,** by the lamp. A second game of Shells, if one is needed, is on the next Market day. So a step down takes one or two years.
 - **"Decide without me"** at the Market: the keeper promises the last cut, the safe way, and says so. After the second time in one town, the singer finds the cadet in the white months: "They say you have stopped deciding. Come and sing."
-- **A misreading the seller can see:** a number less than the keeper's stick already shows. He says: "Your stick has more than that already." He lays the stick on the planks of the Market jetty, one plank for each count day: "Here is today. Then this day, and this. Here my raft comes." Then he asks again. **He can see no other misreading,** because he cannot count ahead. Any other number runs as it is. The next year, for that child, he lays out the planks before he asks.
+- **A misreading the seller can see:** a number less than the keeper's stick already shows. He stops the keeper before she says it aloud: "Your stick has more than that already." He lays the stick on the planks of the Market jetty, one plank for each count day: "Here is today. Then this day, and this. Here my raft comes." Then he asks again, once. **A second low number runs as it is.** No word was given until the keeper spoke, so no word is broken. **He can see no other misreading,** because he cannot count ahead. Any other number runs as it is. The next year, for that child, he lays out the planks before he asks.
 
 **This is the story's need, not a design.** How it is drawn and coded is the big world thread's. Whose year it is, is decided [Source: Marc, 23 November]: each child has their own year. Two things are theirs to solve, not mine:
 - How long "the year runs" takes on screen.
@@ -206,7 +212,7 @@ On Market morning. The old walls, the skipping rhyme, the children's talk of She
 The five peoples, their names and their regions are [Built]. You have confirmed none of them. I build on them.
 
 - **Each people has a custom of its own** (the table in section 1), so they are not one people in five costumes. This is a start, not enough. Homes, food and play are still to write.
-- **Each town has one tally keeper.** The keeper cuts the mark on count day, and can tell the cadet what the town needs, from the Twinseers' words and the old rows. No keeper has worked out what will come in.
+- **Each town has one tally keeper.** The keeper makes the count day's cut, and can tell the cadet what the town needs, from the Twinseers' words and the old rows. No keeper has worked out what will come in.
 - **The Twinseers watch the suns.** At New Year they say two things: how strong the gold sun is this year, and how high the water will come. They say "stronger" or "weaker", never a number. So a plot brings in a different amount each year, the river gives more or less reed, and the wall needs a different height. That is why an old row on a wall is never this year's answer.
 - **The Eights are the ship's crew.** Guests. Extra mouths in every town's need. They cut wood for their keep. Their ship did their counting, as the Year Machine did here, and the ship is dark. They cannot carry a row on either. They do not know a plot from a pond, and they ask the cadet too.
 
@@ -223,7 +229,7 @@ Your words: "they must analyze it and make a decision." [Source]
 **What is the same every time**
 - "Each" always means each one: each plot, each weaver, each cart.
 - A day is always named the same way: "on count day 7, after the count".
-- The cuts are the whole town's pile. **Nobody says how much comes in each count day.** The child reads it off the cuts.
+- The cuts are the whole town's pile. **Nobody says how much comes in each count day.** The child reads it off the cuts. (In Shells, each thing's step is a verse of the rhyme. That is meant: Shells is the step down.)
 - Nobody says "wrong". The year runs, and the picture shows what followed.
 - A miss ends at New Year.
 
@@ -235,27 +241,28 @@ This kind is fitted by the maths thread (`proposals/GMQ_Big_World_Maths_Fit_v1_2
 
 - **When:** the Lake Market, on count day 4, after the count. Only tally keepers make deals, and this is the one time in the year they all meet.
 - **Why mats:** the weavers weave every reed the river gives, and the river gives the same each count day. A stronger sun, more reed. So the pile grows by the same amount each count day, and the amount is new each year.
-- **Why the Furrows want mats:** they press their hill nuts between green reed mats. A mat presses for one year: this year's mats press next year's oil. The Furrows keep them green in the hill pools until then. A dry mat cracks in the press. So the town's mats wait in the river under the houses, to stay green, until the raft comes.
+- **Why the Furrows want mats:** they press their hill nuts between green reed mats. A mat presses for one year: this year's mats press next year's oil. The Furrows keep them green in the hill pools until then, and the pools always hold more mats than a year needs. So one town's mats never change how much oil there is next year. A dry mat cracks in the press. So the town's mats wait in the river under the houses, to stay green, until the raft comes.
 - **Why lamp oil:** no river town can grow it. The Rillfolk cook by day, on a clay hearth-raft moored below each house. At dusk the wind comes off the lake, and a spark on it would set a reed roof alight. So at dusk every open fire is put out. After dark the only flame is a lamp, closed in clay. In the gold months the evenings are long and light. In the white months they are dark by supper.
-- **The tally stick.** The store wall stays in the town. So a tally keeper never leaves home without her stick: this year's row, cut small. At the lake every people reads a stick: it is the lake's common way. At the Market the stick has four cuts. Each is marked with its count day, and the pile that day.
+- **The tally stick.** The mats' row is cut on the post of the jetty where they wait in the river, at the top of the stack. The post stays in the town. So a tally keeper never leaves home without her stick: this year's row, cut small. At the lake every people reads a stick: it is the lake's common way. At the Market the stick has four cuts. Each is marked with its count day, and the pile that day.
 - **The keeper does not say how much comes each count day.** She has never thought of the pile that way. She hands over the stick.
 - **The oil seller is the Furrows' tally keeper.** He speaks, in this order:
   1. **His own old stick first.** It fills the picture while he speaks. It is the stick of one press, the one he set aside for the Menders, in the last year of the Year Machine. He never shaved it smooth. On it: four cuts, then a knot of thread for Market day. Then the machine's faint scratches, one for each count day ahead, each with its number, up to a ring the machine cut round the stick at count day 9. Then the real cuts, made as the oil came. Each landed on a scratch.
      - He says: "In the last year of the Year Machine, my stick looked like yours: four cuts. The machine scratched on ahead, one count day at a time. It said: promise the Menders this many, on count day 9, after the count. I did. The Year Machine burnt before that day. The oil came anyway, onto every scratch."
      - "I have looked at it a hundred times. I see that it came true. I cannot see how it knew."
+     - If the cadet says how ("It goes up twenty each time!"), he says: "Then do it with your town's stick."
      - Then: "That is what the Year Machine did for us. Can you do it without one?"
      - It is a finished example of counting on, one count day at a time. It is about oil, not mats. **Nobody living counted ahead to make it.** Since then he promises only oil that is already in his jars.
   2. **Both costs, before he asks.** Four short lines:
      - "One pot for each mat you promise, now. One pot fills one lamp for the white months. And one hook on my raft for each mat."
      - "Too few, and the mats with no hook stay on your dock. No pot for them."
      - "Too many, and a hook sails empty. For each, my crew takes two pots back: one for the mat, one for the hook."
-     - "For each mat you are out, short or over, one lamp stays dark."
+     - "For each mat too few, or too many, one lamp stays dark."
   3. **The question.** Now the keeper's stick fills the picture, and stays while the child answers. "Today is count day 4. My raft comes on count day 7, after that day's count. How many mats will there be by then, in all?" (The count day is his to name. It is a different one each year. Section 16d asks the maths thread to say "How many mats will your town have by then, in all?", because he deals with three towns.)
      - The child may ask to see his old stick again. He lays it beside the keeper's.
 - **The tally keeper says the cadet's number aloud.** Only a keeper makes a deal. A word at the lake is kept.
 
 **What follows, in the story's words**
-- **At the Market:** he pours one pot for each mat promised. He ties one hook on his raft for each, with the town's knot on it. That hook is the town's word now. He cannot give its place to another town, and he cannot hang another town's mat on it.
+- **At the Market:** he pours one pot for each mat promised. He ties one hook on his raft for each, with the town's tag of coloured reed on it. That hook is the town's word now. He cannot give its place to another town, and he cannot hang another town's mat on it.
 - **At dusk on raft day, the town sets its lamps out on the dock, one for each mat woven by then.** It is the custom: every mat is a lamp. A lamp with oil is lit. One with none stays dark. The lamps are set out only now, after the promise, so they give nothing away. Then each family takes its lamps home for the white months.
 - **Said right:** every hook gets a mat, and every lamp gets its pot. Every lamp on the dock is lit.
 - **Said too few:** every hook gets a mat, and mats are left on the dock with no hook. They can be counted. One lamp stays dark for each.
@@ -263,7 +270,7 @@ This kind is fitted by the maths thread (`proposals/GMQ_Big_World_Maths_Fit_v1_2
 - **Said too many:** hooks sail empty. They can be counted. On the dock his crew says his words: "One pot back for the mat I did not get. One pot back for the hook that sailed empty." Two pots for each empty hook. One lamp stays dark for each.
 - **Said far too many:** the crew takes back every pot there is. They cannot take a pot that is not there. Every lamp stays dark. A promise bigger than his jars is the same: he pours all he has, and the crew takes it all back.
 - **Why two:** an empty hook cost him twice. He poured oil for nothing, and he carried a place he could have sold.
-- **So too few and too many cost the same:** one dark lamp for each mat out. Neither "always say less" nor "always say more" is safe. He says so before the promise.
+- **So too few and too many cost the same:** one dark lamp for each mat too few or too many. Neither "always say less" nor "always say more" is safe. He says so before the promise.
 - **The road from the number to what follows:** the dock (spare mats, or empty hooks, to count), then the lamps on the dock at dusk.
 
 ### The small row: Shells
@@ -273,20 +280,23 @@ When a child is stepped down, the task is the town's task again, smaller. It mus
 - **Shells is the oldest game in the Reach.** It is the lake's deal, made small: shells for oil, Gran's hooks for the raft. Rillfolk children play it with their grans on Market day, while the keepers are at the lake. It is older than the Year Machine, and it has always taught the same thing: a word is kept. To the children it is luck. They say: "Gran always wins."
 - **A child of the town has a chore,** and keeps a small stick of their own, as a tally keeper does. Four cuts, each with its count day and how many there are that day. The thing is always named, and always counted one by one. Each comes on its own, from a place that is the family's, and cannot be hurried:
   - **lotus pods,** from the family's pond. Two each count day.
-  - **plums,** from the family's tree. Five each count day.
-  - **shrimp,** from the family's trap. Ten each count day. Each family has one trap place on the river, shared out long ago.
+  - **plums,** from the family's tree, strung to dry. Five each count day.
+  - **shrimp,** from the family's trap, dried on the rack. Ten each count day. Each family has one trap place on the river, shared out long ago.
+  - Dried, all three keep for the year.
 - **The child asks the cadet to play for them:** "I always lose. Will you say it for me?" The shells are the child's. So the cadet decides for someone, as at the lake.
 - **Gran says both costs first, in the seller's words, made small:**
+  - "Only plums from your own tree go on my hooks."
   - "One shell for each plum you promise, now. And one hook on my rack for each."
-  - "Too few, and the plums with no hook are mine for nothing."
+  - "Too few, and I take the plums with no hook, and pay nothing for them."
   - "Too many, and a hook hangs empty. You give me two shells back for it: one for the plum, one for the hook."
-- **Then she asks, as the seller does:** "Today is count day 4. I come for them on count day 7, after that day's count. How many plums will there be by then, in all?"
+- **Then she asks, as the seller does:** "Today is count day 4. I come for them on count day 7, after that day's count. How many plums will you have by then, in all?"
 - **On that count day, at Gran's rack:**
   - **Right:** every hook has its plum. The child keeps every shell.
   - **Too few:** plums with no hook. They can be counted. They are Gran's, with no shell paid. One shell fewer for each.
   - **Too many:** empty hooks. They can be counted. The child gives Gran two shells for each. One shell fewer for each.
   - **Far too many:** the child gives back every shell Gran paid in this game. Never more: the child's own bowl is safe.
-- **Both sides cost shells, one for each one out.** No blind number is safe, just as at the lake. It is the oil's rule, made small, so the maths thread's rule can play it unchanged.
+- **Both sides cost shells, one for each plum too few or too many.**
+- **A number less than the child's stick already shows:** Gran says, "Your stick has more than that already," and lets the child say again, once. A second low number runs. No blind number is safe, just as at the lake. It is the oil's rule, made small, so the maths thread's rule can play it unchanged.
 - **It is small:** one child, one chore, one stick, a handful of shells. Each game of Shells is played with a different child of the town.
 - **What the cadet finds:** Shells is the lake's deal. The skipping rhyme wins it.
 
@@ -387,7 +397,7 @@ In real life a little extra is good sense. The story must not teach that care is
 | A word is kept. | the Lake Market; the New Year handshake | a trade or a hiring is not undone, and nobody tries |
 | The year has two halves. | the sky | which sun is higher |
 | A plan can be made by hand again. | a store wall, after the cadet's year | a new row with a plan mark beside it |
-| The Year Machine planned for everyone, to the last. | the oil seller's old stick, at the Lake Market | its scratches ahead to its mark, and the cuts that landed on them after it burnt |
+| The Year Machine planned for everyone, to the last. | the oil seller's old stick, at the Lake Market | its scratches ahead to its ring, and the cuts that landed on them after it burnt |
 | Children play the lake's deal small. | Shells, on Market day | "Gran always wins." |
 
 - **A child's sign shows only that a town has learned:** a small sign, in that child's colour. It shows neither the child's number nor how any year went. That stays in the child's own notebook. So nothing a child got wrong is left on a wall for others to see.
@@ -472,7 +482,7 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | Shells costs something | It is a game, with shells. After it, ask: "Did you win?" If a child shrugs, shells are not a cost, and the small row hurts on neither side. |
 | Nobody noticed for sixty years | A child may ask why nobody saw that the rhyme wins Shells. The story's answer: a skipping rhyme is for skipping, and the keepers who hummed new verses to plan are gone. If a child finds that thin, it is thin. |
 | The step-down year reads as an errand | After a step-down year, ask: "Why did you stay in the town?" The answer wanted is "to learn it small", not "because I got it wrong". |
-| "One lamp for each mat out" is read as a count | After a miss of three, ask: "How many lamps are dark?" If a child says "one", the line was read as a flat cost. |
+| "One lamp for each mat too few, or too many" is read as a count | After a miss of three, ask: "How many lamps are dark?" If a child says "one", the line was read as a flat cost. |
 | Nobody counts the years | The slow path is 24 years. Does a child notice that the singer and the children do not age? If so, decision 18. |
 | One reading only | Give the seller's question on paper to three children. Does anyone count a different number of count days? |
 | Watching the year run teaches the count | Does a child say the numbers as the pile climbs? Or look away? |
@@ -673,7 +683,7 @@ The second joint review read the first kind only. Its verdict: not yet, with thr
 |---|---|---|---|
 | 1 | **The seller counts ahead, and "nobody on Algora can".** | **He does not.** His old stick is the last plan the Year Machine made for him. The machine scratched ahead to its mark. The real cuts landed on the scratches after it burnt. He kept the stick. He cannot make another. Since then he promises only oil already in his jars. | 2, 5 |
 | 2 | **His example lands on a double** (80, then 160). | **The story has no reason for count day 8.** It has one for count day 9, Last Raft: the last day rafts sail. He names it as every day is named: "on count day 9, after the count". On day 9 the last cut is not a double of the fourth. The count day is yours to choose. | 5 |
-| 3 | **The cost of too few is not said as a cost.** | **Said as a cost, before he asks.** "One pot fills one lamp for the white months." "Too few, and the mats with no hook stay on your dock. No pot for them." "For each mat you are out, short or over, one lamp stays dark." "Nobody is worse off for a mat" is gone. | 1, 5 |
+| 3 | **The cost of too few is not said as a cost.** | **Said as a cost, before he asks.** "One pot fills one lamp for the white months." "Too few, and the mats with no hook stay on your dock. No pot for them." "For each mat too few, or too many, one lamp stays dark." "Nobody is worse off for a mat" is gone. | 1, 5 |
 | 4 | **"A cousin with no plum" costs nothing on the plum side,** and Gran says no cost first. | **Rewritten as a children's game on Market day,** first called Promise, now **Shells**. It is the lake's deal, made small: Gran pays shells first, one hook on her rack for each thing promised, two shells back for each empty hook. Gran says both costs first. **Both sides cost shells, one for each one out.** | 5 |
 | 5 | **Where does a sung year happen?** | **Always in the town, never at the lake.** Children skip to the rhyme in the street on Market morning. The singer teaches in the white months, by the lamp, after a year has run. Shells is on Market day, in a step-down year. | 3, 5 |
 | 6 | **Does a rest darken towns already learned?** | **No.** A learned town stays lit. | 3 |
@@ -713,21 +723,23 @@ A reviewer read the note with only `CLAUDE.md`, Marc's rules, the brief and the 
 **The seller's finished example** (the numbers are yours). His old stick fills the picture while he speaks:
 > "In the last year of the Year Machine, my stick looked like yours: four cuts. The machine scratched on ahead, one count day at a time. It said: promise the Menders this many, on count day 9, after the count. I did. The Year Machine burnt before that day. The oil came anyway, onto every scratch."
 > "I have looked at it a hundred times. I see that it came true. I cannot see how it knew."
+> (If the cadet says how:) "Then do it with your town's stick."
 > "That is what the Year Machine did for us. Can you do it without one?"
 
 **His four lines on cost:**
 > "One pot for each mat you promise, now. One pot fills one lamp for the white months. And one hook on my raft for each mat."
 > "Too few, and the mats with no hook stay on your dock. No pot for them."
 > "Too many, and a hook sails empty. For each, my crew takes two pots back: one for the mat, one for the hook."
-> "For each mat you are out, short or over, one lamp stays dark."
+> "For each mat too few, or too many, one lamp stays dark."
 
 **Then the keeper's stick fills the picture,** and stays while the child answers. The child may ask to see his old stick again; he lays it beside.
 
 **Shells** (Gran, on Market day):
 > "One shell for each plum you promise, now. And one hook on my rack for each."
-> "Too few, and the plums with no hook are mine for nothing."
+> "Only plums from your own tree go on my hooks."
+> "Too few, and I take the plums with no hook, and pay nothing for them."
 > "Too many, and a hook hangs empty. You give me two shells back for it: one for the plum, one for the hook."
-> "Today is count day 4. I come for them on count day 7, after that day's count. How many plums will there be by then, in all?"
+> "Today is count day 4. I come for them on count day 7, after that day's count. How many plums will you have by then, in all?"
 
 **The things in the small row:** lotus pods (two each count day), plums (five), shrimp (ten). Each is counted one by one, and comes from a place that is the family's own: a pond, a tree, a trap.
 
@@ -783,7 +795,7 @@ Marc's rule: "explore and discover more about the cultures of the world, their h
 | 1 | Me, on the third joint review's six points | | 16a |
 | 2 | A reviewer of the story thread's own: sections 0 to 5, 7, 9, 10, 13 to 16, with the maths note | **Not yet.** Four blockers, sixteen major | 16b |
 | 3 | A second reviewer, fresh: sections 0 to 11 and 16, with the maths note | **"Not yet. It is close.** The Market path holds: the stick, the four cost lines, the question and the oil rule." One blocker, thirteen major | 16h |
-| 4 | Not yet run | | |
+| 4 | A third reviewer, narrow: section 16h, then sections 1, 3, 5, 16c and 16d | **"Yes, for the lake path. I found no blocker.** The stick, the four cost lines, the question and the oil rule still hold." Eight major, five minor, all in words | 16i |
 
 ### 16h. The second story review, and what changed
 
@@ -804,4 +816,24 @@ Marc's rule: "explore and discover more about the cultures of the world, their h
 | 13 | **The seller was shown, yet cannot do it:** "It goes up 20 each time." | "I have looked at it a hundred times. I see that it came true. I cannot see how it knew." Section 5 |
 | 14 to 22 | Minor: the singer's past; the rhyme tied to the calendar; "short by one" read as flat; "there" in the question; the bigger town; "a harder year without a word"; who loads the fleet; gold-month evenings; 999 pots; why walls have no numbers; neighbour towns' mats; rebuilding the Year Machine; what fills the picture. | **All answered.** The rhyme is no longer tied to the calendar: the singer's gran hummed a new verse each year as she planned. "For each mat you are out." "Your town" is proposed (16d). "More river". "No number said". The harbour keeper loads the fleet the old way, raft by raft. Long light evenings in the gold months. He pours all he has. Wall cuts sit at the top of the pile. A hook is its town's word. The Year Machine burnt to its frame. Which stick fills the picture, and when |
 
-**Not re-read by a reviewer:** every change in 16h. I read sections 0 to 10 again after making them.
+**Round 4 read every change in 16h.** Its findings are in 16i.
+
+### 16i. The third story review, and what changed
+
+**Verdict: "Yes, for the lake path. I found no blocker."** What it found, and what changed:
+
+| | It found | What changed |
+|---|---|---|
+| M1 | **"Nothing else" moves time,** so New Year, the moment after a number, Gran's rack and the singer's lesson had nothing to move them. | Three things move time: the town jetty on Market morning; a number (or "decide without me"), after which the year runs at once; and two scenes that end by themselves, New Year and the singer's lesson. Gran's rack holds the cadet as the lake does. Section 3 |
+| M2 | **A child who says 0 again is re-asked forever,** and a re-ask after the keeper has spoken breaks a kept word. | He stops the keeper before she speaks, and asks once more. A second low number runs. Section 3 |
+| M3 | **"For each mat you are out"** reads as losing, after "Trip, and you are out". | "For each mat too few, or too many, one lamp stays dark." Sections 5, 16c |
+| M4 | **"Take plums from my cousin's tree."** | Gran: "Only plums from your own tree go on my hooks." Section 5 |
+| M5 | **"The cadet's own words are the teaching":** "I guessed" would teach the keeper. | She learns by watching the year come right. Her question only invites the child's words. Nothing hangs on the answer. Section 2 |
+| M6 | **"It goes up 20!"** leaves the seller with no reply. | "Then do it with your town's stick." Section 5 |
+| M7 | **"This year's mats press next year's oil"** carries a miss into next year. | The hill pools always hold more mats than a year needs. One town's mats never change next year's oil. Section 5 |
+| M8 | **"Take me with you." "Take my number."** Going to Gran before the boats leave. | The speaker's two answers. Gran: "Shells is played when the boats have gone." Section 3 |
+| Minor | No help for a low number in Shells; the step is named by the thing; "Gran's count day, raft day" in the wrong order; "mine for nothing"; "will there be"; plums and shrimp would rot; the dusk wind only in the white months; "mark" still used; "knot" for two things; five speakers at the lake. | Gran re-asks once, as the seller does. The step is meant, for a step down. "In count-day order". "I take the plums with no hook, and pay nothing for them." "will you have". Dried, they keep. "Every dusk, all year". "ring" and "cut". The hook's tag is coloured reed. The cadet speaks only with their own speaker and the seller |
+
+**Not changed:** "Shells" is the game and the coin, as "marbles" is. The maths question's "will there be" stays the maths thread's to change (16d, row 4).
+
+**Not re-read by a reviewer:** the changes in this table. They are wording, and round 4 found no blocker, so I stopped here. A short check by the big world thread's next joint review would cover them.
