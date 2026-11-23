@@ -539,3 +539,15 @@ These are Marc's words, tidied. They are not on the form above.
     - holes fill back by the next day
     - a test with 14 and 60 made-up cadets
   - The big world thread is the tester; Xylophora's home building in the main game follows later.
+- **Xylophora: walls are perimeter, roofs are area (Marc, 2026-11-23).** "But. The plant with the giant animal in the skin that they used to build the homes… That was the one that I was thinking about. Also… You said that those are walls. Walls and area are different. The animal skin for that one would be the perimeter, right? Yes, we find the area the complete area that we can use to build the walls, but when a student is building the walls of their house or hospital, that was actually the perimeter that would be measuring? Meanwhile, the roofing that is made of these should be the actual area. Can you analyze that? So then the walls just look like thick red lines over the building area to show the outer perimeter of each building?"
+  - The building world he meant for many children is Xylophora (the main game), not Algora. Its building ground is a fixed 14 by 8 patch today: enough for one child, not a class.
+  - The main thread's analysis:
+    - In the game, the skin is the floor (area: "a floor of 20 squares").
+    - The walls are counted as wall panels, one panel per square of edge (perimeter: the Hospital uses the fewest panels; the Food Store uses exactly its panels).
+    - The leaves are the roof (area, 2 by 2).
+    - So the maths is already right, but the walls appear only in words and a thin outline.
+    - [Source] His 2023 Task 2 page uses the skin for area ("the total area available from the alien skin"); skin as walls would change his own page.
+  - Options:
+    - A: keep the skin as floors, and draw the walls as thick red lines, one segment per square of edge (recommended)
+    - B: the skin makes the walls
+  - Waiting on his choice.
