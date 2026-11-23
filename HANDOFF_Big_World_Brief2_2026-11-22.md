@@ -139,3 +139,49 @@ Work as long as you can. **Quality first:** if only one region can be done well 
 2. Your match of big quests to ship parts.
 3. Typing on Algora: as in the game, or taps only?
 4. The other choices from your design note's section 11, and the Reach's decisions you made for him.
+
+## 7. Added later the same evening: mistakes that show themselves
+
+[Source: Marc, 22 November] "If they make a mistake, we shouldn't say no that's not right. We should let it happen, and they will see negative consequences of it... then we step back to an easier scaffolding... and then even you go back to the harder one and maybe even go one past that." He compares it to his Math Skills engine.
+
+- **Read** `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md` before you design a big quest. It turns his words and the engine's steps into five rules for a world. The short version:
+  1. The plan happens, and the picture shows the cause.
+  2. One more try, in case it was a slip.
+  3. Offer a smaller, different problem of the same kind.
+  4. Back to the big one.
+  5. One past it, if the child wants.
+  - Kind consequences; nothing earned is lost; the answer is never shown; a child who is stuck twice gets help finishing, and the mission report says which skill broke.
+- **The engine is in the repository:** `engines/math-skills/current-v1.1/api/constraints/math-skills.txt` (its rules) and `skills/skill_map.csv` (1,835 skills by band, area and galaxy: the ladder for "one or two levels down").
+- **Where:** [Source: Marc] "for quests outside of the initial space station, it's OK for the students to fail and be invested in this world and see something happen." All of Algora is outside the station, so all of its quests may let a mistake happen.
+- **The Reach's fleet:** replace "The order is not right" with what the town got and what it lacked, shown in the picture.
+
+## 8. Added on 23 November: a world that many children change
+
+[Source: Marc, 23 November] "We do see that things look like a hole is dug. Someone build something incorrectly then what happens then? So we need to show it... the main quest to get like an engine upgrade or whatever is building the homes for the people. Even enough students in a class like I'm saying a classroom server, the amount of space where they would be building would have to be growing?... since we're using that one thread as the initial tester, the world must be big enough to allow multiple students to be building things on there."
+
+**You are the tester for this.** Algora is played by one child on one iPad today. Later, a class server will put a whole class in one world (see `proposals/GMQ_Server_Layers_Analysis_v1_2026-11-22.md`). Design and build for that now.
+
+**Rules** [Proposal unless marked]:
+1. **What a child changes stays, and shows** [Source: Marc]: a hole dug, a bridge mended, a house built, and a house built wrong.
+2. **Every change has an owner and a place.** Keep each change in your save as who (the cadet), what, where and when. A server can then merge many children's changes later without a redesign.
+3. **A building quest gets building land that grows** [Source: Marc]:
+   - One plot for each child, laid out by code along a street. When a street is full, the next one opens. Nothing is hand-placed.
+   - New plots go next to the path, so the newest child does not walk furthest.
+   - Plan the land for a grade, not one class: about 60 plots for each building quest.
+4. **A mistake shows to the child who made it** [Source: Marc: "we need to show it"]:
+   - The house that is too small stands too small. The family waits outside, and the picture shows where it falls short.
+   - Then the steps in section 7: another try, a smaller problem, back up.
+5. **Classmates see kindly** [Proposal]:
+   - Other children see a house "being built" (scaffolding) until it is right, never a classmate's mistake.
+   - They see finished work with a code name: "Built by Cadet Comet7".
+   - The teacher sees everything.
+6. **Holes and finds are shared fairly:** a hole one child dug fills back by the next day, and the find is still there for the next child. A trace may stay: "Someone dug here."
+7. **Test it with pretend classmates:**
+   - Add a test-only switch that fills the world with 14, then 60, made-up cadets, each with a finished or half-built house.
+   - Check that the street grows, nothing overlaps, every plot can be reached, the walk stays short, the frame rate holds, and the pictures read well at three screen sizes.
+   - Made-up code names only. Never a real child's name.
+
+**Which quest:** a big quest in one of the next regions where the people need homes or buildings. It also earns its ship part upgrade (section 3). Area and perimeter (3.MD.7, 3.MD.8) fit, and so does the maths of the region's own people.
+- Xylophora, in the main game, has Marc's own home-building quest. The main thread will follow your rules there once you have tried them.
+
+**Tonight or next:** your choice. Rules 2 and 7 (owners on every change, and pretend classmates) are cheap now and expensive later.

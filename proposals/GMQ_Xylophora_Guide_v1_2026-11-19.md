@@ -9,6 +9,37 @@ You said: "You choose. You have the standards now." This is what I chose, why, a
 
 ---
 
+## Changed 23 November (version 89, preview link): the skin makes the walls
+
+[Source: Marc, 23 November] "Lay out the area of the house first, and then have the student click and build the walls around it and they say how much is needed for the actual walls."
+
+**The four materials, each with one meaning:**
+- **The skin's survey:** area (two rectangles joined), as before.
+- **Floors:** flattened ground, marked with two taps. Area.
+- **Walls:** pieces of skin, one piece for each square of edge. Perimeter.
+- **Roofs:** leaves, 2 by 2. Area.
+
+**The wall step,** for every building, the Home too (before, only the Hospital and the Food Store counted the wall):
+1. A tap on the floor asks how many pieces of skin its wall needs.
+   - The floor fills the picture, square by square.
+   - A finished example about something else: the cutters' tool box, 2 by 1, needs 6 pieces.
+2. **Too few** [Proposal]: the wall goes up and stops. The gap shows. Nothing is lost.
+3. **Too many** [Proposal]: the wall goes up. The spare pieces lie beside it, cut too short to use: that skin is wasted, and the map key's last words count it.
+4. **After two misses on one wall** [Proposal]: the Site Chief offers a smaller wall first, in the sand: 3 by 1, 2 by 2 or 1 by 3, which is 8 pieces. That is never the answer, because every building's wall is 10 or more. The child chooses.
+5. **If the skin runs short,** the herder finds more. Nobody is stuck.
+
+**The walls are drawn** as thick red pieces on the edges, so a child can count them. The floor is tan.
+
+**"More Homes"** is now: the herder found more skin, the number of pieces is a whole number of your Home's walls, and it is never over 100. So the division stays a Grade 3 one.
+
+**Numbers:**
+- **New games use rule 2.** The skin is enough for the four shortest walls, with 10 to 36 pieces to spare. Checked on 20,000 seeds in `checks/xylophora_quest_check.py`.
+  - **No Food Store of 16 pieces.** Its best floor would be 4 by 4: area 16 and wall 16, the same number. That invites the very mix-up between area and perimeter.
+  - **The store's best area is never another order's area,** so the board never shows the store's answer. The play test found both.
+- **Games begun before version 89 keep rule 1,** so their numbers never change. Checked: 3,000 seeds give the same numbers as the class link.
+
+**A number to check, from your message:** a 3 by 2 house has a perimeter of 10 (3 + 2 + 3 + 2), not 8.
+
 ## Changed 21 November (versions 76 to 80, preview link)
 
 - **A Mission panel** lists the five jobs and names the next one.

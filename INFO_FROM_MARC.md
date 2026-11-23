@@ -523,5 +523,50 @@ These are Marc's words, tidied. They are not on the form above.
   - This answers the thread's question "easier numbers or more help for a child who struggles?"
   - [Conflict] with what the big world thread built: every task on Algora says "wrong" at the moment of the answer, in kinder words; and in the fleet nothing sails until every line is right. Listed in `proposals/GMQ_Big_World_Pattern_Ideas_v1_2026-11-22.md`, section 14. The thread's own rule to its reviewers, "the world never accepts wrong maths", was not Marc's and is withdrawn.
   - Asked of him: the same hard problem again, or a new one of the same size? Is stepping down always the child's choice? Does "one past" earn more? Change what is built, or use the rule from here on?
+- **Mistakes should show themselves, then step down (Marc, 2026-11-22, evening).** What he told the big world thread: "If they make a mistake, we shouldn't say no that's not right. We should let it happen, and they will see negative consequences of it and then we need to go back and do it again leave it simpler but a different problem a smaller one and they can see that it does work... Then we step back to an easier scaffolding if they want to continue the quest... and then even you go back to the harder one and maybe even go one past that." To the main thread: "it is similar to the skills that we do in the math skills engine. If they miss a problem, we don't just say wrong. We then go back or go down one or two levels and find where their understanding is breaking and then we teach that and then work back up. There might be some we need to do like on these world is it the student does bad math or something, like they choose the wrong size for the house then they find out a little bit later that it was too small that they did not cut or use enough. Did they show you the math skills zip file? Is that in the GIT anywhere? If not, I can share it, and you can put it in there like the pedagogy thinking behind it"
+  - The Math Skills engine is in the repository: `engines/math-skills/` (v1.1 and the 11 November server copy, its constraint file v4.1 and 48 skill files; student records and keys left out). Its skill list is in `skills/skill_map.csv`.
+  - Written up as `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md`: five rules for a world, mapped to the engine's probe, step below, teaching, mastery gate and FAILED-FOUNDATIONAL. Added to the big world brief (section 7).
+  - Asked: if his zip holds more than the repository (a write-up of the thinking, research, a newer version), he can share it, without student records or keys.
+- **Failing is OK after the station (Marc, 2026-11-22, evening).** "Because that's the other thing does not for quests outside of the initial space station, it's OK for the students to fail and be invested in this world and see something happen."
+  - Read as: in every quest after the KIS Station, a mistake may play out and change the world; the station, where children learn to play, keeps its gentler help (the main thread's reading, to confirm).
+  - Added to `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md` (where it applies; rule B now says something really happens, and the child can always recover) and to the big world brief, section 7.
+- **A world many children change (Marc, 2026-11-23).** "For the quests outside of the initial space station quests. But that brings into the question like you have to change how things play up because we do see that things look like a hole is dug. Someone build something incorrectly then what happens then? So we need to show it. You know our thing about that one world where the main quest to get like an engine upgrade or whatever is building the homeless [homes] for the people. Even enough students in a class like I'm saying a classroom server, the amount of space where they would be building would have to be growing? So again that's why we need to think about like or since we're using that one thread as the initial tester, the world must be big enough to allow multiple students to be building things on there you know. For just that one example."
+  - Confirms: failing with consequences is for quests outside the KIS Station.
+  - Added to the big world brief as section 8:
+    - every change has an owner and a place
+    - building land that grows by code, one plot for each child, planned for a grade (about 60 plots)
+    - a mistake shows to its maker; classmates see scaffolding, then the finished work with a code name
+    - holes fill back by the next day
+    - a test with 14 and 60 made-up cadets
+  - The big world thread is the tester; Xylophora's home building in the main game follows later.
+- **Xylophora: walls are perimeter, roofs are area (Marc, 2026-11-23).** "But. The plant with the giant animal in the skin that they used to build the homes… That was the one that I was thinking about. Also… You said that those are walls. Walls and area are different. The animal skin for that one would be the perimeter, right? Yes, we find the area the complete area that we can use to build the walls, but when a student is building the walls of their house or hospital, that was actually the perimeter that would be measuring? Meanwhile, the roofing that is made of these should be the actual area. Can you analyze that? So then the walls just look like thick red lines over the building area to show the outer perimeter of each building?"
+  - The building world he meant for many children is Xylophora (the main game), not Algora. Its building ground is a fixed 14 by 8 patch today: enough for one child, not a class.
+  - The main thread's analysis:
+    - In the game, the skin is the floor (area: "a floor of 20 squares").
+    - The walls are counted as wall panels, one panel per square of edge (perimeter: the Hospital uses the fewest panels; the Food Store uses exactly its panels).
+    - The leaves are the roof (area, 2 by 2).
+    - So the maths is already right, but the walls appear only in words and a thin outline.
+    - [Source] His 2023 Task 2 page uses the skin for area ("the total area available from the alien skin"); skin as walls would change his own page.
+  - Options:
+    - A: keep the skin as floors, and draw the walls as thick red lines, one segment per square of edge (recommended)
+    - B: the skin makes the walls
+  - Waiting on his choice.
+- **The skin makes the walls (Marc, 2026-11-23).** "No they don't. The home needed six and so I made a 3 x 2 house. The perimeter of that house would be eight so you need eight pieces of skin for the wall." Then: "So she might need to lay out the area of the house first, and then have the student click and build the walls around it and they say how much is needed for the actual walls."
+  - He was right that the Home's walls were not counted: only the Hospital and the Food Store used wall panels.
+  - The main thread recomputed his example: the perimeter of a 3 by 2 house is 10 (3 + 2 + 3 + 2), not 8.
+  - Read as option B, with his order: mark the floor (area), then build its wall and say how many pieces of skin it needs (perimeter).
+  - Built in version 89 (preview only), with his rule that mistakes after the station show themselves:
+    - floors are flattened ground
+    - the wall is thick red, one piece for each square of edge
+    - too few pieces leave a gap (nothing lost); too many leave spare pieces, wasted
+    - after two misses, the Chief offers a smaller wall in the sand
+    - if the skin runs short, the herder finds more
+    - "More Homes" is the skin the herder found, divided by one Home's wall, kept within 100
+    - games begun before version 89 keep their old numbers
+- **A tie is a tie; and what a challenge battle is (Marc, 2026-11-23, to the battle thread).** Asked whether "nobody wins" is right when both ships fall in the same round: "Nobody wins. Because at some point, they'll be able to do like friendly battles ..? but other times they can do challenge battles where they can each agree to put up a rare or epic card randomly chosen from their deck. And whoever wins gets both cards unless they tie"
+  - **Decided:** when both ships lose their last part in the same round, nobody wins. It is a tie. (The page already does this. No change.)
+  - **Decided, for later:** two kinds of battle. A **friendly battle** has nothing at stake. In a **challenge battle** both players agree to put up one rare or epic card each, chosen at random from their deck. The winner gets both cards. In a tie, nobody gets the other's card.
+  - This settles the open point in the rules sheet about what a challenge battle is (it listed two ideas). **For the main thread:** the rules sheet needs it. Not built: the practice battle is a friendly battle against the computer.
+  - Questions the battle thread will bring when challenge battles are built, not before: what happens if a player has no rare or epic card; whether the card put up may still be played in that battle; whether a child sees which card is at stake before agreeing.
 - **To the big world thread: four answers on the rule for mistakes (Marc, 2026-11-23).** "1) new one. Same size. 2) no. It's in the math skills wngine in the repo. 3). Sure. But the students shouldn't know they're doing one past. . It's just like if they managed to complete something at a grade 3 level, consistently whatever then they are just split into harder level problems, but they're not aware that they're moving up or anything. It should be natural progression for them just to understand like I'm still able to help solve these real life problems. 4) your planet is the trial. I think we need to try to build it to this rule."
   - Decided [Source]: after a mistake and its consequence, the hard problem comes back as a new one of the same size. Stepping down is not the child's choice: the maths skills engine in the repo decides. Harder problems come when a child is consistently right at Grade 3 level, and the child is never told they have moved up. Algora is the trial: build it to this rule.
