@@ -13,6 +13,7 @@ Short. Read this, then the files it names. Everything is on the main branch (`cl
 | **Building has stopped** | On purpose. Five designs of mine failed review on paper. Marc said: stop inventing while building |
 | **What is being worked out** | "The deciding years": a story problem with a table, a decision, and what follows. A story thread writes the story. This thread fits the maths. One reviewer reads both together |
 | **Three joint reviews so far** | 1: six blockers. 2: three. **3: two, both in my picker and number box. "The town's stick, the question and the oil rule hold."** Both are fixed in `checks/bigworld_year_rule_check.js`. **The fixes are not reviewed** |
+| **New, 23 November: walking ("big world 6")** | Marc played Algora and could not see far or tell where to go. Step 1 is built, on his word "we can try this and see what happens": no black mist on the walking screen (a square is seen once it has been on the screen); 16 squares across on an iPad; worn-earth paths to every person; a landmark at each person (a new big old tree; the listener moved to the bridge). Note: `proposals/GMQ_Big_World_Walking_v1_2026-11-23.md`. **Next: two or three children play (step 2). Step 3, one screen at a time, only if they still get lost** |
 
 ### The very next steps, in order
 

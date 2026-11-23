@@ -8,7 +8,7 @@
 //   1  the story comes first: six pages before the map; no maths on them
 //   2  a machine before the elder: a Mender sends the cadet to the village; no task opens
 //   3  the pan before the pouch: it goes on the Needs list; no task opens
-//   4  the walk to the village through the mist; inside, Elder Rivet's story, then the finished example (the old pump)
+//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Rivet's story, then the finished example (the old pump)
 //   5  a machine: nothing typed, a number too big, tests, "handed back", notes written only when the child taps
 //   6  a wrong plate: it is shown wrong by a test, and the right rule is never said
 //   7  closing the page in the middle of a machine and opening it again: the same machine, the same notes

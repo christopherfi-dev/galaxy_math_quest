@@ -95,6 +95,12 @@ blob(45, 60, 2.2, 3, 'm', .2, '.'); road([[34, 74], [40, 74]], ':', '.'); road([
 set(46, 60, ':', '.m'); set(46, 74, ':', '.');
 rect(28, 80, 40, 88, '.', 'T*,'); for (let oy = 0; oy < 4; oy++) for (let ox = 0; ox < 6; ox++) set(29 + ox * 2, 81 + oy * 2, 'a');
 for (const [x, y] of [[46, 59], [46, 73], [13, 83], [12, 83], [14, 83], [14, 68], [18, 60], [33, 62], [34, 79], [15, 80], [20, 78], [13, 66], [9, 70], [38, 72], [29, 70], [41, 82], [24, 86], [27, 77], [21, 57], [7, 79], [8, 76], [25, 72], [21, 71], [41, 61], [41, 62]]) set(x, y, '.');   // squares where a thing or a being stands
+// ways to every person, and a landmark at each one that can be picked out from across the screen
+// [Marc, 23 November: "he's just like in the middle of grass somewhere ... there's no landmarks there's no like real paths". Proposal of the big world thread: each can be moved.]
+road([[34, 78], [41, 78], [41, 81]], ':', '.,*T');                                                                                                        // to the orchard keeper, at the side of her orchard ("Four rows of six trees")
+road([[14, 69], [13, 69], [13, 67]], ':', '.,*T');                                                                                                        // past the pond machine to the fisher, at the pond
+rect(27, 67, 31, 70, '.', 'T*,'); set(29, 69, 'O'); road([[29, 75], [29, 71]], ':', '.,*T');                                                              // the big old tree in the middle of the meadow, the tallest thing there; the old Mender sits under it
+set(44, 73, '.');                                                                                                                                         // the Mender with big ears stands at the broken bridge, listening across the river
 // the far bank: the Reach's landing. A small piece of region 2 that is built now.
 road([[50, 74], [55, 74], [55, 72]], ':', '.'); set(49, 74, '~'); set(48, 74, '~'); set(47, 74, '~'); set(47, 60, '~'); set(48, 60, '~'); set(49, 60, '~');
 road([[50, 60], [52, 60], [52, 74]], ':', '.');
