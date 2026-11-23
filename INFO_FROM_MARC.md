@@ -586,3 +586,9 @@ These are Marc's words, tidied. They are not on the form above.
   - a table of contradictions and loose threads with fixes
   - the story told in five sentences
   - the reviewer hunting for contradictions
+- **"This browser is too old to run the game" on a student's iPad (Marc, 2026-11-23, a photo).** "This message came up in the student iPad chrome. Why?" The photo shows Chrome on an iPad, the message box, a black picture, and the Music button (so the preview link, version 88 or later).
+  - The message appears when the iPad's browser cannot read the game's script at all. The game hides it only once the whole script has been read.
+  - Found: the whole game used one piece of JavaScript newer than iOS 13.4, a double question mark on one line of Cargo Load. It is in the class copy (81) too. On an older iPad the game stops before it starts. (Chrome on an iPad uses the iPad's own Safari engine, so its age is the iPad's iOS.)
+  - Fixed in version 91 (prototype; the preview follows after the station play test): the game now reads as JavaScript 2018, which iOS 11.3 and newer understand. `checks/parse_check.js` now fails, instead of warning, if that syntax comes back.
+  - To confirm the cause: that iPad's iOS version (Settings, General, About). If it is 13.4 or newer, the cause is something else, such as a page that only half loaded.
+  - The class copy (81) has the same line. Fixing it there needs his word.
