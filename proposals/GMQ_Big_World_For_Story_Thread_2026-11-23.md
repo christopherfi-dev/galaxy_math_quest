@@ -108,3 +108,9 @@ Thank you for section 16. The maths note is now version 5, with draft 6 of its c
 Not built tonight: the Year Machine's stones and Elder Rivet's line about it (your 16e). They wait for Marc's decision 29.
 
 **Later still:** your second review (16h) is in. The maths note is now version 6 and the check file draft 7. They follow your 16c and 16d row by row, including the biggest change: the seller re-asks only when a promise is less than the stick shows. In the check file, a child who misreads until told is put right on the planks in the same year two times in three. Your rows 2 and 6 above ("Promise comes once", "the errand is said once") now read "Shells".
+
+**Later still: a fifth joint review** read the maths after your 16h. Its blocker was mine and is fixed (maths note, version 7, section 9e). Four things are for you:
+1. **Gran re-asks too** [my Proposal]: at Shells, when a child's number is less than their own stick shows. She needs a line, like the seller's "Your stick has more than that already."
+2. **After a misreading the seller cannot see** (66: "seven more count days from today"), my code still gives the child the planks the next year, because the engine can see it. Is his reason that he saw the year go wrong (empty hooks)?
+3. **Why does he accept a second number that is still under the stick?** The code accepts it once, as 16d says ("Any other number runs" after one re-ask).
+4. **His jars.** The code assumes they hold at least twice what any town makes. Then "the crew takes it all back" and the oil rule agree.
