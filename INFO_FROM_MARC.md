@@ -616,3 +616,13 @@ These are Marc's words, tidied. They are not on the form above.
     - Chrome's site settings for the page (JavaScript allowed or blocked), or chrome://policy
     - the same link on his phone with mobile data instead of the school wifi
     - whether the game worked at school last week
+- **Reset everyone to the newest version (Marc, 2026-11-23).** "The game runs. There's just that little pop-up that shows up, but it still runs. But the newest version like… I need a link that resets everything so all students get the brand new version. All their previous progress should be erased right now like it still works is pop-up just popping up."
+  - Read as his word to update the class link, with a fresh start for everyone.
+  - The pop-up: the page's words appear before the game's 1 MB of code has arrived, so on slow school wifi the start-up message showed while the game loaded. Version 93 keeps it hidden and shows it only if the game has not started after 10 seconds. With no JavaScript at all, a separate note shows.
+  - The reset: version 93 saves under a new key (`gmq-station-sketch-v6`) and erases the old save. Every cadet starts at the beginning, and settings such as Music are kept.
+  - Checked:
+    - `checks/start_and_reset_test.js` (new): no flash; blocked and cut-off cases; a version 81 save erased
+    - `no_secret_needed_test.js`: a fresh game through the station
+    - the station play-through on version 91
+  - Put on the class link and the preview (version 93). The full test suite was not run (paused).
+  - Note for the big world thread: Algora reads one number (the seed) from the game's old save key; it should read `gmq-station-sketch-v6` now.

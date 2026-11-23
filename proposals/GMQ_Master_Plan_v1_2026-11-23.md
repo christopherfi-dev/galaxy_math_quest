@@ -30,7 +30,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 | Thread | Owns | Where it is now |
 |---|---|---|
-| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 90 on the preview. The class link is on 81. |
+| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 93 on the preview and on the class link (23 November, everyone started fresh). |
 | **Big world** (Planet Algora, Galaxy Patternox) | `docs/bigworld/*` and its notes | The first region (the Mender Meadow) is built and playable. The Reach is designed. Its second brief: `HANDOFF_Big_World_Brief2_2026-11-22.md`. |
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
 | **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built: first person, 13 seconds, ready to wire in (Phase 2). See `proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 9. |
@@ -40,7 +40,9 @@ Everything is **[Proposal]** unless it says [Source].
 
 ## 3. What the children have, and what is waiting for them
 
-**The class link (version 81):**
+**The class link (version 93, since 23 November; every cadet started fresh that day):** everything below, and versions 82 to 93.
+
+**Before that, version 81 had:**
 - the station
 - Voltara
 - Galactic Trade
@@ -50,7 +52,7 @@ Everything is **[Proposal]** unless it says [Source].
 - Xylophora
 - Operation Stardust
 
-**On the preview only (versions 82 to 89):**
+**Added in versions 82 to 93 (now on the class link too):**
 
 | Version | What |
 |---|---|
@@ -61,6 +63,8 @@ Everything is **[Proposal]** unless it says [Source].
 | 88 | Music: a tune for each world, off until tapped. |
 | 89 | Xylophora: the skin makes the walls (area, then perimeter). |
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
+| 91 | Older iPads (iOS 11.3 and newer) can read the game. |
+| 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
 
 ## 4. The order of work [Proposal]
 
@@ -147,7 +151,7 @@ Each note lays out the choices and recommends one.
 | # | Decision | Note |
 |---|---|---|
 | 1 | **Is a ship upgrade from a big quest lasting, or a card for one battle?** [Conflict] with the battle thread's upgrade cards | `HANDOFF_Big_World_Brief2_2026-11-22.md`, section 6 |
-| 2 | **Update the class link,** after Stage 1 | this plan, Stage 1 |
+| 2 | ~~Update the class link~~: done 23 November, version 93, with a fresh start for everyone. The fly-in comes in the next update. | this plan, Stage 1 |
 | 3 | The fly-in: should the child have a little control (A none, B lean, C a longer flight)? How do the children address you? | `GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 8 |
 | 4 | Algora: its six choices (the name, one planet from your two quests, five peoples and the Makers, their names, its size, any four stones), its decisions 7 to 15, and the Reach's seven | the big world design note, section 11; the Reach note, section 9 (on its branch until it is pushed) |
 | 5 | Typing on Algora, or taps only | the big world brief, section 6 |
