@@ -604,6 +604,18 @@ These are Marc's words, tidied. They are not on the form above.
   - Reviewed five times by one independent reviewer, who saw only `CLAUDE.md`, the handoff and the note: 3 blockers and 12 major; then 0 and 7; then, after the history was added, 0 and 6; then 0 and 2; then "nothing above MINOR". Each round's faults and fixes are in the note's section 13. The reviewer's own limit: it never saw the game, and its last read searched the unchanged parts.
   - Said plainly to him: the culture is still mostly clocks (homes, food, play and songs are four lines); the cougar's clock is the weakest rework; the chain to the workshop has six legs, as he told it, against his own rule of 3 or 4 steps.
   - Pushed to `claude/trusting-edison-vl78nc` on his word (only the thread's own files). The game file was not touched.
+- **The same message on his school MacBook (Marc, 2026-11-23, a photo).** "It popped up on my MacBook. School MacBook. This is the latest version of chrome I think." The photo: Chrome 157.0.8103.79 (arm64), "Updates are disabled by your administrator."
+  - So the main thread's first diagnosis (an old iPad) was wrong for this computer: Chrome 157 reads all of the game's code.
+  - Checked from outside the school: both live links load and the game's code runs (version 81 and version 91, no errors). The pages are fine; something on the school's devices or network stops the game's code. A managed Chrome, or the school's web filter, blocking JavaScript on github.io is the likeliest cause.
+  - The old message blamed an old browser in every case. Version 92 (preview) tells three cases apart:
+    - no code runs at all: blocked by the device or network; ask the school's IT to allow christopherfi-dev.github.io
+    - code runs but the game's does not load: reload, or the browser is too old
+    - the game runs: no message
+  - The double question mark removed in version 91 still helps truly old iPads. It was not this cause.
+  - Checks asked of him:
+    - Chrome's site settings for the page (JavaScript allowed or blocked), or chrome://policy
+    - the same link on his phone with mobile data instead of the school wifi
+    - whether the game worked at school last week
 - **Each planet will grow much larger (Marc, 2026-11-23, to the Chronosia story thread, after its report).** "The thing is is that each of these planets will be expanded into very much larger ones. With dozens of quests if need be spread across them. To keep practicing / advancing the skills. And this is where we can get deeper?"
   - Read as: he answers the thread's own worry that the culture is still thin. A planet today is a first region; later it holds dozens of quests, for practice and for harder skills, and the deeper culture and history go there.
   - The thread's answer: yes. The walked map is one valley of the eight in its story; the other seven are regions waiting to be built. Added as section 5g and decision 16 of `proposals/GMQ_Chronosia_Story_v1_2026-11-23.md`: each valley its own people and a band of skill; story quests once, daily work again and again for practice; the fact sheet holds them together. Its pick: approve the spine now, add valleys after Algora (the plan's pilot) has been played. Section 5g was added after the review and has not been reviewed.
