@@ -98,6 +98,28 @@ for t in range(60, 300, 5):
         if plain[1] - plain[0] == plain[2] - plain[1] and (ts[2] + g) != t + 3 * g: bad.append("boat: a second pattern")
 print(f"4. The drifting boat: {n} posts. Every one crosses an hour ({cross} of {n}).")
 
+# ---------------------------------------------------------------------------------------------------------------
+# 5. THE COUGAR'S CLOCK (Cougar Rock). Three windings. Each takes a while, so the master clock has moved on each time.
+#    The child reads the master clock (a clock face, to 5 minutes) and sets the cougar's number wheels.
+#    First time: 1:00 to 8:55, in fives.  Then 20 to 40 minutes later, twice.
+n = 0
+for t in range(60, 9 * 60, 5):
+    for g1 in (20, 25, 30, 35, 40):
+        for g2 in (20, 25, 30, 35, 40):
+            n += 1; ts = [t, t + g1, t + g1 + g2]
+            if any(x % 5 for x in ts): bad.append("cougar: a time off the five-minute marks")
+            if not (ts[0] < ts[1] < ts[2]): bad.append("cougar: the times do not go forward")
+            if ts[2] > 12 * 60 + 55: bad.append(f"cougar: {T(ts[2])} is past 12:55")
+            if len(set(ts)) != 3: bad.append("cougar: two readings the same")
+print(f"5. The cougar's clock: {n} sets of three readings. Each is later than the one before, and on a five-minute mark.")
+
+# ---------------------------------------------------------------------------------------------------------------
+# THE SAMPLE TIDE TABLE printed in the note, worked out here so the note cannot be wrong about it.
+W = 20; rows = [(80, 110), (125, 155), (190, None)]
+ok = [s for s in range(rows[0][0], rows[2][0] + 1) if ((rows[0][1] <= s < rows[1][0]) or (rows[1][1] <= s < rows[2][0])) and s + W <= (rows[1][0] if s < rows[1][0] else rows[2][0])]
+print(f"   The note's sample: walk {W} minutes. Water in {T(80)}, out {T(110)}. In {T(125)}, out {T(155)}. In {T(190)}. Safe to step in from {T(ok[0])} to {T(ok[-1])}.")
+if (T(ok[0]), T(ok[-1])) != ('2:35', '2:50'): bad.append("the note's sample tide table does not give 2:35 to 2:50")
+
 print()
 if bad:
     print(f"FAULTS: {len(bad)}"); [print(' -', b) for b in bad[:20]]; print("RESULT: FAIL"); sys.exit(1)
