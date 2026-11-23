@@ -7,6 +7,7 @@
 //     Xylophora (the leaf print first) → the scale (too little, too much, then right; the picture never shows a total) → a glow stone from the trader → the lantern
 //     → the tide table (full of water, half way and back, the first and last safe minute) → the gear door (too few, too many, right: the epic card) → the workshop
 //     (the plans, the last page, the Long Spring, the small door) → the lamp room → out by the stone door, and back in.
+//   ANOTHER ORDER: soft sand first, before the lantern is known; Voltara's own glow stone, no trader; the Keeper never asked.
 //   ALSO: closing the game in the cave, the workshop and the lamp room; old saves (the cave's old question answered; the stone door opened; the old gear door
 //     opened; the leaf print dug); every line said passes the kind-words check.
 // Run: node checks/lantern_chain_test.js [folder for screenshots]
@@ -108,6 +109,23 @@ const { chromium } = require('playwright'); const path = require('path');
       await shot('8_old_save');
     } catch (e) { bad.push(`${name}: stopped: ${String(e.message).split('\n')[0]}`); }
     { const rude = await p.evaluate(t => t.filter(x => rude(x)), said); if (rude.length) bad.push(name + ': unkind words: ' + rude.join(' | ')); }
+    await p.context().close(); }
+  { // ---- ANOTHER ORDER: Xylophora's sand first, before anyone mentions a lantern; Voltara's own glow stone (no trader); the Keeper never asked
+    const name = 'other order', p = await open(name, 1180, 745), ok = (c, what) => { if (!c) bad.push(`${name}: ${what}`); }, expect = (got, re, what) => { if (!re.test(String(got))) bad.push(`${name}: ${what}: got "${got}"`); };
+    const idle = async () => { for (let i = 0; i < 300; i++) { if (await p.evaluate(() => !CM.route.length && !CM.then && PL.to == null && !PL.then)) return; await p.waitForTimeout(80); } };
+    const say = async t => { await p.fill('#cmd', t); await p.press('#cmd', 'Enter'); await p.waitForTimeout(150); await idle(); await p.waitForTimeout(150); const r = await p.evaluate(() => lines[lines.length - 1].text || ''); said.push(r); return r; };
+    try {
+      await p.evaluate(() => { skipIntro(); goXylophora(); const c = XY(); c.x = XDIG[0]; c.y = XDIG[1]; save(); }); await p.waitForTimeout(300); await say('dig'); expect(await say('dig'), /You fill a sack with it\./, 'soft sand can be taken before the lantern is known');
+      await p.evaluate(() => { closeToy(); goVoltara(); V().sc = 'hollow'; PL.x = .7; save(); }); await p.waitForTimeout(300); expect(await say('talk glassmaker'), /We make glass\. Our little lights are crumbs of glow stone behind glass\./, 'the glassmaker, before the lantern');
+      await p.evaluate(() => { give('stone'); if (!S.secrets.includes('stone')) S.secrets.push('stone'); save(); });      // Voltara's tall-tree glow stone, a secret there
+      await p.evaluate(() => { closeToy(); goChronosia(); C().seen = new Array(CW * CH).fill('1').join(''); save(); }); await p.waitForTimeout(300); await say('go to cave'); await say('take lantern'); ok(await p.evaluate(() => S.inv.includes('blantern')), 'the broken lantern');
+      await p.evaluate(() => { closeToy(); goVoltara(); V().sc = 'hollow'; PL.x = .7; save(); }); await p.waitForTimeout(300); expect(await say('talk glassmaker'), /leads you to the furnace/, 'sand already in the bag: the scale opens at once, with no need to visit the Keeper');
+      const n = await p.evaluate(() => lanNums()), want = 4 * n.p + n.L, c = [Math.floor(want / 100), Math.floor(want % 100 / 50), Math.floor(want % 50 / 10)]; for (let i = 0; i < 3; i++) for (let k = 0; k < c[i]; k++) await p.click(`#toy [data-add="${i}"]`); await p.click('#try'); await p.waitForTimeout(300);
+      expect(await p.evaluate(() => lines[lines.length - 1].text || ''), /You have a glow stone\. Talk to the glassmaker again\./, 'right first time, with a glow stone already');
+      expect(await say('talk glassmaker'), /You have a lantern\./, 'the lantern, from Voltara\'s own stone'); ok(await p.evaluate(() => S.inv.includes('lantern') && !S.inv.includes('stone') && TRADE().gems === 0), 'no gems were spent');
+      await p.reload(); await p.waitForTimeout(700); ok(await p.evaluate(() => S.inv.includes('lantern') && !S.inv.includes('stone')), 'opened again: still one lantern, no loose stone');
+      await p.evaluate(() => { closeToy(); goChronosia(); save(); }); await p.waitForTimeout(300); await say('go to cave'); expect(await say('look passage'), /Water fills it\./, 'the cave by lantern light');
+    } catch (e) { bad.push(`${name}: stopped: ${String(e.message).split('\n')[0]}`); }
     await p.context().close(); }
   await b.close(); if (errs.length) bad.push('script errors: ' + [...new Set(errs)].slice(0, 5).join(' | '));
   console.log(`${said.length} lines read.`); console.log(bad.length ? 'FAULTS:\n  ' + bad.join('\n  ') : 'The black cave and the lantern: every check passed, on three screens.'); console.log('RESULT: ' + (bad.length ? 'FAIL' : 'PASS')); process.exit(bad.length ? 1 : 0);
