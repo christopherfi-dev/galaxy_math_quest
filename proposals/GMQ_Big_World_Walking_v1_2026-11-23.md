@@ -144,6 +144,7 @@ Taps for the middle child, and how many gave up:
 - **The page's own checks:** numbers (20,000 children), the Reach's numbers (20,000), music, the map (the builder, the world check, 15 broken copies caught). All pass.
 - **The play test, version with step 1 only:** every part, by taps and typing, at iPad sideways, iPad upright and phone. **Passes, no faults.**
 - **The play test, version with the signs and the review's fixes:** **passes, no faults**, at all three sizes. (Its first run stopped on iPad upright. That was a fault in the test, not the page: a tap meant to walk was pushed to the screen's edge and landed on the red spinner, which picked it up, as a child's tap would. The test now taps the ground beside things.)
+- **The play test, final version** (after the second review's fixes): **passes, no faults**, at all three sizes, by taps and typing, closing and opening again.
 - **`checks/bigworld_wander_check.js`:** section 4. About 40 seconds for each run.
 - **Pictures:** I looked at 15 places at three sizes, and at the Map.
 - **An independent review of 20 pictures and the change.** It found 6 faults that matter and several small ones. Section 3, items 8 to 15, are its findings that I fixed. Section 6 lists the rest.
