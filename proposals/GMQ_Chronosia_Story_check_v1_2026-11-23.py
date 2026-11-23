@@ -9,44 +9,46 @@ def T(m):  # minutes of the day to a clock time with no am or pm
     return f"{m // 60}:{m % 60:02d}"
 
 # ---------------------------------------------------------------------------------------------------------------
-# 1. THE FLOODED PASSAGE (the cave). The wall lists three floods: when the water comes in, and when it goes out.
+# 1. THE FLOODED PASSAGE (the cave). The passage is under water when the cadet arrives. The wall lists when that water goes out,
+#    then two more floods: when each comes in, and when the middle one goes out.
 #    The walk takes W minutes. The child chooses the minute to step in. Dry feet if: the water is out, and the walk ends
-#    no later than the next "water in". Exactly one of the two dry gaps is long enough.
+#    no later than the next "water in". Exactly one of the two dry gaps is long enough. Any time outside the two gaps is under water.
 #    W: 15, 20 or 25.  Flood 1 goes out at t (1:00 to 3:55, in fives).  Short gap: W-10 or W-5.  Long gap: W+5 to W+20.
-#    Either gap can come first.  Floods 1 and 2 last 20 to 40 minutes.
+#    Either gap can come first.  Flood 2 lasts 20, 30 or 40 minutes.
 def flood_cases():
     for W in (15, 20, 25):
         for out1 in range(60, 240, 5):
-            for f1 in (20, 30, 40):
-                for f2 in (20, 30, 40):
-                    for short in (W - 10, W - 5):
-                        for long_ in (W + 5, W + 10, W + 15, W + 20):
-                            for long_first in (True, False):
-                                g1, g2 = (long_, short) if long_first else (short, long_)
-                                in1 = out1 - f1
-                                in2 = out1 + g1
-                                out2 = in2 + f2
-                                in3 = out2 + g2
-                                yield W, [(in1, out1), (in2, out2), (in3, None)], (g1, g2)
+            for f2 in (20, 30, 40):
+                for short in (W - 10, W - 5):
+                    for long_ in (W + 5, W + 10, W + 15, W + 20):
+                        for long_first in (True, False):
+                            g1, g2 = (long_, short) if long_first else (short, long_)
+                            in2 = out1 + g1
+                            out2 = in2 + f2
+                            in3 = out2 + g2
+                            yield W, (out1, in2, out2, in3), (g1, g2)
 
-n = 0; cross = 0; starts_min = 99
-for W, rows, gaps in flood_cases():
-    n += 1
-    (in1, out1), (in2, out2), (in3, _) = rows
-    fits = [g >= W for g in gaps]
-    if fits.count(True) != 1: bad.append(f"flood: {fits.count(True)} gaps fit, W={W}, gaps={gaps}")
-    # every start a child could type, minute by minute, and what happens
+def flood_ok(W, out1, in2, out2, in3):   # every minute a child could type, from midnight to noon
     ok = []
-    for s in range(in1, in3 + 1):
+    for s in range(0, 12 * 60):
         dry_now = (out1 <= s < in2) or (out2 <= s < in3)
         nxt = in2 if s < in2 else in3
         if dry_now and s + W <= nxt: ok.append(s)
-    if not ok: bad.append(f"flood: no safe start, W={W}, rows={rows}")
+    return ok
+
+n = 0; cross = 0; starts_min = 99
+for W, (out1, in2, out2, in3), gaps in flood_cases():
+    n += 1
+    fits = [g >= W for g in gaps]
+    if fits.count(True) != 1: bad.append(f"flood: {fits.count(True)} gaps fit, W={W}, gaps={gaps}")
+    ok = flood_ok(W, out1, in2, out2, in3)
+    if not ok: bad.append(f"flood: no safe start, W={W}")
     if ok and ok != list(range(ok[0], ok[-1] + 1)): bad.append("flood: the safe starts are not one unbroken stretch")
+    if ok and ok[0] < out1: bad.append("flood: a safe start before the first water goes out")
     five = [s for s in ok if s % 5 == 0]
     starts_min = min(starts_min, len(five))
     if len(five) < 2: bad.append(f"flood: fewer than two safe starts on a five-minute mark, W={W}, gaps={gaps}")
-    if in1 < 20 or in3 >= 10 * 60: bad.append(f"flood: a time before 0:20 or after 9:59: {T(in1)} to {T(in3)}")
+    if in3 >= 10 * 60: bad.append(f"flood: a time after 9:59: {T(in3)}")
     if any(a // 60 != b // 60 for a, b in ((out1, in2), (out2, in3))): cross += 1
     if min(gaps) <= 0: bad.append("flood: a gap of no minutes")
 print(f"1. The flooded passage: {n} tables, every one walked minute by minute. Fewest safe five-minute starts: {starts_min}. Tables where a gap crosses the hour: {cross}.")
@@ -99,25 +101,40 @@ for t in range(60, 300, 5):
 print(f"4. The drifting boat: {n} posts. Every one crosses an hour ({cross} of {n}).")
 
 # ---------------------------------------------------------------------------------------------------------------
-# 5. THE COUGAR'S CLOCK (Cougar Rock). Three windings. Each takes a while, so the master clock has moved on each time.
-#    The child reads the master clock (a clock face, to 5 minutes) and sets the cougar's number wheels.
-#    First time: 1:00 to 8:55, in fives.  Then 20 to 40 minutes later, twice.
+# 5. THE COUGAR'S CLOCK (Cougar Rock). The brass plate has three clock faces: the time now, when the watch begins (dusk),
+#    and when it ends (dawn). The child reads each face, to 5 minutes, and sets the cougar's number wheels.
+#    Now: 1:00 to 12:55.  Watch begins: 6:00 to 6:55.  Watch ends: 5:00 to 5:55.  All three readings differ.
+#    The night trips in the game's own portal log leave between 7:00 and 10:20, so every watch covers them.
 n = 0
-for t in range(60, 9 * 60, 5):
-    for g1 in (20, 25, 30, 35, 40):
-        for g2 in (20, 25, 30, 35, 40):
-            n += 1; ts = [t, t + g1, t + g1 + g2]
-            if any(x % 5 for x in ts): bad.append("cougar: a time off the five-minute marks")
-            if not (ts[0] < ts[1] < ts[2]): bad.append("cougar: the times do not go forward")
-            if ts[2] > 12 * 60 + 55: bad.append(f"cougar: {T(ts[2])} is past 12:55")
-            if len(set(ts)) != 3: bad.append("cougar: two readings the same")
-print(f"5. The cougar's clock: {n} sets of three readings. Each is later than the one before, and on a five-minute mark.")
+for now in range(60, 13 * 60, 5):
+    for dusk in range(6 * 60, 7 * 60, 5):
+        for dawn in range(5 * 60, 6 * 60, 5):
+            if len({now, dusk, dawn}) != 3: continue
+            n += 1
+            if dusk > 7 * 60: bad.append("cougar: the watch begins after the first night trip can leave")
+            if any(x % 5 for x in (now, dusk, dawn)): bad.append("cougar: a time off the five-minute marks")
+print(f"5. The cougar's clock: {n} sets of three readings. Every watch begins by 6:55, before any night trip (7:00 to 10:20).")
+
+# ---------------------------------------------------------------------------------------------------------------
+# 6. SARA'S HISTORY WALL (the Council Hall). Fixed years: the great clock, Year 1. The Council, Year 58. The portal, Year 184. Now, Year 267.
+#    The capsule was buried K years ago. K comes from the game's own mountain rule. For all 99,990 seeds K is 7 to 49
+#    (worked out from the game file with node, on 23 November). So its year is 267 - K.
+years = {'the great clock': 1, 'the Council': 58, 'the portal': 184, 'now': 267}
+order = sorted(years.values())
+if order != [1, 58, 184, 267] or len(set(order)) != 4: bad.append("wall: the fixed years are not in order")
+n = 0
+for K in range(7, 50):
+    n += 1; y = 267 - K
+    if not (184 < y < 267): bad.append(f"wall: the capsule year {y} is not between the portal and now")
+    if y in years.values(): bad.append(f"wall: the capsule year {y} lands on another tile")
+gaps_ = sorted({b - a for a in years.values() for b in years.values() if b > a})
+if any(g <= 0 or g > 999 for g in gaps_): bad.append("wall: a gap outside 1 to 999")
+print(f"6. The history wall: {n} capsule years, from Year {267 - 49} to Year {267 - 7}. Gaps Sara can ask about: {gaps_}.")
 
 # ---------------------------------------------------------------------------------------------------------------
 # THE SAMPLE TIDE TABLE printed in the note, worked out here so the note cannot be wrong about it.
-W = 20; rows = [(80, 110), (125, 155), (190, None)]
-ok = [s for s in range(rows[0][0], rows[2][0] + 1) if ((rows[0][1] <= s < rows[1][0]) or (rows[1][1] <= s < rows[2][0])) and s + W <= (rows[1][0] if s < rows[1][0] else rows[2][0])]
-print(f"   The note's sample: walk {W} minutes. Water in {T(80)}, out {T(110)}. In {T(125)}, out {T(155)}. In {T(190)}. Safe to step in from {T(ok[0])} to {T(ok[-1])}.")
+ok = flood_ok(20, 110, 125, 155, 190)
+print(f"   The note's sample: walk 20 minutes. Water out {T(110)}. In {T(125)}, out {T(155)}. In {T(190)}. Safe to step in from {T(ok[0])} to {T(ok[-1])}.")
 if (T(ok[0]), T(ok[-1])) != ('2:35', '2:50'): bad.append("the note's sample tide table does not give 2:35 to 2:50")
 
 print()
