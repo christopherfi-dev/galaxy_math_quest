@@ -33,6 +33,44 @@ Here is how I read the problem.
 
 ---
 
+## 1h. Your answers of 23 November, and the two dodge cards
+
+**What you settled**
+
+| You said | So |
+|---|---|
+| "Every kid gets 1 spy, 1 policeman, 1 epic, and 1 rare in their space station initial 15 starter pack." | The starter pack is 15 cards with those four in it. Every child can put up a rare or an epic in a challenge battle. [For the main thread: the station gives the cards.] |
+| Challenge battles: "2) Yes. 3) yes." | The card you put up may still be played in that battle. You see which card is at stake before you agree. |
+| Shield cards need the Shield Generator: "yes" | Confirmed. |
+| The sounds: "Good for now" | Left as they are. |
+| Hundred Cannon multiplies the AP: "yea" | Confirmed. |
+| Dodge cards: "maybe. Sure?" | Built, below, so you can try them. |
+| "Split rule? Not sure what that refers to." | See the end of this section. Nothing changed. |
+
+**The two dodge cards** [Built on your "maybe. Sure?". Say the word and they come out.]
+
+- **Wormhole Zip (common):** "Zip away. The enemy ship's attack misses you. You do not fire this round."
+- **Triple Illusion (rare):** "The enemy sees three ships. Its attack misses you. You do not fire this round."
+- **They follow your law for every shield card.** The other ship's regular AP always misses. A higher attack card still hits with the part it adds. A gold card that multiplies the AP hits with everything.
+  - Wormhole Zip against Twin Tens (rare, 55 + 20): the 55 misses, the 20 hits.
+  - Triple Illusion against Twin Tens: everything misses.
+  - Either one against Doubling Drive: all 110 hits.
+- **The price is mine** [Proposal]: your ship is away, so you do not fire that round. Without a price a dodge would beat every block card of its kind. Vanishing Act (epic) dodges and still fires.
+- **They need the Shield Generator,** like every shield card.
+- **I added them. I did not replace two block cards,** so nothing of yours is lost. A deck is now 47 cards.
+- **They show a shield,** like the other defence cards. A picture of their own would be clearer. I have not drawn one.
+
+**What they do to a battle** (two computer players, 2,000 battles each): about one round longer. 12 rounds with random play, 15 with clever play. 9 battles in 10 are over by round 16 or 19.
+
+**"The split rule": what I meant**
+
+- It is your rule from the rules sheet: when a hit gets past your shield, **you choose which parts take it**, and you may put the whole hit on one part. Your own example: an 80-point hit on a part with 5 HP left, and the other 75 points are lost.
+- My worry was that a child would always dump the whole hit on their least useful part.
+- **I have left it exactly as you wrote it.** Your shield rules made the worry smaller: which part you give up now matters, because the Shield Generator brings your shield back and the Weapons let you attack.
+- Nothing for you to decide. If it ever looks too easy when children play, tell me.
+
+---
+
 ## 1g. Two rulings of the evening: no turn order, and a lower shield still stops the AP
 
 **1. "Strikes do not arrive in turn order. The turn just gives the second person a chance to be strategic."** [Your words, 22 November]
@@ -353,23 +391,20 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 | | Two gentle players | Two clever players |
 |---|---|---|
-| **Length** | 11 rounds in the middle; 9 in 10 are over by round 14 | 14 rounds in the middle; 9 in 10 are over by round 17 |
-| **A ship wins** | 92 in 100 | 93 in 100 |
-| **Nobody wins** (both fall in the same round) | 8 in 100 | 7 in 100 |
-| **The player who led the last round wins / the one who answered** | 46 / 46 | 45 / 48 |
-| **A shield comes back, in one battle** | about 5 times | about 10 times |
-| **An attack card's part goes through a shield** | about once in two battles | about once a battle |
+| **Length** | 12 rounds in the middle; 9 in 10 are over by round 16 | 15 rounds in the middle; 9 in 10 are over by round 19 |
+| **A ship wins** | 92 in 100 | 94 in 100 |
+| **Nobody wins** (both fall in the same round) | 8 in 100 | 6 in 100 |
+| **A shield comes back, in one battle** | about 6 times | about 10 times |
+| **An attack card's part goes through a shield** | about twice in three battles | a little more than once a battle |
 
 - **Leading and answering are even.** Neither gives an edge.
 - **A clever player beats a gentle one** in 80 battles in 100.
 
 ### Still for you to rule on
 
-1. **The split** (section 4, point 2).
-2. **Shield cards need the Shield Generator** (section 1c). Is that right?
-3. **The sounds:** right or wrong, and on or off at the start?
-4. **Dodge cards** at common and rare: do you want them?
-5. **Hundred Cannon** counts as a card that multiplies the AP (section 1g). Is that right?
+1. **The dodge cards** (section 1h): keep them? Is "you do not fire" the right price? Should they have a picture of their own?
+
+Everything else you have answered.
 
 ---
 
@@ -382,7 +417,8 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,010 checks, all pass. It checks:
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,184 checks, all pass. It checks:
+  - Wormhole Zip: the opened card says what will miss and what will still hit, and that you do not fire; played, exactly that happens;
   - the exception for a card that multiplies the AP: the opened card says the whole attack goes through, you are asked to place all of it, and the lower shield is not touched;
   - no card is ever marked "cannot block"; no ship is marked as hitting first; "How" says both attacks land together;
   - the opened card at six real screen sizes, with the browser's own bars taken off (two iPhones upright, two phones sideways, iPad both ways): the picture, "Give this order" and "Back" are inside the screen for every card in the hand, and the button works;
@@ -405,7 +441,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 135 million checks, all pass. It tests each of your rulings of 22 November by hand: both attacks landing together (and turn order with its switch on), a lower block card still stopping the ship's own AP, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 152 million checks, all pass. It tests each of your rulings of 22 November by hand: both attacks landing together (and turn order with its switch on), a lower block card still stopping the ship's own AP, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.

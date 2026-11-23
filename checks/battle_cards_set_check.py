@@ -21,16 +21,16 @@ def want(label, got, exp=True):
 cards, parts, ups, ideas = D['cards'], D['parts'], D['upgrades'], D['ideas']
 
 # ---------- 1. the set ----------
-want('battle cards', len(cards), 45)
+want('battle cards', len(cards), 47)
 want('ship part cards', len(parts), 20)
 want('upgrade cards', len(ups), 5)
-want('cards in all, without the ideas', len(cards) + len(parts) + len(ups), 70)
-want('by type', dict(Counter(c['type'] for c in cards)), {'attack': 12, 'defence': 15, 'repair': 10, 'spy': 7, 'guard': 1})
+want('cards in all, without the ideas', len(cards) + len(parts) + len(ups), 72)
+want('by type', dict(Counter(c['type'] for c in cards)), {'attack': 12, 'defence': 17, 'repair': 10, 'spy': 7, 'guard': 1})
 # Marc, 22 November: a card that gives Main Shield shows a shield; a heart is only for repairing the HP of parts
 want('every card that adds to the Main Shield is a shield card', [c['id'] for c in cards if any(o['op'].startswith('shield_') for o in c['ops']) and c['type'] != 'defence'], [])
 want('no heart card touches the Main Shield', [c['id'] for c in cards if c['type'] == 'repair' and any(o['op'].startswith('shield_') or o['op'].startswith('block') for o in c['ops'])], [])
 mix = Counter(c['rarity'] for c in cards)
-want('common, rare, epic', [mix['common'], mix['rare'], mix['epic']], [22, 16, 7])
+want('common, rare, epic', [mix['common'], mix['rare'], mix['epic']], [23, 17, 7])
 print('     that is', [round(100.0 * mix[k] / len(cards)) for k in ('common', 'rare', 'epic')], 'in a hundred; the 2023 target was 50, 35, 15')
 everything = cards + parts + ups + ideas
 want('every id is used once', len(set(c['id'] for c in everything)), len(everything))
@@ -49,7 +49,7 @@ RULES = {  # op: where the rules sheet carries it
     'atk_round100': 'section 3: a bonus from the card', 'block': 'section 5: defence cards', 'block_all': 'section 5: defence cards',
     'repair_one': 'section 5: healing HP', 'repair_share': 'section 5: healing HP', 'repair_all': 'section 5: healing HP', 'repair_full': 'section 5: healing HP',
     'round_up10': 'section 5: healing HP', 'move_hp': 'section 5: healing HP', 'revive': 'section 5: revival', 'shield_add': 'section 5: defence cards',
-    'shield_per_card': 'section 5: defence cards', 'shield_rebuild': 'section 5: defence cards', 'block_per_card': 'section 5: defence cards', 'spy': 'section 6: Spy', 'guard': 'section 6: Policeman', 'upgrade': 'section 9: upgrades'}
+    'shield_per_card': 'section 5: defence cards', 'shield_rebuild': 'section 5: defence cards', 'block_per_card': 'section 5: defence cards', 'block_dodge': 'section 5: defence cards', 'spy': 'section 6: Spy', 'guard': 'section 6: Policeman', 'upgrade': 'section 9: upgrades'}
 want('ops outside the rules sheet (set)', sorted({o['op'] for c in cards + ups for o in c['ops']} - set(RULES)), [])
 want('a Guard has one job (rules sheet, section 6)', [c['id'] for c in cards if c['type'] == 'guard' and c['ops'] != [{'op': 'guard'}]], [])
 want('idea cards are kept out of the set', all(c['ops'] == [{'op': 'x'}] and c.get('ask') for c in ideas), True)
@@ -111,6 +111,7 @@ want('every repair of parts says working, lost or damaged', [c['id'] for c in ca
 # Marc, 22 November: a shield card puts a broken Main Shield back up. Every such card says so.
 want('every card that adds to the Main Shield says a broken shield comes back', [c['id'] for c in cards if any(o['op'] in ('shield_add', 'shield_per_card', 'shield_rebuild') for o in c['ops']) and 'A broken shield comes back' not in c['text']], [])
 want('every block card says it can bring back a broken shield', [c['id'] for c in cards if any(o['op'] in ('block', 'block_per_card') for o in c['ops']) and 'bring back a broken shield' not in c['text']], [])
+want('every dodge card says you do not fire', [c['id'] for c in cards if any(o['op'] == 'block_dodge' for o in c['ops']) and 'You do not fire this round' not in c['text']], [])
 want('no card still says "if it is still up"', [c['id'] for c in cards if 'still up' in c['text']], [])
 want('a card with two effects names both parts it needs', [c['id'] for c in cards if len(c['ops']) > 1 and ' and ' not in c.get('needs', '')], [])
 want('longest card text (letters)', max(len(c['text']) for c in cards + ups + ideas) <= 90, True)
@@ -180,6 +181,7 @@ def apply(c, ship, hand, enemy, incoming):
             if ship['shield'] == 0:
                 if n > 0: ship['shield'] = min(100, n)
             else: blocked += min(n, incoming)
+        elif op == 'block_dodge': blocked += incoming; bonus = 0   # away: the ship's attack misses, and you do not fire
         elif op == 'block_all': blocked += incoming
         elif op == 'repair_one':
             live = [p for p in ship['parts'] if p['hp'] > 0]
