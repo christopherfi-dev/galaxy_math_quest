@@ -95,7 +95,7 @@ Taps for the middle child, and how many gave up:
 | the old stones | 13, 13% | **9, 0%** |
 
 **What it showed:**
-- **Most of the gain is the mist.** With the old mist put back, the new paths, landmarks and signs alone help less: the keeper 15 taps and 30% gave up, the Wall Machine 10 and 16%.
+- **Most of the gain is the mist.** With the old mist put back, the new paths, landmarks and signs alone help less: the keeper 12 taps and 11% gave up, the Wall Machine 10 and 16%. The village is 4 taps even with the mist: that is the corrected sign.
 - **The old sign by the ship made things worse.** On the old page, a child who never read it found the village in 3 taps (2% gave up). A child who read "north" and went north took 12 (11% gave up). The new sign gives 3 taps either way.
 - The signs help a little elsewhere: the bridge, the old stones, the Wall Machine.
 - **The reed cutter is still the hardest** (10 taps). No sign or landmark names the reeds.
@@ -142,7 +142,7 @@ Taps for the middle child, and how many gave up:
 
 - **The page's own checks:** numbers (20,000 children), the Reach's numbers (20,000), music, the map (the builder, the world check, 15 broken copies caught). All pass.
 - **The play test, version with step 1 only:** every part, by taps and typing, at iPad sideways, iPad upright and phone. **Passes, no faults.**
-- **The play test, version with the signs and the review's fixes:** (result below).
+- **The play test, version with the signs and the review's fixes:** **passes, no faults**, at all three sizes. (Its first run stopped on iPad upright. That was a fault in the test, not the page: a tap meant to walk was pushed to the screen's edge and landed on the red spinner, which picked it up, as a child's tap would. The test now taps the ground beside things.)
 - **`checks/bigworld_wander_check.js`:** section 4. About 40 seconds for each run.
 - **Pictures:** I looked at 15 places at three sizes, and at the Map.
 - **An independent review of 20 pictures and the change.** It found 6 faults that matter and several small ones. Section 3, items 8 to 15, are its findings that I fixed. Section 6 lists the rest.
