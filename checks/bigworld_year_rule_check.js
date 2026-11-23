@@ -7,12 +7,12 @@
 // WHAT FOLLOWS.  She pours one pot of oil and ties one hook for each mat promised (S).
 //   too few:  T - S spare mats on the dock.     too many:  S - T empty hooks, and two pots back for each.     Either way the town is that many pots short, and never more than T short.
 //   The picture shows only the gap: that many dark windows.
-// THE SMALL ROW is the same task, smaller, with steps of 2, 5 or 10: "the little market", a children's game on Market day [story, section 16a, point 4].
-//   Gran pays one shell for each thing promised and keeps one place on her rack for each. Too few: the rest are hers, with no shell paid. Too many: two shells back
-//   for each empty place, never fewer than none. It is the oil rule, so gap() below is the small row's rule too.  (Draft 2 had no stick for it; a reviewer showed it then read two ways.)
-// YEARS [draft 5, from the story's section 16c; the maths thread's choice]: a year is one problem at the lake. The step down (one or two small rows, and the song by
-//   twos, fives and tens between them) is ONE step-down year, played on its Market day in the town. The singer sings the two missed rows by the fire in the white
-//   months of a year already counted, so they cost no year of their own. "That line of the song again" after a missed gate costs none either.
+// THE SMALL ROW is the same task, smaller, with steps of 2, 5 or 10: "Promise", a children's game on Market day [story, section 16a, point 4].
+//   Gran pays one shell for each thing promised and keeps one hook on her rack for each. Too few: the rest are hers, with no shell paid. Too many: two shells back
+//   for each empty hook, never fewer than none. It is the oil rule, so gap() below is the small row's rule too. Things: reed cups (2 a count day), plums (5), clay beads (10).  (Draft 2 had no stick for it; a reviewer showed it then read two ways.)
+// YEARS [draft 5, from the story's section 16b, finding B2, and 16d, row 5]: a year is one Market day. A year at the lake is one problem. The step down is played
+//   on Market day in the town (Promise), so it is one year; a second Promise, if needed, is on the next Market day: a second year. The song is taught by the lamp
+//   in the white months of a year already counted, so the two sung rows cost no year of their own. "That line of the song again" after a missed gate costs none either.
 //
 // What this file does:
 //   1. lists every problem in each band and checks it
@@ -24,7 +24,7 @@
 'use strict';
 const SHOWN = 4, GOLD = 9, TOTAL_MAX = 99, BOX_MAX = 999;      /* no answer is over 99; the box takes three digits, so a child who means 108 can say 108 */
 const BANDS = { small: [2, 5, 10], low: [3, 4, 6], high: [7, 8, 9], big: [11, 12, 13, 14, 15] };
-const EXAMPLE = { step: 20, n: 9, what: 'the oil seller\'s stick: the last plan a machine made for her' };      /* 20, 40, 60, 80; the machine's line for Last Raft, count day 9: 180 [story, section 16a, points 1 and 2]. No band has a step of 20.
+const EXAMPLE = { step: 20, n: 9, what: 'the oil seller\'s stick: the last plan the Year Machine made for him' };      /* 20, 40, 60, 80; the machine's line for Last Raft, count day 9: 180 [story, section 16a, points 1 and 2]. No band has a step of 20.
    Day 8 gave 160, a double of the last cut, which a child could take as the rule. 180 is not. It is the last three cuts added (40 + 60 + 80), which is a true way; the picker catches a child with only that habit. */
 const gap = (S, T) => S <= T ? T - S : Math.min(T, S - T);      /* pots short of what the mats could have bought = dark windows */
 /* likely wrong replies, each named, and of one of two sorts: a COUNT fault (the skip count went wrong) or a READ fault (the question was read another way) */
@@ -49,7 +49,7 @@ function town(band, h, child, rnd, note) { let years = 0; const log = [], ask = 
   const a = ask(band, 'assess'); if (!a) return { end: 'none left', years, log }; if (a.right) return { end: 'first', years, log };
   const p = ask(band, 'probe'); if (!p) return { end: 'none left', years, log }; if (p.right) return { end: 'slip', years, log };
   const sort = classify(a.c.k, a.c.n, a.S) === 'read' && classify(p.c.k, p.c.n, p.S) === 'read' ? 'read' : 'count';
-  if (sort === 'count') { /* the step below: the small row */ const s1 = ask('small', 'small'); if (!s1) return { end: 'none left', years, log }; if (!s1.right) { log.push('song by 2s, 5s, 10s'); const s2 = ask('small', 'small again', true);      /* the same Market day: another child's gran gives it */ if (!s2 || !s2.right) return { end: 'rest', years, log }; } log.push('the song: a new verse'); } else log.push('the seller tells it again, with the stick laid along the days');
+  if (sort === 'count') { /* the step below: the small row */ const s1 = ask('small', 'small'); if (!s1) return { end: 'none left', years, log }; if (!s1.right) { log.push('song by 2s, 5s, 10s'); const s2 = ask('small', 'small again');      /* the next Market day: a second step-down year [story, 16b, B2] */ if (!s2 || !s2.right) return { end: 'rest', years, log }; } log.push('the song: a new verse'); } else log.push('the seller tells it again, with the stick laid along the days');
   /* taught in single steps, then a worked example: the child's own two missed rows are made again, line by line. They spend no new problem. */ for (const m of [a, p]) { child(m.c, 'sung', band); log.push('sung:' + m.c.id + ' again'); }      /* by the fire, in the white months: no year of its own */
   for (let g = 0; g < 2; g++) { let run = 0; for (let i = 0; i < 3; i++) { const q = ask(band, 'gate'); if (!q) return { end: run > 0 ? 'gate' : 'rest', years, log, short: 1 };      /* every problem of the band is used: a gate with only right answers so far counts */ if (!q.right) break; run++; } if (run === 3) return { end: 'gate', years, log }; if (g === 0) log.push('that line of the song again'); }
   return { end: 'rest', years, log }; }

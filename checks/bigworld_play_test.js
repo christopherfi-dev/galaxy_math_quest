@@ -54,7 +54,11 @@ async function readAll(p, max) { const got = []; for (let i = 0; i < (max || 30)
 // tap a square of the map, if it is on the screen; otherwise tap toward it
 async function tapSquare(p, x, y) { const g = await p.evaluate(() => { const c = document.getElementById('cv').getBoundingClientRect(); return { c: { l: c.left, t: c.top, w: c.width, h: c.height } }; });
   const cam = await p.evaluate(() => window.__bw.cam());
-  const px = (x + .5 - cam.ox) * cam.ts, py = (y + .5 - cam.oy) * cam.ts, cx = Math.max(6, Math.min(g.c.w - 6, px)), cy = Math.max(52, Math.min(g.c.h - 6, py));
+  const px = (x + .5 - cam.ox) * cam.ts, py = (y + .5 - cam.oy) * cam.ts; let cx = Math.max(6, Math.min(g.c.w - 6, px)), cy = Math.max(52, Math.min(g.c.h - 6, py));
+  /* to walk, a child taps the ground: a tap that would land on a thing on the way (it would use it) moves one square toward the middle, up to three times */
+  for (let k = 0; k < 3; k++) { const a = Math.floor(cam.ox + cx / cam.ts), b0 = Math.floor(cam.oy + cy / cam.ts); if (a === x && b0 === y) break;
+    const busy = await p.evaluate(([a, b]) => !!SOLID[key(a, b)] || (!!GATEOF[key(a, b)] && !gateOpen(GATEOF[key(a, b)])) || MAP[b][a] === 'H' || (Math.abs(a - 13) <= 1 && b === 83), [a, b0]); if (!busy) break;
+    cx += Math.sign(g.c.w / 2 - cx) * cam.ts; cy = Math.max(52, cy + Math.sign(g.c.h / 2 - cy) * cam.ts); }
   await p.mouse.click(g.c.l + cx, g.c.t + cy); return px >= 0 && py >= 0 && px <= g.c.w && py <= g.c.h; }
 async function walkTo(p, x, y) { for (let i = 0; i < 70; i++) { let s = await st(p); if (s.S.at === 'map' && !s.reading && !s.task && s.x === x && s.y === y) return true;
     if (s.task && s.task.kind === 'cog') { for (let k = 0; k < 3; k++) { const q = (await st(p)).task; if (!q || q.kind !== 'cog') break; const c = q.qs[q.i], plus = c.b[1] - c.a[1] === c.b[0] - c.a[0], ans = plus ? c.x + (c.a[1] - c.a[0]) : c.x * (c.a[1] / c.a[0]); await pad(p, ans); await press(p, 'ok'); } const got = await readAll(p); if (/Cog Catcher/.test(got.join(' '))) p.cogs = (p.cogs || 0) + 1; continue; }      // a loose cog: three quick rules
