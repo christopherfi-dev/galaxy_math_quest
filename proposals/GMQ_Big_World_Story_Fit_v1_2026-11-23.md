@@ -119,3 +119,52 @@ The story chose kindness: nothing bad lasts. That is right for 8-year-olds. But 
 5. Can B and C have a shorter road from the number to what follows?
 
 Then I fit the numbers, check them in code, and both notes go to one reviewer together.
+
+---
+
+## 7. Examples, asked for by Marc the same day
+
+Every number was worked out again. None of this is a design. They are examples of the kind.
+
+### Question 1: plain multiples, and the two-step size
+
+**Plain: one row.**
+
+| | The problem | The answer | Too little | Too much |
+|---|---|---|---|---|
+| How much? | Reed Town's fish row has four cuts: 6, 12, 18, 24. "How many strings by Last Raft?" (the 7th count day) | 30, 36, **42** | Said 36: the keeper sells too little, and the lamps go out early | Said 48: she sells fish the town does not have |
+| For how long? | "The wall needs 40 blocks. The carts bring 8 on each count day. For how many months do we hire them?" | 8, 16, 24, 32, 40: **5 months** | 4 months: the wall is 8 blocks short at one end | 6 months: a month of carts paid for and not needed |
+| How many? | "The town needs 35 sacks by Last Raft. One plot fills 7 sacks in a year. How many plots do we sow with food?" | 7, 14, 21, 28, 35: **5 plots** | 4 plots: 28 sacks. The bowls are small in White month 3 | 6 plots: one plot of roof reed lost. A roof drips |
+
+**Two steps: the harder size.**
+
+| The problem | The answer | Why it is harder |
+|---|---|---|
+| "Each plot brings 3 sacks on a count day. We sowed 4 plots. How many sacks by Gold month 5?" | 12 each count day. 12, 24, 36, 48, **60** | Two things to hold: plots, and count days |
+| The story's decision A as written: "The town needs 84 sacks by Last Raft. One plot brings 3 on each count day. How many plots?" | One plot brings 21 in the year. 21, 42, 63, 84: **4 plots** | 84 ÷ 21 is outside the times tables |
+
+### Question 2: how far ahead
+
+| How far | The problem | What the child does |
+|---|---|---|
+| **7 count days** | 6, 12, 18, 24. By the 7th? **42** | Writes three more rows. Counting on is enough. No better idea is needed |
+| **9 count days** (a longer year) | 6, 12, 18, 24. By the 9th? **54** | Writes five more rows. Still counting on |
+| **28 count days** (a count every week) | "A boat brings 3 strings each week. Four cuts: 3, 6, 9, 12. How many by week 24?" **72** | Twenty more rows is slow. A better idea pays: 10 weeks is 30, 20 weeks is 60, 4 more weeks is 12. Or: week 12 is 36, and double it |
+| | The same boat, by Last Raft (week 28)? **84** | 20 weeks is 60, 8 weeks is 24 |
+
+- **Only the last one asks for your "24th day" thinking.** The first two can be done by adding down the column.
+- Under 100, the far count works for steps of 2, 3 and 4 (4 × 24 = 96). A step of 5 gives 120: the harder size.
+- **Both can live in one calendar:** boats come home every week, plots are picked every month. Near counts for the first problems, far counts later. That is the story thread's to shape.
+
+### Question 3: my opinion
+
+**Yes. Good things and memories should last. Harm should not. Stores should not, yet.**
+
+| Lasts past New Year | Does not last |
+|---|---|
+| **The town grows after a good year:** one more house, one more lamp lit. Next year it says "we are more houses", and the numbers are bigger. The child's success *is* the harder problem, and nobody announces it | **Harm.** A thin month ends. A wet floor dries |
+| **The keeper remembers,** in one line at New Year: "Last year the bowls were small in White month 3." It ties this year to the last | **A child's number, on any wall a classmate can see** |
+| **The plan mark on the store wall,** in the child's colour | **The stores themselves,** for now |
+
+- **Why not the stores:** if spare food carried over, next year's count would start with some already. That is 3x + 2, which you want later. So "this town keeps some back now" is the natural door to that level, when you choose to open it.
+- **What could prove me wrong:** children may not notice a town growing. Ask one: "Is this town different from last year?" And a child who struggles has a town that stays small: in a class that could be seen.
