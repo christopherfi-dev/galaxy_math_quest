@@ -10,9 +10,17 @@ Short. Read this, then the files it names. Everything is on the main branch (`cl
 | | |
 |---|---|
 | **Built and live** | `prototypes/big_world.html` = `docs/bigworld/index.html` ("big world 5"): the Mender Meadow, the Reach, typing, music, the well quest. All checks and the play test pass. https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/ |
-| **Building has stopped** | On purpose. Five designs of mine failed review on paper (the Hills twice, the sunk raft, the tide posts, and the first maths fit). Marc said: stop inventing while building |
-| **What is being worked out now** | "The deciding years": story problems with a table, a decision, and what follows. A story thread writes the story. I fit the maths. One reviewer reads both together |
-| **The very next step** | A **third joint review** of the first kind only ("how much?"). If it finds no blocker: build that kind, for one child on one iPad |
+| **Building has stopped** | On purpose. Five designs of mine failed review on paper. Marc said: stop inventing while building |
+| **What is being worked out** | "The deciding years": a story problem with a table, a decision, and what follows. A story thread writes the story. This thread fits the maths. One reviewer reads both together |
+| **Three joint reviews so far** | 1: six blockers. 2: three. **3: two, both in my picker and number box. "The town's stick, the question and the oil rule hold."** Both are fixed in `checks/bigworld_year_rule_check.js`. **The fixes are not reviewed** |
+
+### The very next steps, in order
+
+1. **Send the story thread the six points** in the maths note's section 9c. Marc passes messages between threads.
+2. **When it answers, bring the maths note in line,** word for word, as before.
+3. **A short fourth review:** only "are the two blockers of review 3 fixed, and did the fixes break anything?" Give it the check file and section 9c.
+4. **If that says yes: build the first kind,** for one child on one iPad, in `prototypes/big_world.html`. The rule, the picker and the engine's path are already written as code in the check file: move them into the page's `NUM` and `WORLD` parts. Then the page's own checks, pictures at three sizes, the play test, and an independent review of the pictures.
+5. **Two things of mine still open:** a reading fault fails the small row too, because it is the same sentence; and "decide without me" is not in the code.
 
 ## 2. Read these, in this order
 
