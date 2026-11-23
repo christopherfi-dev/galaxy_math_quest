@@ -34,6 +34,7 @@ Everything is **[Proposal]** unless it says [Source].
 | **Big world** (Planet Algora, Galaxy Patternox) | `docs/bigworld/*` and its notes | The first region (the Mender Meadow) is built and playable. The Reach is designed. Its second brief: `HANDOFF_Big_World_Brief2_2026-11-22.md`. |
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
 | **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built: first person, 13 seconds, ready to wire in (Phase 2). See `proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 9. |
+| **Chronosia story** (writes only) | `proposals/GMQ_Chronosia_Story_*` | Started 23 November with `HANDOFF_Chronosia_Story_2026-11-23.md`: one cohesive story for Chronosia; every task passes the test "no maths as a password". The main thread builds once Marc approves. |
 
 **Threads cannot talk to each other.** Marc carries messages between them. The repository is their shared memory: this plan, the handoffs, and `INFO_FROM_MARC.md`.
 
@@ -158,6 +159,17 @@ Each note lays out the choices and recommends one.
 | 11 | "Start again": should it ask "Are you sure?" first | not written up yet |
 | 13 | **The lantern's recipe:** soft sand only, or soft sand and the glow stone? If the glow stone, it alone stops lighting Chronosia's passage once the lantern exists. | this plan, Stage 3 |
 | 12 | **Older decisions from 21 November, some answered since** | `GMQ_Decisions_Waiting_2026-11-21.md`. The main thread should mark which are answered (its first job). |
+
+## 5b. The story test, for every task on every planet
+
+[Source: Marc, 23 November: "Why would that open a wall in the cave? That's what I mean. You're not doing a cohesive story."]
+
+1. **Need:** someone in the story needs this worked out, for a reason the child is told first.
+2. **Meaning:** the answer changes the world because of what it means. No maths as a password.
+3. **Consequence:** after the station, a wrong answer plays out and shows why.
+4. **Picture:** what the child works on fills the picture.
+
+Chronosia is checked first, by its story thread. The other planets follow, with the same test.
 
 ## 6. How we will know it works
 
