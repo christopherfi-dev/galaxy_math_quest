@@ -30,7 +30,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 | Thread | Owns | Where it is now |
 |---|---|---|
-| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 89 on the preview. The class link is on 81. |
+| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 90 on the preview. The class link is on 81. |
 | **Big world** (Planet Algora, Galaxy Patternox) | `docs/bigworld/*` and its notes | The first region (the Mender Meadow) is built and playable. The Reach is designed. Its second brief: `HANDOFF_Big_World_Brief2_2026-11-22.md`. |
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
 | **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built: first person, 13 seconds, ready to wire in (Phase 2). See `proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 9. |
@@ -59,12 +59,13 @@ Everything is **[Proposal]** unless it says [Source].
 | 87 | Chronosia's things lead to each other: the cave, the key and the cougar, the tortoise and the pond. |
 | 88 | Music: a tune for each world, off until tapped. |
 | 89 | Xylophora: the skin makes the walls (area, then perimeter). |
+| 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 
 ## 4. The order of work [Proposal]
 
 ### Stage 1: the newest game, with the fly-in, to the class (main thread)
 
-1. **Wire the fly-in into the game,** as version 90 on the preview. The fly-in thread's section 9 says how.
+1. **Wire the fly-in into the game,** as version 91 on the preview. The fly-in thread's section 9 says how.
    - It plays when a child lands on Voltara: the full scene the first time, two seconds after that.
    - A tap skips it.
    - It skips itself on an iPad that cannot draw it, or that asks for less motion. The game then lands as it does today.
@@ -72,7 +73,7 @@ Everything is **[Proposal]** unless it says [Source].
    - The game's tests turn it off.
 2. **Marc plays the preview** on an iPad: the fly-in, Lengthar, Chronosia's links, music, Xylophora's walls.
 3. **The class update check:** saved class games open in the new version (`checks/class_update_test.js`).
-4. **On Marc's word ("update the class link"),** the class gets everything from versions 82 to 90 at once. He is told first what the children will see new.
+4. **On Marc's word ("update the class link"),** the class gets everything from versions 82 to 91 at once. He is told first what the children will see new.
 
 ### Stage 2: Algora, the big world, as the pilot (big world thread)
 
@@ -91,11 +92,19 @@ Everything is **[Proposal]** unless it says [Source].
 
 ### Stage 3: the world web across the planets (main thread)
 
-1. **Strand A, the lantern.** This is Marc's own example of a mini quest [Source: Marc, 22 November]:
-   - Voltara's Nomads can make a lantern, but need soft sand.
-   - Xylophora's cactus ring has the sand: dig it up.
-   - The Nomads' glassworks cut the panes; the child measures them with Lengthar's tape.
-   - The lantern lights Chronosia's dark passage for every child.
+1. **Strand A, the lantern.** This is Marc's own example of a mini quest [Source: Marc, 22 November], with his additions of 23 November:
+   - **Chronosia's cave needs a lantern.** The cave's front is lit by daylight; its passage is dark.
+   - **The Nomads on Voltara make lanterns,** but they need **soft sand** for the glass.
+   - **Xylophora has the soft sand, in the cactus ring.** Digging there must give soft sand.
+     - [Source: Marc, 23 November] "I dug in the sand on that one planet and I didn't collect soft sand. I got a flat leaf."
+     - Today that dig gives the leaf print, a secret. Keep the print as the first find. A second dig, or "take sand", fills a sack.
+   - **The child does the maths that builds it:** cutting the glass panes to exact centimetres with Lengthar's measuring tape.
+   - **Maybe the lantern's light is the glow stone** [Source: Marc, 23 November: "maybe even to make lantern we need a glow stone"].
+     - Then the glow stone (Voltara's secret) is part of the recipe: a secret that matters later, as Marc wants.
+     - Then the glow stone alone is too faint for the deep passage (one step, like Voltara's tunnel). Only inside the lantern does it light the way.
+     - Today (version 87) the glow stone alone lights the passage. That changes when the lantern is built. See decision 13.
+   - **Take the lantern back to the cave.** The passage leads to the gear door and the workshop.
+   - **Inside, solving a problem gives an epic card** [Source: Marc, 22 November].
 2. **Every planet's big quests upgrade a ship part** [Source: Marc, 22 November]: which quest gives which part. Waits on decision 1 in section 5.
 3. **Mistakes that show themselves,** in the big quests already built after the station: Voltara, Chronosia, Lengthar, Stardust. (Xylophora's walls already do it.)
 4. **Strands B and C** (the hungry families; the Gumblefish's bubble), after strand A.
@@ -147,6 +156,7 @@ Each note lays out the choices and recommends one.
 | 9 | Mistakes: the five rules; offer the smaller problem, or go to it; which quests first | `GMQ_Mistakes_and_Consequences_v1_2026-11-22.md`, section 7 |
 | 10 | The server: the split as the long-term shape; one class or a grade per world; when to try step 1; what children may do across classes | `GMQ_Server_Layers_Analysis_v1_2026-11-22.md`, section 5 |
 | 11 | "Start again": should it ask "Are you sure?" first | not written up yet |
+| 13 | **The lantern's recipe:** soft sand only, or soft sand and the glow stone? If the glow stone, it alone stops lighting Chronosia's passage once the lantern exists. | this plan, Stage 3 |
 | 12 | **Older decisions from 21 November, some answered since** | `GMQ_Decisions_Waiting_2026-11-21.md`. The main thread should mark which are answered (its first job). |
 
 ## 6. How we will know it works
