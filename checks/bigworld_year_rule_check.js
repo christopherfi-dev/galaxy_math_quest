@@ -1,5 +1,5 @@
-// Algora's deciding years: the first kind of decision, "HOW MUCH?".  The number rule, the picker, and the engine's path.   [DRAFT 5: nothing here is in the page yet.]
-// Story: proposals/GMQ_Algora_Story_v1_2026-11-23.md.  Maths: proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md (version 4).
+// Algora's deciding years: the first kind of decision, "HOW MUCH?".  The number rule, the picker, and the engine's path.   [DRAFT 6: nothing here is in the page yet. Draft 6 answers the fourth joint review, 23 November.]
+// Story: proposals/GMQ_Algora_Story_v1_2026-11-23.md.  Maths: proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md (version 5).
 // [Source: Marc, 23 November] "For these they use the multiples. 3, 6, 9, 12." A row starts from nothing and climbs by the same step.
 //
 // THE PROBLEM, at every size: a tally stick with four cuts, each marked with its count day and the pile that day: k, 2k, 3k, 4k.
@@ -14,12 +14,16 @@
 //   on Market day in the town (Promise), so it is one year; a second Promise, if needed, is on the next Market day: a second year. The song is taught by the lamp
 //   in the white months of a year already counted, so the two sung rows cost no year of their own. "That line of the song again" after a missed gate costs none either.
 //
+//
 // What this file does:
 //   1. lists every problem in each band and checks it
 //   2. checks what follows, for every number a child could type
-//   3. plays the engine's path for 3,000 made-up children of each of nine kinds, through three towns. It checks that no child meets a problem twice, that two
-//      problems running never share a step, a count day or an answer, and that a child with one fixed habit is not waved through. When a band has nothing
-//      new left for a child, the kind rests; it prints how often that happens.
+//   3. plays the engine's path for 3,000 made-up children of each of fourteen kinds, through three towns. It checks:
+//      no child meets a problem twice; a child with one fixed habit lights at most one town (at the first try, by a slip, or through the gate);
+//      each kind of child takes the path it should (counting faults to Promise and the song, reading faults to the second telling, "decide without me"
+//      to the singer); every child finishes (learned, or a rest). It PRINTS what it cannot promise: how often two problems running share a step,
+//      a count day or an answer (the picker avoids it, and gives up one wish at a time when it must), how often a band runs out, how many
+//      different first problems the children get, and what the engine's three gate tries would give in place of two.
 // Run:  node checks/bigworld_year_rule_check.js
 'use strict';
 const SHOWN = 4, GOLD = 9, TOTAL_MAX = 99, BOX_MAX = 999;      /* no answer is over 99; the box takes three digits, so a child who means 108 can say 108 */
@@ -31,31 +35,49 @@ const gap = (S, T) => S <= T ? T - S : Math.min(T, S - T);      /* pots short of
 function wrongWays(k, n) { return [ { sort: 'count', name: 'one count day short', v: k * (n - 1) }, { sort: 'count', name: 'one count day over', v: k * (n + 1) }, { sort: 'count', name: 'the next cut', v: (SHOWN + 1) * k },
   { sort: 'read', name: 'only the mats still to come', v: k * (n - SHOWN) }, { sort: 'read', name: 'N more count days from today', v: k * (SHOWN + n) }, { sort: 'read', name: 'that one day\'s mats', v: k }, { sort: 'read', name: 'the count day itself', v: n },
   { sort: 'read', name: 'all the cuts added up', v: k * 10 }, { sort: 'read', name: 'the last cut plus the count day', v: SHOWN * k + n }, { sort: 'read', name: 'the step plus the count day', v: k + n }, { sort: 'read', name: 'the whole year', v: k * GOLD, skip: n === GOLD } ].filter(w => !w.skip); }
-const classify = (k, n, S) => { const w = wrongWays(k, n).find(w => w.v === S); return w ? w.sort : 'other'; };
+/* a reply's sort. A reply that is a reading fault AND a counting fault (on count day 9: 5k is "only the mats to come" and "the next cut"; 10k is "all the cuts
+   added" and "one count day over") is 'both': it tells nothing, and the other reply decides [fourth review, M2]. No reply ("decide without me") is 'skip'. */
+const classify = (k, n, S) => { if (S === null) return 'skip'; const w = wrongWays(k, n).filter(w => w.v === S), sorts = [...new Set(w.map(x => x.sort))]; return !sorts.length ? 'other' : sorts.length > 1 ? 'both' : sorts[0]; };
+const GATE_TRIES = +(process.env.GATES || 2);      /* the two threads chose two, not the engine's three. Section 3 prints what three would give [fourth review, M5] */
 /* Three ways that are RIGHT, and are not refused: add the last two cuts (count day 7), double the last cut (8), add the last three (9). A child who knows all three knows the row.
-   A child with only one of them is caught by the picker: see rightN below. */
+   A child with only one of them lights one town at most: see rightN below, and the check in section 3. */
 function pool(band) { const out = []; for (const k of BANDS[band]) for (let n = SHOWN + 2; n <= GOLD; n++) { const T = k * n; if (T > TOTAL_MAX) continue; if (wrongWays(k, n).some(w => w.v === T)) continue; out.push({ k, n, T, id: k + 'x' + n }); } return out; }
-/* THE PICKER.  h is the child's history: used (ids), last ({k,n,T,S}), rightN (count days the child has been right on).
-   A new problem is never one the child has had; differs from the last in step, count day and answer; its answer is not what the child last said;
-   and, while it can, it uses a count day the child has NOT yet been right on. So one habit ("add the last two cuts") is right once and no more. */
+/* THE PICKER.  h is the child's history: used (ids), last ({k,n,T,S}: the last row the child met, or sang), rightN (count days the child has been right on).
+   It never gives a problem the child has had. It WISHES, in this order, and gives up one wish at a time only when no problem left meets them all:
+     0. the child's very first problem is not on the finished example's count day (9)
+     1. a count day the child has not yet been right on (so one habit is right once and no more)
+     2. a new step, a new count day and a new answer, and not the answer the child last said
+     3. a new step and a new answer      4. a new answer      5. any problem not yet used
+   Among the problems that meet its wishes it picks BY CHANCE, so the children in one class do not all hear the same stick [fourth review, M1].
+   Only when the band runs tight (6 or fewer left) does it prefer the problem that leaves most others usable, so the band does not run out. */
 function pick(band, h, rnd) { const P = pool(band).filter(c => !h.used[c.id]), L = h.last, fresh = c => !L || (c.k !== L.k && c.n !== L.n && c.T !== L.T && c.T !== L.S);
-  let ok = P.filter(c => fresh(c) && h.rightN.indexOf(c.n) < 0), relaxed = 0; if (!ok.length) { ok = P.filter(fresh); relaxed = 1; } if (!ok.length) { ok = P.filter(c => !L || (c.k !== L.k && c.T !== L.T && c.T !== L.S)); relaxed = 2; } if (!ok.length) { ok = P.filter(c => !L || (c.T !== L.T && c.T !== L.S)); relaxed = 3; } if (!ok.length) { ok = P; relaxed = 4; } if (!ok.length) return null;
-  /* It gives up one wish at a time before it stops: first a fresh count day, then a new count day, then a new step, then a new answer. It NEVER repeats a problem. It returns nothing only when every problem of the band has been used. */
-  /* keep the road open: prefer the problem that leaves most others still usable after it */ const room = c => P.filter(d => d.id !== c.id && d.k !== c.k && d.n !== c.n && d.T !== c.T).length, best = Math.max(...ok.map(room)), top = ok.filter(c => room(c) === best), c = top[Math.floor(rnd() * top.length)];
-  return Object.assign({ relaxed }, c); }
+  const wish = [c => (L || c.n !== EXAMPLE.n) && h.rightN.indexOf(c.n) < 0 && fresh(c), c => h.rightN.indexOf(c.n) < 0 && fresh(c), fresh, c => !L || (c.k !== L.k && c.T !== L.T && c.T !== L.S), c => !L || (c.T !== L.T && c.T !== L.S), () => true];
+  let ok = [], relaxed = 0; for (; relaxed < wish.length; relaxed++) { ok = P.filter(wish[relaxed]); if (ok.length) break; } if (!ok.length) return null;
+  if (P.length <= 6) { const room = c => P.filter(d => d.id !== c.id && d.k !== c.k && d.n !== c.n && d.T !== c.T).length, best = Math.max(...ok.map(room)); ok = ok.filter(c => room(c) === best); }
+  const c = ok[Math.floor(rnd() * ok.length)]; return Object.assign({ relaxed, sameK: !!L && c.k === L.k, sameN: !!L && c.n === L.n, sameT: !!L && (c.T === L.T || c.T === L.S) }, c); }
 /* THE ENGINE'S PATH in one town.  [Source: math-skills.txt v4.1: assess, probe, classify from both wrong answers, check the step below, teach in single steps, a worked example, a mastery gate of three.]
-   child(problem, phase) returns the number the child says. Returns { end: 'first' | 'slip' | 'gate' | 'rest', years, log }. */
-function town(band, h, child, rnd, note) { let years = 0; const log = [], ask = (b, phase, free) => { const c = pick(b, h, rnd); if (!c) { note.dry++; return null; } if (c.relaxed) note.relaxed[c.relaxed]++; const S = child(c, phase, b), right = S === c.T; if (!free) years++; h.used[c.id] = 1; h.last = { k: c.k, n: c.n, T: c.T, S }; if (right && phase !== 'sung') h.rightN.push(c.n); log.push(`${phase}:${c.id}${right ? '' : '(' + S + ')'}`); return { c, S, right }; };
-  const a = ask(band, 'assess'); if (!a) return { end: 'none left', years, log }; if (a.right) return { end: 'first', years, log };
-  const p = ask(band, 'probe'); if (!p) return { end: 'none left', years, log }; if (p.right) return { end: 'slip', years, log };
-  const sort = classify(a.c.k, a.c.n, a.S) === 'read' && classify(p.c.k, p.c.n, p.S) === 'read' ? 'read' : 'count';
-  if (sort === 'count') { /* the step below: the small row */ const s1 = ask('small', 'small'); if (!s1) return { end: 'none left', years, log }; if (!s1.right) { log.push('song by 2s, 5s, 10s'); const s2 = ask('small', 'small again');      /* the next Market day: a second step-down year [story, 16b, B2] */ if (!s2 || !s2.right) return { end: 'rest', years, log }; } log.push('the song: a new verse'); } else log.push('the seller tells it again, with the stick laid along the days');
-  /* taught in single steps, then a worked example: the child's own two missed rows are made again, line by line. They spend no new problem. */ for (const m of [a, p]) { child(m.c, 'sung', band); log.push('sung:' + m.c.id + ' again'); }      /* by the fire, in the white months: no year of its own */
-  for (let g = 0; g < 2; g++) { let run = 0; for (let i = 0; i < 3; i++) { const q = ask(band, 'gate'); if (!q) return { end: run > 0 ? 'gate' : 'rest', years, log, short: 1 };      /* every problem of the band is used: a gate with only right answers so far counts */ if (!q.right) break; run++; } if (run === 3) return { end: 'gate', years, log }; if (g === 0) log.push('that line of the song again'); }
-  return { end: 'rest', years, log }; }
+   child(problem, phase, band) returns the number the child says, or null for "decide without me". Phases: assess, probe, small, small again, told, sung, gate.
+   Returns { end: 'first' | 'slip' | 'gate' | 'rest' | 'none left', path, years, log }.
+   - Two counting faults (or one, and one reply that tells nothing): Promise, ONLY until the child has passed it once in any town [fourth review, M6]; then the song.
+   - Two reading faults (or one, and one that tells nothing): the seller tells it again on the jetty. No Promise, and no song [note, section 2; fourth review, M7].
+   - Two "decide without me": the singer finds the cadet in the white months, "Come and sing": the song [story, 16d, row 6]. One, and one wrong reply: the wrong reply decides.
+   - A skip at Promise or at the gate counts as a miss. A skip uses up its problem: the child has seen it. */
+function town(band, h, child, rnd, note, gates) { let years = 0; const log = [], ask = (b, phase) => { const c = pick(b, h, rnd); if (!c) { note.dry++; return null; } note.asked++; if (c.sameK) note.sameK++; if (c.sameN) note.sameN++; if (c.sameT) note.sameT++;
+    const S = child(c, phase, b), right = S === c.T; years++; h.used[c.id] = 1; h.last = { k: c.k, n: c.n, T: c.T, S }; if (right) h.rightN.push(c.n); log.push(`${phase}:${c.id}${right ? '' : '(' + S + ')'}`); return { c, S, right }; },
+    out = (end, path, extra) => Object.assign({ end, path, years, log }, extra || {});
+  const a = ask(band, 'assess'); if (!a) return out('none left'); if (a.right) return out('first');
+  const p = ask(band, 'probe'); if (!p) return out('none left'); if (p.right) return out('slip');
+  const so = [classify(a.c.k, a.c.n, a.S), classify(p.c.k, p.c.n, p.S)], said = so.filter(x => x !== 'skip');
+  const path = !said.length ? 'singer' : said.every(x => x === 'read' || x === 'both') && said.some(x => x === 'read') ? 'read' : 'count';
+  if (path === 'count' && !h.promised) { const s1 = ask('small', 'small'); if (!s1) return out('none left', path); if (!s1.right) { log.push('the song by twos, fives and tens'); const s2 = ask('small', 'small again'); if (!s2) return out('none left', path); if (!s2.right) return out('rest', path); } h.promised = 1; }
+  if (path === 'read') { child(p.c, 'told', band); log.push('told again on the jetty, one plank for each count day'); }
+  else { /* the song, by the lamp in the white months: the child's own two missed rows made again, line by line. They spend no new problem and no year. */ for (const m of [a, p]) { child(m.c, 'sung', band); log.push('sung:' + m.c.id + ' again'); } h.last = { k: p.c.k, n: p.c.n, T: p.c.T, S: p.c.T }; }
+  for (let g = 0; g < gates; g++) { let run = 0; for (let i = 0; i < 3; i++) { const q = ask(band, 'gate'); if (!q) { note.short++; return out(run > 0 ? 'gate' : 'rest', path, { short: 1 }); }      /* every problem of the band is used: a gate with only right answers so far counts */ if (!q.right) break; run++; } if (run === 3) return out('gate', path); if (g < gates - 1) log.push('that line of the song again'); }
+  return out('rest', path); }
 /* THREE TOWNS.  The first asks the low band. A town learned at the first try, or through the gate (three right in a row), sends the next town one band up.
    Learned by a slip: the next town asks the same band once more, as the engine re-asks a fragile skill. A rest, or no new problem left: the kind rests, and no other town asks. */
-function trial(child, rnd) { const h = { used: {}, last: null, rightN: [] }, note = { dry: 0, relaxed: { 1: 0, 2: 0, 3: 0, 4: 0 } }, order = ['low', 'high', 'big'], out = [], mem = {}; let b = 0; for (let t = 0; t < 3; t++) { const r = town(order[b], h, (c, ph, band) => child(c, ph, band, mem), rnd, note); out.push(Object.assign({ band: order[b] }, r)); if (r.end === 'rest' || r.end === 'none left') break; if ((r.end === 'first' || r.end === 'gate') && b < 2) b++; } return { towns: out, note, h }; }
+function trial(child, rnd, gates) { const h = { used: {}, last: null, rightN: [], promised: 0 }, note = { dry: 0, asked: 0, sameK: 0, sameN: 0, sameT: 0, short: 0 }, order = ['low', 'high', 'big'], towns = [], mem = {}; let b = 0;
+  for (let t = 0; t < 3; t++) { const r = town(order[b], h, (c, ph, band) => child(c, ph, band, mem), rnd, note, gates || GATE_TRIES); towns.push(Object.assign({ band: order[b] }, r)); if (r.end === 'rest' || r.end === 'none left') break; if ((r.end === 'first' || r.end === 'gate') && b < 2) b++; } return { towns, note, h }; }
 const rng = seed => { let s = (seed * 2654435761) >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
 
 const bad = [], say = (ok, what) => { if (!ok) bad.push(what); };
@@ -67,17 +89,47 @@ for (const band of Object.keys(BANDS)) { const all = pool(band); say(all.length 
     /* 2. what follows, for every number the box takes */ for (let S = 0; S <= BOX_MAX; S++) { const g = gap(S, c.T); say((g === 0) === (S === c.T), `${c.id}, said ${S}: a miss with no dark window, or a right answer with one`); say(g >= 0 && g <= c.T, `${c.id}, said ${S}: ${g} dark windows`); if (S !== c.T) say(g >= 1, `${c.id}, said ${S}: a miss that does not show`); const m = 2 * c.T - S; if (m >= 0 && m <= BOX_MAX) say(g === gap(m, c.T), `${c.id}: ${S} and ${m} are as far out and cost differently`); } }
   console.log(`  ${band.padEnd(6)} steps ${String(BANDS[band]).padEnd(15)} ${String(all.length).padStart(2)} problems: ${all.map(c => c.id).join(' ')}`); }
 say(Object.keys(BANDS).every(b => BANDS[b].indexOf(EXAMPLE.step) < 0), 'the finished example\'s step is in a band'); say(EXAMPLE.step * EXAMPLE.n === 180, 'the finished example comes to 180'); say(EXAMPLE.step * EXAMPLE.n !== 2 * SHOWN * EXAMPLE.step, 'the finished example is a double of the last cut');
-/* the note's worked example */ say(pool('low').some(c => c.id === '6x7'), 'the note\'s example (6, 12, 18, 24; count day 7) is not a low problem'); say(gap(36, 42) === 6 && gap(48, 42) === 6 && gap(99, 42) === 42 && gap(108, 42) === 42 && gap(42, 42) === 0, 'the note\'s example: said 36, 48, 99, 42'); say(classify(6, 7, 18) === 'read' && classify(6, 7, 36) === 'count' && classify(6, 7, 66) === 'read', 'the note\'s named faults');
-/* 3. made-up children. What each says: */
-const KINDS = { 'always right': c => c.T, 'one count day over, always': c => c.T + c.k, 'only the mats to come, always': c => c.k * (c.n - SHOWN), 'adds the last two cuts, always': c => 7 * c.k, 'doubles the last cut, always': c => 8 * c.k,
-  'wrong until taught, then right': (c, ph, b, r, mem) => { if (ph === 'sung') mem[b] = 1; return mem[b] || b === 'small' ? c.T : c.T - c.k; }, 'cannot do the small row either': (c, ph) => ph === 'sung' ? c.T : c.T + 1, 'right half the time': (c, ph, b, r) => r() < .5 ? c.T : c.T - c.k, 'right 8 times in 10': (c, ph, b, r) => r() < .8 ? c.T : c.T + c.k };
-console.log('\n3,000 made-up children of each kind, through three towns:');
-for (const name of Object.keys(KINDS)) { const ends = {}, yrs = []; let dry = 0, rel1 = 0, rel2 = 0, rel3 = 0, firsts = 0, most = 0;
-  for (let seed = 1; seed <= 3000; seed++) { const rnd = rng(seed), r2 = rng(seed + 99991), res = trial((c, ph, b, mem) => KINDS[name](c, ph, b, r2, mem), rnd); let y = 0; const ids = [];
-    for (const t of res.towns) { ends[t.end] = (ends[t.end] || 0) + 1; y += t.years; most = Math.max(most, t.years); t.log.forEach(l => { if (/^sung:/.test(l)) return;      /* the two missed rows made again with the singer are meant to come twice */ const m = /:(\d+x\d+)/.exec(l); if (m) ids.push(m[1]); }); if (t.end === 'first') firsts++; }
-    yrs.push(y); dry += res.note.dry; rel1 += res.note.relaxed[1]; rel2 += res.note.relaxed[2]; rel3 += res.note.relaxed[3] + res.note.relaxed[4]; say(new Set(ids).size === ids.length, `${name}, child ${seed}: a problem came twice`);
-    /* a fixed habit must not be waved through: at most one town at the first try */ if (/always$/.test(name) && name !== 'always right') say(res.towns.filter(t => t.end === 'first').length <= 1, `${name}, child ${seed}: learned ${res.towns.filter(t => t.end === 'first').length} towns at the first try`); }
-  say(dry <= (/half/.test(name) ? 30 : 0), `${name}: a band was used up for ${dry} of 3000 children`);      /* only a coin-flip child may ever use a whole band up, and then for fewer than 1 in 100 */ say(most <= 12, `${name}: ${most} years in one town`);
-  yrs.sort((a, b) => a - b); console.log(`  ${name.padEnd(32)} years for three towns: ${yrs[0]} to ${yrs[yrs.length - 1]} (middle ${yrs[1500]}); most in one town ${most}; towns ended: ${Object.keys(ends).map(e => e + ' ' + ends[e]).join(', ')}${dry ? `; a whole band was used up for ${dry} children` : ''}${rel3 ? `; two problems running shared a step ${rel3} times` : ''}`); }
-console.log(bad.length ? '\nFAILED:\n  ' + [...new Set(bad)].slice(0, 30).join('\n  ') : '\nok: every problem holds; every miss shows as dark windows and too few costs what too many costs; through three towns no child met a problem twice, and no fixed habit was waved through');
+/* the note's worked example */ say(pool('low').some(c => c.id === '6x7'), 'the note\'s example (6, 12, 18, 24; count day 7) is not a low problem'); say(gap(36, 42) === 6 && gap(48, 42) === 6 && gap(99, 42) === 42 && gap(108, 42) === 42 && gap(42, 42) === 0, 'the note\'s example: said 36, 48, 99, 42'); say(classify(6, 7, 18) === 'read' && classify(6, 7, 36) === 'count' && classify(6, 7, 66) === 'read', 'the note\'s named faults'); say(classify(3, 9, 15) === 'both' && classify(3, 9, 30) === 'both' && classify(3, 9, null) === 'skip', 'a reply that tells nothing is not called a counting fault');
+/* 3. made-up children. What each says. Each kind names the path it must take in the first town, and how its towns must end. */
+const KINDS = {
+  'always right':                    { say: c => c.T, ends: /^(first)$/ },
+  'right 8 times in 10':             { say: (c, ph, b, r) => r() < .8 ? c.T : c.T + c.k },
+  'right half the time':             { say: (c, ph, b, r) => r() < .5 ? c.T : c.T - c.k, dry: 30 },
+  'one count day over, always':      { say: c => c.T + c.k, path: 'count', habit: 1 },
+  'only the mats to come, always':   { say: c => c.k * (c.n - SHOWN), path: 'read', habit: 1 },
+  'adds the last two cuts, always':  { say: c => 7 * c.k, habit: 1 },
+  'doubles the last cut, always':    { say: c => 8 * c.k, habit: 1 },
+  'adds the last three cuts, always':{ say: c => 9 * c.k, habit: 1 },
+  'wrong until taught, then right':  { say: (c, ph, b, r, m) => { if (ph === 'sung') m[b] = 1; return m[b] || b === 'small' ? c.T : c.T - c.k; }, path: 'count', ends: /^(gate)$/ },
+  'taught, needs every second try':  { say: (c, ph, b, r, m) => { if (ph === 'sung') m[b] = 1; if (b === 'small') return (m.sm = (m.sm || 0) + 1) % 2 ? c.T + 1 : c.T; if (ph === 'gate' && m[b] && !m['g' + b] && (m['q' + b] = (m['q' + b] || 0) + 1) === 3) { m['g' + b] = 1; return c.T - c.k; }      /* misses the LAST question of the first gate: the longest way */ return m[b] ? c.T : c.T - c.k; }, path: 'count', ends: /^(gate)$/ },
+  'misreads until told again':       { say: (c, ph, b, r, m) => { if (ph === 'told') m.told = 1; return m.told ? c.T : c.k * (c.n - SHOWN); }, path: 'read', ends: /^(gate|first)$/ },      /* once told, every later town is right at the first try */
+  'cannot do Promise either':        { say: (c, ph) => ph === 'sung' ? c.T : c.T + 1, path: 'count', ends: /^(rest)$/ },
+  'always decides without me':       { say: () => null, path: 'singer', ends: /^(rest)$/ },
+  'decides without me, then learns': { say: (c, ph, b, r, m) => { if (ph === 'sung') m[b] = 1; return m[b] ? c.T : ph === 'assess' || ph === 'probe' ? null : c.T - c.k; }, path: 'singer', ends: /^(gate)$/ } };
+function play(name, gates) { const K = KINDS[name], ends = {}, yrs = [], firsts = {}; let dry = 0, asked = 0, sameK = 0, sameN = 0, sameT = 0, short = 0, most = 0;
+  for (let seed = 1; seed <= 3000; seed++) { const rnd = rng(seed), r2 = rng(seed + 99991), res = trial((c, ph, b, mem) => K.say(c, ph, b, r2, mem), rnd, gates); let y = 0; const ids = [];
+    for (const t of res.towns) { ends[t.end] = (ends[t.end] || 0) + 1; y += t.years; most = Math.max(most, t.years); t.log.forEach(l => { if (/^sung:/.test(l)) return;      /* the two missed rows sung again are meant to come twice */ const m = /:(\d+x\d+)/.exec(l); if (m) ids.push(m[1]); }); }
+    const f = (/:(\d+x\d+)/.exec(res.towns[0].log[0]) || [])[1]; firsts[f] = (firsts[f] || 0) + 1;
+    yrs.push(y); dry += res.note.dry; asked += res.note.asked; sameK += res.note.sameK; sameN += res.note.sameN; sameT += res.note.sameT; short += res.note.short;
+    if (gates !== GATE_TRIES) continue;
+    say(new Set(ids).size === ids.length, `${name}, child ${seed}: a problem came twice`);
+    if (K.habit) say(res.towns.filter(t => /^(first|slip|gate)$/.test(t.end)).length <= 1, `${name}, child ${seed}: a fixed habit lit ${res.towns.filter(t => /^(first|slip|gate)$/.test(t.end)).length} towns`);
+    if (K.path) say(res.towns[0].path === K.path, `${name}, child ${seed}: the first town took the ${res.towns[0].path} path, not the ${K.path} path`);
+    if (K.path === 'read') say(res.towns.every(t => !t.log.some(l => /^small/.test(l) || /^sung:/.test(l))), `${name}, child ${seed}: a reading fault was sent to Promise or the song`);
+    if (K.ends) say(res.towns.every(t => K.ends.test(t.end)), `${name}, child ${seed}: a town ended ${res.towns.map(t => t.end).join(', ')}`);
+    say(res.towns.filter(t => /small/.test(t.log.join(' '))).length <= 1, `${name}, child ${seed}: Promise came in more than one town`);
+    const last = res.towns[res.towns.length - 1]; say(res.towns.length === 3 || /^(rest|none left)$/.test(last.end), `${name}, child ${seed}: the trial stopped without an end`); }
+  yrs.sort((a, b) => a - b); const nf = Object.keys(firsts).length, topF = Math.max(...Object.values(firsts));
+  return { name, lo: yrs[0], hi: yrs[yrs.length - 1], mid: yrs[1500], most, ends, dry, asked, sameK, sameN, sameT, short, nf, topF }; }
+console.log(`\n3,000 made-up children of each kind, through three towns (gate: ${GATE_TRIES} tries):`);
+const rows = Object.keys(KINDS).map(name => play(name, GATE_TRIES));
+for (const r of rows) { const K = KINDS[r.name]; say(r.dry <= (K.dry || 0), `${r.name}: a band was used up for ${r.dry} of 3000 children`); say(r.most <= 10, `${r.name}: ${r.most} years in one town`);
+  console.log(`  ${r.name.padEnd(33)} years ${r.lo === r.hi ? r.lo : r.lo + ' to ' + r.hi} (middle ${r.mid}); most in one town ${r.most}; towns ended: ${Object.keys(r.ends).map(e => e + ' ' + r.ends[e]).join(', ')}${r.dry ? `; a band used up for ${r.dry}` : ''}${r.short ? `; a short gate passed ${r.short} times` : ''}`); }
+const all = rows.reduce((a, r) => ({ asked: a.asked + r.asked, sameK: a.sameK + r.sameK, sameN: a.sameN + r.sameN, sameT: a.sameT + r.sameT }), { asked: 0, sameK: 0, sameN: 0, sameT: 0 });
+console.log(`\nTwo problems running, of ${all.asked} asked: the same step ${all.sameK} times, the same count day ${all.sameN}, the same answer (or the last answer said) ${all.sameT}.`);
+const ar = rows.find(r => r.name === 'always right'); console.log(`First problems: ${ar.nf} different ones among 3,000 "always right" children; the commonest is given to ${ar.topF}.`);
+say(ar.nf >= 6 && ar.topF <= 750, `the first problem is nearly fixed: ${ar.nf} different, the commonest ${ar.topF} of 3000`);
+const g3 = Object.keys(KINDS).map(name => play(name, GATE_TRIES === 2 ? 3 : 2)), g3dry = g3.filter(r => r.dry).map(r => `${r.name} ${r.dry}`), g3m = Math.max(...g3.map(r => r.most)), g3h = g3.find(r => r.name === 'right half the time');
+console.log(`With ${GATE_TRIES === 2 ? 'the engine\'s three gate tries in place of two' : 'two gate tries'}: a band used up for ${g3dry.length ? g3dry.join(', ') : 'nobody'}; most years in one town ${g3m}; "right half the time" ${g3h.lo} to ${g3h.hi} years.`);
+console.log(bad.length ? '\nFAILED:\n  ' + [...new Set(bad)].slice(0, 30).join('\n  ') : '\nok: every problem holds; every miss shows as dark windows and too few costs what too many costs; through three towns no child met a problem twice; a fixed habit lights one town at most; each kind takes its path and finishes; Promise comes once; the first problem is not fixed');
 process.exit(bad.length ? 1 : 0);

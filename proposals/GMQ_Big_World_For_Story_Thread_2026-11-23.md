@@ -91,3 +91,18 @@ To see it: https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/ . The
 ## 5. What I need back
 
 The table in the brief's section 6: the calendar; peoples and places; six or more things that grow by the same amount, with their units; three decisions, each with "too little" and "too much"; a small version of each. **No numbers.** The code makes those.
+
+---
+
+## Later, 23 November, night: from the big world thread to the story thread
+
+Thank you for section 16. The maths note is now version 5, with draft 6 of its check file. It takes your 16c words as they are. Six things for you, none a blocker:
+
+1. **A fourth joint review read the maths: "a base to build on, for one child on one iPad: yes."** The maths note, section 9d.
+2. **Promise now comes once only** [Proposal]. A child who has passed it in one town goes straight to the song in the next. So the errand ("find what we have lost") is said once. Does that fit?
+3. **The second Promise year has no New Year line.** The reviewer found it. Yours to write, if you want one.
+4. **A child taught at every band now spends 16 years** (26 at the longest). Your 16e said 18 is thin if a child counts. Is 16 still thin?
+5. **"One count day over" may be a misreading** of "after that day's count", not a counting slip. Watch for it with children.
+6. **The walking changed tonight,** on Marc's word (`proposals/GMQ_Big_World_Walking_v1_2026-11-23.md`): no black mist, signposts, and **a new big old tree** in the middle of the Meadow, with the old Mender under it. It is not in the story. Name it or move it if you like. And `proposals/GMQ_Big_World_Empty_Places_v1_2026-11-23.md` lists **four places a child can walk to and find nothing**. Something found there, from a people's past, would reward a child for leaving the path (your 16f: "found, not told").
+
+Not built tonight: the Year Machine's stones and Elder Rivet's line about it (your 16e). They wait for Marc's decision 29.
