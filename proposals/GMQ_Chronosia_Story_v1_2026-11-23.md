@@ -14,7 +14,8 @@
 - **I found 35 contradictions and loose threads.** Section 7. Each has a fix. Five are faults a child could catch.
 - **Of 30 built tasks: 12 keep, 12 rework, 5 merge into others, 1 becomes scenery. One task is new:** Sara's history wall. Nothing a child has earned is lost. Section 4.
 - **Your lantern chain of today is section 5.** The cave is black. Nothing can be done there without the lantern.
-- **Fifteen decisions are yours.** Section 11.
+- **Sixteen decisions are yours.** Section 11.
+- **Room to grow:** the walked map is one valley of eight. The other seven are where a larger Chronosia, and a deeper culture, would go. Section 5g.
 
 ### The story in one breath [Proposal]
 
@@ -544,6 +545,30 @@ You wrote: "for this world. Or galaxy." This thread's job is Chronosia. So this 
 - **Each world of Galaxy Metrica keeps one measure for all the others:** Chronosia keeps time, Lengthar keeps length, Xylophora keeps area. [Source: the galaxy's planets and their maths.] A cadet who helps all three has mended the galaxy's measures.
 - **What it costs:** one or two lines on Voltara, Xylophora and Lengthar. Those planets have their own notes and their own stories. I have not checked this idea against them.
 
+### 5g. Room to grow: the eight valleys
+
+[Source: Marc, 23 November: "each of these planets will be expanded into very much larger ones. With dozens of quests if need be spread across them. To keep practicing / advancing the skills. And this is where we can get deeper?"]
+
+**Yes. And the story above was shaped so that it can.** Added after the review; the reviewer has not read this part. All [Proposal].
+
+- **The map a child walks today is one valley of eight.** The other seven are seen from the tower. Each is a region waiting to be built, the way Algora has its Meadow and its Reach.
+- **Each valley is where the culture gets deeper.** Its own stripe of sky, its own hour, its own people: homes, food, work, games, songs. Today's valley is the Council's, so it is all clocks and officials. A farming valley, a river valley and a mountain valley would not be.
+- **Each valley can carry a band of skill.** A sketch, not a plan:
+
+| Valley | The people's life | The maths that life needs |
+|---|---|---|
+| The Council's (built) | clocks, missions | time to the minute; minutes between; patterns |
+| A market valley | stalls that open and shut by the hour | timetables; adding and subtracting hours and minutes |
+| A river valley | boats and tides on the slow and fast river | time and distance; tide tables that get harder |
+| A valley under a different stripe | its hour is not the Council's hour | the difference between two places' times. That is Grade 4 and 5 maths, and it is already in your world: each stripe is a time zone. |
+
+- **Two kinds of quest, so that dozens do not become "random things" again:**
+  1. **Story quests** happen once. Each begins with a person in a valley who needs something because of how they live.
+  2. **Daily work** can be done again and again, with new numbers each time: the runners' rounds, the baker's slow bread, the tide at the cave. This is where practice lives. It is the people's ordinary life, so it needs no new story each time.
+- **What holds dozens of quests together:** the fact sheet in section 2. Every new quest must agree with it, and must pass your four questions. Sara's wall grows with each valley: each has old places of its own.
+- **What I would not do yet:** design seven valleys now. Your plan says Algora is the pilot: see how one large planet plays, then grow the others. The spine can be approved and built first. A valley can be added to it later without changing it.
+- **What could prove this wrong:** if the spine is too tight. A story that explains everything can leave no room for a surprise. If a new valley's best idea would break a rule here, change the rule, and tell every thread.
+
 ---
 
 ## 6. The big quest, and the ship part
@@ -738,6 +763,10 @@ Each has what it costs. My pick is marked. Throw it out if you see it differentl
     - **C:** your own history for Chronosia. Tell me the bones, and I will fit the evidence to it.
     - Every name, year and custom is mine. Change any. The eight valleys have no names yet: they are yours to give.
 15. **A thread for the whole galaxy** (section 5f): the Nomads' old trade road, and one measure for each world. Shall I work it out properly, with the other planets' notes in front of me? Or is the galaxy's story the main thread's job?
+
+16. **Growing Chronosia by valleys** (section 5g).
+    - **A (my pick):** approve the spine now; build it in today's valley; add valleys after Algora has been played. Cost: the deeper culture waits.
+    - **B:** design the second valley now, as its own note. Cost: it is designed before Algora has shown what works on a large planet.
 
 **Older decisions this note leans on:** the plan's 1 (lasting upgrade or card), 7 (the Clockmaker), 9 (mistakes), 13 (the recipe).
 
