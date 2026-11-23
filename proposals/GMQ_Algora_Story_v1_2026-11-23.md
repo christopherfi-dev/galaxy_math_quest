@@ -66,7 +66,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 |---|---|---|---|---|---|
 | 1 | Beans | plot | count day | sacks | eating, in the white months |
 | 2 | River rice [Built] | plot | count day | baskets [Built] | eating |
-| 3 | Fish | boat | count day | strings | eating |
+| 3 | Fish | boat | count day | strings | eating. What is over the need is sold for lamp oil, which no town can grow. |
 | 4 | Fruit [Built: the orchard] | tree | count day | jars | eating |
 | 5 | Roof reed | plot | count day | bundles | new roofs, before the rain. Roofs rot each wet season. |
 | 6 | Stone [Source: "how much stone do we need in the 12th month", 22 November, in `INFO_FROM_MARC.md`] | cart | count day | blocks | the flood wall. The high water rolls it down every year. |
@@ -77,8 +77,8 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 | | The decision | Why it cannot be changed later | Too little | Too much | A small version |
 |---|---|---|---|---|---|
 | **A. How many?** | In sowing week: how many of the town's plots are sown with food. The rest are sown with roof reed. | Seed takes only in the new mud, in the first week. | The food pile stops short. White month 3 is thin. Every bowl is smaller. Then it is New Year. | More food than was needed. But too few plots of reed: some roofs are not mended, and drip. | A family's garden: a few plots, food or reed for their own roof. |
-| **B. How much?** | At the Lake Market: how many strings of fish the town's boats will bring in, in all, by Last Raft. The keeper trades on the cadet's word. | Only keepers may trade, and keepers leave their towns once a year, for the lake. A word given there is kept. | Said too little: the keeper buys fish the town did not need, and pays in roof reed. Roofs drip. | Said too much: the keeper sells fish the town turns out not to have. The fish jars run out in White month 3. | A family with one boat: its catch, and a roof mat to trade for. |
-| **C. For how long?** | At New Year: for how many months the town hires the Furrows' carts, so the wall has stone enough. | The Furrows have few carts. At New Year every cart-month is promised to some town. There are none left to ask for later. | The carts go to another town too soon. The wall is short at one end. In White month 1 the water comes over there. The town bails out together. | The carts come for a month too many, and are paid for in food. To grow that food, plots were taken from reed. Roofs drip. | A family's doorstep wall, and a neighbour's hand cart for so many months. |
+| **B. How much?** | At the Lake Market: how many strings of fish the town's boats will bring in, in all, by Last Raft. The keeper sells what is over the town's need, for lamp oil. | Only keepers may trade, and keepers leave their towns once a year, for the lake. A word given there is kept. | Said too little: she sells too few strings, and brings home too little oil. In the white months the lamps go out early. Spare fish sits in the jars. | Said too much: she sells fish the town turns out not to have. Plenty of oil. But the fish jars run out in White month 3. | A family with one boat: its catch, and oil for one lamp. |
+| **C. For how long?** | At New Year: for how many months the town hires the Furrows' carts, so the wall has stone enough. | At New Year every cart-month is promised: to a town, or to the Furrows' own terraces. There are none left to ask for later. | The carts go to another town too soon. The wall is short at one end. In White month 1 the water comes over there. The town bails out together. | The carts come for a month too many, and are paid for in food. To grow that food, plots were taken from reed. Roofs drip. | A family's doorstep wall, and a neighbour's hand cart for so many months, paid in jars of fruit. Jars paid away are jars not eaten. |
 
 **One decision for each town, each year, and in this order: A, then C, then B.** Section 3 says why, and what the keeper does about the other two.
 
@@ -125,7 +125,7 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 | **Gold month 7** | The S.S. Infinity comes through the Gate. The Gate breaks. The machines go dark, just as the loads must be worked out. The call for help goes out [Built]. **The cadet lands.** The high water is coming [Built]. | |
 | **Last Raft** | The Reach's fleet [Built] is this day's work. | The fleet sails when the cadet has loaded it. Or the cadet tells the harbour keeper to sail without them: she loads by guess, and the towns are a little short. |
 | **White months 1 to 3** | High water. This year's stores were planned by the machines, before the ship's crew came. So every town is a little short. | Shown, not walked: one picture for each town. Then New Year. |
-| **Gold month 1, New Year** | The machines are still dark. For the first time in sixty years, somebody must draw the line by hand. **The deciding years begin here.** | |
+| **Gold month 1, New Year** | The machines are still dark. For the first time in sixty years, somebody must make the plan by hand. **The deciding years begin here.** | |
 
 **The Meadow's machines [Built] have no date.** They can be done in any gold month.
 
@@ -144,13 +144,13 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 
 | | Until she has learned it, the keeper... | What that costs | Is it seen as a miss? |
 |---|---|---|---|
-| **A, sowing** | sows half food, half reed, by habit | too little of one, a little too much of the other | Yes. This is why every unhelped town is a little short. **So A is always asked first.** |
+| **A, sowing** | sows half food, half reed, because she cannot work it out | too little of one, a little too much of the other | Yes. This is why every unhelped town is a little short. **So A is always asked first.** |
 | **C, the carts** | hires the carts for all seven months | food, to pay for months she did not need | No. The pay is inside the need she tells the cadet in an A year. The wall is always finished. |
-| **B, the fish** | does not trade at all | a few strings too few, or a few wasted | No. Fish is nobody's sowing. It touches neither plots nor wall. |
+| **B, the fish** | sells only a few strings, to be safe | too little lamp oil. The lamps go out early in the white months. | It is seen, but it is the same in every town, every year, until B is learned. It touches neither plots nor wall, so a child does not take it for their own miss. It is the reason B is worth asking. |
 
-- **An A year:** the carts are hired for seven months and nothing is traded. If the cadet's sowing is right, the year comes out right.
+- **An A year:** the carts are hired for seven months, and the lamps go out early as they always have. If the cadet's sowing is right, the food and the roofs come out right.
 - **A C year** comes only after A is learned. The cadet decides the months at New Year. Then the keeper sows, rightly, for the town's food and that pay.
-- **A B year** comes only after A is learned. Fish is its own pile, with its own line.
+- **A B year** comes only after A is learned. Fish is its own pile, with its own line. The river always gives more than the town needs. If the cadet's word is right, the lamps burn all evening for the first time.
 - **When a keeper learns:** after a year that came out right. How many right years it takes is the engine's choice, not the story's. Until then she asks the same kind again, with new numbers.
 - **When she has learned it,** she does it herself and it comes out right. She asks for the next kind, or the same kind grown harder: "We are more houses this year."
 - **A town the cadet has never helped** is a little short every year, and its keeper says so. It is never a disaster, and never the best choice.
@@ -173,7 +173,7 @@ The five peoples, their names and their regions are [Built]. You have confirmed 
 - **The Twinseers watch the suns.** At New Year they say two things: how strong the gold sun is this year, and how high the water will come. So a plot brings in a different amount each year, and the wall needs a different height. That is why an old row on a wall is never this year's answer.
 - **The Eights are the ship's crew.** Guests. Extra mouths in every town's need. They cut wood for their keep. They can count patterns in a log. They do not know a plot from a pond, and they ask the cadet too.
 
-**The same need in many places:** three Rillfolk towns, the Mender village, the Furrows' terraces. Five towns, three kinds of decision, and a family in each town for the small version. A kind is asked again, with new numbers, until it comes out right. Whether five towns are enough for a whole class is the big world thread's to judge.
+**The same need in many places:** three Rillfolk towns, the Mender village, the Furrows' terraces. A is asked in all five. C in four: the Furrows do not hire their own carts. B in the three Rillfolk towns: only they have boats. Each has a family for the small version. A kind is asked again, with new numbers, until it comes out right. Whether five towns are enough for a whole class is the big world thread's to judge.
 
 ---
 
@@ -204,23 +204,26 @@ Your words: "they must analyze it and make a decision." [Source]
 ### B. How much? [Source: "How much do they need by month 11"; "if this growing pattern continues", 22 November, in `INFO_FROM_MARC.md`]
 
 - **When:** the Lake Market, after four count days. Only keepers may trade, and this is the one time they leave their towns.
-- **Why fish:** nobody sows fish. The boats bring what the river gives. So there is always a little too much, or a little too little, and something to trade.
+- **Why fish:** nobody sows fish. The boats bring what the river gives, and it is always more than the town needs. What is over can be sold.
+- **Why lamp oil:** no town can grow it. It comes from the hills, to the Market. Without it the white months are dark by supper.
 - **The cadet reads:** this year's four cuts in the fish row of the store wall. A real table, from nothing, the same amount more each time.
 - **The question, in these words:** "How many strings will the boats bring in, in all, by Last Raft?"
-- **The keeper trades on that word.** She knows what the town needs. If the cadet's number is less, she buys the difference and pays in roof reed. If it is more, she sells the extra for roof mats. The child is not asked for that sum. **What is traded moves on Last Raft,** so the seven cuts stay even.
-- **Said too little:** she bought fish the town did not need. The reed she paid with was for roofs. Some drip.
-- **Said too much:** she sold fish the town turns out not to have. A word at the lake is kept, so the fish goes. The fish jars run out in White month 3.
-- **The small version:** one family, one boat, and a roof mat to trade for.
+- **The keeper trades on that word.** She keeps what the town needs, and sells the rest for oil. The child is not asked for that sum. **What is traded moves on Last Raft,** so the seven cuts stay even.
+- **Said too little:** she sold too few strings, and came home with too little oil. The lamps go out early. Spare fish sits in the jars.
+- **Said too much:** she sold fish the town turns out not to have. A word at the lake is kept, so the fish goes. There is plenty of oil, and the fish jars run out in White month 3.
+- **Said right:** the lamps burn all evening, and the jars last to New Year.
+- **It cannot be dodged:** a child who only repeats the town's need sells nothing, and the town is dark.
+- **The small version:** one family, one boat, and oil for one lamp.
 
 ### C. For how long? [Source: "how much stone do we need in the 12th month", 22 November, in `INFO_FROM_MARC.md`]
 
 - **When:** New Year. The Furrows come down to shake hands. They have few carts, and every cart-month is promised to some town that day.
 - **Why a wall every year:** a low wall of river stone breaks the first rush of the water. The water rolls its stones down the bank. A wall that could stand for ever would take mountain stone, and more carts than there are.
-- **The keeper says:** how many blocks this year's wall needs. (The Twinseers have said how high the water will come.) How many carts the Furrows can send. What each cart brings on a count day.
+- **The keeper says:** how many blocks this year's wall needs. (The Twinseers have said how high the water will come.) How many carts the Furrows can send. What each cart brings on a count day. In a C year the town has plots enough for the right number of months, and no more.
 - **The cadet decides:** for how many months to hire the carts. The Furrows are paid in food, at Last Raft.
 - **Too few months:** the carts go on to another town. The wall is short at one end. In White month 1 the water comes over there. Wet floors. The town bails out together.
 - **Too many months:** the wall is finished, and the carts still come. A deal is a deal. The keeper had to sow more food to pay for them, so fewer plots of reed. Some roofs drip. The spare blocks lie in a heap: the wall is no better for them.
-- **The small version:** a family's doorstep wall, and a neighbour's hand cart for so many months.
+- **The small version:** a family's doorstep wall, and a neighbour's hand cart for so many months, paid in jars of fruit.
 
 **The decision already built** is a fourth: **send.** The Reach's fleet [Built] is the Last Raft job.
 
@@ -255,7 +258,7 @@ In real life a little extra is good sense. The story must not teach that care is
 
 | | What | What it costs |
 |---|---|---|
-| **A (my pick)** | **Extra food is never the mistake.** It is shared at the New Year feast. The mistake is what the extra cost: plots that should have been reeds, reeds paid away, food paid for carts. It is seen in the same town. | The code must give each town exactly enough for its needs, so that more of one is less of another. |
+| **A (my pick)** | **Extra food is never the mistake.** It is shared at the New Year feast. The mistake is what the extra cost: plots that should have been reed, or fish sold that the town did not have. It is seen in the same town. | The code must give each town exactly enough for its needs, so that more of one is less of another. |
 | **B** | A little too much is fine. Only a lot has a cost. | A line between "a little" and "a lot", which a child can find by guessing high. |
 | **C** | Too much is never a mistake at all. | A child who types a huge number is always right. That was a blocker in the tide post's review. |
 
@@ -267,14 +270,14 @@ In real life a little extra is good sense. The story must not teach that care is
 
 | What a child learns | Where | How they know |
 |---|---|---|
-| They once planned by hand. | every old store wall | old rows: a line first, then cuts climbing to it |
-| The machines took the planning. | the same walls | newer rows: cuts, and no line |
+| They once planned by hand. | every old store wall | old rows: a line, a scratched plan beside it, then cuts climbing to the line |
+| The machines took the planning. | the same walls | sixty newer rows: a line and cuts, and no plan beside them |
 | One year went wrong. | the same walls | one row whose cuts stop short of its line |
 | Each people counts its own way. | the Menders' bowls; the Rillfolk's song; the Furrows' white stones | the same count, three ways |
 | The Makers were their own people. | a family's coin [Built]; the stones at the Lake Market | a Maker's mark beside a family's mark |
 | A word is kept. | the Lake Market; the New Year handshake | a trade or a hiring is not undone, and nobody tries |
 | The year has two halves. | the sky | which sun is higher |
-| A plan can be made by hand again. | a store wall, after the cadet's year | a new row with a line on it |
+| A plan can be made by hand again. | a store wall, after the cadet's year | a new row with a plan mark beside it |
 
 - **A child's row shows only that a plan was made:** a small mark, in that child's colour. It shows neither the child's number nor how the year went. That stays in the child's own notebook. So nothing a child got wrong is left on a wall for others to see.
 - **Someone who remembers:** an old Rillfolk singer knows a counting song from her gran. She does not know what it is for. The song is a plan, sung.
@@ -404,4 +407,12 @@ A reviewer read this note with only `CLAUDE.md`, the brief, and the big world th
 | A keeper learned after one help, even a wrong one. | She learns after a year that came out right. Until then she asks the same kind again. |
 | B's question read three ways. | One wording: "How many strings will the boats bring in, in all, by Last Raft?" What is traded moves on Last Raft. |
 | Small things: "as her mother did"; sown reed against the built reed cutter; a keeper who knows the need can draw the line. | Each corrected. The lost skill is now exact: not the line, but what will reach it. |
+
+**Fourth read: 1 blocker, 0 major, 6 minor.** "A and C now hold." The blocker was decision B. What changed:
+
+| It found | What I changed |
+|---|---|
+| In B, a right answer could still leave roofs dripping; a small miss showed nothing; and a child could dodge it by repeating the town's need. | The river always gives more than the town needs. What is over is sold for lamp oil, which no town can grow. Too little said: dark evenings. Too much said: the fish jars run out. Repeating the need sells nothing, and the town is dark. |
+| "Five towns, three kinds" was overstated. | A in five towns, C in four, B in three. |
+| The family's hand cart had lost its pay. A keeper's "habit" after sixty years of machines. The line against the plan. | Each corrected. |
 
