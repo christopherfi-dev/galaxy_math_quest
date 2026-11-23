@@ -9,6 +9,7 @@
 #   5. the skin is enough for the four floors, and "how many more Homes?" has one answer, from 2 to 6
 #   RULE 2 (version 89, new games): the skin makes the WALLS. It is enough for the four shortest walls with 10 to 36 pieces to spare;
 #      "more Homes" is 3 to 6, and the skin the herder finds stays within 100 for every Home shape that fits the ground.
+#      No store of 16 pieces (a 4 by 4 store has area 16 and wall 16), and the store's best area is no other order's area.
 #      Rule 1 above is kept for games begun before version 89, so their numbers never change.
 #   6. the three floors on the building ground fit, with a path between them
 #   7. the Leafgrove grows enough leaves for careful roofs, and one more
@@ -57,7 +58,7 @@ def nums(seed, ver=1):
         sf = best_floor(W); st = sf[0] * sf[1]; f = 3 * k; T = h + p + st + f; n = (S - T) // h
         if ver == 2:
             n2 = 3 + int(r() * 4); spare = S - (best_wall(h) + best_wall(p) + W + fact_wall(f))
-            if 10 <= spare <= 36:
+            if 10 <= spare <= 36 and W != 16 and st not in (h, p, f):
                 v = dict(a=a, b=b, c=c, d=d, S=S, h=h, p=p, W=W, sf=sf, st=st, k=k, f=f, T=T, n=n2, spare=spare); break
             continue
         if 2 <= n <= 6:
@@ -145,6 +146,7 @@ for seed in range(1, N + 1):
     walls = best_wall(h) + best_wall(p) + W + fact_wall(f); spare = S - walls
     if not (10 <= spare <= 36) or spare != v['spare']: bad.append(f'rule 2, seed {seed}: skin {S}, the shortest walls need {walls}')
     if not (3 <= n <= 6): bad.append(f'rule 2, seed {seed}: more Homes {n}')
+    if W == 16 or v['st'] in (h, p, f): bad.append(f'rule 2, seed {seed}: the store\'s area {v["st"]} shows elsewhere, or equals its wall')
     hw = [(q, 2 * (q[0] + q[1])) for q in rects(p)]; bestP = min(x[1] for x in hw); hbest = [q for q, per in hw if per == bestP]
     store = [(w, W // 2 - w, w * (W // 2 - w)) for w in range(1, W // 4 + 1)]; bestA = max(x[2] for x in store); sbest = [x for x in store if x[2] == bestA]
     if len(hbest) != 1 or len(sbest) != 1: bad.append(f'rule 2, seed {seed}: no single best Hospital or Food Store')
@@ -166,7 +168,7 @@ print('Rule 2 (version 89): skin to spare after the four shortest walls:', ', '.
 print('Rule 2: more Homes:', ', '.join(f'{k} in {n2c[k]:,}' for k in sorted(n2c)))
 print(f'Rule 2: the thinnest Home alone would use more than the spare skin in {thin_short:,} seeds. Then the herder finds more skin: nobody is stuck.')
 print(f'Rule 2: check number for seeds 1 to 2,000: {check2}')
-EXPECT2 = 2783623   # the play test holds the same number
+EXPECT2 = 2787790   # the play test holds the same number
 if EXPECT2 and check2 != EXPECT2: bad.append(f'rule 2: the check number is {check2}, not {EXPECT2}: the rule changed')
 print(f'{N:,} seeds. Different sets of numbers: {len(sets):,}.')
 print('More Homes:', ', '.join(f'{k} in {n_count[k]:,}' for k in sorted(n_count)))

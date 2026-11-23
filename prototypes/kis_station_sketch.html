@@ -4377,7 +4377,7 @@ function xNums(seed, ver) { if (ver == null) ver = typeof S !== 'undefined' && S
   for (let i = 0; i < 400 && !v; i++) { const a = pk([8, 9, 10]), b = pk([6, 7, 8]), c = pk([3, 4, 5].filter(x => a + x <= 13)), d = pk([2, 3, 4, 5].filter(x => x <= b - 2)), S0 = a * b + c * d;
     const h = pk([6, 8, 12]), p = pk([12, 16, 20, 24]), W = pk([10, 12, 14, 16, 18]), k = pk([5, 6, 7, 8]), sf = xBestFloor(W), st = sf[0] * sf[1], f = 3 * k, T = h + p + st + f, n = Math.floor((S0 - T) / h);
     if (ver === 1) { if (n >= 2 && n <= 6) v = { a, b, c, d, S: S0, h, p, W, sf, st, k, f, T, left: S0 - T, n, rem: (S0 - T) % h }; continue; }
-    const t = { a, b, c, d, S: S0, h, p, W, sf, st, k, f, T, n: 3 + Math.floor(r() * 4) }, spare = S0 - xWmin(t); if (spare >= 10 && spare <= 36) v = t; }
+    const t = { a, b, c, d, S: S0, h, p, W, sf, st, k, f, T, n: 3 + Math.floor(r() * 4) }, spare = S0 - xWmin(t); if (spare >= 10 && spare <= 36 && W !== 16 && st !== h && st !== p && st !== f) v = t; }      /* W 16 makes a 4 by 4 store: area 16 and wall 16, the very mix-up to avoid; and no other order on the board may show the store's answer */
   v.fx = r() < .5; v.fy = r() < .5; v.field = pk([[4, 2], [4, 3], [4, 4], [6, 2], [6, 4], [8, 2], [8, 3], [8, 4]]); v.part = v.field[0] * v.field[1] / 4; v.bestP = xBestWall(v.p);
   const hd = xRects(v.p).find(q => 2 * (q[0] + q[1]) === v.bestP), fr = xRects(v.f).filter(q => q[0] <= 3 && q[1] <= 10);
   v.need = { home: Math.min.apply(null, xRects(v.h).map(q => xLv(q[0], q[1]))), hosp: xLv(hd[0], hd[1]), store: xLv(v.sf[0], v.sf[1]), fact: Math.min.apply(null, fr.map(q => xLv(q[0], q[1]))) };

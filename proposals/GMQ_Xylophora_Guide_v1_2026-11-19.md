@@ -34,6 +34,8 @@ You said: "You choose. You have the standards now." This is what I chose, why, a
 
 **Numbers:**
 - **New games use rule 2.** The skin is enough for the four shortest walls, with 10 to 36 pieces to spare. Checked on 20,000 seeds in `checks/xylophora_quest_check.py`.
+  - **No Food Store of 16 pieces.** Its best floor would be 4 by 4: area 16 and wall 16, the same number. That invites the very mix-up between area and perimeter.
+  - **The store's best area is never another order's area,** so the board never shows the store's answer. The play test found both.
 - **Games begun before version 89 keep rule 1,** so their numbers never change. Checked: 3,000 seeds give the same numbers as the class link.
 
 **A number to check, from your message:** a 3 by 2 house has a perimeter of 10 (3 + 2 + 3 + 2), not 8.

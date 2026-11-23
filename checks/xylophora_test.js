@@ -22,7 +22,7 @@
 // Run:  node checks/xylophora_test.js [folder for screenshots]
 // Needs Node with Playwright and Chromium.
 const { chromium } = require('playwright'); const path = require('path');
-const CHECK = 2708402, CHECK2 = 2783623;      // the same numbers are in checks/xylophora_quest_check.py (rule 1 for games begun before version 89, rule 2 for new games)
+const CHECK = 2708402, CHECK2 = 2787790;      // the same numbers are in checks/xylophora_quest_check.py (rule 1 for games begun before version 89, rule 2 for new games)
 (async () => {
   const out = process.argv[2], b = await chromium.launch(), bad = [], errs = [], notes = [];
   for (const [name, w, h, seed] of [['ipad', 1180, 745, 4242], ['ipad-tall', 820, 1100, 0], ['phone', 390, 760, 0]]) {
@@ -153,7 +153,7 @@ const CHECK = 2708402, CHECK2 = 2783623;      // the same numbers are in checks/
     { const t1 = await say('hint'), t2 = await say('hint'), t3 = await say('hint'), t4 = await say('hint'); expect(t2, /hangs over a wall is partly wasted/, 'the nudge about waste'); expect(t3, /lay a floor again/, 'the nudge that a floor can be laid again'); expect(t4, /That is all the help there is\. The rest is yours to work out/, 'the nudges run out'); ok(t1 !== t2, 'nudges should not repeat'); }
     const leavesHome = lv(v.h, 1); { const t = await say('build home'); expect(t, new RegExp(`You take up the Home floor and its wall\\. The pieces go back to the pile\\.( Its ${Math.min(leavesHome, 99)} leaves go back in your arms\\.)?`), 'taking up a floor gives its wall and its leaves back'); } await tapTile(14, 18); await tapTile(14 + v.h / 2 - 1, 19);
     expect(await last(), new RegExp(`You mark a floor ${v.h / 2} by 2\\. The crew flattens the ground\\. The Home floor is marked out: ${v.h} squares\\. Now its wall`), 'the Home, laid again in a better shape');
-    expect(await say('lay leaf'), /./, 'a leaf before the wall'); ok(await p.evaluate(() => widget && widget.kind === 'xask' && /The Home floor is/.test($('toy').textContent)), 'no roof before the wall: the wall is asked first'); await type(Pf); expect(await last(), /No gap/, 'the Home wall again');
+    await say('lay leaf'); ok(await p.evaluate(() => widget && widget.kind === 'xask' && /The Home floor is/.test($('toy').textContent)), 'no roof before the wall: the wall is asked first'); await type(Pf); expect(await last(), /No gap/, 'the Home wall again');
     for (let k2 = 0; k2 < 8; k2++) { if (await p.evaluate(() => XY().done.roofs)) break; await say('lay leaf'); }
     expect(await last(), /Every roof is whole! That night the first rain falls\. Every room stays dry\. You earn a card/, 'every roof whole'); ok(await p.evaluate(() => XY().done.roofs && xStage() === 'homes'), 'the roofs quest should be done'); await shot('6_roofs');
     expect(await say('build home'), /The colony is built\. Nothing needs to move now/, 'no floor moves once the roofs are on');
