@@ -701,6 +701,8 @@ Your class has version 81. On it they may have done the six quests and up to 19 
 
 Each has what it costs. My pick is marked. Throw it out if you see it differently.
 
+**Decided on 23 November** [Source: Marc: "Your four are fine."]: decision 1 (A), decision 2 (A), decision 14 (A), and the glow stone in decision 6 (B, a trader at Galactic Trade). The other twelve are still open. The build list is `proposals/GMQ_Chronosia_Story_Build_List_v1_2026-11-23.md`.
+
 1. **The cause.**
    - **A (my pick):** extra trips by night tear the sky. Eight missions a year it can mend. Gain: one cause for the quakes, the case, the guard and the cave. Cost: your Council was careless for years.
    - **B:** nobody knows why the sky tore. Gain: the Council stays pure heroes, and the story is simpler for an eight-year-old. Cost: the case and the guard need another reason, which I have not found.
