@@ -2,7 +2,7 @@
 
 **Date:** 23 November 2026. **For:** Marc. **From:** the big world thread.
 **Nothing here is built.** Everything is **[Proposal]** unless it says [Source].
-**It has not been reviewed yet.** It goes to an independent reviewer before any building.
+**It was reviewed the same day, and it failed: 6 blockers. Nothing will be built from this note.** The review is in section 9. Sections 1 to 2c (your rule, your engine, the skill map, the three conflicts) still stand. **The trial problem in section 4 does not.**
 
 ---
 
@@ -202,3 +202,41 @@ Not designed here. Only what the rule would mean, and how big the change is.
 | 6 | Three in a row | Your engine's rule, as it is. Or two in a world, where each problem takes longer than a typed sum | yours |
 | 7 | A child with a missing foundation | A villager takes the job over, and your report shows it (this note). Or the quest waits for the child | this note |
 | 8 | Does the tide post take the fleet's place as the Reach's big quest? | Yes: the Reach's big quest becomes a pattern. No: it is a second job beside the fleet | **yours. I do not know** |
+
+---
+
+## 9. The review: 6 blockers. Not built.
+
+The reviewer worked every example again. **The four worked examples are right.** It also listed every case the number rule allows: there are only 72 problems of full size.
+
+### The blockers
+
+| | Blocker | A case |
+|---|---|---|
+| B1 | **"Day 12" reads two ways.** The keeper paints each morning, and the water climbs during the day too | 5, 8, 11, 14. The morning line on day 12 is 38. The water at the end of day 12 is 41. I called 41 "the common mistake". A careful reader gets it honestly, and is then stepped down |
+| B2 | **My "smaller" problem rewards the wrong method.** It starts at the step, so day × step is always right | 5, 10, 15, 20: day 7 is 7 × 5. A child stepped down for exactly that thinking gets it right, then goes back to a size where it is wrong in 63 of 72 cases |
+| B3 | **When the start equals the step, two mistakes cancel** | 3, 6, 9, 12: day 12 is 36 by the right way, and by day × step. 9 of the 72 cases |
+| B4 | **"Too high" shows a dry town, and the engine counts it wrong.** The child sees success and is then stepped down | A child who types 99 every time keeps every town dry |
+| B5 | **The towns run out.** One problem, one new one, then three in a row: two of the three towns are already used | By your engine's rule, the worst case in this one family is **14 problems, 12 of them full size: 45 to 60 minutes**, ending in "move on" |
+| B6 | **The harder size breaks the story.** High water is day 12, so there is no day 24, and the water never reaches mark 41 | |
+
+### The major faults that matter most
+
+- **It is "what comes next" with a story on top, not a decision from a table.** There is one row of four numbers. Nothing is weighed or chosen. **You said "how much stone do we need in the 12th month". I changed the quantity to a water line.** With stone, too little and too much both hurt in a natural way.
+- **I rebuilt your engine as fixed code, with no AI, and did not list that as your decision.** Your engine leans on judgement: classify the error, find the skill underneath. Fixed code with one "smaller" problem is a lesser thing.
+- **My advice bent your answer.** You said "your planet is the trial". I made one new problem the trial and left the seven built tasks saying "wrong".
+- **Your own words pull two ways** [Conflict]: on 16 November the engine was "a bit too much", and mini quests are 3 to 5 problems. On 23 November stepping down "is in the maths skills engine". I took the whole of the engine without asking how much of it you mean.
+- Section 2's line "the world does not give the answer" was wrong as I built it: the true mark can be read off the post afterwards.
+- Day 12 needs 11 × 3: outside the 10 × 10 table. The tables question is still open.
+
+### What I take from it
+
+This is the fourth design of mine in two days to fail a review on paper: the Hills twice, the sunk raft, and this. Each time I invented the problem myself. **I should start from one of your problems, not mine.**
+
+### What I need from you before I design again
+
+1. **Give me one story problem of yours** that has a table and a decision: from Exemplars, or one of your own from 2023. I will fit the rule and the engine to it, and change as little of it as I can.
+2. **How much of the engine belongs in a world?** All of it (up to 14 problems in one place)? Or a shorter form: one new problem, one smaller, one back?
+3. **A child builds a little too high, to be safe. Right, or wrong?** In real life it is good sense.
+4. **May the engine's steps run as fixed code for now,** until the AI is in the page?
+5. **"Your planet is the trial":** one new problem first, or change the built tasks as well, in the same go?
