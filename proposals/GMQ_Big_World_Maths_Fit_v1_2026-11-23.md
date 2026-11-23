@@ -4,12 +4,12 @@
 **Read with:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md`.
 **Nothing here is built.** Everything is **[Proposal]** unless it says [Source].
 
-**This is version 2.** One reviewer read version 1 and the story together. Its verdict: **"Not yet a base to build on. Close, for one child playing alone."** It found 6 blockers. Section 9 lists them.
+**This is version 3.** One reviewer read version 1 and the story together. Its verdict: **"Not yet a base to build on. Close, for one child playing alone."** It found 6 blockers. Section 9 lists them. Version 2 answered them and asked six things of the story thread. **The story thread said yes to all six** (its section 14), and version 3 is brought in line with its words.
 
 **What changed:**
 - **Only the first kind of decision is fitted now: "how much?"** The other two are parked. Section 7 says why.
 - The number rule was rewritten. It is `checks/bigworld_year_rule_check.js`. It lists every case, and it passes.
-- **Version 2 has not been reviewed.** Six things in it need the story thread first (section 8).
+- **Version 3 has not been reviewed.** It goes, with the story, to one reviewer again. If that finds no blocker, the first kind is built for one child on one iPad.
 
 ---
 
@@ -44,10 +44,10 @@ The reviewer found four ways to read version 1's sentence. This one names the da
 
 | | The rule |
 |---|---|
-| At the Market | The seller pours **one pot of oil for each mat promised** |
+| At the Market | The seller pours **one pot of oil for each mat promised,** and ties one hook on her raft for each |
 | On count day 7, right (42) | She takes every mat. The town has 42 pots |
 | Too few (said 36) | She takes 36. **Six spare mats lie on the dock.** The town has 36 pots: 6 short |
-| Too many (said 48) | She takes 42. **Six hooks on her raft are empty.** For each empty hook she takes back **two pots.** The town has 36 pots: 6 short |
+| Too many (said 48) | She takes 42. **Six hooks on her raft are empty.** "One pot back for the mat I did not get. One pot back for the hook that sailed empty." [the story's words] The town has 36 pots: 6 short |
 | Far too many (said 99) | She takes back every pot. The town has none. It can never have fewer than none |
 
 - **Six too few costs what six too many costs.** So neither "always say less" nor "always say more" is safe. In version 1, saying too many cost nothing at all.
@@ -65,7 +65,7 @@ Scratched on the Market's old stone, from long ago. Another keeper's stick: 5, 1
 
 | Band | The step | Who asks |
 |---|---|---|
-| **Small** | 2, 5 or 10 | the step down. Your skill map's level below Grade 3 |
+| **Small** | 2, 5 or 10 | the step down: **a child's own rack** (below). Your skill map's level below Grade 3 |
 | **Low** | 3, 4 or 6 | the first town a child helps |
 | **High** | 7, 8 or 9 | the second |
 | **Big** | 11 to 15 | later, unseen: "we are more houses this year" |
@@ -76,13 +76,22 @@ The reviewer was right that one "full" size from 3 to 9 was too wide: after a mi
 
 | | Year of 7 gold months | Year of 9 gold months |
 |---|---|---|
-| Small | 6 problems | 10 |
-| Low | **5** | 11 |
-| High | **6** | 12 |
-| Big | 9 | 12 |
-| Problems in a row, each new in step, count day and answer | **3 to 7** | 7 to 12 |
+| Small | | **20** |
+| Low | 5 problems | **11** |
+| High | 6 | **12** |
+| Big | 9 | **12** |
+| Problems in a row, each new in step, count day and answer | 3 to 7 | **9 to 15** |
 
-- **With seven count days there are 5 or 6 problems in a town's band.** That is not enough. It is decision 2.
+- **Seven count days leave 5 or 6 problems in a town's band.** So the story thread changed its year to nine gold months and three white: twelve, like ours. It is still your decision 2.
+
+### The small row: a child's own rack [the story's section 5]
+
+- A child of the town has a chore. It brings **one bundle each count day:** a pair of sandals, a hand of five plums, or a bundle of ten fire sticks.
+- In the first week, gran ties the rack: **one loop for each thing there will be "on count day 6, after the count".** The child says how many.
+- **There is no stick,** because nothing is cut yet. The bundle is said in words. So this is the same row with nothing shown: 5, 10, 15... to the 6th.
+- Too few loops: things with no loop lie on the floor. Too many: empty loops. Both can be counted.
+- It is small in the story too: one child, one chore.
+
 - **After any year the next problem has a new step, a new count day and a new answer,** and its answer is no number the last year showed. The check file tries this for every problem and every reply.
 - **Refused,** each printed by the check file with its reason: a row where a wrong method lands on the right answer (3, 6, 9, 12 on count day 6: the last cut plus the count day is also 18); any total over 99; the finished example's own row.
 - **"Double the 4th cut" for count day 8 is not refused.** It is a right way, and a good one.
@@ -100,7 +109,7 @@ The reviewer was right that one "full" size from 3 to 9 was too wide: after a mi
 | Wrong, then a probe | The year shows what followed. Next year the same town asks again, with a new stick |
 | Probe right: a slip | She has learned it. She asks once more on a later visit, as your engine does |
 | Probe wrong: check the skill underneath | A small row: steps of 2, 5 or 10 |
-| Teach in single steps | **The old singer teaches,** not the keeper: her gran's counting song is a plan, sung [the story's section 7]. One line of the song for each count day, and the child gives each number |
+| Teach in single steps | **The old singer teaches,** not the keeper [the story's section 5]. Her gran's counting song has a verse by twos, by fives and by tens. Each line is one count day more. She sings a line and stops; the child gives the number. Sung one line past today, the song counts ahead. For a town's row there is no verse: **the cadet makes the new verse,** by threes or by sevens, and the keeper learns it |
 | A worked example | One more row, sung together |
 | Mastery gate: three new, right in a row | Three more years in that town's band |
 | The step below is missing too | Your words to the main thread: "go down one or two levels... teach that and then work back up." So the song is taught at the small size first. If that fails, the kind rests, your report names the skill, and the town asks again on a later visit, starting small |
@@ -168,16 +177,20 @@ The reviewer found these further off. I agree. I have not fitted them.
 
 ---
 
-## 8. What I need from the story thread
+## 8. What I asked of the story thread, and its answers
 
-| | | Why |
+All six: **yes.** [The story's section 14.]
+
+| | I asked for | The story now says |
 |---|---|---|
-| 1 | **The rule for too many mats,** in its own words: two pots back for each empty hook, never fewer than none. Or a better one that costs the same both ways | Its note still says only "takes pots of oil back" |
-| 2 | **"The raft comes on count day N, after the count."** And all mats wait at home | Its note says no raft sails after Last Raft, and uses "by Gold month 7" |
-| 3 | **A tally stick at the Market.** The keeper does not say the step | The store wall is in the town |
-| 4 | **Nine gold months, not seven** (its own option B) | Section 3: seven leaves 5 problems in a band |
-| 5 | **A small row that is small in the story too:** something counted in 2s, 5s and 10s, that is not a trade | In version 1 one family's weaver made 70 mats and a whole town made 15. And "only keepers trade" |
-| 6 | **The singer as the teacher** | In its story nobody can count ahead. A keeper who teaches the child contradicts that |
+| 1 | The rule for too many mats, in its words | One pot for each mat promised, and one hook tied for each. "One pot back for the mat I did not get. One pot back for the hook that sailed empty." Never fewer than none |
+| 2 | "On count day N, after the count" | That is now the one way a day is named. Rafts still sail on Last Raft day |
+| 3 | A tally stick at the Market | A keeper never leaves home without her stick. She does not say the step: she has never thought of the pile that way |
+| 4 | Nine gold months | Its pick now. Your decision 2 |
+| 5 | A small row that is small in the story | A child's chore, and gran's rack |
+| 6 | The singer as the teacher | Her counting song |
+
+**One thing it asks me to check:** a child may feel "she took two!" as a punishment. If so, its other fair rule is: she takes back one pot, and next year ties only as many hooks as she was given mats. That lasts past New Year, so it is yours. Decision 6.
 
 ---
 
@@ -185,7 +198,7 @@ The reviewer found these further off. I agree. I have not fitted them.
 
 | | Found | Done |
 |---|---|---|
-| B1 | Saying too many mats cost nothing | Section 2: two pots back for each empty hook, with a floor. Checked for every number. Needs the story thread (8.1) |
+| B1 | Saying too many mats cost nothing | Section 2: two pots back for each empty hook, with a floor. Checked for every number. The story now says the same |
 | B2 | "For how long": too many months contradicts the keeper's safe way | Parked. Section 7b |
 | B3 | "How many" and "for how long" have no table | Parked. Section 7a |
 | B4 | The "how many" rule did not model its question | Parked. Section 7c |
@@ -194,8 +207,8 @@ The reviewer found these further off. I agree. I have not fitted them.
 | | A third of "how much" was only the next number | The raft never comes on count day 5 |
 | | "Full" was too wide. One answer could give away the next | Bands. A new answer after every year |
 | | The question read four ways | Section 2 |
-| | A family made more than a town | Asked of the story thread (8.5) |
-| | The keeper taught the child | The singer does (8.6) |
+| | A family made more than a town | The small row is a child's chore now (section 3) |
+| | The keeper taught the child | The singer does (section 4) |
 | | The years table was short. Engine bends were not stated | Section 4 |
 | | The example was not an example of the task | Section 2 |
 | | Closing the game and walking away were not designed | Section 5 |
@@ -216,3 +229,4 @@ The reviewer counted 30 between the two notes: "more than a person can answer". 
 | 3 | **One try at the gate, or your engine's three?** | One: 8 years at most in a town, then a rest. Three: 14, and problems must repeat | one |
 | 4 | **The step down is always the small row** | Or wait for the AI, which can choose the skill underneath as your engine does | the small row, for now |
 | 5 | **In the singer's song, may a wrong number be sung again?** | Yes: teaching needs it. Or the song also lets a wrong line stand, and the pips show it at the end | yes |
+| 6 | **Two pots back, or one pot and fewer hooks next year?** | Two: it ends at New Year, and too few costs what too many costs. One and fewer hooks: gentler on the day, but it lasts into next year | two |
