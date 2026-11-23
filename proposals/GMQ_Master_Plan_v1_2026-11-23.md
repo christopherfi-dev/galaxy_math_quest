@@ -167,6 +167,8 @@ Each note lays out the choices and recommends one.
 | 10 | The server: the split as the long-term shape; one class or a grade per world; when to try step 1; what children may do across classes | `GMQ_Server_Layers_Analysis_v1_2026-11-22.md`, section 5 |
 | 11 | "Start again": should it ask "Are you sure?" first | not written up yet |
 | 13 | ~~**The lantern's recipe**~~: answered 23 November. Marc approved the Chronosia story (rule R18: a lantern is a glow stone behind Nomad glass), and its glow stone from a trader at Galactic Trade. So the recipe is soft sand and the glow stone, and the glow stone alone stops lighting the passage. **Tell Marc this reading;** he can still change it. | the Chronosia story note, R18 and decision 6 |
+| 14 | **The glow stone's price at the trade beacon:** 200 gems [Proposal, version 96]. Too dear, or too cheap, for what the class earns on a trade trip? | this plan; the game's `LANPRICE` |
+| 15 | **Lengthar's measuring tape** has no use yet (the Chronosia story note, decision 6, pick A). Leave it as a prize, or design a quest that needs it? | the Chronosia story note, decision 6 |
 | 12 | **Older decisions from 21 November, some answered since** | `GMQ_Decisions_Waiting_2026-11-21.md`. The main thread should mark which are answered (its first job). |
 
 ## 5b. The story test, for every task on every planet
