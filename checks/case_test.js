@@ -31,8 +31,8 @@ const { chromium } = require('playwright'); const path = require('path');
         const P = FCASE.places, rule = { Sara: k => P.find(o => o.n === k.place.n).on, Tim: k => !P.find(o => o.n === k.place.n).other, Alex: k => k.a / k.b <= 0.5, Zara: k => k.log[3].t1 - k.log[3].t0 <= 45 };
         for (let i = 1; i <= 5000; i++) { const k = fCase(i * 31 + 7), left = FCASE.who.filter(n => rule[n](k)); res.who[k.W] = (res.who[k.W] || 0) + 1;
           if (left.length !== 1 || left[0] !== k.W) B(`cadet ${i}: ${left.join(', ') || 'nobody'} left, but ${k.W} went`);
-          const L4 = k.log.find(r => r.d === 'Oct 5'); if (!L4 || L4.t1 - L4.t0 !== k.mins || k.mins === 45 || L4.t1 >= 1440 || L4.t0 < 19 * 60 || L4.t0 % 5 || k.mins % 5) B(`cadet ${i}: last night's clocks are wrong`);
-          if (k.log.filter(r => r.d === 'Oct 5').length !== 1 || k.nights.filter(n => n.d === 'Oct 5').length !== 1 || k.nights[3].a !== k.a) B(`cadet ${i}: last night is not clear`);
+          const L4 = k.log.find(r => r.d === 'Last night'); if (!L4 || L4.t1 - L4.t0 !== k.mins || k.mins === 45 || L4.t1 >= 1440 || L4.t0 < 19 * 60 || L4.t0 % 5 || k.mins % 5) B(`cadet ${i}: last night's clocks are wrong`);
+          if (k.log.filter(r => r.d === 'Last night').length !== 1 || k.nights.filter(n => n.d === 'Last night').length !== 1 || k.log.some(r => /Oct/.test(r.d)) || k.nights[3].a !== k.a) B(`cadet ${i}: last night is not clear`);
           if (k.a * 2 === k.b || k.a < 1 || k.a >= k.b || [4, 6, 8].indexOf(k.b) < 0 || k.nights.some(n => n.a < 0 || n.a > k.b)) B(`cadet ${i}: the needle is wrong`);
           if (k.place.home || !P.some(o => o.x === k.place.x && o.y === k.place.y && o.n === k.place.n)) B(`cadet ${i}: the dial points nowhere useful`); }
         if (new Set(P.map(o => o.x + ',' + o.y)).size !== P.length) B('two places share a point'); res.check = fCheck('chrono'); return res; });
@@ -45,7 +45,7 @@ const { chromium } = require('playwright'); const path = require('path');
     expect(await say('look'), /Stripes of colour fill the sky\. A thin crack runs across them\./, 'the crack is in the map\'s look'); await shot('1_map');
     // ---- the board first
     await say('use case'); ok(await p.locator('#toy .fcell').count() === 12, 'the grid has 12 boxes'); const board = await p.locator('#toy').innerText();
-    expect(board, /Last night, Oct 5, someone used the time portal[\s\S]*Only Wen has two ✓[\s\S]*Away for: not written yet[\s\S]*Went to: not written yet[\s\S]*Danger needle: not written yet/, 'the note, the finished example and an empty casebook');
+    expect(board, /Last night someone used the time portal, and did not sign the log\. Today the crack in the sky grew again, and the quakes began\.[\s\S]*Only Wen has two ✓[\s\S]*Away for: not written yet[\s\S]*Went to: not written yet[\s\S]*Danger needle: not written yet/, 'the note, the finished example and an empty casebook');
     expect(board, /Must stay on Chronosia all week[\s\S]*Cannot go to other dimensions[\s\S]*No risky trips without a chaperone[\s\S]*Cannot be away longer than 45 minutes/, 'the four rules'); await shot('2_board');
     await p.click('#try'); expect(await msg(), /^Fill every box with ✓ or ✗ first\.$/, 'an unfinished grid'); await p.click('#leave');
     // ---- the portal: the clocks and the dial
@@ -61,7 +61,7 @@ const { chromium } = require('playwright'); const path = require('path');
     expect(await last(), new RegExp(`the trip went to ${K.n.replace(/[-.]/g, '\\$&')}\\.$`), 'the place goes in the casebook');
     // ---- the danger meter: tap a night, read the needle
     await say('use meter'); ok(await p.locator('#fmeter svg').count() === 0, 'no needle until a night is tapped'); await p.locator('#fnights button').nth(3).click(); await p.waitForTimeout(150);
-    ok(await p.locator('#fmeter svg line').count() === K.b + 2, 'the line is cut into the right number of parts'); expect(await p.locator('#fmeter').innerText(), /Oct 5/, 'last night\'s needle'); await shot('5_meter');
+    ok(await p.locator('#fmeter svg line').count() === K.b + 2, 'the line is cut into the right number of parts'); expect(await p.locator('#fmeter').innerText(), /The needle, last night\./, 'last night\'s needle, with no date (v94, rule R20)'); await shot('5_meter');
     await p.fill('#ans', '9'); await p.fill('#ans2', '8'); await p.click('#try'); expect(await msg(), /never past 1/, 'a needle past 1'); await p.fill('#ans', String(K.a * 2)); await p.fill('#ans2', String(K.b * 2)); await p.click('#try'); await p.waitForTimeout(200);
     expect(await last(), new RegExp(`the needle was at ${K.a * 2}/${K.b * 2}\\.$`), 'an equal fraction is written as the child wrote it');
     // ---- the board: grids that do not work, a wrong name, the right name
@@ -76,10 +76,10 @@ const { chromium } = require('playwright'); const path = require('path');
     if (K.W === 'Tim') expect(await p.locator('#toy').innerText(), new RegExp(K.n.replace(/[-.]/g, '\\$&')), 'Tim names the place');
     await p.click('#leave'); await say('use case'); ok(await p.locator('#tell').count() === 1, 'the choice waits until it is made');
     const ipad = name === 'ipad'; await p.click(ipad ? '#tell' : '#keep'); await p.waitForTimeout(300);
-    expect(await last(), ipad ? /They chain the portal shut\.[\s\S]*The crack in the sky fades\. You earn a card\.$/ : /promises never to go again\. Only you two know\. The crack stays in the sky\. You earn a card\.$/, 'the choice');
+    expect(await last(), ipad ? /the portal is locked by night\. Missions go by day\.[\s\S]*Once the day turns and night comes, the crack can mend\. The Council trusts you now: it will share its notes with you\. You earn a card\.$/ : /promises never to go again\. Only you two know\. The crack stays in the sky\. \w+ whispers: "I owe you\. I will help you, when I can\." You earn a card\.$/, 'the choice');
     expect(await p.evaluate(() => JSON.stringify(S.log[S.log.length - 1])), new RegExp(`the time portal case.*named ${K.W} after 2 tries, with 0 nudges; casebook clues right: 3 of 3; chose: ${ipad ? 'tell the Council' : 'keep the secret'}`), 'the teacher\'s log');
-    expect(await say('look'), ipad ? /fill the sky\. A river[\s\S]*The time portal is sealed\.$/ : /A thin crack runs across them\.[\s\S]*Only you know who used the portal\.$/, 'the choice leaves its mark on the map');
-    expect(await say('look portal'), ipad ? /Chains hold it shut/ : /Its dial points home/, 'the portal after the choice'); expect(await say('use case'), /^Case closed\./, 'the board after the case'); await shot('7_after');
+    expect(await say('look'), ipad ? /A thin crack runs across them\. A river[\s\S]*The time portal is locked by night\.$/ : /A thin crack runs across them\.[\s\S]*Only you know who used the portal\.$/, 'the choice leaves its mark on the map');
+    expect(await say('look portal'), ipad ? /Locked by night/ : /Its dial points home/, 'the portal after the choice'); expect(await say('use case'), /^Case closed\./, 'the board after the case'); await shot('7_after');
     await say('go to hall'); expect(await say('talk ' + K.W.toLowerCase()), ipad ? /You were right to tell them/ : /Thank you for keeping my secret/, `${K.W} remembers`); ok(!/secret|right to tell/.test(await say('talk ' + K.W.toLowerCase())), 'and says it once'); await say('leave');
     await p.reload(); await p.waitForTimeout(500); ok(await p.evaluate(() => C().cs.done) === K.W && await p.evaluate(() => !!C().fk['case_' + (C().cs.choice)]), 'all of it is kept after the game is opened again');
     await ctx.close();

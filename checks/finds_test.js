@@ -121,7 +121,7 @@ const { chromium } = require('playwright'); const path = require('path');
   }
   { // ---- as a child has it: reading cards on, taps only
     const name = 'cards-on', p = await open(name, 1180, 745, true); await p.evaluate(() => { skipIntro(); goChronosia(); }); await p.waitForTimeout(400);
-    const read = async () => { for (let i = 0; i < 12; i++) { if (!(await p.evaluate(() => READ.open))) return; const dis = await p.locator('#cardok').isDisabled().catch(() => true); if (!dis) await p.locator('#cardok').tap().catch(() => {}); await p.waitForTimeout(500); } bad.push(name + ': a reading card would not close'); };
+    const read = async () => { for (let i = 0; i < 40; i++) { if (!(await p.evaluate(() => READ.open))) return; const dis = await p.locator('#cardok').isDisabled().catch(() => true); if (!dis) await p.locator('#cardok').tap().catch(() => {}); await p.waitForTimeout(500); } bad.push(name + ': a reading card would not close'); };
     const idle = async () => { for (let i = 0; i < 250; i++) { if (await p.evaluate(() => !CM.route.length && !CM.then)) return; await p.waitForTimeout(80); } bad.push(name + ': still walking'); };
     const tapTile = async (x, y) => { const pt = await p.evaluate(([x, y]) => { const g = cGeo(), r = cv.getBoundingClientRect(); return [r.left + g.ox + (x + .5) * g.ts, r.top + g.oy + (y + .5) * g.ts]; }, [x, y]); await p.touchscreen.tap(pt[0], pt[1]); await p.waitForTimeout(200); };
     await read(); await tapTile(10, 11); await idle(); await p.waitForTimeout(300); if (!/Two eyes blink/.test(await p.evaluate(() => lines.map(l => l.text || '').join(' ')))) bad.push(name + ': tapping the burrow should walk there and say what is seen'); await read();

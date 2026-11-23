@@ -67,7 +67,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await answer(gq.a); ok(await at() === 'shop', 'the right answer goes into the workshop'); ok(await p.evaluate(() => S.cards.length) === cards0 + 1, 'the gear door gives one card');
     expect(await p.evaluate(() => lines.slice(-2).map(l => l.text).join(' | ')), /The round door rolls aside\. You earn a card\. \| You go through\. The Clockmaker's Workshop\./, 'the words on going through'); await shot('3_workshop');
     expect(await say('hint'), /Look at the plan on the wall\./, 'the workshop hint');
-    await tapThing('plan'); expect(await last(), /keyhole, shaped like a gear.*First wind its clock\. Then turn my key\. It will guard my time portal\./, 'the plan');
+    await tapThing('plan'); expect(await last(), /keyhole, shaped like a gear.*First wind its clock\. Then turn my guard key\. It will guard the time portal by night\./, 'the plan');
     expect(await say('use coat'), /Time portal\. One way\./, 'the coat');
     expect(await say('hint'), /Wind its clock first\./, 'the workshop hint after the plan');
     ok(await p.evaluate(() => { const j = JSON.parse(localStorage.getItem(KEY)); return j.c.at === 'map' && j.c.sub[0] === 'shop'; }), 'the save says "on the map" for the class link, with a note for version 87'); await p.reload(); await p.waitForTimeout(700); ok(await at() === 'shop', 'closed and opened again: still in the workshop');
@@ -84,13 +84,14 @@ const { chromium } = require('playwright'); const path = require('path');
     expect(await say('use key on cougar'), /will not turn while the cougar's clock is stopped\. Wind the clock first\./, 'a stopped cougar will not take the key'); ok(await p.evaluate(() => !widget), 'the key does not open the quest');
     await p.evaluate(() => { C().done.cougar = true; save(); });      // shortcut: the cougar's quest is played in checks/chronosia_test.js
     expect(await say('look cougar'), /keyhole, shaped like a gear/, 'the keyhole shows once it is wound');
-    expect(await say('hint'), /Use the clockmaker's key on the cougar\./, 'the ridge hint');
-    await tapThing('cougar'); expect(await last(), /runs to the time portal.*on guard.*crack in the sky begins to fade\.$/, 'the cougar goes on guard');
+    expect(await say('hint'), /Use the guard key on the cougar\./, 'the ridge hint (v94: "the guard key")');
+    await tapThing('cougar'); expect(await last(), /runs to the time portal\. It sits down beside it\. It will guard it by night\..*Once the day turns and night comes, the crack can mend\.$/, 'the cougar goes on guard; the day is still stuck, so the crack stays (v94)');
     ok((await fk()).guard && !(await has('clkey')), 'the key stays in the cougar'); ok(await p.evaluate(() => cThings('ridge').map(t => t.id).join() === 'stones,rock'), 'the rock is empty');
     expect(await say('look'), /The rock is empty now\./, 'Cougar Rock, after'); await shot('4_ridge_empty');
-    expect(await say('talk cougar'), /not here\. It guards the time portal now\./, 'talking to the empty rock'); await say('leave'); expect(await say('look'), /Stripes of colour fill the sky\. A river/, 'the map, after'); ok(!/crack/.test(await last()), 'the crack is gone from the words');
+    expect(await say('talk cougar'), /not here\. It guards the time portal now\./, 'talking to the empty rock'); await say('leave'); expect(await say('look'), /Stripes of colour fill the sky\. A thin crack runs across them\. A river/, 'the map, after: the crack stays while the day is stuck (v94)');
+    await p.evaluate(() => { C().done.clocks = true; C().done.quakes = true; save(); }); expect(await say('look'), /Stripes of colour fill the sky\. A river/, 'the map, once the day turns'); ok(!/crack/.test(await last()), 'the crack is gone from the words once the day turns and the guard is on watch');
     expect(await say('look portal'), /The Clockwork Cougar sits beside it, on guard\./, 'the portal has its guard'); await shot('5_map_guard');
-    { const endTxt = await p.evaluate(() => { fCaseEnd('chrono', fCase(C().seed)); $('keep').click(); return lines[lines.length - 1].text; }); expect(endTxt, /The cougar guards the portal, so the sky stays whole\./, 'the case ending knows the guard'); ok(!/crack/.test(endTxt), 'no crack in the ending'); }
+    { const endTxt = await p.evaluate(() => { fCaseEnd('chrono', fCase(C().seed)); $('keep').click(); return lines[lines.length - 1].text; }); expect(endTxt, /The cougar guards the portal by night, so no more trips can tear the sky\./, 'the case ending knows the guard'); ok(!/crack/.test(endTxt), 'no crack in the ending'); }
 
     // ---- THE POND, THE TORTOISE AND THE WARM STONE
     await say('go to grove'); ok(await at() === 'grove', 'in the grove');
@@ -107,9 +108,9 @@ const { chromium } = require('playwright'); const path = require('path');
     await say('leave'); expect(await p.evaluate(() => cMore('map')), /You carry a warm stone\. The tortoise in the grove is cold\./, 'the map hint, once the main jobs are done');
     await say('go to grove'); await tapThing('tortoise'); expect(await last(), /You give the tortoise the warm stone\..*Time runs slow in that pond\..*Dive in\./, 'the tortoise tells its secret');
     ok((await fk()).tsecret && !(await has('wstone')), 'the stone is given');
-    await tapThing('pond'); expect(await last(), /On the bottom lies a glass bottle\..*I hid my key in a tin box, on my little boat\./, 'the dive brings up the note'); ok(await has('cnote'), 'the note is in the bag'); await shot('6_grove');
+    await tapThing('pond'); expect(await last(), /On the bottom lies a glass bottle\..*I hid the key in a tin box, on my little boat\./, 'the dive brings up the note'); ok(await has('cnote'), 'the note is in the bag'); await shot('6_grove');
     await tapThing('pond'); expect(await last(), /You dive again/, 'a second dive');
-    expect(await say('read note'), /I built the time portal/, 'the note can be read again');
+    expect(await say('read note'), /The Council said no\./, 'the note can be read again');
     expect(await say('hint'), /All is done here/, 'the grove is done');
 
     // ---- A SAVE FROM BEFORE VERSION 87
