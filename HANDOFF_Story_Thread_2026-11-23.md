@@ -77,21 +77,25 @@ Every one of these cost a review round.
 
 ### Algora: mid-way. This is the live job.
 
-- **The note:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md`. Five reviews of its own, then changed three times to answer the big world thread (its sections 13, 14 and 15). **Those three sets of changes have not been reviewed by a reviewer of this thread's own.**
-- **The maths:** `proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md`, version 4, by the big world thread. It fits **only the first kind of decision, "how much?"**
-- **Two joint reviews** have read the story and the maths together, for the first kind. Both said "not yet". The second found three small blockers, and said: "The numbers for the town's stick and promise hold."
-- **Where it stopped:** the big world thread asked five things of the story (the maths note's section 8b). All five are answered in the story note's section 15. **The ball is with the big world thread:** it fits version 5, and sends both notes to a third joint review.
-- **The second and third kinds ("how many?", "for how long?") are parked.** The story note's section 14 has offers for them: a carter's load board and a seed board bring the tables; the keeper's safe way sets fish out for all nine months; the keeper tells both needs. None of it is fitted. Sections 1, 3 and 5 still describe those two kinds as they were before parking.
-- **What Marc has decided for Algora** is in the maths note's section 1. The newest: each child has their own year; the simulation is dropped ("Work it logically").
-- **Nothing of Algora's story is confirmed by Marc.** Not the name, not the five peoples, not the calendar. The note has twenty-eight decisions, which is too many. The maths note's section 10 names the five that matter for a first build.
+**Updated 23 November, late, by the second story-thread session.**
 
-**The first kind, in six lines, so you can answer quickly:**
-1. A town's weavers make the same number of mats each count day. A count day is the last day of a gold month. There are nine.
-2. At the Lake Market, on count day 4, the keeper hands over her tally stick: four cuts, each with its count day and the pile that day.
-3. The oil seller shows her own stick first, says both costs, then asks: "Today is count day 4. My raft comes on count day 7, after that day's count. How many mats will there be by then, in all?"
-4. She pours one pot of oil for each mat promised, and ties one hook on her raft for each.
-5. Too few: spare mats on the dock, and that many dark windows. Too many: empty hooks, two pots back for each, and that many dark windows.
-6. A step down is a child's own stick: sandals by twos, plums by fives, fire sticks by tens. The old singer teaches, through her gran's counting song.
+- **The note:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md`. **Read its section 16 first.** It holds everything since this handoff was first written.
+- **The maths:** `proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md`, by the big world thread. It fits **only the first kind, "how much?"**. Its third joint review: "The town's stick, the question and the oil rule hold."
+- **What this session did:**
+  - answered the third joint review's six story points (section 16a);
+  - ran two reviews of the story thread's own. Round 2: four blockers. Round 3: "Not yet. It is close. The Market path holds." One blocker. Both answered (16b, 16h). A narrow round 4 was started; 16g says whether it reported.
+- **The big changes, so you can answer quickly:**
+  - **The Year Machine** at the lake did all the planning and burnt with the Gate. The built Meadow machines are small, one rule each. The built loading board was its hand.
+  - **The oil seller is the Furrows' tally keeper, a man.** His finished example is the Year Machine's last stick: scratches ahead, real cuts landing on them. "I cannot see how it knew."
+  - **Costs:** one pot fills one lamp. "For each mat you are out, short or over, one lamp stays dark." The lamps are set out on the dock at dusk on raft day, one for each mat woven.
+  - **Mats are press mats,** kept green; a dry mat cracks. **No open fire after dusk,** when the lake wind rises.
+  - **The small row is Shells,** a children's game on Market day: the oil rule played for shells with Gran. Lotus pods by twos, plums by fives, shrimp by tens.
+  - **The singer's gran** hummed a new verse each year as she planned. The children kept three verses, for skipping. Making a new verse is the lost skill.
+  - **"Now":** the cadet explores on Market morning (count day 4, after the count, before the keepers leave). Time moves only at the town jetty and at "Let the year run".
+  - **The tally keeper is the town's built speaker.**
+- **The ball is with the big world thread:** section 16d lists sixteen places where its maths note must change, or confirm. The biggest: the seller can re-ask only when a number is less than the stick already shows.
+- **The second and third kinds are still parked.** Section 14 has the offers.
+- **Nothing of Algora's story is confirmed by Marc.** The note now has thirty decisions. Two are new: 29 (the Year Machine) and 30 (the step-down year).
 
 ### What may come next
 
@@ -119,6 +123,14 @@ Every one of these cost a review round.
 
 ## 6. What this handoff does not know
 
-- What the big world thread has written since its version 4. Fetch the main branch and look before you answer anything about Algora.
-- How the main thread's build of the cave came out, and whether it changed anything the story note says. If Marc reports a fault from playing it, read the game's lines for that place before you answer.
-- Whether the three unreviewed sets of changes to the Algora note hold. A reviewer of your own, on sections 1, 3, 5 and 13 to 15, would be a fair first job. Ask Marc before spending on it.
+- What the big world thread does with section 16d. Fetch the main branch and look before you answer anything about Algora.
+- How the main thread's build of the cave came out, and whether it changed anything the Chronosia note says. If Marc reports a fault from playing it, read the game's lines for that place before you answer.
+- Whether round 4 of the Algora review found anything. Section 16g of the note says.
+
+## 7. Learned by the second session
+
+11. **Every fix opens a smaller hole.** Round 2 found four blockers; their fixes made round 3's one blocker and thirteen majors. Plan for two or three rounds after any big change, and say which changes no reviewer has read.
+12. **Search the built page before you invent.** A role, a machine or a board may already exist. "The speaker", "the loading board" and the Meadow machines were all on the page, and two of them contradicted a fix.
+13. **For every cost, ask: "Can the child just make more, or get it elsewhere?"** Floor mats, rolled beads, plaited cups and a neighbour town's mats each undid a cost. Use things that come on their own, from a place that is someone's.
+14. **A name in a typed world must not be a common verb, or a word the page already uses.** "Promise" was the game's name and the verb in every line.
+15. **Reviews cost Marc tokens:** about 190,000 each, done in full. Keep a re-check narrow: give it the list of changes and the sections they touch.
