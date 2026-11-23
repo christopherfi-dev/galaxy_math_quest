@@ -1,6 +1,6 @@
 # Galaxy Math Quest: the whole plan
 
-**Date:** 23 November 2026 (version 95). **For:** Marc, and every thread.
+**Date:** 23 November 2026 (version 96). **For:** Marc, and every thread.
 **What this is:** one list of everything:
 - what is built
 - who is doing what
@@ -30,7 +30,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 | Thread | Owns | Where it is now |
 |---|---|---|
-| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 95 on the class link and the preview: Chronosia's story, stages 1 and 2 (v94); the Voltara fly-in (v95). Next: Chronosia's stages 3 and 4 together. |
+| **Main** (a new thread replaces the old one on 23 November) | the game file, the class link, the preview, this plan, the handoff, the zip; it wires the other threads' work into the game; it reviews their work | Version 96 on the class link and the preview: Chronosia's story, stages 1 and 2 (v94); the Voltara fly-in (v95); the black cave and the lantern across the planets, stages 3 and 4 (v96). Next: stages 5 to 7. |
 | **Big world** (Planet Algora, Galaxy Patternox) | `docs/bigworld/*` and its notes | The first region (the Mender Meadow) is built and playable. The Reach is designed. Its second brief: `HANDOFF_Big_World_Brief2_2026-11-22.md`. |
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
 | **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built, and **wired into the game in version 95** (Phase 2, by the main thread). Its piece is copied unchanged; a new version of the piece must be copied in again by the main thread. |
@@ -43,7 +43,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 ## 3. What the children have, and what is waiting for them
 
-**The class link (version 95, 23 November):** everything below, and versions 82 to 95. **Every push now updates the class link too** [Source: Marc, 23 November: "So anything you push me push for them as well. Always."]. Version 93 began a new save, so every cadet started fresh that day.
+**The class link (version 96, 23 November):** everything below, and versions 82 to 96. **Every push now updates the class link too** [Source: Marc, 23 November: "So anything you push me push for them as well. Always."]. Version 93 began a new save, so every cadet started fresh that day.
 
 **Before that, version 81 had:**
 - the station
@@ -68,6 +68,7 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
+| 96 | The black cave and the lantern: the broken lantern, the Nomad glassmaker, soft sand on Xylophora, sand weighed in grams, a glow stone from a trader, the tide table, the gear door and the epic card, the workshop and its stair. |
 | 95 | The Voltara fly-in: a short flight down when a cadet lands, the full one the first time. A tap skips it. A Teacher switch turns it off. |
 | 94 | Chronosia's story, stages 1 and 2: the call for help on landing; the Keeper's and the Watcher's reasons; the clocks before the quake; the day turns when the quake is held; the crack fades only when the night trips stop too; the case without dates. |
 
@@ -101,7 +102,7 @@ Everything is **[Proposal]** unless it says [Source].
 
 ### Stage 3: the world web across the planets (main thread)
 
-1. **Strand A, the lantern.** This is Marc's own example of a mini quest [Source: Marc, 22 November], with his additions of 23 November:
+1. **Strand A, the lantern: built in version 96** (the Chronosia build list's stages 3 and 4). This is Marc's own example of a mini quest [Source: Marc, 22 November], with his additions of 23 November:
    - **Chronosia's cave needs a lantern.** The cave's front is lit by daylight; its passage is dark.
    - **The Nomads on Voltara make lanterns,** but they need **soft sand** for the glass.
    - **Xylophora has the soft sand, in the cactus ring.** Digging there must give soft sand.

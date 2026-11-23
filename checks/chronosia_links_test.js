@@ -1,18 +1,15 @@
 // Chronosia's things lead to each other (version 87).   [Source: Marc, 2026-11-22: the tortoise, the cougar, the pond, the key and the cave "doesn't connect to
 // anything"; "Touching the cave should have you go into the cave because it's a new place"; "connecting all these things together... not just weird standalone".]
 // [Proposal: all of it] Three trails, played as a child plays them, by tapping and by typing, at iPad size and at phone size:
-//   THE CAVE: a tap on the cave walks there and goes in. The back wall asks its question; a wrong answer changes nothing. The wall slides aside: a passage.
-//     The gear door's picture fills the screen while its question is open, with the question's own number of gears and teeth.
-//     The passage is too dark. The hint says the light is on another planet [Source: Marc, 2026-11-21, the special torch]. The stone door is as before.
-//     With a glow stone from Voltara (a secret there), the passage leads to a gear door (a question);
-//     a wrong answer changes nothing; the right one gives a card and goes into the Clockmaker's workshop. The plan shows the cougar's keyhole.
+//   THE CAVE [v96]: a tap on the cave walks there and goes in. It is black: no wall table and no passage can be seen, and a glow stone lights only your hand.
+//     The hint points to the broken lantern. With the lantern (the chain, the tide table and the gear door are played in checks/lantern_chain_test.js),
+//     the passage leads into the Clockmaker's workshop. The plan shows the cougar's keyhole.
 //     Leave goes back to the cave, then to the map, beside the cave. Closed and opened again inside the workshop: still there, and Leave still works.
 //   THE KEY: the sundial, the boat, the tin box. The tin box gives the clockmaker's key. The key will not turn in a stopped cougar. Wound, the cougar takes
 //     the key and goes to guard the time portal: the rock is empty, the key leaves the bag, the crack leaves the sky, the portal says so, the case's ending says so.
 //   THE POND: "swim" and "dive" in the pond say why not yet and point to the tortoise. The tortoise, its job done, is cold. A glow stone is not warm.
 //     A warm stone from Cougar Rock (by tap). The tortoise tells the pond's secret. The dive brings up the Clockmaker's note, which can be read again from the bag.
 //   ALSO: a save from before version 87 gets the key it had earned. A save made in the cave or the workshop reads "on the map" to the class link (version 81).
-//     The gear door's question, on 5,000 cadets: 3 to 8 gears, 6 to 10 teeth each, the answer is their product, no sentence over 10 words.
 // Shortcut, said plainly: the tortoise's and the cougar's own quests are marked done here. They are played in full by checks/chronosia_test.js.
 // Run: node checks/chronosia_links_test.js [folder for screenshots]
 const { chromium } = require('playwright'); const path = require('path');
@@ -35,7 +32,7 @@ const { chromium } = require('playwright'); const path = require('path');
     const answer = async v => { await p.fill('#ans', String(v)); await p.click('#try'); await p.waitForTimeout(200); };
     const shot = async n => { if (out) { await p.waitForTimeout(600); await p.screenshot({ path: path.join(out, `links_${name}_${n}.png`) }); } };
     const has = i => p.evaluate(i => S.inv.includes(i), i), fk = () => p.evaluate(() => Object.assign({}, CK())), at = () => p.evaluate(() => C().at);
-    const q = id => p.evaluate(id => { const f = id === 'gears' ? CGEARS : FINDS.chrono.find(f => f.id === id), s = f.at ? fStand('chrono', f) : []; return { a: fQ('chrono', f).a, stand: s }; }, id);
+    const q = id => p.evaluate(id => { const f = FINDS.chrono.find(f => f.id === id), s = f.at ? fStand('chrono', f) : []; return { a: fQ('chrono', f).a, stand: s }; }, id);
     const play = async (id, opts) => { opts = opts || {}; for (let guard = 0; guard < 40; guard++) { const s2 = await p.evaluate(() => widget && widget.kind === 'cq' ? { kind: widget.steps[widget.i].kind, ans: widget.steps[widget.i].ans, i: widget.i, n: widget.steps.length } : null); if (!s2) return;
         if (opts.wrongAt === s2.i && !opts.didWrong) { opts.didWrong = true; if (s2.kind === 'yn') { await p.tap(s2.ans ? '#no' : '#yes'); } else { await p.fill('#ah', '59'); if (s2.kind !== 'num') await p.fill('#am', '59'); await p.tap('#try'); } await p.waitForTimeout(120); ok(await p.evaluate(() => /\w/.test($('msg').textContent) && widget.i === widget.steps.length - widget.steps.length + widget.i), `${id}: a wrong answer should give a hint`); ok(await p.evaluate(i => widget.i === i, s2.i), `${id}: a wrong answer must not move on`); continue; }
         if (opts.leaveAt === s2.i && !opts.didLeave) { opts.didLeave = true; await p.tap('#leave'); await p.waitForTimeout(150); ok(await p.evaluate(([id, i]) => !widget && C().prog[id] === i, [id, s2.i]), `${id}: leaving should keep the place`); await say(opts.again); await p.waitForTimeout(200); ok(await p.evaluate(i => widget && widget.i === i, s2.i), `${id}: coming back should go on from step ${s2.i + 1}`); continue; }
@@ -43,36 +40,24 @@ const { chromium } = require('playwright'); const path = require('path');
         await p.waitForTimeout(90); } bad.push(`${name}: ${id}: the quest did not end`); };
     await p.evaluate(() => { skipIntro(); goChronosia(); C().seen = new Array(CW * CH).fill('1').join(''); save(); }); await p.waitForTimeout(300);
 
-    // ---- THE CAVE, THE LAMP, THE GEAR DOOR, THE WORKSHOP
-    const cave = await q('cave');
-    await tapTile(12, 9); ok(await at() === 'cave', 'a tap on the cave goes in'); expect(await last(), /^The Dark Cave\. .*Old writing covers the back wall\.$/, 'the cave, before');
-    ok(!(await p.evaluate(() => cThings('cave').some(t => t.id === 'passage'))), 'no passage before the wall opens'); expect(await say('use passage'), /do not see that here/, 'the passage is not there yet'); await shot('1_cave');
-    await tapThing('wall'); ok(await p.locator('#ans').count() === 1, 'a tap on the wall asks its question');
-    await answer(cave.a + 5); expect(await p.textContent('#msg'), /That is not it/, 'a wrong answer'); ok(!(await fk()).cave, 'a wrong answer changes nothing');
-    await answer(cave.a); expect(await last(), /The back wall slides aside, and a passage goes down/, 'the wall opens'); ok(await p.evaluate(() => cThings('cave').some(t => t.id === 'passage')), 'the passage is there now');
-    await tapThing('passage'); expect(await last(), /too dark.*A light would help/, 'too dark without a light'); ok(await p.locator('#ans').count() === 0, 'no question in the dark');
-    expect(await say('hint'), /too dark\. You need a light that never goes out\. Look for one on another planet\./, 'the cave hint points to another planet');
-    await tapCorner(); ok(await at() === 'map', 'the corner goes back to the map'); ok(String(await p.evaluate(() => [C().x, C().y, CM.px, CM.py])) === String(cave.stand.concat(cave.stand)), 'beside the cave, drawn where it stands');
-    const door = await q('door'); await say('use door'); ok(await p.locator('#ans').count() === 1, 'the door asks'); await answer(door.a); expect(await last(), /An old lamp lights by itself\. It has waited a long time\. You earn a card\.$/, 'the door, as in version 86');
-    expect(await say('take lamp'), /It stays where it is\./, 'the door\'s lamp stays in the door'); ok(!(await has('lamp')), 'no lamp in the bag');
+    // ---- THE CAVE AND THE WORKSHOP [v96: the cave is black; the chain to the lantern, the tide table and the gear door are played in full by checks/lantern_chain_test.js]
+    await tapTile(12, 9); ok(await at() === 'cave', 'a tap on the cave goes in'); expect(await last(), /^The Dark Cave\. A cave in the rock\. Daylight reaches only the way in\. Beyond it, the cave is black\./, 'the cave, before');
+    ok(!(await p.evaluate(() => cThings('cave').some(t => t.id === 'passage' || t.id === 'wall'))), 'no passage and no wall table can be seen in the dark'); await shot('1_cave');
     await p.evaluate(() => give('stone'));      // the glow stone, a secret found on Voltara
-    expect(await say('hint'), /The Clock Tower needs you\./, 'on the map, a main job comes first in the hint'); expect(await p.evaluate(() => cMore('map')), /Your light could show the way down the dark cave\./, 'then the map hint points back to the cave');
-    await say('go to cave'); ok(await at() === 'cave', 'typing "go to cave" goes in too');
-    expect(await say('look passage'), /Your glow stone lights the way\. The passage goes down to a round door made of gears\./, 'the glow stone shows the gear door'); await shot('2_cave_lit');
-    const cards0 = await p.evaluate(() => S.cards.length), gq = await q('gears');
-    await tapThing('passage'); ok(await p.locator('#ans').count() === 1, 'the gear door asks'); expect(await p.locator('#toy').innerText(), /You hold up the glow stone\.[\s\S]*There are \d+ gears\. Each has \d+ teeth\. How many teeth in all\?/, 'the gear question');
-    { const t = await p.locator('#toy').innerText(), m = t.match(/There are (\d+) gears\. Each has (\d+) teeth/); ok(m && +m[1] * +m[2] === gq.a, 'the gear answer is the product of the two numbers shown');
-      await p.waitForTimeout(100); ok(m && await p.evaluate(([a, b]) => !!widget.gears && widget.gears[0] === a && widget.gears[1] === b, [+m[1], +m[2]]), 'the picture draws the gears and the teeth the question names'); await shot('2b_gear_door'); }
-    await answer(gq.a + 1); ok(await at() === 'cave' && !(await fk()).gears, 'a wrong gear answer changes nothing');
-    await answer(gq.a); ok(await at() === 'shop', 'the right answer goes into the workshop'); ok(await p.evaluate(() => S.cards.length) === cards0 + 1, 'the gear door gives one card');
-    expect(await p.evaluate(() => lines.slice(-2).map(l => l.text).join(' | ')), /The round door rolls aside\. You earn a card\. \| You go through\. The Clockmaker's Workshop\./, 'the words on going through'); await shot('3_workshop');
+    await tapThing('dark'); expect(await last(), /It lights your hand, and no more\./, 'a glow stone is not enough for the black cave'); ok(await p.locator('#ans').count() === 0 && await p.locator('#ah').count() === 0, 'no question in the dark');
+    expect(await say('hint'), /Look at the broken lantern by the way in\./, 'the cave hint points to the broken lantern');
+    await tapCorner(); ok(await at() === 'map', 'the corner goes back to the map');
+    expect(await say('hint'), /The Clock Tower needs you\./, 'on the map, a main job comes first in the hint');
+    await p.evaluate(() => { give('lantern'); const k = CK(); k.tide = 1; k.gears = 1; save(); });      // shortcut: the lantern, the tide and the gear door are played in checks/lantern_chain_test.js
+    await say('go to cave'); ok(await at() === 'cave', 'typing "go to cave" goes in too'); expect(await say('look passage'), /The passage goes down to the open door\. The workshop is below\./, 'by lantern light');
+    await shot('2_cave_lit'); await tapThing('passage'); ok(await at() === 'shop', 'the passage leads to the workshop'); await shot('3_workshop');
     expect(await say('hint'), /Look at the plan on the wall\./, 'the workshop hint');
     await tapThing('plan'); expect(await last(), /keyhole, shaped like a gear.*First wind its clock\. Then turn my guard key\. It will guard the time portal by night\./, 'the plan');
     expect(await say('use coat'), /Time portal\. One way\./, 'the coat');
     expect(await say('hint'), /Wind its clock first\./, 'the workshop hint after the plan');
-    ok(await p.evaluate(() => { const j = JSON.parse(localStorage.getItem(KEY)); return j.c.at === 'map' && j.c.sub[0] === 'shop'; }), 'the save says "on the map" for the class link, with a note for version 87'); await p.reload(); await p.waitForTimeout(700); ok(await at() === 'shop', 'closed and opened again: still in the workshop');
+    ok(await p.evaluate(() => { const j = JSON.parse(localStorage.getItem(KEY) || sessionStorage.getItem(KEY)); return j.c.at === 'map' && j.c.sub[0] === 'shop'; }), 'the save says "on the map", with a note for the workshop'); await p.reload(); await p.waitForTimeout(700); ok(await at() === 'shop', 'closed and opened again: still in the workshop');
     expect(await say('leave'), /^You walk back up the passage\. The Dark Cave\./, 'leave goes back to the cave'); ok(await at() === 'cave', 'in the cave');
-    expect(await say('go down'), /You walk down the passage\. The Clockmaker's Workshop\./, '"go down" goes in again');
+    expect(await say('go down'), /You walk down the passage, in a dry minute\. The Clockmaker's Workshop\./, '"go down" goes in again');
     await tapCorner(); ok(await at() === 'cave', 'the corner in the workshop goes back to the cave');
     await say('leave'); ok(await at() === 'map', 'out on the map');
 
@@ -118,8 +103,6 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.reload(); await p.waitForTimeout(700); ok(await has('clkey'), 'an old save gets the key it earned');
 
     // ---- THE GEAR DOOR'S NUMBERS
-    if (name === 'ipad') { const r = await p.evaluate(() => { let badN = 0; const seen = new Set(); for (let s = 1; s <= 5000; s++) { const k = fQ('chrono', CGEARS, s), m = k.q.match(/^There are (\d+) gears\. Each has (\d+) teeth\. How many teeth in all\?$/); if (!m || +m[1] * +m[2] !== k.a || k.a !== Math.floor(k.a) || +m[1] < 3 || +m[1] > 8 || +m[2] < 6 || +m[2] > 10 || k.q.split(/[.?!]/).some(x => x.trim().split(/\s+/).length > 10)) badN++; seen.add(k.a); } return { badN, kinds: seen.size }; });
-      ok(r.badN === 0, `the gear door: ${r.badN} bad questions`); console.log(`The gear door: 5,000 cadets, ${r.badN} bad, ${r.kinds} different answers.`); }
     await p.context().close();
   }
   await b.close();
