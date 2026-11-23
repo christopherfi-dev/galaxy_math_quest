@@ -530,3 +530,12 @@ These are Marc's words, tidied. They are not on the form above.
 - **Failing is OK after the station (Marc, 2026-11-22, evening).** "Because that's the other thing does not for quests outside of the initial space station, it's OK for the students to fail and be invested in this world and see something happen."
   - Read as: in every quest after the KIS Station, a mistake may play out and change the world; the station, where children learn to play, keeps its gentler help (the main thread's reading, to confirm).
   - Added to `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md` (where it applies; rule B now says something really happens, and the child can always recover) and to the big world brief, section 7.
+- **A world many children change (Marc, 2026-11-23).** "For the quests outside of the initial space station quests. But that brings into the question like you have to change how things play up because we do see that things look like a hole is dug. Someone build something incorrectly then what happens then? So we need to show it. You know our thing about that one world where the main quest to get like an engine upgrade or whatever is building the homeless [homes] for the people. Even enough students in a class like I'm saying a classroom server, the amount of space where they would be building would have to be growing? So again that's why we need to think about like or since we're using that one thread as the initial tester, the world must be big enough to allow multiple students to be building things on there you know. For just that one example."
+  - Confirms: failing with consequences is for quests outside the KIS Station.
+  - Added to the big world brief as section 8:
+    - every change has an owner and a place
+    - building land that grows by code, one plot for each child, planned for a grade (about 60 plots)
+    - a mistake shows to its maker; classmates see scaffolding, then the finished work with a code name
+    - holes fill back by the next day
+    - a test with 14 and 60 made-up cadets
+  - The big world thread is the tester; Xylophora's home building in the main game follows later.
