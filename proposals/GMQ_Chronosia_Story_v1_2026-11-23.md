@@ -44,7 +44,7 @@ A people whose whole way of life is agreeing on the time. All [Proposal] unless 
   - **A birth clock.** When a child is born, a tiny clock is hung in the hollow tree, with the name and the year cut on it. The family winds it once, at the child's first sunset. After that nobody winds it: it ticks in time with its person, wherever they are, for as long as they live (R21). A stopped clock is left in its place. The Clockmakers' own clocks hang deep inside the hollow, out of sight.
   - **The runners and the evening call.** One runner from each valley, in the colour of their stripe of sky. They carry the day's turn, not the hour. From the tower top, eight valleys light their lamps at once.
   - **Slow bread.** Dough left by the slow pond rises for a week (R2). A loaf is shared at a child's first sunset.
-  - **Shadow tag.** Children chase each other's shadows on the landing field. Their chalk rings are still there. Today the shadows do not move, and the game is spoiled.
+  - **Shadow tag.** Children chase each other's shadows on the landing field. Their chalk rings are still there. Nobody is playing today: the children were called indoors when the quakes began. They come out when the seventh is held.
   - **A time capsule** is buried on the Backward Mountain, where things stay young. [Source: the Time Capsule Unveiling, and Sara's love of capsules]
   - **Nobody hurries a tortoise.**
   - **TimeTweak fruit** is eaten before a long wait. [Source: the fruit]
@@ -132,7 +132,7 @@ Everything on Chronosia should agree with this. If you change a fact here, the t
 | R18 | **The cave is black.** Daylight reaches the way in, and no further. A glow stone lights your hand and no more. Nomad glass makes a small light big. A lantern is a glow stone behind Nomad glass. Fire is no use: the cave's wet air puts it out. | [Source] the black cave, your words of 23 November. [Proposal] the rest. |
 | R19 | Even water keeps a timetable on Chronosia. The slow river backs up into the cave at set times. | [Proposal] new |
 | R20 | **No line says today's date.** The mission week, Oct 3 to Oct 7, is always still ahead. The timetable is annual. | [Source] the dates, and "Annual". [Proposal] the rule. Decision 13. |
-| R21 | **A birth clock is bound to its person.** It is wound once. Then it ticks with them, wherever they are, and stops when they die. It is the one clockwork on Chronosia that nobody winds and no quake stops. | [Proposal] new. The discovery "the Clockmaker is alive" rests on it. |
+| R21 | **A birth clock is bound to its person.** It is wound once. Then it ticks with them, wherever they are, and stops when they die. After that first winding nobody winds it, and no quake stops it. | [Proposal] new. The discovery "the Clockmaker is alive" rests on it. |
 
 **Said plainly about R13 and R20:** the game has no clock and no calendar. Every quest waits for the child. R13 gives that a story reason before the seventh quake. After it, days turn and nothing counts them. A sharp child who plays for weeks could still ask when Oct 3 comes. I think that is acceptable.
 
@@ -419,12 +419,12 @@ All [Proposal]. Words in quotes are sample lines for the game.
 | **The valley plates,** under the eight small clocks. Each names a seat of the Council. Two clocks for each. | The Council once kept these clocks itself. | "The four seats used to keep these clocks. You used to climb the tower." | 8 clocks, 4 seats, 2 each |
 | **The notches on the white arch.** 9 rows of 10, and 4 more. After the last, a small clock is cut. | They marked 94 longest days. Then the clock came, and they stopped. | "The arch is at least 94 years older than the great clock." | 9 × 10 + 4 = 94 (3.OA.3) |
 | **The sun mark,** on the arch and on the sundial in the stone ring. | The same people made both. | "The stone ring is from the Shadow Age too." | none: matching |
-| **The birth clocks** in the hollow tree. The lowest: "Year 3", stopped. Deep inside the hollow, where only someone small can look: a row of clocks with a gear for a name. Five are stopped. The sixth reads "Year 171". **It is still ticking.** | A birth clock ticks only while its person lives (R21). How old are they now? | "The Clockmaker is alive. And 96 years old." | 267 − 171 = 96 (3.NBT.2) |
+| **The birth clocks** in the hollow tree. The lowest: "Year 3", stopped. Deep inside the hollow, where only someone small can look: a row of six clocks with a gear for a name. Five are stopped. The first has no year on it: the custom began with the great clock. The sixth reads "Year 171". **It is still ticking.** | A birth clock ticks only while its person lives (R21). How old are they now? | "The Clockmaker is alive. And 96 years old." | 267 − 171 = 96 (3.NBT.2) |
 | **The makers' marks** in the workshop: 41, 38, 52, 35, 39, and one with no tally. | Five Clockmakers served 205 years, from Year 1. | "The last Clockmaker began in Year 206." | 41 + 38 + 52 + 35 + 39 = 205 (3.NBT.2) |
 | **The year stone,** by the portal (task 20). | The night trips are growing. | Zara's forecast goes on the wall. | task 20 |
 
 - **What the answer changes:** each claim becomes a tile on the wall. Sara's words change: she starts by telling the cadet where to look, and ends by asking the cadet what it means.
-  - **The Clockmaker's clock changes the most.** The Keeper, told: "Still ticking? I have not looked inside that tree in years. I did not dare." Then, in the hall, Zara: "Then someone is out there holding the sky together. My mission to the Multiverse Core has a second reason now." (Your booklet's page 10. Decision 2.)
+  - **The Clockmaker's clock changes the most.** The Keeper, told: "Still ticking? I have not been to that tree in years. I am too big to see inside it now. And I did not dare ask." Then, in the hall, Zara: "Then the Clockmaker is somewhere." And, only if you choose decision 2A: "If it is where I think, my mission to the Multiverse Core has a second reason now." (Your booklet's page 10.)
   - **Six tiles can be found on Chronosia alone.** With six: a card, and a name the Council gives to a friend of its history. (The name is yours to choose.) The seventh, the makers' marks, is in the workshop, behind the lantern chain. It is the wall's last secret.
   - **Honest about the maths:** three pieces of evidence carry real sums (the notches, the birth clock, the tallies), and the year stone is task 20. The other three are reading and matching. Discovering is not always a sum.
 - **A mistake shows:** the claim does not fit something Sara does know, and she says what.
@@ -525,7 +525,7 @@ The lantern must say the same thing wherever a child meets it.
 | The clock came, and the old way stopped. | the arch | the small clock cut after the last notch |
 | Every child has a clock, for life. | the hollow tree | names and years; the family; the newborn's silent clock |
 | They share the day, not the hour. | the tower; the tower top | the runners; eight valleys lighting their lamps at once |
-| They bake slow bread, and children play shadow tag. | the hollow tree; the landing field | the family's loaf; the chalk rings |
+| They bake slow bread, and children play shadow tag. | the hollow tree; the landing field | the family's loaf; the chalk rings, and the children themselves once the quake is held |
 | The Council once kept the clocks itself. | the clock board; the hall | the seat on each plate; the numbers on the four chairs |
 | The Clockmakers taught each other, and the line stopped. | the workshop | six marks, five tallies, an empty space |
 | The Clockmaker is still alive. | deep inside the hollow tree | six clocks with a gear for a name; one still ticks |
@@ -819,4 +819,8 @@ A reviewer read this note with only `CLAUDE.md` and the handoff. It never saw th
 | The culture is all clocks, and the main road shows little of it. | The evening call, slow bread and shadow tag are added, and I say plainly that this is still thin. Section 1. |
 
 **What it still calls weakest, and I agree:** the culture beyond clocks; how much of it a child meets on the main road; and that three of the wall's seven pieces carry little maths.
+
+**Fifth read: 0 blockers, 0 major, 6 minor.** "Nothing above MINOR." Five of the six minor points are corrected. The sixth asked for a line that is already in task 21: only the fastest trail reaches the top after the capsule was buried [Built, tested].
+
+**What the reviewer could not do,** in its own words: it never saw the game, your pages or the check script, and on its last read it searched the unchanged parts and did not read them again. "A fault in an unchanged part that I passed four times could still be there."
 
