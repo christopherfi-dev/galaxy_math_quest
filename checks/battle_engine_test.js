@@ -18,7 +18,7 @@ const stats = { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0,
 function play(opts, k0, k1, sd, keep) {
   const S = B.newBattle(opts, k0, k1, sd), size = B.cardCount(S.P[0]);
   const start = S.P.map(p => p.deck.concat(p.hand).sort().join(','));
-  ok(size === 37 + Math.min(opts.spies, 7) + opts.guards + (opts.upgrades ? 5 : 0), 'each deck starts with the right number of cards', size);
+  ok(size === 39 + Math.min(opts.spies, 7) + opts.guards + (opts.upgrades ? 5 : 0), 'each deck starts with the right number of cards', size);
   ok(S.P.every(p => p.deck.concat(p.hand).filter(B.isSpy).length === Math.min(opts.spies, 7) && p.deck.concat(p.hand).filter(B.isGuard).length === opts.guards), 'each deck has the Spy and Guard cards the switches say');
   ok(S.P[0].hand.length === 5 && S.P[1].hand.length === 5, 'a hand of 5 at the start');
   ok(S.P[0].shield === 100 && S.P[1].shield === 100, 'both shields start at 100');
@@ -37,7 +37,9 @@ function play(opts, k0, k1, sd, keep) {
       // the card played was in the hand
       ok(before.hand[i].indexOf(L.card[i]) >= 0, 'the card played came from the hand');
       // Weapons lost: no attack, whatever the card
-      ok(L.snap.wep[i] ? L.atk[i] >= 15 : L.atk[i] === 0, 'a ship without Weapons does not attack', JSON.stringify(L.atk));
+      ok(L.snap.wep[i] ? L.atk[i] >= 15 : L.atk[i] === 0, 'a ship without Weapons does not attack; every other ship does, a ship that dodges too', JSON.stringify(L.atk));
+      ok(!L.away[i] || (c.ops.some(o => o.op === 'block_dodge') && L.snap.sg[i]), 'a ship dodges only when it played a dodge card and has its Shield Generator');
+      if (c.ops.some(o => o.op === 'block_dodge') && L.snap.sg[i] && !(opts.kindBlock && !opts.shieldKind && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d]))) ok(L.away[i], 'a dodge card that works makes the ship dodge');
       // Shield Generator lost: no block
       ok(L.snap.sg[i] || L.block[i] === 0, 'a ship without its Shield Generator cannot block');
       // Marc, 22 November: a lower card cannot block a higher attack card
@@ -199,7 +201,7 @@ const a = play(D, STD, STD, 4242, false), b = play(D, STD, STD, 4242, false);
 ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the same battle');
 // the rules by hand: four small cases with known answers
 (function () {
-  const S = B.newBattle(Object.assign({}, D, { spies: 7, guard: 'swap', shieldRebuild: 'reborn' }), STD, STD, 7);
+  const S = B.newBattle(Object.assign({}, D, { spies: 7, guard: 'blind', shieldRebuild: 'reborn' }), STD, STD, 7);
   ok(B.shipAP(S.P[0]) === 55 && S.P[0].parts.reduce((t, q) => t + q.hp, 0) === 100, 'a Standard ship has 100 HP and 55 AP');
   function force(i, id) { const p = S.P[i]; let h = p.hand.indexOf(id); if (h < 0) { const d = p.deck.indexOf(id); p.deck.splice(d, 1); p.deck.push(p.hand[0]); p.hand[0] = id; h = 0; } return h; }
   function round(c0, c1, ch) { B.startRound(S, force(0, c0), force(1, c1)); B.doSwap(S, 0); B.doSwap(S, 1); B.steps(S).forEach(st => { const req = B.need(S, st); B.run(S, st, req ? (ch && ch[st.k + (st.a === undefined ? st.d : st.a)]) || B.cpuChoose(S, req) : null); }); return S.log[S.log.length - 1]; }
@@ -239,6 +241,13 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   L = duel('A12', 'D09'); ok(L.atk[0] === 100 && L.through[1] === 0, 'the epic block card blocks an epic attack card whole');
   L = duel('A12', 'A10'); ok(L.block[1] === 0 && L.atk[1] === 65, 'Hit and Hide (rare) against Hundred Cannon (epic): its block stops nothing, and it still adds 10 to its own attack');
   L = duel('A08', 'A10'); ok(L.block[1] === 10 && L.through[1] === 65, 'Hit and Hide (rare) against Twin Tens (rare): blocks its 10');
+  // dodge cards (Marc, 22 and 23 November): Wormhole Zip (common) and Triple Illusion (rare)
+  L = duel('A01', 'D11'); ok(L.through[1] === 0 && L.atk[1] === 55 && L.through[0] === 55 && L.away[1], 'Wormhole Zip (common) against Spark Shot (common): the whole attack misses, and the ship that dodged still fires its 55', JSON.stringify([L.through, L.atk]));
+  L = duel('R01', 'D11'); ok(L.through[1] === 0 && L.atk[1] === 55, 'Wormhole Zip against a plain attack: it misses, and the dodger fires');
+  L = duel('A08', 'D11'); ok(L.block[1] === 55 && L.through[1] === 20 && L.atk[1] === 55, 'Wormhole Zip (common) against Twin Tens (rare, 55 + 20): the ship\'s 55 misses, the card\'s 20 still hits', JSON.stringify([L.block, L.through]));
+  L = duel('A08', 'D12'); ok(L.through[1] === 0, 'Triple Illusion (rare) against Twin Tens (rare): the whole attack misses');
+  L = duel('A11', 'D12'); ok(L.through[1] === 110 && L.block[1] === 0, 'Triple Illusion (rare) against Doubling Drive (epic, doubles the AP): the whole 110 still hits');
+  L = duel('A01', 'D11', S => { S.P[1].parts[2].hp = 0; }); ok(L.through[1] === 60 && L.atk[1] > 0 && !L.away[1], 'with its Shield Generator lost, a ship cannot dodge: it is hit, and it fires as usual', JSON.stringify([L.through, L.atk]));
   // the old rule, kept on the switch
   L = duel('A12', 'D02', null, { shieldKind: false }); ok(L.block[1] === 0 && L.through[1] === 100, 'with the old rule switched on: a common block card does not block an epic attack card at all');
   L = duel('A08', 'D02', null, { shieldKind: false }); ok(L.block[1] === 0 && L.through[1] === 75, 'with the old rule switched on: a common block card does not block a rare attack card at all');
