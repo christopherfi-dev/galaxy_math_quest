@@ -654,3 +654,6 @@ These are Marc's words, tidied. They are not on the form above.
   - Put on the class link and the preview (version 93). The full test suite was not run (paused).
   - Note for the big world thread: Algora reads one number (the seed) from the game's old save key; it should read `gmq-station-sketch-v6` now.
 - **"JavaScript is allowed" (Marc, 2026-11-23),** after checking Chrome's site settings on his school MacBook. So the school does not block the game's code. That fits his earlier words ("The game runs"): the start-up message was only showing while the large page loaded on slow wifi. Version 93 (class link and preview) keeps it hidden unless the game has not started after 10 seconds.
+- **The Chronosia story is approved (Marc, 2026-11-23).** He passed on the story thread's words, "The Chronosia story is approved on four decisions. Build from proposals/GMQ_Chronosia_Story_Build_List_v1_2026-11-23.md.", and asked: "Should I have a new thread do this?"
+  - Answer: the new main thread, which owns the game file. A separate builder would collide with it.
+  - Order set in `HANDOFF_2026-11-20.md` section 0: the build list's stages 1 to 3, then the fly-in, then stages 4 to 7 (stage 4 is the lantern, the plan's strand A).
