@@ -116,20 +116,30 @@ for now in range(60, 13 * 60, 5):
 print(f"5. The cougar's clock: {n} sets of three readings. Every watch begins by 6:55, before any night trip (7:00 to 10:20).")
 
 # ---------------------------------------------------------------------------------------------------------------
-# 6. SARA'S HISTORY WALL (the Council Hall). Fixed years: the great clock, Year 1. The Council, Year 58. The portal, Year 184. Now, Year 267.
-#    The capsule was buried K years ago. K comes from the game's own mountain rule. For all 99,990 seeds K is 7 to 49
-#    (worked out from the game file with node, on 23 November). So its year is 267 - K.
-years = {'the great clock': 1, 'the Council': 58, 'the portal': 184, 'now': 267}
-order = sorted(years.values())
-if order != [1, 58, 184, 267] or len(set(order)) != 4: bad.append("wall: the fixed years are not in order")
-n = 0
-for K in range(7, 50):
-    n += 1; y = 267 - K
-    if not (184 < y < 267): bad.append(f"wall: the capsule year {y} is not between the portal and now")
-    if y in years.values(): bad.append(f"wall: the capsule year {y} lands on another tile")
-gaps_ = sorted({b - a for a in years.values() for b in years.values() if b > a})
-if any(g <= 0 or g > 999 for g in gaps_): bad.append("wall: a gap outside 1 to 999")
-print(f"6. The history wall: {n} capsule years, from Year {267 - 49} to Year {267 - 7}. Gaps Sara can ask about: {gaps_}.")
+# 6. SARA'S HISTORY WALL (the Council Hall). One history for every cadet, so these are fixed numbers, not a rule with seeds.
+#    Now: Year 267 [Source: Marc's Task 3, "Oct 4, 267"]. The portal: Year 184. The great clock: Year 1.
+#    The arch: 9 rows of 10 notches and 4 more. The makers' tallies: 41, 38, 52, 35, 39. The Clockmaker's birth clock: Year 171.
+#    The Keeper's: Year 199. Sara's: Year 229. The lowest clock on the tree: Year 3.
+#    From the game's own mountain rule, for all 99,990 seeds (worked out with node on 23 November): the trails go back 8 to 60 years.
+NOW, PORTAL = 267, 184
+notches = 9 * 10 + 4
+tallies = [41, 38, 52, 35, 39]
+began = 1 + sum(tallies)            # five Clockmakers served from Year 1; the sixth began the year after
+born = {'the Clockmaker': 171, 'the Keeper': 199, 'Sara': 229}
+if notches != 94: bad.append("wall: the notches are not 94")
+if sum(tallies) != 205 or began != 206: bad.append("wall: the tallies do not give Year 206")
+if NOW - PORTAL != 83: bad.append("wall: the timetable has not run 83 years")
+ages = {k: NOW - v for k, v in born.items()}
+if ages != {'the Clockmaker': 96, 'the Keeper': 68, 'Sara': 38}: bad.append(f"wall: ages {ages}")
+# the Clockmaker before must be the one who built the portal: that one served the 39 years up to Year 205
+if not (began - tallies[-1] <= PORTAL < began): bad.append("wall: the portal's year is not inside the fifth Clockmaker's years")
+# the last Clockmaker must already be at work in the earliest year any cadet's mountain shows a crack coming (60 years back at most)
+if not began <= NOW - 60: bad.append("wall: the last Clockmaker began after the earliest year a cadet can see from the mountain")
+# and was grown up by then, and the Keeper was born early enough to be a pupil before the latest the Clockmaker can have left (8 years back)
+if began - born['the Clockmaker'] < 20: bad.append("wall: the Clockmaker took over too young")
+if (NOW - 8) - born['the Keeper'] < 10: bad.append("wall: the Keeper was too young to be a pupil")
+if any(a > 120 for a in ages.values()): bad.append("wall: someone is older than 120, which Sara's line says nobody is")
+print(f"6. The history wall: {notches} notches. The tallies make {sum(tallies)}, so Year {began}. Ages now: {ages}. The portal ({PORTAL}) falls in the fifth Clockmaker's years ({began - tallies[-1]} to {began - 1}).")
 
 # ---------------------------------------------------------------------------------------------------------------
 # THE SAMPLE TIDE TABLE printed in the note, worked out here so the note cannot be wrong about it.

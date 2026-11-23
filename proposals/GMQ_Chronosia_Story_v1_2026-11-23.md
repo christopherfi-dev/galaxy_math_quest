@@ -10,8 +10,8 @@
 
 - **Chronosia has good parts and no spine.** The six quests, the 19 finds, the case and the three trails were built at different times. Nothing says why any of it is happening.
 - **Your own material already holds a spine.** Zara's profile says: "too much time travel is ripping holes in the universe." [Source] I propose that as the one cause. It is your decision 1.
-- **A world to discover** [Source: Marc, 23 November: "a world where we explore and discover more about the cultures of the world, their history... Not just random things."] So the note now says who the Chronosians are: three ages of history, their customs, and where a child finds each piece. Sections 1 and 5e.
-- **I found 34 contradictions and loose threads.** Section 7. Each has a fix. Five are faults a child could catch.
+- **A world to discover** [Source: Marc, 23 November: "a world where we explore and discover more about the cultures of the world, their history... Not just random things."] So the note now says who the Chronosians are: three ages of history, their customs, and the evidence a child reads at each old place. Nobody tells the history. The child finds it. Sections 1 and 5e.
+- **I found 35 contradictions and loose threads.** Section 7. Each has a fix. Five are faults a child could catch.
 - **Of 30 built tasks: 12 keep, 12 rework, 5 merge into others, 1 becomes scenery. One task is new:** Sara's history wall. Nothing a child has earned is lost. Section 4.
 - **Your lantern chain of today is section 5.** The cave is black. Nothing can be done there without the lantern.
 - **Fifteen decisions are yours.** Section 11.
@@ -32,31 +32,35 @@ Everything here is [Proposal] unless tagged.
 
 ### Who the Chronosians are
 
-A people whose whole way of life is agreeing on the time.
+A people whose whole way of life is agreeing on the time. All [Proposal] unless tagged. Every name and year is mine to change.
 
-- **Their land:** time runs at different speeds in different places. [Source] There are eight valleys. Each lies under one stripe of the sky, and each keeps its own time. [Source: the stripes are time zones. Proposal: eight valleys.]
+- **Their land:** time runs at different speeds in different places. [Source] There are eight valleys. Each lies under one stripe of the sky, and each keeps its own time. [Source: the stripes are time zones. Proposal: eight valleys.] The map a child walks is one of them, the Council's valley. The other seven are seen from the top of the Clock Tower.
 - **Their history has three ages.**
-  1. **The Shadow Age,** before the clocks. They told the time by shadows, and the years by the rings on a tortoise's shell. No two valleys agreed on the hour, so they could never meet on the same day. They left the stone ring, its sundial, and the white arch.
-  2. **The Clock Age,** from Year 1. The first Clockmaker built the great clock. It takes its time from eight small clocks, one for each valley. For the first time, eight valleys shared one day. Years are counted from that day. In Year 58 the Council of Timekeepers was founded, to keep the eight clocks together. Each member keeps two.
-  3. **The Portal Age,** from Year 184. The Clockmakers built the time portal. The Council, who had only kept Chronosia's time, began to mend time elsewhere: eight missions a year.
+  1. **The Shadow Age,** before the clocks. They told the time by shadows. Each longest day they cut a notch in the white arch. No two valleys agreed on the hour, so they could never meet on the same day. They left the stone ring, its sundial, and the arch.
+  2. **The Clock Age,** from Year 1. The first Clockmaker built the great clock. It takes its time from eight small clocks, one for each valley. For the first time, eight valleys shared one day. Years are counted from that day. The Council of Timekeepers began then: four members, and each kept two of the eight clocks. Each evening a runner carried the true time home to each valley.
+  3. **The Portal Age,** from Year 184. The Clockmakers built the time portal. The Council began to mend time elsewhere: eight missions a year, two for each member. [Source: eight missions, two each.] They stopped climbing the tower. The Keeper keeps the eight clocks alone now.
 - **Now it is Year 267.** [Source: your Task 3 asks about "Oct 4, 267".]
 - **Their customs:**
-  - **A birth clock.** When a child is born, a tiny clock is hung in the hollow tree. It ticks for that child.
-  - **The year stone.** Each new year the Keeper cuts one number on the stone by the portal.
-  - **A time capsule for each generation,** buried on the Backward Mountain, where things stay young. [Source: the Time Capsule Unveiling, and Sara's love of capsules]
-  - **Nobody hurries a tortoise.** The tortoises were the first calendars.
+  - **A birth clock.** When a child is born, a tiny clock is hung in the hollow tree, with the name and the year cut on it. It is started at the child's first sunset. It ticks for as long as that person lives. A stopped clock is left in its place.
+  - **The runners.** One from each valley, in the colour of their stripe of sky.
+  - **A time capsule** is buried on the Backward Mountain, where things stay young. [Source: the Time Capsule Unveiling, and Sara's love of capsules]
+  - **Nobody hurries a tortoise.**
   - **TimeTweak fruit** is eaten before a long wait. [Source: the fruit]
-  - **The Clockmakers** pass their craft from teacher to pupil. Each adds a mark to the workshop wall. The Tower Keeper was the last Clockmaker's pupil, and never finished learning: "I can keep a clock. I cannot make one."
-- **What a child should come away knowing:** a people learned to agree on the time, grew proud of it, and then grew careless with it.
+  - **The Clockmakers** pass their craft from teacher to pupil. Each cuts a mark on the workshop wall, and a tally of the years they served.
+- **The ordinary people a child meets** (new, and a cost: section 11, decision 14):
+  - **Eight runners at the Clock Tower.** They came for the evening time. Evening will not come. They wait.
+  - **A family at the hollow tree,** with a baby born this afternoon. Her clock has a name and no tick. "Her first sunset has not come."
+  - So the stuck day is not only a machine's trouble. It is a baby whose first day will not end.
+- **What a child should come away knowing:** a people learned to agree on the time, grew proud of it, looked away to other worlds, and grew careless at home.
 
 ### What happened on Chronosia
 
 1. **Time runs at different speeds in different places.** A river that rushes and crawls. A mountain that grows younger as you climb. A sky in stripes, each colour its own time zone. [Source: your Chronosia page]
-2. **The Clockmakers built the great machines:** the great clock with its eight small clocks, then the Time Stabilizer and the time portal. The last of them is "the Clockmaker" of this story. [Built: the Clockmaker, version 87]
+2. **The Clockmakers built the great machines:** the great clock with its eight small clocks, and later the time portal. The last of them is "the Clockmaker" of this story [Built: version 87], who built the engine cores, and then three last things: the Time Stabilizer, the cougar, and the Long Spring.
 3. **The Council of Timekeepers uses the portal for its missions:** Atlantis, the dinosaurs, the black hole, and the rest of your booklet. [Source: the eight missions. Built: the chart house map shows "every place the portal reaches".] The portal makes the jump. On the far side, a mission may still need a ship or a submarine. [Source: your booklet's pages]
 4. **Every trip tears the sky a little.** [Source: Zara's profile, "too much time travel is ripping holes in the universe".] A small tear mends by itself. Eight trips a year, the missions of the Annual Timetable, is the most the sky can mend. It cannot bear more.
 5. **The extra trips are the trouble.** Members slip through by night: a quick errand, a look at a favourite place. There are a few more each year.
-6. **The Clockmaker saw the first thin crack, years ago.** The Clockmaker built a brass cougar to guard the portal by night. The Council said no. They did not believe a few errands could hurt.
+6. **The Clockmaker saw the first thin crack, years ago,** and warned that quakes would follow. The Council allowed a Watcher and a Stabilizer, in case. But when the Clockmaker built a brass cougar to guard the portal by night, the Council said no. They did not believe a few errands could hurt.
 7. **So the Clockmaker trusted the future instead.** The cougar was left on its rock, not wound. Its key was set adrift on the river. Notes were left for whoever came later. Then the Clockmaker went through the portal, one way.
 8. **Today the tear grew too big.** Six Time Quakes came this afternoon, each longer than the last. [Source: your Task 2] They stopped the clocks. [Source: your Task 1] With the great clock stopped, the day cannot turn. [Source: your Task 1, "the day-night cycle is disrupted"]
 9. **Chronosia called for help.** [Source: "a mysterious call from the newly discovered world of Chronosia"]
@@ -79,19 +83,19 @@ A people whose whole way of life is agreeing on the time.
 - **The guard:** the tortoise's eggs lead to the pond, the pond to the Clockmaker's note, the note to the key, the key to the cougar.
 - **The black cave:** a lantern from another planet lights the way to the Clockmaker's workshop.
 - **The Backward Mountain:** Sara's time capsule.
-- **The history wall:** Sara is the Senior Historian. [Source] Every old place the cadet finds goes on her wall, in its year.
+- **The history wall:** Sara is the Senior Historian. [Source] She knows only what the Council wrote down, and that begins with the portal. The cadet reads the evidence at the old places, and tells her what it means.
 
 ### How it ends, and what is different afterwards
 
 | What the cadet did | What a child can see afterwards |
 |---|---|
 | Set the eight clocks | The eight clocks tick. The tower door is open. The Keeper keeps one hand on the great clock. |
-| Held the seventh quake | The day turns. The sundial's shadow moves. The great clock strikes, and the tiny clocks in the hollow tree tick together. The needle draws a flat line. The digger sits outside its burrow. The landing words no longer say "time is broken". |
+| Held the seventh quake | The day turns. The runners run home with the time. The baby's clock starts at sunset. The sundial's shadow moves. The great clock strikes, and the tiny clocks in the hollow tree tick together. The needle draws a flat line. The digger sits outside its burrow. The landing words no longer say "time is broken". |
 | Planned the missions | The Council gives the Engine Core, and the name Timekeeper Cadet. |
 | Closed the case | The portal is locked by night, or one member owes you a secret. |
 | Woke the guard | The rock is empty. The cougar sits by the portal. In the hall, a member says: "So the Clockmaker's guard was finished after all. We were wrong to say no." |
 | Carried the lantern in | The cave is lit. The workshop is open. |
-| Filled Sara's history wall | The wall in the Council Hall shows Chronosia's three ages. Sara gives her old map. |
+| Filled Sara's history wall | The wall in the Council Hall shows Chronosia's three ages. Sara: "You have walked further into our past than I ever have." |
 
 **The crack is the scoreboard.** It fades when a whole night passes with no trip. That needs two things. The day must be turning again: the seventh quake held. And the night trips must be stopped: the Council locks the portal by night, or the guard takes its post. If the cadet keeps the secret and never wakes the guard, the crack stays, and one day the quakes will come back. That is a choice that matters.
 
@@ -116,7 +120,7 @@ Everything on Chronosia should agree with this. If you change a fact here, the t
 | R9 | The quakes come in a chain: each 5 minutes longer, with 30 minutes of calm between. | [Source] |
 | R10 | **Hold one quake from its first minute to its last, and the chain breaks.** The tear is still there. If it grows again, a new chain will start one day. | [Proposal] new. Without it, a child can ask: "What about the eighth?" |
 | R11 | **A quake's jolt makes a clock's wheels slip.** The minutes run past 59 and the hour never turns. Then the clock stops. It still holds a true time, written wrong: 3:67 is 4:07. | [Proposal] new |
-| R12 | The eight small clocks keep the time of the eight valleys. They may differ: each place keeps its own time (R1). The great clock takes its time from all eight. Every other small clock on Chronosia listens for the great clock, except the cougar's (R17). | [Proposal] new |
+| R12 | The eight small clocks keep the time of the eight valleys. They may differ: each place keeps its own time (R1). The great clock takes its time from all eight. Every other small clock on Chronosia listens for the great clock, except two that keep their own time: the cougar's, and the master clock in its rock (R17). | [Proposal] new |
 | R13 | **While the great clock is stopped, the day cannot move on.** The sun hangs in the afternoon sky. Night does not come. Minutes still pass in each place (R1): water flows, stones cool, wheels turn. But the day waits, and the chain of quakes waits with it, however long the cadet takes and however far they fly. A child can see it: the sundial's shadow does not move. | [Source] "the day-night cycle is disrupted". [Proposal] the rest. Decision 3. |
 | R14 | **What runs, and when.** The great clock stopped at 5:04, when the sixth quake ended. (1) Before the eight clocks are true: nothing in the tower runs. (2) Once they are true: the eight small clocks tick, and the great clock is ready. The Keeper keeps it held. "Start the day, and the seventh quake comes with it." (3) The cadet throws the Stabilizer's switch. The Keeper lets go. Thirty minutes of calm run out, and the quake comes at 5:34. (4) Once the quake is held, the day turns. Night comes again. The great clock strikes, and the small clocks everywhere tick with it. | [Built] "Time runs forward." [Source] 30 minutes of calm. [Proposal] the rest. |
 | R15 | The Stabilizer has three charges. A failed try uses one, and the Watcher winds that try back, to 5:04. Nobody else can wind time back, and nothing but a try of the Stabilizer. | [Built] the charges. [Proposal] the limit. |
@@ -134,14 +138,15 @@ All [Proposal] unless tagged.
 
 | When | What | What it caused |
 |---|---|---|
-| The Shadow Age, before Year 1 | People told time by a sundial in the stone ring [Built: "from before the clocks"], and marked the longest day through the white arch. | The sundial still tells true time. A quake cannot jolt a shadow. |
-| Year 1 | The first Clockmaker built the great clock and its eight small clocks. | Eight valleys shared one day. Years are counted from here. |
-| Year 58 | The Council of Timekeepers was founded. | Four members, two clocks each. |
-| Year 184 | The Clockmakers built the portal, and engine cores for the Council's ships. | The Council began its missions. [Source] The Annual Timetable has run for 83 years. |
-| Some years ago. Nobody wrote the year down. | The first thin crack. The last Clockmaker asked for a night guard. The Council said no. | The cougar was never set on guard. |
+| The Shadow Age, before Year 1 | People told time by a sundial in the stone ring [Built: "from before the clocks"]. Each longest day they cut a notch in the white arch: 94 notches in all. | A quake cannot jolt a shadow. But since this afternoon the shadow does not move (R13). |
+| Year 1 | The first Clockmaker built the great clock and its eight small clocks. The Council of Timekeepers began. | Eight valleys shared one day. Years are counted from here. The notches on the arch stop. Four members, two clocks each. |
+| Year 171 | The last Clockmaker was born. | A birth clock in the hollow tree. It still ticks. |
+| Year 184 | The Clockmakers of that time built the portal. | The Council began its missions [Source], and stopped climbing the tower. The Annual Timetable has run for 83 years. |
+| Year 206 | The last Clockmaker took over the workshop, and later built the engine cores for the Council's ships. | Five Clockmakers came before: 41, 38, 52, 35 and 39 years. That is 205. |
+| Some years ago. Nobody wrote the year down. | The first thin crack. The last Clockmaker warned of quakes. The Council allowed a Watcher and a Stabilizer. It said no to a night guard. | The Quake Station. The cougar was never set on guard. |
 | Soon after | The Clockmaker set the key adrift, left a note in the pond and plans in the workshop, hung a Nomad lantern by the cave, and left one way. | Nobody wound the cougar. Nobody went into the cave again. |
 | Some years ago | Sara buried a time capsule on the Backward Mountain. [Built] A drawing inside shows the sky as it was before the crack. | The Time Capsule Unveiling, Oct 6. [Source: your booklet, page 9] |
-| Each year since | A few more night trips than the year before. The Keeper cuts the year's count on a stone by the portal. | The tear grew. |
+| Each year since the Clockmaker left | The Keeper has cut the year's count of night trips on a stone by the portal. For years the numbers were small and much the same. In the last four years they have grown by the same step. | The tear grew. |
 | The last four nights | Three errands, signed in the portal's log, as the Council's habit allows. One trip with no name, last night. The next day the quakes began. | The case: who made the trip that was one too many? |
 | This afternoon, Year 267 | Six quakes, 12:49 to 5:04. [Source] The clocks slipped and stopped. The Clockmaker's lantern fell from its hook and smashed. Its glow stone cracked and went dark. | The day stuck. The call for help. |
 | When the switch is thrown | The seventh quake, 5:34 to 6:09. [Source, recomputed: 5:04 + 30 = 5:34; 30 + 5 = 35 minutes] | The cadet holds it, or tries again. |
@@ -150,18 +155,20 @@ All [Proposal] unless tagged.
 
 | Who | Whose | Knows | Wants | Where | What changes |
 |---|---|---|---|---|---|
-| Sara, Senior Historian | [Source] | old places, time capsules | her capsule brought down for the Unveiling; the old places walked again, for her history wall | Council Hall | She gets the capsule sealed, or spoiled. Her wall fills. |
+| Sara, Senior Historian | [Source] | what the Council wrote down, which begins with the portal. **Not** the ages before it. | her capsule brought down for the Unveiling; someone to walk the old places and tell her what is there | Council Hall | She gets the capsule sealed, or spoiled. Her wall fills with things she did not know. |
 | Tim, Head of Astro-Tech | [Source] | the sun | to stop the sun spinning away | Council Hall | He leads both his missions. |
 | Alex, Prehistoric and Robotic Studies | [Source] | dinosaurs, robots | a pet stegosaurus | Council Hall | He misses the dinosaurs. |
 | Zara, Quantum Physics Director | [Source] | **that time travel tears the sky** | a forecast, so the Council will listen | Council Hall | The count stone gives her one. |
-| The night traveller | [Built] one of the four, different for each cadet | their own reason: Sara, Old Chronosia before the clocks; Tim, the sun; Alex, the first robot; Zara, a hole in time [Built]. [Proposal] If it is Zara: "I went to measure the tear, to prove the danger. I made it worse. I could not sign my name." | not to be found out. The quakes began the day after their trip. | Council Hall | Told on, or owing the cadet a secret. |
-| The Tower Keeper | [Built, version 33] | clocks; the yearly count; that the Clockmaker carried a Nomad lantern. [Proposal] The last Clockmaker's pupil. | the day turning again | Clock Tower | The great clock runs. |
+| The night traveller | [Built] one of the four, different for each cadet | [Proposal] An errand is for the Council's work, and is signed. This trip was for themselves, so it could not be signed. Their own reason: Sara, Old Chronosia before the clocks; Tim, the sun; Alex, the first robot; Zara, a hole in time [Built]. [Proposal] If it is Zara: "I went to measure the tear, to prove the danger. I made it worse. I could not sign my name." | not to be found out. The quakes began the day after their trip. | Council Hall | Told on, or owing the cadet a secret. |
+| The Tower Keeper | [Built, version 33] | clocks; the count of night trips; that the Clockmaker carried a Nomad lantern. [Proposal] The last Clockmaker's pupil, taught the clocks and never the deep work. Was never shown the cave: "You cannot keep a secret, only a clock." Has no key for the cougar. Saw the Council say no, and did not dare ask again. Has counted every night trip since, and told nobody until Zara asked. | the day turning again | Clock Tower | The great clock runs. In the workshop, the space after the last mark is the Keeper's. |
 | The Quake Watcher | [Built, version 33] | the six quakes | the seventh held | Quake Station | The needle goes flat. |
 | The Temporal Tortoise | [Source] the creature. [Proposal] her eggs. | the pond's secret | her eggs kept warm | Tortoise Grove | Her eggs hatch. |
 | The Clockwork Cougar | [Source] the creature, on your Chronosia page. [Proposal] the guard. | the time, once its clock is set | to be wound, set and sent to its post | Cougar Rock, then the portal | It guards the portal by night. |
 | The Clockmaker | [Built, version 87] | everything | to be believed | gone. Only notes and plans. | The cadet finishes what the Clockmaker began. |
 | The old climber | [Built, version 56] | the mountain | a plan before anyone climbs | foot of the mountain | She lets the cadet climb. |
 | The digger | [Built, version 55] | nothing | the shaking to stop | the burrow | Comes out when the quakes end. |
+| The eight runners | [Proposal] new | their own valley; the custom of carrying the time | the evening time, to take home | Clock Tower | They run home when the day turns. |
+| A family with a newborn | [Proposal] new | the birth clock custom | the baby's first sunset | the hollow tree | Her clock starts. |
 | A Nomad glassmaker | [Proposal] new. The Number Nomads are yours. | glass, lanterns | soft sand, and a whole glow stone | Nomad Hollow, Voltara | Mends the lantern. |
 
 ### 2d. The objects
@@ -190,9 +197,14 @@ All [Proposal] unless tagged.
 | The gear door | the end of the passage | stays | A real mechanism: turn the handle the right number of times. |
 | The plans, the coat, the ticket [Built] | the workshop | stay | The Clockmaker's story. |
 | The Long Spring | the workbench | the ship's Engine Core | The super level-up. Decision 7. |
-| Sara's history wall | the Council Hall | stays | A line of years, from before the clocks to Year 267. Each old place the cadet finds goes on it. |
-| Sara's old map [Built: "She carries a very old map."] | Sara | the bag, when the wall is half full | It marks the old places not yet found. |
-| The birth clocks [Built: the hollow tree's tiny clocks] | the hollow tree | stay | One for every Chronosian child. |
+| Sara's history wall | the Council Hall | stays | A line of years. At first it holds only "The portal: Year 184" and "Now: Year 267". |
+| Sara's old map [Built: "She carries a very old map."] | Sara | the bag, when the cadet agrees to help | It marks old places nobody has walked for years: an arch, a ring of stones, a tree, a cave. |
+| The year wheel | the top of the Clock Tower | stays | It has clicked once a year since the great clock first ran. It reads 267. |
+| The valley plates | under each of the eight small clocks | stay | Each names a valley, and the Council office that once kept that clock. |
+| The notches | the white arch | stay | One for each longest day: 9 rows of 10, and 4 more. After the last, a small clock is cut. |
+| The sun mark | the white arch, and the sundial | stays | The same mark on both. The same people made them. |
+| The birth clocks [Built: the hollow tree's tiny clocks] | the hollow tree | stay | One for every child born in this valley, with a name and a year. |
+| The makers' marks | the workshop wall | stay | Six marks. A tally of years beside five of them. |
 | Sara's capsule [Built] | the top of the mountain, in an earlier year | Sara, or opened there | The Unveiling. |
 | TimeTweak fruit [Source] | the tree in the north-east | the bag | One bite, and a long wait passes in a blink. [Source: "an hour zips by like a second"] |
 
@@ -205,8 +217,8 @@ All [Proposal] unless the place is tagged in section 2.
 | Place | Why it is there | Who | What they need |
 |---|---|---|---|
 | Landing field | You arrive. The call is repeated here. | | |
-| Clock Tower | The quakes stopped its clocks, and the day with them. | the Keeper | eight true times |
-| Quake Station | It watches what the tear does to the ground. | the Watcher | the seventh quake's two minutes |
+| Clock Tower | The quakes stopped its clocks, and the day with them. | the Keeper; eight runners, waiting | eight true times |
+| Quake Station | Built when the Clockmaker warned of quakes. It watches what the tear does to the ground. | the Watcher | the seventh quake's two minutes |
 | Council Hall | The Council's missions are the trips the sky can bear. | Sara, Tim, Alex, Zara | a plan with no wasted trip |
 | Time portal, chart house, danger meter, case board | The cause of it all, and its instruments. | | the night traveller's name |
 | Count stone | The Keeper counts the night trips here, each new year. | Zara asks | this year's number, if nothing changes |
@@ -219,8 +231,8 @@ All [Proposal] unless the place is tagged in section 2.
 | Backward Mountain, hut, notice | Your mountain. Sara's capsule is at the top. | the old climber; Sara asks | a climbing plan |
 | TimeTweak tree | Your fruit. | | |
 | Still pool | Shows rule R2 early: your face is one second late. | | nothing. A free secret. |
-| The hollow tree | The birth clocks hang here. A custom. | | nothing. A discovery for Sara's wall. |
-| The white arch | The Shadow Age marked the longest day through it. A quake threw it down. | | nothing. A discovery for Sara's wall. |
+| The hollow tree | The birth clocks hang here. | a family with a newborn | the baby's first sunset. Evidence for Sara's wall. |
+| The white arch | The Shadow Age cut a notch here each longest day. A quake threw it down this afternoon. | | nothing. Evidence for Sara's wall. |
 | Burrow, old stump | Scenery. The burrow shows when the quakes have ended. | the digger | nothing |
 | Stone door in the hills | The top of the workshop's back stair. | | nothing from outside |
 
@@ -258,15 +270,15 @@ All [Proposal] unless the place is tagged in section 2.
 | 20 | Find: carved stone | Nobody. Scratch a number, the stone glows. | Nothing. | "That is not it." | 3.OA.9 | **Rework:** the count stone. Same numbers. |
 | 21 | The Backward Mountain (hut, notice, mountain) | Sara's capsule. But nobody asks you. | The capsule comes down, sealed or opened. | A count of wrong numbers. [Built] | 3.OA.8, 3.OA.9 | **Keep.** Sara asks. The plan plays out. |
 | 22 | Find: small burrow | Nobody. The seeds are never found. | The digger comes out. | "That is not it." | 3.NBT.2 | **Scenery** that changes when the quakes end. |
-| 23 | Find: hollow tree | Nobody. | Clocks chime. | "That is not it." | 3.OA.1 | **Rework:** a discovery. The birth clocks. No sum. |
-| 24 | Find: broken arch | Nobody. Say a number and stone flies. | The arch stands. | "That is not it." | 3.NBT.2 | **Rework:** a discovery. The Shadow Age's sun gate. No sum. |
+| 23 | Find: hollow tree | Nobody. | Clocks chime. | "That is not it." | 3.OA.1 | **Rework:** evidence for task 31. The birth clocks. |
+| 24 | Find: broken arch | Nobody. Say a number and stone flies. | The arch stands. | "That is not it." | 3.NBT.2 | **Rework:** evidence for task 31. The notches. |
 | 25 | Find: still pool | | Shows R2. | | none | **Keep.** A free secret. |
 | 26 | Find: old stump | | Nothing, ever. | | none | **Keep.** A dead end, as your Novus law asks. |
 | 27 | TimeTweak fruit | | Nothing. Its words differ from your page. | | none | **Rework:** it passes a wait. |
 | 28 | Time wisps | The cadet, for practice and to recharge the Stabilizer. | A quarter credit. A charge. | One slip allowed. [Built] | 3.MD.1, 3.NBT.2 | **Keep.** Add R16. |
-| 29 | The tower top | | A view that points to the grove. | | none | **Keep.** Add: from here the crack is widest over the portal. |
+| 29 | The tower top | | A view that points to the grove. | | none | **Keep.** Add: the eight valleys under their stripes; the crack, widest over the portal; the year wheel. |
 | 30 | The epic card for all six jobs | | "Timekeeper Cadet". | | | **Rework:** the big quest gives the Engine Core. Section 6. |
-| 31 | **New:** Sara's history wall | Sara, the Senior Historian. She must stay in the hall all week, and nobody has walked the old places for years. | The wall fills. Chronosia has its history back. | A tile in the wrong place breaks the story, and Sara says how. | 3.NBT.2, a number line | **New.** Decision 14. |
+| 31 | **New:** Sara's history wall | Sara, the Senior Historian. The Council's records begin with the portal. She must stay in the hall all week, and nobody has walked the old places for years. | Sara learns what she did not know. The wall fills. | A wrong claim does not fit something she does know, and she says what. | 3.NBT.2, 3.OA.3 | **New.** Decision 14. |
 
 ### 4b. The reworked tasks, written out
 
@@ -276,6 +288,7 @@ All [Proposal]. Words in quotes are sample lines for the game.
 - **Add to the Keeper:** "The quakes made the wheels slip. The minutes ran past 59, and the hour never turned. Then each clock stopped. It still holds a true time. It is only written wrong."
 - **And:** "The great clock takes its time from these eight. While it is stopped, the day cannot move on. Look at any shadow."
 - **The win, changed** (today: "The great clock ticks again!"): "Eight gears turn. The eight clocks tick. The great clock is ready. The Keeper keeps one hand on its weight. 'Not yet. Start the day, and the seventh quake comes with it. Go to the Watcher.'"
+- **Under each clock, a plate:** the valley's name, and "Kept by the Senior Historian", or another Council office. Two clocks for each office. (Evidence for task 31. The eight names are yours to give.)
 - **Why it matters:** now 3:67 has a meaning. The child does the carry the wheel missed. And the eight clocks may show eight different times, because each keeps the time of its own part of Chronosia (R12).
 - **The picture:** the board of eight clocks. [Built]
 
@@ -286,13 +299,13 @@ All [Proposal]. Words in quotes are sample lines for the game.
 - **After the win:** the day turns (R14). The needle draws a flat line. The landing words change.
 
 **Task 3. Who goes where. [Keep]**
-- **Add to Zara, first:** "I say each trip tears the sky. So let each mission have one leader, and no more."
+- **Add to Zara, first:** "I believe each trip tears the sky. So let each mission have one leader, and no more."
 - **Before the count stone (task 20):** "The others shrug." **After it:** "The others nod now." The game checks which.
 - The Council's own reason needs no belief in Zara: one mission, one leader, has always been its rule. [Built: "No mission has two leaders."]
 
 **Task 4. The Council timetable. [Keep, fix words]**
 - **Add, first:** "A member who sets out and cannot finish leaves the mission undone. It must be flown again. Find the mission each of us cannot finish."
-- **Zara adds:** "And a mission flown twice is a ninth trip. The sky can mend eight." (R6.)
+- **Zara adds:** "And a mission flown twice is a ninth trip. I believe the sky can mend eight." (R6.)
 - **A mistake shows:** see decision 8. My pick: the first member whose line is wrong speaks, and names only their rule. "Zara looks at her line and shakes her head. 'Remember what I told you about my sleep.'" Not the mission. Not the others.
 
 **Task 5. The tortoise's eggs. [Rework of quests 5 and 7]**
@@ -309,7 +322,7 @@ All [Proposal]. Words in quotes are sample lines for the game.
 - **Need:** a brass plate on the rock, from the Clockmaker: "My guard watches by night. It keeps its own clock, so that no quake can stop it. When it runs down it forgets three things: the time now, when its watch begins, and when its watch ends. Wind it. Then set them again from these three clocks."
 - **The task:**
   1. **Wind it.** A crank in its side. No maths.
-  2. **Set its three wheels.** The plate has three clock faces. The first is the master clock, sealed in the rock. It shows the time now. The other two are painted on: "watch begins" and "watch ends". The cougar's chest has three pairs of number wheels: hour and minutes. The child reads each face and sets its wheels. (New numbers. The built boxes.)
+  2. **Set its three wheels.** The plate has three clock faces. The first is the master clock, sealed in the rock. It shows the time now. The other two are painted on: "watch begins", with a small moon, and "watch ends", with a small sun. The cougar's chest has three pairs of number wheels: hour and minutes. The child reads each face and sets its wheels. (New numbers. The built boxes.)
 - **What the answer changes:** the cougar knows the time, and it knows its hours. Night is when the extra trips are made (R7). Afterwards `look cougar` says its watch.
 - **A mistake shows:** the cougar acts on the wheels as set. "The cougar stands. It walks to the edge of the rock. It lies down again. By its wheels, its watch is already over."
 - **The picture:** the plate with its three clock faces, large.
@@ -345,7 +358,7 @@ All [Proposal]. Words in quotes are sample lines for the game.
   - **Standard:** 3.OA.6.
   - **Inside: the epic card.** [Source: your words of 22 November: "Gold epic card as reward inside after solving a problem."]
 - **Task 11, the workshop.** No maths. By lantern light:
-  - **The wall of plans:** the great clock, the Stabilizer, the portal, the cougar. Beside them, a row of makers' marks: one for each Clockmaker, teacher to pupil. The last mark is the Clockmaker's. There is a space after it. (A discovery for Sara's wall.)
+  - **The wall of plans:** the great clock, the Stabilizer, the portal, the cougar. Beside them, six makers' marks, teacher to pupil. Five have a tally of years: 41, 38, 52, 35, 39. The sixth is the Clockmaker's, with no tally. After it is a space, marked out and never cut: the pupil's. (Evidence for task 31.)
   - **The Clockmaker's last page:** "Every trip tears the sky. I asked for a night guard. The Council said no. So I leave my guard for you."
   - **The cougar plan** [Built]. A child who came by the pond knows it already. A child who came by the cave first learns it here. That is why it stays.
   - **The Long Spring** on the bench. Its label: "For an engine core. Too strong for a cougar." (Decision 7.)
@@ -365,14 +378,15 @@ All [Proposal]. Words in quotes are sample lines for the game.
 - **The sundial** stays in the stone ring beside the dock, as a discovery. Its shadow does not move until the day turns (R13).
 
 **Task 19. The case. [Keep, fix words]**
-- **What makes last night's trip a case:** the errands before it were signed. This one was not. And the day after it, the quakes began. The board's note: "Last night someone used the portal, and did not sign the log. Today the quakes began. Who went?"
+- **What makes last night's trip a case:** an errand is for the Council's work, and it is signed. A trip for yourself may not be signed, so it may not be made. Last night's was not signed. And the day after it, the quakes began. The board's note: "Last night someone used the portal, and did not sign the log. Today the quakes began. Who went?"
 - **Why the Council acts on a name:** the traveller's own words. "It was one small trip." If one small trip was one too many, there can be no more night trips.
 - **If the traveller is Zara,** her words are in section 2c. She of all people.
 - **The other fixes** are in section 7: numbers 1, 2, 4, 11.
 
 **Task 20. The count stone. [Rework of the carved stone]**
-- **Need:** Zara: "I say the night trips tear the sky. The Council shrugs. The Keeper cuts a number on a stone by the portal each new year: the night trips of that year. This year's is not cut yet. If nothing changes, what will it be?"
-- **The task:** "The stone reads: 7, 13, 19, 25. What comes next?" (The built numbers. Each is 6 more. 31.)
+- **Need:** Zara: "I believe the night trips tear the sky. The Council shrugs. The Keeper has counted them since the Clockmaker left, one number a year, on a stone by the portal. Nobody asked to see it, until I did. This year's is not cut yet. If nothing changes, what will it be?"
+- **The stone:** a long column. The old numbers at the top are small and much the same, and half worn away. The last four are clear.
+- **The task:** "The last four read: 7, 13, 19, 25. What comes next?" (The built numbers. Each is 6 more. 31.)
 - **What the answer changes,** where a child can see it: Zara pins the forecast up in the hall. The other members' words change, in tasks 3 and 4. It is a tile for Sara's wall. "More every year. Now they must listen." It is a forecast, not a proof. She says so.
 - **A mistake shows:** "Zara lays your number beside the stone. 'The stone grows by the same step each year. Yours does not.'"
 - **The picture:** the stone and its numbers.
@@ -385,23 +399,37 @@ All [Proposal]. Words in quotes are sample lines for the game.
 
 **Task 22. The burrow. [Scenery]** Before: "Two eyes blink. It will not come out while the ground shakes." After the seventh quake is held, the digger sits in the sun.
 
-**Tasks 23 and 24. Two discoveries. [Rework]** No sums. Each tells part of who the Chronosians are, and each becomes a tile for Sara's wall.
-- **The hollow tree:** "Tiny clocks hang like fruit. Each has a name on it. One is new, and has no name yet." The Keeper, if asked: "A clock for every child born here. Mine is the scratched one." Before the great clock runs, each ticks at its own speed. After, they tick together (R12).
-- **The white arch:** "An arch from before the clocks. Marks are cut in its stones: a sun, low, and a line." Sara, if asked: "On the longest day, the sun set through that arch. It was their calendar." A quake threw it down this afternoon.
-- **What this costs:** three sums fewer on the map. Decision 9.
+**Tasks 23, 24 and 31. Sara's history wall, and its evidence. [Rework, and new]**
 
-**Task 31. Sara's history wall. [New]**
-- **Need:** Sara: "I keep our history. But I must stay in this hall all week, and nobody has walked the old places since the Clockmaker left. Half my wall is empty. Bring me what you find."
-- **The wall:** one long line of years, from "before the clocks" on the left to Year 267 on the right, marked in tens.
-- **The task:** each discovery is a tile. The child puts it at its year. Then Sara asks one thing about it, and the child works it out.
-  - "The great clock: Year 1. The portal: Year 184. How many years did we have clocks, and no portal?" (184 − 1 = 183.)
-  - "The Council began in Year 58. How old is it now?" (267 − 58 = 209.)
-  - "My capsule was buried 14 years ago. In what year?" (The cadet's own number, from the Council notice. 267 − 14 = 253.)
-- **What the answer changes:** the wall fills. When it is half full, Sara gives her old map: it marks the old places not yet found. When it is full, a card, and the name the Council gives to a friend of its history. (The name is yours to choose.)
-- **A mistake shows:** a tile in the wrong place breaks the story, and Sara says how. "That puts the portal before the great clock. But the portal's own clock was set by it." A wrong number of years: "Sara walks her finger along the wall, ten by ten. She stops short of the tile."
-- **The picture:** the wall.
-- **Standard:** 3.NBT.2, and placing numbers on a number line.
-- **The first crack has no tile.** "Nobody wrote that year down," says Sara. "We did not want to see it." (See section 7, number 34.)
+[Source: Marc, 23 November: "explore and discover more about the cultures of the world, their history."]
+
+- **Need:** Sara: "I am the Senior Historian. And I know almost nothing. The Council's books begin with the portal. Before that, my wall is bare. I must stay in this hall all week, and nobody has walked the old places for years. Take my old map. Tell me what is there."
+- **Her wall at the start:** two tiles only. "The portal: Year 184." "Now: Year 267."
+- **The rule of this task: nobody tells the history. Each old place holds evidence. The child reads it, works out what it means, and tells Sara.** She did not know it. That is the Need.
+
+| Evidence, read at the place | What the child works out | What they tell Sara | The maths |
+|---|---|---|---|
+| **The year wheel,** at the top of the Clock Tower. It clicks once a year. It reads 267. | Years are counted from the day the great clock first ran. | "Year 1 is the great clock." | reading a 3-digit number |
+| **The valley plates,** under the eight small clocks. Each names a Council office. Two clocks for each. | The Council once kept these clocks itself. | "You used to climb the tower." | 8 clocks, 4 offices, 2 each |
+| **The notches on the white arch.** 9 rows of 10, and 4 more. After the last, a small clock is cut. | They marked 94 longest days. Then the clock came, and they stopped. | "The arch is at least 94 years older than the great clock." | 9 × 10 + 4 = 94 (3.OA.3) |
+| **The sun mark,** on the arch and on the sundial in the stone ring. | The same people made both. | "The stone ring is from the Shadow Age too." | none: matching |
+| **The birth clocks** in the hollow tree. The lowest: "Year 3", stopped. One reads "Year 171", with a gear for a name. **It is still ticking.** | Whose clock has a gear for a name? How old are they now? | "The Clockmaker is alive. And 96 years old." | 267 − 171 = 96 (3.NBT.2) |
+| **The makers' marks** in the workshop: 41, 38, 52, 35, 39, and one with no tally. | Five Clockmakers served 205 years, from Year 1. | "The last Clockmaker began in Year 206." | 41 + 38 + 52 + 35 + 39 = 205 (3.NBT.2) |
+| **The year stone,** by the portal (task 20). | The night trips are growing. | Zara's forecast goes on the wall. | task 20 |
+
+- **What the answer changes:** each claim becomes a tile on the wall. Sara's words change: she starts by telling the cadet where to look, and ends by asking the cadet what it means. When the wall is full: a card, and a name the Council gives to a friend of its history. (The name is yours to choose.)
+- **A mistake shows:** the claim does not fit something Sara does know, and she says what.
+  - "The Clockmaker is 196": "Nobody here has lived past 120. Look at the year on that clock again."
+  - "The last Clockmaker began in Year 195": "The portal was built in 184, by the Clockmaker before. That one served 39 years, by your own list. Add again."
+  - "The arch is 49 years older": "You said nine rows. How many in a row?"
+- **The picture:** at each place, the evidence itself, large: the arch's stones, the tree's clocks, the wall of marks. At the hall, the wall.
+- **The hollow tree, before and after** (task 23): before the day turns, each tiny clock ticks at its own speed, and the newborn's does not tick at all. After, they tick together (R12), and hers has started.
+- **The white arch** (task 24): a quake threw it down this afternoon. The notched stones lie in the grass, in their rows.
+- **The same for every child, on purpose.** A people has one history. Children can compare what they found, and argue about what it means. The cost: these sums can be copied from a neighbour.
+- **The first crack has no tile.** "Nobody wrote that year down," says Sara. "We did not want to see it." (Section 7, number 34.)
+- **Sara's capsule is not on the wall.** It is her own, not Chronosia's.
+- **Standards:** 3.NBT.2, 3.OA.3.
+- **What this costs:** three sums fewer on the map (the tree, the arch, the burrow), and seven pieces of evidence to draw. Decisions 9 and 14.
 
 **Task 27. The TimeTweak fruit.** One bite, and a wait passes in a blink: "step in at 2:35", "throw the hook at 4:05". Without one, the words say: "You wait." Nothing depends on it. It is colour, and it is your fruit used as your page describes it.
 
@@ -417,7 +445,7 @@ The steps are yours. The details in the table are [Proposal].
 
 | Step | Where | What happens | What the child is told |
 |---|---|---|---|
-| 1 | Chronosia, the cave | **Black.** One step in, and nothing. In the daylight by the way in lies a broken lantern: smashed glass, a cracked dark stone. A tag on it. | "Nomad Hollow, Voltara." The Keeper, if asked: "The Clockmaker's lantern. It hung by the cave for years. A quake threw it down today." |
+| 1 | Chronosia, the cave | **Black.** One step in, and nothing. In the daylight by the way in lies a broken lantern: smashed glass, a cracked dark stone. A tag on it. | The tag has a maker's mark: a number in a ring. The Keeper: "Nomad work. The Clockmaker's lantern. It hung by the cave for years. A quake threw it down today. The Nomads? I hear they are on Voltara now." |
 | 2 | Voltara, Nomad Hollow | The glassmaker knows the lantern. "We made that. New glass needs soft sand. Ours is all grit." | "The softest sand lies where round cacti stand in a ring." No planet is named. The hint names it, if asked. |
 | 3 | Xylophora, the cactus ring | Dig. First the leaf print, as today. Under it, the sand is soft as flour. Take a sack. | [Source: Marc, 23 November: "I dug in the sand... and I didn't collect soft sand."] |
 | 4 | Voltara, Nomad Hollow | **The maths: how much sand?** Then: "Glass gives no light. Its old stone is cracked. It needs a whole glow stone. Ours are only crumbs." | See below. Where the stone is found is decision 6. |
@@ -469,32 +497,39 @@ The lantern must say the same thing wherever a child meets it.
 - Every chain can be entered from more than one end: the dock's drum can be read without the note; the cougar shows its keyhole without the plan; the plan and the note each tell the same story to a child who has not found the other.
 - No child is stuck: every step has a hint that names the next place.
 
-### 5e. What a child discovers, and where
+### 5e. What a child discovers, and how they know
 
 [Source: Marc, 23 November: "explore and discover more about the cultures of the world, their history... Not just random things."] All details [Proposal].
 
-| The discovery | Where | Who tells more | What it tells | On Sara's wall |
-|---|---|---|---|---|
-| The stone ring and its sundial | the dock | Sara | Before clocks, a shadow was the time. | before Year 1 |
-| The white arch | the north-east | Sara | They marked the longest day. | before Year 1 |
-| The tortoise's shell rings | Tortoise Grove | the tortoise | The tortoises were the first calendars. Nobody hurries one. | before Year 1 |
-| The eight small clocks | the Clock Tower | the Keeper | Eight valleys, eight times, one great clock. | Year 1 |
-| The birth clocks | the hollow tree | the Keeper | A clock for every child. | a custom, from Year 1 |
-| The Council's book and its cover | the Council Hall | any member | First they kept the eight clocks. Then they began to mend other times. | Year 58, Year 184 |
-| The year stone | beside the portal | the Keeper, Zara | One number a year. More night trips each year. | the last few years |
-| The makers' marks | the workshop | the Keeper, afterwards | The Clockmakers, teacher to pupil. The line stops. | Year 1 to "some years ago" |
-| Sara's capsule | the Backward Mountain | Sara, the old climber | A capsule for each generation, buried where things stay young. | the cadet's own year |
-| The Clockmaker's lantern | the cave | the Keeper, the Nomads | Chronosia once traded with other worlds. | section 5f |
+**Three ways to find out, in this order of worth:**
+1. **Evidence the child reads and works out.** The table in task 31.
+2. **People living their customs,** where the child can see them: the runners waiting for evening; the family with a clock that will not start; the Keeper keeping eight clocks alone.
+3. **Someone who was there, and says so:** the tortoise ("Your people sat by this pond and waited for my grandmother. Nobody hurried her."); the Keeper, about the day the Council said no.
 
-- **Nothing here is random.** Each thing a child finds on the map is a piece of the same people.
-- **A discovery can be made in any order.** The wall puts them in order. That is the maths.
+**What is never done:** a character reciting dates.
+
+| What a child learns about the Chronosians | Where | How they know |
+|---|---|---|
+| They count years from the great clock. | the tower top | the year wheel reads 267 |
+| There are eight valleys, each with its own time. | the tower top; the clock board; the runners | seen; read on the plates; eight people in eight colours |
+| Before clocks, they watched the sun. | the arch; the stone ring | the notches; the same sun mark |
+| The clock came, and the old way stopped. | the arch | the small clock cut after the last notch |
+| Every child has a clock, for life. | the hollow tree | names and years; the family; the newborn's silent clock |
+| The Council once kept the clocks itself. | the clock board | the office on each plate |
+| The Clockmakers taught each other, and the line stopped. | the workshop | six marks, five tallies, an empty space |
+| The Clockmaker is still alive. | the hollow tree | the oldest ticking clock |
+| The Council would not listen. | the workshop; the Keeper | the last page; someone who was there |
+| The night trips are growing. | the year stone | the last four numbers |
+| They once traded with other worlds. | the cave | the lantern's maker's mark (section 5f) |
+
+**The test** (it is the reviewer's): ask a child, "How do you know the arch is older than the clock?" The right kind of answer is "94 notches, and then a little clock". The wrong kind is "Sara said."
 
 ### 5f. A thread for the whole galaxy: a sketch only
 
 You wrote: "for this world. Or galaxy." This thread's job is Chronosia. So this is one idea, in a few lines, for you to take or leave. Decision 15.
 
 - **The Number Nomads were traders.** [Source: they are nomads, "stranded by a cosmic storm".] [Proposal] Before the storm they travelled between worlds. They carried soft sand from Xylophora, lanterns to Chronosia, and measuring rods from Lengthar.
-- **So the lantern chain is their old trade road.** The Clockmaker's lantern is the proof that it once ran. The cadet is the first to walk it since the storm.
+- **So the lantern chain is their old trade road.** The Clockmaker's lantern, with its maker's mark, is the proof that it once ran. The cadet is the first to walk the whole of it since the storm.
 - **Each world of Galaxy Metrica keeps one measure for all the others:** Chronosia keeps time, Lengthar keeps length, Xylophora keeps area. [Source: the galaxy's planets and their maths.] A cadet who helps all three has mended the galaxy's measures.
 - **What it costs:** one or two lines on Voltara, Xylophora and Lengthar. Those planets have their own notes and their own stories. I have not checked this idea against them.
 
@@ -505,7 +540,7 @@ You wrote: "for this world. Or galaxy." This thread's job is Chronosia. So this 
 - **The big quest is your four tasks:** the clocks, the seventh quake, who goes where, the timetable. [Source]
 - **Its reward is the Engine Core.** Your briefing: "secure an advanced Engine Core for our spaceship. However, the Chronosians insist we help them first." [Source]
 - **[Conflict]** The same page ends: "an upgraded Weapons System to acquire!" Decision 4.
-- **In the story** [Proposal]: the Council gives it. "The Clockmaker built the engine cores for our ships. One is left. It is yours." So the big quest and the cave are about the same person.
+- **In the story** [Proposal]: the Council gives it. "The last Clockmaker built the engine cores for our ships. One is left. It is yours." So the big quest and the cave are about the same person. (The portal is older: the Clockmaker before built it, in Year 184.)
 - **Today** [Built] the epic card and the name Timekeeper Cadet come after all six jobs. **Proposal:** they come with the Engine Core, after your four. The tortoise and the cougar become side quests, with a card each. This is part of decision 4.
 - **The super level-up** [Source: your words of today: "a super level up to a ship part"]: the Long Spring from the workshop, fitted to the Engine Core [Proposal]. A child who has the spring and no core is told: "It fits an engine core. The Council has the last one." So the secret chain leads back to the main road.
 - **Whether an upgrade is lasting or a card for one battle** is the plan's decision 1. It is not mine.
@@ -552,8 +587,9 @@ You wrote: "for this world. Or galaxy." This thread's job is Chronosia. So this 
 | 30 | No reason | "A time wisp can recharge the Stabilizer." | Why would it? | R16. |
 | 31 | Loose thread | Workbench: "You turn a tiny gear. Far off, a bell rings once." | What bell? | The tower bell, once the great clock runs. Before that: "Nothing answers." |
 | 32 | Words against the picture | Tower top: "a small glade hidden in the trees to the north". | On the map the grove is north-east of the tower. | "to the north-east". |
-| 33 | Loose threads | Sara "carries a very old map". The Keeper has "a ring of keys". | Neither is used. | Sara's map marks the old places (task 31). Say "a ring of tower keys", so nobody thinks they open the portal. |
+| 33 | Loose threads | Sara "carries a very old map". The Keeper has "a ring of keys". | Neither is used. | Sara's map is given at the start of task 31, and marks the old places. Say "a ring of tower keys", so nobody thinks they open the portal. |
 | 34 | Differs from child to child | From the mountain, the sky "has one thin crack" at one trail's top and none at the next. Each cadet's mountain goes back a different number of years. | For one cadet the crack began about 10 years ago. For another, about 50. Children will compare. | Keep the year of the first crack out of every line. "Nobody wrote that year down." |
+| 35 | No reason | A Time Stabilizer and a Quake Station stand ready. | No quake had ever come before this afternoon. | The Clockmaker warned of quakes. The Council allowed a Watcher and a Stabilizer, in case. |
 
 ---
 
@@ -590,8 +626,8 @@ Your class has version 81. On it they may have done the six quests and up to 19 
 **Mine [Proposal], new here:**
 - that the night trips are the cause, and that the sky can bear the eight missions
 - rules R6, R7, R10 to R14, R16, R17, R19, R20
-- who the Chronosians are: the eight valleys, the three ages, the years 1, 58 and 184, the customs, the line of Clockmakers, the Keeper as a pupil
-- Sara's history wall
+- who the Chronosians are: the eight valleys, the three ages, the years 1, 171, 184 and 206, the customs, the line of Clockmakers, the Keeper as a pupil, the runners, the family
+- Sara's history wall and its seven pieces of evidence
 - the Council said no to the guard
 - the tortoise's eggs; the cougar's master clock; the dock and its drum; the count stone
 - the broken lantern at the cave; the Nomad glassmaker; the sand on the scale
@@ -606,6 +642,8 @@ Your class has version 81. On it they may have done the six quests and up to 19 
 |---|---|
 | The story can be told | After a child plays, ask: "Why were there quakes?" If they cannot say "too many trips", it is not landing. |
 | A child discovers a people, not a list | Ask: "Tell me about the people who live on Chronosia." If the answer is only "they have clocks", the culture is not coming through. |
+| The history is found, not told | Ask: "How do you know the arch is older than the clock?" "94 notches, then a little clock" is discovering. "Sara said" is not. |
+| One history for all is right | The wall's sums are the same for every child, so they can be copied. Watch whether children argue about what the evidence means, or pass the numbers along. |
 | The history wall is wanted | Watch whether a child goes looking for the next old place, or fills the wall only when told. If only when told, it is homework with a story on it. |
 | The Council can be a little to blame | Ask a child: "Should the Council keep travelling?" The story's answer is "by day, yes; by night, no". If children say "never", the story has turned them against your characters. |
 | It fits your booklet | Zara's missions mend holes (pages 5 and 10). I read that as: the Council mends by day, and tears by night. If you meant the Council as heroes only, decision 1 is B. |
@@ -633,7 +671,7 @@ Each has what it costs. My pick is marked. Throw it out if you see it differentl
 2. **The Clockmaker.** (The plan's decision 7.)
    - **A (my pick):** keep, with this story. The Clockmaker asked for a guard. The Council refused. The Clockmaker left notes, then went one way to the Multiverse Core, to hold the sky from the far side. It leaves a door open to your booklet's page 10, "Repair the Space-Time Fabric". Cost: your Council refused someone.
    - **B:** keep the Clockmaker, but nobody knows where they went. Cost: the ticket stays a loose thread.
-   - **C:** no Clockmaker. The workshop is the Keeper's old teacher's. Cost: the cave has less to say.
+   - **C:** no Clockmaker. The workshop is an old store of clock parts, with nobody's story. Cost: the cave has less to say, and the key, the note and the cougar need another owner.
 3. **The stuck afternoon, and the order of the main road.**
    - **A (my pick):** rule R13. The day is stuck until the clocks are true. So the clocks come before the quake. The Council Hall is open at any time. Cost: one fixed order, where today there is none.
    - **B:** your 2023 order for all four.
@@ -683,10 +721,10 @@ Each has what it costs. My pick is marked. Throw it out if you see it differentl
     - **B:** today is Oct 2, the day before the mission week. Cost: the game then needs days that pass, or Oct 3 never comes.
 
 14. **Who the Chronosians are, and Sara's history wall.** Section 1, section 5e and task 31.
-    - **A (my pick):** the three ages, the customs, and the wall as the reason to explore. Cost: a new task to build, and dates that every later Chronosia idea must respect.
-    - **B:** the history and customs, told by the places and people, but no wall. Cost: nothing asks a child to put it together.
-    - **C:** your own history for Chronosia. Tell me the bones, and I will fit the tasks to it.
-    - Every name, year and custom is mine. Change any.
+    - **A (my pick):** the three ages, the customs, the runners and the family, and the wall as the reason to explore, with evidence at each old place. Cost: one new task; seven pieces of evidence and ten new people to draw (eight runners, two parents; the baby is a bundle); dates that every later Chronosia idea must respect.
+    - **B:** the evidence and the people, but no wall. Cost: nothing asks a child to put it together.
+    - **C:** your own history for Chronosia. Tell me the bones, and I will fit the evidence to it.
+    - Every name, year and custom is mine. Change any. The eight valleys have no names yet: they are yours to give.
 15. **A thread for the whole galaxy** (section 5f): the Nomads' old trade road, and one measure for each world. Shall I work it out properly, with the other planets' notes in front of me? Or is the galaxy's story the main thread's job?
 
 **Older decisions this note leans on:** the plan's 1 (lasting upgrade or card), 7 (the Clockmaker), 9 (mistakes), 13 (the recipe).
@@ -698,7 +736,7 @@ Each has what it costs. My pick is marked. Throw it out if you see it differentl
 - **Read:** `CLAUDE.md`, the handoff, the plan, your four 2023 Chronosia pages, the Chronosia guide, the quest design, the finds kit, the case kit, the links note, the invitations note, the mistakes note, and your words in `INFO_FROM_MARC.md`.
 - **Read in the game file:** the map, the six quests, the three sheets, the Stabilizer, every place, all 19 finds, the locks, the mountain, the case, the version 87 trails, the hints, the mission panel, the report home, and the lines about the glow stone, the cactus ring, the tape and the Nomads on the other planets.
 - **Ran:** `checks/chronosia_links_test.js`. It passed. I looked at its iPad pictures: the map, the cave, the gear door, the workshop, the rock, the grove.
-- **New number rules:** six (the tide table, the gear door, the sand, the dock, the cougar's clock, the history wall). `proposals/GMQ_Chronosia_Story_check_v1_2026-11-23.py` walks through every combination each rule allows: 5,184 tide tables, 36 gear doors, 28 recipes, 240 dock drums, 20,448 sets of cougar times, and all 43 capsule years a cadet can get. 0 faults. (The capsule's age, 7 to 49 years, was worked out from the game's own mountain rule for all 99,990 seeds.) Every tide table has exactly one gap that fits and at least two safe starts. It also works out the sample table in task 9.
+- **New number rules:** six (the tide table, the gear door, the sand, the dock, the cougar's clock, the history wall). `proposals/GMQ_Chronosia_Story_check_v1_2026-11-23.py` walks through every combination each rule allows: 5,184 tide tables, 36 gear doors, 28 recipes, 240 dock drums, 20,448 sets of cougar times, and the history wall's years. 0 faults. (The mountain's reach, 8 to 60 years back, was worked out from the game's own rule for all 99,990 seeds, so that the wall's years could be checked against it.) Every tide table has exactly one gap that fits and at least two safe starts. It also works out the sample table in task 9.
 - **Rules reused, not rechecked:** the tortoise's times, the egg shares and the count stone use the game's built numbers. The game's own tests cover them.
 - **Not done:**
   - I did not play the preview on an iPad.
@@ -743,4 +781,17 @@ A reviewer read this note with only `CLAUDE.md` and the handoff. It never saw th
 | The knock would announce the boat. The note did not say why the key was hidden. | The post is out in the river. The knock means you missed it. The note now says why. |
 | Old saves had a different stone door. | One build for everyone: task 12. |
 | Decisions with one choice. | Decisions 1, 5, 9, 11 and 13 now have real alternatives. |
+
+**Third read, after the history was added: 0 blockers, 6 major, 2 minor.** All six were in the new history. Its judgement: "a mechanism with a history bolted on", because the history was told, not found. What changed:
+
+| It found | What I changed |
+|---|---|
+| Sara already knew every year. Her questions were a quiz. | Sara knows only what begins with the portal. Each old place holds evidence. The child reads it and tells her. Task 31, rewritten. |
+| The Keeper, as the Clockmaker's pupil, would have known and acted. | One row of fact in 2c: taught the clocks only, never shown the cave, no key, did not dare. Counted the night trips, and told nobody. |
+| The year stone's four numbers dated the crack wrongly. | A long column. Only the last four years grow by the same step. |
+| Year 58, "two each" and the eight valleys were words only. | Year 58 is gone. The plates under the clocks name a valley and a Council office. Eight runners wait at the tower. The seven other valleys are seen from its top. |
+| Who built the engine cores: the Clockmaker, or the Clockmakers of Year 184? | The last Clockmaker built the cores. The one before built the portal. Three lines corrected. |
+| A capsule year that differs for each child, on one people's wall. | The capsule is off the wall. "Each generation" is gone. |
+| The only Chronosians were six officials. | The runners, and a family whose baby's first day will not end. |
+| Small things: the sundial "still tells true time"; the map; Zara stating beliefs as facts; twelve-hour faces; the Stabilizer with no quakes before today. | Each corrected. The last is contradiction 35. |
 
