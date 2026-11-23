@@ -2,7 +2,7 @@
 
 **Date:** 23 November 2026. **For:** Marc, and the big world thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the big world thread's.
-**Changed four times after its fifth review,** to answer the big world thread (sections 13 to 16). Three joint reviews, of this story and the maths together, have read the first kind. **Section 16 is the newest (23 November, evening). It changes sections 1, 3, 5, 7, 9 and 10.** Section 16f says who has read it.
+**Changed four times after its fifth review,** to answer the big world thread (sections 13 to 16). Three joint reviews, of this story and the maths together, have read the first kind. **Section 16 is the newest (23 November, evening). It changes sections 1, 3, 5, 7, 9 and 10.** Section 16g says who has read it.
 
 **Tags**
 - [Source]: your pages or your words.
@@ -707,3 +707,8 @@ Marc's rule: "explore and discover more about the cultures of the world, their h
 - **"Nobody noticed for sixty years" is the weakest joint.** The song stops at today, and only the singer ever hummed it in the game. Section 10 says to watch for it.
 - **Sections 13 to 15 are a record.** Where they differ from sections 1 to 5, sections 1 to 5 and this section hold.
 - **Who has read this section:** see 16g.
+
+### 16g. Who has read this section
+
+- **A reviewer of the story thread's own is reading it now,** with sections 1, 3, 5 and 13 to 15. Its findings, and what I change, will be written here.
+- **Until then, treat the words in 16b as a draft.** They may change a little. The answers in 16a should hold.
