@@ -83,7 +83,7 @@ Every one of these cost a review round.
 - **The maths:** `proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md`, by the big world thread. It fits **only the first kind, "how much?"**. Its third joint review: "The town's stick, the question and the oil rule hold."
 - **What this session did:**
   - answered the third joint review's six story points (section 16a);
-  - ran two reviews of the story thread's own. Round 2: four blockers. Round 3: "Not yet. It is close. The Market path holds." One blocker. Both answered (16b, 16h). A narrow round 4 was started; 16g says whether it reported.
+  - ran two reviews of the story thread's own. Round 2: four blockers. Round 3: "Not yet. It is close. The Market path holds." One blocker. Both answered (16b, 16h). Round 4, narrow: **"Yes, for the lake path. I found no blocker."** Its eight majors are fixed in words (16i), and not re-read.
 - **The big changes, so you can answer quickly:**
   - **The Year Machine** at the lake did all the planning and burnt with the Gate. The built Meadow machines are small, one rule each. The built loading board was its hand.
   - **The oil seller is the Furrows' tally keeper, a man.** His finished example is the Year Machine's last stick: scratches ahead, real cuts landing on them. "I cannot see how it knew."
@@ -125,7 +125,7 @@ Every one of these cost a review round.
 
 - What the big world thread does with section 16d. Fetch the main branch and look before you answer anything about Algora.
 - How the main thread's build of the cave came out, and whether it changed anything the Chronosia note says. If Marc reports a fault from playing it, read the game's lines for that place before you answer.
-- Whether round 4 of the Algora review found anything. Section 16g of the note says.
+- Whether 16i's wording fixes hold. No reviewer has read them.
 
 ## 7. Learned by the second session
 
