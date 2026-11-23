@@ -635,3 +635,6 @@ These are Marc's words, tidied. They are not on the form above.
   - **Decided:** a ship that plays a dodge card still fires that round. The "you do not fire" price, which was the battle thread's own proposal, is dropped.
   - The battle thread did not push back: a round where nothing happens is dull, and he is right. The one cost, told to him: while a shield is still up, a dodge card now saves more than a block card of the same kind (the whole AP against 8 to 25 of it).
   - **Done on 23 November.** Wormhole Zip and Triple Illusion now say "You still fire", and the ship that dodges attacks as usual. Battle length is the same as with the price (12 rounds random play, 15 clever play).
+- **A picture for dodge cards (Marc, 2026-11-23, to the battle thread).** Asked whether the dodge cards should have a picture of their own: "I think yes? Dodge should have its own picture"
+  - **Decided:** dodge cards carry their own symbol, not the shield.
+  - **Done on 23 November.** Wormhole Zip and Triple Illusion show a new symbol drawn for them: a ship slipping aside, two faint ships where it was, a laser passing through the place it left. The card says DODGE in teal. For the rules they are still shield cards (they need the Shield Generator). Asked back: should Vanishing Act, the epic "no attack hits you" card, be a dodge card too?

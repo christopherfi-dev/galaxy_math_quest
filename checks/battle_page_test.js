@@ -286,7 +286,7 @@ async function act(page, name, flags, size) {
     await page.locator('#lclose').tap();
     await page.locator('#bhelp').tap();
     pass(name + ': "How" says both attacks land together, and that a lower shield card still stops the ship\'s own attack', /Both attacks land together/.test(await page.locator('#hturn').textContent()) && /still stops the other ship's own attack/.test(await page.locator('#help').textContent()));
-    pass(name + ': "How" shows the six symbols and the lost-part rules', await page.locator('#keyrow svg').count() === 6 && /cannot attack/.test(await page.locator('#help').textContent()));
+    pass(name + ': "How" shows the seven symbols, the dodge among them, and the lost-part rules', await page.locator('#keyrow svg').count() === 7 && /Dodge/.test(await page.locator('#keyrow').textContent()) && /cannot attack/.test(await page.locator('#help').textContent()));
     await shot(page, name + '_8_how');
     await page.locator('#hclose').tap();
     await page.locator('#brules').tap();
@@ -411,6 +411,7 @@ async function act(page, name, flags, size) {
       await page.locator('.hc.mine').nth(0).tap();
       st = await state(page);
       pass(name + ': Wormhole Zip says the ship\'s 55 will miss, the rare card\'s 20 will still hit, and that you still attack for 55', st.fore.indexOf('The enemy\'s hit is 75. The ship\'s own 55 misses you. What its rare card adds still hits: 20.') >= 0 && st.fore.indexOf('Your attack: 55.') >= 0 && !/do not fire/.test(st.fore), st.fore);
+      pass(name + ': a dodge card says DODGE and shows its own picture, not the shield', await page.evaluate(() => { const svg = document.querySelector('#pop.open .big svg'); return !!svg && svg.querySelector('.ty').textContent === 'DODGE' && /dodge/.test(svg.getAttribute('aria-label')) && svg.querySelectorAll('.dg').length === 2; }));
       await shot(page, name + '_9e_wormhole_zip');
       await page.locator('#playit').tap();
       let g6 = 0; while (g6++ < 60) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
