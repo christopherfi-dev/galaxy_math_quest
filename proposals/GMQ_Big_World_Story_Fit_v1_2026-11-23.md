@@ -216,3 +216,32 @@ Not a design. One way to hold the constraints together, for you to judge. All [P
 1. **Each child's own year, or one year the whole class shares?** A shared year means what follows arrives when the class is ready, not when the child is.
 2. **May a child read a classmate's finished table?**
 3. **What does the town show of the class:** lamps that only go up, or nothing?
+
+---
+
+## 9. Marc's answers on the class world [Source: Marc, 23 November]
+
+> "1. Own year. Or we could say... the town always runs a simulation so they do not die... what you'll see is what would've happened? 2) No. I say they can only see which families are finished and by who. 3) The finished ones."
+
+| | Decided |
+|---|---|
+| 1 | **Each child has their own year.** |
+| 2 | **A child cannot read a classmate's table.** They see only which families are finished, and by whom |
+| 3 | **The town shows the finished ones.** |
+
+So rows a, b, c, d and g of section 8 stand. Row e becomes "the finished families". **Row f is out.**
+
+### The simulation: how I read it, and what I think [Proposal]
+
+**How I read it:** the child's year is a run of "what would have happened". The real town is shared by the class, and it is never harmed by one child's plan. Only a plan that came out right is really carried out, and that family is then shown as finished.
+
+**I think it is right, for three reasons:**
+- It answers "whose year is it?" Every child's year is their own run. The town is everyone's.
+- It is kind. Nobody's family really goes hungry.
+- It fits your answers 2 and 3: the shared world holds only finished work.
+
+**One guard it needs:** a run must not become a "check my answer" button. So the run goes to the end of the year, and then **a new problem comes, with new numbers** [Source: your answer of 23 November: "New one. Same size."]. A child cannot run, nudge the number, and run again.
+
+**One risk, plainly:** you said children should "be invested in this world and see something happen". A flood that would have happened may matter less to a child than one that did. Watch for a child who shrugs at it.
+
+**For the story thread:** who runs it? The keeper laying the year out in pips, one count day at a time, would fit "nobody has laid them out ahead in sixty years". That is theirs to shape.
