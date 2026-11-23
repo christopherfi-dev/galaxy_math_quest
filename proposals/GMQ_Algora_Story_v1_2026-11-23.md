@@ -2,7 +2,7 @@
 
 **Date:** 23 November 2026. **For:** Marc, and the big world thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the big world thread's.
-**Changed after its fifth review,** to answer the big world thread's two questions: the order of the three decisions, and two shorter chains. Section 13 says what changed. Those changes have not been reviewed. They go to the joint review, with the maths.
+**Changed three times after its fifth review,** to answer the big world thread (sections 13, 14 and 15). **None of those changes has been reviewed by a reviewer of my own.** Two joint reviews, of this story and the maths together, have read the first kind.
 
 **Tags**
 - [Source]: your pages or your words.
@@ -21,7 +21,7 @@
 - **One cause:** the Makers' machines did all the planning. The Gate broke. The machines went dark. Nobody remembers how to plan a year by hand.
 - **The table the big world thread asked for is section 1.** The rest explains it.
 - **Three things nobody had decided** have options in section 6.
-- **Twenty-five decisions are yours.** Section 9. Three shape the rest: why the Gate broke, the year, and "decided once".
+- **Twenty-eight decisions are yours.** Section 9. That is too many. The maths thread's note names the five that matter for a first build, and I agree with its list. Three shape the rest: why the Gate broke, the year, and "decided once".
 
 ### The story in one breath [Proposal]
 
@@ -41,13 +41,13 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 
 | | |
 |---|---|
-| **The year** | 10 months. Seven **gold months**, then three **white months**. |
-| **Their names** | Gold month 1 to Gold month 7. White month 1 to White month 3. (Decision 3.) |
-| **Count day** | The last day of every gold month. On it, each plot, boat and cart brings in the same amount as last month. |
-| **"By Gold month 5"** | Always means: after that month's count day. That is five count days. |
+| **The year** | 12 months. Nine **gold months**, then three **white months**. (Decision 2. It was seven and three. The maths needs nine.) |
+| **Their names** | Gold month 1 to Gold month 9. White month 1 to White month 3. (Decision 3.) |
+| **Count day** | The last day of every gold month. On it, each plot, boat and cart brings in the same amount as last month. **Count day 5** is the one at the end of Gold month 5. |
+| **"On count day 5, after the count"** | The one way a day is named. Five count days have been counted. |
 | **New Year** | The first day of Gold month 1. Every store is empty. The first week is **sowing week**. |
 | **The Lake Market** | After Gold month 4's count day. The one time in the year the keepers leave their towns. Only keepers trade. |
-| **Last Raft** | Gold month 7's count day. After it, no raft sails [Built]. |
+| **Last Raft** | Count day 9. Rafts still sail that day. After it, none does [Built]. |
 | **The white months** | High water. Nothing comes in. The towns live on their stores. |
 | **How long a month is in our days** | Never said. |
 
@@ -78,11 +78,13 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 
 | | The decision | Why it cannot be changed later | Too little | Too much | A small version |
 |---|---|---|---|---|---|
-| **1. How much?** | At the Lake Market: how many mats the town's weavers will have made by the day the oil raft comes back. The oil seller pours oil for that many, now. | Only keepers trade, and only at the lake. The oil is poured that day. | Fewer pots of oil than the mats could have bought. The lamps go out early in the white months. Spare mats lie in a heap. | When the raft comes back, the town owes more mats than it has. The seller takes pots of oil back. The lamps go out early. | A family with one weaver, and oil for one lamp. |
+| **1. How much?** | At the Lake Market: how many mats the town's weavers will have made when the oil raft comes. The oil seller pours one pot for each mat promised, now. | Only keepers trade, and only at the lake. She ties one hook on her raft for each mat promised. | Spare mats lie on the dock, with no hook. The town has less oil than its mats were worth. The lamps go out early. | Empty hooks on her raft. For each one she takes back two pots. The lamps go out early. | A child's own rack: pairs, hands of five, or bundles of ten. Section 5. |
 | **2. How many?** | In sowing week: how many of the town's good plots are sown with food. The rest are sown with roof reed. | Seed takes only in the new mud, in the first week. | The food pile stops short. White month 3 is thin. Every bowl is smaller. Then it is New Year. | More food than was needed. But too few plots of reed: some roofs are not mended, and drip. | A family's garden: a few plots, food or reed for their own roof. |
 | **3. For how long?** | At New Year: for how many months the town hires the Furrows' carts, so the wall has stone enough. | The Furrows have carts enough for what is agreed at New Year, and no more. | The carts stop coming too soon. The wall is short at one end. In White month 1 the water comes over there. The town bails out together. | The carts come for a month too many. Each month is paid for in fish. The fish jars run out in White month 3. | A family's doorstep wall, and a neighbour's hand cart for so many months, paid in jars of fruit. |
 
 **One decision for each town, each year, in this order.** The plainest comes first: a row of cuts that grows by the same amount, read on to a later count day. Section 3 says what the keeper does about the other two.
+
+**The maths thread has fitted only the first kind so far. The second and third are parked.** Section 14 says what the story offers for them.
 
 ---
 
@@ -112,6 +114,7 @@ All [Proposal] unless tagged.
 | **Sixty years** | The machines planned. The keepers still cut a mark each count day. Nobody scratched a plan any more. | Sixty newer rows on each wall: a line, cuts, and no plan beside them. |
 | **Now** | The Gate broke. Every rule plate burnt black [Built]. | Dark machines. Keepers who can count what has come in, and cannot say what will. |
 
+- **The old rows on the store walls carry no numbers.** Cuts, a line, a scratched plan. They show that planning was done, and how a year went. They cannot be read as this year's answer.
 - **What was lost is exact.** A keeper can count what has come in. She can say what the town needs: she has every old row in front of her. What nobody can do is work out, in the first week, what will reach that line. That is why a table is kept (the cuts), and why a child's plan is worth something.
 - **The Makers were these peoples' own great-grandparents.** (Decision 6. It changes no built words: Elder Rivet says only "long ago".)
 - **The keeper could do it, if someone showed her.** She can count. She has pips. Nobody has laid them out ahead in sixty years. The first year the cadet does it, and she watches. That is the arc: the cadet does not replace the keepers. The cadet gives the skill back.
@@ -125,7 +128,7 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 
 | When | What | What moves time on |
 |---|---|---|
-| **Gold month 7** | The S.S. Infinity comes through the Gate. The Gate breaks. The machines go dark, just as the loads must be worked out. The call for help goes out [Built]. **The cadet lands.** The high water is coming [Built]. | |
+| **Gold month 9** | The S.S. Infinity comes through the Gate. The Gate breaks. The machines go dark, just as the loads must be worked out. The call for help goes out [Built]. **The cadet lands.** The high water is coming [Built]. | |
 | **Last Raft** | The Reach's fleet [Built] is this day's work. | The fleet sails when the cadet has loaded it. Or the cadet tells the harbour keeper to sail without them: she loads by guess, and the towns are a little short. |
 | **White months 1 to 3** | High water. This year's stores were planned by the machines, before the ship's crew came. So every town is a little short. | Shown, not walked: one picture for each town. Then New Year. |
 | **Gold month 1, New Year** | The machines are still dark. For the first time in sixty years, somebody must make the plan by hand. **The deciding years begin here.** | |
@@ -134,8 +137,8 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 
 ### How a deciding year goes
 
-1. **At New Year one town asks for help,** with one decision.
-2. **The cadet decides.** For A and C, that is in the first week. For B, the year runs to the Lake Market first, and the cadet reads four cuts on the wall.
+1. **Each year one town asks for help,** with one decision. For the first kind it asks at the Lake Market, on count day 4. For the other two, at New Year.
+2. **The cadet decides.** For the first kind, the cadet reads the four cuts on the keeper's tally stick.
 3. **The cadet says: "Let the year run."** In that town's picture the months go by, one count day at a time. The pile climbs by the same amount each time. A child watches the count happen.
 4. **The white months show how it went,** in that same town.
 5. **New Year again.** Another town asks, or the same one. The numbers are new, because the Twinseers have new words: a stronger sun, higher water. This is "a new problem of the same size". A harder year arrives without a word.
@@ -149,7 +152,7 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 |---|---|---|---|
 | **1, the mats and the oil** | promises only a few mats, to be safe | too little lamp oil. The lamps go out early in the white months. | **Yes. It is the one trouble every town has, the year after the machines went dark. So it is asked first.** |
 | **2, sowing** | sows every scrap of mud, the poor far plots too, half food and half reed | enough of both, and a great deal of wasted work | No. The town is fed and dry. It is tired. |
-| **3, the carts** | hires the carts for all seven months | fish, to pay for months she did not need | No. She keeps enough fish back. The wall is always finished. |
+| **3, the carts** | hires the carts for all nine months | fish, to pay for months she did not need | No. She keeps enough fish back. The wall is always finished. |
 
 - **A year of the first kind:** the far plots are sown and the carts come all year. If the cadet's word at the Market is right, the lamps burn all evening again.
 - **A year of the second kind** comes after the first is learned. The keeper says: "This year we sow only the good near plots. There are just enough. How many for food?" The lamps are lit. The carts come all year.
@@ -171,7 +174,7 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 
 Between years. The town that asks is somewhere else on the map. The old walls, the songs and the coin are found on the way. A year is one decision. The walk to it is the world.
 
-**A step down is a family.** When the engine steps a child down, the next New Year a family asks, not a town. Same idea, a few plots.
+**A step down is a child's own stick.** When the engine steps a child down, a child of the town asks, with a chore and a small stick of their own. Section 5.
 
 **This is the story's need, not a design.** How it is drawn and coded is the big world thread's. Three things are theirs to solve, not mine:
 - In a world a whole class shares, whose year is it?
@@ -197,12 +200,12 @@ The five peoples, their names and their regions are [Built]. You have confirmed 
 
 Your words: "they must analyze it and make a decision." [Source]
 
-**Before any decision, a finished example:** an old row on the store wall, from another year and another thing. A line, then cuts climbing to it by the same amount.
+**Before any decision, a finished example,** about another thing. For the first kind it is the oil seller's own stick (below).
 
 **What is the same every time**
 - "Each" always means each one: each plot, each weaver, each cart.
-- "By Gold month 7" always means after that month's count day.
-- The cuts on the wall are the whole town's pile. So the keeper can say what **all** the town's weavers, or plots, bring in on one count day. Then a row is plain multiples. "Each weaver makes so many, and we have so many weavers" is the same row, a size harder. Which one a child is given is the maths thread's to choose.
+- A day is always named the same way: "on count day 7, after the count".
+- The cuts are the whole town's pile. **Nobody says how much comes in each count day.** The child reads it off the cuts.
 - Nobody says "wrong". The year runs, and the picture shows what followed.
 - A miss ends at New Year.
 
@@ -210,17 +213,60 @@ Your words: "they must analyze it and make a decision." [Source]
 
 ### 1. How much? [Source: "How much do they need by month 11"; "if this growing pattern continues", 22 November, in `INFO_FROM_MARC.md`]
 
-- **When:** the Lake Market. Only keepers may trade, and this is the one time they leave their towns.
-- **Why mats:** the weavers make mats from wild river reed, the same number every count day. Every mat is for trade. None is kept.
+This kind is fitted by the maths thread (`proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md`, section 2). The story below is written to match it.
+
+- **When:** the Lake Market, after count day 4. Only keepers may trade, and this is the one time they leave their towns.
+- **Why mats:** the weavers make mats from wild river reed, the same number every count day. Every mat made by raft day is for trade.
 - **Why lamp oil:** the Furrows press it from hill nuts, and bring it to the Market. No river town can grow it. Without it the white months are dark by supper.
-- **The cadet reads:** this year's cuts in the mat row of the store wall. A real table, from nothing, the same amount more each time.
-- **The oil seller asks:** "My raft comes back for the mats after Gold month 7. How many will there be, in all?" (The month is said at the Market. It can be a different one each year.)
-- **The cadet's number is the deal.** She pours oil for that many mats, there and then.
-- **Said too little:** the town went home with less oil than its mats were worth. The lamps go out early. A heap of spare mats is left on the dock.
-- **Said too much:** the raft comes back, and the town has fewer mats than it promised. The seller takes pots of oil back. The lamps go out early. The mat rack is bare.
-- **Said right:** the raft takes every mat. The lamps burn all evening, to New Year.
-- **The road from the number to what follows:** the number, the oil, the lamps. Two steps.
-- **The small version:** one family, one weaver, and oil for one lamp.
+- **The tally stick.** The store wall stays in the town. So a keeper never leaves home without her stick: this year's row, cut small. At the Market it has four cuts. Each is marked with its count day, and the pile that day.
+- **The keeper does not say how much comes each count day.** She has never thought of the pile that way. She hands over the stick.
+- **The oil seller speaks, in this order:**
+  1. **Her own stick first.** She presses oil, the same number of pots each count day. "I told the Twinseers I would have oil for them on count day 8. I counted on. I said so many. And I did." It is a finished example, and it is about oil, not mats.
+  2. **Both costs, before she asks.** "One pot for each mat you promise, and one hook on my raft for each. Mats with no hook are no use to me. For a hook that sails empty I take two pots back: one for the mat, one for the hook."
+  3. **The question:** "Today is count day 4. My raft comes on count day 7, after that day's count. How many mats will there be by then, in all?" (The count day is hers to name. It is a different one each year.)
+- **The cadet's number is the deal.** A word at the lake is kept.
+
+**What follows, in the story's words**
+- **At the Market:** "One pot for each mat you promise." She pours them. And she ties one hook on her raft for each mat. That hook is the town's now. She cannot give its place to another town.
+- **Said right:** every hook gets a mat. The lamps burn all evening, to New Year.
+- **Said too few:** every hook gets a mat, and mats are left on the dock with no hook. They can be counted. The town has that many pots fewer than it could have had.
+- **The spare mats** go on the town's own floors. Nobody is worse off for a mat. But a mat is not a lamp.
+- **Mats made after the raft has gone** go on the floors too. Her raft comes once.
+- **Said too many:** hooks sail empty. They can be counted. "One pot back for the mat I did not get. One pot back for the hook that sailed empty." Two pots for each empty hook.
+- **Said far too many:** she takes back every pot there is. She cannot take a pot that is not there.
+- **Why two:** an empty hook cost her twice. She poured oil for nothing, and she carried a place she could have sold.
+- **So too few and too many cost the same.** Neither "always say less" nor "always say more" is safe.
+- **The road from the number to what follows:** the dock, the oil shelf, the lamps.
+
+**The finished example** is the seller's own stick, as above. The numbers on it are the maths thread's.
+
+### The small row: a child's own stick
+
+When a child is stepped down, the task is the town's task again, smaller. It must be small in the story too. And it cannot be a trade: only keepers trade.
+
+- **A child of the town has a chore,** and keeps a small stick of their own, as the keeper does. Four cuts, each with its count day and how many there are that day. What is counted is always named:
+  - **sandals,** plaited for the family's feet in the wet. They come by twos.
+  - **plums,** strung to dry. They come by fives.
+  - **fire sticks,** tied for the hearth. They come by tens.
+- **Why a number must be said today:** the family brings them to the New Year feast table, and the keeper carries each family's word to the lake today. A word is kept.
+- **Gran asks, in the same words as the seller:** "Today is count day 4. The rain comes on count day 7, after that day's count. How many plums will there be by then, in all?"
+- **Gran carves one peg on the feast rack for each plum the child says.**
+- **Too few said:** plums with no peg. They are left in the rain, and spoil. They can be counted.
+- **Too many said:** empty pegs. Each is a cousin at the feast with no plum. They can be counted.
+- **Both sides cost by the count:** one plum lost for each one short, one cousin without for each one over.
+- **It is small:** one child, one chore, one stick.
+
+### The old singer: the one who teaches
+
+Nobody on Algora can count ahead. So nobody can teach it. But one thing was never handed to the machines: a song.
+
+- **An old Rillfolk singer** [Built: the Rillfolk sing] knows a counting song from her gran. Children skip to it.
+- **It has three verses:** the sandals, by twos. The plums, by fives. The fire sticks, by tens. Each line is one count day more.
+- **She does not know what it is for.** To her it is a skipping song. It always stops at today.
+- **What the cadet finds:** sing one line past today, and the song says what will be. That is counting ahead. It was in the song all along.
+- **How she teaches:** she sings a line and stops. The child gives the number. If the number does not fit the tune, she lays out pips and sings the line again. She is teaching a song, and a singer may say "again".
+- **The towns' rows have no verse:** threes, fours, sixes, sevens. The cadet makes the new verses. That is the skill moving from the small row to the town's.
+- **The keeper watches, and learns the new verse.** That is what "she has learned it" means.
 
 ### 2. How many? [Source: "How many farms do we need"]
 
@@ -246,7 +292,7 @@ Your words: "they must analyze it and make a decision." [Source]
 **The decision already built** is a fourth: **send.** The Reach's fleet [Built] is the Last Raft job.
 
 **For the maths thread, said plainly:**
-- Count days stop at seven as the calendar stands. Section 13 says what the story can bear instead.
+- Count days now run to nine. Section 14.
 - Fruit, wood, river rice and fish are in the list of things that grow, and no decision above asks about them. They are there for you.
 
 ---
@@ -257,7 +303,7 @@ Your words: "they must analyze it and make a decision." [Source]
 
 | | What | What it gives | What it costs |
 |---|---|---|---|
-| **A (my pick)** | The S.S. Infinity came through in Gold month 7. It was too heavy for the Gate. Nobody meant harm. | It uses your ship [Source]. It dates everything (section 3). It gives the towns extra mouths, so last year's plan cannot simply be used again. | The crew are a little to blame. It is the big world thread's own pick too. |
+| **A (my pick)** | The S.S. Infinity came through in Gold month 9. It was too heavy for the Gate. Nobody meant harm. | It uses your ship [Source]. It dates everything (section 3). It gives the towns extra mouths, so last year's plan cannot simply be used again. | The crew are a little to blame. It is the big world thread's own pick too. |
 | **B** | A great storm. | Nobody is to blame. | "Find out why" [Built] has no answer worth finding. |
 | **C** | One people let its count slip, and the Gate needed all of them. | A culprit. | Too close to Chronosia's story. Hard to tell kindly. |
 
@@ -265,8 +311,8 @@ Your words: "they must analyze it and make a decision." [Source]
 
 | | What | What it costs |
 |---|---|---|
-| **A (my pick)** | Ten months: seven gold, three white. | Count days stop at seven. |
-| **B** | Twelve months: nine gold, three white. | Count days reach nine. "By month 11" still cannot be said: month 11 is a white month. |
+| **A** | Ten months: seven gold, three white. | Count days stop at seven. The maths thread counted: that leaves 5 problems in a town's band. |
+| **B (my pick now)** | Twelve months: nine gold, three white. | Count days reach nine. A year as long as ours. "By month 11" still cannot be said: month 11 is a white month. |
 | **C** | Twelve months, all with a count day. Then "by month 11" is said as you said it. | No high water season. The year loses its shape, and "share by the white" goes. |
 
 ### 6c. Is storing too much, to be safe, a mistake?
@@ -287,7 +333,8 @@ In real life a little extra is good sense. The story must not teach that care is
 
 | What a child learns | Where | How they know |
 |---|---|---|
-| They once planned by hand. | every old store wall | old rows: a line, a scratched plan beside it, then cuts climbing to the line |
+| A song can count ahead. | the old singer, in any Rillfolk town | sing one line past today |
+| They once planned by hand. | every old store wall | old rows: a line, a scratched plan beside it, then cuts climbing to the line. No numbers. |
 | The machines took the planning. | the same walls | sixty newer rows: a line and cuts, and no plan beside them |
 | One year went wrong. | the same walls | one row whose cuts stop short of its line |
 | Each people counts its own way. | the Menders' bowls; the Rillfolk's song; the Furrows' white stones | the same count, three ways |
@@ -297,7 +344,7 @@ In real life a little extra is good sense. The story must not teach that care is
 | A plan can be made by hand again. | a store wall, after the cadet's year | a new row with a plan mark beside it |
 
 - **A child's row shows only that a plan was made:** a small mark, in that child's colour. It shows neither the child's number nor how the year went. That stays in the child's own notebook. So nothing a child got wrong is left on a wall for others to see.
-- **Someone who remembers:** an old Rillfolk singer knows a counting song from her gran. She does not know what it is for. The song is a plan, sung.
+- **Someone who remembers:** an old Rillfolk singer knows a counting song from her gran. She does not know what it is for. Sung one line past today, it is a plan. Section 5.
 - **A question for you:** you said "the cultures of the world, their history". I read that as each planet's own invented peoples. If you meant our own world's real cultures, tell me, and this section changes.
 - **Still thin, and I say so:** this is one custom for each people, and one shared history. It is not yet a culture a child could describe. Homes, food, games and stories are still to write.
 - **Borrowed from the real world, on purpose:** knotted and tallied counts, and farming by a yearly flood, are things real peoples have done. They are here because a child can understand them, and because they need counting ahead. No real people's names, places or stories are used.
@@ -313,7 +360,7 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | | Kind | What is built | Why it is a fault | Fix | Cost |
 |---|---|---|---|---|---|
 | 1 | Contradiction | The Eights are one of five peoples who each keep an old Rule Stone. They are also the crew of a ship calling for help now. | A crew that has just arrived cannot keep an old stone. | Four old peoples keep four stones. The fifth rule was the Gate's own. | The Gate's design is the big world thread's. This is a question for it, not a fix from me. |
-| 2 | No date | "On the day the Gate broke." | When? | Gold month 7, this year. | Two or three lines. |
+| 2 | No date | "On the day the Gate broke." | When? | Gold month 9, this year. | Two or three lines. |
 | 2b | Reads two ways | "You crossed the old stones! Nobody has done that for years." | It can sound as if the Gate broke years ago. | It is about the stones only: for years there was a bridge. Say so. | One line. |
 | 3 | Loose thread | "Find out why the Gate broke." | Nothing built says why. | Section 6a. | Your decision. |
 | 4 | Two things, one word | "The tide is in" and "the high water". | A child may think they are the same. | The tide is daily. The high water is yearly. | One line. |
@@ -329,15 +376,15 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | | Decision | My pick | The other way |
 |---|---|---|---|
 | 1 | Why the Gate broke | The ship was too heavy (6a, A) | A storm; or a people's count slipped |
-| 2 | The year's length | Ten months (6b, A) | Twelve, with or without a high water |
-| 3 | The months' names | Gold month 1 to 7, White month 1 to 3: nothing to learn | Ten names of their own, such as Sprout and Leaf: more flavour, more to remember |
+| 2 | The year's length | Twelve months: nine gold, three white (6b, B). The maths thread asks for it, and I agree. | Ten: seven gold, three white. Too few problems. |
+| 3 | The months' names | Gold month 1 to 9, White month 1 to 3: nothing to learn | Ten names of their own, such as Sprout and Leaf: more flavour, more to remember |
 | 4 | Storing too much | Extra food is shared at the feast; the cost is what it took (6c, A) | A little is fine; or never a mistake |
 | 5 | The one cause | The machines did the planning, and the skill was lost | Yours |
 | 6 | The Makers were the peoples' own great-grandparents | Yes | Strangers from elsewhere |
 | 7 | "Grow, then share": the suns as the halves of the year | Yes. Your Multiplica and Dividia. | The suns as scenery |
 | 8 | Each plot is picked every month | Yes. Two suns, fast growth. | One harvest a year. Then nothing grows "by the same amount each month". |
 | 9 | **Decided once:** sowing week, keepers at the Lake Market, cart-months promised at New Year | Yes. It is what makes counting ahead matter. | Towns may change their minds in the year. Then a child can ask "why not wait and see?" |
-| 10 | The cadet lands in Gold month 7 | Yes. The built quests should fit as they are. | Lands at New Year. The fleet's words would change. |
+| 10 | The cadet lands in Gold month 9 | Yes. The built quests should fit as they are. | Lands at New Year. The fleet's words would change. |
 | 11 | One town, one decision, each year | Yes. What follows comes straight after each decision. | Plan every town, then run one year. Feedback comes late. |
 | 12 | A town has only so much, so more of one thing is less of another | Yes | Costs that fall on another town. The first draft; it failed review. |
 | 13 | The Twinseers' New Year words change the numbers each year | Yes | The same numbers every year. Then last year's row is this year's answer. |
@@ -353,7 +400,11 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | 23 | The fleet may sail without the cadet, loaded by guess | Yes. No child is stuck at Last Raft. | The season waits for ever. |
 
 | 24 | What lasts | A miss ends at New Year. What the cadet gave a town stays, and is seen: lit windows, fallow plots, fuller fish racks. | A miss also leaves a small mark for one more year, such as a water line on the houses. |
-| 25 | Count days | One at the end of each gold month: seven. | One each week: twenty-eight. Section 13. |
+| 25 | Count days | One at the end of each gold month: nine. | One each week. Section 13. |
+
+| 26 | The rule for too many mats | One pot for each mat promised. Two pots back for each empty hook. Never fewer than none. It is the maths thread's rule, and I think it is fair. | One pot back for each empty hook. Then saying too many costs less than saying too few, and "always say more" is safe. |
+| 27 | The small row | A child's chore and own stick: sandals, plums or fire sticks, with a peg on the feast rack for each | A family that trades. But only keepers trade. |
+| 28 | Who teaches | The old singer, through her gran's counting song | The keeper. But she cannot count ahead. |
 
 **Not mine to pick:** every name the big world thread made (Algora, the five peoples, the towns); one planet or two from your two pages. I built on one planet, because "grow, then share" needs both suns over one people.
 
@@ -494,4 +545,61 @@ It read this note for the maths (`proposals/GMQ_Big_World_Story_Fit_v1_2026-11-2
 - **They have not been reviewed.** Five reviews came before them. The joint review, of this note and the maths together, is the first to read them.
 - **One thing I am not sure of:** in the first kind, too little and too much both end in lamps out early. The heap of spare mats, or the bare rack, must tell a child which it was. Section 10 has the check.
 - **The fish decision is gone.** Fish is now only food, and the carts' pay.
+
+---
+
+## 14. Second answers to the big world thread
+
+One reviewer read this story and the maths together. Its verdict: not yet a base; close for "how much", for one child alone. The maths thread's version 2 fits only the first kind, and asks six things of the story.
+
+### The six things
+
+| | It asked for | The story's answer | Where |
+|---|---|---|---|
+| 1 | The rule for too many mats, in the story's words | **Yes, its rule.** One pot for each mat promised. One hook tied on the raft for each. "One pot back for the mat I did not get. One pot back for the hook that sailed empty." Never fewer than none. | Section 5 |
+| 2 | "The raft comes on count day N, after the count." All mats wait at home. | **Yes.** That is now the one way a day is named. Rafts still sail on Last Raft day; after it, none does. | Section 1 |
+| 3 | A tally stick at the Market. The keeper does not say the step. | **Yes.** A keeper never leaves home without her stick: this year's row, cut small. She has never thought of the pile as so much each count day. | Section 5 |
+| 4 | Nine gold months | **Yes.** My pick is changed. It is still Marc's decision 2. | Sections 1 and 6b |
+| 5 | A small row that is small in the story, and not a trade | **A child's chore, and gran's rack.** A pair of sandals, a hand of five plums, a bundle of ten fire sticks. One loop for each thing promised. | Section 5 |
+| 6 | The singer as the teacher | **Yes.** Her gran's counting song has verses by twos, fives and tens. Sung one line past today, it counts ahead. | Section 5 |
+
+### One thing I would check in its rule
+
+"Two pots back for each empty hook" makes six too many cost the same as six too few. That is the point of it. But a child may feel it as a punishment: "she took two!" The seller's own words must carry the fairness. If children still call it unfair, the other fair rule is: she takes back one pot, and next year she ties only as many hooks as she was given mats. That lasts past New Year, so it is Marc's to choose.
+
+### The two parked kinds
+
+The reviewer found three faults in them. I agree with all three. Here is what the story can offer when the maths thread comes back to them. None of it is fitted.
+
+| The fault | What the story offers |
+|---|---|
+| **Neither has a table.** Both are decided at New Year, before any count day. | **The other side brings the table,** as the maths thread suggests. The Furrow carter brings a load board to the handshake: what his carts carry, month on month. Three rows are cut. The rest is bare wood. For sowing, the Menders bring a seed board with the pips: what one plot brings by Last Raft, then two plots, then three. The child reads on until the town's number is reached. |
+| **"For how long": the cadet can leave the town worse off than the keeper's safe way.** | **The safe way is nine months, with fish set out for all nine.** Each month the cadet does not hire, one row of fish goes back to the town's own racks. So even a cadet who says a month too many leaves the town better off than before. Too many: a heap of spare blocks, and fewer rows of fish saved than could have been. Too few: the wall is short, and the water comes over. **The two sides do not cost the same, and should not.** A wall too low is worse than a wall too high. That is true, and a child can be told it. |
+| **"How many": the reed side is never told.** | **Tell it.** The keeper says both needs before the child decides: so much food, so much reed, and "these good plots are just enough for both". Then a careful child can check both sides. |
+
+- **A thing to settle first for "for how long":** if the two sides do not cost the same, "always say nine" is safe, and it is the keeper's own way. Is that a miss, or only no gain? In the story it is no gain: the town is as tired as before. Whether the engine may count "no gain" as a miss is the maths thread's and Marc's to say.
+
+### What changed in this note, and what it costs
+
+- The year is twelve months. The first kind's story is rewritten to match the fitted maths. The small row and the singer are new.
+- **None of it has been reviewed.** The next joint review is the first to read it.
+- **The second and third kinds in sections 1, 3 and 5 are as they were.** They are parked, and the offers above are not yet written into them.
+
+---
+
+## 15. Third answers to the big world thread
+
+The second joint review read the first kind only. Its verdict: not yet, with three small blockers. "The numbers for the town's stick and promise hold." The maths thread's version 4 asks for my words on five things.
+
+| | It asked for | The story's answer | Where |
+|---|---|---|---|
+| 1 | The small row as the town's task, smaller | **A child's own stick,** four cuts, the same question from Gran. The thing is named: sandals, plums, fire sticks. One peg on the feast rack for each one said. A plum with no peg spoils. An empty peg is a cousin with no plum. Both by the count. | Section 5 |
+| 2 | The seller's own stick as the finished example, and both costs before she asks | **Yes, in that order:** her stick, both costs, the question. | Section 5 |
+| 3 | Mats made after the raft has come, and the spare mats | **Both go on the town's own floors.** "Nobody is worse off for a mat. But a mat is not a lamp." Her raft comes once. | Section 5 |
+| 4 | Four stale lines | **Corrected.** Nobody says how much comes each count day. The cuts are on the keeper's stick. A step down is a child's own stick. The first kind is asked at the Lake Market. | Sections 3 and 5 |
+| 5 | Old rows on store walls carry no numbers | **Yes.** Cuts, a line, a scratched plan. They show that planning was done. They cannot be this year's answer. | Sections 2 and 7 |
+
+- **The question is now the maths thread's, word for word:** "Today is count day 4. My raft comes on count day 7, after that day's count. How many mats will there be by then, in all?"
+- **One thing to check with children:** "a cousin with no plum" is the gentlest cost in the note. If it reads as nothing, the small row has only one side that hurts.
+- **These changes have not been reviewed.**
 
