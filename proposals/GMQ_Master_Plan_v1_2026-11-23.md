@@ -35,8 +35,11 @@ Everything is **[Proposal]** unless it says [Source].
 | **Battle** | `docs/battle/*` and its notes | Marc's rules and the new card set, on its own page. See its newest notes in `proposals/GMQ_Card_Battle_*`. |
 | **Fly-in** | `docs/flyin/*` and its notes | The Voltara arrival is built: first person, 13 seconds, ready to wire in (Phase 2). See `proposals/GMQ_Voltara_Flyin_v1_2026-11-22.md`, section 9. |
 | **Chronosia story** (writes only) | `proposals/GMQ_Chronosia_Story_*` | Started 23 November with `HANDOFF_Chronosia_Story_2026-11-23.md`: one cohesive story for Chronosia; every task passes the test "no maths as a password". The main thread builds once Marc approves. |
+|  |  | **Approved by Marc on 23 November.** The main thread builds from `proposals/GMQ_Chronosia_Story_Build_List_v1_2026-11-23.md`: stages 1 to 3 first, then the fly-in, then stages 4 to 7. |
 
 **Threads cannot talk to each other.** Marc carries messages between them. The repository is their shared memory: this plan, the handoffs, and `INFO_FROM_MARC.md`.
+
+**Every thread pushes its notes to the main branch as soon as they are written,** its own files only, merging first. That is how the other threads see them. [Source: Marc, 23 November: "Should the story thread be pushing its stories to the main thread so all threads can see them and understand them?"] Before a thread designs or builds something that touches another thread's work, it reads that thread's newest notes on the main branch.
 
 ## 3. What the children have, and what is waiting for them
 

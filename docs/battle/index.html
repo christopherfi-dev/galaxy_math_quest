@@ -105,7 +105,7 @@ button{font-family:inherit}
 .lg{border-top:1px solid #26304d;padding:6px 0;font-size:14px;line-height:1.4}
 .lg b{color:#ffd84a}
 .keyrow{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
-.keyrow div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:800;width:92px;text-align:center}
+.keyrow div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:800;width:84px;text-align:center}
 .keyrow svg{width:64px;height:64px}
 @media(max-width:600px){
  .ship{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -248,8 +248,8 @@ button{font-family:inherit}
  {"id":"D08","pic":"minus","type":"defence","rarity":"rare","name":"Patch and Block","badge":"−15","text":"Block 15, or bring back a broken shield with 15 HP. Repair 5 HP on one working part.","ops":[{"op":"block","n":15},{"op":"repair_one","n":5}],"maths":"their attack - 15, and one part + 5","from":"new: two things on one card","needs":"Needs Shield Generator and Power Module"},
  {"id":"D10","pic":"cards","type":"defence","rarity":"rare","name":"Card Wall","badge":"4×","text":"Count the other cards in your hand. Block 4 for each, or bring back a broken shield.","ops":[{"op":"block_per_card","n":4}],"maths":"4 x the cards left in your hand, then their attack - that","from":"new: the four times table, to match Nano Shield"},
  {"id":"D09","type":"defence","rarity":"epic","name":"Vanishing Act","badge":"0","text":"No attack hits you this round. A Spy still can.","ops":[{"op":"block_all"}],"maths":"none: the attack on you is 0","from":"Cloaking Device, Wormhole, Teleport and nine more"},
- {"id":"D11","type":"defence","rarity":"common","name":"Wormhole Zip","badge":"zip","text":"Zip through a wormhole. The enemy ship's attack misses you. You still fire.","ops":[{"op":"block_dodge"}],"maths":"their ship's attack misses","from":"Marc, 22 November: Wormhole Zip. His 2023 cards Wormhole and Teleport"},
- {"id":"D12","type":"defence","rarity":"rare","name":"Triple Illusion","badge":"×3","text":"The enemy sees three ships. Its ship's attack misses you. You still fire.","ops":[{"op":"block_dodge"}],"maths":"their ship's attack misses","from":"Marc, 22 November: Triple Illusion. His 2023 card Decoy Drones"},
+ {"id":"D11","sym":"dodge","type":"defence","rarity":"common","name":"Wormhole Zip","badge":"zip","text":"Zip through a wormhole. The enemy ship's attack misses you. You still fire.","ops":[{"op":"block_dodge"}],"maths":"their ship's attack misses","from":"Marc, 22 November: Wormhole Zip. His 2023 cards Wormhole and Teleport"},
+ {"id":"D12","sym":"dodge","type":"defence","rarity":"rare","name":"Triple Illusion","badge":"×3","text":"The enemy sees three ships. Its ship's attack misses you. You still fire.","ops":[{"op":"block_dodge"}],"maths":"their ship's attack misses","from":"Marc, 22 November: Triple Illusion. His 2023 card Decoy Drones"},
  {"id":"R01","pic":"patch","type":"repair","rarity":"common","name":"Quick Patch","badge":"+6","text":"Repair 6 HP on one of your working parts.","ops":[{"op":"repair_one","n":6}],"maths":"part HP + 6","from":"Emergency Repairs (6)"},
  {"id":"R02","pic":"tape","type":"repair","rarity":"common","name":"Hull Tape","badge":"+8","text":"Repair 8 HP on one of your working parts.","ops":[{"op":"repair_one","n":8}],"maths":"part HP + 8","from":"Armor Patch (7)"},
  {"id":"R03","pic":"bot","type":"repair","rarity":"common","name":"Repair Bot","badge":"+10","text":"Repair 10 HP on one of your working parts.","ops":[{"op":"repair_one","n":10}],"maths":"part HP + 10","from":"Repair Drone (10)"},
@@ -666,6 +666,7 @@ var TYPE={
  repair:{name:'REPAIR',c:'#ff4d6d',d:'#2b1320',needs:'Needs your Power Module'},
  spy:{name:'SPY',c:'#a78bfa',d:'#1d1838',needs:'Gets past the Main Shield'},
  guard:{name:'POLICE',c:'#5b8cff',d:'#101c40',needs:'Stops a Spy card'},
+ dodge:{name:'DODGE',c:'#2dd4bf',d:'#0d2628',needs:'Needs your Shield Generator'},
  upgrade:{name:'UPGRADE',c:'#ffd23f',d:'#2a2210',needs:'Makes one part Level 2'}
 };
 var RAR={common:{name:'COMMON',c:'#7ed957',n:1},rare:{name:'RARE',c:'#b388ff',n:2},epic:{name:'EPIC',c:'#ffd23f',n:3}};
@@ -715,8 +716,20 @@ function symSpy(x,y,s){return '<g transform="translate('+x+','+y+') scale('+s+')
  +'<ellipse cx="0" cy="-24" rx="50" ry="9" fill="#2b2f45" stroke="#10162c" stroke-width="4"/>'
  +'<rect x="-24" y="-12" width="20" height="13" rx="5" fill="#10162c"/><rect x="4" y="-12" width="20" height="13" rx="5" fill="#10162c"/><rect x="-6" y="-9" width="12" height="4" fill="#10162c"/>'
  +'<path d="M-8,10 Q0,14 8,10" fill="none" stroke="#10162c" stroke-width="3" stroke-linecap="round"/></g>';}
+/* dodge: a ship that has slipped aside. Two faint ships show where it was; the laser passes through the first of them. [Marc, 23 November: "Dodge should have its own picture"] */
+function symDodge(x,y,s){
+ function ship(tx,ty,op,ghost){
+  var o='<g'+(ghost?' class="dg"':'')+' transform="translate('+tx+','+ty+') rotate(-32) scale('+(ghost?1.0:1.25)+')" opacity="'+op+'">';
+  if(ghost)return o+'<path d="M-30,-9 L-48,-28 L-18,-16 Z M-30,9 L-48,28 L-18,16 Z M-36,0 Q-12,-28 40,0 Q-12,28 -36,0 Z" fill="#9ff3e6"/></g>';
+  return o+'<path d="M-30,-9 L-48,-28 L-18,-16 Z M-30,9 L-48,28 L-18,16 Z" fill="#2dd4bf" stroke="#10162c" stroke-width="4" stroke-linejoin="round"/>'
+   +'<path d="M-36,0 Q-12,-28 40,0 Q-12,28 -36,0 Z" fill="#e9eefb" stroke="#10162c" stroke-width="5" stroke-linejoin="round"/>'
+   +'<circle cx="8" cy="0" r="9" fill="#4f9dff" stroke="#10162c" stroke-width="4"/></g>';}
+ return '<g transform="translate('+x+','+y+') scale('+s+')">'
+  +ship(-30,26,0.22,true)+ship(-8,6,0.42,true)
+  +'<line x1="-74" y1="46" x2="72" y2="46" stroke="#ff8a3d" stroke-width="12" stroke-linecap="round"/><line x1="-74" y1="46" x2="72" y2="46" stroke="#fff3c4" stroke-width="4" stroke-linecap="round"/>'
+  +ship(16,-20,1,false)+'</g>';}
 function symUp(x,y,s){var o='<g transform="translate('+x+','+y+') scale('+s+')">';for(var i=0;i<3;i++){o+='<path d="M-44,'+(-12+i*30)+' L0,'+(-52+i*30)+' L44,'+(-12+i*30)+'" fill="none" stroke="#10162c" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M-44,'+(-12+i*30)+' L0,'+(-52+i*30)+' L44,'+(-12+i*30)+'" fill="none" stroke="'+(i===0?'#ffd84a':(i===1?'#ffb347':'#ff8a3d'))+'" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>';}return o+'</g>';}
-var SYMBOL={attack:symGun,defence:symShield,repair:symHeart,guard:symPolice,spy:symSpy,upgrade:symUp};
+var SYMBOL={attack:symGun,defence:symShield,repair:symHeart,guard:symPolice,spy:symSpy,upgrade:symUp,dodge:symDodge};
 function symbol(type,x,y,s){return SYMBOL[type](x,y,s);}
 function partIcon(code,x,y,s,c){
  var g='<g transform="translate('+x+','+y+') scale('+s+')">';
@@ -739,13 +752,13 @@ function frame(id,edge,body){
  return o;
 }
 function cardSVG(card,uid){
- var t=TYPE[card.type],r=RAR[card.rarity],id=uid||card.id.replace(/[^A-Za-z0-9]/g,'');
+ var look=card.sym||card.type,t=TYPE[look],r=RAR[card.rarity],id=uid||card.id.replace(/[^A-Za-z0-9]/g,'');
  var edge=r?r.c:'#dbe3f0',o='<svg xmlns="'+NS+'" viewBox="0 0 250 350" role="img" aria-label="'+esc(card.name+'. '+t.name.toLowerCase()+(card.rarity?', '+card.rarity:'')+'. '+card.text)+'">';
  o+=frame(id,edge,'#141b33');
  o+='<rect x="15" y="15" width="220" height="38" rx="8" fill="'+edge+'"/><rect x="15" y="40" width="220" height="13" fill="'+edge+'"/>';
  o+='<text x="125" y="'+(34+nameSize(card.name)*0.34)+'" text-anchor="middle" font-size="'+nameSize(card.name)+'" font-weight="900" fill="#10162c" class="nm">'+esc(card.name)+'</text>';
  o+='<rect x="15" y="53" width="220" height="146" fill="'+t.d+'"/><circle cx="108" cy="126" r="66" fill="'+t.c+'" opacity=".22"/>';
- o+=symbol(card.type,card.type==='guard'?112:106,128,card.type==='upgrade'?0.9:1.0);
+ o+=symbol(look,card.type==='guard'?112:106,look==='dodge'?122:128,card.type==='upgrade'?0.9:1.0);
  var bl=card.badge.length,bf=bl<=2?32:(bl===3?27:(bl===4?21:17));
  o+='<circle cx="197" cy="186" r="34" fill="#fff" stroke="#10162c" stroke-width="5"/><text x="197" y="'+(186+bf*0.35)+'" text-anchor="middle" font-size="'+bf+'" font-weight="900" fill="#10162c" class="bd">'+esc(card.badge)+'</text>';
  o+='<text x="24" y="218" font-size="14" font-weight="900" fill="'+t.c+'" letter-spacing="1.5" class="ty">'+t.name+'</text>';
@@ -1163,8 +1176,8 @@ function debris(p,n,colour){
  if(FAST)return;var o='',i,a=[];for(i=0;i<n;i++){a.push({an:Math.PI*2*i/n+Math.random(),d:70+Math.random()*90,r:3+Math.random()*5});o+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+a[i].r.toFixed(1)+'" fill="'+(i%3?colour:'#fff')+'"/>';}
  var g=fx(o);tween(700,function(t){for(var k=0;k<n;k++){var c=g.childNodes[k],e=1-(1-t)*(1-t);c.setAttribute('cx',(p.x+Math.cos(a[k].an)*a[k].d*e).toFixed(1));c.setAttribute('cy',(p.y+Math.sin(a[k].an)*a[k].d*e+40*t*t).toFixed(1));c.setAttribute('opacity',(1-t).toFixed(2));}}).then(function(){gone(g);});
 }
-function wall(side,text){
- if(FAST)return;var f=facing(side),s=U.L.ship[side],g=fx('<circle cx="'+f.x.toFixed(0)+'" cy="'+f.y.toFixed(0)+'" r="74" fill="#4f9dff" fill-opacity=".3" stroke="#bfdbfe" stroke-width="6"/><g transform="translate('+f.x.toFixed(0)+','+f.y.toFixed(0)+') scale(0.5)">'+symShield(0,0,1)+'</g>');
+function wall(side,text,dodge){
+ if(FAST)return;var f=facing(side),s=U.L.ship[side],g=fx('<circle cx="'+f.x.toFixed(0)+'" cy="'+f.y.toFixed(0)+'" r="74" fill="#4f9dff" fill-opacity=".3" stroke="#bfdbfe" stroke-width="6"/><g transform="translate('+f.x.toFixed(0)+','+f.y.toFixed(0)+') scale(0.5)">'+(dodge?symDodge(0,0,1):symShield(0,0,1))+'</g>');
  floatText({x:f.x,y:f.y-80},text,'#bfdbfe',40);
  tween(1300,function(t){g.setAttribute('opacity',t<0.75?1:((1-t)/0.25).toFixed(2));}).then(function(){gone(g);});
 }
@@ -1198,7 +1211,7 @@ function animate(st,R){
    for(var i=0;i<2;i++){if(S.cur&&S.cur.atk[i]>0){var p=turret(i);floatText({x:p.x,y:i===1?p.y+(U.L.land?84:60):p.y-34},String(S.cur.atk[i]),i?'#fca5a5':'#93c5fd',52);}}
    return wait(1300);});
   if(lines.length>2)then(function(){say(lines.slice(2).join(' '));
-   for(var i=0;i<2;i++){var bk=S.cur?S.cur.block[i]:0;if(bk!==0&&S.cur.atk[1-i]>0){wall(i,S.cur.away[i]?(S.cur.through[i]>0?'DODGED '+Math.min(bk,S.cur.atk[1-i]):'MISSED!'):(bk<0?'ALL BLOCKED':'BLOCK '+Math.min(bk,S.cur.atk[1-i])));snd(S.cur.away[i]?'spy':'wall');}
+   for(var i=0;i<2;i++){var bk=S.cur?S.cur.block[i]:0;if(bk!==0&&S.cur.atk[1-i]>0){wall(i,S.cur.away[i]?(S.cur.through[i]>0?'DODGED '+Math.min(bk,S.cur.atk[1-i]):'MISSED!'):(bk<0?'ALL BLOCKED':'BLOCK '+Math.min(bk,S.cur.atk[1-i])),S.cur.away[i]);snd(S.cur.away[i]?'spy':'wall');}
     if(S.cur&&S.cur.raised[i]>0){flash(i);floatText({x:U.L.ship[i].cx,y:U.L.ship[i].cy-120},'SHIELD UP '+S.cur.raised[i],'#bfdbfe',44);snd('up');}}
    return wait(1500);});
   return chain;
@@ -1322,7 +1335,7 @@ function openLog(){
  else{S.log.forEach(function(L){h+='<div class="lg"><b>Round '+L.round+'.</b> You: '+esc(B.card(L.card[0]).name)+'. The enemy: '+esc(B.card(L.card[1]).name)+'.<br>'+L.lines.map(esc).join('<br>')+'</div>';});if(S.over)h+='<div class="lg"><b>'+esc(S.over.why)+'</b></div>';}
  el('loglist').innerHTML=h;show('logv',true);
 }
-(function(){var h='';[['attack','Attack'],['defence','Block'],['repair','Repair'],['spy','Spy'],['guard','Policeman'],['upgrade','Upgrade']].forEach(function(t){h+='<div><svg viewBox="-80 -72 190 144">'+symbol(t[0],0,0,1)+'</svg>'+t[1]+'</div>';});el('keyrow').innerHTML=h;})();
+(function(){var h='';[['attack','Attack'],['defence','Shield'],['dodge','Dodge'],['repair','Repair'],['spy','Spy'],['guard','Policeman'],['upgrade','Upgrade']].forEach(function(t){h+='<div><svg viewBox="-80 -72 190 144">'+symbol(t[0],0,0,1)+'</svg>'+t[1]+'</div>';});el('keyrow').innerHTML=h;})();
 el('stage').addEventListener('click',function(ev){var t=ev.target;while(t&&t!==this){var c=t.getAttribute&&t.getAttribute('class');if(c&&/\bpod\b/.test(c)){onPod(+t.getAttribute('data-side'),+t.getAttribute('data-ix'));return;}if(c&&/\border\b/.test(c)){zoom(t.getAttribute('data-id'));return;}t=t.parentNode;}});
 el('sgo').addEventListener('click',newBattle);
 el('sstd').addEventListener('click',function(){U.kinds=['standard','standard','standard','standard','standard'];drawSetup();});

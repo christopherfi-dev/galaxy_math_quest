@@ -111,6 +111,7 @@ want('every repair of parts says working, lost or damaged', [c['id'] for c in ca
 # Marc, 22 November: a shield card puts a broken Main Shield back up. Every such card says so.
 want('every card that adds to the Main Shield says a broken shield comes back', [c['id'] for c in cards if any(o['op'] in ('shield_add', 'shield_per_card', 'shield_rebuild') for o in c['ops']) and 'A broken shield comes back' not in c['text']], [])
 want('every block card says it can bring back a broken shield', [c['id'] for c in cards if any(o['op'] in ('block', 'block_per_card') for o in c['ops']) and 'bring back a broken shield' not in c['text']], [])
+want('a dodge card, and only a dodge card, carries the dodge picture', [c['id'] for c in cards if (c.get('sym') == 'dodge') != any(o['op'] == 'block_dodge' for o in c['ops'])], [])
 want('every dodge card says you still fire', [c['id'] for c in cards if any(o['op'] == 'block_dodge' for o in c['ops']) and 'You still fire' not in c['text']], [])
 want('no card still says "if it is still up"', [c['id'] for c in cards if 'still up' in c['text']], [])
 want('a card with two effects names both parts it needs', [c['id'] for c in cards if len(c['ops']) > 1 and ' and ' not in c.get('needs', '')], [])
