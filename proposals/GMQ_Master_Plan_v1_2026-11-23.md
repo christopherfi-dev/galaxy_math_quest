@@ -37,6 +37,8 @@ Everything is **[Proposal]** unless it says [Source].
 | **Chronosia story** (writes only) | `proposals/GMQ_Chronosia_Story_*` | Started 23 November with `HANDOFF_Chronosia_Story_2026-11-23.md`: one cohesive story for Chronosia; every task passes the test "no maths as a password". The main thread builds once Marc approves. |
 |  |  | **Approved by Marc on 23 November.** The main thread builds from `proposals/GMQ_Chronosia_Story_Build_List_v1_2026-11-23.md`. Stages 1 and 2 are built (version 94). Then the fly-in, then stages 3 and 4 together (so the class never gets a cave nobody can enter), then 5 to 7. |
 
+| **Trade** (from 23 November) | `docs/trade/*` and its notes | Starts with `HANDOFF_Trade_2026-11-23.md`: Galactic Trade rebuilt as a market (the note's option A, Marc: "We can do your idea, see how it works"), on its own page; the main thread wires it in. |
+
 **Threads cannot talk to each other.** Marc carries messages between them. The repository is their shared memory: this plan, the handoffs, and `INFO_FROM_MARC.md`.
 
 **Every thread pushes its notes to the main branch as soon as they are written,** its own files only, merging first. That is how the other threads see them. [Source: Marc, 23 November: "Should the story thread be pushing its stories to the main thread so all threads can see them and understand them?"] Before a thread designs or builds something that touches another thread's work, it reads that thread's newest notes on the main branch.
@@ -83,7 +85,8 @@ Everything is **[Proposal]** unless it says [Source].
 2. **Big world thread:** no new region. Change the walking only for what the children show. Finish the deciding years' review loop (its handoff, steps 2 and 3); build the first kind only after a joint review says yes.
 3. **Story thread:** its round 4 review of Algora; something to find in Algora's four empty places. The next region's story only after children have played the first two.
 4. **Main thread:** Chronosia's stages 5 to 7 (the guard's trail, the people and their history, the reward). Review the other threads' work as it lands.
-5. **Battle thread and fly-in thread:** wait. The battle comes into the game on Marc's word (Stage 4 below). Other planets' fly-ins after the class has reacted to Voltara's.
+5. **Trade thread (new):** builds the market from `HANDOFF_Trade_2026-11-23.md`, on its own page.
+6. **Battle thread and fly-in thread:** wait. The battle comes into the game on Marc's word (Stage 4 below). Other planets' fly-ins after the class has reacted to Voltara's.
 
 **After the children have played Algora,** decide together: the next region, its people, and how much harder it gets.
 
@@ -182,10 +185,10 @@ Each note lays out the choices and recommends one.
 | 10 | The server: the split as the long-term shape; one class or a grade per world; when to try step 1; what children may do across classes | `GMQ_Server_Layers_Analysis_v1_2026-11-22.md`, section 5 |
 | 11 | "Start again": should it ask "Are you sure?" first | not written up yet |
 | 13 | ~~**The lantern's recipe**~~: answered 23 November. Marc approved the Chronosia story (rule R18: a lantern is a glow stone behind Nomad glass), and its glow stone from a trader at Galactic Trade. So the recipe is soft sand and the glow stone, and the glow stone alone stops lighting the passage. **Tell Marc this reading;** he can still change it. | the Chronosia story note, R18 and decision 6 |
-| 14 | **The glow stone's price at the trade beacon:** 200 gems [Proposal, version 96]. Too dear, or too cheap, for what the class earns on a trade trip? | this plan; the game's `LANPRICE` |
+| 14 | ~~The glow stone's price~~: answered 23 November. The glow stone moves to a far planet in the rebuilt market (the trade thread). Until then the game keeps 200 gems. | `HANDOFF_Trade_2026-11-23.md` |
 | 15 | **Lengthar's measuring tape** has no use yet (the Chronosia story note, decision 6, pick A). Leave it as a prize, or design a quest that needs it? | the Chronosia story note, decision 6 |
-| 16 | **Galactic Trade, three choices** (version 97 fixed the rest): A, rounding as an estimate ("the scanner reads only roughly: about 10 light-years"), or as now; B, your Trade Data Sheet as the picture, every planet's numbers in view, rounding only for the planets chosen, or scan-first as now; C, what the gems buy: the Council's Power Module upgrade, from your Task 2 page. Picks: A estimate, B the data sheet, C yes. | this plan; your Task 2 page |
-| 17 | **Voltara's energy plan shows a running total** of the energy used as places are switched on. Your rule says never show the adding. Take it out (the child adds, then the tower checks), or keep it? Your class has played it. | the game's `startPlan` |
+| 16 | ~~Galactic Trade~~: answered 23 November, the market (option A), by a new thread. The rest of the row is history: **Galactic Trade, three choices** (version 97 fixed the rest): A, rounding as an estimate ("the scanner reads only roughly: about 10 light-years"), or as now; B, your Trade Data Sheet as the picture, every planet's numbers in view, rounding only for the planets chosen, or scan-first as now; C, what the gems buy: the Council's Power Module upgrade, from your Task 2 page. Picks: A estimate, B the data sheet, C yes. | this plan; your Task 2 page |
+| 17 | ~~Voltara's running total~~: answered 23 November, keep it (Marc will watch for children who only click). History: **Voltara's energy plan shows a running total** of the energy used as places are switched on. Your rule says never show the adding. Take it out (the child adds, then the tower checks), or keep it? Your class has played it. | the game's `startPlan` |
 | 12 | **Older decisions from 21 November, some answered since** | `GMQ_Decisions_Waiting_2026-11-21.md`. The main thread should mark which are answered (its first job). |
 
 ## 5b. The story test, for every task on every planet
