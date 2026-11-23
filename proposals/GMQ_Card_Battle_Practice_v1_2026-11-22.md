@@ -47,20 +47,23 @@ Here is how I read the problem.
 | Dodge cards: "maybe. Sure?" | Built, below, so you can try them. |
 | "Split rule? Not sure what that refers to." | See the end of this section. Nothing changed. |
 
-**The two dodge cards** [Built on your "maybe. Sure?". Say the word and they come out.]
+**The two dodge cards** [Built on your "maybe. Sure?".]
 
-- **Wormhole Zip (common):** "Zip away. The enemy ship's attack misses you. You do not fire this round."
-- **Triple Illusion (rare):** "The enemy sees three ships. Its attack misses you. You do not fire this round."
+- **Wormhole Zip (common):** "Zip through a wormhole. The enemy ship's attack misses you. You still fire."
+- **Triple Illusion (rare):** "The enemy sees three ships. Its ship's attack misses you. You still fire."
+- **A ship that dodges still fires.** [Your ruling, 23 November: "dodge should still fire. Otherwise it's not that cool of a card to play... It's like a nothing round."] I had proposed that it should not fire. You were right: a round in which nothing happens is dull. I did not push back.
 - **They follow your law for every shield card.** The other ship's regular AP always misses. A higher attack card still hits with the part it adds. A gold card that multiplies the AP hits with everything.
   - Wormhole Zip against Twin Tens (rare, 55 + 20): the 55 misses, the 20 hits.
   - Triple Illusion against Twin Tens: everything misses.
   - Either one against Doubling Drive: all 110 hits.
-- **The price is mine** [Proposal]: your ship is away, so you do not fire that round. Without a price a dodge would beat every block card of its kind. Vanishing Act (epic) dodges and still fires.
+- **What then makes Vanishing Act epic:** nothing gets past it, not even a gold card.
 - **They need the Shield Generator,** like every shield card.
 - **I added them. I did not replace two block cards,** so nothing of yours is lost. A deck is now 47 cards.
 - **They show a shield,** like the other defence cards. A picture of their own would be clearer. I have not drawn one.
 
-**What they do to a battle** (two computer players, 2,000 battles each): about one round longer. 12 rounds with random play, 15 with clever play. 9 battles in 10 are over by round 16 or 19.
+**The one cost of a dodge that fires:** while your shield is still up, a dodge saves more than a block card of the same kind. Wormhole Zip saves the whole 55. Ten-Tile Wall saves 10. When your shield is broken they do the same job, because any shield card then stops the whole AP. If the dodge cards turn out too good in the first rounds, the simple cure is to make Wormhole Zip rare.
+
+**What they do to a battle** (two computer players, 2,000 battles each): about one round longer. 12 rounds with random play, 15 with clever play. 9 battles in 10 are over by round 15 or 19.
 
 **"The split rule": what I meant**
 
@@ -402,7 +405,7 @@ Two Standard ships, your rules, the default switches, 4,000 battles for each kin
 
 ### Still for you to rule on
 
-1. **The dodge cards** (section 1h): keep them? Is "you do not fire" the right price? Should they have a picture of their own?
+1. **The dodge cards** (section 1h): should they have a picture of their own?
 
 Everything else you have answered.
 
@@ -417,8 +420,8 @@ Everything else you have answered.
 
 ## 9. Checks
 
-- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,184 checks, all pass. It checks:
-  - Wormhole Zip: the opened card says what will miss and what will still hit, and that you do not fire; played, exactly that happens;
+- **Ran:** `node checks/battle_page_test.js`. It plays the page at iPad sideways, iPad upright and phone size. 2,020 checks, all pass. It checks:
+  - Wormhole Zip: the opened card says what will miss, what will still hit, and your own attack; played, exactly that happens, and your ship still fires;
   - the exception for a card that multiplies the AP: the opened card says the whole attack goes through, you are asked to place all of it, and the lower shield is not touched;
   - no card is ever marked "cannot block"; no ship is marked as hitting first; "How" says both attacks land together;
   - the opened card at six real screen sizes, with the browser's own bars taken off (two iPhones upright, two phones sideways, iPad both ways): the picture, "Give this order" and "Back" are inside the screen for every card in the hand, and the button works;
@@ -441,8 +444,9 @@ Everything else you have answered.
   - the ships hold still when a part must be tapped;
   - leaving between rounds, and in the middle of one; a whole battle to its end; your block rule;
   - at real speed: the ships float, the stars drift, a Spy flies, a block card shows its shield, a laser fires, the damage floats up, a round takes under 25 seconds, a beaten ship blows up before "YOU WIN!".
-- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 152 million checks, all pass. It tests each of your rulings of 22 November by hand: both attacks landing together (and turn order with its switch on), a lower block card still stopping the ship's own AP, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
+- **Ran:** `node checks/battle_engine_test.js`. Computer against computer: all 147,456 combinations of switches, then 52,000 more battles. 147 million checks, all pass. It tests each of your rulings of 22 November by hand: both attacks landing together (and turn order with its switch on), a lower block card still stopping the ship's own AP, a shield card bringing a broken shield back, Shield Reborn going to full, and a higher attack card's own part going through a lower shield.
 - **Ran:** `python3 checks/battle_cards_set_check.py` (51 checks) and `node checks/battle_cards_page_test.js` (42 checks). All pass.
+  - The cards-page test failed two checks once, at one screen size, while the heavy engine check was running beside it. Run on its own it passed three times out of three. I count that as the test's timing, not a fault in the page, but I have not proved it.
 - **Looked at:** the screens myself, at all three sizes, and stills taken in the middle of the movement. I fixed what I saw: words that crossed the hull, cracks that crossed the labels, cards that were small, a top bar that ran off a phone, two numbers that floated on top of each other.
 - **Rough only:** the three numbers for the split in section 4. They come from a trial outside the page and have no test.
 - **Did not run:** the game's play tests. Nothing in the game was touched.

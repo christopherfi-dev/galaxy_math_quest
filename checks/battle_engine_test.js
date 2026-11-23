@@ -37,9 +37,9 @@ function play(opts, k0, k1, sd, keep) {
       // the card played was in the hand
       ok(before.hand[i].indexOf(L.card[i]) >= 0, 'the card played came from the hand');
       // Weapons lost: no attack, whatever the card
-      ok(L.away[i] ? L.atk[i] === 0 : (L.snap.wep[i] ? L.atk[i] >= 15 : L.atk[i] === 0), 'a ship without Weapons does not attack, and a ship that is away does not fire', JSON.stringify(L.atk));
-      ok(!L.away[i] || (c.ops.some(o => o.op === 'block_dodge') && L.snap.sg[i]), 'a ship is away only when it played a dodge card and has its Shield Generator');
-      if (c.ops.some(o => o.op === 'block_dodge') && L.snap.sg[i] && L.snap.wep[i] && !(opts.kindBlock && !opts.shieldKind && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d]))) ok(L.away[i], 'a dodge card that works takes the ship away');
+      ok(L.snap.wep[i] ? L.atk[i] >= 15 : L.atk[i] === 0, 'a ship without Weapons does not attack; every other ship does, a ship that dodges too', JSON.stringify(L.atk));
+      ok(!L.away[i] || (c.ops.some(o => o.op === 'block_dodge') && L.snap.sg[i]), 'a ship dodges only when it played a dodge card and has its Shield Generator');
+      if (c.ops.some(o => o.op === 'block_dodge') && L.snap.sg[i] && !(opts.kindBlock && !opts.shieldKind && B.card(L.card[d]).type === 'attack' && B.rank(L.card[i]) < B.rank(L.card[d]))) ok(L.away[i], 'a dodge card that works makes the ship dodge');
       // Shield Generator lost: no block
       ok(L.snap.sg[i] || L.block[i] === 0, 'a ship without its Shield Generator cannot block');
       // Marc, 22 November: a lower card cannot block a higher attack card
@@ -242,9 +242,9 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   L = duel('A12', 'A10'); ok(L.block[1] === 0 && L.atk[1] === 65, 'Hit and Hide (rare) against Hundred Cannon (epic): its block stops nothing, and it still adds 10 to its own attack');
   L = duel('A08', 'A10'); ok(L.block[1] === 10 && L.through[1] === 65, 'Hit and Hide (rare) against Twin Tens (rare): blocks its 10');
   // dodge cards (Marc, 22 and 23 November): Wormhole Zip (common) and Triple Illusion (rare)
-  L = duel('A01', 'D11'); ok(L.through[1] === 0 && L.atk[1] === 0 && L.away[1], 'Wormhole Zip (common) against Spark Shot (common): the whole attack misses, and the ship that zipped away does not fire', JSON.stringify([L.through, L.atk]));
-  L = duel('R01', 'D11'); ok(L.through[1] === 0 && L.atk[1] === 0, 'Wormhole Zip against a plain attack: it misses');
-  L = duel('A08', 'D11'); ok(L.block[1] === 55 && L.through[1] === 20 && L.atk[1] === 0, 'Wormhole Zip (common) against Twin Tens (rare, 55 + 20): the ship\'s 55 misses, the card\'s 20 still hits', JSON.stringify([L.block, L.through]));
+  L = duel('A01', 'D11'); ok(L.through[1] === 0 && L.atk[1] === 55 && L.through[0] === 55 && L.away[1], 'Wormhole Zip (common) against Spark Shot (common): the whole attack misses, and the ship that dodged still fires its 55', JSON.stringify([L.through, L.atk]));
+  L = duel('R01', 'D11'); ok(L.through[1] === 0 && L.atk[1] === 55, 'Wormhole Zip against a plain attack: it misses, and the dodger fires');
+  L = duel('A08', 'D11'); ok(L.block[1] === 55 && L.through[1] === 20 && L.atk[1] === 55, 'Wormhole Zip (common) against Twin Tens (rare, 55 + 20): the ship\'s 55 misses, the card\'s 20 still hits', JSON.stringify([L.block, L.through]));
   L = duel('A08', 'D12'); ok(L.through[1] === 0, 'Triple Illusion (rare) against Twin Tens (rare): the whole attack misses');
   L = duel('A11', 'D12'); ok(L.through[1] === 110 && L.block[1] === 0, 'Triple Illusion (rare) against Doubling Drive (epic, doubles the AP): the whole 110 still hits');
   L = duel('A01', 'D11', S => { S.P[1].parts[2].hp = 0; }); ok(L.through[1] === 60 && L.atk[1] > 0 && !L.away[1], 'with its Shield Generator lost, a ship cannot dodge: it is hit, and it fires as usual', JSON.stringify([L.through, L.atk]));

@@ -410,12 +410,12 @@ async function act(page, name, flags, size) {
       const z0 = await state(page);
       await page.locator('.hc.mine').nth(0).tap();
       st = await state(page);
-      pass(name + ': Wormhole Zip says the ship\'s 55 will miss, the rare card\'s 20 will still hit, and that you do not fire', st.fore.indexOf('The enemy\'s hit is 75. The ship\'s own 55 misses you. What its rare card adds still hits: 20.') >= 0 && st.fore.indexOf('Your ship is away, so you do not fire this round.') >= 0, st.fore);
+      pass(name + ': Wormhole Zip says the ship\'s 55 will miss, the rare card\'s 20 will still hit, and that you still attack for 55', st.fore.indexOf('The enemy\'s hit is 75. The ship\'s own 55 misses you. What its rare card adds still hits: 20.') >= 0 && st.fore.indexOf('Your attack: 55.') >= 0 && !/do not fire/.test(st.fore), st.fore);
       await shot(page, name + '_9e_wormhole_zip');
       await page.locator('#playit').tap();
       let g6 = 0; while (g6++ < 60) { st = await state(page); if (st.phase === 'roundend' || st.over) break; await act(page, name, flags, size); }
       const zip = await page.evaluate(() => { const S = window.GMQB.U.S, l = S.log[S.log.length - 1]; return { atk: l.atk, through: l.through, away: l.away }; });
-      pass(name + ': played: only the 20 hits your shield (100 to 80), and your ship does not fire: the enemy is untouched', zip.through[0] === 20 && zip.atk[0] === 0 && zip.away[0] && st.shield[0] === 80 && st.shield[1] === z0.shield[1] && JSON.stringify(st.hp[1]) === JSON.stringify(z0.hp[1]), JSON.stringify([zip, st.shield]));
+      pass(name + ': played: only the 20 hits your shield (100 to 80), and your ship still fires its 55 at the enemy\'s shield (100 to 45)', zip.through[0] === 20 && zip.atk[0] === 55 && zip.away[0] && st.shield[0] === 80 && z0.shield[1] === 100 && st.shield[1] === 45, JSON.stringify([zip, st.shield]));
       await idle(page);
       await page.locator('#bnew').tap();
 
