@@ -39,6 +39,8 @@ Everything is **[Proposal]** unless it says [Source].
 
 **Threads cannot talk to each other.** Marc carries messages between them. The repository is their shared memory: this plan, the handoffs, and `INFO_FROM_MARC.md`.
 
+**Every thread pushes its notes to the main branch as soon as they are written,** its own files only, merging first. That is how the other threads see them. [Source: Marc, 23 November: "Should the story thread be pushing its stories to the main thread so all threads can see them and understand them?"] Before a thread designs or builds something that touches another thread's work, it reads that thread's newest notes on the main branch.
+
 ## 3. What the children have, and what is waiting for them
 
 **The class link (version 93, since 23 November; every cadet started fresh that day):** everything below, and versions 82 to 93.
