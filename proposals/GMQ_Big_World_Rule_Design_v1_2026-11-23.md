@@ -37,7 +37,38 @@ I read `engines/math-skills/current-v1.1/api/constraints/math-skills.txt` (versi
 | Three failed gates: move on, come back later | The same |
 | Most skills passed: a higher band. Several failed: a lower band | Harder or easier problems. Never said aloud |
 
-**What the engine cannot give us:** its skill lists hold almost nothing on patterns. I found four lines: skip counting on a hundred chart; patterns in the times table; what a rule does not say; two patterns side by side. Nothing on "go on with a growing pattern" or "the 12th one". **So what counts as "smaller" for a pattern problem is not in the engine. I have to propose it, and you have to judge it.**
+### The ladder: I was half wrong, and here is the correction
+
+After I wrote this note, the main thread's work arrived: `skills/skill_map.csv`, your engine's 1,835 skills by level and galaxy. [Source]
+
+| What the map says | What it means here |
+|---|---|
+| **Patternox is 447 skills, and it is the engine's "algebraic concepts": word problems and unknown numbers.** Only 4 lines name a pattern | In your own map, Patternox is the galaxy of story problems. So the fleet's "what times 8 is 72?" *is* on the map: "unknown factors in multiplication, products within 100" |
+| Levels 181 to 200 are the core for Grade 3. 161 to 180 are the gaps below. 201 to 210 is the stretch | That is "one or two levels down", and "one past" |
+| Core: "solves multi-step word problems with the four operations" | The tide post is this: jumps × step, then add the start |
+| One and two levels down: "solves one-step equal-groups multiplication word problems, products within 100" | **This is the "smaller" problem.** It matches what I proposed in section 4: a post that starts at nothing and climbs by 2, 5 or 10 |
+| Stretch: "writes and solves a two-step equation with an unknown" | **This is "harder".** It matches the backwards question |
+
+So the ladder for a story problem is in your map. What is still not there: a ladder for patterns as patterns (repeating, growing shapes, the 24th one). For those I would have to propose one.
+
+## 2b. Where the main thread's note and your answers to me differ [Conflict]
+
+The main thread wrote `proposals/GMQ_Mistakes_and_Consequences_v1_2026-11-22.md` from your words of 22 November. On 23 November you answered me directly. Three points differ. **I follow your newer words. Please confirm.**
+
+| | The main thread's note | Your answer to me, 23 November |
+|---|---|---|
+| After a mistake | "One more try at the same problem" | "New one. Same size." |
+| The smaller problem | "Want to try a smaller one first?" The child chooses | "No. It's in the math skills engine." |
+| One past | "If the child wants... for a bonus" | "The students shouldn't know they're doing one past." |
+
+The rest of that note I follow: the picture shows the cause; nothing earned is lost; the child can always recover; a short delay, linked back; the answer is not handed over.
+
+## 2c. A world many children change [Source: Marc, 23 November, in the brief's section 8]
+
+- You want a class in one world later, and this planet is the tester.
+- **In the trial below, every change is kept with its owner, its place and its time,** from the start. A wall is "built by" one cadet.
+- **Pretend classmates** (14, then 60) are a test switch. Not designed in this note.
+- The homes quest with plots on a growing street is a different quest. It is not this note.
 
 ---
 
@@ -165,7 +196,7 @@ Not designed here. Only what the rule would mean, and how big the change is.
 |---|---|---|---|
 | 1 | The trial family | The tide posts (this note). Or change the fleet first: nothing new to learn, but it is the largest change and it is times tables, not a pattern | the tide posts |
 | 2 | The built tasks | Change them after children have played the trial. Or change all now: weeks of work on a rule not yet tried | after |
-| 3 | What is "smaller" | Counting by 2, 5 or 10 from nothing, to a near day (this note). Yours to judge: your engine does not say | this note |
+| 3 | What is "smaller" | A one-step problem: counting by 2, 5 or 10 from nothing, to a near day. Your skill map puts that one and two levels down | this note |
 | 4 | What is "harder" | The backwards question, or day 24. Or bigger steps (7, 8, 9) | backwards, then day 24 |
 | 5 | Too high | It costs the next job some stone (this note). Or only "too low" matters | this note |
 | 6 | Three in a row | Your engine's rule, as it is. Or two in a world, where each problem takes longer than a typed sum | yours |
