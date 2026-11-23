@@ -1,4 +1,4 @@
-// Algora's deciding years: the first kind of decision, "HOW MUCH?".  The number rule, the picker, and the engine's path.   [DRAFT 4: nothing here is in the page yet.]
+// Algora's deciding years: the first kind of decision, "HOW MUCH?".  The number rule, the picker, and the engine's path.   [DRAFT 5: nothing here is in the page yet.]
 // Story: proposals/GMQ_Algora_Story_v1_2026-11-23.md.  Maths: proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md (version 4).
 // [Source: Marc, 23 November] "For these they use the multiples. 3, 6, 9, 12." A row starts from nothing and climbs by the same step.
 //
@@ -7,7 +7,12 @@
 // WHAT FOLLOWS.  She pours one pot of oil and ties one hook for each mat promised (S).
 //   too few:  T - S spare mats on the dock.     too many:  S - T empty hooks, and two pots back for each.     Either way the town is that many pots short, and never more than T short.
 //   The picture shows only the gap: that many dark windows.
-// THE SMALL ROW is the same task, smaller: a child's own stick for a chore, with steps of 2, 5 or 10.  (Draft 2 had no stick for it; a reviewer showed it then read two ways.)
+// THE SMALL ROW is the same task, smaller, with steps of 2, 5 or 10: "the little market", a children's game on Market day [story, section 16a, point 4].
+//   Gran pays one shell for each thing promised and keeps one place on her rack for each. Too few: the rest are hers, with no shell paid. Too many: two shells back
+//   for each empty place, never fewer than none. It is the oil rule, so gap() below is the small row's rule too.  (Draft 2 had no stick for it; a reviewer showed it then read two ways.)
+// YEARS [draft 5, from the story's section 16c; the maths thread's choice]: a year is one problem at the lake. The step down (one or two small rows, and the song by
+//   twos, fives and tens between them) is ONE step-down year, played on its Market day in the town. The singer sings the two missed rows by the fire in the white
+//   months of a year already counted, so they cost no year of their own. "That line of the song again" after a missed gate costs none either.
 //
 // What this file does:
 //   1. lists every problem in each band and checks it
@@ -19,7 +24,8 @@
 'use strict';
 const SHOWN = 4, GOLD = 9, TOTAL_MAX = 99, BOX_MAX = 999;      /* no answer is over 99; the box takes three digits, so a child who means 108 can say 108 */
 const BANDS = { small: [2, 5, 10], low: [3, 4, 6], high: [7, 8, 9], big: [11, 12, 13, 14, 15] };
-const EXAMPLE = { step: 20, n: 8, what: 'the oil seller\'s own stick: pots of oil pressed' };      /* 20, 40, 60, 80; she said 160 for count day 8. No band has a step of 20. */
+const EXAMPLE = { step: 20, n: 9, what: 'the oil seller\'s stick: the last plan a machine made for her' };      /* 20, 40, 60, 80; the machine's line for Last Raft, count day 9: 180 [story, section 16a, points 1 and 2]. No band has a step of 20.
+   Day 8 gave 160, a double of the last cut, which a child could take as the rule. 180 is not. It is the last three cuts added (40 + 60 + 80), which is a true way; the picker catches a child with only that habit. */
 const gap = (S, T) => S <= T ? T - S : Math.min(T, S - T);      /* pots short of what the mats could have bought = dark windows */
 /* likely wrong replies, each named, and of one of two sorts: a COUNT fault (the skip count went wrong) or a READ fault (the question was read another way) */
 function wrongWays(k, n) { return [ { sort: 'count', name: 'one count day short', v: k * (n - 1) }, { sort: 'count', name: 'one count day over', v: k * (n + 1) }, { sort: 'count', name: 'the next cut', v: (SHOWN + 1) * k },
@@ -39,12 +45,12 @@ function pick(band, h, rnd) { const P = pool(band).filter(c => !h.used[c.id]), L
   return Object.assign({ relaxed }, c); }
 /* THE ENGINE'S PATH in one town.  [Source: math-skills.txt v4.1: assess, probe, classify from both wrong answers, check the step below, teach in single steps, a worked example, a mastery gate of three.]
    child(problem, phase) returns the number the child says. Returns { end: 'first' | 'slip' | 'gate' | 'rest', years, log }. */
-function town(band, h, child, rnd, note) { let years = 0; const log = [], ask = (b, phase) => { const c = pick(b, h, rnd); if (!c) { note.dry++; return null; } if (c.relaxed) note.relaxed[c.relaxed]++; const S = child(c, phase, b), right = S === c.T; years++; h.used[c.id] = 1; h.last = { k: c.k, n: c.n, T: c.T, S }; if (right && phase !== 'sung') h.rightN.push(c.n); log.push(`${phase}:${c.id}${right ? '' : '(' + S + ')'}`); return { c, S, right }; };
+function town(band, h, child, rnd, note) { let years = 0; const log = [], ask = (b, phase, free) => { const c = pick(b, h, rnd); if (!c) { note.dry++; return null; } if (c.relaxed) note.relaxed[c.relaxed]++; const S = child(c, phase, b), right = S === c.T; if (!free) years++; h.used[c.id] = 1; h.last = { k: c.k, n: c.n, T: c.T, S }; if (right && phase !== 'sung') h.rightN.push(c.n); log.push(`${phase}:${c.id}${right ? '' : '(' + S + ')'}`); return { c, S, right }; };
   const a = ask(band, 'assess'); if (!a) return { end: 'none left', years, log }; if (a.right) return { end: 'first', years, log };
   const p = ask(band, 'probe'); if (!p) return { end: 'none left', years, log }; if (p.right) return { end: 'slip', years, log };
   const sort = classify(a.c.k, a.c.n, a.S) === 'read' && classify(p.c.k, p.c.n, p.S) === 'read' ? 'read' : 'count';
-  if (sort === 'count') { /* the step below: the small row */ const s1 = ask('small', 'small'); if (!s1) return { end: 'none left', years, log }; if (!s1.right) { log.push('song by 2s, 5s, 10s'); const s2 = ask('small', 'small again'); if (!s2 || !s2.right) return { end: 'rest', years, log }; } log.push('the song: a new verse'); } else log.push('the seller tells it again, with the stick laid along the days');
-  /* taught in single steps, then a worked example: the child's own two missed rows are made again, line by line. They spend no new problem. */ for (const m of [a, p]) { child(m.c, 'sung', band); years++; log.push('sung:' + m.c.id + ' again'); }
+  if (sort === 'count') { /* the step below: the small row */ const s1 = ask('small', 'small'); if (!s1) return { end: 'none left', years, log }; if (!s1.right) { log.push('song by 2s, 5s, 10s'); const s2 = ask('small', 'small again', true);      /* the same Market day: another child's gran gives it */ if (!s2 || !s2.right) return { end: 'rest', years, log }; } log.push('the song: a new verse'); } else log.push('the seller tells it again, with the stick laid along the days');
+  /* taught in single steps, then a worked example: the child's own two missed rows are made again, line by line. They spend no new problem. */ for (const m of [a, p]) { child(m.c, 'sung', band); log.push('sung:' + m.c.id + ' again'); }      /* by the fire, in the white months: no year of its own */
   for (let g = 0; g < 2; g++) { let run = 0; for (let i = 0; i < 3; i++) { const q = ask(band, 'gate'); if (!q) return { end: run > 0 ? 'gate' : 'rest', years, log, short: 1 };      /* every problem of the band is used: a gate with only right answers so far counts */ if (!q.right) break; run++; } if (run === 3) return { end: 'gate', years, log }; if (g === 0) log.push('that line of the song again'); }
   return { end: 'rest', years, log }; }
 /* THREE TOWNS.  The first asks the low band. A town learned at the first try, or through the gate (three right in a row), sends the next town one band up.
@@ -60,7 +66,7 @@ for (const band of Object.keys(BANDS)) { const all = pool(band); say(all.length 
     say([1, 2, 3, 4].map(i => i * c.k).indexOf(c.T) < 0, `${c.id}: the answer is cut on the stick`);
     /* 2. what follows, for every number the box takes */ for (let S = 0; S <= BOX_MAX; S++) { const g = gap(S, c.T); say((g === 0) === (S === c.T), `${c.id}, said ${S}: a miss with no dark window, or a right answer with one`); say(g >= 0 && g <= c.T, `${c.id}, said ${S}: ${g} dark windows`); if (S !== c.T) say(g >= 1, `${c.id}, said ${S}: a miss that does not show`); const m = 2 * c.T - S; if (m >= 0 && m <= BOX_MAX) say(g === gap(m, c.T), `${c.id}: ${S} and ${m} are as far out and cost differently`); } }
   console.log(`  ${band.padEnd(6)} steps ${String(BANDS[band]).padEnd(15)} ${String(all.length).padStart(2)} problems: ${all.map(c => c.id).join(' ')}`); }
-say(Object.keys(BANDS).every(b => BANDS[b].indexOf(EXAMPLE.step) < 0), 'the finished example\'s step is in a band'); say(EXAMPLE.step * EXAMPLE.n === 160, 'the finished example comes to 160');
+say(Object.keys(BANDS).every(b => BANDS[b].indexOf(EXAMPLE.step) < 0), 'the finished example\'s step is in a band'); say(EXAMPLE.step * EXAMPLE.n === 180, 'the finished example comes to 180'); say(EXAMPLE.step * EXAMPLE.n !== 2 * SHOWN * EXAMPLE.step, 'the finished example is a double of the last cut');
 /* the note's worked example */ say(pool('low').some(c => c.id === '6x7'), 'the note\'s example (6, 12, 18, 24; count day 7) is not a low problem'); say(gap(36, 42) === 6 && gap(48, 42) === 6 && gap(99, 42) === 42 && gap(108, 42) === 42 && gap(42, 42) === 0, 'the note\'s example: said 36, 48, 99, 42'); say(classify(6, 7, 18) === 'read' && classify(6, 7, 36) === 'count' && classify(6, 7, 66) === 'read', 'the note\'s named faults');
 /* 3. made-up children. What each says: */
 const KINDS = { 'always right': c => c.T, 'one count day over, always': c => c.T + c.k, 'only the mats to come, always': c => c.k * (c.n - SHOWN), 'adds the last two cuts, always': c => 7 * c.k, 'doubles the last cut, always': c => 8 * c.k,

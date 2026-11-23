@@ -99,8 +99,9 @@ for (const [x, y] of [[46, 59], [46, 73], [13, 83], [12, 83], [14, 83], [14, 68]
 // [Marc, 23 November: "he's just like in the middle of grass somewhere ... there's no landmarks there's no like real paths". Proposal of the big world thread: each can be moved.]
 road([[34, 78], [41, 78], [41, 81]], ':', '.,*T');                                                                                                        // to the orchard keeper, at the side of her orchard ("Four rows of six trees")
 road([[14, 69], [13, 69], [13, 67]], ':', '.,*T');                                                                                                        // past the pond machine to the fisher, at the pond
-rect(27, 67, 31, 70, '.', 'T*,'); set(29, 69, 'O'); road([[29, 75], [29, 71]], ':', '.,*T');                                                              // the big old tree in the middle of the meadow, the tallest thing there; the old Mender sits under it
-set(44, 73, '.');                                                                                                                                         // the Mender with big ears stands at the broken bridge, listening across the river
+rect(27, 67, 31, 70, '.', 'T*,'); set(29, 69, 'O'); road([[29, 75], [29, 70]], ':', '.,*T');                                                              // the big old tree in the middle of the meadow, the tallest thing there; the old Mender sits under it
+set(44, 75, '.');                                                                                                                                         // the Mender with big ears stands at the broken bridge, listening across the river
+for (const [x, y] of [[22, 67], [33, 76], [41, 73]]) set(x, y, '.');                                                                                      // signposts at three forks (old wall and hill; orchard and bridge; old stones and bridge)
 // the far bank: the Reach's landing. A small piece of region 2 that is built now.
 road([[50, 74], [55, 74], [55, 72]], ':', '.'); set(49, 74, '~'); set(48, 74, '~'); set(47, 74, '~'); set(47, 60, '~'); set(48, 60, '~'); set(49, 60, '~');
 road([[50, 60], [52, 60], [52, 74]], ':', '.');
