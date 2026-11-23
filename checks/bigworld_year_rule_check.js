@@ -1,60 +1,49 @@
-// Algora's deciding years: the number rule for the three kinds of decision, at three sizes.   [DRAFT: nothing here is in the page yet.]
-// Story: proposals/GMQ_Algora_Story_v1_2026-11-23.md (sections 1, 3, 5).  Maths: proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md.
-// [Source: Marc, 23 November] "For these they use the multiples. 3, 6, 9, 12." So every row starts from nothing and climbs by the same amount.
+// Algora's deciding years: the number rule for the first kind of decision, "HOW MUCH?".   [DRAFT 2: nothing here is in the page yet.]
+// Story: proposals/GMQ_Algora_Story_v1_2026-11-23.md.  Maths: proposals/GMQ_Big_World_Maths_Fit_v1_2026-11-23.md (version 2).
+// [Source: Marc, 23 November] "For these they use the multiples. 3, 6, 9, 12." A row starts from nothing and climbs by the same step.
 //
-// There are so few cases that this does not sample: it lists EVERY case and checks each one.
-//   kind 1  HOW MUCH      the mats row has four cuts: k, 2k, 3k, 4k. "How many mats, in all, after count day N?"     answer k x N
-//   kind 2  HOW MANY      "The store must gain R sacks on every count day. One plot brings a. How many plots?"        answer R / a
-//   kind 3  FOR HOW LONG  "The wall needs B blocks. The carts bring c on every count day. For how many months?"       answer B / c
-// Sizes: small (a family: steps of 2, 5, 10), full (a town: 3, 4, 6, 7, 8, 9), big (a town with more houses: 11 to 15).
-// A size is a range of the step, never a different kind of sum.
+// Draft 1 covered three kinds. A joint review of story and maths found the second and third kinds not ready (no table at New Year; costs that
+// contradict the story). They are PARKED. This file is the first kind only, with what that review asked for:
+//   - the raft never comes on the count day after the last cut ("the next number" is not counting ahead)
+//   - bands of steps, so one size is not too wide: small 2, 5, 10; low 3, 4, 6; high 7, 8, 9; big 11 to 15.
+//     (Bands of two steps were tried first. A town then had 4 to 6 problems, and the picker ran dry. Three steps is the least that works.)
+//   - a picker: after any year, the next problem has a new step, a new count day AND a new answer, and its answer is no number the last year showed
+//   - what follows a miss, as a rule that is checked: the oil the town ends with, for every number a child could type
 //
-// What it checks for every case:
-//   - every total is 100 or less; count days and months never pass 7 (the gold season)
-//   - the answer is not a number the keeper has just said (so it cannot be parroted)
-//   - no likely wrong method lands on the right answer (listed below, for each kind)
-//   - small and full use only facts inside 10 x 10
-//   - the finished example's own row (5, 10, 15 ... 35) is never a child's problem
-// And for the engine: after a miss the next problem must have a new step AND a new count; it checks that enough such problems exist.
+// THE PROBLEM.  The tally stick has four cuts: k, 2k, 3k, 4k.  "My raft comes on count day N, after the count. How many mats will there be, in all?"   answer k x N
+// WHAT FOLLOWS.  The seller pours one pot of oil for each mat promised (S). On count day N the town has T = k x N mats.
+//   S = T: she takes every mat. The town has T pots.
+//   S < T: she takes S mats. T - S spare mats lie on the dock. The town has S pots.
+//   S > T: she takes T mats, and S - T hooks on her raft are empty. For each empty hook she takes back TWO pots. The town has T - (S - T) pots, and never fewer than none.
+//   So d too few and d too many both leave the town d pots short. Neither way is the safe way.   [A proposal to the story thread: its note says only "takes pots of oil back".]
 //
-// Run:  node checks/bigworld_year_rule_check.js
+// It lists EVERY case; it does not sample.   Run:  node checks/bigworld_year_rule_check.js
 'use strict';
-const SIZES = {      /* small: the skip counts of the year before (2, 5, 10), which is the step below in Marc's skill map. full: the Grade 3 tables. big: steps past the tables, by skip counting. */
-  1: { small: { step: [2, 5, 10], n: [5, 6, 7] }, full: { step: [3, 4, 6, 7, 8, 9], n: [5, 6, 7] }, big: { step: [11, 12, 13, 14, 15], n: [5, 6, 7] } },
-  2: { small: { step: [2, 5, 10], n: [2, 3, 4, 5, 6] }, full: { step: [3, 4, 6, 7, 8, 9], n: [3, 4, 5, 6, 7, 8, 9] }, big: { step: [11, 12, 13, 14, 15], n: [3, 4, 5, 6, 7, 8] } },
-  3: { small: { step: [2, 5, 10], n: [2, 3, 4, 5, 6] }, full: { step: [3, 4, 6, 7, 8, 9], n: [3, 4, 5, 6, 7] }, big: { step: [11, 12, 13, 14, 15], n: [3, 4, 5, 6, 7] } } };
-const EXAMPLE = { step: 5, n: 7 };      /* the finished example on the old wall: 5, 10, 15 ... 35. No child is given this row. */
-const SHOWN = 4;      /* cuts on the wall at the Lake Market */
-/* every case of a kind and size: { step, n, total, ask, answer, said } where "said" are the numbers the child has been given */
-function cases(kind, size) { const S = SIZES[kind][size], out = [];
-  for (const step of S.step) for (const n of S.n) { const total = step * n; if (total > 100) continue;
-    const c = kind === 1 ? { step, n, total, answer: total, said: [1, 2, 3, 4].map(i => i * step).concat([n]) } : { step, n, total, answer: n, said: [total, step] };
-    if (step === EXAMPLE.step && n === EXAMPLE.n) continue;                        /* the finished example's own row */
-    if (c.said.indexOf(c.answer) >= 0) continue;                                   /* the answer is a number just said */
-    if (wrongWays(kind, c).some(w => w.v === c.answer)) continue;                   /* a wrong method lands on it */
-    out.push(c); } return out; }
-/* likely wrong methods, each with a name. A case is refused if any of them gives the right answer. */
-function wrongWays(kind, c) { const k = c.step, n = c.n, T = c.total;
-  if (kind === 1) return [ { name: 'the next cut only', v: (SHOWN + 1) * k, skip: n === SHOWN + 1 }, { name: 'one count day short', v: k * (n - 1) }, { name: 'one count day over', v: k * (n + 1) },
-    { name: 'the last cut plus the count day', v: SHOWN * k + n }, { name: 'the last cut plus the step', v: SHOWN * k + k, skip: n === SHOWN + 1 }, { name: 'the step plus the count day', v: k + n }, { name: 'double the last cut', v: 2 * SHOWN * k } ].filter(w => !w.skip);
-  return [ { name: 'take the step away', v: T - k }, { name: 'add them', v: T + k }, { name: 'the step itself', v: k } ]; }      /* halving is not listed: when the step is 2 it is the right way */
-const bad = [], say = (ok, what) => { if (!ok) bad.push(what); }, NAMES = { 1: 'how much', 2: 'how many', 3: 'for how long' };
-for (const kind of [1, 2, 3]) for (const size of ['small', 'full', 'big']) { const all = cases(kind, size), S = SIZES[kind][size];
-  say(all.length >= (size === 'small' ? 6 : 12), `${NAMES[kind]}, ${size}: only ${all.length} problems`);
-  for (const c of all) { say(c.total <= 100, `${NAMES[kind]} ${size} ${c.step}x${c.n}: over 100`); say(c.n <= 9 && (kind === 2 || c.n <= 7), `${NAMES[kind]} ${size} ${c.step}x${c.n}: past the 7th count day`);
-    if (size !== 'big') say(c.step <= 10 && c.n <= 10, `${NAMES[kind]} ${size} ${c.step}x${c.n}: outside 10 x 10`); say(!(c.step === EXAMPLE.step && c.n === EXAMPLE.n), `${NAMES[kind]} ${size}: the finished example's row is a child's problem`);
-    if (kind === 1) say(c.n > SHOWN, `how much ${size}: count day ${c.n} is already cut on the wall`); }
-  /* the engine: assess, a new one, then up to three gates of three: twelve of one size, each with a new step and a new count from the one before */
-  let chain = 0, last = null; const pool = all.slice(); for (let i = 0; i < 400 && chain < 12; i++) { const pick = pool.find(c => !last || (c.step !== last.step && c.n !== last.n)); if (!pick) break; pool.splice(pool.indexOf(pick), 1); last = pick; chain++; }
-  say(chain >= 12 || size !== 'full', `${NAMES[kind]}, full: a child can meet only ${chain} problems in a row with a new step and a new count each time (the engine may ask for 12)`);
-  const ans = all.map(c => c.answer), tot = all.map(c => c.total);
-  console.log(`${NAMES[kind].padEnd(13)} ${size.padEnd(5)} steps ${String(S.step).padEnd(16)} ${String(all.length).padStart(3)} problems; totals ${Math.min(...tot)} to ${Math.max(...tot)}; answers ${Math.min(...ans)} to ${Math.max(...ans)}; in a row with new step and count: ${chain}`); }
-/* the cases the rule refuses, and why: printed so a person can read them */
-console.log('\nrefused, with the reason:');
-for (const kind of [1, 2, 3]) for (const size of ['small', 'full', 'big']) { const S = SIZES[kind][size]; for (const step of S.step) for (const n of S.n) { const total = step * n; if (total > 100) continue; const c = kind === 1 ? { step, n, total, answer: total, said: [1, 2, 3, 4].map(i => i * step).concat([n]) } : { step, n, total, answer: n, said: [total, step] };
-  const why = c.said.indexOf(c.answer) >= 0 ? 'the answer is a number just said' : (wrongWays(kind, c).find(w => w.v === c.answer) || {}).name; if (why) console.log(`  ${NAMES[kind]}, ${size}: step ${step}, ${kind === 1 ? 'count day' : 'answer'} ${n} (${total}): ${why}`); } }
-/* what follows a miss: its size comes from the child's own number. Worked for one case of each kind, as the note does. */
-const ex = [ ['how much: 6, 12, 18, 24; after count day 7', 6 * 7, 42], ['how many: the store must gain 24; a plot brings 4', 24 / 4, 6], ['for how long: 40 blocks; the carts bring 8', 40 / 8, 5], ['big, how much: 12, 24, 36, 48; after count day 7', 12 * 7, 84] ];
-for (const [what, got, want] of ex) say(got === want, `the note's example "${what}" is ${got}, not ${want}`);
-console.log(bad.length ? '\nFAILED:\n  ' + bad.join('\n  ') : '\nok: every case of the three kinds at three sizes is listed and holds; the note\'s examples are right');
+const SHOWN = 4, BOX_MAX = 99;      /* cuts on the tally stick at the Lake Market; the biggest number the box takes (her raft holds 99 pots) */
+const BANDS = { small: [2, 5, 10], low: [3, 4, 6], high: [7, 8, 9], big: [11, 12, 13, 14, 15] };
+const EXAMPLE = { step: 5, n: 8 };      /* the finished example: another keeper, long ago, four cuts 5, 10, 15, 20 and a promise for count day 8. No child is given this row. */
+const pots = (S, T) => S <= T ? S : Math.max(0, T - (S - T));
+/* "Double the 4th cut" is NOT here: for count day 8 it is a right way, and a good one. */
+function wrongWays(k, n) { return [ { name: 'the next cut', v: (SHOWN + 1) * k }, { name: 'one count day short', v: k * (n - 1) }, { name: 'one count day over', v: k * (n + 1) }, { name: 'the last cut plus the count day', v: SHOWN * k + n },
+  { name: 'the last cut plus the step', v: SHOWN * k + k }, { name: 'the step plus the count day', v: k + n }, { name: 'N more count days from the market', v: k * (SHOWN + n) }, { name: 'only the mats made after the market', v: k * (n - SHOWN) }, { name: 'all the cuts added up', v: k * (1 + 2 + 3 + 4) } ]; }
+function pool(band, gold) { const out = []; for (const k of BANDS[band]) for (let n = SHOWN + 2; n <= gold; n++) { const T = k * n; if (T > BOX_MAX) continue; if (k === EXAMPLE.step && n === EXAMPLE.n) continue; if (wrongWays(k, n).some(w => w.v === T)) continue; out.push({ k, n, T }); } return out; }
+/* the picker: the next problem after one with step k, count day n, answer T, where the child said S */
+function next(band, gold, last, seed) { const ok = pool(band, gold).filter(c => !last || (c.k !== last.k && c.n !== last.n && c.T !== last.T && c.T !== last.S && [1, 2, 3, 4].every(i => i * c.k !== last.T))); return ok.length ? ok[seed % ok.length] : null; }
+const bad = [], say = (ok, what) => { if (!ok) bad.push(what); };
+for (const gold of [7, 9]) { console.log(`\nA year with ${gold} gold months (${gold} count days):`);
+  for (const band of Object.keys(BANDS)) { const all = pool(band, gold);
+    for (const c of all) { say(c.n > SHOWN + 1, `${band} ${c.k}x${c.n}: the raft comes on the very next count day`); say(c.T <= BOX_MAX, `${band} ${c.k}x${c.n}: over ${BOX_MAX}`);
+      if (band !== 'big') say(c.k <= 10 && c.n <= 10, `${band} ${c.k}x${c.n}: outside 10 x 10`);
+      /* what follows: every number a child could type */ for (let S = 0; S <= BOX_MAX; S++) { const p = pots(S, c.T); say(p >= 0 && p <= c.T, `${c.k}x${c.n}, said ${S}: ${p} pots`); say((S === c.T) === (p === c.T), `${c.k}x${c.n}, said ${S}: a miss that costs nothing, or a right answer that costs`); if (S !== c.T && 2 * c.T - S >= 0 && 2 * c.T - S <= BOX_MAX) say(p === pots(2 * c.T - S, c.T), `${c.k}x${c.n}: ${S} and ${2 * c.T - S} are as far out and do not cost the same`); } }
+    /* how long a chain can the picker make in this band, never repeating a problem, each one new in step, count day and answer? */
+    let chain = 0, last = null; const used = {}; for (let i = 0; i < 60; i++) { const ok = pool(band, gold).filter(c => !used[c.k + 'x' + c.n] && (!last || (c.k !== last.k && c.n !== last.n && c.T !== last.T))); if (!ok.length) break; last = ok[0]; used[last.k + 'x' + last.n] = 1; chain++; }
+    console.log(`  ${band.padEnd(6)} steps ${String(BANDS[band]).padEnd(15)} ${String(all.length).padStart(2)} problems: ${all.map(c => c.k + 'x' + c.n).join(' ')}   | in a row, all new: ${chain}`);
+    if (gold === 9) say(all.length >= 5, `${band}: only ${all.length} problems in a year of 9 gold months`); } }
+/* the picker really gives a new step, count day and answer, whatever came before and whatever the child said */
+for (const band of Object.keys(BANDS)) for (const c of pool(band, 9)) for (let S = 0; S <= BOX_MAX; S += 7) for (let seed = 0; seed < 5; seed++) { const nx = next(band, 9, { k: c.k, n: c.n, T: c.T, S }, seed); if (!nx) { say(false, `${band}: nothing can follow ${c.k}x${c.n} when the child said ${S}`); continue; } say(nx.k !== c.k && nx.n !== c.n && nx.T !== c.T && nx.T !== S, `${band}: after ${c.k}x${c.n} (said ${S}) the picker gave ${nx.k}x${nx.n}`); }
+/* the note's worked examples must be real problems of the pool, with the consequences the note states */
+const inPool = (band, k, n) => pool(band, 9).some(c => c.k === k && c.n === n);
+say(inPool('low', 6, 7), 'the note\'s example 6, 12, 18, 24 on count day 7 is not in the low band'); say(6 * 7 === 42, '6 x 7'); say(pots(36, 42) === 36 && 42 - 36 === 6, 'said 36: 6 spare mats, 36 pots'); say(pots(48, 42) === 36 && 48 - 42 === 6, 'said 48: 6 empty hooks, 36 pots'); say(pots(99, 42) === 0, 'said 99: no oil at all');
+say(!inPool('small', EXAMPLE.step, EXAMPLE.n), 'the finished example is a child\'s problem'); say(EXAMPLE.step * EXAMPLE.n === 40, 'the finished example comes to 40');
+console.log(bad.length ? '\nFAILED:\n  ' + [...new Set(bad)].slice(0, 30).join('\n  ') : '\nok: every "how much" problem is listed and holds; a miss always costs, a right answer never does, and too few costs what too many costs; the picker always finds a new step, count day and answer');
 process.exit(bad.length ? 1 : 0);

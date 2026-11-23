@@ -1,196 +1,218 @@
 # Algora's deciding years: the maths, fitted to the story
 
-**Date:** 23 November 2026. **For:** Marc, the story thread, and one reviewer who reads both. **From:** the big world thread.
-**Read with:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md` (sections 1, 3, 5 and 13). This note adds numbers to that story. It changes none of it.
-**Nothing here is built.** No picture is drawn and no word of the page is written. Everything is **[Proposal]** unless it says [Source].
-**It has not been reviewed.** The next step is one review of this note and the story together.
+**Date:** 23 November 2026. **For:** Marc, the story thread, and the next reviewer. **From:** the big world thread.
+**Read with:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md`.
+**Nothing here is built.** Everything is **[Proposal]** unless it says [Source].
 
-Every number below was made by `checks/bigworld_year_rule_check.js`, which lists every case and checks each one. It passes.
+**This is version 2.** One reviewer read version 1 and the story together. Its verdict: **"Not yet a base to build on. Close, for one child playing alone."** It found 6 blockers. Section 9 lists them.
+
+**What changed:**
+- **Only the first kind of decision is fitted now: "how much?"** The other two are parked. Section 7 says why.
+- The number rule was rewritten. It is `checks/bigworld_year_rule_check.js`. It lists every case, and it passes.
+- **Version 2 has not been reviewed.** Six things in it need the story thread first (section 8).
 
 ---
 
-## 1. What is already decided [Source: Marc]
+## 1. What is decided [Source: Marc]
 
 | | Decided | When |
 |---|---|---|
-| 1 | For now the maths is multiples: "3, 6, 9, 12". A pattern with a start (3x + 2) comes later | 23 November |
+| 1 | For now the maths is multiples: "3, 6, 9, 12". A pattern with a start comes later | 23 November |
 | 2 | A wrong decision is carried out. Nobody says "wrong". The child sees what follows | 22 November |
 | 3 | Then a new problem of the same size | 23 November |
 | 4 | His maths skills engine decides a step down. Harder problems come unseen | 23 November |
 | 5 | Each child has their own year | 23 November |
-| 6 | Classmates see only what is finished, and by whom. Nobody reads another child's table | 23 November |
-| 7 | The simulation idea is dropped: "I agree my answer was not the best answer." Work it out logically | 23 November |
+| 6 | The simulation is dropped. "Work it logically. I will see how well it works out" | 23 November |
 
 ---
 
-## 2. One row, three questions
+## 2. The first kind: how much?
 
-Every problem on Algora's deciding years is **one row that starts from nothing and climbs by the same step.** The story gives three questions to ask of it.
+### What the child looks at
 
-| | The story's decision | The row | The child is asked | The sum |
-|---|---|---|---|---|
-| **1. How much?** | mats promised to the oil seller, at the Lake Market | count days → mats | "How many mats, in all, after count day 7?" | step × count days |
-| **2. How many?** | plots sown with food, in sowing week | plots → sacks on a count day | "How many plots do we sow with food?" | need ÷ step |
-| **3. For how long?** | months of the Furrows' carts, at New Year | months → blocks | "For how many months do we hire the carts?" | need ÷ step |
+- **The keeper's tally stick fills the picture,** at the Lake Market. Four cuts, each with its number: 6, 12, 18, 24.
+- Nothing is drawn after the fourth cut. The child's own table is in the notebook, and the game fills in none of it.
+- **The keeper never says the step.** The child reads it off the stick.
 
-- **1 goes forwards along the row. 2 and 3 go along it until a number is reached.** That is the order the story now has, and it is the right order for the maths.
-- **In every one the child may write the row out.** That always works. It is skip counting, which is what you asked for.
-- **No sum has three numbers.** Following the story's section 5, the keeper always gives what *all* the weavers, or one plot, or all the carts bring on one count day.
+### The words: one sentence, one moment
 
-### 1. How much?
+> "My raft comes on count day 7, after the count. Every mat waits at home till then. How many mats will there be, in all?"
 
-| | |
+The reviewer found four ways to read version 1's sentence. This one names the day, says the count is over, and says nothing has been handed over yet.
+
+### What follows
+
+| | The rule |
 |---|---|
-| **In the picture** | The mat row: four cuts, each with its number. For example 6, 12, 18, 24 |
-| **The oil seller asks** | "My raft comes back after count day 7. How many mats will there be, in all?" |
-| **The answer** | 30, 36, **42** |
-| **Said too little** (36) | Oil is poured for 36 mats. When the raft comes back there are 42. **Six spare mats lie on the dock.** The lamps go out early |
-| **Said too much** (48) | Oil is poured for 48. When the raft comes back there are 42. **Six hooks on the raft are empty.** The seller takes oil back. The lamps go out early |
+| At the Market | The seller pours **one pot of oil for each mat promised** |
+| On count day 7, right (42) | She takes every mat. The town has 42 pots |
+| Too few (said 36) | She takes 36. **Six spare mats lie on the dock.** The town has 36 pots: 6 short |
+| Too many (said 48) | She takes 42. **Six hooks on her raft are empty.** For each empty hook she takes back **two pots.** The town has 36 pots: 6 short |
+| Far too many (said 99) | She takes back every pot. The town has none. It can never have fewer than none |
 
-### 2. How many?
+- **Six too few costs what six too many costs.** So neither "always say less" nor "always say more" is safe. In version 1, saying too many cost nothing at all.
+- **The picture shows three things, in this order:** the dock (spare mats, or empty hooks: they can be counted), the oil shelf (the same number of empty places), then the lamps going out.
+- The number box takes 0 to 99. Her raft holds 99 pots.
+- The check file tries every number a child could type, for every problem: a miss always costs, and a right answer never does.
 
-| | |
-|---|---|
-| **The keeper says** | "The store must gain 24 sacks on every count day. One plot brings 4. We have 9 good plots. How many do we sow with food?" The rest are sown with roof reed |
-| **The answer** | 4, 8, 12, 16, 20, 24: **6 plots** |
-| **Too few** (5) | The pile gains 20 on a count day, not 24. It stops below the line. Bowls are smaller in White month 3 |
-| **Too many** (7) | The pile passes the line. But only 2 plots of reed were sown, not 3. Some roofs are not mended, and drip |
+### The finished example: a prediction, not a full row
 
-### 3. For how long?
-
-| | |
-|---|---|
-| **The keeper says** | "The wall needs 40 blocks. The carts bring 8 on every count day. For how many months do we hire them?" |
-| **The answer** | 8, 16, 24, 32, 40: **5 months** |
-| **Too few** (4) | The carts stop coming. The wall is 8 blocks short at one end. The water comes over there |
-| **Too many** (6) | The wall is finished and the carts still come. The sixth month is paid for in fish. The fish jars run out in White month 3 |
-
-**What follows always comes from the child's own number:** six mats, one plot, eight blocks. And then the year is over, and the next problem has new numbers [Source: decision 3].
+Scratched on the Market's old stone, from long ago. Another keeper's stick: 5, 10, 15, 20. Her raft came on count day 8. "Four more count days: 25, 30, 35, 40. She said 40. The raft took every mat." No child is given this row.
 
 ---
 
-## 3. The three sizes
+## 3. The sizes, and every problem there is
 
-**A size is a range of the step. It is never a different kind of sum.** [My tide post failed on exactly this: its "smaller" problem could be solved by a method that was wrong at full size.]
+| Band | The step | Who asks |
+|---|---|---|
+| **Small** | 2, 5 or 10 | the step down. Your skill map's level below Grade 3 |
+| **Low** | 3, 4 or 6 | the first town a child helps |
+| **High** | 7, 8 or 9 | the second |
+| **Big** | 11 to 15 | later, unseen: "we are more houses this year" |
 
-| Size | Who asks | The step | Where it sits in your skill map [Source: `skills/skill_map.csv`] |
-|---|---|---|---|
-| **Small** | a family | 2, 5 or 10 | the gap levels, below Grade 3: the skip counts of the year before |
-| **Full** | a town | 3, 4, 6, 7, 8 or 9 | the core levels: "equal-groups multiplication, products within 100" and "unknown factors, products within 100" |
-| **Big** | "we are more houses this year" | 11, 12, 13, 14 or 15 | the stretch level. Past the times tables, but still one row: 12, 24, 36, 48 |
+The reviewer was right that one "full" size from 3 to 9 was too wide: after a miss on 8 × 7 the next problem could be 3 × 5.
 
-### Every problem there is
+**The raft never comes on count day 5.** That is only "the next number". It always comes two or more count days after the last cut.
 
-| | Small | Full | Big |
-|---|---|---|---|
-| 1. How much? | 7 problems. Totals 10 to 70 | **17.** Totals 15 to 63 | 14. Totals 55 to 98 |
-| 2. How many? | 13. Answers 2 to 6 | **36.** Answers 3 to 9 | 26. Answers 3 to 8 |
-| 3. For how long? | 13. Answers 2 to 6 | **26.** Answers 3 to 7 | 24. Answers 3 to 7 |
+| | Year of 7 gold months | Year of 9 gold months |
+|---|---|---|
+| Small | 6 problems | 10 |
+| Low | **5** | 11 |
+| High | **6** | 12 |
+| Big | 9 | 12 |
+| Problems in a row, each new in step, count day and answer | **3 to 7** | 7 to 12 |
 
-**What the rule refuses,** and the check file prints each one:
-- **An answer that is a number the keeper has just said.** "The store must gain 49. One plot brings 7." The answer is 7, and a child could just say it back.
-- **A wrong method that lands on the right answer.** With cuts 3, 6, 9, 12 and count day 6, the last cut plus the count day is 12 + 6 = 18, and so is the right answer. That row is refused.
-- **Any total over 100,** and any count day or month past the 7th.
-- **The finished example's own row.**
-
-**After a miss, the next problem has a new step and a new count.** So the last answer is no help with the next one. The check shows that 12 such problems in a row exist at full size, for each kind.
-
-### The finished example [the story's section 5: "an old row on the store wall"]
-
-An old row for river rice, from another year: a line at 35, and cuts 5, 10, 15, 20, 25, 30, 35 climbing to it. No child is ever given this row.
+- **With seven count days there are 5 or 6 problems in a town's band.** That is not enough. It is decision 2.
+- **After any year the next problem has a new step, a new count day and a new answer,** and its answer is no number the last year showed. The check file tries this for every problem and every reply.
+- **Refused,** each printed by the check file with its reason: a row where a wrong method lands on the right answer (3, 6, 9, 12 on count day 6: the last cut plus the count day is also 18); any total over 99; the finished example's own row.
+- **"Double the 4th cut" for count day 8 is not refused.** It is a right way, and a good one.
 
 ---
 
 ## 4. Your engine's steps, in years
 
-[Source: `engines/math-skills/current-v1.1/api/constraints/math-skills.txt`, version 4.1.] I follow it as written, with one change you asked for: the world does not state the answer.
+[Source: `engines/math-skills/current-v1.1/api/constraints/math-skills.txt`, version 4.1.]
 
 | Your engine | In the world |
 |---|---|
-| Assess: one question | A town asks one kind, at New Year. The cadet decides. The year runs |
-| Right | The keeper has learned it. Lit windows from then on (the story's "what lasts") |
-| Wrong | The year shows what followed. Then New Year |
-| Probe: one more, new numbers | The same town asks the same kind again: new step, new count |
-| Probe right: a slip | The keeper has learned it. Your engine marks it fragile and asks once more another day. So does she |
-| Probe wrong: check the skill underneath, with one question | **A family asks, not the town.** The same kind, small size |
-| That is wrong too | A neighbour's keeper helps this town this year. The child goes on to another town. Your report says which skill, for you to teach |
-| That is right: teach in single steps | The keeper lays the town's row out in pips with the child, one count day at a time. The child does each sum |
-| A worked example | One more row together |
-| Mastery gate: three new ones, right in a row | Three more years, full size |
-| Consistently right | The next town asks the big size. Nothing is said |
+| Assess | A town asks at the Market. The cadet promises. The year runs |
+| Right | The keeper has learned it. Lit windows from then on |
+| Wrong, then a probe | The year shows what followed. Next year the same town asks again, with a new stick |
+| Probe right: a slip | She has learned it. She asks once more on a later visit, as your engine does |
+| Probe wrong: check the skill underneath | A small row: steps of 2, 5 or 10 |
+| Teach in single steps | **The old singer teaches,** not the keeper: her gran's counting song is a plan, sung [the story's section 7]. One line of the song for each count day, and the child gives each number |
+| A worked example | One more row, sung together |
+| Mastery gate: three new, right in a row | Three more years in that town's band |
+| The step below is missing too | Your words to the main thread: "go down one or two levels... teach that and then work back up." So the song is taught at the small size first. If that fails, the kind rests, your report names the skill, and the town asks again on a later visit, starting small |
 
-- **"Finished"** means the keeper has learned that kind: right at the first try, right at the second, or through the gate.
-- **"Consistently"** [Proposal]: right at the first try in two towns running, for one kind. Then the big size.
+### Where I bend your engine, said plainly
 
-### How long this is. Please read.
+| | Your engine | Here | Why |
+|---|---|---|---|
+| 1 | States the answer after a miss | The year shows it | Your rule of 22 November |
+| 2 | Three tries at the gate: up to 14 problems | **One try at the gate: 8 at most.** Then the kind rests | There are not 14 all-new problems in a band, even with nine count days. And you called the engine "a bit too much" for a world |
+| 3 | Picks the skill underneath from the two wrong answers | Always the small row | No AI is in the page yet. It is decision 4 |
+| 4 | Assesses a skill once | Each of the three mat towns asks, one band higher each time | A town is a place, not a test |
+| 5 | Confirms or corrects every small step | In the song, a wrong number is sung again with the pips laid out | Is that "saying wrong"? Decision 5 |
+| 6 | Has "skip" and "I don't know" | "Decide without me": the keeper promises a few mats, to be safe. Dark evenings. The year runs | The story's own way out, as for the fleet |
 
-| A child who... | Years for one kind in one town |
+### How long
+
+| A child who... | Years in one town |
 |---|---|
 | is right first time | 1 |
-| slips once | 2 |
-| needs the step down and passes the gate at once | 8 |
-| the worst case your engine allows | 14 |
+| slips once | 2, and one more later |
+| is stepped down, and passes the gate | 8 |
+| is stepped down, and misses the gate | 8, then a rest |
 
-A year is one decision, the months going by on the screen, and the white months. If that is two minutes, the worst case is about half an hour on one kind in one town. **You called the engine "a bit too much" on 16 November. This is where that would show.** It is decision 1 below.
+The reviewer's estimate, not measured: five to seven minutes for the first year, three after that. So a child who is stepped down spends about 25 minutes in one town.
 
 ---
 
-## 5. The class in one world
+## 5. What the trial would be
 
 | | |
 |---|---|
-| **Each child's years are their own, and they really happen.** | No simulation. A miss is mild and ends at New Year, as the story says |
-| **A step down is a family asking, in the child's own year.** | No classmate sees it |
-| **What the class sees** | On each town's store wall, one mark for each kind a cadet has finished there, with the cadet's name |
-| **What nobody sees** | Another child's numbers, table, misses, or how many years it took |
-
-**The flaw I could not remove is still here:** in a class of 14, a wall of names shows who is not on it yet. Decision 3.
+| **One child, on one iPad** | No wall of names. That needs a server, and none has run. [`CLAUDE.md`: each iPad keeps its own game today] |
+| **The three mat towns** | Stilt, Reed and Mud. The Menders and the Furrows have no worked "how much" yet (the reviewer's finding 17) |
+| **Saved at once** | The stick a town shows is saved when it asks. Closing and opening the game brings the same stick back. A year that has begun to run, finishes |
+| **Walking away** | The town waits at the Market. No other town asks until this one has its answer, or is told "decide without me" |
 
 ---
 
-## 6. Four places where the numbers found a hole in the story
-
-For the story thread. I have not changed its note.
-
-| | The hole | A way to close it [Proposal] |
-|---|---|---|
-| a | **In "how much", saying too much may cost nothing.** The seller "takes pots of oil back". If she takes back only the oil for the mats that are missing, the town ends with exactly the oil its mats were worth: the same as a right answer | For every mat she cannot have, she takes back its pot **and one more**, for her empty raft. Then six too many costs what six too few costs, and neither way is the safe way |
-| b | **The table is not where the decision is.** The mat row is on the store wall, in the town. The promise is made at the Lake Market | The keeper carries a tally stick to the lake: the same four cuts |
-| c | **In "how many", who knows what the store must gain on a count day?** The story's keeper knows the need by Last Raft. That would make the sum three numbers | She reads it off an old row that reached its line: each cut is the same amount above the last |
-| d | **In "how much", too little and too much both end in dark lamps.** The story says so itself | The picture must show the heap of spare mats, or the empty hooks, before the lamps. Section 2 above |
-
----
-
-## 7. The maths, against the standards
+## 6. The maths, against the standards
 
 | What the child does | Standard | How sure |
 |---|---|---|
-| Goes on with a row of multiples | 3.OA.9, 3.OA.7 | sure |
-| Reads a table and decides from it | 3.OA.3 | sure |
-| Finds how many steps reach a number | 3.OA.4, 3.OA.6 | sure |
-| The big size: steps of 11 to 15 | past the tables. By skip counting it is reachable | a stretch, and never announced |
+| Reads a row of multiples and goes on with it | 3.OA.9, 3.OA.7 | sure |
+| Decides from a table | 3.OA.3 | sure |
+| The big band: steps of 11 to 15 | past the tables | a stretch. The reviewer notes it is uneven: counting by 11 is easier than by 7 |
 
-**What this does not carry:** counting far ahead (the 24th count day), a row with a start (3x + 2), repeating patterns, growing shapes. The story's decision 25 would open the first. You said the second comes later.
-
----
-
-## 8. What could prove this wrong
-
-- **Writing the row out always works.** With seven count days at most, nothing forces a better idea. Is going on with a row enough for now? You said it is skip counting, and that is fine. I believe you, and say it plainly.
-- **"How much" has only 17 problems at full size.** Fourteen children will share some.
-- **Questions 2 and 3 are one sum in two stories.** A child may notice. That may be good.
-- **Half an hour on one kind,** in the worst case.
-- **A child may not link the heap of mats to their number.** Ask one: "Why are there six mats on the dock?"
-- **Nobody has played anything like this.**
+**An honest note, which is decision 1:** on 19 November you said big quests "should require them to actually think and solve and struggle". "How much" is one to three additions. You also chose multiples for now. Both are your words.
 
 ---
 
-## 9. Your decisions
+## 7. Parked: "how many?" and "for how long?"
+
+The reviewer found these further off. I agree. I have not fitted them.
+
+| | The fault | A case |
+|---|---|---|
+| a | **Neither has a table.** Both are decided at New Year, before any count day. The keeper says numbers and the child divides. That is a sum with a story on top | 24 ÷ 4. 40 ÷ 8 |
+| b | **"For how long": too many months is worse than the keeper's own safe way** | She hires for all 7 months and "keeps enough fish back". The cadet says 6 where 5 is right, and the fish jars run out. The town is worse off with the cadet than without |
+| c | **"How many": my rule did not model my own question.** With "9 good plots" said aloud, the answer is 9 in five cases, and "9 take away the step" is right in three more | 27 ÷ 3 = 9 |
+| d | **The reed side is never told.** A child who sows one plot more "to be safe" is punished by a rule they could not know | |
+| e | **A keeper who knows what the store must gain each count day has already counted ahead** | |
+
+**One idea for the story thread, which would give both a table:** the other side brings one. A Furrow carter has a load board: 1 month, 8 blocks. 2 months, 16. 3 months, 24. The child reads on until the wall's number is reached. It is theirs to judge.
+
+---
+
+## 8. What I need from the story thread
+
+| | | Why |
+|---|---|---|
+| 1 | **The rule for too many mats,** in its own words: two pots back for each empty hook, never fewer than none. Or a better one that costs the same both ways | Its note still says only "takes pots of oil back" |
+| 2 | **"The raft comes on count day N, after the count."** And all mats wait at home | Its note says no raft sails after Last Raft, and uses "by Gold month 7" |
+| 3 | **A tally stick at the Market.** The keeper does not say the step | The store wall is in the town |
+| 4 | **Nine gold months, not seven** (its own option B) | Section 3: seven leaves 5 problems in a band |
+| 5 | **A small row that is small in the story too:** something counted in 2s, 5s and 10s, that is not a trade | In version 1 one family's weaver made 70 mats and a whole town made 15. And "only keepers trade" |
+| 6 | **The singer as the teacher** | In its story nobody can count ahead. A keeper who teaches the child contradicts that |
+
+---
+
+## 9. What the reviewer found, and what I did
+
+| | Found | Done |
+|---|---|---|
+| B1 | Saying too many mats cost nothing | Section 2: two pots back for each empty hook, with a floor. Checked for every number. Needs the story thread (8.1) |
+| B2 | "For how long": too many months contradicts the keeper's safe way | Parked. Section 7b |
+| B3 | "How many" and "for how long" have no table | Parked. Section 7a |
+| B4 | The "how many" rule did not model its question | Parked. Section 7c |
+| B5 | The weakest child's path was a loop of misses with no teaching | Section 4: taught at the small size, then a rest |
+| B6 | The wall of names needs a server that has never run | Section 5: left out of the trial |
+| | A third of "how much" was only the next number | The raft never comes on count day 5 |
+| | "Full" was too wide. One answer could give away the next | Bands. A new answer after every year |
+| | The question read four ways | Section 2 |
+| | A family made more than a town | Asked of the story thread (8.5) |
+| | The keeper taught the child | The singer does (8.6) |
+| | The years table was short. Engine bends were not stated | Section 4 |
+| | The example was not an example of the task | Section 2 |
+| | Closing the game and walking away were not designed | Section 5 |
+| | My check file claimed more than it did | Rewritten. It now checks the consequences, the picker, and that the note's example is a real problem |
+
+**Not done:** the class picture (the reviewer's finding 18). With no server there is nothing to build. It stays a question.
+
+---
+
+## 10. Your decisions
+
+The reviewer counted 30 between the two notes: "more than a person can answer". These are the ones that matter for a first build.
 
 | | Decision | Options, with costs | I would choose |
 |---|---|---|---|
-| 1 | **How much of your engine?** | All of it: up to 14 years on one kind in one town. Or a short form: a miss, one new one, a family, then back; 4 or 5 years at most, and less proof that the skill is mended | all of it for the trial, and time it with a child |
-| 2 | **Small is 2, 5 and 10** | Your skill map's level below. Or small numbers of the same tables (3 × 2, 4 × 3): easier to build, but not the skill underneath | 2, 5 and 10 |
-| 3 | **Names on the wall** | A mark appears only when finished. Or every cadet's name is there from the first day, and a finished kind lights it. Either way, who is behind can be worked out | yours |
-| 4 | **"Consistently" is two towns running** | Or three. More proof, more years | two |
-| 5 | **Counting far ahead** (the story's decision 25) | Seven count days now, and far counts later. Or a count day every week from the start: your "24th day" can be asked, and the story's wall has 28 cuts | seven now |
+| 1 | **Is "how much" enough for a big quest?** | Yes: it is your multiples, a table, a decision, and what follows. Or it is practice, and the big quest needs the other two kinds as well, which are not ready | yes, as a first trial |
+| 2 | **Nine gold months, or seven?** | Seven: 5 problems in a band. Nine: 11, and a year of 12 months, like ours | nine |
+| 3 | **One try at the gate, or your engine's three?** | One: 8 years at most in a town, then a rest. Three: 14, and problems must repeat | one |
+| 4 | **The step down is always the small row** | Or wait for the AI, which can choose the skill underneath as your engine does | the small row, for now |
+| 5 | **In the singer's song, may a wrong number be sung again?** | Yes: teaching needs it. Or the song also lets a wrong line stand, and the pips show it at the end | yes |
