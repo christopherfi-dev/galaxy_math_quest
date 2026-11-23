@@ -4,7 +4,7 @@
 **Read with:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md`.
 **Nothing here is built.** Everything is **[Proposal]** unless it says [Source].
 
-**This is version 4.** Two joint reviews have read this note with the story.
+**This is version 5.** Three joint reviews have read this note with the story.
 - **The first:** "Not yet a base to build on. Close, for one child playing alone." 6 blockers. Section 9.
 - **The second,** on the first kind only: **"Not yet. Three blockers, each a small fix. The numbers for the town's stick and promise hold."** Section 9b says what it found and what I did.
 
@@ -12,7 +12,15 @@
 
 **A third joint review has read version 4: "Not yet. Two blockers, each a small fix. The town's stick, the question and the oil rule hold."** Both blockers were in my picker and my number box. Both are fixed in the check file, and section 9c says how. The fixes have not been reviewed.
 
-**Before that review:** The story thread has since answered yes to all five things in section 8b (its section 15), and the two notes use the same words. Nothing is built.
+**What version 5 changes (23 November, night):** the story thread answered the third review's six points, and its own reviewer then found four story blockers, all fixed (the story, section 16). Version 5 takes the story's words as they are (its section 16c) and follows its section 16d, row by row:
+- the seller is a man, the Furrows' tally keeper; his finished example is the last plan of the Year Machine, for the Menders, on count day 9 (no longer a double of the last cut);
+- his four lines on cost, said before he asks;
+- the small row is **Promise**, a children's game on Market day: reed cups, plums, clay beads; Gran's hooks; shells, by the same rule as the oil;
+- the song is taught by the lamp, in the white months of a year already played, so **it costs no year**; a child taught at every band now spends **18 years, not 24**;
+- "decide without me" and the second telling use the story's words.
+**The story thread's second reviewer has not read the rewritten story yet** (its section 16g). Its words may change once more.
+
+**A fourth joint review has read version 5 and the check file: "Both blockers from review 3 are fixed. A base to build on, for one child on one iPad: yes."** No new blocker. It found seven major points and some claims the check file did not check. Section 9d says what I did: all are answered in the check file's draft 6, and in this note.
 
 Every number below comes from `checks/bigworld_year_rule_check.js`. It passes.
 
@@ -35,19 +43,26 @@ Every number below comes from `checks/bigworld_year_rule_check.js`. It passes.
 
 ### What the child looks at
 
-- **The keeper's tally stick fills the picture,** at the Lake Market. Four cuts. Each is marked with its count day and the pile that day:
+- **The tally keeper's stick fills the picture,** at the Lake Market. Four cuts. Each is marked with its count day and the pile that day:
 
 | count day 1 | count day 2 | count day 3 | count day 4 |
 |---|---|---|---|
 | 6 | 12 | 18 | 24 |
 
 - Nothing is drawn after the fourth cut. The child's own table is in the notebook, and the game fills in none of it.
-- The keeper never says the step. The child reads it off the stick.
+- The tally keeper never says the step. The child reads it off the stick.
 
 ### What the seller says, in this order
 
-1. **A finished example, about another thing.** Her own stick, for the oil she presses: 20, 40, 60, 80 pots. "I told the Twinseers I would have oil for them on count day 8. I counted on: 100, 120, 140, 160. I said 160. And I did." No band has a step of 20.
-2. **Both costs, before any number is asked.** "One pot for each mat you promise, and one hook on my raft for each. Mats with no hook are no use to me. For a hook that sails empty I take two pots back: one for the mat, one for the hook."
+1. **A finished example, about another thing.** His old stick, for the oil of one press: four cuts of 20, 40, 60, 80 pots, then the Year Machine's faint scratches ahead, one for each count day, with numbers (100, 120, 140, 160, 180). In the story's words [story, 16c]:
+   > "In the last year of the Year Machine, my stick looked like yours: four cuts. The machine scratched on ahead, one count day at a time. It said: promise the Menders this many, on count day 9, after the count. I did. The Year Machine burnt before that day. The oil came anyway, onto every scratch."
+   > "That is what the Year Machine did for us. Can you do it without one?"
+   - The answer is 180. No band has a step of 20. **Count day 9, not 8:** 160 was a double of the last cut, which a child could take as the rule [third review]. 180 is not. It is the last three cuts added (40 + 60 + 80), which is a true way; the picker catches a child who has only that habit (section 3).
+2. **Both costs, before any number is asked.** In the story's words [story, 16c]:
+   > "One pot for each mat you promise, now. One pot fills one lamp for the white months. And one hook on my raft for each mat."
+   > "Too few, and the mats with no hook stay on your dock. No pot for them."
+   > "Too many, and a hook sails empty. For each, my crew takes two pots back: one for the mat, one for the hook."
+   > "Short by one, or over by one: one dark window, the same."
 3. **The question, with today in it:**
 
 > "Today is count day 4. My raft comes on count day 7, after that day's count. How many mats will there be by then, in all?"
@@ -60,10 +75,11 @@ The second reviewer found six ways to misread version 3's sentence. Three came f
 |---|---|
 | Right (42) | Every hook gets a mat. **No window is dark** |
 | Too few (said 36) | **Six spare mats on the dock.** Then six dark windows |
-| Too many (said 48) | **Six empty hooks.** She takes two pots back for each. Then six dark windows |
-| Far too many (said 99) | She takes back every pot. Every window the mats could have lit is dark: 42 |
+| Too many (said 48) | **Six empty hooks.** His crew takes two pots back for each. Then six dark windows |
+| Far too many (said 99) | His crew takes back every pot. Every window the mats could have lit is dark: 42 |
 
-- **The picture shows only the gap:** the dock first (mats or hooks, which can be counted), then that many dark windows. It never shows a shelf with 42 places: that would be the answer, drawn.
+- **Before the promise, nothing shows the answer.** It never shows a shelf with 42 places: that would be the answer, drawn.
+- **After the promise, the year runs** [Proposal, accepting the story's 16b, finding 17]: the stick gets its new cuts, one each count day; then the dock (spare mats, or empty hooks, which can be counted); then, on raft day, one lamp for each mat the town wove, lit or dark. The climb comes after the promise, so it gives nothing away, and it shows the count the child should have made.
 - **Six too few costs what six too many costs.** No blind number pays: the reviewer tried "always 99", "always 0", "the last cut", "the next cut".
 - A miss of one is one mat on the dock and one dark window.
 - **The box takes three digits.** No answer is over 99, but a child who means 108 must be able to say 108. The check file tries every number from 0 to 999 for every problem.
@@ -79,7 +95,9 @@ Code can tell some wrong replies apart with no AI. For 6, 12, 18, 24 and count d
 | 66 | **A reading fault:** seven more count days from today |
 | 6, or 7 | **A reading fault:** one day's mats; or the count day itself |
 
-Two count faults lead to the small row and the song. **Two reading faults do not:** the seller tells it again, with the stick laid along the days of her journey. The skip counting was never the trouble.
+**On count day 9, two replies tell nothing:** 5k is "only the mats to come" and also "the next cut"; 10k is "all the cuts added" and also "one count day over". Such a reply does not decide: the child's other reply does [fourth review, M2].
+
+Two count faults lead to Promise and the song. **Two reading faults do not:** the seller tells it again. In the story's words [story, 16d, row 7], he lays the tally keeper's stick on the planks of the Market jetty, one plank for each count day: "Here is today. Then this day, and this. Here my raft comes." The skip counting was never the trouble. **No Promise and no song follow a reading fault:** the jetty telling is the help, then the gate [fourth review, M7: version 5 said this, and the code did otherwise].
 
 ---
 
@@ -87,10 +105,10 @@ Two count faults lead to the small row and the song. **Two reading faults do not
 
 | Band | The step | Who asks |
 |---|---|---|
-| **Small** | 2, 5 or 10 | the step down: **a child's own rack** (below). Your skill map's level below Grade 3 |
+| **Small** | 2, 5 or 10 | the step down: **Promise**, a children's game (below). Your skill map's level below Grade 3 |
 | **Low** | 3, 4 or 6 | the first town a child helps |
 | **High** | 7, 8 or 9 | the second |
-| **Big** | 11 to 15 | later, unseen: "we are more houses this year" |
+| **Big** | 11 to 15 | later, unseen: "We are more houses than Stilt Town." [story, 16d, row 8] |
 
 The reviewer was right that one "full" size from 3 to 9 was too wide: after a miss on 8 × 7 the next problem could be 3 × 5.
 
@@ -105,18 +123,23 @@ The reviewer was right that one "full" size from 3 to 9 was too wide: after a mi
 
 With seven gold months there were 5 or 6 in a band. So the story thread changed its year to nine gold months and three white: twelve, like ours. It is still your decision 2.
 
-### The small row: the same task, smaller
+### The small row: Promise, the same task, smaller
 
-The second reviewer's first blocker: version 3's small row had no stick, and "one loop for each thing" read two ways (6 bundles, or 30 plums).
+The second reviewer's first blocker: version 3's small row had no stick, and "one loop for each thing" read two ways (6 bundles, or 30 plums). The third review then found that its cost worked on one side only.
 
-- **Now it is the town's task again, with a child's own stick.** A child of the town has a chore, and cuts their own small stick: 5, 10, 15, 20 plums.
-- **Gran asks, in the same words:** "Today is count day 4. The rain comes on count day 7, after that day's count. How many plums will there be by then, in all?"
-- **The thing to count is named:** plums, sandals, fire sticks. Never "things", and never bundles.
-- **Gran carves one peg on the feast rack for each plum the child says** [the story's words]. Too few: plums with no peg are left in the rain, and spoil. Too many: each empty peg is a cousin at the feast with no plum. Both can be counted.
-- **The story thread's own caution:** "a cousin with no plum" is the gentlest cost there is. If children read it as nothing, the small row hurts on one side only. To check with a child.
+- **It is Promise,** a children's game on Market day: the lake's deal, made small [story, 16a, point 4]. A step-down year is an errand: the tally keeper asks the cadet to stay in the town that Market day [story, 16b, finding 12].
+- **The thing to count is named,** and counted one by one: reed cups (two each count day), plums (five), clay beads (ten). Never bundles or pairs.
+- **Gran says both costs first, then asks,** in the story's words [story, 16c]:
+  > "One shell for each plum you promise, now. And one hook on my rack for each."
+  > "Too few, and the plums with no hook are mine for nothing."
+  > "Too many, and a hook hangs empty. You give me two shells back for it: one for the plum, one for the hook."
+  > "Today is count day 4. I come for them on count day 7, after that day's count. How many plums will there be by then, in all?"
+- **It is the oil rule:** one for each promised, two back for each empty hook, never fewer than none. Both sides cost shells, one for each one out. The check file plays it with the same rule.
+- **The story thread's caution:** Promise is a game in a game. If a child shrugs at shells, it costs nothing. To check with a child.
 - Steps of 2, 5 and 10. Eleven problems.
 
-- **A child never meets a problem twice.** After any year the next problem has a new step, a new count day and a new answer, and its answer is not what the child last said.
+- **A child never meets a problem twice.** The picker also wishes for a new step, a new count day and a new answer, not the answer the child last said, and not what the child last sang. When no problem left meets every wish, it gives up one wish at a time. Played for 326,164 problems: two running shared a step 5 times, a count day 12 times, an answer twice.
+- **It picks by chance** among the problems that meet its wishes [fourth review, M1]. Version 5 always chose the problem that left most others open, so half of all children got 3 × 7 first and half 3 × 9, and an answer could travel round the room. Now 3,000 children get 8 different first problems; the commonest goes to 391 of them. The first problem is never on count day 9, the day of the finished example. Only when 6 or fewer problems are left does it choose the one that leaves most others open.
 - **A count day the child has been right on does not come again while another can.** There are three quick ways that are right: add the last two cuts (count day 7), double the last cut (8), add the last three (9). A child who knows all three knows the row. A child with only one of them is right once, and is then asked for another day.
 - **Refused,** each printed by the check file with its reason: a row where a wrong method lands on the right answer (3, 6, 9, 12 on count day 6: the last cut plus the count day is also 18); any total over 99; the finished example's own row.
 - **"Double the 4th cut" for count day 8 is not refused.** It is a right way, and a good one.
@@ -135,10 +158,11 @@ The second reviewer's first blocker: version 3's small row had no stick, and "on
 | Right | **Learned.** Lit windows from then on | |
 | Wrong, then a new one | Next year the same town asks again: a new stick | 1 |
 | Right this time | **Learned,** by a slip | |
-| Wrong again: two count faults | The small row. Right: on to the song. Wrong: the song by twos, fives and tens, then the small row once more. Wrong again: a rest | 1 or 2 |
-| Wrong again: two reading faults | The seller tells it again, with the stick laid along the days | |
-| Taught in single steps, then a worked example | The singer and the cadet make the new verse, one line for each count day, with pips. **The two rows made this way are the child's own two missed rows.** They use up no new problem | 2 |
-| The gate | Three new years, right in a row: **learned.** A miss: that line of the song again, and one more gate. A second miss: a rest | 3 to 6 |
+| Wrong again: two count faults | Promise, on Market day, in the town. Right: on to the song. Wrong: the song by twos, fives and tens, then Promise once more, on the next Market day. Wrong again: a rest [story, 16b, finding B2]. **Promise comes once only:** a child who has passed it in one town goes straight to the song in the next [Proposal; fourth review, M6] | 1 or 2, the first time; then 0 |
+| Wrong again: two reading faults | The seller tells it again on the jetty, one plank for each count day. **No Promise, no song** | 0 |
+| Twice "decide without me" | The singer finds the cadet in the white months: "Come and sing." The song | 0 |
+| Taught in single steps, then a worked example | The singer and the cadet make the new verse, one line for each count day, with shells, by the lamp, in the white months of a year already played. **The two rows made this way are the child's own two missed rows.** They use up no new problem | 0 |
+| The gate | Three new years, right in a row: **learned.** A miss: that line of the song again, by the lamp, in that year's white months, and one more gate. A second miss: a rest | 2 to 6 |
 
 ### Across the three mat towns
 
@@ -149,34 +173,38 @@ The second reviewer's first blocker: version 3's small row had no stick, and "on
 | in a rest | nothing. The kind rests in every town, and your report names the skill |
 
 - **"Learned"** is the word for a town. **"Finished"** is all three towns learned.
-- **"A rest"** means: the keepers go on promising a few mats, the safe way. The evenings stay dark. No town asks again in the trial. The rest of the planet is open.
-- **"Decide without me"** is a button at the Market. The keeper promises a few mats. The year runs. Nothing is counted for or against the child. Two in a row in one town, and the singer comes over.
+- **"A rest"** means: the tally keepers of towns not yet learned go on promising a few mats, the safe way, and their evenings stay dark. **A learned town stays lit** [story, 16a, point 6]. No town asks again in the trial. The rest of the planet is open.
+- **"Decide without me"** is a button at the Market. The tally keeper promises a few, the safe way, and says so. The year runs. After the second in one town, the singer finds the cadet in the white months: "They say you have stopped deciding. Come and sing." [story, 16d, row 6]. **In the code** [Proposal; fourth review, M3]: it uses up its problem, because the child has seen it. The same town asks again next year. Twice at the assess and the probe: the song, then the gate. Once, with one wrong reply: the wrong reply decides the path. At Promise or at the gate it counts as a miss. A child who always presses it ends in a rest after 4 years, so the trial always ends.
 - **The picker never repeats a problem.** When it cannot give a problem that is new in step, count day and answer, it gives up one wish at a time: first a count day the child has not been right on, then a new count day, then a new step. Only when every problem of a band is used does it stop. Then a gate with only right answers so far counts as passed.
 
 ### Played in code: 3,000 made-up children of each kind
 
 | A child who... | Years for three towns | How the towns ended |
 |---|---|---|
-| is always right | 3 | all learned at the first try. The third town was the big band |
-| is right 8 times in 10 | 3 to 21. Half need 3 | mostly learned. No band ran out |
-| is wrong until taught, in every band | 24 | all three learned through the gate: 8 years each |
+| is always right | 3 | all learned at the first try |
+| is right 8 times in 10 | 3 to 16. Half need 3 | mostly learned. No band ran out |
+| is wrong until taught, in every band | **16** | all three learned through the gate: 6 years in the first town, 5 in each other |
+| is taught, but needs a second Promise and misses the last question of the first gate, in every town | **26** | all three learned. The longest way a taught child can take |
+| misreads ("only the mats to come") until told again | 7 | the first town through the gate; then right at the first try |
 | always counts one day over | 4 | a rest in the first town |
-| always reads "only the mats to come" | 4 to 6 | a rest in the first town |
-| only ever adds the last two cuts | 4 to 8 | at most one town learned, then a rest. **Not waved through.** But half of these children do light the first town at the first try: see decision 2 |
-| is right half the time, by chance | 3 to 29 | mixed. A whole band was used up for 1 child in 3,000 |
+| always reads "only the mats to come" | 4 | a rest in the first town. **Never sent to Promise:** it is a reading fault |
+| only ever adds the last two cuts / doubles the last cut / adds the last three cuts | 4 to 7 | **one town lit at most,** at the first try or by a slip, then a rest. Checked for every child |
+| always presses "decide without me" | 4 | a rest in the first town |
+| presses it, then learns from the song | 15 | all three learned through the gate |
+| is right half the time, by chance | 3 to 19 | mixed. A whole band was used up for 1 child in 3,000 |
 
-**Read the third row.** A child who must be taught at every band spends 24 years here. At three minutes a year that is over an hour, across several lessons.
+**Read the third and fourth rows.** A child who must be taught at every band spends 16 years here; one who also needs every second chance, 26. Version 4 said 24, and version 5 said 18. How long a year takes is not known: **time it with children** [story, 16d, row 9]. The story's reviewer finds 18 New Years thin if a child counts them (the story, 16e); 16 is a little less thin.
 
 ### Where this bends your engine
 
 | | Your engine | Here | Why |
 |---|---|---|---|
 | 1 | States the answer after a miss | The year shows it | Your rule of 22 November |
-| 2 | Three tries at the gate | Two | A band has 11 or 12 problems. Two gates need 10 |
+| 2 | Three tries at the gate | Two | **The reason given was wrong** [fourth review, M5]: "two gates need 10" counted the sung rows as problems. With three tries: 17 children in 6,000 who answer by chance use a band up (15 right half the time, 2 right 8 times in 10), and one town can take 13 years, not 10. With two: 1 child in 3,000. **Yours or the threads' to choose again** (section 10) |
 | 3 | Picks the skill underneath by judgement | Two count faults: the small row. Two reading faults: told again. Anything else: the small row | Code can see this much. The AI could see more |
 | 4 | Stops when the step below is missing | Teaches the step below once, by song | Your words to the main thread: "go down one or two levels... teach that and then work back up" |
 | 5 | Assesses a skill once | Three towns, a band higher each time | A town is a place |
-| 6 | Confirms or corrects each small step | The singer sings a line again, with pips | She is teaching a song |
+| 6 | Confirms or corrects each small step | The singer sings a line again, with shells, by the lamp | She is teaching a song |
 | 7 | "Skip", "I don't know" | "Decide without me" | The story's way out |
 
 ---
@@ -291,7 +319,7 @@ All six: **yes.** [The story's section 14.]
 | B1 | **A band "ran out" with problems still unused,** and a child who was getting them right was put in a rest. One path could never finish: it needed 12 low problems and there are 11 | The picker gives up one wish at a time and never stops while a problem is unused. The two sung rows are the child's own missed rows, so they use up none. Played again: no band runs out, except for 1 coin-flip child in 3,000 |
 | B2 | **Likely wrong replies could not be typed.** "One count day over" for 12 × 8 is 108. In a two-digit box it became 10, and the dock showed the wrong side | The box takes three digits. Checked from 0 to 999 |
 
-**For the story thread, from the same review (not blockers):**
+**For the story thread, from the same review (not blockers). All six are answered in the story's section 16a, and version 5 of this note follows them:**
 1. **The seller counts ahead, and "nobody on Algora can".** Her example says "I counted on: 100, 120, 140, 160." A child can ask why she does not read the keeper's stick herself.
 2. **Her example lands on a double** (80, then 160). A child may take "double the last cut" from it. Count day 6 or 9 would not.
 3. **The cost of too few is not said as a cost.** "Mats with no hook are no use to me" is her loss, and the story adds "nobody is worse off for a mat". Before the promise, saying less sounds safe.
@@ -303,6 +331,28 @@ All six: **yes.** [The story's section 14.]
 
 **Not done:** the class picture (the reviewer's finding 18). With no server there is nothing to build. It stays a question.
 
+## 9d. The fourth joint review: "yes, a base to build on"; seven major points
+
+| | Found | Done |
+|---|---|---|
+| M1 | **The picker was almost fixed:** half of all children got 3 × 7 first, half 3 × 9 | It picks by chance among its wishes. 8 different first problems; the commonest for 391 of 3,000. Checked |
+| M2 | **Reading faults went down the wrong path** on count day 9 (5k and 10k are both kinds) | Such a reply tells nothing; the other decides. "Only the mats to come" never goes to Promise. Checked for every child |
+| M3 | **"Decide without me" was not defined** | Defined, in the code and section 4 [Proposal]. Two kinds of child play it; both finish |
+| M4 | **"18 years" was a range, up to 30** | Now 16 to 26 (section 4) |
+| M5 | **The reason for two gate tries was wrong** | Said so; the cost of three is printed every run (section 4, row 2 of the engine table) |
+| M6 | **Promise came back in every town** | Once only [Proposal]. For the story thread: the errand ("find what we have lost") is said once |
+| M7 | **The note and the code disagreed on the song** | The code follows the note: a reading fault gets the jetty telling, no song |
+| | The file claimed "never" for shared steps, days and answers | It prints how often (above), and says "wishes" |
+| | "No fixed habit was waved through" counted first tries only | It counts every town lit: one at most. Checked |
+| | "Add the last three cuts" was not played | It is now: one town at most |
+| | Which path a child takes was never checked | Each kind names its path, and it is checked |
+| | `most <= 12` could not fail | It is `most <= 10`, the longest a town can take with two tries |
+| | The gate's first problem could match what was just sung | After the song, the picker counts the last sung row as the last row |
+
+**Still open, small:** a short gate passes when a band runs out (1 child in 3,000; listed as an engine bend here); "one count day over" may be a misreading of "after that day's count" (watch for it with children); the second Promise year has no New Year line (for the story thread).
+
+**Mine, from before, now closed:** a reading fault no longer meets Promise, so it cannot fail it for the same sentence; "decide without me" is in the code.
+
 ---
 
 ## 10. Your decisions
@@ -313,11 +363,11 @@ Both reviewers said the two notes hold more decisions than a person can answer. 
 |---|---|---|---|
 | 1 | **Is "how much" enough for a first big quest?** | Yes: it is your multiples, a table, a decision, and what follows. Or it is practice, and the big quest must wait for the other two kinds, which are not ready | yes, as a first trial |
 | 2 | **One right year lights a town for good** | Yes, as your engine passes a skill on one right answer. Or two right years on different count days: surer, and twice as long for every child | one |
-| 3 | **A child who must be taught at every band spends 24 years** | Accept it for the trial, and time it. Or teach once only, and after that a miss is a rest | accept, and time it |
+| 3 | **A child who must be taught at every band spends 16 to 26 years** (24 in version 4; 18 in version 5) | Accept it for the trial, and time it. Or teach once only, and after that a miss is a rest | accept, and time it |
 
 **Decided by the two threads, as you said we should. Say if you disagree.**
 - **Nine gold months.** You said: "however long you make their year."
-- **Two tries at the gate,** not your engine's three. A band has 11 or 12 problems.
+- **Two tries at the gate,** not your engine's three. **Open again:** its reason was wrong (section 4, "Where this bends your engine", row 2). Three tries costs a band running out for 17 children in 6,000 who answer by chance, and up to 13 years in one town. I would still choose two, now for that reason.
 - **The singer may sing a wrong line again.** Your engine corrects in teaching too.
 - **Two pots back for an empty hook.** The other way lasts into the next year.
 - **The step down:** the small row for count faults, a second telling for reading faults.

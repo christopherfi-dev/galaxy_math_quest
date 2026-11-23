@@ -31,6 +31,11 @@ Print it, or keep it open beside you. About 30 minutes for one child.
 | 15 | **Over the river** (if they get there): the three towns, the tags, the fleet. Do they see why a green lamp can still be wrong? | | |
 | 16 | **Words.** Which words do they stop at or ask about? | | |
 | 17 | **When do they want to stop?** And do they ask to play again? | | |
+| 18 | **Walking, since 23 November** (no mist, signposts). Minutes from landing to Elder Rivet: ___ | | |
+| 19 | **Taps that go nowhere.** Count them in the first five minutes. | | |
+| 20 | **Leaving the path.** Do they walk off it to explore? Or stay on it? | | |
+| 21 | **The signposts.** Do they tap one to read it? Do they follow the arrow? | | |
+| 22 | **The hidden things** (a hollow log, some rubble, a bottle in the reeds). Found too easily, now that there is no mist? | | |
 
 ## Three questions for afterwards
 

@@ -27,7 +27,7 @@ const built = execFileSync('node', [path.resolve(__dirname, 'bigworld_map_build.
 say(built === cut('/*MAP-BEGIN', '/*MAP-END*/'), 'the map in the page is not what checks/bigworld_map_build.js paints. Run the builder, or put the change into it.');
 
 // 2. shape and letters
-const W = world(), KNOWN = '~.:,*swcpdRTtarH^#mDbS';
+const W = world(), KNOWN = '~.:,*swcpdRTtarH^#mDbSO';      /* O: the big old tree in the Meadow, a landmark */
 say(W.MAPW === 128 && W.MAPH === 96 && W.MAP.length === 96 && W.REG.length === 96, `the map is ${W.MAPW} x ${W.MAPH} with ${W.MAP.length} rows`);
 W.MAP.forEach((r, y) => { say(r.length === 128, `row ${y} is ${r.length} long`); for (const c of r) if (KNOWN.indexOf(c) < 0) say(false, `row ${y} has the letter "${c}", which the page cannot draw`); });
 W.REG.forEach((r, y) => { say(r.length === 128 && /^[0-9]+$/.test(r), `region row ${y} is wrong`); });
