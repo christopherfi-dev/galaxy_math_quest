@@ -73,6 +73,7 @@ Every item below was missed at least once. Find the faults yourself; Marc should
 | File | What it is |
 |---|---|
 | `HANDOFF_2026-11-20.md` | **Read first.** Short. What is built, how a change is made, Marc's rules, what is waiting on him |
+| `proposals/GMQ_Master_Plan_v1_2026-11-23.md` | **Read second.** The whole plan: what is built, who is doing what, the order of work, every decision waiting on Marc |
 | `HANDOFF_2026-11-17.md` | The long record of every version, with function names. Search it; do not read it all. |
 | `proposals/GMQ_Roadmap_v1_2026-11-17.md` | The whole game outlined: twelve parts, what is built, what is next |
 | `prototypes/kis_station_sketch.html` | The game itself, one file |
