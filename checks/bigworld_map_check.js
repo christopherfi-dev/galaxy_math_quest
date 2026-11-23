@@ -58,7 +58,7 @@ for (const [name, fn, want] of breaks) { const w = world(); fn(w); const f = w.b
 // 5. words
 W.THINGS.forEach(t => { say(t.words && t.words.length && /^[a-z]+$/.test(t.words[0]), `${t.id}: no word to tap`); say(!!t.name, `${t.id}: no name`); (t.says || []).concat(t.then ? t.then.says : [], t.look ? [t.look] : []).forEach(s => say(s.length <= 150, `${t.id}: a line of ${s.length} letters is too long to read at once`)); });
 Object.keys(W.SCENES).forEach(s => W.SCENES[s].things.forEach(t => say(t.words && t.words.length && t.x > 0 && t.x < 1, `scene ${s}: ${t.id} has no word or no place`)));
-for (const a of W.THINGS) for (const b of W.THINGS) if (a.id < b.id && a.words[0] === b.words[0] && Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) <= 6 && !(a.words[1] && b.words[1] && a.words[1] !== b.words[1])) say(false, `${a.id} and ${b.id} are close and share the word "${a.words[0]}"`);
+for (const a of W.THINGS) for (const b of W.THINGS) if (a.id < b.id && (a.chip || a.words[0]) === (b.chip || b.words[0]) && Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) <= 6 && !(a.words[1] && b.words[1] && a.words[1] !== b.words[1])) say(false, `${a.id} and ${b.id} are close and share the word "${a.chip || a.words[0]}"`);      /* the word on the desk's button: its chip, or its first word */
 
 // 6. walks are short
 { const key = (x, y) => y * 128 + x, solid = {}; W.THINGS.forEach(t => { solid[key(t.x, t.y)] = 1; });

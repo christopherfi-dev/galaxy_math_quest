@@ -101,9 +101,9 @@ road([[34, 78], [41, 78], [41, 81]], ':', '.,*T');                              
 road([[14, 69], [13, 69], [13, 67]], ':', '.,*T');                                                                                                        // past the pond machine to the fisher, at the pond
 rect(27, 67, 31, 70, '.', 'T*,'); set(29, 69, 'O'); road([[29, 75], [29, 70]], ':', '.,*T');                                                              // the big old tree in the middle of the meadow, the tallest thing there; the old Mender sits under it
 set(44, 75, '.');                                                                                                                                         // the Mender with big ears stands at the broken bridge, listening across the river
-for (const [x, y] of [[22, 67], [33, 76], [41, 73]]) set(x, y, '.');                                                                                      // signposts at three forks (old wall and hill; orchard and bridge; old stones and bridge)
+for (const [x, y] of [[21, 65], [35, 75], [40, 75], [12, 79]]) set(x, y, '.');                                                                                      // signposts: the lanes fork (old wall and hill), the stones fork (old stones and bridge), and the one by the ship
 // the far bank: the Reach's landing. A small piece of region 2 that is built now.
-road([[50, 74], [55, 74], [55, 72]], ':', '.'); set(49, 74, '~'); set(48, 74, '~'); set(47, 74, '~'); set(47, 60, '~'); set(48, 60, '~'); set(49, 60, '~');
+road([[50, 74], [55, 74], [55, 72]], ':', '.'); road([[55, 74], [58, 74]], ':', '.,*m');      // the path runs on to the reed gate (it stopped three squares short) set(49, 74, '~'); set(48, 74, '~'); set(47, 74, '~'); set(47, 60, '~'); set(48, 60, '~'); set(49, 60, '~');
 road([[50, 60], [52, 60], [52, 74]], ':', '.');
 blob(55, 71, 1.8, 1.4, '.', 0); line([[51, 66], [58, 66], [59, 70], [59, 79], [50, 80], [48, 80]], 1, 'm', '.,*T'); line([[50, 58], [54, 58], [54, 66]], 1, 'm', '.,*T'); set(52, 66, ':');                                                       // reeds ring the landing: the road east is not open yet
 scatter(51, 67, 58, 79, '*', .06, '.');

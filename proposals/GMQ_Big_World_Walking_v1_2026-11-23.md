@@ -57,7 +57,7 @@ You said "we can try this and see what happens," so step 1 is built. Each part c
 In the Reach every person already stood on a road, at a town, the harbour or the gate.
 
 **Added tonight, to make walking clearer** (you asked for this before bed)
-5. **Three signposts at forks.** Arrow boards point along each path, with a short label: "← Old wall · Hill →", "↓ Orchard · Bridge →", "↑ Old stones · Bridge →". Tap one to read it in full. They use the elder's own words: "The machines are by the pond, on the hill, by the old wall and in the orchard."
+5. **Signposts at three forks, and the one by the ship.** Arrow boards point along each path, with a short label: "Village · Rill →" (by the ship), "← Old wall · Hill →", "↓ Orchard · Bridge ↑", "↑ Old stones · Bridge →". Tap one to read it in full. They use the elder's own words: "The machines are by the pond, on the hill, by the old wall and in the orchard." Each stands **beside** its fork, and the cadet reads it **at** the fork, so every way it names can be walked from there with "go". **The sign's own words work too:** "go village", "go hill", "go stones" walk the way the sign points, even before that place has been on the screen.
 6. **The sign by the ship tells the truth now.** It said "MENDER VILLAGE, north". North of it is the path to the pond. It now says "MENDER VILLAGE, east, then north." (Section 4 shows what the old sign did.)
 7. **"go north" follows the path** to the next fork, and stops beside anyone on the way. Before, it went 4 squares in a straight line and often ended on the grass. Off a path it now walks up to 8 squares.
 
@@ -85,20 +85,21 @@ Taps for the middle child, and how many gave up:
 | Mender Village | 12 taps, 11% gave up | **3, 0%** |
 | Pond Machine | 3, 12% | **2, 1%** |
 | Wall Machine | 9, 14% | **4, 1%** |
-| Hill Machine | 18, 17% | **6, 0%** |
+| Hill Machine | 18, 17% | **5, 0%** |
 | Orchard Machine | 8, 10% | **6, 0%** |
 | the orchard keeper | 21, 52% | **7, 0%** |
 | the old Mender | 5, 3% | **3, 0%** |
-| the fisher | 6, 21% | **3, 2%** |
+| the fisher | 6, 21% | **3, 3%** |
 | the reed cutter | 12, 8% | **10, 1%** |
-| the bridge | 7, 0% | **6, 0%** |
-| the old stones | 13, 13% | **9, 0%** |
+| the bridge | 7, 0% | **7, 0%** |
+| the old stones | 13, 13% | **9, 1%** |
 
 **What it showed:**
 - **Most of the gain is the mist.** With the old mist put back, the new paths, landmarks and signs alone help less: the keeper 12 taps and 11% gave up, the Wall Machine 10 and 16%. The village is 4 taps even with the mist: that is the corrected sign.
 - **The old sign by the ship made things worse.** On the old page, a child who never read it found the village in 3 taps (2% gave up). A child who read "north" and went north took 12 (11% gave up). The new sign gives 3 taps either way.
 - The signs help a little elsewhere: the bridge, the old stones, the Wall Machine.
 - **The reed cutter is still the hardest** (10 taps). No sign or landmark names the reeds.
+- Taking the orchard's sign away for a while showed what one sign is worth: the orchard keeper went from 7 taps to 10, and 5% gave up. It is back.
 
 **What it cannot tell you:** it is a model, not a child. It never misreads a sign. It does not spot a landmark before the person at it. Use it to compare two versions of the page, not to promise how long your class takes. Only children can say that (section 7).
 
@@ -107,7 +108,7 @@ Taps for the middle child, and how many gave up:
 1. **What counts as seen:** every square that has been on the screen. With 6 squares round the cadet, the Map would stay dark where the child clearly saw land.
 2. **The big old tree.** It is new, and it is not in the story. It has no word to type: a word like "tree" would make the cadet cross the meadow whenever a child typed "look tree" near any tree. The story thread may want to name it.
 3. **Moving the listener** to the bridge. The listener's own lines are about hearing the Rillfolk across the river.
-4. **The three signposts,** what they say, and the new words on the ship's sign.
+4. **The signposts,** what they say, where they stand, and the new words on the ship's sign. The sign to the hedge was taken out: the hedge leads to a land not built yet.
 5. **The path colour.**
 6. **"go" follows a path** to the next fork.
 7. **The cadet sits a little below the middle** of the picture, so the buttons hide less of what is ahead.
@@ -117,7 +118,7 @@ Taps for the middle child, and how many gave up:
 
 - **Phones.** Squares stay at 36 pixels (about 6 mm), so a phone still shows 10.8 × 11 squares, and the buttons still cover the village when you walk north. Smaller squares would be too small for fingers. Which device did you play on?
 - **"go to [name]"** works for anyone who has been on the screen, even someone never met. Limiting it to people met is your call (the main thread's option 6).
-- **Upright iPad:** about 250 pixels of the desk below the picture are empty. The picture could be taller. It is a layout change, so I left it.
+- **Upright iPad:** about 250 pixels of the desk below the picture are empty, and the reading card sits over the picture. The picture could be taller. It is a layout change, so I left it.
 - **Step 3, one screen at a time:** only if children still get lost.
 - **People on the Map:** not built.
 - **Hidden things.** The rubble, the hollow log and the bottle can now be seen from about 8 squares away, not 6. They are still off the paths.
@@ -146,5 +147,7 @@ Taps for the middle child, and how many gave up:
 - **`checks/bigworld_wander_check.js`:** section 4. About 40 seconds for each run.
 - **Pictures:** I looked at 15 places at three sizes, and at the Map.
 - **An independent review of 20 pictures and the change.** It found 6 faults that matter and several small ones. Section 3, items 8 to 15, are its findings that I fixed. Section 6 lists the rest.
+- **A second independent review**, of the signposts, the camera and the Map, after the first round of fixes. It found that **every signpost blocked the very way it named** (the cadet stood beside the sign, and the sign stood on that square), and that the signs' own words did not work with "go". Also: the ship's sign had no arrows, and the hint still said "north"; one label covered the cadet; the lanes sign named the hedge, which leads nowhere built; on the Map a name or "You" could sit on the village dot; "go" walked past people who came into view on the way, and off a path it crossed a path without stopping; the far bank's path stopped three squares short of the reed gate. **All fixed.** Not fixed: "go" follows a path round corners, so "go north" can end up going east (it is what the path does); "You cannot get there yet" gives no reason.
+- **`checks/bigworld_signs_test.js` (new):** at every signpost, on three screens, it reads the sign and types every direction and place word on it. Each must walk the way the sign says: 48 walks. **Passes.** Run on the page before these fixes, it fails on every sign, as it should.
 - **Not run:** a real iPad, a real child. The size test (`checks/bigworld_size_test.js`) checks an older test page that this change does not touch.
 - **Shortcut:** most pictures were taken by placing the cadet on a square, not by walking there. The play test does walk.
