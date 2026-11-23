@@ -10,7 +10,9 @@
 
 **What version 4 changes:** the small row is the same task made smaller; the question names today; both costs are told before the promise; the finished example is about another thing; the engine's path is written out and played in code for 27,000 made-up children; "finished", "a rest" and "decide without me" are defined.
 
-**Version 4 has not been reviewed.** Four of its changes need the story thread's words (section 8b). Nothing is built.
+**A third joint review has read version 4: "Not yet. Two blockers, each a small fix. The town's stick, the question and the oil rule hold."** Both blockers were in my picker and my number box. Both are fixed in the check file, and section 9c says how. The fixes have not been reviewed.
+
+**Before that review:** The story thread has since answered yes to all five things in section 8b (its section 15), and the two notes use the same words. Nothing is built.
 
 Every number below comes from `checks/bigworld_year_rule_check.js`. It passes.
 
@@ -64,7 +66,7 @@ The second reviewer found six ways to misread version 3's sentence. Three came f
 - **The picture shows only the gap:** the dock first (mats or hooks, which can be counted), then that many dark windows. It never shows a shelf with 42 places: that would be the answer, drawn.
 - **Six too few costs what six too many costs.** No blind number pays: the reviewer tried "always 99", "always 0", "the last cut", "the next cut".
 - A miss of one is one mat on the dock and one dark window.
-- The check file tries every number from 0 to 99 for every problem.
+- **The box takes three digits.** No answer is over 99, but a child who means 108 must be able to say 108. The check file tries every number from 0 to 999 for every problem.
 
 ### A reply that is a reading, not a count [your engine: classify from both wrong answers]
 
@@ -110,7 +112,8 @@ The second reviewer's first blocker: version 3's small row had no stick, and "on
 - **Now it is the town's task again, with a child's own stick.** A child of the town has a chore, and cuts their own small stick: 5, 10, 15, 20 plums.
 - **Gran asks, in the same words:** "Today is count day 4. The rain comes on count day 7, after that day's count. How many plums will there be by then, in all?"
 - **The thing to count is named:** plums, sandals, fire sticks. Never "things", and never bundles.
-- **Both sides cost by the count:** a plum with no place spoils; an empty place is seen. How the places are made (loops, pegs, a tray) is the story thread's.
+- **Gran carves one peg on the feast rack for each plum the child says** [the story's words]. Too few: plums with no peg are left in the rain, and spoil. Too many: each empty peg is a cousin at the feast with no plum. Both can be counted.
+- **The story thread's own caution:** "a cousin with no plum" is the gentlest cost there is. If children read it as nothing, the small row hurts on one side only. To check with a child.
 - Steps of 2, 5 and 10. Eleven problems.
 
 - **A child never meets a problem twice.** After any year the next problem has a new step, a new count day and a new answer, and its answer is not what the child last said.
@@ -134,7 +137,7 @@ The second reviewer's first blocker: version 3's small row had no stick, and "on
 | Right this time | **Learned,** by a slip | |
 | Wrong again: two count faults | The small row. Right: on to the song. Wrong: the song by twos, fives and tens, then the small row once more. Wrong again: a rest | 1 or 2 |
 | Wrong again: two reading faults | The seller tells it again, with the stick laid along the days | |
-| Taught in single steps, then a worked example | The singer and the cadet make the new verse, one line for each count day, with pips. Two rows are made this way | 2 |
+| Taught in single steps, then a worked example | The singer and the cadet make the new verse, one line for each count day, with pips. **The two rows made this way are the child's own two missed rows.** They use up no new problem | 2 |
 | The gate | Three new years, right in a row: **learned.** A miss: that line of the song again, and one more gate. A second miss: a rest | 3 to 6 |
 
 ### Across the three mat towns
@@ -148,19 +151,19 @@ The second reviewer's first blocker: version 3's small row had no stick, and "on
 - **"Learned"** is the word for a town. **"Finished"** is all three towns learned.
 - **"A rest"** means: the keepers go on promising a few mats, the safe way. The evenings stay dark. No town asks again in the trial. The rest of the planet is open.
 - **"Decide without me"** is a button at the Market. The keeper promises a few mats. The year runs. Nothing is counted for or against the child. Two in a row in one town, and the singer comes over.
-- **When a band has no new problem left for a child, the kind rests.** It never repeats a problem to keep going.
+- **The picker never repeats a problem.** When it cannot give a problem that is new in step, count day and answer, it gives up one wish at a time: first a count day the child has not been right on, then a new count day, then a new step. Only when every problem of a band is used does it stop. Then a gate with only right answers so far counts as passed.
 
 ### Played in code: 3,000 made-up children of each kind
 
 | A child who... | Years for three towns | How the towns ended |
 |---|---|---|
 | is always right | 3 | all learned at the first try. The third town was the big band |
-| is right 8 times in 10 | 3 to 21. Half need 3 | mostly learned. For 1 child in 100 a band ran out |
+| is right 8 times in 10 | 3 to 21. Half need 3 | mostly learned. No band ran out |
 | is wrong until taught, in every band | 24 | all three learned through the gate: 8 years each |
 | always counts one day over | 4 | a rest in the first town |
 | always reads "only the mats to come" | 4 to 6 | a rest in the first town |
-| only ever adds the last two cuts | 4 to 9 | at most one town learned, then a rest. **Not waved through** |
-| is right half the time, by chance | 3 to 29 | mixed. For 4 in 100 a band ran out |
+| only ever adds the last two cuts | 4 to 8 | at most one town learned, then a rest. **Not waved through.** But half of these children do light the first town at the first try: see decision 2 |
+| is right half the time, by chance | 3 to 29 | mixed. A whole band was used up for 1 child in 3,000 |
 
 **Read the third row.** A child who must be taught at every band spends 24 years here. At three minutes a year that is over an hour, across several lessons.
 
@@ -234,7 +237,7 @@ All six: **yes.** [The story's section 14.]
 
 ---
 
-## 8b. What I need from the story thread now
+## 8b. What I asked of the story thread the second time. All five: yes [its section 15]
 
 | | | Why |
 |---|---|---|
@@ -280,6 +283,23 @@ All six: **yes.** [The story's section 14.]
 | | "Always the small row" ignored what code can see | Reading faults are told again, not sent to the small row |
 | | "Finished", the third town, a rest, "decide without me", closing the game: not defined | Sections 4 and 5 |
 | | The years table was wrong | Replaced by the played paths. Section 4 |
+
+## 9c. The third joint review: two blockers, both mine
+
+| | Found | Done |
+|---|---|---|
+| B1 | **A band "ran out" with problems still unused,** and a child who was getting them right was put in a rest. One path could never finish: it needed 12 low problems and there are 11 | The picker gives up one wish at a time and never stops while a problem is unused. The two sung rows are the child's own missed rows, so they use up none. Played again: no band runs out, except for 1 coin-flip child in 3,000 |
+| B2 | **Likely wrong replies could not be typed.** "One count day over" for 12 × 8 is 108. In a two-digit box it became 10, and the dock showed the wrong side | The box takes three digits. Checked from 0 to 999 |
+
+**For the story thread, from the same review (not blockers):**
+1. **The seller counts ahead, and "nobody on Algora can".** Her example says "I counted on: 100, 120, 140, 160." A child can ask why she does not read the keeper's stick herself.
+2. **Her example lands on a double** (80, then 160). A child may take "double the last cut" from it. Count day 6 or 9 would not.
+3. **The cost of too few is not said as a cost.** "Mats with no hook are no use to me" is her loss, and the story adds "nobody is worse off for a mat". Before the promise, saying less sounds safe.
+4. **"A cousin with no plum" costs nothing on the plum side.** Saying 99 loses no plums. And Gran does not say either cost before she asks.
+5. **Where does a sung year happen?** The Market is at the lake. The singer is in a town.
+6. **A rest: does it darken towns already learned?** My note said "in every town". The story says lit windows "from then on". The story is right: a learned town stays lit.
+
+**Mine, still open:** a reading fault fails the small row for the same reason, because it is the same sentence. "Decide without me" is not in the code yet.
 
 **Not done:** the class picture (the reviewer's finding 18). With no server there is nothing to build. It stays a question.
 
