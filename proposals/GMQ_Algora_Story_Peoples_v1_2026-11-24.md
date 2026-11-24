@@ -3,7 +3,7 @@
 **Date:** 24 November 2026. **For:** Marc, and the big world thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the big world thread's.
 **Read with:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md` (the deciding years), and the big world thread's `proposals/GMQ_Big_World_Empty_Places_v1_2026-11-23.md`.
-**Rewritten after one independent review** ("not yet": one blocker, eight major). Section 9 says what changed. The rewrite has not been reviewed.
+**Rewritten after one independent review** ("not yet": one blocker, eight major). Section 9 says what changed. The rewrite has not been re-read by a reviewer. **Marc accepted its four decisions on 24 November** (section 8).
 
 **Tags**
 - [Built]: on the Algora page today. Still only the big world thread's proposal, unless it also says [Source].
@@ -243,6 +243,13 @@ Each is off the path, needs no maths, and tells part of a people's past. Each ha
 ---
 
 ## 8. Your decisions
+
+**Decided [Source: Marc, 24 November: "If you have a logical reason for each one, then I accept your recommendations and we push it."]** All four, as picked below, for these reasons:
+1. **One history for four peoples.** Your rule: a world explored to discover its peoples' history, "not just random things". A shared history makes each find a piece of one story, so the second find a child makes is recognised, not random. The page already ties the peoples together: "The Gate's code is five rules in a row. Each people keeps one" [Built]. The Eights are left out because they came this year: putting them in would be a contradiction a child can spot.
+2. **The elder was there.** History is best found from someone who was there, not told. The elder is the first person a child meets on Algora. So the Year Machine, which the whole deciding-years quest stands on, is met early, through a witness, not first heard of at the lake.
+3. **The Eights are always eight.** Their built name has no reason, and a child will ask. "∞ is an eight lying down" is a reason a Grade 3 child can see for themselves, and it ties to the ship's name from your own 2023 page. Its cost: the crew is fixed at eight, so the build must show eight, or show them as a group.
+4. **The four finds.** The big world thread asked for exactly this. A place a child can walk to with nothing in it is "a promise the world does not keep" (its words). Each find rewards leaving the path, tells part of a people's past, and points to a land the child will reach later (your rule 6). No maths, so nothing competes with the quests. Its cost: four small things to build, and lines for four tellers.
+
 
 | | Decision | My pick | The other way |
 |---|---|---|---|

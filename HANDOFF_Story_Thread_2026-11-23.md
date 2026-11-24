@@ -100,7 +100,7 @@ Every one of these cost a review round.
 ### Algora's five peoples (24 November)
 
 - **The note:** `proposals/GMQ_Algora_Story_Peoples_v1_2026-11-24.md`. One history for four peoples (each handed a skill to a Makers' machine and kept a piece of it); the Eights are guests, outside it. Four finds for the big world thread's empty places: a painted shutter (D), two pairs of footprints (E), a sheet of ship's paper (G), white pebbles (H). One teller each.
-- **One review:** "not yet" (one blocker: the paper gave away why the Gate broke). Rewritten; the rewrite is not re-read. Four decisions for Marc in its section 8.
+- **One review:** "not yet" (one blocker: the paper gave away why the Gate broke). Rewritten; the rewrite is not re-read. **Marc accepted its four decisions on 24 November**, each with its reason (section 8).
 
 ### What may come next
 
