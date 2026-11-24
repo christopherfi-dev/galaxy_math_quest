@@ -138,7 +138,7 @@ Examples: Gemini's image models (Nano Banana Pro, Nano Banana 2), ChatGPT images
    - A child will tap each one, and ask about it.
    - Every picture needs the word check ("if the words say under, look"). That is real work for each picture.
 5. **It costs your time, if you make the pictures.**
-   - A good picture may take 5 to 15 tries. [Proposal: my estimate]
+   - ~~A good picture may take 5 to 15 tries.~~ **Corrected, 24 November: this was my guess, not a test.** [Source: Marc, 24 November: in Gemini he made four pictures for one reading text, and the characters stayed the same in all four.] His experience is better evidence than my guess. The Elder Thimble test (`GMQ_Character_Test_Elder_Thimble_v1_2026-11-24.md`) will give a real count.
    - The whole game needs about 40 to 60 pictures (backgrounds, people, faces, cards). [Proposal: my estimate]
    - The other way: I make them through the Canva connection this session has. I have not tried it, so I do not know if its pictures are good enough. They would be saved in your Canva account.
 6. **Who owns the pictures.**

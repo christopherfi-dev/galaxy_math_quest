@@ -736,7 +736,7 @@ function tallOld(t, x, y, px, py, ts) {
   Speed: the still ground is painted once into blocks of 8 x 8 squares and kept (at most 16). While nothing new is needed, the next block towards the edge is painted ahead,
   one a frame, so walking does not stop to paint. Only the water's glints and the tall grass move each frame.
   Needs from the page: MAP, MAPW, MAPH, REGIONS, regAt, GATEOF, SOLID, TALL, cx, INK, tNow, vw, vh, shadow2, drawGate, tallOld.
-  The tap "Old look" on the top bar shows the page's own drawing, for comparing (sample only). */
+  "Look: old" on the Ship panel shows the page's own drawing, for comparing (sample only). */
 const WL = (() => {
   let on = true; try { on = localStorage.getItem('gmq-look-sample') !== 'old'; } catch (e) {}
   const CH = 8, MAXC = 16, cache = new Map(), spr = new Map(); let cKey = '', sKey = '';
@@ -809,6 +809,7 @@ const WL = (() => {
       fillShape(g, x0, y0, ts, inn, null, css(rim), { grow: .05, r }); fillShape(g, x0, y0, ts, inn, null, css(c), { r }); }
     /* small marks, inside each square: grass tufts, worn marks on paths, ripples on sand, rows in a field, slabs on a stone floor */
     for (let y = y0 - 1; y < y0 + CH + 1; y++) for (let x = x0 - 1; x < x0 + CH + 1; x++) { const t = L(x, y), px = (x - x0) * ts, py = (y - y0) * ts, k = x + ',' + y;
+      if (t === 'b') { g.fillStyle = '#a8713f'; g.fillRect(px - 1, py + ts * .08, ts + 2, ts * .84); g.strokeStyle = '#6b4424'; g.lineWidth = 2; g.beginPath(); for (let k2 = 1; k2 < 4; k2++) { g.moveTo(px + ts * k2 / 4, py + ts * .08); g.lineTo(px + ts * k2 / 4, py + ts * .92); } g.stroke(); g.strokeStyle = INK; g.lineWidth = 1.5; g.strokeRect(px - 1, py + ts * .08, ts + 2, ts * .84); continue; }      /* a bridge is always drawn, even with a thing standing on it */
       if (SOLID[key(x, y)] || GATEOF[key(x, y)]) continue;
       if (t === '.' || t === 'd' || t === 'c' || t === 'p') { const r = reg(x, y), c = landC(r), green = GREEN[r];
         for (let i = 0; i < 3; i++) { if (hash(x, y, 20 + i) > .5) continue; const bx = px + ts * (.15 + hash(x, y, 23 + i) * .7), by = py + ts * (.25 + hash(x, y, 26 + i) * .65);
@@ -821,7 +822,7 @@ const WL = (() => {
       else if (t === 'R') { g.strokeStyle = css(COL.stoneRim); g.lineWidth = 1.2; g.strokeRect(px + 2, py + 2, ts - 4, ts - 4); }
       else if (t === '*') { for (const [a, b, col] of [[.28, .34, '#ffd25e'], [.66, .56, '#ff8fb0'], [.4, .74, '#ffffff'], [.78, .26, '#b9a3ff']]) { const fx = px + ts * (a + (hash(x, y, 70 + a * 9) - .5) * .12), fy = py + ts * (b + (hash(x, y, 71 + b * 9) - .5) * .12);
           g.strokeStyle = '#2f7f3f'; g.lineWidth = Math.max(1, ts * .025); g.beginPath(); g.moveTo(fx, fy); g.lineTo(fx, fy + ts * .12); g.stroke(); g.fillStyle = col; for (let p = 0; p < 5; p++) { const an = p / 5 * 6.283; g.beginPath(); g.arc(fx + Math.cos(an) * ts * .045, fy + Math.sin(an) * ts * .045, ts * .04, 0, 7); g.fill(); } g.fillStyle = '#f08a2c'; g.beginPath(); g.arc(fx, fy, ts * .03, 0, 7); g.fill(); } }
-      else if (t === 'b') { g.fillStyle = '#a8713f'; g.fillRect(px - 1, py + ts * .08, ts + 2, ts * .84); g.strokeStyle = '#6b4424'; g.lineWidth = 2; g.beginPath(); for (let k2 = 1; k2 < 4; k2++) { g.moveTo(px + ts * k2 / 4, py + ts * .08); g.lineTo(px + ts * k2 / 4, py + ts * .92); } g.stroke(); g.strokeStyle = INK; g.lineWidth = 1.5; g.strokeRect(px - 1, py + ts * .08, ts + 2, ts * .84); } } }
+} }
 
   let painted = 0;
   function block(ci, cj, ts) { const d = dprNow(), ck = ts.toFixed(3) + '@' + d; if (ck !== cKey) { for (const c of cache.values()) { c.cv.width = c.cv.height = 0; } cache.clear(); cKey = ck; }
@@ -860,11 +861,9 @@ const WL = (() => {
   function tree(t, x, y, px, py, ts) { if (!TREE[t]) return false; const v = Math.floor(hash(x, y, 1) * 6), j = t === 'a' ? .04 : .14, jx = (hash(x, y, 2) - .5) * j * ts, jy = (hash(x, y, 3) - .5) * j * .7 * ts;
     shadow2(px + jx, py + jy, ts, .38); const s = sprite(t, v, ts); cx.drawImage(s.c, px + jx - s.ox, py + jy - s.oy, s.w, s.h); return true; }
 
-  /* sample only: a button on the top bar to compare with the page's own drawing */
-  function button() { const hr = document.getElementById('hudr'); if (!hr || document.getElementById('b_look')) return; const b = document.createElement('button'); b.className = 'hb' + (on ? ' on' : ''); b.id = 'b_look'; b.type = 'button'; b.textContent = on ? 'New look' : 'Old look';
-    b.onclick = () => { on = !on; b.className = 'hb' + (on ? ' on' : ''); b.textContent = on ? 'New look' : 'Old look'; try { localStorage.setItem('gmq-look-sample', on ? 'new' : 'old'); } catch (e) {} }; hr.insertBefore(b, hr.firstChild); }
-  button();
-  return { get on() { return on; }, ground, tree, paint, hash, cacheSize: () => cache.size };
+  /* sample only: "Look: new / old" on the Ship panel, beside Sound and Music, to compare with the page's own drawing. (Not on the top bar: there it made the bar taller on a phone, and a tap on the ground hit it.) */
+  function toggle() { on = !on; try { localStorage.setItem('gmq-look-sample', on ? 'new' : 'old'); } catch (e) {} }
+  return { get on() { return on; }, toggle, ground, tree, paint, hash, cacheSize: () => cache.size };
 })();
 function tall(t, x, y, px, py, ts) { if (WL.on && WL.tree(t, x, y, px, py, ts)) return; tallOld(t, x, y, px, py, ts); }
 /*WORLD-LOOK-END*/
@@ -1567,8 +1566,8 @@ function panelHtml() {
   const atShip = S.at === 'map' && Math.abs(Math.round(P.px) - 13) + Math.abs(Math.round(P.py) - 82) <= 1;
   /* the buttons come first, so a long list of cards can never push Close off the screen */
   const up = Object.keys(PARTS).filter(k => (S.parts || {})[k]), base = Object.keys(PARTS).filter(k => !(S.parts || {})[k]);
-  return `<h3>Your ship</h3><p class="q">${atShip ? 'Your ship waits here. Everything you do is saved by itself.' : 'Your ship is in the meadow where you landed.'} Rule Stones lit: ${S.lit} of 5.</p><div class="brow four">${atShip || S.at !== 'map' ? '' : btn('home', 'Go back to my ship', 'warm')}${btn('report', 'Mission report', 'quiet')}${btn('sound', 'Sound: ' + (S.sound ? 'on' : 'off'), 'quiet')}${btn('music', 'Music: ' + (MUS.on ? 'on' : 'off'), 'quiet')}${btn('close', 'Close', 'quiet')}${btn('reset', 'Start again', 'quiet')}</div><p class="q"><b>Ship parts:</b> ${up.map(k => PARTS[k] + ' <b>Level 2</b>').join(', ')}${up.length && base.length ? '. ' : ''}${base.length ? 'Level 1: ' + base.map(k => PARTS[k]).join(', ') : ''}</p><p class="q"><b>Cards won on Algora:</b> ${S.cards.length ? S.cards.map(c => c.epic ? '<b>' + esc(c.name) + ' (EPIC)</b>' : esc(c.name)).join(', ') : 'none yet'}</p><p class="dim">More of Algora is coming. (${VERSION})</p>`; }
-function panelPress(b) { if (b === 'close') return openPanel(PANEL); if (b === 'report' || b === 'ship') { PANEL = b; return drawTask(); } if (b === 'sound') { S.sound = !S.sound; save(); beep(600, .08); return drawTask(); } if (b === 'music') { musSet(!MUS.on); return drawTask(); }
+  return `<h3>Your ship</h3><p class="q">${atShip ? 'Your ship waits here. Everything you do is saved by itself.' : 'Your ship is in the meadow where you landed.'} Rule Stones lit: ${S.lit} of 5.</p><div class="brow four">${atShip || S.at !== 'map' ? '' : btn('home', 'Go back to my ship', 'warm')}${btn('report', 'Mission report', 'quiet')}${btn('sound', 'Sound: ' + (S.sound ? 'on' : 'off'), 'quiet')}${btn('music', 'Music: ' + (MUS.on ? 'on' : 'off'), 'quiet')}${btn('look', 'Look: ' + (WL.on ? 'new' : 'old'), 'quiet')}${btn('close', 'Close', 'quiet')}${btn('reset', 'Start again', 'quiet')}</div><p class="q"><b>Ship parts:</b> ${up.map(k => PARTS[k] + ' <b>Level 2</b>').join(', ')}${up.length && base.length ? '. ' : ''}${base.length ? 'Level 1: ' + base.map(k => PARTS[k]).join(', ') : ''}</p><p class="q"><b>Cards won on Algora:</b> ${S.cards.length ? S.cards.map(c => c.epic ? '<b>' + esc(c.name) + ' (EPIC)</b>' : esc(c.name)).join(', ') : 'none yet'}</p><p class="dim">More of Algora is coming. (${VERSION})</p>`; }
+function panelPress(b) { if (b === 'close') return openPanel(PANEL); if (b === 'report' || b === 'ship') { PANEL = b; return drawTask(); } if (b === 'sound') { S.sound = !S.sound; save(); beep(600, .08); return drawTask(); } if (b === 'music') { musSet(!MUS.on); return drawTask(); } if (b === 'look') { WL.toggle(); return drawTask(); }
   if (b === 'home') { openPanel(PANEL); FADE = 1; P.route = []; P.then = null; P.px = 13; P.py = 82; P.dir = 'down'; cam.x = 13.5; cam.y = 82.5; see(); note('You follow your own tracks back to the ship.'); save(); drawWords(); return setPlace(); }
   if (b === 'reset') { PANEL = ''; $('b_ship').classList.remove('on'); TASK = { kind: 'reset', title: 'Start again?' }; drawWords(); return drawTask(); } }
 function toggleBig() { if (reading() || TASK || PIC) return; BIG = !BIG; $('b_map').classList.toggle('on', BIG); if (BIG) { PANEL = ''; $('b_needs').classList.remove('on'); $('b_ship').classList.remove('on'); } drawWords(); drawTask(); setPlace(); }

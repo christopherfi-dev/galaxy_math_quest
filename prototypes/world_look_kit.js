@@ -12,7 +12,7 @@
   Speed: the still ground is painted once into blocks of 8 x 8 squares and kept (at most 16). While nothing new is needed, the next block towards the edge is painted ahead,
   one a frame, so walking does not stop to paint. Only the water's glints and the tall grass move each frame.
   Needs from the page: MAP, MAPW, MAPH, REGIONS, regAt, GATEOF, SOLID, TALL, cx, INK, tNow, vw, vh, shadow2, drawGate, tallOld.
-  The tap "Old look" on the top bar shows the page's own drawing, for comparing (sample only). */
+  "Look: old" on the Ship panel shows the page's own drawing, for comparing (sample only). */
 const WL = (() => {
   let on = true; try { on = localStorage.getItem('gmq-look-sample') !== 'old'; } catch (e) {}
   const CH = 8, MAXC = 16, cache = new Map(), spr = new Map(); let cKey = '', sKey = '';
@@ -137,11 +137,9 @@ const WL = (() => {
   function tree(t, x, y, px, py, ts) { if (!TREE[t]) return false; const v = Math.floor(hash(x, y, 1) * 6), j = t === 'a' ? .04 : .14, jx = (hash(x, y, 2) - .5) * j * ts, jy = (hash(x, y, 3) - .5) * j * .7 * ts;
     shadow2(px + jx, py + jy, ts, .38); const s = sprite(t, v, ts); cx.drawImage(s.c, px + jx - s.ox, py + jy - s.oy, s.w, s.h); return true; }
 
-  /* sample only: a button on the top bar to compare with the page's own drawing */
-  function button() { const hr = document.getElementById('hudr'); if (!hr || document.getElementById('b_look')) return; const b = document.createElement('button'); b.className = 'hb' + (on ? ' on' : ''); b.id = 'b_look'; b.type = 'button'; b.textContent = on ? 'New look' : 'Old look';
-    b.onclick = () => { on = !on; b.className = 'hb' + (on ? ' on' : ''); b.textContent = on ? 'New look' : 'Old look'; try { localStorage.setItem('gmq-look-sample', on ? 'new' : 'old'); } catch (e) {} }; hr.insertBefore(b, hr.firstChild); }
-  button();
-  return { get on() { return on; }, ground, tree, paint, hash, cacheSize: () => cache.size };
+  /* sample only: "Look: new / old" on the Ship panel, beside Sound and Music, to compare with the page's own drawing. (Not on the top bar: there it made the bar taller on a phone, and a tap on the ground hit it.) */
+  function toggle() { on = !on; try { localStorage.setItem('gmq-look-sample', on ? 'new' : 'old'); } catch (e) {} }
+  return { get on() { return on; }, toggle, ground, tree, paint, hash, cacheSize: () => cache.size };
 })();
 function tall(t, x, y, px, py, ts) { if (WL.on && WL.tree(t, x, y, px, py, ts)) return; tallOld(t, x, y, px, py, ts); }
 /*WORLD-LOOK-END*/

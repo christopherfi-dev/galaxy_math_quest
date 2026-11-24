@@ -5,7 +5,8 @@
 // For EVERY square of the whole map (128 x 96), it paints the ground with the kit and reads the colour at the middle of the square:
 //   - a water square (~) must look like water (blue), and
 //   - every other square (land, sand, path, bridge...) must not.
-// It also checks: the kit leaves walking alone (every square walks the same with the new look on and off); no page errors; nothing asked of the network but the fonts.
+// It also checks: the kit leaves walking alone (every square walks the same with the new look on and off); the top bar is the big world's own
+// (no button added there: on a phone a taller bar took taps meant for the ground); no page errors; nothing asked of the network but the fonts.
 // Run:  node checks/world_look_check.js [page]      (default: prototypes/world_look_sample.html)
 const { chromium } = require('playwright'); const path = require('path');
 const FILE = process.argv.find(a => /\.html$/.test(a)) || path.resolve(__dirname, '..', 'prototypes', 'world_look_sample.html');
@@ -20,13 +21,15 @@ const FILE = process.argv.find(a => /\.html$/.test(a)) || path.resolve(__dirname
     return { n, bad, on: WL.on }; });
   // walking with the look off: switch, and compare every square
   const before = await p.evaluate(() => { const o = []; for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) o.push(walkable(x, y) ? 1 : 0); return o.join(''); });
-  const off = await p.evaluate(() => { document.getElementById('b_look').click(); return WL.on; });      /* the story's first card is up, and the veil waits for it: press the button itself */
+  const off = await p.evaluate(() => { WL.toggle(); return WL.on; });      /* what "Look: old" on the Ship panel does */
   const after = await p.evaluate(() => { const o = []; for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) o.push(walkable(x, y) ? 1 : 0); return o.join(''); });
-  await p.evaluate(() => document.getElementById('b_look').click());
+  await p.evaluate(() => WL.toggle());
   const faults = [];
   if (r.bad.length) faults.push(...r.bad.map(s => 'square ' + s));
   if (!r.on) faults.push('the new look was not on at the start');
-  if (off) faults.push('the Old look button did not switch the look off');
+  if (off) faults.push('Look: old did not switch the look off');
+  const bar = await p.evaluate(() => Array.from(document.querySelectorAll('#hud button')).map(b => b.id).join(','));
+  if (bar !== 'b_map,b_needs,b_ship,b_mus') faults.push('the top bar has changed: ' + bar);
   if (before !== after) faults.push('walking changed when the look was switched');
   if (errs.length) faults.push('page errors: ' + errs.join(' | '));
   if (reqs.length) faults.push('asked the network for: ' + reqs.join(', '));
