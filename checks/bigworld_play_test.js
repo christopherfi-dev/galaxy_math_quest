@@ -6,9 +6,13 @@
 //
 // What it plays, on an iPad held sideways (1180 x 745):
 //   1  the story comes first: six pages before the map; no maths on them
+//   1a the first lesson at the ship [Marc, 24 November]: a Mender shows 3 making 5 in a practice machine; the child writes it down, picks another number
+//      (the same one again is turned back), writes it down, taps + (another sign is turned back) and 2 (another number is turned back); the machine says
+//      + 2; the cadet cannot walk away until it is done; then the Mender sends the cadet to Elder Rivet
 //   2  a machine before the elder: a Mender sends the cadet to the village; no task opens
 //   3  the pan before the pouch: it goes on the Needs list; no task opens
-//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Rivet's story, then the finished example (the old pump)
+//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Rivet's story (the painted board
+//      no longer follows it: the lesson at the ship is the finished example since 24 November)
 //   5  a machine: nothing typed, a number too big, tests, "handed back", notes written only when the child taps
 //   6  a wrong plate: it is shown wrong by a test, and the right rule is never said
 //   7  closing the page in the middle of a machine and opening it again: the same machine, the same notes
@@ -100,6 +104,18 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     // 1. the story first
     say(s.reading && s.pages === 6, `${name}: the story at the start has ${s.pages} pages, not 6`); await layout(p, `${name}, the first page`); await shot(p, tag + '01_story');
     const intro = await readAll(p); say(intro.length === 6 && /broken/.test(intro[0]) && /S\.S\. Infinity/.test(intro[2]) && /mission/i.test(intro[4]), `${name}: the story pages are not as written`); say(!intro.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the story`);
+    // 1a. the first lesson
+    let ls = await st(p); say(ls.task && ls.task.kind === 'lesson' && ls.reading, `${name}: no lesson at the ship after the story`);
+    await readAll(p); await p.waitForFunction(() => window.__bw.S().lesson && window.__bw.S().lesson.step === 1, null, { timeout: 15000 });
+    let lp = await readAll(p); say(/put in 3\. Out came 5/.test(lp.join(' ')), `${name}: the Mender did not show 3 making 5: ${lp.join(' | ')}`);
+    await press(p, 'write'); await readAll(p); say(!(await p.evaluate(() => { command('go north'); return P.route.length > 0; })), `${name}: the cadet could walk away during the lesson`);
+    await pad(p, 3); await press(p, 'pull'); ls = await st(p); say(/already/.test(ls.task.msg), `${name}: picking 3 again was not turned back`);
+    await pad(p, 6); await press(p, 'pull'); await p.waitForTimeout(60); await idle(p); await p.waitForTimeout(80); ls = await st(p); say(/6 went in\. 8 came out/.test(ls.task.msg), `${name}: 6 did not make 8 in the practice machine: ${ls.task.msg}`); await shot(p, tag + '02a_lesson'); await layout(p, `${name}, the first lesson`);
+    await press(p, 'write'); lp = await readAll(p); say(/\+ 2/.test(lp.join(' ')) && /3 makes 5\. 6 makes 8/.test(lp.join(' ')), `${name}: the Mender did not read the notes and name the pattern: ${lp.join(' | ')}`);
+    await p.click('#task [data-sign="times"]'); ls = await st(p); say(/sign is \+/.test(ls.task.msg), `${name}: a wrong sign was not turned back`);
+    await p.click('#task [data-sign="plus"]'); await pad(p, 5); ls = await st(p); say(/How many more/.test(ls.task.msg), `${name}: a wrong number was not turned back`);
+    await pad(p, 2); await p.waitForTimeout(80); await shot(p, tag + '02a_lesson_labelled'); lp = await readAll(p); say(/Elder Rivet/.test(lp.join(' ')), `${name}: the lesson does not send the cadet to the elder`);
+    ls = await st(p); say(ls.S.flags.lessonDone && !ls.task && ls.S.lesson.notes.length === 2, `${name}: the lesson did not end with two notes`);
     s = await st(p); say(!s.reading && s.x === 13 && s.y === 82 && s.place === 'Mender Meadow', `${name}: after the story the cadet is not at the ship in the Mender Meadow`); await layout(p, `${name}, the map`); await shot(p, tag + '02_map');
 
     // 1b. TYPING. The small keys on the desk, then "Do it". Then a real keyboard. Words the game knows, and one it does not.
@@ -124,7 +140,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     await useThing(p, 'village'); s = await st(p); say(s.S.at === 'village' && s.place === 'Mender Village', `${name}: the village did not open`); await readAll(p); await p.waitForTimeout(500); await shot(p, tag + '04_village'); await layout(p, `${name}, the village`);
     await word(p, 'rstone'); pg = await readAll(p); say(pg.some(t => /dark/.test(t)), `${name}: the Rule Stone should be dark`);
     await word(p, 'elder'); s = await st(p); say(s.reading, `${name}: the elder says nothing`); pg = await readAll(p, 6); say(pg.length === 6 && /plate/.test(pg[4]), `${name}: the elder's story is not 6 pages ending in the job`);
-    s = await st(p); say(s.reading && s.pic === 'The painted board', `${name}: the finished example does not follow the elder's story`); await p.click('#readok'); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '05_example_pump'); await layout(p, `${name}, the finished example`); pg = await readAll(p);
+    s = await st(p); say(s.pic !== 'The painted board', `${name}: the painted board still follows the elder's story (the lesson at the ship does its job now)`); await shot(p, tag + '05_after_elder'); pg = await readAll(p);
     s = await st(p); say(s.S.flags.metElder && s.S.bag.indexOf('notebook') >= 0 && s.S.needs.some(n => n.id === 'plates'), `${name}: after the elder there is no notebook or no need`);
     say(NUM.rule.times.n !== 4 && NUM.rule.plus.n !== 6, `${name}: the example's rules are this child's rules`);
     await word(p, 'door'); s = await st(p); say(s.S.at === 'map', `${name}: could not leave the village`);

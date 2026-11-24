@@ -22,7 +22,7 @@ const bad = [], say = (ok, what) => { if (!ok) { bad.push(what); console.log('  
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true }), p = await ctx.newPage(), errs = [];
     p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
     await p.goto(URL + '?seed=3'); await p.evaluate(() => localStorage.clear()); await p.goto(URL + '?seed=3'); await p.waitForFunction(() => window.__bw && window.__bw.READ.q.length > 0);
-    const t0 = Date.now();
+    const t0 = Date.now(); await p.evaluate(() => setFlag('lessonDone'));      /* the first lesson is the play test's; this test reads cards */
     const st = () => p.evaluate(() => { const r = document.getElementById('read').getBoundingClientRect(), v = document.getElementById('veil'), vr = v ? v.getBoundingClientRect() : null, ok = document.getElementById('readok');
       return { card: [r.left, r.top, r.right, r.bottom], shown: !document.getElementById('read').hidden, veil: !!v && !v.hidden && vr.width >= innerWidth - 1 && vr.height >= innerHeight - 1, asleep: ok.disabled, lab: (document.getElementById('readlab') || ok).textContent,
         i: window.__bw.READ.i, n: window.__bw.READ.q.length, page: window.__bw.READ.q[window.__bw.READ.i] || '', nudge: document.getElementById('read').classList.contains('nudge'), say: !document.getElementById('readsay').disabled }; });

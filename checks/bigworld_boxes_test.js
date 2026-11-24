@@ -16,7 +16,7 @@ const bad = [], say = (ok, what) => { if (!ok) { bad.push(what); console.log('  
   for (const [name, w, h] of [['iPad sideways', 1180, 745], ['iPad upright', 820, 1180], ['phone', 390, 760]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true }), p = await ctx.newPage(), errs = [];
     p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-    await p.goto(URL + '?seed=4&fastread=1'); await p.evaluate(() => localStorage.clear()); await p.goto(URL + '?seed=4&fastread=1'); await p.waitForFunction(() => window.__bw && window.__bw.S());
+    await p.goto(URL + '?seed=4&fastread=1'); await p.evaluate(() => localStorage.clear()); await p.goto(URL + '?seed=4&fastread=1'); await p.waitForFunction(() => window.__bw && window.__bw.S()); await p.evaluate(() => setFlag('lessonDone'));
     const readAll = async () => { for (let i = 0; i < 30; i++) { if (!(await p.evaluate(() => window.__bw.READ.q.length > 0))) return; await p.click('#readok'); await p.waitForTimeout(60); } };
     await readAll();
     // stand at the Pond Machine, with the elder met, and open it
