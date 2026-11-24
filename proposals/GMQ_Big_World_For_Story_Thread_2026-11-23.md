@@ -118,3 +118,18 @@ Not built tonight: the Year Machine's stones and Elder Rivet's line about it (yo
 ---
 
 **24 November, from the big world thread.** Marc confirmed the name ("Ok. Change his name."). In the page ("big world 11") the elder is **Elder Thimble**. "rivet" is still understood when typed, and never shown. The Year Machine's two lines from your 16j are in: the elder's, when the Menders' Rule Stone lights; the harbour keeper's, in her first meeting. Your story note still says Elder Rivet in places: that is yours to change.
+
+---
+
+**24 November, from the big world thread: a request, on Marc's decision.**
+
+Marc saw that a child can cross the old stones and skip all four machines. He decided [Source, `INFO_FROM_MARC.md`, 24 November]:
+1. **Elder Thimble gives a Mender's tool** when all four plates are true, and **a later task cannot be done without it.** ("I think a tool for the later task.")
+2. The old stones work only after Pim's spinner is found and Pim tells the cadet to use them. **Built** in big world 12: the stones lie under the water until Pim's secret ("Push the old post, and the stones come up").
+
+**What I need from you, to build part 1:**
+- **The tool.** What it is and its name (a Mender's thing; Elder Thimble's own?), and the elder's words when he gives it.
+- **The later task.** On the Reach's main path, so that the Rillfolk's Rule Stone cannot be lit without it. Something Rillfolk with a burnt plate, where the cadet finds the rule (test it, write it down, label it) and makes the plate with the tool. Why only the Menders' tool can make it. One idea only, yours to take or leave: the harbour's water gate, which opens for the fleet, has a burnt plate, so a right load still cannot sail until the gate has its plate.
+- **A child who came by the stones without the tool.** Who says what, kindly, so the child knows to go back to Elder Thimble and why. Nobody says "wrong".
+
+**Limits:** no new place (the built Reach only); the maths is finding a rule (3.OA.9), one step on from the Meadow's machines (for example a rule a child sees as a table), which also prepares the deciding years. The maths I fit when your words are written.

@@ -30,7 +30,8 @@
 //      the Makers' box with its lid example, wrong wheels shown wrong, the right wheels: an epic card
 //  1b  TYPING: the small keys on the desk and a real keyboard; push, take, dig, dance, help, hint, and a word the game does not know
 //  +   a loose cog may roll out on any walk; the test catches it. Music is on at first and plays once the child has tapped [Marc, 24 November: "Can you add music?"]; the Music button on the top bar and the one on the ship panel each stop it and start it again, and the choice is kept.
-//  13  a second child crosses by the old stones only: a splash gives a new pattern; five right stones get across
+//  13  a second child crosses by the old stones only. First the stones lie under the water and the post does nothing; the child finds Pim's spinner, Pim tells
+//      how to raise them, the post raises them [Marc, 24 November]; a splash gives a new pattern; five right stones get across
 //  14  closing in the middle of the stones and opening again
 //  15  the big map, the Needs list, the ship panel, the report, "Go back to my ship"
 // On all three screens (1180 x 745, 820 x 1180, 390 x 760): nothing scrolls, nothing spills, every button of every task is on the screen,
@@ -269,7 +270,13 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
   // 13, 14. a second child: the old stones only
   console.log('--- the old stones, iPad sideways and phone');
   for (const [w, h, name, seed] of [[1180, 745, 'stones, iPad sideways', 101], [390, 760, 'stones, phone', 202]].filter(q => q[2].toLowerCase().indexOf(ONLY.toLowerCase()) >= 0)) { played++; const p = await open(b, w, h, seed); const tag = SHOTS ? `${w}x${h}_` : '';
-    await readAll(p, 6); await doLesson(p); await useThing(p, 'cutter'); let pg0 = await readAll(p); say(/reeds/.test(pg0.join(' ')), `${name}: the reed cutter says nothing about reeds`); await useThing(p, 'post'); let s = await st(p); say(s.reading && s.pic === 'The old post', `${name}: the finished example (the old rope) did not come first`); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '22_stones_example'); let pg = await readAll(p); say(/go down/.test(pg.join(' ')), `${name}: the example does not say a pattern can go down`);
+    await readAll(p, 6); await doLesson(p); await useThing(p, 'cutter'); let pg0 = await readAll(p); say(/reeds/.test(pg0.join(' ')), `${name}: the reed cutter says nothing about reeds`); await useThing(p, 'post'); let pg = await readAll(p), s = await st(p);
+    say(/too deep/.test(pg.join(' ')) && !s.task && !s.S.flags.stonesUp && s.S.needs.some(n => n.id === 'stones' && /under the water/.test(n.text)), `${name}: before Pim's secret the old stones did not stay under the water: ${pg.join(' / ')}`); await shot(p, tag + '21b_stones_under_water');
+    // Pim's spinner: found by the pond, given to Pim; Pim tells how to raise the stones
+    await useThing(p, 'spin'); await readAll(p); await useThing(p, 'village'); const arrive = await readAll(p); await word(p, 'kid'); pg = await readAll(p); s = await st(p);      /* the village's own words first (the elder greets a cadet he has not met) */
+    say(s.S.flags.spinGiven && /Push the old post/.test(pg.join(' ')) && s.S.needs.some(n => n.id === 'stones' && /as Pim said/.test(n.text)), `${name}: Pim did not tell how to raise the stones: ${pg.join(' / ')}`);
+    await useThing(p, 'post'); s = await st(p); say(s.reading && /push the old post/i.test(s.page) && s.S.flags.stonesUp, `${name}: the post did not raise the stones (${s.page})`); await shot(p, tag + '21c_stones_rise'); await p.click('#readok'); await p.click('#readok'); await p.waitForTimeout(120);
+    s = await st(p); say(s.reading && s.pic === 'The old post', `${name}: the finished example (the old rope) did not come first`); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '22_stones_example'); pg = await readAll(p); say(/go down/.test(pg.join(' ')), `${name}: the example does not say a pattern can go down`);
     s = await st(p); say(s.task && s.task.kind === 'stones', `${name}: the stones did not open`); await layout(p, name); await shot(p, tag + '23_stones');
     const rounds = await p.evaluate(seed => [0, 1, 2].map(r => window.__bw.stones(seed, r)), seed);
     say(s.tasktext.indexOf(rounds[0].shown.join(', ')) >= 0, `${name}: the post's numbers are not on the desk`);
