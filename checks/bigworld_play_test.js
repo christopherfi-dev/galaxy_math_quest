@@ -34,7 +34,7 @@
 //  14  closing in the middle of the stones and opening again
 //  15  the big map, the Needs list, the ship panel, the report, "Go back to my ship"
 // On all three screens (1180 x 745, 820 x 1180, 390 x 760): nothing scrolls, nothing spills, every button of every task is on the screen,
-// the reading card is in the middle of the screen, high up, the picture has at least 45% of the screen. The page asks the network for nothing but the game's two fonts.
+// the reading card is on the screen and never over the picture, the picture has at least 45% of the screen. The page asks the network for nothing but the game's two fonts.
 //
 // Run:  node checks/bigworld_play_test.js [--shots folder] [--only phone]     (--only plays the screens whose name holds that word)
 const { chromium } = require('playwright');
@@ -49,7 +49,7 @@ const SIGN = { times: '×', plus: '+', minus: '−', share: '÷' };
 
 async function open(b, w, h, seed) { const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: SHOTS ? 2 : 1, hasTouch: true }), p = await ctx.newPage(); p.errs = []; p.reqs = [];
   p.on('pageerror', e => p.errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') p.errs.push(m.text()); }); p.on('request', r => p.reqs.push(r.url()));
-  p.seedUrl = URL + '?seed=' + seed + '&fastread=1';      /* fastread: OK wakes at once, so this test does not wait 4 to 5 seconds on every card. checks/bigworld_reading_test.js checks the real wait. */ await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S()); return p; }
+  p.seedUrl = URL + '?seed=' + seed + '&fastread=1';      /* fastread: OK wakes at once, so this test does not wait 2.5 to 3.5 seconds on every card. checks/bigworld_reading_test.js checks the real wait. */ await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S()); return p; }
 const st = p => p.evaluate(() => { const b = window.__bw, S = b.S(); return { S: JSON.parse(JSON.stringify(S)), x: Math.round(b.P.px), y: Math.round(b.P.py), reading: b.READ.q.length > 0, page: b.READ.q[b.READ.i] || '', pages: b.READ.q.length, task: b.task() ? JSON.parse(JSON.stringify(b.task())) : null, panel: b.panel(), big: b.big(), pic: b.pic() ? b.pic().title : '', idle: b.idle(), place: document.getElementById('place').textContent, desk: document.getElementById('desk').innerText, tasktext: document.getElementById('task').innerText }; });
 const idle = p => p.waitForFunction(() => window.__bw.idle(), null, { timeout: 30000 }).catch(async e => { const d = await p.evaluate(() => ({ route: P.route.length, at: [Math.round(P.px), Math.round(P.py)], to: P.route.slice(-1)[0], scto: SC.to, ma: MA.phase, fade: FADE, pic: PIC && PIC.title, task: TASK && TASK.kind, reading: READ.q.length, held: READ.held, big: BIG, place: S.at })).catch(() => ({}));
   throw new Error('the game was not idle after 30 seconds: ' + JSON.stringify(d)); });      /* say why, so a stall can be found */
@@ -88,12 +88,12 @@ async function plate(p, rule) { await press(p, 'plate'); await p.click(`#task [d
 async function layout(p, where) { const L = await p.evaluate(() => { const r = e => { const q = e.getBoundingClientRect(); return [q.left, q.top, q.right, q.bottom, q.width, q.height]; }, vis = e => !!(e.offsetWidth || e.offsetHeight), stage = r(document.getElementById('stage')), desk = r(document.getElementById('desk')), read = document.getElementById('read');
     const btns = [...document.querySelectorAll('#desk button, #hud button')].filter(vis).map(b => ({ t: b.textContent.trim().slice(0, 24), r: r(b) }));
     const task = document.getElementById('task'), words = document.getElementById('words');
-    return { iw: innerWidth, ih: innerHeight, sw: document.scrollingElement.scrollWidth, sh: document.scrollingElement.scrollHeight, sy: scrollY, stage, desk, read: read.hidden ? null : r(read), readLow: read.classList.contains('low'), btns, taskScroll: task.hidden ? 0 : task.scrollHeight - task.clientHeight, wordsScroll: words.hidden ? 0 : words.scrollHeight - words.clientHeight, deskScroll: document.getElementById('desk').scrollHeight - document.getElementById('desk').clientHeight }; });
+    return { iw: innerWidth, ih: innerHeight, sw: document.scrollingElement.scrollWidth, sh: document.scrollingElement.scrollHeight, sy: scrollY, stage, desk, read: read.hidden ? null : r(read), btns, taskScroll: task.hidden ? 0 : task.scrollHeight - task.clientHeight, wordsScroll: words.hidden ? 0 : words.scrollHeight - words.clientHeight, deskScroll: document.getElementById('desk').scrollHeight - document.getElementById('desk').clientHeight }; });
   say(L.sw <= L.iw && L.sh <= L.ih && L.sy === 0, `${where}: the page scrolls or spills (${L.sw} x ${L.sh} in ${L.iw} x ${L.ih})`);
   say(L.stage[4] * L.stage[5] >= L.iw * L.ih * .45, `${where}: the picture has under 45% of the screen (${Math.round(L.stage[4] * L.stage[5] / (L.iw * L.ih) * 100)}%)`);
   for (const b of L.btns) say(b.r[0] >= -1 && b.r[2] <= L.iw + 1 && b.r[1] >= -1 && b.r[3] <= L.ih + 1, `${where}: the button "${b.t}" is off the screen`);
   say(L.taskScroll <= 2, `${where}: the task on the desk needs scrolling (${L.taskScroll}px hidden)`); say(L.wordsScroll <= 2, `${where}: the word rows need scrolling (${L.wordsScroll}px hidden)`); say(L.deskScroll <= 2, `${where}: the desk overflows by ${L.deskScroll}px`);
-  if (L.read) say(L.read[0] >= -1 && L.read[2] <= L.iw + 1 && L.read[1] >= 0 && L.read[3] <= L.ih + 1 && Math.abs((L.read[0] + L.read[2]) / 2 - L.iw / 2) <= 3 && (L.read[1] <= L.ih * .3 || (L.readLow && L.read[1] <= L.ih * .6)),      /* on a phone, a finished example's card sits just below the picture */ `${where}: the reading card is not in the middle of the screen, high up (it is at ${L.read.slice(0, 4).map(Math.round).join(', ')})`);      /* [Marc, 24 November] */
+  if (L.read) say(L.read[0] >= -1 && L.read[2] <= L.iw + 1 && L.read[1] >= 0 && L.read[3] <= L.ih + 1 && (L.read[0] >= L.stage[2] - 2 || L.read[1] >= L.stage[3] - 2), `${where}: the reading card is off the screen or over the picture (it is at ${L.read.slice(0, 4).map(Math.round).join(', ')}; the picture ends at ${Math.round(L.stage[2])}, ${Math.round(L.stage[3])})`);      /* [Marc, 24 November: "it's blocking some of these scenes"] */
   for (const b of L.btns) say(b.r[5] >= 34, `${where}: the button "${b.t}" is only ${Math.round(b.r[5])}px tall`); }
 
 (async () => {
