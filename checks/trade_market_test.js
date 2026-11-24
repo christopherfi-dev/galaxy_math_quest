@@ -75,9 +75,9 @@ async function run(b, size, w, h, seed, extra) {
   const t0 = await noTotals('the first board'); if (!/To buy/.test(t0.d)) fail(size, 'no way to the price list from the board'); await shot('6_board');
   // tapping the picture: a card, then a planet on the map, each loads a crate, and a second tap takes it off (the layout is worked out as the page does)
   { const r = await p.evaluate(() => { const c = document.getElementById('cv').getBoundingClientRect(); return { x: c.left, y: c.top, w: c.width, h: c.height }; });
-    const ORDER = 'FSJIGOBRCNPKTMLHQDEA'.split(''), vw = r.w, vh = r.h, mm = Math.min(vw, vh), fs = Math.max(11, Math.min(17, mm * .025)), pad = Math.max(6, mm * .012), cols = vw >= 560 ? 5 : 3, cw = (vw - pad * (cols + 1)) / cols, cfs = Math.max(11, Math.min(fs, cw / 9.2)), ch = cfs * 4.6;
-    const off = (vw - cols * cw - (cols + 1) * pad) / 2, rows = Math.ceil(5 / cols), base = vh - fs * 2.7, ry = Math.max(40, base - (rows * ch + (rows + 1) * pad + fs * .6)), n = s.board.offers[1].n;
-    const a = (-78 + ORDER.indexOf(n) * (156 / 19)) * Math.PI / 180, rr = .2 + .8 * LY[n] / 71, X = vw / 2 + Math.sin(a) * rr * vw * .47, Y = base - Math.cos(a) * rr * ry;
+    const ORDER = 'FSJIGOBRCNPKTMLHQDEA'.split(''), vw = r.w, vh = r.h, mm = Math.min(vw, vh), fs = Math.max(12, Math.min(17, mm * .025)), pad = Math.max(6, mm * .012), cols = vw >= 560 ? 5 : 3, cw = (vw - pad * (cols + 1)) / cols, cfs = Math.max(11, Math.min(fs, cw / 9.2)), ch = cfs * 4.6;
+    const off = (vw - cols * cw - (cols + 1) * pad) / 2, rows = Math.ceil(5 / cols), base = vh - fs * 2.7, rad = Math.max(40, Math.min(vw * .47, base - (rows * ch + (rows + 1) * pad + fs * .6))), n = s.board.offers[1].n;
+    const a = (-78 + ORDER.indexOf(n) * (156 / 19)) * Math.PI / 180, rr = .2 + .8 * LY[n] / 71, X = vw / 2 + Math.sin(a) * rr * rad, Y = base - Math.cos(a) * rr * rad;
     await p.mouse.click(r.x + off + pad + cw / 2, r.y + pad + ch / 2); await p.waitForTimeout(60); await p.mouse.click(r.x + X, r.y + Y); await p.waitForTimeout(60);
     let q = await st(); if (q.sel.indexOf(0) < 0) fail(size, 'tapping a card did not load a crate'); if (q.sel.indexOf(1) < 0) fail(size, 'tapping a planet on the map did not load a crate');
     await noTotals('tapping the picture'); await p.mouse.click(r.x + off + pad + cw / 2, r.y + pad + ch / 2); await p.mouse.click(r.x + X, r.y + Y); await p.waitForTimeout(60);
@@ -90,10 +90,13 @@ async function run(b, size, w, h, seed, extra) {
   // trip 1: the best plan, with wrong answers first, and the page closed mid-flight
   let best = await bestOf(); let end = await trip(best.pick, { wrong: true, reload: true, shot: true }); await shot('9_result1');
   // the ship's log
-  await click('#trlog'); d = await desk(); if (!/Every trip/.test(d) || !d.includes(String(end))) fail(size, 'the ship\'s log does not keep trip 1'); if (extra && /last=/.test(extra) && !/Last season/.test(d)) fail(size, 'the old season is not in the log'); await shot('10_log'); await click('#try');
+  await click('#trlog'); d = await desk(); if (!/Every trip/.test(d) || !d.includes(String(end))) fail(size, 'the ship\'s log does not keep trip 1'); if (extra && /last=/.test(extra) && (!/older season/.test(d) || /2,000|2000/.test(d))) fail(size, 'the old season is not in the log, or its number is shown'); await shot('10_log'); await click('#try');
   // a trip to Planet R without enough for the stone (one size only)
-  if (size === 'ipad_sideways') { await click('#trbuy'); await shot('11_to_buy'); s = await st(); await click('#trstone'); await fill('ans', 120); await fill('ans2', s.gems - 120); await click('#try'); m = await msg(); seen.add(m);
-    if (!/land on Planet R/.test(m)) fail(size, 'the stone pump did not say what is left: ' + m); await click('#trfly'); await waitStep('shome'); d = await desk(); if (!/not enough/.test(d)) fail(size, 'not enough for the stone is not said'); await shot('12_not_enough');
+  if (size === 'ipad_sideways') { await click('#trbuy'); await shot('11_to_buy'); s = await st();
+    await click('#trsup'); m = await msg(); seen.add(m); if (!/Not enough yet/.test(m) || (await st()).gems !== s.gems) fail(size, 'supplies with too few gems: ' + m);
+    if (/\b1?\d\d\b gems more|need \d/.test(m)) fail(size, 'the supplies message works out the difference for the child');
+    await click('#trstone'); await fill('ans', 120); await fill('ans2', s.gems - 120); await click('#try'); m = await msg(); seen.add(m);
+    if (!/land on Planet R/.test(m) || !/costs 300/.test(m)) fail(size, 'the stone pump did not put what is left beside the price: ' + m); await click('#trfly'); await waitStep('shome'); d = await desk(); if (!/not enough/.test(d) || !/fuel here cost 120/.test(d)) fail(size, 'not enough for the stone, and what the fuel cost, are not said'); await shot('12_not_enough');
     await click('#try'); await waitStep('plan'); s = await st(); if (s.gems !== end - 120) fail(size, 'the fuel to R was not spent'); end = s.gems; }
   // the next trips: one with a loss, then the best, until the stone and the supplies are bought
   let trips = 1, stoneAt = 0, lossSeen = false;
@@ -112,7 +115,7 @@ async function run(b, size, w, h, seed, extra) {
     if (!lossSeen && loss >= 0 && 2 * LY[o[loss].n] <= s.gems) { const alt = plans(o, s.gems).filter(x => x.fits && x.pick.indexOf(loss) >= 0).sort((a, c) => c.end - a.end)[0]; if (alt) { pick = alt.pick; lossSeen = true; } }
     await trip(pick, { shot: trips === 1 && size !== 'ipad_sideways' }); trips++;
     d = await desk();
-    if (lossSeen && /lost you/.test(d)) { lossSeen = 'said'; await shot('16_loss'); }
+    if (lossSeen && /You lost \d+ gems at Planet [A-Z]\./.test(d)) { lossSeen = 'said'; await shot('16_loss'); }
   }
   if (lossSeen !== 'said') fail(size, 'a trip that lost gems was not played, or not said');
   if (!stoneAt && !(extra && /stone=1/.test(extra))) fail(size, 'the glow stone was never bought'); else if (stoneAt > 4) fail(size, 'the glow stone took ' + stoneAt + ' trips');
@@ -124,7 +127,7 @@ async function run(b, size, w, h, seed, extra) {
 async function corners(b) { const size = 'states', p = await b.newPage({ viewport: { width: 1180, height: 745 } }); p.on('pageerror', e => errs.push(size + ': ' + e.message));
   const set = async (st) => { await p.goto(FILE + '?fast=1'); await p.evaluate(s2 => { localStorage.setItem('gmq-trade-page-v1', JSON.stringify({ state: s2, bag: {} })); }, st); await p.goto(FILE + '?fast=1'); await p.waitForFunction(() => window.GMQ_PAGE && document.querySelector('#toy h3')); return p.evaluate(() => document.getElementById('toy').innerText); };
   const base = { v: 1, seed: 99, step: 'plan', gems: 650, trip: 3, board: null, sel: [], left: 0, log: [], bought: { supplies: false, stone: false }, gifts: 0 };
-  let d = await set(base); d.split('\n').forEach(x => seen.add(x.trim())); if (!/nearly full/.test(d) || !/999/.test(d)) fail(size, 'the full chest is not said'); if (OUT) await p.screenshot({ path: path.join(OUT, 'states_full_chest.png') });
+  let d = await set(base); d.split('\n').forEach(x => seen.add(x.trim())); if (!/Buy something first/.test(d) || !/999/.test(d)) fail(size, 'a ship with 600 gems or more is not told to buy first'); if (OUT) await p.screenshot({ path: path.join(OUT, 'states_full_chest.png') });
   d = await set(Object.assign({}, base, { gems: 30 })); d.split('\n').forEach(x => seen.add(x.trim())); const g = await p.evaluate(() => window.GMQ_PAGE.saved().state.gems); if (!/sends 100 gems/.test(d) || g !== 130) fail(size, 'the Council gift below 60 gems: ' + g); if (OUT) await p.screenshot({ path: path.join(OUT, 'states_gift.png') });
   await p.close(); }
 

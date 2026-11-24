@@ -11,6 +11,7 @@
 //   5. on every trip after the first there is an offer that loses gems (it pays less than its fuel), on a planet 50 light-years or more away
 //   6. the glow stone can be bought after two or three good trips, never one, and never more than four
 //   7. no child is ever left unable to fly: every board has two or more planets they can afford; below 60 gems the Council sends 100
+//   2b. Planets I, O and Q are never offered (on the desk they read as a word, or as zero); offered planets sit apart on the map
 //   8. no pay is already round (none ends in 0): a child who rounds to compare is choosing to, and the exact count is real adding
 //   9. a child who always takes the biggest pay does worse than one who works it out (the check that the rule does not flatter itself);
 //      so does a child who always takes the nearest planets (no one shortcut works)
@@ -43,22 +44,28 @@ say(`Planets: the 20 letters, distances, fan order and colours match the game's 
   say(`Handoff 5c, worked again: best ${ok[0].who} ${ok[0].end}; next ${ok[1].who} ${ok[1].end}; D alone ${get('D').end}; A+B fuel ${get('A+B').fuel}, too far. As the note says.`); }
 // the page's solved example: Tavi's stalls, coins and rent
 { const D = GMQTrade.demo, res = [];
-  for (let m = 1; m < 16; m++) { const pick = D.stalls.filter((s, i) => m & (1 << i)); if (pick.length > D.baskets) continue; const rent = pick.reduce((a, s) => a + s[2], 0); res.push({ who: pick.map(s => s[0]).join(''), rent, end: rent <= D.coins ? D.coins - rent + pick.reduce((a, s) => a + s[1], 0) : null }); }
+  for (let m = 1; m < 16; m++) { const pick = D.stalls.filter((s, i) => m & (1 << i)); if (pick.length > D.baskets) continue; const rent = pick.reduce((a, s) => a + s[2], 0); res.push({ who: pick.map(s => s[0]).join('+'), rent, end: rent <= D.coins ? D.coins - rent + pick.reduce((a, s) => a + s[1], 0) : null }); }
   const ok = res.filter(r => r.end !== null).sort((a, b) => b.end - a.end), get = w => res.find(r => r.who === w), text = D.lines.join(' | ');
-  if (ok[0].who !== 'QR' || ok[0].end !== 63 || ok[1].end >= 63) fail('Tavi: Q and R are not the one best choice at 63');
-  if (get('P').end !== 52 || !text.includes('0 + 52 = 52')) fail('Tavi: P alone'); if (!text.includes('0 + 35 + 28 = 63')) fail('Tavi: Q and R line');
-  if (get('QS').rent !== 13 || !text.includes('6 + 7 = 13')) fail('Tavi: Q and S rent'); if (get('RS').rent !== 11 || !text.includes('4 + 7 = 11')) fail('Tavi: R and S rent');
+  if (ok[0].who !== 'blue+yellow' || ok[0].end !== 63 || ok[1].end >= 63) fail('Tavi: blue and yellow are not the one best choice at 63');
+  if (get('red').end !== 52 || !text.includes('0 + 52 = 52')) fail('Tavi: red alone'); if (get('blue').end !== 39 || !text.includes('10 − 6 = 4.  4 + 35 = 39')) fail('Tavi: blue alone, with coins left over');
+  if (!text.includes('0 + 35 + 28 = 63')) fail('Tavi: blue and yellow line');
+  if (get('blue+green').rent !== 13 || !text.includes('6 + 7 = 13')) fail('Tavi: blue and green rent'); if (get('yellow+green').rent !== 11 || !text.includes('4 + 7 = 11')) fail('Tavi: yellow and green rent');
+  if (D.stalls.some(s => /^[A-Z]$/.test(s[0]))) fail('Tavi: a stall named by a letter can be mixed up with a planet');
   const big = D.stalls.slice().sort((a, b) => b[1] - a[1])[0][0]; if (ok[0].who.includes(big)) fail('Tavi: the biggest pay should not be in her best choice');
-  say(`Tavi's paper, worked again: every choice of 1 or 2 stalls: ${res.map(r => r.who + (r.end === null ? ' too much rent' : ' ' + r.end)).join(', ')}. Best ${ok[0].who} ${ok[0].end}. Stall P pays most and is not in it.`); }
+  say(`Tavi's paper, worked again: every choice of 1 or 2 stalls: ${res.map(r => r.who + (r.end === null ? ' too much rent' : ' ' + r.end)).join(', ')}. Best ${ok[0].who} ${ok[0].end}. The red stall earns most and is not in it.`); }
 
 // ---- the boards: every choice worked out again by this code ----
 function every(offers, B) { const out = []; for (let m = 1; m < 1 << offers.length; m++) { const pick = offers.filter((o, i) => m & (1 << i)); if (pick.length > K.crates) continue;
   const fuel = pick.reduce((a, o) => a + 2 * LY[o.n], 0), pay = pick.reduce((a, o) => a + o.pay, 0); out.push({ m, pick, fuel, pay, fits: fuel <= B, left: B - fuel, end: B - fuel + pay }); } return out; }
-let boards = 0, nearTrap = 0, decoy = 0, eased = 0, maxTries = 0, maxNum = 0, minMargin = 999, lossFar = 0, laterBoards = 0, roundPays = 0, gifts = 0, fulls = 0, nulls = 0; const distinct1 = new Set(), distinctAll = new Set(), margins = [];
+let minApart = 9, minLoss = 999, maxLoss = 0, boards = 0, nearTrap = 0, decoy = 0, eased = 0, maxTries = 0, maxNum = 0, minMargin = 999, lossFar = 0, laterBoards = 0, roundPays = 0, gifts = 0, fulls = 0, nulls = 0; const distinct1 = new Set(), distinctAll = new Set(), margins = [];
 let others = 0;
 function board(seed, trip, B) { const b = RULE.boardFor(seed, trip, B); if (!b) { nulls++; fail(`no board for seed ${seed}, trip ${trip}, ${B} gems`); return null; } if (b.other) others++;
   boards++; maxTries = Math.max(maxTries, b.tries); if (b.eased) eased++; const o = b.offers, key = JSON.stringify(o); distinctAll.add(key); if (trip === 1) distinct1.add(key);
   if (o.length !== K.offers) fail('a board without 5 offers'); if (new Set(o.map(x => x.n)).size !== o.length || o.some(x => x.n === K.stone)) fail('a board repeats a planet, or offers Planet R');
+  if (o.some(x => 'IOQ'.includes(x.n))) fail('a board offers I, O or Q (they read as a word, or as zero)');
+  { const P = n => { const a = (-78 + RULE.ORDER.indexOf(n) * (156 / 19)) * Math.PI / 180, r = .2 + .8 * LY[n] / 71; return [Math.sin(a) * r, Math.cos(a) * r]; }, ns = o.map(x => x.n).concat([K.stone]);
+    for (let i = 0; i < ns.length; i++) for (let k = i + 1; k < ns.length; k++) { const d = Math.hypot(P(ns[i])[0] - P(ns[k])[0], P(ns[i])[1] - P(ns[k])[1]); minApart = Math.min(minApart, d); if (d < .16) fail(`seed ${seed}: Planets ${ns[i]} and ${ns[k]} sit too close on the map`); } }
+  o.forEach(x => { if (x.pay < 2 * LY[x.n]) { minLoss = Math.min(minLoss, 2 * LY[x.n] - x.pay); maxLoss = Math.max(maxLoss, 2 * LY[x.n] - x.pay); } });
   o.forEach(x => { if (x.pay % 10 === 0) roundPays++; if (x.pay < 40 || x.pay > 399) fail(`seed ${seed}: a pay of ${x.pay}`); maxNum = Math.max(maxNum, x.pay); });
   if (o.filter(x => 2 * LY[x.n] <= B).length < 2) fail(`seed ${seed} trip ${trip}: fewer than two planets the child can afford`);
   const all = every(o, B), fit = all.filter(c => c.fits).sort((a, c) => c.end - a.end), best = fit[0], margin = best.end - fit[1].end;
@@ -98,10 +105,11 @@ const pct = (a, b) => (100 * a / b).toFixed(1) + '%', mean = a => (a.reduce((x, 
 say(`\nBoards made: ${boards} (${SEEDS} seeds x 5 kinds of child). Different boards: ${distinctAll.size}; different first-trip boards: ${distinct1.size} of ${SEEDS} seeds.`);
 say(`Most draws for one board: ${maxTries}. Boards where the decoy had to be turned the other way: ${eased}. Boards that could not be made: ${nulls}. Boards taken from a nearby seed: ${others}.`);
 say(`Biggest number a child sees or works out: ${maxNum} (must be under 1,000).   Pays ending in 0: ${roundPays} (must be 0).`);
-margins.sort((a, b) => a - b); say(`The best choice leads the next by at least ${minMargin} gems (median ${margins[margins.length >> 1]}).`);
+margins.sort((a, b) => a - b); say(`Offered planets sit at least ${minApart.toFixed(2)} of the map's radius apart (and from Planet R): their rings never touch.`);
+say(`The best choice leads the next by at least ${minMargin} gems (median ${margins[margins.length >> 1]}).`);
 say(`The biggest pay is NOT part of the best choice on ${pct(decoy, boards)} of boards (must be 50% or more, and under 100%).`);
 say(`Taking the nearest planets first comes home 30 gems or more behind the best on ${pct(nearTrap, boards)} of boards.`);
-say(`Trips after the first with a far offer that loses gems: ${lossFar} of ${laterBoards}.   Gifts from the Council (below 60 gems): ${gifts}.   Children stuck with 600+ gems and nothing to buy: ${fulls}.`);
+say(`A losing offer loses ${minLoss} to ${maxLoss} gems. Trips after the first with a far offer that loses gems: ${lossFar} of ${laterBoards}.   Gifts from the Council (below 60 gems): ${gifts}.   Children stuck with 600+ gems and nothing to buy: ${fulls}.`);
 say('\nTrade trips before the glow stone, and before both things on the list, for each kind of child:');
 for (const k in KINDS) say(`  ${(k + ':').padEnd(10)} ${KINDS[k].padEnd(38)} stone ${JSON.stringify(R[k].stone)}   both ${JSON.stringify(R[k].both)}   most gems ${R[k].maxGems}`);
 const bs = R.best.trips, bp = R.bigPay.trips; let worseStone = 0, worseBoth = 0, better = 0;
@@ -112,7 +120,7 @@ say(`Mean trips for both: works it out ${mean(bs.map(t => t[1]))}, biggest pay $
 if (Object.keys(R.best.stone).some(k => k !== '2' && k !== '3')) fail('a child who works it out cannot buy the stone after 2 or 3 trips: ' + JSON.stringify(R.best.stone));
 if (Object.keys(R.leftover.stone).some(k => +k > 4 || k === '1' || k === 'never')) fail('a careful child (biggest pay minus fuel) needs more than four trips, or one: ' + JSON.stringify(R.leftover.stone));
 if (Object.keys(R.bigPay.stone).some(k => k === '1')) fail('the stone after one trip');
-if (maxNum > 999) fail('a number over 999'); if (roundPays) fail('pays that end in 0'); if (decoy < boards / 2 || decoy === boards) fail('the biggest pay is the best too often, or never');
+if (maxNum > 999) fail('a number over 999'); if (minLoss < 15) fail('an offer loses only ' + minLoss + ' gems: too small to notice'); if (roundPays) fail('pays that end in 0'); if (decoy < boards / 2 || decoy === boards) fail('the biggest pay is the best too often, or never');
 if (worseBoth < SEEDS * .5) fail('the child who takes the biggest pay is not worse off on half the seeds');
 if (better > SEEDS * .02) fail('the child who takes the biggest pay does better too often');
 if (+mean(R.nearest.trips.map(t => t[1]).filter(x => x < 99)) <= +mean(bs.map(t => t[1])) + .3) fail('the child who takes the nearest planets does about as well as one who works it out');
