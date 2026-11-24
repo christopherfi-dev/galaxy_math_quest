@@ -131,7 +131,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
       <div id="hudr"><button class="hb" id="b_map">Map</button><button class="hb" id="b_needs">Needs</button><button class="hb" id="b_ship">Ship</button><button class="hb" id="b_mus" aria-label="Music"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6.4" cy="18" r="2.9" fill="currentColor"/><circle cx="17.4" cy="16" r="2.9" fill="currentColor"/><line class="slash" x1="2.5" y1="2.5" x2="21.5" y2="21.5" stroke="#ff8f6b" stroke-width="2.8" stroke-linecap="round"/></svg><span class="hbw">Music</span></button></div></div>
   </div>
   <div id="veil" hidden></div>
-  <div id="read" hidden role="dialog" aria-live="polite" aria-label="Read this, then tap OK"><div id="readwho"></div><div id="readtext"></div><div id="readrow"><span id="readn"></span><button class="btn quiet" id="readsay">Read to me</button><button class="btn" id="readok" disabled><span id="readfill"></span><b id="readlab">Read…</b></button></div></div>
+  <div id="read" hidden role="dialog" aria-live="polite" aria-label="Read this, then tap OK"><button class="btn quiet" id="readskip" type="button" hidden>Skip the start ›</button><div id="readwho"></div><div id="readtext"></div><div id="readrow"><span id="readn"></span><button class="btn quiet" id="readsay">Read to me</button><button class="btn" id="readok" disabled><span id="readfill"></span><b id="readlab">Read…</b></button></div></div>
   <div id="desk">
     <div id="log"></div>
     <div id="words"></div>
@@ -958,10 +958,55 @@ const CAST = (() => {
       cx.fillStyle = col; cx.beginPath(); cx.ellipse(ox, oy, erx * 1.12, ery * 1.12, 0, 0, 7); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = Math.max(2.5, ery * .2); cx.lineCap = 'round'; cx.beginPath(); cx.moveTo(ox - erx * .95, oy + ery * .1); cx.quadraticCurveTo(ox, oy + ery * .55, ox + erx * .95, oy + ery * .1); cx.stroke(); cx.lineCap = 'butt'; }
     cx.restore(); return true; }
   /* on the walking map: a Mender of the crowd stands on its square (the Rillfolk are another people, and keep the game's drawing) */
-  function crowd(t, X, Y, ts) { if (t.folk === 'rill') return false; return mender(t.id, t.col || '#c9793a', X, Y + ts * .34, ts * .82, t.name); }
+  const grows = {};      /* a Mender talking on the map grows a little, so the face and the hop can be seen [Proposal, after Marc: "right now they're not really moving in any way"] */
+  function crowd(t, X, Y, ts) { if (t.folk === 'rill') return false; const talk = reading() && READ.who.toLowerCase() === String(t.name).toLowerCase(), g = grows[t.id] = (grows[t.id] || 1) + ((talk ? 1.35 : 1) - (grows[t.id] || 1)) * .12;
+    return mender(t.id, t.col || '#c9793a', X, Y + ts * .34, ts * .82 * g, t.name); }
   return { draw, faceFor, mender, crowd, crowdFace, test: { blinkNow: c => { st[c].blinkAt = tNow; } } };      /* test: for checks only */
 })();
 /*WORLD-CAST-END*/
+/*WORLD-OPENING-BEGIN  The start of the big world: landing on the meadow, a Mender to meet you, and a way to skip it.   [Proposal, 24 November 2026]
+  [Source: Marc, 24 November: "Can you add a skip intro? I don't have to do the introduction every time I land on the planet." And: "we should show the ship on the meadow
+   and then a character standing next to them who they're talking to you as explain how to do things. Welcoming committee or whatever. It's a bit jarring to go from
+   space to learning how the planet works without actually seeing that you're on the planet."]
+  - The story's last page ("You land in a green meadow…") shows the meadow: your ship, the cadet, and a Mender standing beside them, with his toolbox.
+  - The Mender's welcome ("Welcome to Planet Algora…", "Before you go anywhere, let me show you how we work.") is said there, on the meadow, beside the ship.
+    Then the practice machine, with "We use machines like this one…", and the lesson as before. No new words: the game's own lines, said where they belong.
+  - While he talks on the meadow he grows a little, so his face and his hop can be seen (as for any Mender talking on the map).
+  - "Skip the start" on the reading card: the story, the welcome and the first lesson, all at once. It shows only once this iPad has finished the start
+    (a child's first time keeps the story and the worked example), or when the page's address ends in #skip (for the teacher).
+    A skip is written in the mission report, and the Mender's last line of the lesson is said, so the child knows where to go: Elder Thimble, in the village. */
+const OPENING = (() => {
+  const SEEN = 'gmq-bigworld-looksample-seenstart';
+  let greeting = false;
+  const seen = () => { try { return localStorage.getItem(SEEN) === '1'; } catch (e) { return false; } };
+  const mark = () => { try { localStorage.setItem(SEEN, '1'); } catch (e) {} };
+  const inStart = () => !!S && (S.intro < 9 || greeting || (!flag('lessonDone') && !flag('metElder')));
+  const canSkip = () => inStart() && (seen() || location.hash === '#skip');
+  function skip() {
+    clearTimeout(READ.tm); READ.q = []; READ.i = 0; READ.then = null; READ.who = ''; $('read').hidden = true; $('veil').hidden = true;
+    greeting = false; S.intro = 9; PIC = null; TASK = null; S.open = null; BOX.on = ''; BOX.v = {};
+    const L = S.lesson || (S.lesson = { step: 0, notes: [], last: null }); L.step = 6; L.greeted = 1; setFlag('lessonDone');
+    report('Skipped the start: the story, the welcome and the first lesson (seen before on this iPad)', '', '');
+    mark(); setPlace(); drawWords(); drawTask(); save();
+    tell(['Elder Thimble needs help. Four machines in our meadow have burnt plates. Go and see him in the village, up the path.'], null, 'A Mender'); }
+  function greet() {      /* after the story: on the meadow, beside the ship, the welcome; then the practice machine */
+    const L = S.lesson || (S.lesson = { step: 0, notes: [], last: null });
+    if (L.step > 0 || L.greeted) return startLesson();
+    greeting = true; PIC = null; TASK = null; P.dir = 'right'; setPlace(); drawWords(); drawTask();
+    tell(['Welcome to ' + PLANET + ', visitor from the sky! I am a Mender. We keep the machines here.', 'Before you go anywhere, let me show you how we work.'],
+      () => { greeting = false; L.greeted = 1; save(); startLesson(); }, 'A Mender'); }
+  let grow = 1;
+  function drawGreeter(X, Y, ts) {      /* the Mender beside the ship, from the story's last page until the practice machine */
+    if (!(greeting || (S.intro < 9 && READ.i >= 5 && reading()))) return;
+    const talk = reading() && READ.who === 'A Mender'; grow += ((talk ? 1.35 : 1) - grow) * .12;
+    const gx = P.px + 1.3, gy = P.py; CAST.mender('lesson', '#c9793a', X(gx) + ts / 2, Y(gy) + ts * .84, ts * .82 * grow, 'A Mender'); }
+  const css = document.createElement('style'); css.textContent = '#read #readskip { float: right; width: auto; display: inline-block; flex: none; font-size: .78rem; padding: 4px 10px; min-height: 30px; margin: -4px -4px 4px 8px; }'; document.head.appendChild(css);
+  const b = document.getElementById('readskip');
+  if (b) { b.onclick = e => { e.stopPropagation(); skip(); };      /* small, in the card's corner: set on the button itself, so the page's own button style (full width on a phone) does not win */
+    [['float', 'right'], ['width', 'auto'], ['min-width', '0'], ['display', 'inline-block'], ['flex', 'none'], ['font-size', '.78rem'], ['padding', '4px 10px'], ['min-height', '30px'], ['margin', '-4px -4px 4px 8px'], ['align-self', 'flex-end'], ['justify-self', 'end']].forEach(([k, v]) => b.style.setProperty(k, v, 'important')); }
+  return { canSkip, skip, greet, drawGreeter, mark, get greeting() { return greeting; } };
+})();
+/*WORLD-OPENING-END*/
 
 /* things on the map */
 function drawThing(t, X, Y, ts) { const id = t.id;
@@ -1005,6 +1050,7 @@ function drawMap(dt) { geo(); seeScreen(); const ts = V.ts, x0 = Math.floor(V.ox
   const py0 = Math.round(P.py + .49);
   for (let y = y0; y <= Math.min(MAPH - 1, y1 + 2); y++) { for (let x = Math.max(0, x0 - 1); x <= Math.min(MAPW - 1, x1 + 1); x++) { const t = MAP[y][x]; if (TALL.indexOf(t) >= 0) tall(t, x, y, X(x), Y(y), ts); const th = SOLID[key(x, y)]; if (th && thingSeen(th)) drawThing(th, X(x) + ts / 2, Y(y) + ts / 2, ts); }
     if (y === py0) drawAstro(X(P.px) + ts / 2, Y(P.py) + ts / 2 - ts * .1, ts * 1.3, P.route.length > 0, P.dir, P.step); }
+  OPENING.drawGreeter(X, Y, ts);
   for (const t of THINGS) { if (!t.label || !thingSeen(t) || t.x < x0 - 1 || t.x > x1 + 1 || t.y < y0 - 1 || t.y > y1 + 1) continue; const lx = X(t.x) + ts / 2, ly = t.kind === 'sign' && t.stand && t.stand[1] < t.y ? Y(t.y) + ts * 1.15 : Y(t.y) - ts * (t.kind === 'machine' ? .62 : t.id === 'village' ? .72 : t.kind === 'being' ? .62 : .5),      /* a sign south of where you stand has its name below it, off the cadet */ done = t.kind === 'machine' ? M(t.site).ok : t.gate ? gateOpen(t.gate) : false; if (t.kind === 'machine' && !M(t.site).seenIt) continue; pill((done ? '✓ ' : '') + t.label, lx, ly);
     if (bang(t)) { const by = Y(t.y) - ts * 1.25 - Math.abs(Math.sin(tNow * 3)) * 5; cx.fillStyle = '#ffd25e'; circ(lx, by, Math.max(9, ts * .24)); cx.fill(); ol(2); text('!', lx, by + 1, Math.max(12, ts * .34), INK); } }
   if (P.route.length) { const [tx, ty] = P.route[P.route.length - 1]; cx.strokeStyle = 'rgba(255,255,255,.75)'; cx.lineWidth = 2; cx.setLineDash([5, 5]); circ(X(tx) + ts / 2, Y(ty) + ts / 2, ts * .3); cx.stroke(); cx.setLineDash([]); } }
@@ -1124,7 +1170,7 @@ function tell(pages, then, who) { READ.q = pages.filter(Boolean); READ.i = 0; RE
 /* OK sleeps while a bar fills: 2.5 seconds for a short card, a little more for each word, at most 3.5 seconds (the main game's longest). Tapping anything else shakes the card.
    [Marc, 24 November: "that 4-5 second timer that the main game has"; then, with a photo of the station: "they cannot click OK until like three or four seconds. It's in the space station initial station quest code."] */
 function readWait(t) { const w = String(t || '').trim().split(/\s+/).filter(Boolean).length; return FASTREAD ? 60 : Math.max(2500, Math.min(3500, 1500 + w * 80)); }      /* 2.5 seconds for a short card, up to 3.5 for a long one [Marc, 24 November: "maybe 2.5 seconds or so just so they have to hesitate for a second before clicking"] */
-function showRead() { const rd = $('read');
+function showRead() { const rd = $('read'); $('readskip').hidden = !OPENING.canSkip();
   if (PIC && PIC.busy && PIC.busy()) { rd.hidden = true; $('veil').hidden = true; READ.held = true; return; }      /* the picture is moving (the fleet sails): the words wait until it stops, so the child sees what they tell */
   READ.held = false; $('veil').hidden = false; $('veil').classList.toggle('clear', !!(PIC && PIC.inset)); placeRead(rd); rd.hidden = false; rd.classList.remove('nudge'); $('readwho').textContent = READ.who; $('readtext').textContent = READ.q[READ.i]; $('readn').textContent = READ.q.length > 1 ? (READ.i + 1) + ' of ' + READ.q.length : '';
   const b = $('readok'), fl = $('readfill'); READ.wait = readWait(READ.q[READ.i]); b.disabled = true; $('readlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `readfill ${READ.wait}ms linear forwards`;
@@ -1378,10 +1424,10 @@ function nudge(kind) { const list = NUDGES[kind], all = S.nudges || (S.nudges = 
 const inNotes = (site, r) => (S.notes[site] || []).some(q => q[0] === r[0] && q[1] === r[1]);
 const LESSON = { m: { ok: false }, rule: { op: 'plus', n: 2 }, title: 'The practice machine' };
 function startLesson() { const L = S.lesson || (S.lesson = { step: 0, notes: [], last: null }); LESSON.m.ok = L.step >= 6; TASK = { kind: 'lesson', msg: '', title: 'The practice machine' }; BOX.v = {}; BOX.on = L.step === 2 ? 'in' : L.step === 5 ? 'n' : ''; MA.done = null; MA.show = null; MA.fallen = null; PIC = machinePic(null, LESSON); S.open = { kind: 'lesson' }; drawWords(); drawTask(); setPlace(); save();
-  if (L.step === 0) tell(['Welcome to ' + PLANET + ', visitor from the sky! I am a Mender. We keep the machines here.', 'Before you go anywhere, let me show you how we work.', 'We use machines like this one. Each machine follows one rule. Watch.'], () => runMachine(3, 5, false, () => { L.last = [3, 5]; L.step = 1; save(); drawTask(); tell(['I put in 3. Out came 5.', 'Tap “Write it down”, so we remember it.'], () => drawTask(), 'A Mender'); }), 'A Mender');
+  if (L.step === 0) tell((L.greeted ? [] : ['Welcome to ' + PLANET + ', visitor from the sky! I am a Mender. We keep the machines here.', 'Before you go anywhere, let me show you how we work.']).concat(['We use machines like this one. Each machine follows one rule. Watch.']), () => runMachine(3, 5, false, () => { L.last = [3, 5]; L.step = 1; save(); drawTask(); tell(['I put in 3. Out came 5.', 'Tap “Write it down”, so we remember it.'], () => drawTask(), 'A Mender'); }), 'A Mender');
   else if (L.step === 4) tell(['Tap the sign +, to start the label.'], () => drawTask(), 'A Mender');
   else if (L.step === 6) finishLesson(); }
-function finishLesson() { setFlag('lessonDone'); report('The first lesson at the ship: tested, wrote down, labelled the practice machine', S.lesson && S.lesson.notes.map(r => r[0] + ' → ' + r[1]).join(', '), '+ 2'); TASK = null; PIC = null; S.open = null; BOX.on = ''; BOX.v = {}; drawWords(); drawTask(); setPlace(); save(); }
+function finishLesson() { OPENING.mark(); setFlag('lessonDone'); report('The first lesson at the ship: tested, wrote down, labelled the practice machine', S.lesson && S.lesson.notes.map(r => r[0] + ' → ' + r[1]).join(', '), '+ 2'); TASK = null; PIC = null; S.open = null; BOX.on = ''; BOX.v = {}; drawWords(); drawTask(); setPlace(); save(); }
 function openMachine(site, quiet) { const m = M(site); TASK = { kind: 'machine', site, phase: m.ok && S.pouch !== null && !S.gates.bridge ? 'real' : 'test', msg: '', title: cap(siteName(site)) }; BOX.v = {}; BOX.on = TASK.phase === 'real' ? 'out' : 'in'; MA.done = null; MA.show = null; MA.fallen = null; PIC = machinePic(site); S.open = { kind: 'machine', site }; drawWords(); drawTask(); setPlace(); save(); }
 /* A Mender fits the child's plate and tests it in front of them. A wrong plate is shown wrong by a test, never just called wrong:
    a rule has to work for every number. The test is one the child could have done. */
@@ -1563,7 +1609,7 @@ function cogOut() { P.route = []; P.then = null; S.cogAt = S.steps + 100000; PIC
 function cogPic() { return { title: 'A loose cog', draw(w, h) { const hz = h * .4, u = Math.min(w, h), q = TASK && TASK.kind === 'cog' ? TASK.qs[TASK.i] : null, X = w * (.3 + .05 * Math.sin(tNow * 1.5)), Y = h * .7, R = u * .13; backdrop(w, h, hz); cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(X, Y + R * 1.05, R, R * .2, 0, 0, 7); cx.fill(); cx.fillStyle = '#ffd25e'; cx.beginPath(); for (let i = 0; i < 20; i++) { const an = i / 20 * 6.283 + tNow * 3, r2 = R * (i % 2 ? .78 : 1); cx[i ? 'lineTo' : 'moveTo'](X + Math.cos(an) * r2, Y + Math.sin(an) * r2); } cx.closePath(); cx.fill(); ol(3); cx.fillStyle = '#6b4a22'; circ(X, Y, R * .22); cx.fill(); ol(2);
     if (q) { const bx = w * .5, bw = Math.min(w * .46, u * .7), fs = Math.max(15, bw * .1); [[q.a[0] + '  →  ' + q.a[1], .2], [q.b[0] + '  →  ' + q.b[1], .36], [q.x + '  →  ?', .52]].forEach(([tx, fy], i) => { cx.fillStyle = i === 2 ? '#fff3c4' : '#fff'; rr(bx, h * fy - fs * .8, bw, fs * 1.6, fs * .5); cx.fill(); ol(2.5); text(tx, bx + bw / 2, h * fy + 1, fs, INK); }); } } }; }
 /* the first pages: why the cadet is here. Told before any maths. */
-function introPic() { return { title: 'Galaxy Patternox', draw(w, h) { const s = READ.i; cx.fillStyle = '#070a1c'; cx.fillRect(0, 0, w, h); for (let i = 0; i < 70; i++) { cx.fillStyle = `rgba(220,230,255,${.3 + .5 * ((i * 37) % 10) / 10})`; cx.fillRect((i * 173) % w, (i * 97) % h, 2, 2); }
+function introPic() { return { title: 'Galaxy Patternox', draw(w, h) { const s = READ.i; if (s >= 5) { if (this.title !== hereName()) { this.title = hereName(); setPlace(); } drawMap(.016); return; }      /* the last page, "You land in a green meadow": the meadow itself */ cx.fillStyle = '#070a1c'; cx.fillRect(0, 0, w, h); for (let i = 0; i < 70; i++) { cx.fillStyle = `rgba(220,230,255,${.3 + .5 * ((i * 37) % 10) / 10})`; cx.fillRect((i * 173) % w, (i * 97) % h, 2, 2); }
     const u = Math.min(w, h);
     if (s <= 2) { const X = w * .5, Y = h * .42, fl = .35 + .65 * Math.abs(Math.sin(tNow * 7) * Math.sin(tNow * 1.9)); for (let k = 0; k < 5; k++) { cx.strokeStyle = `rgba(${150 + k * 20},${120 + k * 12},255,${fl * (.9 - k * .15)})`; cx.lineWidth = u * .012; cx.beginPath(); cx.ellipse(X, Y, u * (.3 - k * .045), u * (.2 - k * .03), 0, 0, 7); cx.stroke(); } cx.fillStyle = `rgba(20,10,60,${.9})`; cx.beginPath(); cx.ellipse(X, Y, u * .09, u * .06, 0, 0, 7); cx.fill();
       if (s >= 1) { const sx = X - u * .42 + ((tNow * .12) % 1) * u * .3; cx.fillStyle = '#dfe6f0'; cx.beginPath(); cx.ellipse(sx, Y + u * .2, u * .05, u * .022, 0, 0, 7); cx.fill(); ol(1.5); cx.fillStyle = '#6db3ff'; cx.beginPath(); cx.arc(sx, Y + u * .19, u * .024, Math.PI, 0); cx.fill(); ol(1.2); }
@@ -1673,7 +1719,7 @@ function stageTap(e) { const r = cv.getBoundingClientRect(), x = e.clientX - r.l
   geo(); const tx = Math.floor(V.ox + x / V.ts), ty = Math.floor(V.oy + y / V.ts); if (tx < 0 || ty < 0 || tx >= MAPW || ty >= MAPH) return; let t = seen[key(tx, ty)] ? SOLID[key(tx, ty)] : null; if (!t && seen[key(tx, ty)]) { const g = GATEOF[key(tx, ty)]; if (g && !gateOpen(g)) t = THINGS.find(o => o.gate === g); if (!t && MAP[ty][tx] === 'H') t = TH.village; if (!t && Math.abs(tx - 13) <= 1 && ty === 83) t = TH.ship; } if (t && thingSeen(t)) return runThing(t, verb, held); if (verb === 'dig') { goTo(tx, ty, digHere); return drawWords(); } verb = ''; held = ''; kbHide(); beep(500, .03); goTo(tx, ty); drawWords(); }
 cv.addEventListener('pointerdown', e => { e.preventDefault(); stageTap(e); });
 $('readok').onclick = readOk; $('readsay').onclick = () => { if (reading()) speak(READ.q[READ.i]); };
-$('read').addEventListener('pointerdown', e => { e.stopPropagation(); if ($('readok').disabled && !(e.target.closest && e.target.closest('#readsay'))) readNudge(); });
+$('read').addEventListener('pointerdown', e => { e.stopPropagation(); if ($('readok').disabled && !(e.target.closest && e.target.closest('#readsay, #readskip'))) readNudge(); });
 $('veil').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); readNudge(); });      /* the rest of the screen waits until the words are read */
 $('b_mus').onclick = () => { musSet(!MUS.on); if (PANEL === 'ship') drawTask(); }; musButton();
 $('b_map').onclick = toggleBig; $('b_needs').onclick = () => { if (BIG) toggleBig(); openPanel('needs'); }; $('b_ship').onclick = () => { if (BIG) toggleBig(); openPanel('ship'); };
@@ -1691,8 +1737,8 @@ function bwSlice() { const r = regAt(Math.round(P.px), Math.round(P.py)), R = RE
 /* ---- start, and the frame loop */
 function boot() { kbBuild(); S = load() || fresh(); { const nm = x => typeof x === 'string' ? x.replace(/Elder Rivet/g, 'Elder Thimble') : x; (S.needs || []).forEach(q => { q.text = nm(q.text); }); (S.log || []).forEach(l => { l.what = nm(l.what); l.maths = nm(l.maths); l.result = nm(l.result); }); }      /* a game saved before the elder was renamed (24 November) */ if (!S.st) S.st = { round: 0, row: 0 }; S.parts = S.parts || {}; if (S.flags.stoneLit && !S.parts.engine) S.parts.engine = 2;      /* a save from before upgrades */ NUM = bwNumbers(S.seed); FLEET = bwFleet(S.seed); WELL = bwWell(S.seed); S.tags = S.tags || {}; S.fleet = S.fleet || { plan: {}, sends: 0, lamps: null, tab: 'stilt' }; TOWNS.forEach(t => { S.fleet.plan[t] = S.fleet.plan[t] || { k: 0, n: 0 }; }); S.well = S.well || { step: 0, turns: 0, hit: false, told: 0 }; S.steps = S.steps || 0; unpackSeen(S.seen); P.px = S.x; P.py = S.y; P.dir = S.dir || 'down'; cam.x = S.x + .5; cam.y = S.y + .5; SC.x = S.sx || .13; see(); size(); setPlace(); drawLog(); drawWords(); drawTask();
   const faults = bwCheck(); if (faults.length) console.error('bwCheck: ' + faults.join(' | '));
-  if (S.intro < 9) { PIC = introPic(); setPlace(); tell(['The wormhole to Galaxy Patternox is broken. It flickers.', 'A small ship can slip through a flicker. A big ship cannot.', 'A call comes through the flicker: “This is the S.S. Infinity. We are lost in Patternox. The Gate\'s code is broken. Please help.”', 'Past the wormhole is one planet with two suns: ' + PLANET + '.', 'Your mission: find out why the Gate broke. Mend it. Then Patternox is open to everyone.', 'You land in a green meadow. Tap the picture to walk. Tap a word to do something.'], () => { S.intro = 9; PIC = null; report('Landed on ' + PLANET, '', ''); setPlace(); drawWords(); save(); if (!flag('lessonDone') && !flag('metElder')) startLesson(); }, 'Mission'); }
-  else if (!flag('lessonDone') && !flag('metElder')) startLesson();      /* landed, but the lesson is not done: it comes first */
+  if (S.intro < 9) { PIC = introPic(); setPlace(); tell(['The wormhole to Galaxy Patternox is broken. It flickers.', 'A small ship can slip through a flicker. A big ship cannot.', 'A call comes through the flicker: “This is the S.S. Infinity. We are lost in Patternox. The Gate\'s code is broken. Please help.”', 'Past the wormhole is one planet with two suns: ' + PLANET + '.', 'Your mission: find out why the Gate broke. Mend it. Then Patternox is open to everyone.', 'You land in a green meadow. Tap the picture to walk. Tap a word to do something.'], () => { S.intro = 9; PIC = null; report('Landed on ' + PLANET, '', ''); setPlace(); drawWords(); save(); if (!flag('lessonDone') && !flag('metElder')) OPENING.greet(); }, 'Mission'); }
+  else if (!flag('lessonDone') && !flag('metElder')) OPENING.greet();      /* landed, but the lesson is not done: it comes first */
   else if (S.open) { const o = S.open; if (o.kind === 'machine' && TH['m_' + o.site]) openMachine(o.site); else if (o.kind === 'pan' && !S.gates.bridge && S.pouch !== null) { TASK = { kind: 'pan', msg: '', title: 'The bridge pan' }; PIC = panPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'fleet' && !flag('fleetDone')) { TASK = { kind: 'fleet', msg: '', title: 'The loading board' }; BOX.v = { n: S.fleet.plan[S.fleet.tab].n ? String(S.fleet.plan[S.fleet.tab].n) : '' }; BOX.on = 'n'; PIC = fleetPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'box' && S.well.step === 6) { TASK = { kind: 'box', phase: 'test', msg: '', title: 'The Makers\' box' }; BOX.v = {}; BOX.on = 'in'; PIC = boxPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'stones' && !S.gates.stones) { TASK = { kind: 'stones', msg: '', title: 'The old stepping stones' }; PIC = stonesPic(); drawWords(); drawTask(); setPlace(); } else S.open = null; }
   requestAnimationFrame(loop); }
 let last = 0;
