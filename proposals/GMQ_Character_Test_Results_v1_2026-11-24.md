@@ -85,4 +85,4 @@ Put him into my copy of the big world, in his village, with the thicker outline.
 - breathe, blink, and hop when he starts to talk
 - change face with his words (happy, worried, thinking, surprised, from picture 2)
 
-Before that, one choice from you: **handles and arms (as Gemini drew him), or handles only (as the game draws Menders)?**
+**Decided** [Source: Marc, 24 November: "Handles and arms are fine."]: Menders have pot handles and separate arms with hands. Next test: Pim, in the same Gemini chat (`GMQ_Character_Test_Pim_v1_2026-11-24.md`).
