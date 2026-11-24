@@ -8,10 +8,10 @@
 //   1  the story comes first: six pages before the map; no maths on them
 //   1a the first lesson at the ship [Marc, 24 November]: a Mender shows 3 making 5 in a practice machine; the child writes it down, picks another number
 //      (the same one again is turned back), writes it down, taps + (another sign is turned back) and 2 (another number is turned back); the machine says
-//      + 2; the cadet cannot walk away until it is done; then the Mender sends the cadet to Elder Rivet
+//      + 2; the cadet cannot walk away until it is done; then the Mender sends the cadet to Elder Thimble
 //   2  a machine before the elder: a Mender sends the cadet to the village; no task opens
 //   3  the pan before the pouch: it goes on the Needs list; no task opens
-//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Rivet's story (the painted board
+//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Thimble's story (the painted board
 //      no longer follows it: the lesson at the ship is the finished example since 24 November)
 //   5  a machine: nothing typed, a number too big, tests, "handed back", notes written only when the child taps
 //   6  a wrong plate: it is shown wrong by a test, and the right rule is never said
@@ -118,7 +118,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     await press(p, 'write'); lp = await readAll(p); say(/\+ 2/.test(lp.join(' ')) && /3 makes 5\. 6 makes 8/.test(lp.join(' ')), `${name}: the Mender did not read the notes and name the pattern: ${lp.join(' | ')}`);
     await p.click('#task [data-sign="times"]'); ls = await st(p); say(/sign is \+/.test(ls.task.msg), `${name}: a wrong sign was not turned back`);
     await p.click('#task [data-sign="plus"]'); await pad(p, 5); await p.waitForTimeout(80); ls = await st(p); say(/How many more/.test(ls.task.msg), `${name}: a wrong number was not turned back`);
-    await pad(p, 2); await p.waitForTimeout(80); await shot(p, tag + '02a_lesson_labelled'); lp = await readAll(p); say(/Elder Rivet/.test(lp.join(' ')), `${name}: the lesson does not send the cadet to the elder`);
+    await pad(p, 2); await p.waitForTimeout(80); await shot(p, tag + '02a_lesson_labelled'); lp = await readAll(p); say(/Elder Thimble/.test(lp.join(' ')), `${name}: the lesson does not send the cadet to the elder`);
     ls = await st(p); say(ls.S.flags.lessonDone && !ls.task && ls.S.lesson.notes.length === 2, `${name}: the lesson did not end with two notes`);
     s = await st(p); say(!s.reading && s.x === 13 && s.y === 82 && s.place === 'Mender Meadow', `${name}: after the story the cadet is not at the ship in the Mender Meadow`); await layout(p, `${name}, the map`); await shot(p, tag + '02_map');
 
@@ -136,7 +136,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     tp = await type('help'); say(/doing word/.test(tp), `${name}: "help" gave: ${tp}`);
     tp = await type('hint'); say(/village/.test(tp), `${name}: "hint" before the elder should point to the village: ${tp}`);
     // 2. a machine before the elder
-    await useThing(p, 'm_pond'); s = await st(p); say(s.reading && !s.task, `${name}: a machine opened before the elder was met`); let pg = await readAll(p); say(pg.some(t => /Elder Rivet first/.test(t)), `${name}: the machine did not send the cadet to the elder`);
+    await useThing(p, 'm_pond'); s = await st(p); say(s.reading && !s.task, `${name}: a machine opened before the elder was met`); let pg = await readAll(p); say(pg.some(t => /Elder Thimble first/.test(t)), `${name}: the machine did not send the cadet to the elder`);
     // 3. the pan before the pouch
     await useThing(p, 'pan'); s = await st(p); say(s.reading && !s.task && s.pic === 'The bridge over the Rill', `${name}: the pan should show itself and wait`); await shot(p, tag + '03_pan_first'); pg = await readAll(p); s = await st(p); say(pg.some(t => t.indexOf(String(NUM.target)) >= 0) && s.S.needs.some(n => n.id === 'pan'), `${name}: the pan did not say its number or go on the Needs list`); say(!s.task && s.S.pouch === null, `${name}: the pan opened a task without a pouch`);
 

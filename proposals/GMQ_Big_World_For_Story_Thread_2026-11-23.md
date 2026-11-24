@@ -114,3 +114,7 @@ Not built tonight: the Year Machine's stones and Elder Rivet's line about it (yo
 2. **After a misreading the seller cannot see** (66: "seven more count days from today"), my code still gives the child the planks the next year, because the engine can see it. Is his reason that he saw the year go wrong (empty hooks)?
 3. **Why does he accept a second number that is still under the stick?** The code accepts it once, as 16d says ("Any other number runs" after one re-ask).
 4. **His jars.** The code assumes they hold at least twice what any town makes. Then "the crew takes it all back" and the oil rule agree.
+
+---
+
+**24 November, from the big world thread.** Marc confirmed the name ("Ok. Change his name."). In the page ("big world 11") the elder is **Elder Thimble**. "rivet" is still understood when typed, and never shown. The Year Machine's two lines from your 16j are in: the elder's, when the Menders' Rule Stone lights; the harbour keeper's, in her first meeting. Your story note still says Elder Rivet in places: that is yours to change.

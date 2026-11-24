@@ -11,7 +11,7 @@
 //   3  while it sleeps: a tap on the dimmed picture shakes the card and does nothing else; Enter does nothing; "Read to me" can be tapped
 //   4  Next brings the next page, asleep again; the last OK takes the card and the dimming away
 //   5  while the picture is moving (as when the fleet sails), new words wait, and come when it stops
-//   6  at a finished example (Elder Rivet's painted board), the words do not hide what they explain: the card is not over the picture, and the picture
+//   6  at a finished example (Elder Thimble's painted board), the words do not hide what they explain: the card is not over the picture, and the picture
 //      is not dimmed.   [Marc, 24 November: "They keep trying to touch the board."]
 // Run:  node checks/bigworld_reading_test.js     (about a minute)
 const { chromium } = require('playwright');
