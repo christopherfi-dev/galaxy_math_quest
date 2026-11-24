@@ -1,0 +1,122 @@
+# Elder Thimble and Pim, alive in the big world (sample)
+
+**Date:** 24 November 2026. **For:** Marc. **Nothing in the game, or in the big world's own page, was changed.**
+
+**Marc's ask** [Source: Marc, 24 November]: "You can do this: 'Put Elder Thimble and Pim into my copy of the big world now, with breathing, blinking, a hop when they talk, and faces that change with their words.'"
+
+**Where to see it:** the sample of the big world (private page in my message; in this folder `prototypes/world_look_sample.html`). Walk to Mender Village. "Look: old" on the Ship panel shows the game's own drawing, as today.
+
+---
+
+## 1. What they do
+
+- **They stand where the game drew them,** in the village: Pim by the door, Elder Thimble by the pip store. Nothing they say, and nothing a child does, has changed.
+- **Breathing:** a slow, small stretch up from the feet.
+- **Blinking:** every 2.5 to 5 seconds. The eyelids are the face's own copper, with a dark line where they close.
+- **A hop** at each new page of their words, with a small squash when they land, and a gentle bob while their words are up.
+- **Their face follows their words.** Each line in the game has a feeling (section 3). A new line that is not in the table falls back on its last mark: "?" thinking, "!" happy.
+- **Pim, until his spinner is given back: sad. After: playing with it.** [Proposal] What the child did shows in the picture (rule 4). Before, his sad face may make a child want to ask him what is wrong.
+
+Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and a phone (390 × 760), while each one talks and while they rest. A blink and a hop were checked frame by frame.
+
+---
+
+## 2. How it was made
+
+- **From Marc's Gemini pictures:** Elder Thimble's calm front view and his four feelings; Pim's front view, his four feelings and his spinner picture. Eleven frames.
+- **Cut out in code** (`prototypes/world_cast_build.py`):
+  - white background: flood from the corners, then the white closed inside a handle loop (a white piece with no pupil inside it is a hole; a piece with a pupil is an eye)
+  - green background: by colour, with the green tint taken off the edges
+  - a thicker dark outline round each figure, to match the game's own line weight
+  - one scale for all of a character's frames (the gold knob is the same size in every frame), feet on one line, a jump kept as a jump
+  - the eyes found for blinking, and the face colour beside them
+- **Size:** 145 KB of pictures in all. The sample grew from 305 KB to 505 KB (pictures are held inside the page as text).
+- **On screen:** Elder Thimble about 130 pixels tall on an iPad held sideways, Pim about 95.
+
+---
+
+## 3. Their lines and faces [Proposal: the feelings are my reading of each line; change any]
+
+**Elder Thimble** (five faces: calm, happy, worried, thinking, surprised)
+
+| Line | Face |
+|---|---|
+| Sky visitor! Welcome. I am Elder Thimble. | happy |
+| The Makers built machines for us, long ago… | thinking |
+| When the Gate broke, every rule plate burnt black… | worried |
+| One machine ate some of our pips! We do not dare to use them. | worried |
+| Four machines stand in our meadow… | calm |
+| You know how already: test it, write it down, then label it… | happy |
+| You found a rule! Now I can trust you with these. | surprised |
+| Here are our last … pips. Gold ones. Real ones. | calm |
+| The bridge over the Rill went up when the Gate broke… | worried |
+| The bridge has a lock: its pan… / The Makers made it so… | thinking |
+| Use only a machine with a true plate. And our law… | calm |
+| All four plates are true! We can use our machines again. | surprised |
+| Those machines sort and count. The Year Machine… burnt. | worried |
+| Look: our Rule Stone is glowing… | happy |
+| Its light flies to the Gate on the mountain… | thinking |
+| The other four are with the other peoples of Algora… | calm |
+| And for you: (a card) | happy |
+| What is that? Let me see. | surprised |
+| This is no machine's plate. It is far too thick. | thinking |
+| It is a piece of the Gate's own plate… | surprised |
+| Keep it safe. One day you may stand at the Gate. | calm |
+| You have made … of the 4 plates… | happy |
+| The Rillfolk are over the river… | calm |
+| The bridge pan still waits for its pips… | thinking |
+| His painted board: Long ago I found the rule… / I poured in 2 buckets… / Was the rule "add 6"? Or "times 4"?… / So I poured in 3… / 3 times 4 is 12… / Now you… | happy / calm / thinking / thinking / happy / calm |
+
+**Pim** (six faces: smiling, sad, overjoyed, secret, excited, playing with his spinner)
+
+| Line | Face |
+|---|---|
+| Hello! I am Pim. | smiling |
+| I lost my spinner by the pond. It is red. Have you seen it? | sad |
+| Hello! I am Pim. Oh! That is my spinner! You found it! | overjoyed |
+| Thank you! Want a secret? … / Push the old post, and the stones come up. Shh! | secret |
+| Whee! Look at it spin! | playing with his spinner |
+| The big kids cross the river north of the bridge… | secret |
+| I can count to 100 by fives. Want to hear? | excited |
+| A bottle? With a note? For ME? / "From Wim, of Mud Town." Wim! … | excited |
+| Thank you, sky visitor! I will write back today. | overjoyed |
+
+---
+
+## 4. Tests
+
+- `checks/world_look_check.js`: **passes.** Now also: both characters' pictures load and draw, and three lines get the right face.
+- `checks/bigworld_reading_test.js` and `checks/bigworld_play_test.js` on the sample: see the end of this note.
+- Not run: the game's own tests. The game was not touched.
+
+---
+
+## 5. What the big world thread would need, to take this in
+
+1. **Its safety rule lets in no pictures at all** (`default-src 'none'`). Pictures held inside the page (`img-src data:`) must be allowed. Still, nothing is asked of the internet. (This is why the first try showed the old drawings.)
+2. Paste `world_cast_sprites.js` and `world_cast_kit.js` into the page, and change two lines in the village scene (the build script shows which).
+3. About 145 KB more in the page.
+
+---
+
+## 6. Decisions for you
+
+1. **Do they look right in the village?** They are a different style from the drawn huts, bins and board around them. [Proposal: fine for now; the scene itself could be redrawn later.]
+2. **The faces in section 3:** change any that feel wrong.
+3. **Pim sad until his spinner comes back:** keep it?
+4. **The crowd:** when your three pictures (9 to 11) come, I make the ordinary Menders from them, the same way.
+
+---
+
+## 7. What could prove this wrong
+
+- **The children may watch the characters and not read.** Moving things pull the eye; the hop is short on purpose. Watch whether the reading card is still read.
+- **A face that does not match the words** confuses more than no face. Check the table.
+- **Speed on the older iPad:** the pictures are small, and each is drawn once a frame. Walk into the village on that iPad.
+- **Mixed styles:** the drawn Mender at the first lesson, and the crowd on the map, still look like the old drawings.
+
+---
+
+## Results of the big world tests on this sample
+
+(filled in when the tests finished)

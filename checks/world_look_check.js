@@ -24,7 +24,13 @@ const FILE = process.argv.find(a => /\.html$/.test(a)) || path.resolve(__dirname
   const off = await p.evaluate(() => { WL.toggle(); return WL.on; });      /* what "Look: old" on the Ship panel does */
   const after = await p.evaluate(() => { const o = []; for (let y = 0; y < MAPH; y++) for (let x = 0; x < MAPW; x++) o.push(walkable(x, y) ? 1 : 0); return o.join(''); });
   await p.evaluate(() => WL.toggle());
+  // Elder Thimble and Pim: their pictures load (the page's safety rule lets pictures held in the page through), and they draw in place of the old drawing
+  await p.waitForTimeout(400);
+  const cast = await p.evaluate(() => ({ loaded: Object.keys(CAST_SPRITES).every(c => Object.keys(CAST_SPRITES[c].frames).length >= 5), drawsElder: CAST.draw('elder', 100, 200, 50), drawsPim: CAST.draw('pim', 200, 200, 50),
+    faces: ['One machine ate some of our pips! We do not dare to use them.', 'I lost my spinner by the pond. It is red. Have you seen it?', 'Push the old post, and the stones come up. Shh!'].map((t, i) => CAST.faceFor(i ? 'pim' : 'elder', t)).join(',') }));
   const faults = [];
+  if (!cast.loaded || !cast.drawsElder || !cast.drawsPim) faults.push('Elder Thimble and Pim do not draw: ' + JSON.stringify(cast));
+  if (cast.faces !== 'worried,sad,secret') faults.push('the faces do not follow the words: ' + cast.faces);
   if (r.bad.length) faults.push(...r.bad.map(s => 'square ' + s));
   if (!r.on) faults.push('the new look was not on at the start');
   if (off) faults.push('Look: old did not switch the look off');
