@@ -48,6 +48,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hb { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: .86rem; background: rgba(6, 9, 18, .86); color: #e8eef8; border: 1.5px solid #4a5d80; border-radius: 10px; padding: 7px 10px; min-height: 42px; }
 .hb.on { background: #6db3ff; color: #08121f; border-color: #6db3ff; }
 .hb.new::after { content: ' ●'; color: #ff8f6b; }
+#b_mus { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 44px; }
+#b_mus .slash { display: none; } #b_mus.mute .slash { display: inline; } #b_mus.mute { color: #8b97ad; }      /* music off: the note is struck through, as on an iPad's own sound button */
 /* the reading card: over a lightly dimmed screen, where the desk is (beside the picture on a wide screen, below it on an upright one), never over the picture;
    OK sleeps 2.5 to 3.5 seconds while a bar fills [Marc, 24 November: "The students don't realize they need to read the text boxes"; then "it's blocking some
    of these scenes... find a better place for these"; "maybe 2.5 seconds or so". The look is the main game's card. placeRead() sets the place.] */
@@ -118,7 +120,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .list li.done { color: #8fa3bf; text-decoration: line-through; }
 .list li small { display: block; color: #a9b9d0; font-size: .8rem; text-decoration: none; }
 .list li b { color: #ffd25e; }
-@media (max-width: 560px) { .word { padding: 6px 11px; min-height: 36px; } #pad button { min-height: 36px; } .btn { min-height: 38px; padding: 7px 12px; } #readtext { font-size: 1.12rem; } #read { top: clamp(48px, 11vh, 120px); padding: 10px 12px; } .hb { padding: 6px 8px; font-size: .78rem; } #stonesbar { display: none; } }
+@media (max-width: 560px) { .word { padding: 6px 11px; min-height: 36px; } #pad button { min-height: 36px; } .btn { min-height: 38px; padding: 7px 12px; } #readtext { font-size: 1.12rem; } #read { top: clamp(48px, 11vh, 120px); padding: 10px 12px; } .hb { padding: 6px 8px; font-size: .78rem; } .hbw { display: none; } #stonesbar { display: none; } }
 </style>
 </head>
 <body>
@@ -126,7 +128,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   <div id="stage">
     <canvas id="cv" aria-label="The picture: Planet Algora"></canvas>
     <div id="hud"><div id="place"></div><div id="stonesbar" hidden></div>
-      <div id="hudr"><button class="hb" id="b_map">Map</button><button class="hb" id="b_needs">Needs</button><button class="hb" id="b_ship">Ship</button></div></div>
+      <div id="hudr"><button class="hb" id="b_map">Map</button><button class="hb" id="b_needs">Needs</button><button class="hb" id="b_ship">Ship</button><button class="hb" id="b_mus" aria-label="Music"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6.4" cy="18" r="2.9" fill="currentColor"/><circle cx="17.4" cy="16" r="2.9" fill="currentColor"/><line class="slash" x1="2.5" y1="2.5" x2="21.5" y2="21.5" stroke="#ff8f6b" stroke-width="2.8" stroke-linecap="round"/></svg><span class="hbw">Music</span></button></div></div>
   </div>
   <div id="veil" hidden></div>
   <div id="read" hidden role="dialog" aria-live="polite" aria-label="Read this, then tap OK"><div id="readwho"></div><div id="readtext"></div><div id="readrow"><span id="readn"></span><button class="btn quiet" id="readsay">Read to me</button><button class="btn" id="readok" disabled><span id="readfill"></span><b id="readlab">Read…</b></button></div></div>
@@ -142,7 +144,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 'use strict';
 const $ = id => document.getElementById(id);
 const PLANET = 'Planet Algora';          /* [Proposal] the name is Marc's to choose. It is used from here only. */
-const VERSION = 'big world 9';
+const VERSION = 'big world 10';
 const KEY = 'gmq-bigworld-v1', GAMEKEY = 'gmq-station-sketch-v5';      /* its own save. The game's save is read for the cadet's name only, and never written. */
 
 /*MAP-BEGIN (painted by checks/bigworld_map_build.js; change that file, not these letters)*/
@@ -821,29 +823,32 @@ function beep(f, d, type) { if (!S || !S.sound) return; try { AC = AC || new (wi
   Our own tunes: no music files, nothing copied. Written in the game's own form (TUNES in the game file, version 88):
   bpm counts eighth notes; pcs are the pitch classes of the tune's key (for the check); a voice has w (wave), v (loudness), pl (plucked: it fades fast),
   or tick (a click) with hz; s holds one token for each eighth: a note like C4 or F#5, "-" holds, "." rests, "x" clicks, "|" is a bar line.
-  Off until someone taps "Music" on the ship panel (many iPads in one room). Softer while a task is open or words wait to be read. */
+  On from the start (an iPad lets it begin only at the first tap); the ♪ button on the top bar turns it off and on, and each iPad remembers. [Marc, 24 November:
+  "Can you add music? May make it more enjoyable." Until then it was off until "Music" was tapped on the ship panel.] Softer while a task is open or words wait
+  to be read. The Meadow, the village and the Reach, heard most, have two halves (8 bars: 18 to 23 seconds before they repeat); every third time round the
+  melody rests, so they tire less. */
 const TUNES = {
   sky: { bpm: 64, pcs: [9, 11, 0, 2, 4, 5, 7], v: [
     { w: 'sine', v: .04, s: 'E5 - - - A5 - - - | G5 - - - E5 - - - | C5 - - - D5 - E5 - | A4 - - - - - - -' },
     { w: 'triangle', v: .02, s: 'A3 - E4 - A3 - E4 - | C4 - G4 - C4 - G4 - | F3 - C4 - G3 - D4 - | A3 - E4 - A3 - - -' },
     { w: 'sine', v: .045, s: 'A2 - - - - - - - | C3 - - - - - - - | F2 - - - G2 - - - | A2 - - - - - - -' }] },
   meadow: { bpm: 104, pcs: [0, 2, 4, 5, 7, 9, 11], v: [
-    { w: 'triangle', v: .034, s: 'E5 G5 C6 G5 A5 - G5 - | F5 A5 C6 A5 G5 - E5 - | D5 F5 A5 F5 E5 G5 C6 - | B5 A5 G5 F5 E5 - . .' },
-    { w: 'sine', v: .05, s: 'C3 - G3 - C3 - G3 - | F3 - C3 - C3 - G3 - | D3 - A3 - C3 - E3 - | G2 - G3 - C3 - - -' },
-    { tick: 1, hz: 2100, v: .009, s: 'x . . x . . x . | x . . x . . x . | x . . x . . x . | x . x . x . . .' }] },
+    { w: 'triangle', v: .034, s: 'E5 G5 C6 G5 A5 - G5 - | F5 A5 C6 A5 G5 - E5 - | D5 F5 A5 F5 E5 G5 C6 - | B5 A5 G5 F5 E5 - . . | A4 C5 E5 C5 D5 - C5 - | F4 A4 C5 A4 G4 - A4 - | E4 G4 C5 G4 F4 A4 D5 - | B4 C5 D5 E5 D5 - - .' },
+    { w: 'sine', v: .05, s: 'C3 - G3 - C3 - G3 - | F3 - C3 - C3 - G3 - | D3 - A3 - C3 - E3 - | G2 - G3 - C3 - - - | A2 - E3 - A2 - E3 - | F2 - C3 - F2 - C3 - | E2 - G2 - D3 - A2 - | G2 - D3 - G2 - B2 -' },
+    { tick: 1, hz: 2100, v: .009, s: 'x . . x . . x . | x . . x . . x . | x . . x . . x . | x . x . x . . . | x . . x . . x . | x . . x . . x . | x . . x . . x . | x . x . x . x .' }] },
   village: { bpm: 88, pcs: [5, 7, 9, 10, 0, 2, 4], v: [
-    { w: 'triangle', v: .02, pl: 1, s: 'F4 A4 C5 A4 F4 A4 C5 A4 | Bb4 D5 F5 D5 Bb4 D5 F5 D5 | G4 Bb4 D5 Bb4 C5 E5 G5 E5 | F4 A4 C5 F5 C5 A4 F4 .' },
-    { w: 'sine', v: .034, s: 'C5 - - - A4 - - - | D5 - - - Bb4 - - - | Bb4 - - - C5 - - - | A4 - - - F4 - - -' },
-    { w: 'sine', v: .05, s: 'F2 - - - - - - - | Bb2 - - - - - - - | G2 - - - C3 - - - | F2 - - - - - - -' }] },
+    { w: 'triangle', v: .02, pl: 1, s: 'F4 A4 C5 A4 F4 A4 C5 A4 | Bb4 D5 F5 D5 Bb4 D5 F5 D5 | G4 Bb4 D5 Bb4 C5 E5 G5 E5 | F4 A4 C5 F5 C5 A4 F4 . | D4 F4 A4 F4 D4 F4 A4 F4 | Bb3 D4 F4 D4 Bb3 D4 F4 D4 | G4 Bb4 D5 Bb4 G4 Bb4 D5 Bb4 | C5 E5 G5 E5 C5 E5 G5 Bb4' },
+    { w: 'sine', v: .034, s: 'C5 - - - A4 - - - | D5 - - - Bb4 - - - | Bb4 - - - C5 - - - | A4 - - - F4 - - - | A4 - - - D5 - - - | F5 - - - D5 - - - | D5 - - - Bb4 - - - | C5 - - - E5 - - -' },
+    { w: 'sine', v: .05, s: 'F2 - - - - - - - | Bb2 - - - - - - - | G2 - - - C3 - - - | F2 - - - - - - - | D3 - - - - - - - | Bb2 - - - - - - - | G2 - - - - - - - | C3 - - - - - - -' }] },
   reach: { bpm: 84, pcs: [2, 4, 5, 7, 9, 10, 0], v: [
-    { w: 'triangle', v: .032, s: 'A4 - D5 - F5 E5 D5 - | C5 - E5 - G5 F5 E5 - | Bb4 - D5 - F5 - A5 - | G5 - E5 - D5 - - -' },
-    { w: 'sine', v: .022, pl: 1, s: 'D3 A3 D4 A3 D3 A3 D4 A3 | C3 G3 C4 G3 C3 G3 C4 G3 | Bb2 F3 Bb3 F3 Bb2 F3 Bb3 F3 | A2 E3 A3 E3 D3 A3 D4 .' },
-    { w: 'sine', v: .045, s: 'D2 - - - - - - - | C2 - - - - - - - | Bb1 - - - - - - - | A1 - - - D2 - - -' }] },
+    { w: 'triangle', v: .032, s: 'A4 - D5 - F5 E5 D5 - | C5 - E5 - G5 F5 E5 - | Bb4 - D5 - F5 - A5 - | G5 - E5 - D5 - - - | G4 - Bb4 - D5 C5 Bb4 - | A4 - C5 - F5 E5 C5 - | D5 - - - C5 - Bb4 - | A4 - C5 - E5 - - -' },
+    { w: 'sine', v: .022, pl: 1, s: 'D3 A3 D4 A3 D3 A3 D4 A3 | C3 G3 C4 G3 C3 G3 C4 G3 | Bb2 F3 Bb3 F3 Bb2 F3 Bb3 F3 | A2 E3 A3 E3 D3 A3 D4 . | G2 D3 G3 D3 G2 D3 G3 D3 | F2 C3 F3 C3 F2 C3 F3 C3 | Bb2 F3 Bb3 F3 Bb2 F3 Bb3 F3 | A2 E3 A3 E3 A2 E3 A3 .' },
+    { w: 'sine', v: .045, s: 'D2 - - - - - - - | C2 - - - - - - - | Bb1 - - - - - - - | A1 - - - D2 - - - | G2 - - - - - - - | F2 - - - - - - - | Bb1 - - - - - - - | A1 - - - - - - -' }] },
   deep: { bpm: 56, pcs: [4, 5, 7, 9, 11, 0, 2], v: [
     { w: 'sine', v: .04, s: 'E4 - - - - - F4 - | E4 - - - - - - - | G4 - - - F4 - - - | E4 - - - - - - -' },
     { w: 'sine', v: .05, s: 'E2 - - - - - - - | E2 - - - - - - - | C2 - - - D2 - - - | E2 - - - - - - -' },
     { tick: 1, hz: 1400, v: .012, s: '. . . x . . . . | . . . . . . x . | . . x . . . . . | . . . . . x . .' }] } };
-const MUS = { on: false, vol: .6, g: null, timer: null, tune: null, step: 0, pass: 0, next: 0, count: 0, cache: {}, duck: 1 };
+const MUS = { on: true, vol: .6, g: null, timer: null, tune: null, step: 0, pass: 0, next: 0, count: 0, cache: {}, duck: 1 };
 function musParse(id) { if (MUS.cache[id]) return MUS.cache[id]; const T = TUNES[id], B = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
   const voices = T.v.map(vc => { const toks = vc.s.split(/\s+/).filter(x => x && x !== '|'), ev = []; toks.forEach((tk, i) => { if (tk === '-') { if (ev.length && ev[ev.length - 1].end === i) { ev[ev.length - 1].len++; ev[ev.length - 1].end = i + 1; } } else if (tk === 'x') ev.push({ at: i, len: 1, end: i + 1, click: 1 }); else if (tk !== '.') { const m = /^([A-G])([#b]?)(\d)$/.exec(tk); if (m) ev.push({ at: i, len: 1, end: i + 1, hz: 440 * Math.pow(2, ((+m[3] + 1) * 12 + B[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) - 69) / 12) }); } }); return { vc, ev, n: toks.length }; });
   return (MUS.cache[id] = { voices, n: voices[0].n, sd: 60 / T.bpm / 2 }); }
@@ -857,10 +862,11 @@ function musTick() { if (!MUS.on || !AC || !MUS.g) return; if (document.hidden |
   const T = musParse(MUS.tune); while (MUS.next < AC.currentTime + .4) { T.voices.forEach((v, vi) => { if (vi === 0 && MUS.pass % 3 === 2) return; for (const e of v.ev) if (e.at === MUS.step) musNote(v.vc, e, MUS.next, T.sd); }); MUS.next += T.sd; MUS.step++; if (MUS.step >= T.n) { MUS.step = 0; MUS.pass++; } } }      /* every third time round the melody rests, so a short loop tires less */
 function musStart() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) { return; } if (!MUS.g) { MUS.g = AC.createGain(); MUS.g.connect(AC.destination); } MUS.g.gain.setTargetAtTime(MUS.vol * MUS.duck, AC.currentTime, .2); MUS.tune = null; MUS.next = AC.currentTime + .1; if (!MUS.timer) MUS.timer = setInterval(musTick, 120); }
 function musStop() { if (MUS.timer) { clearInterval(MUS.timer); MUS.timer = null; } if (MUS.g && AC) { try { MUS.g.gain.setTargetAtTime(.0001, AC.currentTime, .08); } catch (e) {} } MUS.tune = null; }
-function musSet(on) { MUS.on = !!on; try { localStorage.setItem('gmq-bigworld-music', on ? 'on' : 'off'); } catch (e) {} if (on) musStart(); else musStop(); }
+function musSet(on) { MUS.on = !!on; try { localStorage.setItem('gmq-bigworld-music', on ? 'on' : 'off'); } catch (e) {} if (on) musStart(); else musStop(); musButton(); }
+function musButton() { const b = document.getElementById('b_mus'); if (!b) return; b.classList.toggle('mute', !MUS.on); b.setAttribute('aria-label', MUS.on ? 'Music is on. Tap to turn it off.' : 'Music is off. Tap to turn it on.'); b.title = MUS.on ? 'Music: on' : 'Music: off'; }
 function musWake() { if (!MUS.on) return; if (!MUS.timer) musStart(); else if (AC && AC.state === 'suspended') { try { AC.resume(); } catch (e) {} } }      /* an iPad lets sound start only after a tap */
-try { MUS.on = localStorage.getItem('gmq-bigworld-music') === 'on'; } catch (e) {}
-document.addEventListener('pointerdown', musWake, true);
+try { MUS.on = localStorage.getItem('gmq-bigworld-music') !== 'off'; } catch (e) {}
+document.addEventListener('pointerdown', musWake, true); document.addEventListener('keydown', musWake, true);
 /*MUSIC-END*/
 function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .9; speechSynthesis.speak(u); } catch (e) {} }
 function hush() { try { speechSynthesis.cancel(); } catch (e) {} }
@@ -1421,6 +1427,7 @@ cv.addEventListener('pointerdown', e => { e.preventDefault(); stageTap(e); });
 $('readok').onclick = readOk; $('readsay').onclick = () => { if (reading()) speak(READ.q[READ.i]); };
 $('read').addEventListener('pointerdown', e => { e.stopPropagation(); if ($('readok').disabled && !(e.target.closest && e.target.closest('#readsay'))) readNudge(); });
 $('veil').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); readNudge(); });      /* the rest of the screen waits until the words are read */
+$('b_mus').onclick = () => { musSet(!MUS.on); if (PANEL === 'ship') drawTask(); }; musButton();
 $('b_map').onclick = toggleBig; $('b_needs').onclick = () => { if (BIG) toggleBig(); openPanel('needs'); }; $('b_ship').onclick = () => { if (BIG) toggleBig(); openPanel('ship'); };
 $('words').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.verb) { verb = verb === b.dataset.verb ? '' : b.dataset.verb; held = ''; $('cmd').value = verb ? verb + ' ' : ''; beep(560, .03); if (verb === 'dig' && !hereThings().length) return digHere(); return drawWords(); } if (b.dataset.item) { held = b.dataset.item; $('cmd').value = verb + ' ' + ITEMS[held].words[0] + ' '; beep(560, .03); return drawWords(); } if (b.dataset.dir) return goDir(b.dataset.dir); if (b.dataset.thing) { const t = hereThings().find(o => o.id === b.dataset.thing); if (t) runThing(t, verb, held); } });
 $('kb').addEventListener('pointerdown', e => { e.preventDefault(); }); $('kb').addEventListener('click', e => { const b = e.target.closest('button'); if (b) kbKey(b.dataset.k); });

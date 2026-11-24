@@ -402,9 +402,9 @@ Both reviewers said the two notes hold more decisions than a person can answer. 
 | | Decision | Options, with costs | I would choose |
 |---|---|---|---|
 | 1 | **Is "how much" enough for a first big quest?** | **Decided [Source: Marc, 23 November, to the main thread]: "how much" is fine as the first big quest.** Two or three children try Algora this week | |
-| 2 | **One right year lights a town for good** | Yes, as your engine passes a skill on one right answer. Or two right years on different count days: surer, and twice as long for every child | one |
-| 3 | **A child who must be taught at every band spends 16 to 26 years** (24 in version 4; 18 in version 5) | Accept it for the trial, and time it. Or teach once only, and after that a miss is a rest | accept, and time it |
-| 4 | **Put right on the planks: is it learned?** | A slip, as your engine says "self-corrected" (the next town asks the same size; at the gate it does not count). Or right, as if at the first try: faster, but a child can type 0 for free help | a slip |
+| 2 | **One right year lights a town for good** | **Decided for the trial [Source: Marc, 24 November, to the story thread: "Ok. I agree. Proceed"; the story note's 16j]: yes, one.** Yes, as your engine passes a skill on one right answer. Or two right years on different count days: surer, and twice as long for every child | one |
+| 3 | **A child who must be taught at every band spends 16 to 26 years** (24 in version 4; 18 in version 5) | **Decided for the trial [Source: the same]: accept it, and time it.** Accept it for the trial, and time it. Or teach once only, and after that a miss is a rest | accept, and time it |
+| 4 | **Put right on the planks: is it learned?** | **Decided for the trial [Source: the same]: a slip.** A slip, as your engine says "self-corrected" (the next town asks the same size; at the gate it does not count). Or right, as if at the first try: faster, but a child can type 0 for free help | a slip |
 
 **Decided by the two threads, as you said we should. Say if you disagree.**
 - **Nine gold months.** You said: "however long you make their year."
