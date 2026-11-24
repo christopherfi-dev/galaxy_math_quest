@@ -4,6 +4,8 @@
 //
 // On three screens, at a machine whose plate is burnt: tap 2, pull the lever, wait for the machine. The box is empty; the machine's own picture
 // still shows what went in. Then tap 5: the box says 5, not 25. A second test with 5 runs as 5.
+// And at the machine that shares [Marc, 24 November: "I've tried like 6 numbers. None work"]: three numbers it hands back, one after another, and the Mender
+// by the machine names one it takes (never the rule); that number goes through. Once only.
 // Run:  node checks/bigworld_boxes_test.js
 const { chromium } = require('playwright');
 const path = require('path');
@@ -29,9 +31,20 @@ const bad = [], say = (ok, what) => { if (!ok) { bad.push(what); console.log('  
     await tap('5'); say(await box() === '5', `${name}: after the test, tapping 5 gave "${await box()}" (it should be 5)`);
     await p.click('#task [data-b="pull"]'); await p.waitForFunction(() => window.__bw.idle(), null, { timeout: 15000 }); await p.waitForTimeout(200); await readAll();
     const msg2 = await p.evaluate(() => window.__bw.task().msg); say(/\b5\b/.test(msg2) && !/\b25\b/.test(msg2), `${name}: the second test did not run with 5: "${msg2}"`);
+    // the share machine: three hand-backs, then the Mender's number
+    await p.click('#task [data-b="leave"]').catch(() => {}); await readAll();
+    const sh = await p.evaluate(() => { const N = window.__bw.NUM(), site = Object.keys(N.at).find(k => N.at[k].op === 'share'), t = TH['m_' + site]; delete S.mach[site]; P.route = [];      /* a fresh machine: nothing tried yet */ P.px = t.stand[0]; P.py = t.stand[1]; cam.x = P.px + .5; cam.y = P.py + .5; see(); drawWords(); command('use machine'); return { site, n: N.at[site].n }; });
+    await p.waitForTimeout(300); await readAll(); await p.waitForFunction(() => window.__bw.task() && window.__bw.task().kind === 'machine', null, { timeout: 8000 });
+    const misses = [1, 5, 7, 11, 13, 17].filter(v => v % sh.n !== 0).slice(0, 3); let tip = null;
+    for (const v of misses) { await tap('clr'); for (const d of String(v)) await tap(d); await p.click('#task [data-b="pull"]'); await p.waitForFunction(() => window.__bw.idle(), null, { timeout: 15000 }); await p.waitForTimeout(250);
+      const r = await p.evaluate(() => window.__bw.READ.q.length ? window.__bw.READ.q.join(' ') : ''); if (r) { tip = r; await readAll(); } }
+    const k = tip && +(/took (\d+)/.exec(tip) || [])[1];
+    say(!!k, `${name}: after three hand-backs at the share machine (÷ ${sh.n}) nobody named a number: "${tip}"`); say(!tip || !/share|÷|divid|times|×/i.test(tip), `${name}: the Mender's words give the rule away: "${tip}"`);
+    if (k) { say(k % sh.n === 0 && misses.indexOf(k) < 0, `${name}: the Mender named ${k}, which the machine does not take or was tried`); await tap('clr'); for (const d of String(k)) await tap(d); await p.click('#task [data-b="pull"]'); await p.waitForFunction(() => window.__bw.idle(), null, { timeout: 15000 }); await p.waitForTimeout(250); await readAll();
+      const m3 = await p.evaluate(() => window.__bw.task().msg); say(new RegExp(k + ' went in').test(m3), `${name}: the Mender's number ${k} did not go through: "${m3}"`); }
     say(!errs.length, `${name}: errors: ${errs.join(' | ')}`);
     console.log(`  ${name}: after "2, pull" the box is "${after}"; then "5, pull": ${msg2}`);
     await ctx.close(); }
   await b.close();
-  console.log(bad.length ? `\nFAILED (${bad.length})` : '\nok: on three screens a test empties the box, and the next number starts fresh');
+  console.log(bad.length ? `\nFAILED (${bad.length})` : '\nok: on three screens a test empties the box, and the next number starts fresh; after three hand-backs a Mender names a number that goes through, and not the rule');
   process.exit(bad.length ? 1 : 0); })();
