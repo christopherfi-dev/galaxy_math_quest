@@ -51,6 +51,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* the reading card: in the middle of the screen, higher up, over a dimmed screen; OK sleeps 4 to 5 seconds while a bar fills [Marc, 24 November:
    "The students don't realize they need to read the text boxes. They must be in the middle of the screen higher up." The look is the main game's card.] */
 #veil { position: fixed; inset: 0; z-index: 30; background: rgba(4, 8, 20, .55); }
+#veil.clear { background: rgba(4, 8, 20, .06); }      /* over a finished example (the painted board): the picture is what the words explain, so it stays bright; a tap still only shakes the card */
 #read { position: fixed; left: 50%; top: clamp(56px, 15vh, 190px); transform: translateX(-50%); z-index: 31; width: min(92vw, 660px); max-height: 72vh; overflow: auto; background: #fff8e7; color: #1b2340; border: 3px solid #ffb23e; border-radius: 16px; padding: 14px 16px 12px; box-shadow: 0 12px 36px rgba(0, 0, 0, .6); display: flex; flex-direction: column; gap: 10px; animation: readin .25s ease-out; }
 @keyframes readin { from { transform: translate(-50%, -14px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 #read.nudge { animation: readnudge .3s; }
@@ -579,7 +580,7 @@ const seen = new Uint8Array(MAPW * MAPH), TH = {}, SOLID = {}, GATEOF = {}, CROW
 THINGS.forEach(t => { if (!t.stand) t.stand = bwStand(t); TH[t.id] = t; SOLID[key(t.x, t.y)] = t; });
 Object.keys(GATES).forEach(g => GATES[g].tiles.forEach(([x, y]) => { GATEOF[key(x, y)] = g; }));
 const P = { px: 13, py: 82, route: [], then: null, step: 0, dir: 'down', idle: 0 }, cam = { x: 13, y: 82 }, SC = { x: .12, to: null, then: null, dir: 'right', step: 0 };
-let PIC = null, BIG = false, FADE = 0;
+let PIC = null, BIG = false, FADE = 0, PICTOP = 0;
 
 /* ---- saving. Everything the child did is in S. It is written after every change. */
 function fresh() { let seed = 1 + Math.floor(Math.random() * 2000000000); try { const g = JSON.parse(localStorage.getItem(GAMEKEY)); if (g && g.c && g.c.seed) seed = g.c.seed >>> 0 || seed; } catch (e) {}      /* the same cadet gets the same numbers; nothing else is read */
@@ -860,7 +861,7 @@ function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesi
 function hush() { try { speechSynthesis.cancel(); } catch (e) {} }
 
 /* ---- the reading card: a sentence or two, then OK. [Marc's rule 7: short readings] */
-const READ = { q: [], i: 0, then: null, who: '', tm: 0, wait: 0, held: false };
+const READ = { q: [], i: 0, then: null, who: '', tm: 0, wait: 0, held: false, bottom: 0 };
 const FASTREAD = /[?&]fastread=1/.test(location.search);      /* for the play tests only: OK wakes at once. No child's link has it. */
 const reading = () => READ.q.length > 0, PHONE = () => window.innerWidth <= 560;
 function tell(pages, then, who) { READ.q = pages.filter(Boolean); READ.i = 0; READ.then = then || null; READ.who = who || ''; if (!READ.q.length) { READ.then = null; if (then) then(); return; } showRead(); }
@@ -868,9 +869,10 @@ function tell(pages, then, who) { READ.q = pages.filter(Boolean); READ.i = 0; RE
 function readWait(t) { const w = String(t || '').trim().split(/\s+/).filter(Boolean).length; return FASTREAD ? 60 : Math.round(4000 + Math.max(0, Math.min(1, (w - 10) / 14)) * 1000); }
 function showRead() { const rd = $('read');
   if (PIC && PIC.busy && PIC.busy()) { rd.hidden = true; $('veil').hidden = true; READ.held = true; return; }      /* the picture is moving (the fleet sails): the words wait until it stops, so the child sees what they tell */
-  READ.held = false; $('veil').hidden = false; rd.hidden = false; rd.classList.remove('nudge'); $('readwho').textContent = READ.who; $('readtext').textContent = READ.q[READ.i]; $('readn').textContent = READ.q.length > 1 ? (READ.i + 1) + ' of ' + READ.q.length : '';
+  READ.held = false; $('veil').hidden = false; $('veil').classList.toggle('clear', !!(PIC && PIC.inset)); const low = PHONE() && !!(PIC && PIC.inset); rd.classList.toggle('low', low); rd.style.top = low ? Math.round(cv.getBoundingClientRect().bottom + 8) + 'px' : ''; rd.hidden = false;      /* on a phone a finished example keeps the whole picture: its card sits just below it, in the middle of the screen */ rd.classList.remove('nudge'); $('readwho').textContent = READ.who; $('readtext').textContent = READ.q[READ.i]; $('readn').textContent = READ.q.length > 1 ? (READ.i + 1) + ' of ' + READ.q.length : '';
   const b = $('readok'), fl = $('readfill'); READ.wait = readWait(READ.q[READ.i]); b.disabled = true; $('readlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `readfill ${READ.wait}ms linear forwards`;
   clearTimeout(READ.tm); READ.tm = setTimeout(() => { b.disabled = false; $('readlab').textContent = READ.i < READ.q.length - 1 ? 'Next' : 'OK'; fl.style.animation = 'none'; }, READ.wait);
+  READ.bottom = rd.getBoundingClientRect().bottom - cv.getBoundingClientRect().top;      /* where the card ends, over the picture: a finished example is drawn below it */
   lines.push({ text: READ.q[READ.i] }); lines = lines.slice(-3); drawLog(); drawWords(); drawTask(); }
 function readNudge() { const rd = $('read'); rd.classList.remove('nudge'); void rd.offsetWidth; rd.classList.add('nudge'); beep(200, .08); }
 function readOk() { if (!reading()) return; if ($('readok').disabled || READ.held) return readNudge(); hush(); beep(520, .05); if (READ.i < READ.q.length - 1) { READ.i++; showRead(); return; } clearTimeout(READ.tm); $('read').hidden = true; $('veil').hidden = true; const th = READ.then; READ.q = []; READ.then = null; READ.who = ''; if (th) th(); drawWords(); drawTask(); setPlace(); save(); }
@@ -1395,7 +1397,7 @@ function boot() { kbBuild(); S = load() || fresh(); if (!S.st) S.st = { round: 0
 let last = 0;
 function loop(ts) { const dt = Math.min(.05, last ? (ts - last) / 1000 : .016); last = ts; tNow += dt; if (READ.held && reading() && !(PIC && PIC.busy && PIC.busy())) showRead(); if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();
   if (reading() && READ.hook && READ.hook[READ.i]) { READ.hook[READ.i](); }
-  if (PIC && PIC.inset) { const top = 56, bot = PHONE() ? 0 : Math.min(150, vh * .22); cx.fillStyle = PIC.inset; cx.fillRect(0, 0, vw, vh); cx.save(); cx.translate(0, top); PIC.draw(vw, vh - top - bot, dt); cx.restore(); } else if (PIC) PIC.draw(vw, vh, dt); else if (BIG) drawBig(); else if (S.at === 'map') { stepWalk(dt); cam.x += (P.px + .5 - cam.x) * Math.min(1, dt * 6); cam.y += (P.py + .5 - cam.y) * Math.min(1, dt * 6); drawMap(dt); } else drawScene(dt);
+  if (PIC && PIC.inset) { const top = reading() && !READ.held && READ.bottom > 56 && READ.bottom < vh ? Math.min(vh * .55, READ.bottom + 10) : 56, bot = 8; PICTOP = top;      /* a finished example sits below the card, so the words and what they explain are both in sight [Marc, 24 November: at the painted board children touched the board, not the words] */ cx.fillStyle = PIC.inset; cx.fillRect(0, 0, vw, vh); cx.save(); cx.translate(0, top); PIC.draw(vw, vh - top - bot, dt); cx.restore(); } else if (PIC) PIC.draw(vw, vh, dt); else if (BIG) drawBig(); else if (S.at === 'map') { stepWalk(dt); cam.x += (P.px + .5 - cam.x) * Math.min(1, dt * 6); cam.y += (P.py + .5 - cam.y) * Math.min(1, dt * 6); drawMap(dt); } else drawScene(dt);
   if (FADE > 0) { cx.fillStyle = `rgba(4,6,14,${Math.min(1, FADE)})`; cx.fillRect(0, 0, vw, vh); FADE -= dt * 2.4; }
   requestAnimationFrame(loop); }
 window.__bw = { S: () => S, NUM: () => NUM, P, SC, MA, READ, check: bwCheck, slice: bwSlice, pic: () => PIC, task: () => TASK, panel: () => PANEL, big: () => BIG, idle: () => !P.route.length && SC.to === null && !MA.phase && FADE <= 0, seen, walkable, tell, things: TH, stones: bwStones, cam: () => { geo(); return { ts: V.ts, ox: V.ox, oy: V.oy }; } };
