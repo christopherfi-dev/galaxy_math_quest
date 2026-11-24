@@ -10,13 +10,15 @@
 
 Also saved: `thimble_details_zoomed.png` (hands, lid dents, pouch, zoomed) and `thimble_game_size_test.png` (him at game size, beside the drawn Mender).
 
-**Not known:** how many tries each picture took. [Asked]
+**Tries:** one each. All four took about 90 to 120 seconds. [Source: Marc, 24 November: "Each picture was one shot. All 4 took abt 90-120 seconds in total"]
 
 ---
 
 ## 1. The verdict
 
-**Gemini kept him the same across all four pictures.** Marc was right; my guess of "5 to 15 tries" for a good picture was too pessimistic, at least for one character in one chat.
+**Gemini kept him the same across all four pictures, each in one try, about two minutes for all four.** Marc was right; my guess of "5 to 15 tries" for a good picture was wrong, at least for one character in one chat.
+
+**So the cost moves.** Making 40 to 60 pictures is perhaps half an hour of Gemini's time. The real work is writing each prompt, checking each picture (this test found five faults), cutting it out and fitting it into the game, and keeping one look over months.
 
 ---
 
