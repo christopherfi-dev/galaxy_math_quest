@@ -86,3 +86,43 @@ Put him into my copy of the big world, in his village, with the thicker outline.
 - change face with his words (happy, worried, thinking, surprised, from picture 2)
 
 **Decided** [Source: Marc, 24 November: "Handles and arms are fine."]: Menders have pot handles and separate arms with hands. Next test: Pim, in the same Gemini chat (`GMQ_Character_Test_Pim_v1_2026-11-24.md`).
+
+---
+
+# Test 2: Pim, in the same Gemini chat
+
+**What Marc sent** [Source: Marc, 24 November: "One shot for all."]: four pictures from prompts 5 to 8, one try each. Saved in `content/art_test_2026-11-24/`: `pim_5_sheet.png`, `pim_6_feelings.png`, `pim_7_spinner.png`, `pim_8_with_elder.png`. Also saved: `pim_details_zoomed.png` and `pim_game_size_test.png`.
+
+## The verdict
+
+**Two characters, one chat, eight pictures, eight first tries.** Pim is clearly another person of the same people, and Elder Thimble came back unchanged beside him.
+
+## What is right
+
+- **Pim is someone else:** smaller, lighter copper, no beard, no dent, big eyes, a wide mouth.
+- **His too-big lid** is wider than his pot and tipped, in every picture. At game size it is the thing that tells him apart.
+- **His four feelings** match his story: sad (spinner lost), overjoyed (hugging it), the secret (finger to his mouth, eyes to one side), excited (a jump, the lid bouncing off).
+- **The spinner** is red with three arms, as the game draws it, with lines that show it spinning.
+- **Picture 8:** the elder is the same as in his own pictures, with the dent back on the left of his lid (the prompt said which side), his hand resting on Pim's lid, Pim looking up.
+- **The green background** lifts off cleanly, even inside the handle loops. With the green tint taken off the edges, there is no green fringe at all.
+- **No words, letters or numbers** anywhere.
+
+## Faults
+
+1. **Open, waving hands get a fifth digit again:** four fingers and a thumb when Pim's arms go up (picture 6, "excited"), as with the elder's wave. Hands at rest, holding or pointing keep three fingers and a thumb. **A pattern:** Gemini slips on open hands. Next time, ask for mittens, or for closed hands when waving.
+2. **His lid does not slip down over his forehead,** as asked. It sits on top, too big and tipped. Enough to read as "too big"; not the slipping hat.
+3. **The lid tips the same way from the front and from the back.** A real lid would tip the other way when seen from behind. Nobody will notice at game size.
+4. **Pim is about four fifths of the elder's height** in picture 8 (812 against 1026 pixels), not two thirds. The game draws him at about three fifths. In the game, each cut-out can be set to any size, so this does not matter.
+5. **The spinner has rings in its arms,** like a real toy spinner. The game's drawn spinner is solid. Small; the game's little map spinner could be changed to match.
+
+## At game size
+
+See `content/art_test_2026-11-24/pim_game_size_test.png`: the drawn Mender, Elder Thimble and Pim (twice), with the outline thickened.
+- **Elder Thimble and Pim look like one family.** The drawn Mender beside them now looks like it belongs to another game.
+- **Pim reads at game size:** the tipped lid, the eyes, the finger at his mouth.
+
+## What it means [Proposal]
+
+- **Consistency is not the problem.** Two characters in one chat held across eight pictures.
+- **The cast is the question now.** Every Mender drawn in code will look plainer beside these two. A cheap way: **one ordinary Mender** made in Gemini (a sheet and four feelings), then the gardener, the fisher, the reed cutter and the rest made from it in code: a different copper, a different lid, a hat or an apron. Named characters get their own pictures.
+- **Still to test:** a new chat, another day, with picture 1 attached. Does the elder still come back the same?
