@@ -77,8 +77,9 @@ const CAST = (() => {
       cx.fillStyle = 'rgba(0,0,0,.18)'; cx.beginPath(); cx.ellipse(px + pw * .45, feet, pw * .42, Math.max(2, H * .03), 0, 0, 7); cx.fill(); cx.drawImage(PROP[dress.side], px, feet - ph, pw, ph); }
     cx.fillStyle = 'rgba(0,0,0,.24)'; cx.beginPath(); cx.ellipse(X, feet, fr.w * k * .3, Math.max(2, H * .045), 0, 0, 7); cx.fill();
     cx.save(); cx.translate(X, feet + dy); cx.scale(k * sx * (2 - land), k * sy * land); cx.drawImage(cv, -fr.ax, -fr.ay, fr.w, fr.h);
-    if (dress.head && PROP[dress.head].complete) { const p = CAST_PROPS[dress.head], [rx, ry, hw, top] = fr.rim, hatW = hw * 2 * (dress.head === 'hat' ? 1.3 : 1.25), hatH = hatW * p.h / p.w;
-      const y0 = dress.head === 'hat' ? ry - hatH * .78 : top - (ry - top) * .25; cx.drawImage(PROP[dress.head], rx - hatW / 2 - fr.ax, y0 - fr.ay, hatW, dress.head === 'hat' ? hatH : Math.min(hatH, (ry - top) * 1.35)); }
+    if (dress.head && PROP[dress.head].complete) { const p = CAST_PROPS[dress.head], [rx, ry, hw, top] = fr.rim, lidH = ry - top;      /* on the lid: the brim at the lid's rim, never down over the eyes */
+      if (dress.head === 'hat') { const w = hw * 2 * 1.18, h = w * p.h / p.w; cx.drawImage(PROP.hat, rx - w / 2 - fr.ax, ry + lidH * .08 - h - fr.ay, w, h); }
+      else { const w = hw * 2 * 1.12, h = Math.min(w * p.h / p.w, lidH * 1.25); cx.drawImage(PROP[dress.head], rx - w / 2 - fr.ax, top - lidH * .15 - fr.ay, w, h); } }
     if (tNow > s.blinkAt + .14) s.blinkAt = tNow + 2.5 + ((Math.sin(tNow * 12.9898 + s.phase) * 43758.5453) % 1 + 1) % 1 * 2.5;
     if (tNow >= s.blinkAt && tNow < s.blinkAt + .14) for (const [ex, ey, erx, ery] of fr.eyes) { const ox = ex - fr.ax, oy = ey - fr.ay;
       cx.fillStyle = col; cx.beginPath(); cx.ellipse(ox, oy, erx * 1.12, ery * 1.12, 0, 0, 7); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = Math.max(2.5, ery * .2); cx.lineCap = 'round'; cx.beginPath(); cx.moveTo(ox - erx * .95, oy + ery * .1); cx.quadraticCurveTo(ox, oy + ery * .55, ox + erx * .95, oy + ery * .1); cx.stroke(); cx.lineCap = 'butt'; }

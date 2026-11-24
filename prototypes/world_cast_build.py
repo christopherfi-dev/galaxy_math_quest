@@ -113,11 +113,11 @@ def find_knob(fig):
     return float((box[0] + box[2]) / 2), float(box[2] - box[0])
 
 def find_lid(fig):
-    """the lid's rim: the widest row between the knob and the handles (top 42%), as (middle x, rim y, half width, top of lid y)"""
+    """the lid's rim: the widest row between the knob and the handles (top 30%; lower, the handles stick out), as (middle x, rim y, half width, top of lid y)"""
     a = fig[:, :, 3] > 100; h, w = a.shape; best = (0, 0, 0)
     rows = [r for r in range(h) if a[r].any()]
     top = rows[0] if rows else 0
-    for r in range(top, int(h * .42)):
+    for r in range(top, int(h * .30)):
         xs = np.nonzero(a[r])[0]
         if len(xs) and xs[-1] - xs[0] > best[0]: best = (xs[-1] - xs[0], r, (xs[0] + xs[-1]) / 2)
     return best[2], best[1], best[0] / 2, top

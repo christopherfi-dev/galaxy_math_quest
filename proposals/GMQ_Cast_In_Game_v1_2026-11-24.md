@@ -143,4 +143,7 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 
 ## Results of the big world tests on this sample
 
-(filled in when the tests finished)
+- **With Elder Thimble and Pim** (24 November): `bigworld_reading_test.js` **passes** (59 s); `bigworld_play_test.js` **passes** at all three sizes, no faults (1074 s).
+- **With the crowd as well:** `bigworld_reading_test.js`, `bigworld_signs_test.js`, `bigworld_play_test.js` running; see the next commit.
+- `checks/world_look_check.js` **passes** with the crowd in.
+- Pictures: `content/art_test_2026-11-24/cast_in_village.jpg` (the elder and Pim) and `content/art_test_2026-11-24/crowd_in_game.jpg` (the crowd).
