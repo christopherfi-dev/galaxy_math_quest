@@ -8,10 +8,10 @@
 //   1  the story comes first: six pages before the map; no maths on them
 //   1a the first lesson at the ship [Marc, 24 November]: a Mender shows 3 making 5 in a practice machine; the child writes it down, picks another number
 //      (the same one again is turned back), writes it down, taps + (another sign is turned back) and 2 (another number is turned back); the machine says
-//      + 2; the cadet cannot walk away until it is done; then the Mender sends the cadet to Elder Rivet
+//      + 2; the cadet cannot walk away until it is done; then the Mender sends the cadet to Elder Thimble
 //   2  a machine before the elder: a Mender sends the cadet to the village; no task opens
 //   3  the pan before the pouch: it goes on the Needs list; no task opens
-//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Rivet's story (the painted board
+//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Thimble's story (the painted board
 //      no longer follows it: the lesson at the ship is the finished example since 24 November)
 //   5  a machine: nothing typed, a number too big, tests, "handed back", notes written only when the child taps
 //   6  a wrong plate: it is shown wrong by a test, and the right rule is never said
@@ -118,7 +118,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     await press(p, 'write'); lp = await readAll(p); say(/\+ 2/.test(lp.join(' ')) && /3 makes 5\. 6 makes 8/.test(lp.join(' ')), `${name}: the Mender did not read the notes and name the pattern: ${lp.join(' | ')}`);
     await p.click('#task [data-sign="times"]'); ls = await st(p); say(/sign is \+/.test(ls.task.msg), `${name}: a wrong sign was not turned back`);
     await p.click('#task [data-sign="plus"]'); await pad(p, 5); await p.waitForTimeout(80); ls = await st(p); say(/How many more/.test(ls.task.msg), `${name}: a wrong number was not turned back`);
-    await pad(p, 2); await p.waitForTimeout(80); await shot(p, tag + '02a_lesson_labelled'); lp = await readAll(p); say(/Elder Rivet/.test(lp.join(' ')), `${name}: the lesson does not send the cadet to the elder`);
+    await pad(p, 2); await p.waitForTimeout(80); await shot(p, tag + '02a_lesson_labelled'); lp = await readAll(p); say(/Elder Thimble/.test(lp.join(' ')), `${name}: the lesson does not send the cadet to the elder`);
     ls = await st(p); say(ls.S.flags.lessonDone && !ls.task && ls.S.lesson.notes.length === 2, `${name}: the lesson did not end with two notes`);
     s = await st(p); say(!s.reading && s.x === 13 && s.y === 82 && s.place === 'Mender Meadow', `${name}: after the story the cadet is not at the ship in the Mender Meadow`); await layout(p, `${name}, the map`); await shot(p, tag + '02_map');
 
@@ -136,7 +136,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     tp = await type('help'); say(/doing word/.test(tp), `${name}: "help" gave: ${tp}`);
     tp = await type('hint'); say(/village/.test(tp), `${name}: "hint" before the elder should point to the village: ${tp}`);
     // 2. a machine before the elder
-    await useThing(p, 'm_pond'); s = await st(p); say(s.reading && !s.task, `${name}: a machine opened before the elder was met`); let pg = await readAll(p); say(pg.some(t => /Elder Rivet first/.test(t)), `${name}: the machine did not send the cadet to the elder`);
+    await useThing(p, 'm_pond'); s = await st(p); say(s.reading && !s.task, `${name}: a machine opened before the elder was met`); let pg = await readAll(p); say(pg.some(t => /Elder Thimble first/.test(t)), `${name}: the machine did not send the cadet to the elder`);
     // 3. the pan before the pouch
     await useThing(p, 'pan'); s = await st(p); say(s.reading && !s.task && s.pic === 'The bridge over the Rill', `${name}: the pan should show itself and wait`); await shot(p, tag + '03_pan_first'); pg = await readAll(p); s = await st(p); say(pg.some(t => t.indexOf(String(NUM.target)) >= 0) && s.S.needs.some(n => n.id === 'pan'), `${name}: the pan did not say its number or go on the Needs list`); say(!s.task && s.S.pouch === null, `${name}: the pan opened a task without a pouch`);
 
@@ -197,7 +197,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     await useThing(p, 'village'); let told = []; for (let k = 0; k < 4; k++) { await word(p, 'elder'); s = await st(p); if (s.task && s.task.kind === 'fresh') break; told = told.concat(await readAll(p)); }      // the elder first says what is new (the Rule Stone, the shard), then offers the pouch
     s = await st(p); say(s.task && s.task.kind === 'fresh', `${name}: the elder did not offer a fresh pouch`); await layout(p, `${name}, a fresh pouch`); await press(p, 'yes'); s = await st(p); say(s.S.pouch === NUM.start && s.S.runs === 0, `${name}: the fresh pouch is not ${NUM.start}`);
     // the Rule Stone, and the shard
-    say(s.S.flags.stoneLit && s.S.lit === 1 && s.S.cards.some(c => c.job === 'plates'), `${name}: four true plates did not light the Rule Stone`); say(/Gate's own plate/.test(told.join(' ')) && s.S.flags.shardSeen && s.S.cards.some(c => c.job === 'shard'), `${name}: the elder does not know the shard: ${told.join(' / ')}`);
+    say(s.S.flags.stoneLit && s.S.lit === 1 && s.S.cards.some(c => c.job === 'plates'), `${name}: four true plates did not light the Rule Stone`); say(/Year Machine did the planning, and it burnt/.test(told.join(' ')), `${name}: when the stone lit, the elder did not speak of the Year Machine`); say(/Gate's own plate/.test(told.join(' ')) && s.S.flags.shardSeen && s.S.cards.some(c => c.job === 'shard'), `${name}: the elder does not know the shard: ${told.join(' / ')}`);
     await p.waitForTimeout(300); await shot(p, tag + '15_stone_lit'); await word(p, 'store'); pg = await readAll(p); say(/piling up/.test(pg.join(' ')), `${name}: the pip store does not fill after the Rule Stone is lit`); await word(p, 'rstone'); pg = await readAll(p); say(/glows gold/.test(pg.join(' ')), `${name}: the Rule Stone does not glow`); await word(p, 'door');
     // the right way, three runs, each said first
     for (const op of way) { await useThing(p, 'm_' + siteOf(op)); const o = ruleOut(NUM.rule[op], pouch, 100); await pad(p, o); await press(p, 'pour'); await idle(p); await p.waitForTimeout(80); s = await st(p); say(s.S.pouch === o, `${name}: ${pouch} ${op} should give ${o}, the pouch holds ${s.S.pouch}`); pouch = o; await press(p, 'leave'); }
@@ -213,7 +213,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     const FL = await p.evaluate(() => FLEET), WL = await p.evaluate(() => WELL), TW = ['stilt', 'reed', 'mud'];
     await useThing(p, 'harbour'); s = await st(p); say(s.S.at === 'harbour' && s.place === 'The harbour', `${name}: the harbour did not open`); await readAll(p); await p.waitForTimeout(500); await shot(p, tag + '26_harbour'); await layout(p, `${name}, the harbour`);
     await word(p, 'board'); pg = await readAll(p); say(/talk to her first/.test(pg.join(' ')) && !(await st(p)).task, `${name}: the loading board opened before the keeper told the story`);
-    await word(p, 'keeper2'); pg = await readAll(p); s = await st(p); say(pg.length === 5 && s.S.flags.metKeeper && s.S.needs.some(n => n.id === 'fleet') && s.S.needs.some(n => n.id === 'tags'), `${name}: the harbour keeper's story, or its lines on the Needs list`); say(!pg.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the keeper's story`);
+    await word(p, 'keeper2'); pg = await readAll(p); s = await st(p); say(pg.length === 6 && /Year Machine's hand/.test(pg[4]) && s.S.flags.metKeeper && s.S.needs.some(n => n.id === 'fleet') && s.S.needs.some(n => n.id === 'tags'), `${name}: the harbour keeper's story (6 pages, the Year Machine's hand on the fifth), or its lines on the Needs list: ${pg.length} pages`);      /* the Year Machine line: story note 16j, Marc's decision 29 */ say(!pg.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the keeper's story`);
     await word(p, 'board'); pg = await readAll(p); say(pg.length === 10 && /Rule one/.test(pg[1]) && /24 loaves/.test(pg[5]), `${name}: the rules and then the baker's example should come before the fleet (${pg.length} pages)`); s = await st(p); say(s.task && s.task.kind === 'fleet' && /No order tag/.test(s.tasktext), `${name}: the board should say no tag hangs yet`); await layout(p, `${name}, the fleet with no tags`);
     await press(p, 'send'); s = await st(p); say(/no order from/.test(s.task.msg), `${name}: sending with no tags`); await press(p, 'leave'); await word(p, 'door');
     for (const tw of TW) { await useThing(p, 'sp_' + tw); pg = await readAll(p); say(pg.some(t => t.indexOf(String(FL.order[tw])) >= 0), `${name}: the speaker of ${tw} did not say the order`); if (tw === 'stilt') await shot(p, tag + '27_town'); }

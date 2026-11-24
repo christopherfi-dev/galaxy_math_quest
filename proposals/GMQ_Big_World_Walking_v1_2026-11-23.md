@@ -46,7 +46,7 @@ You said "we can try this and see what happens," so step 1 is built. Each part c
 
 | Person | Where they stand | What changed |
 |---|---|---|
-| Elder Rivet | Mender Village, with its "!" when he has news [the game calls him "he"] | nothing |
+| Elder Thimble | Mender Village, with its "!" when he has news [the game calls him "he"] | nothing |
 | the gardener | the first bend of the path from the ship, in sight of the ship | nothing |
 | the fisher | the pond | a path to the fisher |
 | the reed cutter | the reed bed by the old stones | nothing |
@@ -128,7 +128,7 @@ Taps for the middle child, and how many gave up:
 
 ## 7. Step 2: what to watch when two or three children play [Source: the main thread's plan]
 
-- How long from landing to finding Elder Rivet.
+- How long from landing to finding Elder Thimble.
 - Taps that lead nowhere.
 - Whether they leave the path to explore.
 - Whether they read the signposts. Do they tap them?

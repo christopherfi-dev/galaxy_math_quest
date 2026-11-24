@@ -141,7 +141,7 @@ flowchart LR
 
 ## 4. Region 1 in full: the Mender Meadow [built]
 
-### The trouble, told by Elder Rivet before any maths
+### The trouble, told by Elder Thimble before any maths
 
 - "The Makers built machines for us, long ago. Each machine follows one rule."
 - "When the Gate broke, every rule plate burnt black. Now nobody knows the rules."
@@ -158,7 +158,7 @@ flowchart LR
 - **A wrong plate is shown wrong by a test:** "It drops in 5 test pebbles. Your plate says 11 will come out. Out come 15." The right rule is never said.
 - **A machine that cannot follow its rule** rattles and hands the pebbles back. (Share by 2 cannot take 7. Take away 5 cannot take 3.)
 - **Each child's machines:** one times (2, 3 or 5), one add (3 to 9), one take away (2 to 8), one share (2 or 3). Which one stands where is mixed for each child.
-- **Finished example, the painted wall:** Elder Rivet's old water pump. 2 buckets in, 8 out. Add 6, or times 4? One test cannot tell. 3 buckets in gave 12. So times 4.
+- **Finished example, the painted wall:** Elder Thimble's old water pump. 2 buckets in, 8 out. Add 6, or times 4? One test cannot tell. 3 buckets in gave 12. So times 4.
   - It is about buckets. No child's machine has × 4 or + 6. (Checked on 20,000 children.)
 
 ### The first way over the Rill: the bridge pan
@@ -191,7 +191,7 @@ flowchart LR
 
 | Who or what | Kind | What happens |
 |---|---|---|
-| Elder Rivet | asker, giver | The story, the plates, the pouch, the Rule Stone |
+| Elder Thimble | asker, giver | The story, the plates, the pouch, the Rule Stone |
 | Pim, a Mender child | asker | Lost a red spinner by the pond. Gives a clue: the stepping stones |
 | The orchard keeper | greeter, then asker | "Four rows of six trees." Lost a lucky coin |
 | A gardener, a fisher, a reed cutter | greeters | They say hello. Two say something new once the machines run again |
@@ -199,7 +199,7 @@ flowchart LR
 | An old Mender | teller | "My gran crossed the Rill north of the bridge. On the old stones." |
 | A Rillfolk guard (far bank) | greeter, teller | The road east is washed out. Climb the hill |
 | **The hollow log** | secret | A Maker's coin. The keeper's thanks is a clue: "look in the rubble by the old wall" |
-| **The rubble** | secret | A thick black shard. Elder Rivet knows it: a piece of the Gate's own plate. It goes on the Needs list "for another day": it belongs at the Gate |
+| **The rubble** | secret | A thick black shard. Elder Thimble knows it: a piece of the Gate's own plate. It goes on the Needs list "for another day": it belongs at the Gate |
 | The well, the ring of flowers, the west cliff | scenery | A line each |
 | The hedge in the old wall | a wall with a pointer | "Knock the way the Woods count." On the Needs list, "for another day" |
 | The lookout hill (far bank) | a view | The Reach, the lake, the mountain and the Gate, far away |

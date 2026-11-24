@@ -18,7 +18,7 @@ Print it, or keep it open beside you. About 30 minutes for one child.
 | 2 | **The first minute on the map.** Do they tap the picture to walk? Do they find the village without help? | | |
 | 3 | **Typing.** Do they ever tap the box and type? Or only tap words? Which doing words do they try? | | |
 | 4 | **Playing with things.** Do they push, dig, take, talk to things that are not people? Do they laugh? | | |
-| 5 | **Elder Rivet's painted board** (the finished example). Do they look at it, or tap through? | | |
+| 5 | **Elder Thimble's painted board** (the finished example). Do they look at it, or tap through? | | |
 | 6 | **The first machine.** How many tests before they try a plate? Do they tap "Write it down"? | | |
 | 7 | **A wrong plate.** What do they do next: test again, or guess again? | | |
 | 8 | **The third and fourth machines.** Bored? Faster? Do they sigh? | | |
@@ -31,7 +31,7 @@ Print it, or keep it open beside you. About 30 minutes for one child.
 | 15 | **Over the river** (if they get there): the three towns, the tags, the fleet. Do they see why a green lamp can still be wrong? | | |
 | 16 | **Words.** Which words do they stop at or ask about? | | |
 | 17 | **When do they want to stop?** And do they ask to play again? | | |
-| 18 | **Walking, since 23 November** (no mist, signposts). Minutes from landing to Elder Rivet: ___ | | |
+| 18 | **Walking, since 23 November** (no mist, signposts). Minutes from landing to Elder Thimble: ___ | | |
 | 19 | **Taps that go nowhere.** Count them in the first five minutes. | | |
 | 20 | **Leaving the path.** Do they walk off it to explore? Or stay on it? | | |
 | 21 | **The signposts.** Do they tap one to read it? Do they follow the arrow? | | |

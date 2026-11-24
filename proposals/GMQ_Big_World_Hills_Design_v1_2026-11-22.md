@@ -105,9 +105,9 @@ The rule is not written yet. It must keep:
 | Step | Where | What happens | The maths |
 |---|---|---|---|
 | 1 | The old seed tower, in the Hills | "A stone tower with a door and no handle. Only a square hole where the handle was." | |
-| 2 | Elder Rivet, in the Meadow | "A handle? We can cast one. I need red clay for the mould: 4 parts, and 6 scoops for each. The red clay is at Mud Town, in the Reach." | |
+| 2 | Elder Thimble, in the Meadow | "A handle? We can cast one. I need red clay for the mould: 4 parts, and 6 scoops for each. The red clay is at Mud Town, in the Reach." | |
 | 3 | Mud Town's clay bank | The child **digs**. "How many scoops in all?" One dig takes the scoops the child said | 4 × 6 |
-| 4 | Elder Rivet | "The handle's rim goes all the way round the square hole. The hole's side is 3 fingers. How long a strip must I cut?" | round a square: 3.MD.8 |
+| 4 | Elder Thimble | "The handle's rim goes all the way round the square hole. The hole's side is 3 fingers. How long a strip must I cut?" | round a square: 3.MD.8 |
 | 5 | The seed tower | The handle fits. The door opens | |
 | 6 | Inside: one real problem | **Not designed yet.** It must be a real problem, not one fact. The reviewer was right that "6 × ? = 54" is not enough for an epic card | |
 | | | An epic card | |
