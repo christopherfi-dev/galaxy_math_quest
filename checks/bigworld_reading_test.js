@@ -9,6 +9,8 @@
 //   3  while it sleeps: a tap on the dimmed picture shakes the card and does nothing else; Enter does nothing; "Read to me" can be tapped
 //   4  Next brings the next page, asleep again; the last OK takes the card and the dimming away
 //   5  while the picture is moving (as when the fleet sails), new words wait, and come when it stops
+//   6  at a finished example (Elder Rivet's painted board), the words do not hide what they explain: on an iPad the board is drawn below the card;
+//      on a phone the card sits just below the picture. The screen over the board is not dimmed.   [Marc, 24 November: "They keep trying to touch the board."]
 // Run:  node checks/bigworld_reading_test.js     (about a minute)
 const { chromium } = require('playwright');
 const path = require('path');
@@ -48,6 +50,12 @@ const bad = [], say = (ok, what) => { if (!ok) { bad.push(what); console.log('  
     say(held.held, `${name}: words came over a moving picture`);
     await p.waitForTimeout(1900); s = await st(); say(s.shown && s.asleep, `${name}: the held words did not come when the picture stopped`);
     await p.evaluate(() => { PIC = null; });
+    // 6. the painted board
+    await p.evaluate(() => { READ.q = []; READ.then = null; showMural(); }); await p.waitForTimeout(400);
+    const mu = await p.evaluate(() => { const r = document.getElementById('read').getBoundingClientRect(), c = document.getElementById('cv').getBoundingClientRect(); return { cardTop: r.top, cardBottom: r.bottom, picTop: PICTOP + c.top, picBottom: c.bottom, clear: document.getElementById('veil').classList.contains('clear') }; });
+    if (w <= 560) say(mu.cardTop >= mu.picBottom - 1, `${name}: at the painted board the card covers the picture (card from ${Math.round(mu.cardTop)}, picture to ${Math.round(mu.picBottom)})`);
+    else say(mu.picTop >= mu.cardBottom, `${name}: at the painted board the board starts at ${Math.round(mu.picTop)}, under the card (which ends at ${Math.round(mu.cardBottom)})`);
+    say(mu.clear, `${name}: the painted board is dimmed under the card`);
     say(!errs.length, `${name}: errors: ${errs.join(' | ')}`);
     console.log(`  ${name}: card at ${s.card.slice(0, 4).map(Math.round).join(', ')}; OK woke after ${woke} ms for ${words} words`);
     await ctx.close(); }
