@@ -11,6 +11,7 @@ Short. Read this, then the files it names. Everything is on the main branch (`cl
 |---|---|
 | **Built and live** | `prototypes/big_world.html` = `docs/bigworld/index.html` (**"big world 6"**): the Mender Meadow, the Reach, typing, music, the well quest, and since 23 November the walking changes below. https://christopherfi-dev.github.io/galaxy_math_quest/bigworld/ |
 | **Walking, 23 November** | Marc played Algora and could not see far or tell where to go. Built on his word ("we can try this and see what happens"; then, at bedtime, "make it more clear for students to walk around"): no black mist on the walking screen; 16 squares across on an iPad; worn-earth paths to every person; a landmark at each (a new big old tree; the listener moved to the bridge); signposts at three forks and by the ship (each beside its fork, so every way it names can be walked; its own words work with "go"); a truthful sign by the ship; "go" follows a path; fixes from two independent picture reviews. Note: `proposals/GMQ_Big_World_Walking_v1_2026-11-23.md`. **Next: two or three children play (step 2).** Step 3, one screen at a time, only if they still get lost |
+| **Reading cards, 24 November ("big world 7")** | Marc: children did not notice the words. The card is now in the middle of the screen, high up, over a dimmed screen; OK sleeps 4 to 5 seconds while a bar fills; a tap elsewhere shakes it; words wait while the fleet sails. `checks/bigworld_reading_test.js` checks it. **The play test and the sign test load the page with `&fastread=1`** (OK wakes at once) so they do not wait on every card; no child's link has it |
 | **Building new places has stopped** | On purpose. Five designs of mine failed review on paper. Marc said: stop inventing while building |
 | **The deciding years** | A story problem with a table, a decision, and what follows. A story thread writes the story; this thread fits the maths. **Five joint reviews.** The fourth: "a base to build on: yes". The fifth, after the story's second review changed the seller's re-ask: **"Not yet", one blocker** (a child put on the planks who then miscounted went down the reading path). All its points are answered in the check file's draft 8 and the maths note's section 9e. **The answers are not reviewed** |
 | **The story thread** | Answered the six points, then two reviews of its own (the story, 16b and 16h). The biggest change for the maths: the seller cannot count ahead, so he re-asks only when a promise is less than the stick shows. **The maths note is version 7 and the check file draft 8: both follow the story's 16c and 16d, row by row. The story's round 4 review has not run** |
@@ -48,8 +49,8 @@ Nine gold months and three white. Two pots of oil back for an empty hook. The si
 
 ## 5. Still Marc's
 
-1. Can two or three children try the walking this week?
-2. Is "how much" enough for a first big quest?
+1. **Decided (23 November):** two or three children try Algora this week, and "how much" is fine as the first big quest.
+2. The reading card's wait: Algora waits 4 to 5 seconds, as Marc asked; the main game waits up to 3.5. Keep them different?
 3. Does one right year light a town for good?
 4. A child taught at every band spends 16 to 26 years: accept and time it?
 5. Two gate tries or the engine's three?

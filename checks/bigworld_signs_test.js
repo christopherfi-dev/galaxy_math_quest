@@ -19,7 +19,7 @@ const STEP = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] };
   for (const [name, w, h] of [['sideways', 1180, 745], ['upright', 820, 1180], ['phone', 390, 760]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h } }), p = await ctx.newPage(), errs = [];
     p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-    const fresh = async () => { await p.goto(URL + '?seed=5'); await p.evaluate(() => localStorage.clear()); await p.goto(URL + '?seed=5'); await p.waitForFunction(() => window.__bw && window.__bw.S());
+    const fresh = async () => { await p.goto(URL + '?seed=5&fastread=1'); await p.evaluate(() => localStorage.clear()); await p.goto(URL + '?seed=5&fastread=1'); await p.waitForFunction(() => window.__bw && window.__bw.S()); await p.evaluate(() => setFlag('lessonDone'));
       for (let i = 0; i < 30; i++) { if (!(await p.evaluate(() => window.__bw.READ.q.length > 0))) break; await p.click('#readok'); await p.waitForTimeout(30); } };
     const put = (x, y) => p.evaluate(([x, y]) => { P.route = []; P.then = null; P.px = x; P.py = y; P.dir = 'down'; cam.x = x + .5; cam.y = y + .5; see(); drawWords(); }, [x, y]);
     const at = () => p.evaluate(() => [Math.round(P.px), Math.round(P.py)]);

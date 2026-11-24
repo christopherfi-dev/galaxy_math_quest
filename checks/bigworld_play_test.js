@@ -6,9 +6,13 @@
 //
 // What it plays, on an iPad held sideways (1180 x 745):
 //   1  the story comes first: six pages before the map; no maths on them
+//   1a the first lesson at the ship [Marc, 24 November]: a Mender shows 3 making 5 in a practice machine; the child writes it down, picks another number
+//      (the same one again is turned back), writes it down, taps + (another sign is turned back) and 2 (another number is turned back); the machine says
+//      + 2; the cadet cannot walk away until it is done; then the Mender sends the cadet to Elder Rivet
 //   2  a machine before the elder: a Mender sends the cadet to the village; no task opens
 //   3  the pan before the pouch: it goes on the Needs list; no task opens
-//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Rivet's story, then the finished example (the old pump)
+//   4  the walk to the village (no mist on the walking screen since 23 November; about 16 squares across on an iPad); inside, Elder Rivet's story (the painted board
+//      no longer follows it: the lesson at the ship is the finished example since 24 November)
 //   5  a machine: nothing typed, a number too big, tests, "handed back", notes written only when the child taps
 //   6  a wrong plate: it is shown wrong by a test, and the right rule is never said
 //   7  closing the page in the middle of a machine and opening it again: the same machine, the same notes
@@ -30,7 +34,7 @@
 //  14  closing in the middle of the stones and opening again
 //  15  the big map, the Needs list, the ship panel, the report, "Go back to my ship"
 // On all three screens (1180 x 745, 820 x 1180, 390 x 760): nothing scrolls, nothing spills, every button of every task is on the screen,
-// the reading card is inside the picture, the picture has at least 45% of the screen. The page asks the network for nothing but the game's two fonts.
+// the reading card is in the middle of the screen, high up, the picture has at least 45% of the screen. The page asks the network for nothing but the game's two fonts.
 //
 // Run:  node checks/bigworld_play_test.js [--shots folder] [--only phone]     (--only plays the screens whose name holds that word)
 const { chromium } = require('playwright');
@@ -45,9 +49,10 @@ const SIGN = { times: '×', plus: '+', minus: '−', share: '÷' };
 
 async function open(b, w, h, seed) { const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: SHOTS ? 2 : 1, hasTouch: true }), p = await ctx.newPage(); p.errs = []; p.reqs = [];
   p.on('pageerror', e => p.errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') p.errs.push(m.text()); }); p.on('request', r => p.reqs.push(r.url()));
-  p.seedUrl = URL + '?seed=' + seed; await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S()); return p; }
+  p.seedUrl = URL + '?seed=' + seed + '&fastread=1';      /* fastread: OK wakes at once, so this test does not wait 4 to 5 seconds on every card. checks/bigworld_reading_test.js checks the real wait. */ await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S()); return p; }
 const st = p => p.evaluate(() => { const b = window.__bw, S = b.S(); return { S: JSON.parse(JSON.stringify(S)), x: Math.round(b.P.px), y: Math.round(b.P.py), reading: b.READ.q.length > 0, page: b.READ.q[b.READ.i] || '', pages: b.READ.q.length, task: b.task() ? JSON.parse(JSON.stringify(b.task())) : null, panel: b.panel(), big: b.big(), pic: b.pic() ? b.pic().title : '', idle: b.idle(), place: document.getElementById('place').textContent, desk: document.getElementById('desk').innerText, tasktext: document.getElementById('task').innerText }; });
-const idle = p => p.waitForFunction(() => window.__bw.idle(), null, { timeout: 30000 });
+const idle = p => p.waitForFunction(() => window.__bw.idle(), null, { timeout: 30000 }).catch(async e => { const d = await p.evaluate(() => ({ route: P.route.length, at: [Math.round(P.px), Math.round(P.py)], to: P.route.slice(-1)[0], scto: SC.to, ma: MA.phase, fade: FADE, pic: PIC && PIC.title, task: TASK && TASK.kind, reading: READ.q.length, held: READ.held, big: BIG, place: S.at })).catch(() => ({}));
+  throw new Error('the game was not idle after 30 seconds: ' + JSON.stringify(d)); });      /* say why, so a stall can be found */
 const shot = async (p, name) => { if (SHOTS) { await p.waitForTimeout(120); await p.screenshot({ path: path.join(SHOTS, name + '.png') }); } };
 // read every page of a reading card, the way a child does: OK, OK, OK. Returns the pages.
 async function readAll(p, max) { const got = []; for (let i = 0; i < (max || 30); i++) { const s = await st(p); if (!s.reading) break; got.push(s.page); await p.click('#readok'); await p.waitForTimeout(40); } return got; }
@@ -79,12 +84,12 @@ async function plate(p, rule) { await press(p, 'plate'); await p.click(`#task [d
 async function layout(p, where) { const L = await p.evaluate(() => { const r = e => { const q = e.getBoundingClientRect(); return [q.left, q.top, q.right, q.bottom, q.width, q.height]; }, vis = e => !!(e.offsetWidth || e.offsetHeight), stage = r(document.getElementById('stage')), desk = r(document.getElementById('desk')), read = document.getElementById('read');
     const btns = [...document.querySelectorAll('#desk button, #hud button')].filter(vis).map(b => ({ t: b.textContent.trim().slice(0, 24), r: r(b) }));
     const task = document.getElementById('task'), words = document.getElementById('words');
-    return { iw: innerWidth, ih: innerHeight, sw: document.scrollingElement.scrollWidth, sh: document.scrollingElement.scrollHeight, sy: scrollY, stage, desk, read: read.hidden ? null : r(read), btns, taskScroll: task.hidden ? 0 : task.scrollHeight - task.clientHeight, wordsScroll: words.hidden ? 0 : words.scrollHeight - words.clientHeight, deskScroll: document.getElementById('desk').scrollHeight - document.getElementById('desk').clientHeight }; });
+    return { iw: innerWidth, ih: innerHeight, sw: document.scrollingElement.scrollWidth, sh: document.scrollingElement.scrollHeight, sy: scrollY, stage, desk, read: read.hidden ? null : r(read), readLow: read.classList.contains('low'), btns, taskScroll: task.hidden ? 0 : task.scrollHeight - task.clientHeight, wordsScroll: words.hidden ? 0 : words.scrollHeight - words.clientHeight, deskScroll: document.getElementById('desk').scrollHeight - document.getElementById('desk').clientHeight }; });
   say(L.sw <= L.iw && L.sh <= L.ih && L.sy === 0, `${where}: the page scrolls or spills (${L.sw} x ${L.sh} in ${L.iw} x ${L.ih})`);
   say(L.stage[4] * L.stage[5] >= L.iw * L.ih * .45, `${where}: the picture has under 45% of the screen (${Math.round(L.stage[4] * L.stage[5] / (L.iw * L.ih) * 100)}%)`);
   for (const b of L.btns) say(b.r[0] >= -1 && b.r[2] <= L.iw + 1 && b.r[1] >= -1 && b.r[3] <= L.ih + 1, `${where}: the button "${b.t}" is off the screen`);
   say(L.taskScroll <= 2, `${where}: the task on the desk needs scrolling (${L.taskScroll}px hidden)`); say(L.wordsScroll <= 2, `${where}: the word rows need scrolling (${L.wordsScroll}px hidden)`); say(L.deskScroll <= 2, `${where}: the desk overflows by ${L.deskScroll}px`);
-  if (L.read) { const box = L.iw <= 560 ? L.desk : L.stage; say(L.read[0] >= box[0] - 1 && L.read[2] <= box[2] + 1 && L.read[1] >= box[1] - 1 && L.read[3] <= box[3] + 1, `${where}: the reading card is outside ${L.iw <= 560 ? 'the desk (on a phone it sits on the desk)' : 'the picture'}`); }
+  if (L.read) say(L.read[0] >= -1 && L.read[2] <= L.iw + 1 && L.read[1] >= 0 && L.read[3] <= L.ih + 1 && Math.abs((L.read[0] + L.read[2]) / 2 - L.iw / 2) <= 3 && (L.read[1] <= L.ih * .3 || (L.readLow && L.read[1] <= L.ih * .6)),      /* on a phone, a finished example's card sits just below the picture */ `${where}: the reading card is not in the middle of the screen, high up (it is at ${L.read.slice(0, 4).map(Math.round).join(', ')})`);      /* [Marc, 24 November] */
   for (const b of L.btns) say(b.r[5] >= 34, `${where}: the button "${b.t}" is only ${Math.round(b.r[5])}px tall`); }
 
 (async () => {
@@ -99,6 +104,18 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     // 1. the story first
     say(s.reading && s.pages === 6, `${name}: the story at the start has ${s.pages} pages, not 6`); await layout(p, `${name}, the first page`); await shot(p, tag + '01_story');
     const intro = await readAll(p); say(intro.length === 6 && /broken/.test(intro[0]) && /S\.S\. Infinity/.test(intro[2]) && /mission/i.test(intro[4]), `${name}: the story pages are not as written`); say(!intro.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the story`);
+    // 1a. the first lesson
+    let ls = await st(p); say(ls.task && ls.task.kind === 'lesson' && ls.reading, `${name}: no lesson at the ship after the story`);
+    await readAll(p); await p.waitForFunction(() => window.__bw.S().lesson && window.__bw.S().lesson.step === 1, null, { timeout: 15000 });
+    let lp = await readAll(p); say(/put in 3\. Out came 5/.test(lp.join(' ')), `${name}: the Mender did not show 3 making 5: ${lp.join(' | ')}`);
+    await press(p, 'write'); await readAll(p); say(!(await p.evaluate(() => { command('go north'); return P.route.length > 0; })), `${name}: the cadet could walk away during the lesson`);
+    await pad(p, 3); await press(p, 'pull'); ls = await st(p); say(/already/.test(ls.task.msg), `${name}: picking 3 again was not turned back`);
+    await pad(p, 6); await press(p, 'pull'); await p.waitForTimeout(60); await idle(p); await p.waitForTimeout(80); ls = await st(p); say(/6 went in\. 8 came out/.test(ls.task.msg), `${name}: 6 did not make 8 in the practice machine: ${ls.task.msg}`); await shot(p, tag + '02a_lesson'); await layout(p, `${name}, the first lesson`);
+    await press(p, 'write'); lp = await readAll(p); say(/\+ 2/.test(lp.join(' ')) && /3 makes 5\. 6 makes 8/.test(lp.join(' ')), `${name}: the Mender did not read the notes and name the pattern: ${lp.join(' | ')}`);
+    await p.click('#task [data-sign="times"]'); ls = await st(p); say(/sign is \+/.test(ls.task.msg), `${name}: a wrong sign was not turned back`);
+    await p.click('#task [data-sign="plus"]'); await pad(p, 5); ls = await st(p); say(/How many more/.test(ls.task.msg), `${name}: a wrong number was not turned back`);
+    await pad(p, 2); await p.waitForTimeout(80); await shot(p, tag + '02a_lesson_labelled'); lp = await readAll(p); say(/Elder Rivet/.test(lp.join(' ')), `${name}: the lesson does not send the cadet to the elder`);
+    ls = await st(p); say(ls.S.flags.lessonDone && !ls.task && ls.S.lesson.notes.length === 2, `${name}: the lesson did not end with two notes`);
     s = await st(p); say(!s.reading && s.x === 13 && s.y === 82 && s.place === 'Mender Meadow', `${name}: after the story the cadet is not at the ship in the Mender Meadow`); await layout(p, `${name}, the map`); await shot(p, tag + '02_map');
 
     // 1b. TYPING. The small keys on the desk, then "Do it". Then a real keyboard. Words the game knows, and one it does not.
@@ -123,7 +140,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     await useThing(p, 'village'); s = await st(p); say(s.S.at === 'village' && s.place === 'Mender Village', `${name}: the village did not open`); await readAll(p); await p.waitForTimeout(500); await shot(p, tag + '04_village'); await layout(p, `${name}, the village`);
     await word(p, 'rstone'); pg = await readAll(p); say(pg.some(t => /dark/.test(t)), `${name}: the Rule Stone should be dark`);
     await word(p, 'elder'); s = await st(p); say(s.reading, `${name}: the elder says nothing`); pg = await readAll(p, 6); say(pg.length === 6 && /plate/.test(pg[4]), `${name}: the elder's story is not 6 pages ending in the job`);
-    s = await st(p); say(s.reading && s.pic === 'The painted board', `${name}: the finished example does not follow the elder's story`); await p.click('#readok'); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '05_example_pump'); await layout(p, `${name}, the finished example`); pg = await readAll(p);
+    s = await st(p); say(s.pic !== 'The painted board', `${name}: the painted board still follows the elder's story (the lesson at the ship does its job now)`); await shot(p, tag + '05_after_elder'); pg = await readAll(p);
     s = await st(p); say(s.S.flags.metElder && s.S.bag.indexOf('notebook') >= 0 && s.S.needs.some(n => n.id === 'plates'), `${name}: after the elder there is no notebook or no need`);
     say(NUM.rule.times.n !== 4 && NUM.rule.plus.n !== 6, `${name}: the example's rules are this child's rules`);
     await word(p, 'door'); s = await st(p); say(s.S.at === 'map', `${name}: could not leave the village`);
