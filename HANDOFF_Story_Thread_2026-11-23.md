@@ -95,7 +95,7 @@ Every one of these cost a review round.
   - **The tally keeper is the town's built speaker.**
 - **The ball is with the big world thread:** section 16d lists sixteen places where its maths note must change, or confirm. The biggest: the seller can re-ask only when a number is less than the stick already shows.
 - **The second and third kinds are still parked.** Section 14 has the offers.
-- **Nothing of Algora's story is confirmed by Marc.** The note now has thirty decisions. Two are new: 29 (the Year Machine) and 30 (the step-down year).
+- **Marc decided on 24 November** (the note's 16j): the Year Machine, the step-down year, no month length or ages said, Shells keeps its name, Elder Rivet is renamed (Elder Thimble proposed, his to confirm). **Every other decision goes on the note's pick, for the trial only.** Nothing is confirmed for good.
 
 ### What may come next
 

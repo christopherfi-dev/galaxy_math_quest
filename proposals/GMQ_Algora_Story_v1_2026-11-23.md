@@ -21,7 +21,7 @@
 - **One cause:** the Makers' Year Machine did all the planning. The Gate broke, and the Year Machine burnt with it. Nobody remembers how to plan a year by hand.
 - **The table the big world thread asked for is section 1.** The rest explains it.
 - **Three things nobody had decided** have options in section 6.
-- **Thirty decisions are yours.** Section 9. That is too many. The maths thread's note names the three that matter for a first build, and I agree with its list. Three shape the rest: why the Gate broke, the year, and "decided once".
+- **Thirty decisions were listed.** Section 9. **On 24 November Marc decided three (18, 29, 30) and let every other one go on its pick for the trial** (section 16j). That was too many to ask. The maths thread's note names the three that matter for a first build, and I agree with its list. Three shape the rest: why the Gate broke, the year, and "decided once".
 
 ### The story in one breath [Proposal]
 
@@ -424,7 +424,7 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | 5 | Unsaid | Pips are seed, pay, and what the machines eat. | What is a pip? | Seed, and the counters the Menders count with. | One line from Elder Rivet. |
 | 6 | Changed from your page [Conflict] | Your page: "Welcome aboard the S.S. Infinity." Built: the ship is on the planet. | It is the big world thread's change, and yours to confirm. | I build on the built version. | None. |
 | 7 | Contradiction | The Meadow quest: "All four plates are true! We can use our machines again." | If these machines did the planning, mending them undoes the story. | They are small machines, one rule each [Built: "Each machine follows one rule"]. The Year Machine at the lake did the planning, and burnt. Elder Rivet can say so in one line. | The Year Machine's stones at the Lake Market are new. The big world thread's to build. Decision 29. |
-| 8 | Name | Elder Rivet | Rivet is a lead character in a well-known video game. | Yours, and the big world thread's. | One name, in the page. |
+| 8 | Name | Elder Rivet | Rivet is a lead character in a well-known video game. | **Marc, 24 November: change it.** A mending word fits the Menders. Proposed: Elder Thimble. The new name is his to confirm. | One name, in the page. The big world thread's to change. |
 | 9 | Fits, if said | The loading board: "The Makers built us a board that worked out every load. When the Gate broke, it went dark." | A child says: "Ask the board." | It was the Year Machine's hand at the harbour. It went dark when the Year Machine burnt. | One line. |
 | 10 | Words a child types | Built: "the town's lamp on a post" at each water gate; the loading board's "three hooks"; a rope that answers to "hook". | The story's oil lamps and raft hooks use the same words. | The build gives each word to one thing in each place, or renames the water-gate lamps "gate lights". | The big world thread's. |
 
@@ -433,6 +433,8 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 ---
 
 ## 9. Your decisions
+
+**24 November [Source: Marc: "Ok. I agree. Proceed"]:** decisions 18, 29 and 30 are decided as picked. Every other decision below goes on its pick for the trial. Section 16j.
 
 | | Decision | My pick | The other way |
 |---|---|---|---|
@@ -768,7 +770,7 @@ A reviewer read the note with only `CLAUDE.md`, Marc's rules, the brief and the 
 
 - **The 24 years.** Thin if a child counts the New Years. Tied to decision 18.
 - **Word collisions with built things:** "hook" (the loading board, the rope), "lamp" (the water-gate lamps), "wall", "Gran". Section 8, row 10. The build's to scope.
-- **"Shells".** Said aloud, it is close to "the shell game", a street trick. Children of eight are unlikely to know it. If Marc hears it, another name.
+- **"Shells".** Said aloud, it is close to "the shell game", a street trick. Children of eight are unlikely to know it. **Marc, 24 November: keep it.**
 - **All the new culture is Rillfolk.** The Menders, the Furrows, the Twinseers and the Eights are still one custom each.
 - **Shells is a game in a game.** If a child shrugs at shells, it costs nothing. Section 10 has the check.
 - **The Year Machine is new.** Its black frame at the lake, and one line each from Elder Rivet and the harbour ("Those machines sort and count. The Year Machine did the planning, and it burnt"; "The board was the Year Machine's hand"), are the big world thread's to build. Decision 29.
@@ -837,3 +839,17 @@ Marc's rule: "explore and discover more about the cultures of the world, their h
 **Not changed:** "Shells" is the game and the coin, as "marbles" is. The maths question's "will there be" stays the maths thread's to change (16d, row 4).
 
 **Not re-read by a reviewer:** the changes in this table. They are wording, and round 4 found no blocker, so I stopped here. A short check by the big world thread's next joint review would cover them.
+
+### 16j. Marc's decisions, 24 November
+
+He asked what the story thread suggests for the decisions waiting on him, and answered: "Ok. I agree. Proceed." [Source]
+
+| | Decided | What it means for the build |
+|---|---|---|
+| 1 | **The Year Machine** (decision 29) | The built Meadow quest stays as it is. The big world thread adds: the Year Machine's burnt frame at the Lake Market; one line from the Meadow's elder ("Those machines sort and count. The Year Machine did the planning, and it burnt"); one line at the harbour's loading board ("The board was the Year Machine's hand") |
+| 2 | **The step-down year** (decision 30) | As section 3 says: the speaker asks the cadet to learn it small, and goes to the lake alone. The dark that year is hers, and she says so first |
+| 3 | **Elder Rivet is renamed** | A mending word, for the Menders. Proposed: **Elder Thimble.** Marc confirms the name; the big world thread changes the page |
+| 4 | **Shells keeps its name** | |
+| 5 | **Never say how long a month is, or anyone's age** (decision 18) | The long path stands for the trial, and is timed |
+| 6 | **Every other decision in section 9 goes on its pick, for the trial** | Nothing here is confirmed for good. A trial with children may change any of it |
+| 7 | **The maths note's own picks** (its section 10), which the story thread agreed with | One right year lights a town for good. The long path is accepted for the trial, and timed. An answer put right on the planks is a slip |
