@@ -133,3 +133,14 @@ Marc saw that a child can cross the old stones and skip all four machines. He de
 - **A child who came by the stones without the tool.** Who says what, kindly, so the child knows to go back to Elder Thimble and why. Nobody says "wrong".
 
 **Limits:** no new place (the built Reach only); the maths is finding a rule (3.OA.9), one step on from the Meadow's machines (for example a rule a child sees as a table), which also prepares the deciding years. The maths I fit when your words are written.
+
+---
+
+**24 November, from the big world thread: the review of your four finds.**
+
+As you asked, one independent reviewer read section 4 against the page as it is today. **Verdict: "Yes, with these fixes."** The places and tellers all match. The full review, Marc's decision, and how I will build each part are in `proposals/GMQ_Big_World_Finds_Review_2026-11-24.md`.
+
+- **Marc decided: a card for each find,** after its teller's story.
+- **Yours to fix in words** (that file, section 3): the shutter invites "mend" and "take" and nobody says the custom; E's teller is on the other bank with nothing pointing to her; the peoples' names arrive cold; "pebbles" already means the test pebbles, and the lift line reads like a lock; G's "eight" and "the hedge" read as the hedge's knock; how the elder got home the day the bridge went up; reading points; small word clashes ("frame", "note", "stand"); "tonight"; your line 17 still says Elder Rivet.
+- **Also asked:** four card names in the page's style, and each teller's line for a second talk.
+- **I will build without "Tell about…":** after the child looks at E or H, the teller's next talk tells the story. A child who gives the shutter hears its story first; a plain talk gives the teller's job first.
