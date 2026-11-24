@@ -3,7 +3,7 @@
 **Date:** 24 November 2026. **For:** Marc, and the big world thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the big world thread's.
 **Read with:** `proposals/GMQ_Algora_Story_v1_2026-11-23.md` (the deciding years), and the big world thread's `proposals/GMQ_Big_World_Empty_Places_v1_2026-11-23.md`.
-**Rewritten after one independent review** ("not yet": one blocker, eight major). Section 9 says what changed. The rewrite has not been re-read by a reviewer. **Marc accepted its four decisions on 24 November** (section 8).
+**Rewritten after one independent review** ("not yet": one blocker, eight major). **Marc accepted its four decisions on 24 November** (section 8). **Then the big world thread's review of section 4: "Yes, with these fixes."** Section 4 is version 2; section 9b says what changed.
 
 **Tags**
 - [Built]: on the Algora page today. Still only the big world thread's proposal, unless it also says [Source].
@@ -14,7 +14,7 @@
 
 **No numbers and no maths are given.** This note is culture and history. Each people's maths is the big world thread's.
 
-"The elder" below is Elder Rivet on the page. You agreed he is renamed (Algora note, 16j); the new name is yours to confirm.
+"The elder" below is **Elder Thimble**, as the page now names him (renamed from Elder Rivet on 24 November).
 
 ---
 
@@ -52,7 +52,7 @@ From the Algora page, by search [Built]. All of it is kept.
 
 | Time | What happened | What is left to find |
 |---|---|---|
-| **The Tally Time** | Each people did its hardest work itself. Rillfolk keepers hummed a new verse each year as they planned. Menders found the rule of a thing by testing it: a pump, a sluice, a seed tray. Furrows knew the big counts of their fields, and carted loads down to the river. Twinseers walked the shores in twos each New Year, and told each people the suns' word. Menders and Rillfolk crossed by the old stones [Built] | The old stones; the rhyme; the **footprints** at E; the **white pebbles** at H |
+| **The Tally Time** | Each people did its hardest work itself. Rillfolk keepers hummed a new verse each year as they planned. Menders found the rule of a thing by testing it: a pump, a sluice, a seed tray. Furrows knew the big counts of their fields, and carted loads down to the river. Twinseers walked the shores in twos each New Year, and told each people the suns' word. Menders and Rillfolk crossed by the old stones [Built] | The old stones; the rhyme; the **footprints** at E; the **white chalk** at H |
 | **The Thin Year** | A plan was wrong. Mud Town's store ran out | One short row on Mud Town's store wall |
 | **The Makers' Time** | The best of every people met at the lake. They built the Gate and the Year Machine. Then a machine for each people's hardest work: rule plates for the Menders' machines, a big-fact wheel for the Furrows, dials for the Twinseers' watch house, the harbour's loading board. And the bridge with its pan, and the hill lift. **Each people handed one skill to a machine** | The Makers' coin and box [Built] |
 | **Sixty years** | The machines did the work. Menders trusted the plates, and stopped testing. The old stones went unused: "Nobody has done that for years" [Built]. The Twinseers stopped walking the shores. The Furrows' carts stopped at the lift | The Menders' **painted shutter** at D |
@@ -92,12 +92,12 @@ Each line says what it connects to. Every custom is on my pick unless you say ot
 |---|---|---|
 | **Look, home** [Built] | Tall farmers of the steps. Fields in steps above the Reach. **[Proposal]** Their houses are cut into the terrace walls, so every roof is a field | The hill lift [Built] |
 | **Work** | Fields, carts, oil presses (the Algora note) | |
-| **How they count loads** | **A white pebble for each load,** laid where the load is set down. On a wall being built, it goes into the wall. **[Conflict, small]** The Algora note says "a white stone on the wall for each load". This widens it; it does not change the deciding years | H |
+| **How they count loads** | **A lump of white chalk for each load,** dropped where the load is set down. (It was "a white stone", then "a white pebble"; the page already uses "stone" and "pebbles". The Algora note now says chalk too.) | H |
 | **Kept** [Proposal] | The small counts every child learns. And **quilts**, sewn in pieces by several people, then joined | The finished example [Design]: "a quilt, not a field" |
-| **A thing children do** [Proposal] | When a Furrow child carries their first load, they lay their first white pebble, and the family claps | H |
+| **A thing children do** [Proposal] | When a Furrow child carries their first load, they drop their first lump of chalk, and the family claps | H |
 | **Someone who was there** | **The oil seller**, at the Lake Market (the Algora note). He keeps the Year Machine's last stick | The Lake Market |
 | **Why counting one by one is not enough in the Hills** | The Hills design's to say. I give no reason that could clash with it | [Design] |
-| **The carts now** | Since the lift, the carts stop at its top (H). **[Conflict, small]** The Algora note's parked third kind has carts "down the hill road". When that kind is fitted, its carts bring stone to the top of the lift | The Algora note, section 5, kind 3 |
+| **Why the carts stopped coming to the river** | Not known in the Reach: a question for the Hills (H). The Algora note's parked third kind has carts bringing stone; when it is fitted, it says where they go now | The Algora note, section 5, kind 3 |
 
 ### 3c. The Twinseers
 
@@ -117,86 +117,136 @@ Each line says what it connects to. Every custom is on my pick unless you say ot
 | **Who they are** [Built] | The crew of the S.S. Infinity, lost in Patternox. On your page: "Our alien spaceship is lost in the Pattern Universe" [Source] | |
 | **Their name** [Proposal] | **There are always eight of them.** On their ship eight is the luckiest number, because an eight lying down is the ship's own sign: ∞ | The S.S. Infinity [Source] |
 | **Look** | Yours. Not proposed here | |
-| **Where they are** [Proposal] | **By their ship, in the Woods. A crew does not go far from its ship while the ship is dark.** The Menders leave food by the hedge, and by morning it is gone. Nobody passes the hedge from the Meadow without its knock [Built] | The hedge [Built] |
+| **Where they are** [Proposal] | **By their ship, in the Woods. A crew does not go far from its ship while the ship is dark.** The towns feed their guests (the Algora note). Nobody passes the hedge from the Meadow without its knock [Built] | The hedge [Built] |
 | **Kept** [Proposal] | **The ship's log.** Every evening the youngest of the eight writes the day. It is their only history | G |
 
 ---
 
 ## 4. Four things to find
 
-Each is off the path, needs no maths, and tells part of a people's past. Each has **one person who tells its story**, and starts a thread that leads somewhere.
+**Version 2, after the big world thread's review** ("Yes, with these fixes"; `proposals/GMQ_Big_World_Finds_Review_2026-11-24.md`). Section 9b says what changed.
 
-**How a story is started, so the game never decides a child noticed** (your rule 9):
-- **A find a child can carry** (D, G): the child shows it to the teller.
-- **A find too big to carry** (E, H): after the child has looked at it, talking to its teller offers one extra choice, such as "Tell about the footprints". The story comes only if the child picks it.
+Each is off the path, needs no maths, and tells part of a people's past. Each has **one teller**, and gives **a card after its story** [Source: Marc, 24 November]. Every line a person says is one card of 120 characters or fewer.
 
-### D. The north-west trees (Menders): a painted shutter
+**How a story starts, so the game never decides a child noticed** (your rule 9), as the big world thread builds it:
+- **A find a child can carry** (D, G): the child gives it to the teller. Its story comes first.
+- **A find too big to carry** (E, H): after the child has looked at it, the teller's next talk tells its story. Looking was the child's own act.
 
-**Where:** among the trees in the north-west of the Meadow, by the old wall. **What a child sees first:** a window frame standing on its own in the trees, all that is left of an old hut. A shutter lies in the roots below it, fallen from its hinge.
+### D. The north-west trees (Menders): a painted shutter. Card: **Shutter Saver**
 
-**Look:**
-> "A window frame stands alone among the trees. Its hut fell long ago."
-> "Under it lies a painted shutter. You turn it over."
-> "A great machine stands by a lake. Tiny copper folk climb ladders all over it. One of them has a dent in his lid."
+**Where:** among the trees in the north-west of the Meadow, just south of the old wall.
 
-**Show it to the elder:**
-> "My grandmother's hut stood there. She painted that."
-> "Our family kept the Year Machine. Every gold month we went to the lake to oil it."
-> "I was there the day it burnt. Every plate went white, then black. Menders mend. We could not mend that. There was nothing left to mend."
-> "Will you leave it with me? I will hang it by my door."
+**Look at the window:**
+> "An old window stands alone among the trees. Its hut fell long ago."
+> "A painted shutter lies in the roots below it."
 
-**The child chooses.** Yes: from then on it hangs by the elder's door in the village, and he says "My grandmother's shutter. Thank you." No: the child keeps it.
+**Use, mend or fix the window or the shutter** (the custom, said by the find itself):
+> "You could fix it back on. But a Mender sends a fallen shutter home to its family."
+> "Someone in the village will know whose it is."
 
-**If the child shows it to the elder a second time**, or after it hangs by his door, he touches his lid: "The one with the dent is me. I fell off the top ladder. My grandmother painted me that way." So the dent has its story.
+**Take the window:** "The window stays where its hut stood."
+**Take the shutter:** "You pick up the shutter. It is light, and very old. Someone in the village will know whose it is."
+**Look at the shutter** (its painting fills the picture, as the painted board does):
+> "A painting. A great machine stands by a lake. Tiny copper Menders climb ladders all over it."
+> "One of them has a dent in his lid."
 
-**What it tells:** the Year Machine was real, and the Menders kept it. The elder was there. **Where it leads:** the Year Machine's black frame at the Lake Market, later (Algora note, 16j).
+**Give the shutter to Elder Thimble:**
+> "My grandmother painted that! Her hut stood in the trees."
+> "Our family kept the Year Machine, at the lake. Every month we went to oil it."
+> "I was there the day it burnt. Every plate went white, then black."
+> "Menders mend. We could not mend that. There was nothing left to mend."
+> "Will you leave it with me? I will hang it by my painted board." [yes or no]
 
-### E. The far bank where the old stones land (Twinseers): two pairs of footprints
+- **Yes:** "He hangs the shutter beside his painted board." From then on it is there to look at in the village.
+- **No:** "“Keep it safe, then.”" The child keeps it, and may give it again later.
+- Then the card: **Shutter Saver.**
 
-**Where:** on a flat rock in the grass, off the path on the far bank.
+**His second talk:**
+> "The Mender with the dented lid is me. I fell off the top ladder. My grandmother painted me so."
 
-**Look:**
-> "A flat rock in the grass. Two pairs of footprints are worn into it, side by side."
-> "Someone stood here often. Two someones, always together."
-> "From here you can see both banks of the river."
+**After that,** if the shutter hangs in the village, one line joins his usual ones: "My grandmother's shutter. It is home now."
 
-**Its teller: the old Mender under the big tree** [Built: her gran crossed the old stones]. Choice: "Tell about the footprints".
-> "Two pairs? Then they were Twinseers. My gran said they came every New Year, two by two."
-> "They stood on that rock and told both banks the suns' word. Menders on one side, Rillfolk on the other, all listening."
-> "Then the Year Machine took their word and made the plans. They stopped coming. Nobody asked them back."
+**What it tells:** the Year Machine was real, and the Menders kept it. The elder was there. **Where it leads:** the Year Machine's frame at the Lake Market, later.
 
-**What it tells:** the Twinseers once walked the shores; Menders and Rillfolk once heard them together. **Where it leads:** the Lake. Asking the Twinseers to walk the shores again is a quest for the Lake region [Proposal]. **It is not a lock:** nothing fits it, and it opens nothing. A child can stand in the footprints: "You stand where they stood. You can see both banks."
+### E. Beside the path where the old stones land (Twinseers): two pairs of footprints. Card: **Footprint Finder**
 
-### G. The south beach (Eights): a sheet of ship's paper
+**Where:** on a flat rock **beside** the path on the far bank, not on its squares.
 
-**Where:** on the sand below the orchard, half under a stone.
+**Look at the footprints:**
+> "A flat rock beside the path. Two pairs of footprints are worn into it, side by side."
+> "Two people stood here often, always together. From here you can see both banks."
+> "Someone old in the Reach might remember who."
 
-**Look:**
-> "A sheet of thin, shining paper, half under a stone. The sea has not spoiled it."
-> "It is written in tidy rows: ‘Still lost in Patternox. Eight of us, as always.’"
-> "‘The youngest writes tonight. We planted seeds in a cup by the window. Nothing has come up yet.’"
+**Take or dig:** "The rock was here long before anyone now living. You leave it."
 
-**Its teller: the orchard keeper.** Show it:
-> "Ship's paper! The wind off the woods brings it sometimes."
-> "They keep close to their ship, those Eights. We leave food by the hedge. By morning it is gone."
+**Its teller: the old singer, in the harbour.** Her next talk after the child has looked:
+> "Two pairs of footprints? Then they were Twinseers, the sun watchers from the lake."
+> "When I was small, they came every New Year, two by two."
+> "They stood on that rock and told both banks what the two suns would bring that year."
+> "Then the Year Machine planned everything, and nobody needed telling. They stopped coming."
+- Then the card: **Footprint Finder.**
+
+**Her second talk:**
+> "I was very small. They spoke so softly that both banks went quiet to hear them."
+
+**What it tells:** the Twinseers once walked the shores; Menders and Rillfolk once heard them together; the singer saw them. **Where it leads:** the lake. Asking the Twinseers to walk the shores again is a quest for the Lake region [Proposal].
+
+### G. The south beach (Eights): a page of the ship's log. Card: **Lost Page**
+
+**Where:** on the sand below the orchard, half buried.
+
+**Look at the page:**
+> "A sheet of thin, shining paper, half buried in the sand. The sand has not spoiled it."
+> "At the top: S.S. INFINITY. SHIP'S LOG."
+> "‘Still lost in Patternox. Eight of us, as always. The youngest writes today.’"
+> "‘We planted seeds in a cup. Nothing has come up yet.’"
+
+**Take it:** "You keep the page. The orchard keeper might know where it came from."
+
+**Give the page to the orchard keeper:**
+> "Ship's paper! The S.S. Infinity came down in the woods past the old wall."
+> "Its crew are eight. We call them the Eights. They keep close to their ship."
+> "The wind brings their paper here sometimes."
 > "Whoever wrote that misses a garden, I think."
+- Then the card: **Lost Page.** The child keeps the page.
 
-**What it tells:** the Eights are a lost crew far from home, who write every day, and miss growing things. It says nothing of the Gate. **Where it leads:** the hedge, and the Pattern Woods. A child may keep the sheet, and one day give it back (section 6).
+**Her second talk:**
+> "Keep that page safe. One day you may meet the one who wrote it."
 
-### H. The far bank south of the bridge (Furrows): white pebbles in the grass
+**What it tells:** the S.S. Infinity, whose call brought the cadet here, has a crew of eight who write every day and miss growing things. It says nothing of the Gate. **Where it leads:** the woods, and the page given back one day (section 6).
+
+### H. South of the bridge's landing (Furrows): white chalk in the grass. Card: **Chalk Trail**
 
 **Where:** in the grass just south of the bridge's landing, by the reeds.
 
-**Look:**
-> "White pebbles lie all over this bank, sunk in the grass. Hundreds of them."
-> "Nobody planted them in rows. They lie where they were dropped."
+**Look at the chalk:**
+> "Lumps of white chalk lie all over this bank, sunk in the grass. Hundreds of them."
+> "Nobody set them in rows. They lie where they were dropped."
 
-**Its teller: the Rillfolk guard.** Choice: "Tell about the white pebbles".
-> "Furrow pebbles. In my gran's time the Furrow carts came down the river road to this bank, with stone for our walls."
-> "A Furrow drops a white pebble for every load, where the load is set down. This whole bank is loads."
-> "Then the Makers built the lift. The loads came down by the lift, and the carts stopped coming this far."
+**Take or dig:** "Someone left these here on purpose, long ago. You leave them."
 
-**What it tells:** Furrow carts once came down to the river, and each load was counted with a pebble. **Where it leads:** the hill lift, and the Terrace Hills. **It is not a lock:** the pebbles lie scattered, not in a ring or rows, and nothing asks for a count.
+**Its teller: the Rillfolk guard.** His next talk after the child has looked:
+> "Furrow chalk! The Furrows farm the steps up on the hill."
+> "In the old days their carts came down to this bank, heavy with stone."
+> "A Furrow drops a lump of chalk for every load, where it is set down. Every lump is one load."
+> "Then the carts stopped coming. Nobody here knows why."
+- Then the card: **Chalk Trail.**
+
+**His second talk:**
+> "If you ever go up to the Furrows' fields, ask them why the carts stopped."
+
+**What it tells:** Furrow carts once came down to the river, and each load was marked with chalk. **Where it leads:** the Terrace Hills, with a question to ask there. **It is not a lock:** the chalk lies scattered, nothing asks for a count, and the lift is not named.
+
+### The four card names
+
+| Find | Card | Why that name |
+|---|---|---|
+| D, the shutter | **Shutter Saver** | The child brings a fallen shutter home |
+| E, the footprints | **Footprint Finder** | Like "Kind Finder" and "Deep Finder" |
+| G, the page | **Lost Page** | Like "Lucky Coin": the thing itself |
+| H, the chalk | **Chalk Trail** | It leads up to the Hills |
+
+Said aloud, none is a famous character's name, and none repeats a card on the page.
 
 ---
 
@@ -205,16 +255,16 @@ Each is off the path, needs no maths, and tells part of a people's past. Each ha
 | A child asks | The story answers |
 |---|---|
 | "Why didn't the Menders mend the Year Machine?" | "There was nothing left to mend." It burnt to its frame. Its plates were the Makers' own |
-| "The elder made a plate once. Why can't he find the rules now?" | Since a machine ate their pips, the Menders are afraid to test. The cadet's job is to show them it is safe [Built: the elder's quest] |
-| "Why is the shutter out in the trees?" | When a hut falls, Menders leave its shutter on the frame, so the place remembers. A shutter that falls is brought home. This one has fallen |
+| "The bridge went up that day. How did Elder Thimble get home from the lake?" | **[Proposal] By raft, down the Rill:** the last raft before the north channels shut [Built: "The channels to the north are still shut"]. A Rillfolk raft set him on the Meadow bank |
+| "He made a plate once. Why can't he find the rules now?" | Since a machine ate their pips, the Menders are afraid to test. The cadet's job is to show them it is safe [Built: his quest] |
+| "Why is the shutter out in the trees?" | Its hut fell long ago. When it fell, the shutter was left on the window, so the place remembers. A shutter that falls goes home |
 | "Why don't the Twinseers come back?" | Nobody asked them. A quest in the Lake region |
-| "How does the speaker know the Twinseers' word this year?" | It comes on the first raft after the high water |
-| "Why don't the Eights come out?" | A crew does not go far from its ship while the ship is dark |
-| "Why can't I go into the Woods?" | Nobody passes the hedge without its knock [Built] |
-| "Can I give the paper back?" | Yes, one day, in the Woods (section 6) |
-| "Can I take a white pebble?" | "A Furrow's pebbles are their loads. You leave them." |
-| "Can I dig up the footprint rock?" | "It has stood there longer than anyone remembers. You leave it." |
-| "Why did the carts stop?" | The Makers built the lift |
+| "How does the speaker know the Twinseers' word this year?" | It comes on the first raft after the high water (the Algora note) |
+| "Why don't the Eights come out?" | A crew keeps close to its ship while the ship is dark |
+| "Why can't I go into the woods?" | Nobody passes the hedge without its knock [Built] |
+| "Can I give the page back?" | Yes, one day, in the woods (section 6) |
+| "Can I take the chalk?" | "Someone left these here on purpose, long ago. You leave them." |
+| "Why did the carts stop?" | Nobody in the Reach knows. Ask the Furrows |
 
 ---
 
@@ -259,10 +309,10 @@ Each is off the path, needs no maths, and tells part of a people's past. Each ha
 | 4 | **The four finds** at D, E, G and H, as section 4 | Yes | Other things, or none |
 
 **Small customs, on my pick unless you say otherwise:**
-- Menders paint their story on shutters.
+- Menders paint their story on shutters, and a fallen shutter goes home.
 - A Mender never mends their own lid.
 - Furrow houses are cut into the terrace walls.
-- A child's first load gets a white pebble.
+- A child's first load gets a lump of chalk.
 - The Twinseers go in twos.
 - The Twinseers' word comes on the first raft.
 - A crew does not go far from its ship while it is dark.
@@ -310,3 +360,21 @@ A reviewer read the first version with `CLAUDE.md`, Marc's rules, the empty plac
 **Read against itself once after the rewrite.** Fixed: why a shutter is left in the trees (the custom), food "by the hedge" not inside it, and the carts' small conflict with the parked third kind.
 
 **Not re-read by a reviewer:** this whole rewrite.
+
+### 9b. The big world thread's review of section 4, and what changed
+
+**Verdict: "Yes, with these fixes."** (`proposals/GMQ_Big_World_Finds_Review_2026-11-24.md`.) Marc decided a card for each find. The big world thread builds without "Tell about...": after a child looks at E or H, the teller's next talk tells the story.
+
+| | It found | What changed in section 4 |
+|---|---|---|
+| Blocker 2 | **D invites "mend", "fix" and "take",** and nobody says the custom | The answers to use, mend and fix say it: "a Mender sends a fallen shutter home to its family", and point to the village |
+| Major 1 | **E's teller was on the other bank** | The old singer, in the harbour, on the same bank. She saw them as a child. E's look ends: "Someone old in the Reach might remember who." |
+| Major 2 | **The names arrived cold** | "the sun watchers from the lake"; "S.S. INFINITY. SHIP'S LOG"; "Its crew are eight. We call them the Eights"; "The Furrows farm the steps up on the hill" |
+| Major 3 | **"Pebbles" clashed with the test pebbles; the lift read as a lock** | White chalk. The lift is not named. The guard's story ends: "Nobody here knows why." |
+| Major 4 | **G read as the hedge's knock** | No hedge in the keeper's lines: "the woods past the old wall" |
+| Major 5 | **How did the elder get home, with the bridge up?** | By raft, down the Rill, before the north channels shut (section 5) |
+| Major 9 | **Reading:** a card over 120 characters; "gold month"; "the suns' word"; "took their word"; "this whole bank is loads"; sea against wind | Every spoken card is 120 characters or fewer. "Every month". "what the two suns would bring that year". "the Year Machine planned everything, and nobody needed telling". "Every lump is one load." "The sand has not spoiled it." |
+| Minor | "frame", "note", "stone" at G, "stand", "walls" for stilt houses, "river road", four Grans, "(H)" by the lift, "tonight", line 17, the dent line's start, the elder's "door" | "window"; "page" and "paper"; "half buried in the sand"; no "stand"; "heavy with stone"; no road named; one gran (the elder's grandmother); the carts row rewritten; "today"; Elder Thimble; the dent is his second talk; "by my painted board" |
+| Asked | Four card names, and a second-talk line for each teller | Shutter Saver, Footprint Finder, Lost Page, Chalk Trail. The four second talks are in section 4 |
+
+**Not re-read by a reviewer:** version 2 of section 4. The big world thread's build review will read it.

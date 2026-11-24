@@ -59,7 +59,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 |---|---|---|---|
 | The Menders | Mender Meadow | beans, fruit | They throw nothing away. They count with pips in bowls. |
 | The Rillfolk | the Reach: Stilt Town, Reed Town, Mud Town | river rice, fish, roof reed, mats | They sing their counts [Built: they sing]. Houses on legs [Built]. Their tally keepers count on sticks. On Market day their children play Shells. |
-| The Furrows | the Terrace Hills | beans, stone | They hire out their carts. They lay a white stone on the wall for each load. Their tally keeper sells the oil. |
+| The Furrows | the Terrace Hills | beans, stone | They hire out their carts. They drop a lump of white chalk where each load is set down. Their tally keeper sells the oil. |
 | The Twinseers | the Lake of Two Suns | nothing | They watch the suns. At New Year they say how strong the gold sun is, and how high the water will come. |
 | The Eights | the Pattern Woods, by their ship | nothing | Guests. The ship's crew. No plots and no store. They stay by their ship (the peoples note, `proposals/GMQ_Algora_Story_Peoples_v1_2026-11-24.md`). |
 
@@ -124,7 +124,7 @@ All [Proposal] unless tagged.
 - **A keeper shaves her stick smooth at New Year,** for the new year's cuts. So no keeper has an old stick to copy. Only the oil seller kept one: the Year Machine's last.
 - **The Meadow's machines [Built] are small.** Each follows one rule: it sorts, or counts. Mending their plates lets them work again. None of them ever planned a year. The Year Machine cannot be rebuilt: it burnt to its frame, and nobody knows how it was made.
 - **What was lost is exact.** A keeper can count what has come in. She can say what the town needs, from the Twinseers' words and her old rows. What nobody can do is work out, in the first week, what will reach that line. That is why a table is kept (the cuts), and why a child's plan is worth something.
-- **The Makers were these peoples' own great-grandparents.** (Decision 6. It changes no built words: Elder Rivet says only "long ago".)
+- **The Makers were these peoples' own great-grandparents.** (Decision 6. It changes no built words: Elder Thimble (once Elder Rivet) says only "long ago".)
 - **The keeper could do it, if someone showed her.** She can count. She has shells to count with. Nobody has counted on in sixty years. The cadet does it. She learns by watching the year come right. At the next New Year she asks: "How did you know?", which invites the cadet's own words [Proposal]. Nothing hangs on the answer. That is the arc: the cadet does not replace the keepers. The cadet gives the skill back.
 - **What a child should come away knowing:** a people handed their planning to a machine, and forgot how. Planning ahead is what keeps a town fed.
 
@@ -412,7 +412,7 @@ In real life a little extra is good sense. The story must not teach that care is
 
 I read the big world thread's notes, your two Patternox pages, and the story lines of its page by search. **I did not read every line of the page, or play it.** So two claims in this note rest on a search, not a full read: that the built quests fit the dates in section 3, and that making the Makers great-grandparents changes no built words. **I did not read its Terrace Hills note:** I use only the place's name.
 
-**Keep, as it is:** the planet, the two suns, the Gate, the machines and burnt plates, the Menders, Elder Rivet, the pips, the Rillfolk, the three towns, the harbour board, the fleet, the high water, the singing, the ferry rope, the coin, the shard.
+**Keep, as it is:** the planet, the two suns, the Gate, the machines and burnt plates, the Menders, Elder Thimble, the pips, the Rillfolk, the three towns, the harbour board, the fleet, the high water, the singing, the ferry rope, the coin, the shard.
 
 | | Kind | What is built | Why it is a fault | Fix | Cost |
 |---|---|---|---|---|---|
@@ -848,7 +848,7 @@ He asked what the story thread suggests for the decisions waiting on him, and an
 |---|---|---|
 | 1 | **The Year Machine** (decision 29) | The built Meadow quest stays as it is. The big world thread adds: the Year Machine's burnt frame at the Lake Market; one line from the Meadow's elder ("Those machines sort and count. The Year Machine did the planning, and it burnt"); one line at the harbour's loading board ("The board was the Year Machine's hand") |
 | 2 | **The step-down year** (decision 30) | As section 3 says: the speaker asks the cadet to learn it small, and goes to the lake alone. The dark that year is hers, and she says so first |
-| 3 | **Elder Rivet is renamed** | A mending word, for the Menders. Proposed: **Elder Thimble.** Marc confirms the name; the big world thread changes the page |
+| 3 | **Elder Rivet is renamed** | **Elder Thimble.** The page uses it since big world 11 |
 | 4 | **Shells keeps its name** | |
 | 5 | **Never say how long a month is, or anyone's age** (decision 18) | The long path stands for the trial, and is timed |
 | 6 | **Every other decision in section 9 goes on its pick, for the trial** | Nothing here is confirmed for good. A trial with children may change any of it |
