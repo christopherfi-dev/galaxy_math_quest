@@ -48,15 +48,24 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hb { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: .86rem; background: rgba(6, 9, 18, .86); color: #e8eef8; border: 1.5px solid #4a5d80; border-radius: 10px; padding: 7px 10px; min-height: 42px; }
 .hb.on { background: #6db3ff; color: #08121f; border-color: #6db3ff; }
 .hb.new::after { content: ' ●'; color: #ff8f6b; }
-/* the reading card: words wait on the picture until OK */
-#read { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); width: min(94%, 640px); background: rgba(8, 13, 26, .95); border: 2px solid #ffb23e; border-radius: 14px; padding: 10px 14px 10px; display: flex; flex-direction: column; gap: 8px; }
-#read.top { bottom: auto; top: 58px; }
-#desk > #read { position: static; transform: none; width: 100%; flex: 0 0 auto; }
-#readwho { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: #ffb23e; }
+/* the reading card: in the middle of the screen, higher up, over a dimmed screen; OK sleeps 4 to 5 seconds while a bar fills [Marc, 24 November:
+   "The students don't realize they need to read the text boxes. They must be in the middle of the screen higher up." The look is the main game's card.] */
+#veil { position: fixed; inset: 0; z-index: 30; background: rgba(4, 8, 20, .55); }
+#read { position: fixed; left: 50%; top: clamp(56px, 15vh, 190px); transform: translateX(-50%); z-index: 31; width: min(92vw, 660px); max-height: 72vh; overflow: auto; background: #fff8e7; color: #1b2340; border: 3px solid #ffb23e; border-radius: 16px; padding: 14px 16px 12px; box-shadow: 0 12px 36px rgba(0, 0, 0, .6); display: flex; flex-direction: column; gap: 10px; animation: readin .25s ease-out; }
+@keyframes readin { from { transform: translate(-50%, -14px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+#read.nudge { animation: readnudge .3s; }
+@keyframes readnudge { 25% { transform: translate(calc(-50% - 8px), 0); } 75% { transform: translate(calc(-50% + 8px), 0); } }
+#readok { position: relative; overflow: hidden; min-width: 120px; }
+#readok:disabled { opacity: 1; background: #c9d8ec; color: #33415e; }
+#readfill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(109, 179, 255, .95); }
+#readlab { position: relative; }
+@keyframes readfill { from { width: 0; } to { width: 100%; } }
+#read .btn.quiet { color: #1b5fa8; border-color: #1b5fa8; }
+#readwho { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: #b8641a; }
 #readwho:empty { display: none; }
-#readtext { font-size: 1.16rem; line-height: 1.36; color: #fff; }
+#readtext { font-size: 1.3rem; line-height: 1.4; color: #1b2340; }
 #readrow { display: flex; gap: 8px; align-items: center; }
-#readn { color: #a9b9d0; font-size: .8rem; margin-right: auto; }
+#readn { color: #6a7390; font-size: .85rem; margin-right: auto; }
 .btn { font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif; font-weight: 700; background: #6db3ff; color: #08121f; border: 0; border-radius: 10px; padding: 9px 15px; font-size: 1rem; min-height: 42px; }
 .btn.quiet { background: transparent; color: #6db3ff; border: 1.5px solid #6db3ff; }
 .btn.warm { background: #ffb23e; color: #2b1a00; }
@@ -103,7 +112,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .list li.done { color: #8fa3bf; text-decoration: line-through; }
 .list li small { display: block; color: #a9b9d0; font-size: .8rem; text-decoration: none; }
 .list li b { color: #ffd25e; }
-@media (max-width: 560px) { .word { padding: 6px 11px; min-height: 36px; } #pad button { min-height: 36px; } .btn { min-height: 38px; padding: 7px 12px; } #readtext { font-size: 1.05rem; } .hb { padding: 6px 8px; font-size: .78rem; } #stonesbar { display: none; } }
+@media (max-width: 560px) { .word { padding: 6px 11px; min-height: 36px; } #pad button { min-height: 36px; } .btn { min-height: 38px; padding: 7px 12px; } #readtext { font-size: 1.12rem; } #read { top: clamp(48px, 11vh, 120px); padding: 10px 12px; } .hb { padding: 6px 8px; font-size: .78rem; } #stonesbar { display: none; } }
 </style>
 </head>
 <body>
@@ -112,8 +121,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
     <canvas id="cv" aria-label="The picture: Planet Algora"></canvas>
     <div id="hud"><div id="place"></div><div id="stonesbar" hidden></div>
       <div id="hudr"><button class="hb" id="b_map">Map</button><button class="hb" id="b_needs">Needs</button><button class="hb" id="b_ship">Ship</button></div></div>
-    <div id="read" hidden><div id="readwho"></div><div id="readtext"></div><div id="readrow"><span id="readn"></span><button class="btn quiet" id="readsay">Read to me</button><button class="btn" id="readok">OK</button></div></div>
   </div>
+  <div id="veil" hidden></div>
+  <div id="read" hidden role="dialog" aria-live="polite" aria-label="Read this, then tap OK"><div id="readwho"></div><div id="readtext"></div><div id="readrow"><span id="readn"></span><button class="btn quiet" id="readsay">Read to me</button><button class="btn" id="readok" disabled><span id="readfill"></span><b id="readlab">Read…</b></button></div></div>
   <div id="desk">
     <div id="log"></div>
     <div id="words"></div>
@@ -850,11 +860,20 @@ function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesi
 function hush() { try { speechSynthesis.cancel(); } catch (e) {} }
 
 /* ---- the reading card: a sentence or two, then OK. [Marc's rule 7: short readings] */
-const READ = { q: [], i: 0, then: null, who: '' };
+const READ = { q: [], i: 0, then: null, who: '', tm: 0, wait: 0, held: false };
+const FASTREAD = /[?&]fastread=1/.test(location.search);      /* for the play tests only: OK wakes at once. No child's link has it. */
 const reading = () => READ.q.length > 0, PHONE = () => window.innerWidth <= 560;
 function tell(pages, then, who) { READ.q = pages.filter(Boolean); READ.i = 0; READ.then = then || null; READ.who = who || ''; if (!READ.q.length) { READ.then = null; if (then) then(); return; } showRead(); }
-function showRead() { const rd = $('read'), home = PHONE() || (PIC && PIC.readDesk) ? $('desk') : $('stage'); if (rd.parentNode !== home) home.insertBefore(rd, home === $('desk') ? $('log') : null); rd.classList.toggle('top', !PHONE() && !(PIC && PIC.readDesk) && !!((PIC && PIC.readTop) || (!PIC && S.at !== 'map')));      /* inside a village the people stand along the bottom: the card goes up into the sky, so the one who talks stays in sight */ $('read').hidden = false; $('readwho').textContent = READ.who; $('readtext').textContent = READ.q[READ.i]; $('readn').textContent = READ.q.length > 1 ? (READ.i + 1) + ' of ' + READ.q.length : ''; $('readok').textContent = READ.i < READ.q.length - 1 ? 'Next' : 'OK'; lines.push({ text: READ.q[READ.i] }); lines = lines.slice(-3); drawLog(); drawWords(); drawTask(); }
-function readOk() { if (!reading()) return; hush(); beep(520, .05); if (READ.i < READ.q.length - 1) { READ.i++; showRead(); return; } $('read').hidden = true; const th = READ.then; READ.q = []; READ.then = null; READ.who = ''; if (th) th(); drawWords(); drawTask(); setPlace(); save(); }
+/* OK sleeps 4 seconds, up to 5 for a long card, while a bar fills. Tapping anything else shakes the card. [Marc, 24 November: "that 4-5 second timer that the main game has. To force them to read and not just click click click"] */
+function readWait(t) { const w = String(t || '').trim().split(/\s+/).filter(Boolean).length; return FASTREAD ? 60 : Math.round(4000 + Math.max(0, Math.min(1, (w - 10) / 14)) * 1000); }
+function showRead() { const rd = $('read');
+  if (PIC && PIC.busy && PIC.busy()) { rd.hidden = true; $('veil').hidden = true; READ.held = true; return; }      /* the picture is moving (the fleet sails): the words wait until it stops, so the child sees what they tell */
+  READ.held = false; $('veil').hidden = false; rd.hidden = false; rd.classList.remove('nudge'); $('readwho').textContent = READ.who; $('readtext').textContent = READ.q[READ.i]; $('readn').textContent = READ.q.length > 1 ? (READ.i + 1) + ' of ' + READ.q.length : '';
+  const b = $('readok'), fl = $('readfill'); READ.wait = readWait(READ.q[READ.i]); b.disabled = true; $('readlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `readfill ${READ.wait}ms linear forwards`;
+  clearTimeout(READ.tm); READ.tm = setTimeout(() => { b.disabled = false; $('readlab').textContent = READ.i < READ.q.length - 1 ? 'Next' : 'OK'; fl.style.animation = 'none'; }, READ.wait);
+  lines.push({ text: READ.q[READ.i] }); lines = lines.slice(-3); drawLog(); drawWords(); drawTask(); }
+function readNudge() { const rd = $('read'); rd.classList.remove('nudge'); void rd.offsetWidth; rd.classList.add('nudge'); beep(200, .08); }
+function readOk() { if (!reading()) return; if ($('readok').disabled || READ.held) return readNudge(); hush(); beep(520, .05); if (READ.i < READ.q.length - 1) { READ.i++; showRead(); return; } clearTimeout(READ.tm); $('read').hidden = true; $('veil').hidden = true; const th = READ.then; READ.q = []; READ.then = null; READ.who = ''; if (th) th(); drawWords(); drawTask(); setPlace(); save(); }
 let lines = [];
 function note(text, you) { if (you) lines.push({ you }); lines.push({ text }); lines = lines.slice(-3); drawLog(); }
 function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2]; $('log').innerHTML = (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last ? (last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : (reading() ? '' : `<span class="new">${esc(last.text)}</span>`)) : ''); }
@@ -874,7 +893,7 @@ let verb = '', held = '', TASK = null, PANEL = '';
 const carried = () => S.bag.filter(i => ITEMS[i] && !ITEMS[i].quiet);
 function hereThings() { return S.at === 'map' ? nearThings() : SCENES[S.at].things; }
 function drawWords() { const W = $('words'); $('task').hidden = !(TASK || PANEL); W.hidden = !!(TASK || PANEL); $('cmdrow').hidden = !!(TASK || PANEL); $('desk').classList.toggle('busy', !!(TASK || PANEL)); if (TASK || PANEL || reading() || PIC || BIG) kbHide();
-  if (W.hidden) return; if (reading() || PIC || BIG || S.intro < 9) { W.innerHTML = `<div class="wrow"><span class="wlab">${reading() ? (PHONE() || (PIC && PIC.readDesk) ? '' : 'Read the words on the picture. Then tap ' + (READ.i < READ.q.length - 1 ? 'Next.' : 'OK.')) : BIG ? 'Tap the map to close it.' : ''}</span></div>`; return; }
+  if (W.hidden) return; if (reading() || PIC || BIG || S.intro < 9) { W.innerHTML = `<div class="wrow"><span class="wlab">${reading() ? ('Read the words in the middle of the screen. Then tap ' + (READ.i < READ.q.length - 1 ? 'Next.' : 'OK.')) : BIG ? 'Tap the map to close it.' : ''}</span></div>`; return; }
   const things = hereThings(), seenW = {}; let h = '<div class="wrow"><span class="wlab">Do</span>' + CHIPS.map(v => `<button class="word verb${verb === v ? ' on' : ''}" data-verb="${v}">${v}</button>`).join('') + '</div>';
   if (verb === 'go') h += '<div class="wrow"><span class="wlab">Where</span>' + (S.at === 'map' ? ['north', 'south', 'east', 'west'].map(d => `<button class="word" data-dir="${d}">${d}</button>`).join('') + THINGS.filter(t => t.kind === 'place' && thingSeen(t)).map(t => `<button class="word thing" data-dir="${t.words[0]}">${t.words[0]}</button>`).join('') : '<button class="word thing" data-thing="door">out</button>') + '</div>';
   else { if ((verb === 'use' || verb === 'give') && !held) h += '<div class="wrow"><span class="wlab">' + (carried().length ? cap(verb) + ' what? Something you carry:' : 'You carry nothing to ' + verb + ' yet.') + '</span>' + carried().map(i => `<button class="word item" data-item="${i}">${esc(ITEMS[i].words[0])}</button>`).join('') + '</div>';
@@ -961,7 +980,7 @@ const boxHtml = id => `<button class="box${BOX.on === id ? ' on' : ''}" data-box
 const boxNum = id => BOX.v[id] ? parseInt(BOX.v[id], 10) : null;
 function padKey(k) { const id = BOX.on; if (!id) return; setTimeout(() => { if (TASK && TASKS[TASK.kind] && TASKS[TASK.kind].typed) TASKS[TASK.kind].typed(); }, 0); let v = BOX.v[id] || ''; if (k === 'del') v = v.slice(0, -1); else if (k === 'clr') v = ''; else if (v.length < 3) v = (v + k).replace(/^0+(\d)/, '$1'); BOX.v[id] = v; const el = document.querySelector(`[data-box="${id}"]`); if (el) el.textContent = v; beep(600, .03); if (TASK) TASK.msg = ''; const m = document.querySelector('#task .msg'); if (m) m.textContent = ''; }
 function closeTask() { if (TASK && TASK.kind === 'cog' && !TASK.won) S.cogAt = (S.steps || 0) + 50; TASK = null; PIC = null; S.open = null; BOX.on = ''; BOX.v = {}; drawWords(); setPlace(); save(); }
-function drawTask() { const T = $('task'); T.classList.toggle('istask', !PANEL && !!TASK); if (PANEL) { T.innerHTML = panelHtml(); if (T.scrollHeight > T.clientHeight + 6) T.insertAdjacentHTML('afterbegin', '<p class="dim">▼ There is more. Slide the list up.</p>'); return; } if (!TASK) { T.innerHTML = ''; return; } if (reading()) { T.innerHTML = PHONE() || (PIC && PIC.readDesk) ? '' : `<h3>${esc(TASK.title || '')}</h3><p class="dim">Read the words on the picture. Then tap ${READ.i < READ.q.length - 1 ? 'Next' : 'OK'}.</p>`; return; } T.innerHTML = TASKS[TASK.kind].html(); }
+function drawTask() { const T = $('task'); T.classList.toggle('istask', !PANEL && !!TASK); if (PANEL) { T.innerHTML = panelHtml(); if (T.scrollHeight > T.clientHeight + 6) T.insertAdjacentHTML('afterbegin', '<p class="dim">▼ There is more. Slide the list up.</p>'); return; } if (!TASK) { T.innerHTML = ''; return; } if (reading()) { T.innerHTML = PHONE() || (PIC && PIC.readDesk) ? '' : `<h3>${esc(TASK.title || '')}</h3><p class="dim">Read the words in the middle of the screen. Then tap ${READ.i < READ.q.length - 1 ? 'Next' : 'OK'}.</p>`; return; } T.innerHTML = TASKS[TASK.kind].html(); }
 const btn = (id, label, cls, off) => `<button class="btn ${cls || ''}" data-b="${id}"${off ? ' disabled' : ''}>${label}</button>`;
 function notesHtml(site) { const n = S.notes[site] || []; return `<div class="notes"><b>My notes:</b> ${n.length ? n.map(r => `<span>${r[0]} → ${r[1] === null ? 'handed back' : r[1]}</span>`).join('') : '<i class="dim">nothing written yet</i>'}</div>`; }
 
@@ -1188,7 +1207,7 @@ function bakerPic() { return { title: 'The baker\'s oven', inset: '#7a3a2a', dra
     rows.forEach((rw, i) => { if (!rw[3]) return; const y = h * (.34 + i * .135); cx.fillStyle = rw[4] ? '#dff2d8' : '#f6dcd6'; rr(w * .08, y - h * .05, w * .84, h * .11, 8); cx.fill(); ol(2); text(rw[0], w * .11, y, fs * .9, INK, 'left'); text(rw[1], w * .5, y, fs * .9, INK, 'center'); text(rw[2], w * .89, y, fs * .78, rw[4] ? '#1c7c3a' : '#b3261e', 'right', FONT_B); }); } }; }
 function showBaker(then) { const back = PIC; PIC = bakerPic(); setPlace(); tell(['I bake 24 loaves. I have trays for 5, trays for 6 and trays for 8. A tray goes in full, or it burns.', 'Trays for 5? 4 trays hold 20. 5 trays hold 25. No number of full trays makes 24.', 'Trays for 6? 4 times 6 is 24. But I have only 3 trays for 6.', 'Trays for 8? 3 times 8 is 24. And I have 3 of them. So: 3 trays of 8.', 'Your rafts are my trays. Your orders are my loaves.'], () => { setFlag('sawBaker'); PIC = back; setPlace(); if (then) then(); }, 'The baker'); }
 /* the fleet: the harbour's rafts in rows by kind; each town's line of rafts in its channel; the water gate with three lamps */
-function fleetPic() { return { title: 'The loading board', readDesk: true, sail: 0, draw(w, h, dt) { const F = S.fleet, nm = { stilt: 'Stilt Town', reed: 'Reed Town', mud: 'Mud Town' }, top = 58; cx.fillStyle = '#2f6fd0'; cx.fillRect(0, 0, w, h); cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { const yy = h * (i + .5) / 14, o = ((tNow * .15 + i * .37) % 1) * w; cx.beginPath(); cx.moveTo(o, yy); cx.lineTo(o + w * .05, yy); cx.stroke(); }
+function fleetPic() { return { title: 'The loading board', readDesk: true, sail: 0, busy() { return this.sail > 0 && this.sail < 1; }, draw(w, h, dt) { const F = S.fleet, nm = { stilt: 'Stilt Town', reed: 'Reed Town', mud: 'Mud Town' }, top = 58; cx.fillStyle = '#2f6fd0'; cx.fillRect(0, 0, w, h); cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { const yy = h * (i + .5) / 14, o = ((tNow * .15 + i * .37) % 1) * w; cx.beginPath(); cx.moveTo(o, yy); cx.lineTo(o + w * .05, yy); cx.stroke(); }
     if (this.sail > 0 && this.sail < 1) this.sail = Math.min(1, this.sail + dt * .35);
     const rowH = (h - top - 8) / 3, lx = w * .02, lw = w * .4, rs = Math.min(lw / 5.6, rowH / 2.6), raft = (X, Y, k, sz) => { cx.fillStyle = '#a8713f'; rr(X - sz * .46, Y + sz * .1, sz * .92, sz * .3, 3); cx.fill(); ol(1.5); cx.strokeStyle = '#6b4a22'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X, Y + sz * .1); cx.lineTo(X, Y - sz * .42); cx.stroke(); cx.fillStyle = '#fff7dc'; rr(X - sz * .3, Y - sz * .62, sz * .6, sz * .56, 3); cx.fill(); ol(1.5); text(String(k), X, Y - sz * .33, sz * .4, INK); };
     /* the harbour: what is left of each kind */
@@ -1353,14 +1372,15 @@ function stageTap(e) { const r = cv.getBoundingClientRect(), x = e.clientX - r.l
   geo(); const tx = Math.floor(V.ox + x / V.ts), ty = Math.floor(V.oy + y / V.ts); if (tx < 0 || ty < 0 || tx >= MAPW || ty >= MAPH) return; let t = seen[key(tx, ty)] ? SOLID[key(tx, ty)] : null; if (!t && seen[key(tx, ty)]) { const g = GATEOF[key(tx, ty)]; if (g && !gateOpen(g)) t = THINGS.find(o => o.gate === g); if (!t && MAP[ty][tx] === 'H') t = TH.village; if (!t && Math.abs(tx - 13) <= 1 && ty === 83) t = TH.ship; } if (t && thingSeen(t)) return runThing(t, verb, held); if (verb === 'dig') { goTo(tx, ty, digHere); return drawWords(); } verb = ''; held = ''; kbHide(); beep(500, .03); goTo(tx, ty); drawWords(); }
 cv.addEventListener('pointerdown', e => { e.preventDefault(); stageTap(e); });
 $('readok').onclick = readOk; $('readsay').onclick = () => { if (reading()) speak(READ.q[READ.i]); };
-$('read').addEventListener('pointerdown', e => e.stopPropagation());
+$('read').addEventListener('pointerdown', e => { e.stopPropagation(); if ($('readok').disabled && !(e.target.closest && e.target.closest('#readsay'))) readNudge(); });
+$('veil').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); readNudge(); });      /* the rest of the screen waits until the words are read */
 $('b_map').onclick = toggleBig; $('b_needs').onclick = () => { if (BIG) toggleBig(); openPanel('needs'); }; $('b_ship').onclick = () => { if (BIG) toggleBig(); openPanel('ship'); };
 $('words').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.verb) { verb = verb === b.dataset.verb ? '' : b.dataset.verb; held = ''; $('cmd').value = verb ? verb + ' ' : ''; beep(560, .03); if (verb === 'dig' && !hereThings().length) return digHere(); return drawWords(); } if (b.dataset.item) { held = b.dataset.item; $('cmd').value = verb + ' ' + ITEMS[held].words[0] + ' '; beep(560, .03); return drawWords(); } if (b.dataset.dir) return goDir(b.dataset.dir); if (b.dataset.thing) { const t = hereThings().find(o => o.id === b.dataset.thing); if (t) runThing(t, verb, held); } });
 $('kb').addEventListener('pointerdown', e => { e.preventDefault(); }); $('kb').addEventListener('click', e => { const b = e.target.closest('button'); if (b) kbKey(b.dataset.k); });
 $('cmd').addEventListener('focus', kbShow); $('cmd').addEventListener('pointerdown', kbShow);
 $('task').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || reading()) return; if (b.dataset.k) return padKey(b.dataset.k); if (b.dataset.box) { BOX.on = b.dataset.box; return drawTask(); } if (b.dataset.sign) { TASK.sign = b.dataset.sign; TASK.msg = ''; beep(560, .03); return drawTask(); } if (b.dataset.tab) { S.fleet.tab = b.dataset.tab; BOX.v.n = S.fleet.plan[b.dataset.tab].n ? String(S.fleet.plan[b.dataset.tab].n) : ''; TASK.msg = ''; beep(560, .03); return drawTask(); } if (b.disabled) return; if (b.dataset.b) { if (PANEL) return panelPress(b.dataset.b); if (TASK) TASKS[TASK.kind].press(b.dataset.b); } });
 $('go').onclick = () => command($('cmd').value); $('cmd').addEventListener('keydown', e => { if (e.key === 'Enter') command($('cmd').value); });
-window.addEventListener('keydown', e => { if (e.target === $('cmd')) return; if (!TASK && !PANEL && !reading() && !PIC && !BIG && /^[a-z]$/i.test(e.key) && !e.metaKey && !e.ctrlKey) { $('cmd').focus(); return; } if (reading() && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return readOk(); } if (TASK && BOX.on && /^[0-9]$/.test(e.key)) return padKey(e.key); if (TASK && e.key === 'Backspace') return padKey('del'); const d = { ArrowUp: 'north', ArrowDown: 'south', ArrowRight: 'east', ArrowLeft: 'west' }[e.key]; if (d && !TASK && !reading() && !PIC && !BIG && S.at === 'map') { e.preventDefault(); const v = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] }[d], x = Math.round(P.px) + v[0], y = Math.round(P.py) + v[1]; if (!P.route.length && walkable(x, y)) { P.route = [[x, y]]; P.then = null; } } });
+window.addEventListener('keydown', e => { if (e.target === $('cmd')) return; if (!TASK && !PANEL && !reading() && !PIC && !BIG && /^[a-z]$/i.test(e.key) && !e.metaKey && !e.ctrlKey) { $('cmd').focus(); return; } if (reading() && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return readOk(); }      /* readOk shakes the card while OK sleeps */ if (TASK && BOX.on && /^[0-9]$/.test(e.key)) return padKey(e.key); if (TASK && e.key === 'Backspace') return padKey('del'); const d = { ArrowUp: 'north', ArrowDown: 'south', ArrowRight: 'east', ArrowLeft: 'west' }[e.key]; if (d && !TASK && !reading() && !PIC && !BIG && S.at === 'map') { e.preventDefault(); const v = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] }[d], x = Math.round(P.px) + v[0], y = Math.round(P.py) + v[1]; if (!P.route.length && walkable(x, y)) { P.route = [[x, y]]; P.then = null; } } });
 window.addEventListener('resize', size);
 
 /* ---- what a future AI may be told about this place: facts only, from the tables above and the save. [CLAUDE.md: the constraint architecture] */
@@ -1373,7 +1393,7 @@ function boot() { kbBuild(); S = load() || fresh(); if (!S.st) S.st = { round: 0
   else if (S.open) { const o = S.open; if (o.kind === 'machine' && TH['m_' + o.site]) openMachine(o.site); else if (o.kind === 'pan' && !S.gates.bridge && S.pouch !== null) { TASK = { kind: 'pan', msg: '', title: 'The bridge pan' }; PIC = panPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'fleet' && !flag('fleetDone')) { TASK = { kind: 'fleet', msg: '', title: 'The loading board' }; BOX.v = { n: S.fleet.plan[S.fleet.tab].n ? String(S.fleet.plan[S.fleet.tab].n) : '' }; BOX.on = 'n'; PIC = fleetPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'box' && S.well.step === 6) { TASK = { kind: 'box', phase: 'test', msg: '', title: 'The Makers\' box' }; BOX.v = {}; BOX.on = 'in'; PIC = boxPic(); drawWords(); drawTask(); setPlace(); } else if (o.kind === 'stones' && !S.gates.stones) { TASK = { kind: 'stones', msg: '', title: 'The old stepping stones' }; PIC = stonesPic(); drawWords(); drawTask(); setPlace(); } else S.open = null; }
   requestAnimationFrame(loop); }
 let last = 0;
-function loop(ts) { const dt = Math.min(.05, last ? (ts - last) / 1000 : .016); last = ts; tNow += dt; if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();
+function loop(ts) { const dt = Math.min(.05, last ? (ts - last) / 1000 : .016); last = ts; tNow += dt; if (READ.held && reading() && !(PIC && PIC.busy && PIC.busy())) showRead(); if (cv.clientWidth !== vw || cv.clientHeight !== vh) size();
   if (reading() && READ.hook && READ.hook[READ.i]) { READ.hook[READ.i](); }
   if (PIC && PIC.inset) { const top = 56, bot = PHONE() ? 0 : Math.min(150, vh * .22); cx.fillStyle = PIC.inset; cx.fillRect(0, 0, vw, vh); cx.save(); cx.translate(0, top); PIC.draw(vw, vh - top - bot, dt); cx.restore(); } else if (PIC) PIC.draw(vw, vh, dt); else if (BIG) drawBig(); else if (S.at === 'map') { stepWalk(dt); cam.x += (P.px + .5 - cam.x) * Math.min(1, dt * 6); cam.y += (P.py + .5 - cam.y) * Math.min(1, dt * 6); drawMap(dt); } else drawScene(dt);
   if (FADE > 0) { cx.fillStyle = `rgba(4,6,14,${Math.min(1, FADE)})`; cx.fillRect(0, 0, vw, vh); FADE -= dt * 2.4; }

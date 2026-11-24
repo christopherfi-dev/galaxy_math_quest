@@ -30,7 +30,7 @@
 //  14  closing in the middle of the stones and opening again
 //  15  the big map, the Needs list, the ship panel, the report, "Go back to my ship"
 // On all three screens (1180 x 745, 820 x 1180, 390 x 760): nothing scrolls, nothing spills, every button of every task is on the screen,
-// the reading card is inside the picture, the picture has at least 45% of the screen. The page asks the network for nothing but the game's two fonts.
+// the reading card is in the middle of the screen, high up, the picture has at least 45% of the screen. The page asks the network for nothing but the game's two fonts.
 //
 // Run:  node checks/bigworld_play_test.js [--shots folder] [--only phone]     (--only plays the screens whose name holds that word)
 const { chromium } = require('playwright');
@@ -45,7 +45,7 @@ const SIGN = { times: '×', plus: '+', minus: '−', share: '÷' };
 
 async function open(b, w, h, seed) { const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: SHOTS ? 2 : 1, hasTouch: true }), p = await ctx.newPage(); p.errs = []; p.reqs = [];
   p.on('pageerror', e => p.errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') p.errs.push(m.text()); }); p.on('request', r => p.reqs.push(r.url()));
-  p.seedUrl = URL + '?seed=' + seed; await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S()); return p; }
+  p.seedUrl = URL + '?seed=' + seed + '&fastread=1';      /* fastread: OK wakes at once, so this test does not wait 4 to 5 seconds on every card. checks/bigworld_reading_test.js checks the real wait. */ await p.goto(p.seedUrl); await p.waitForFunction(() => window.__bw && window.__bw.S()); return p; }
 const st = p => p.evaluate(() => { const b = window.__bw, S = b.S(); return { S: JSON.parse(JSON.stringify(S)), x: Math.round(b.P.px), y: Math.round(b.P.py), reading: b.READ.q.length > 0, page: b.READ.q[b.READ.i] || '', pages: b.READ.q.length, task: b.task() ? JSON.parse(JSON.stringify(b.task())) : null, panel: b.panel(), big: b.big(), pic: b.pic() ? b.pic().title : '', idle: b.idle(), place: document.getElementById('place').textContent, desk: document.getElementById('desk').innerText, tasktext: document.getElementById('task').innerText }; });
 const idle = p => p.waitForFunction(() => window.__bw.idle(), null, { timeout: 30000 });
 const shot = async (p, name) => { if (SHOTS) { await p.waitForTimeout(120); await p.screenshot({ path: path.join(SHOTS, name + '.png') }); } };
@@ -84,7 +84,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
   say(L.stage[4] * L.stage[5] >= L.iw * L.ih * .45, `${where}: the picture has under 45% of the screen (${Math.round(L.stage[4] * L.stage[5] / (L.iw * L.ih) * 100)}%)`);
   for (const b of L.btns) say(b.r[0] >= -1 && b.r[2] <= L.iw + 1 && b.r[1] >= -1 && b.r[3] <= L.ih + 1, `${where}: the button "${b.t}" is off the screen`);
   say(L.taskScroll <= 2, `${where}: the task on the desk needs scrolling (${L.taskScroll}px hidden)`); say(L.wordsScroll <= 2, `${where}: the word rows need scrolling (${L.wordsScroll}px hidden)`); say(L.deskScroll <= 2, `${where}: the desk overflows by ${L.deskScroll}px`);
-  if (L.read) { const box = L.iw <= 560 ? L.desk : L.stage; say(L.read[0] >= box[0] - 1 && L.read[2] <= box[2] + 1 && L.read[1] >= box[1] - 1 && L.read[3] <= box[3] + 1, `${where}: the reading card is outside ${L.iw <= 560 ? 'the desk (on a phone it sits on the desk)' : 'the picture'}`); }
+  if (L.read) say(L.read[0] >= -1 && L.read[2] <= L.iw + 1 && L.read[1] >= 0 && L.read[3] <= L.ih + 1 && Math.abs((L.read[0] + L.read[2]) / 2 - L.iw / 2) <= 3 && L.read[1] <= L.ih * .3, `${where}: the reading card is not in the middle of the screen, high up (it is at ${L.read.slice(0, 4).map(Math.round).join(', ')})`);      /* [Marc, 24 November] */
   for (const b of L.btns) say(b.r[5] >= 34, `${where}: the button "${b.t}" is only ${Math.round(b.r[5])}px tall`); }
 
 (async () => {
