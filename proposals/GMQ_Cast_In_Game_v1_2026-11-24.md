@@ -83,6 +83,30 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 
 ---
 
+## 3b. The crowd [Marc's pictures 9 to 11, one try each]
+
+**The pictures** (saved in `content/art_test_2026-11-24/`: `mender_9_sheet.png`, `mender_10_feelings.png`, `mender_11_things.png`):
+- **The ordinary Mender** matches Elder Thimble and Pim: a lid that fits and sits straight, no beard, thin eyebrows, three fingers and a thumb in every frame (the thumbs-up and the hands on his cheeks too).
+- **His copper** came out close to Pim's, not darker as asked. It does not matter: each Mender's copper is set in code.
+- **The eight things** came out as separate pieces: straw hat (with a hole for the knob), apron, shawl, watering can, fishing rod (line and hook kept), a bundle of reeds (drawn with grain heads, like wheat), a basket of red fruit, a toolbox. They have a little more detail than the characters.
+- **No words or numbers** anywhere.
+
+**Made in code from one Mender** [Proposal]:
+
+| Mender | Copper (the game's own) | Wears | Carries (on the ground beside) |
+|---|---|---|---|
+| the gardener | #c9793a | straw hat | watering can |
+| the fisher | #b86a3a | | fishing rod |
+| the Mender with big ears | #d08a4a | | |
+| the old Mender | #a8683a | shawl, over the lid | |
+| the reed cutter | #b8743a | | bundle of reeds |
+| the orchard keeper | #c08040 | | basket of fruit |
+| the Mender at the first lesson | #c9793a | | toolbox |
+
+- **Their faces** follow their words by simple marks: thanks and welcomes happy; "Listen!" surprised; missing, tipping, losing worried; questions and "Shh" thinking.
+- **Things they carry stand on the ground beside them,** so they stay put when the face and hands change. Worn things sit on the lid. The apron was not used: it would cover their hands.
+- **Left as before:** the Mender with big ears has no big ears (a story question first); the Rillfolk (another people) and the well's Mender keep the game's drawing.
+
 ## 4. Tests
 
 - `checks/world_look_check.js`: **passes.** Now also: both characters' pictures load and draw, and three lines get the right face.

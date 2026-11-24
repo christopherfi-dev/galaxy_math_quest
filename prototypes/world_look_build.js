@@ -20,6 +20,11 @@ once('the ground loop in drawMap', loop, 'if (WL.on) WL.ground(x0, y0, x1, y1, X
 // 3b. Elder Thimble and Pim in the village: the Gemini pictures, or the page's own drawing when "Look: old" is chosen or a picture has not loaded
 once('Pim in the village', "else if (t.id === 'kid') mender(X, base - r * .62, r * .62, '#e09a55', 1, '');", "else if (t.id === 'kid') { if (!CAST.draw('pim', X, base, r)) mender(X, base - r * .62, r * .62, '#e09a55', 1, ''); }");
 once('the elder in the village', "else if (t.id === 'elder') mender(X, base - r * 1.02, r * 1.02, '#b86a2a', 2, 'elder');", "else if (t.id === 'elder') { if (!CAST.draw('elder', X, base, r)) mender(X, base - r * 1.02, r * 1.02, '#b86a2a', 2, 'elder'); }");
+// 3b2. the crowd: on the walking map (the Rillfolk keep the page's drawing), and the Mender at the first lesson
+once('the crowd on the map', "else if (t.kind === 'being') (t.folk === 'rill' ? rillfolk : mender)(X, Y + ts * .02, ts * .3, t.col || '#c9793a', t.x * 3 + t.y, '');",
+  "else if (t.kind === 'being') { if (!CAST.crowd(t, X, Y, ts)) (t.folk === 'rill' ? rillfolk : mender)(X, Y + ts * .02, ts * .3, t.col || '#c9793a', t.x * 3 + t.y, ''); }");
+once('the Mender at the first lesson', "mender(w * .08 + bw * .62, h * .84, bw * .1, '#c9793a', 5, '');",
+  "if (!CAST.mender('lesson', '#c9793a', w * .08 + bw * .62, h * .84 + bw * .098, bw * .27, 'A Mender')) mender(w * .08 + bw * .62, h * .84, bw * .1, '#c9793a', 5, '');");
 // 3c. the page lets in no pictures at all; the characters are pictures held inside the page itself (data:), so those are let in. Still nothing is asked of the internet but the fonts.
 once('the page\'s safety rule', `content="default-src 'none'; script-src 'unsafe-inline';`, `content="default-src 'none'; img-src data:; script-src 'unsafe-inline';`);
 // 4. sample only: "Look: new / old" on the Ship panel, beside Sound and Music

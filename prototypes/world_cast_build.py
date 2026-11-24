@@ -23,8 +23,12 @@ FRAMES = {   # character: [(frame name, file, figure number in the row (None: th
     'elder': [('idle', 'thimble_1_sheet.png', 0, 'white'), ('happy', 'thimble_2_feelings.png', 0, 'white'), ('worried', 'thimble_2_feelings.png', 1, 'white'),
               ('thinking', 'thimble_2_feelings.png', 2, 'white'), ('surprised', 'thimble_2_feelings.png', 3, 'white')],
     'pim': [('idle', 'pim_5_sheet.png', 0, 'green'), ('sad', 'pim_6_feelings.png', 0, 'green'), ('joy', 'pim_6_feelings.png', 1, 'green'),
-            ('secret', 'pim_6_feelings.png', 2, 'green'), ('excited', 'pim_6_feelings.png', 3, 'green'), ('spinner', 'pim_7_spinner.png', None, 'green')]}
-IDLE_H = {'elder': 300, 'pim': 260}      # the idle frame's height in the sprite, in pixels (enough for an iPad's sharp screen)
+            ('secret', 'pim_6_feelings.png', 2, 'green'), ('excited', 'pim_6_feelings.png', 3, 'green'), ('spinner', 'pim_7_spinner.png', None, 'green')],
+    'mender': [('idle', 'mender_9_sheet.png', 0, 'green'), ('happy', 'mender_10_feelings.png', 0, 'green'), ('worried', 'mender_10_feelings.png', 1, 'green'),
+               ('thinking', 'mender_10_feelings.png', 2, 'green'), ('surprised', 'mender_10_feelings.png', 3, 'green')]}
+PROPS = ['hat', 'apron', 'shawl', 'can', 'rod', 'reeds', 'basket', 'toolbox']      # picture 11, row by row
+PROP_FILE = 'mender_11_things.png'
+IDLE_H = {'elder': 300, 'pim': 260, 'mender': 260}      # the idle frame's height in the sprite, in pixels (enough for an iPad's sharp screen)
 OUTLINE = 4                               # extra outline, in sprite pixels
 
 def flood_mask(rgb, seeds, thresh):
@@ -108,6 +112,21 @@ def find_knob(fig):
     n, cx, cy, box, comp = min(pieces, key=lambda p: p[3][1])          # the highest gold piece: the knob
     return float((box[0] + box[2]) / 2), float(box[2] - box[0])
 
+def find_lid(fig):
+    """the lid's rim: the widest row between the knob and the handles (top 42%), as (middle x, rim y, half width, top of lid y)"""
+    a = fig[:, :, 3] > 100; h, w = a.shape; best = (0, 0, 0)
+    rows = [r for r in range(h) if a[r].any()]
+    top = rows[0] if rows else 0
+    for r in range(top, int(h * .42)):
+        xs = np.nonzero(a[r])[0]
+        if len(xs) and xs[-1] - xs[0] > best[0]: best = (xs[-1] - xs[0], r, (xs[0] + xs[-1]) / 2)
+    return best[2], best[1], best[0] / 2, top
+
+def copper_of(fig):
+    rgb = fig[:, :, :3].astype(float); a = fig[:, :, 3] > 200; R, G, B = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
+    m = a & (R > 150) & (R - B > 70) & (G < R * .74) & (G > R * .45)
+    return '#%02x%02x%02x' % tuple(int(v) for v in np.median(rgb[m], axis=0)) if m.any() else '#c9793a'
+
 def find_eyes(fig):
     rgb = fig[:, :, :3].astype(int); a = fig[:, :, 3]; h, w = a.shape
     white = (a > 200) & (rgb.min(axis=2) >= 240) & ((rgb.max(axis=2) - rgb.min(axis=2)) <= 14)
@@ -149,9 +168,9 @@ for ch, frames in FRAMES.items():
         fig = rgba[box[1]:box[3], box[0]:box[2]].copy()
         if bg == 'white': fig = holes_away(fig)
         kx, kw = find_knob(fig); eyes, lid = find_eyes(fig)
-        raw[name] = dict(fig=fig, kx=kx, kw=kw, eyes=eyes, lid=lid, lift=ground - box[3])
+        raw[name] = dict(fig=fig, kx=kx, kw=kw, eyes=eyes, lid=lid, lift=ground - box[3], rim=find_lid(fig), copper=copper_of(fig))
     idle = raw['idle']; base_scale = IDLE_H[ch] / idle['fig'].shape[0]
-    data[ch] = {'h': IDLE_H[ch], 'frames': {}}
+    data[ch] = {'h': IDLE_H[ch], 'base': idle['copper'], 'frames': {}}
     for name, r in raw.items():
         s = base_scale * idle['kw'] / r['kw'] if r['kw'] > 4 else base_scale
         s = max(base_scale * .3, min(base_scale * 2, s))         # a knob read wrongly must not blow a frame up (the spinner picture is drawn more than twice as large)
@@ -160,7 +179,8 @@ for ch, frames in FRAMES.items():
         ax = r['kx'] * s + pad; ay = im.height - pad + r['lift'] * s     # the feet line, in sprite pixels
         eyes = [[round(e[0] * s + pad, 1), round(e[1] * s + pad, 1), round(e[2] * s, 1), round(e[3] * s, 1)] for e in r['eyes']]
         src, n = png64(im); total += n
-        data[ch]['frames'][name] = {'src': src, 'w': im.width, 'h': im.height, 'ax': round(ax, 1), 'ay': round(ay, 1), 'eyes': eyes, 'lid': r['lid'] or '#c9793a'}
+        rc = r['rim']; data[ch]['frames'][name] = {'src': src, 'w': im.width, 'h': im.height, 'ax': round(ax, 1), 'ay': round(ay, 1), 'eyes': eyes, 'lid': r['lid'] or '#c9793a',
+            'rim': [round(rc[0] * s + pad, 1), round(rc[1] * s + pad, 1), round(rc[2] * s, 1), round(rc[3] * s + pad, 1)]}
         print(f'{ch:6} {name:9} {im.width}x{im.height}  knob {r["kw"]:.0f}px  scale {s:.3f}  eyes {len(eyes)}  lift {r["lift"]}  {n // 1024} KB')
         if CHECK:
             t = im.copy(); d = ImageDraw.Draw(t)
@@ -168,14 +188,40 @@ for ch, frames in FRAMES.items():
             d.line([ax - 12, ay, ax + 12, ay], fill=(0, 120, 255), width=3); d.line([ax, ay - 12, ax, ay], fill=(0, 120, 255), width=3)
             bgc = Image.new('RGBA', t.size, (96, 170, 92, 255)); bgc.alpha_composite(t); check_tiles.append((f'{ch} {name}', bgc))
 
+def pieces2d(rgba, step=8):
+    """separate objects on one picture, row by row: found on a coarse grid, then cut at full size"""
+    al = rgba[:, :, 3] > 60; h, w = al.shape; small = al[:h - h % step, :w - w % step].reshape(h // step, step, w // step, step).any(axis=(1, 3))
+    small = np.array(Image.fromarray((small * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3))) > 0      # join thin parts (a fishing line)
+    out = []
+    for n, cx, cy, box, comp in white_components(small):
+        if n < 20: continue
+        x0, y0, x1, y1 = box; out.append((x0 * step, y0 * step, min(w, (x1 + 1) * step), min(h, (y1 + 1) * step)))
+    rows = sorted(out, key=lambda b: b[1]); mid = (rows[0][1] + rows[-1][3]) / 2
+    return sorted([b for b in out if (b[1] + b[3]) / 2 < mid], key=lambda b: b[0]) + sorted([b for b in out if (b[1] + b[3]) / 2 >= mid], key=lambda b: b[0])
+
+props = {}
+rgba = cut(os.path.join(ART, PROP_FILE), 'green'); boxes = pieces2d(rgba)
+print('things found:', len(boxes))
+for name, b in zip(PROPS, boxes):
+    piece = rgba[b[1]:b[3], b[0]:b[2]].copy(); al = piece[:, :, 3] > 40; ys, xs = np.nonzero(al)
+    piece = piece[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+    im = Image.fromarray(piece, 'RGBA'); s = 200 / max(im.width, im.height); im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
+    im, pad = outline(im, 3); src, n = png64(im); total += n
+    props[name] = {'src': src, 'w': im.width, 'h': im.height}
+    print(f'thing  {name:8} {im.width}x{im.height}  {n // 1024} KB')
+    if CHECK:
+        bgc = Image.new('RGBA', im.size, (96, 170, 92, 255)); bgc.alpha_composite(im); check_tiles.append(('thing ' + name, bgc))
+
 with open(OUT, 'w') as fh:
     fh.write('/* Elder Thimble and Pim, cut out from Marc\'s Gemini pictures by prototypes/world_cast_build.py. Do not edit by hand. [Proposal, 24 November 2026] */\n')
     fh.write('const CAST_SPRITES = ' + json.dumps(data, separators=(',', ':')) + ';\n')
+    fh.write('const CAST_PROPS = ' + json.dumps(props, separators=(',', ':')) + ';\n')
 print(f'wrote {os.path.relpath(OUT)}: {total // 1024} KB of pictures')
-if CHECK:
-    W = sum(t.width for _, t in check_tiles[:6]) + 70; H = max(t.height for _, t in check_tiles) * 2 + 60
-    sheet = Image.new('RGB', (max(W, 1200), H), 'white'); x = y = 10; row = 0
-    for i, (n, t) in enumerate(check_tiles):
-        if i == 5 and row == 0: x, y, row = 10, H // 2, 1
-        sheet.paste(t.convert('RGB'), (x, y + 16)); ImageDraw.Draw(sheet).text((x, y), n, fill=(0, 0, 0)); x += t.width + 12
+if CHECK:      # every frame and thing on one sheet, wrapped into rows
+    MAXW, x, y, rowh, places = 2000, 10, 10, 0, []
+    for n, t in check_tiles:
+        if x + t.width > MAXW: x, y, rowh = 10, y + rowh + 26, 0
+        places.append((n, t, x, y)); x += t.width + 12; rowh = max(rowh, t.height)
+    sheet = Image.new('RGB', (MAXW, y + rowh + 40), 'white')
+    for n, t, x, y in places: sheet.paste(t.convert('RGB'), (x, y + 16)); ImageDraw.Draw(sheet).text((x, y), n, fill=(0, 0, 0))
     sheet.save(os.path.join(CHECK, 'cast_check.png')); print('check picture:', os.path.join(CHECK, 'cast_check.png'))
