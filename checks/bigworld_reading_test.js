@@ -1,11 +1,11 @@
-// The big world's reading card: in the middle of the screen, higher up; OK sleeps 4 to 5 seconds.   [Marc, 24 November:
+// The big world's reading card: in the middle of the screen, higher up; OK sleeps as long as in the main game (up to 3.5 seconds).   [Marc, 24 November:
 // "The students don't realize they need to read the text boxes. They must be in the middle of the screen higher up. And they must have that 4-5 second
 //  timer that the main game has. To force them to read and not just click click click"]
 // Page: prototypes/big_world.html (the real wait: no fastread here).
 //
 // On three screens (iPad sideways, iPad upright, phone), with touch, in a fresh game:
 //   1  the first story card: in the middle of the screen (left to right), its top in the upper 30%, all on the screen; the rest of the screen dimmed
-//   2  OK sleeps ("Read…") and wakes between 4.0 and 5.0 seconds (5 for a long card), then says Next or OK
+//   2  OK sleeps ("Read…") for the main game's time: half a second and 0.16 seconds a word, at most 3.5 seconds; then says Next or OK
 //   3  while it sleeps: a tap on the dimmed picture shakes the card and does nothing else; Enter does nothing; "Read to me" can be tapped
 //   4  Next brings the next page, asleep again; the last OK takes the card and the dimming away
 //   5  while the picture is moving (as when the fleet sails), new words wait, and come when it stops
@@ -37,9 +37,9 @@ const bad = [], say = (ok, what) => { if (!ok) { bad.push(what); console.log('  
     await p.touchscreen.tap(Math.min(60, w / 4), h - 30); await p.waitForTimeout(60); s = await st();
     say(s.nudge && s.i === 0 && s.shown, `${name}: a tap on the dimmed screen did not just shake the card`);
     await p.keyboard.press('Enter'); await p.waitForTimeout(60); s = await st(); say(s.i === 0, `${name}: Enter moved on while OK slept`);
-    const words = s.page.trim().split(/\s+/).length, want = 4000 + Math.max(0, Math.min(1, (words - 10) / 14)) * 1000;
+    const words = s.page.trim().split(/\s+/).length, want = Math.min(3500, 500 + words * 160);      /* the main game's readPage */
     await p.waitForFunction(() => !document.getElementById('readok').disabled, null, { timeout: 8000 }); const woke = Date.now() - t0;
-    say(woke >= 3900 && woke <= 5400 && Math.abs(woke - want) <= 450, `${name}: OK woke after ${woke} ms for ${words} words (it should be about ${Math.round(want)})`);
+    say(woke >= 1000 && woke <= 3900 && Math.abs(woke - want) <= 450, `${name}: OK woke after ${woke} ms for ${words} words (it should be about ${Math.round(want)})`);
     s = await st(); say(/Next|OK/.test(s.lab), `${name}: awake, the button says "${s.lab}"`);
     // 4. Next: asleep again; then read the rest, the way a child must
     await p.locator('#readok').tap(); await p.waitForTimeout(80); s = await st(); say(s.i === 1 && s.asleep, `${name}: Next did not bring page 2 with OK asleep again`);
@@ -60,5 +60,5 @@ const bad = [], say = (ok, what) => { if (!ok) { bad.push(what); console.log('  
     console.log(`  ${name}: card at ${s.card.slice(0, 4).map(Math.round).join(', ')}; OK woke after ${woke} ms for ${words} words`);
     await ctx.close(); }
   await b.close();
-  console.log(bad.length ? `\nFAILED (${bad.length})` : '\nok: on three screens the card is in the middle, high up, over a dimmed screen; OK sleeps 4 to 5 seconds; a tap meanwhile only shakes it; held words wait for a moving picture');
+  console.log(bad.length ? `\nFAILED (${bad.length})` : '\nok: on three screens the card is in the middle, high up, over a dimmed screen; OK sleeps as long as in the main game; a tap meanwhile only shakes it; held words wait for a moving picture');
   process.exit(bad.length ? 1 : 0); })();
