@@ -107,6 +107,13 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 - **Things they carry stand on the ground beside them,** so they stay put when the face and hands change. Worn things sit on the lid. The apron was not used: it would cover their hands.
 - **Left as before:** the Mender with big ears has no big ears (a story question first); the Rillfolk (another people) and the well's Mender keep the game's drawing.
 
+## 3c. The start, and talking on the map [Source: Marc, 24 November; built in the sample]
+
+- **Land on the meadow first.** The story's last page ("You land in a green meadow…") shows the meadow: the ship, the cadet, and a Mender with his toolbox beside them. His welcome ("Welcome to Planet Algora…", "Before you go anywhere, let me show you how we work.") is said there. Then the practice machine with "We use machines like this one…", and the lesson as before. No new words. (`prototypes/world_opening_kit.js`)
+- **"Skip the start"**, small, in the corner of the reading card: the story, the welcome and the first lesson at once. It shows only once this iPad has finished the start, so a child's first time keeps the story and the worked example; or when the link ends in #skip (for the teacher). After a skip, the Mender's last line of the lesson says where to go (Elder Thimble, in the village), and the skip is written in the mission report.
+- **A Mender talking on the map grows about 1.35 times**, smoothly, and back when the words end, so the face and the hop can be seen. [Proposal, after Marc: "right now they're not really moving in any way"]
+- **Waiting on Marc:** a short zoom to the speaker in the side scenes (the village, the first lesson).
+
 ## 4. Tests
 
 - `checks/world_look_check.js`: **passes.** Now also: both characters' pictures load and draw, and three lines get the right face.

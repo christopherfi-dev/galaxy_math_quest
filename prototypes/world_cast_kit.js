@@ -85,7 +85,9 @@ const CAST = (() => {
       cx.fillStyle = col; cx.beginPath(); cx.ellipse(ox, oy, erx * 1.12, ery * 1.12, 0, 0, 7); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = Math.max(2.5, ery * .2); cx.lineCap = 'round'; cx.beginPath(); cx.moveTo(ox - erx * .95, oy + ery * .1); cx.quadraticCurveTo(ox, oy + ery * .55, ox + erx * .95, oy + ery * .1); cx.stroke(); cx.lineCap = 'butt'; }
     cx.restore(); return true; }
   /* on the walking map: a Mender of the crowd stands on its square (the Rillfolk are another people, and keep the game's drawing) */
-  function crowd(t, X, Y, ts) { if (t.folk === 'rill') return false; return mender(t.id, t.col || '#c9793a', X, Y + ts * .34, ts * .82, t.name); }
+  const grows = {};      /* a Mender talking on the map grows a little, so the face and the hop can be seen [Proposal, after Marc: "right now they're not really moving in any way"] */
+  function crowd(t, X, Y, ts) { if (t.folk === 'rill') return false; const talk = reading() && READ.who.toLowerCase() === String(t.name).toLowerCase(), g = grows[t.id] = (grows[t.id] || 1) + ((talk ? 1.35 : 1) - (grows[t.id] || 1)) * .12;
+    return mender(t.id, t.col || '#c9793a', X, Y + ts * .34, ts * .82 * g, t.name); }
   return { draw, faceFor, mender, crowd, crowdFace, test: { blinkNow: c => { st[c].blinkAt = tNow; } } };      /* test: for checks only */
 })();
 /*WORLD-CAST-END*/
