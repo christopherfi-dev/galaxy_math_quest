@@ -152,6 +152,10 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 
 - **With Elder Thimble and Pim** (24 November): `bigworld_reading_test.js` **passes** (59 s); `bigworld_play_test.js` **passes** at all three sizes, no faults (1074 s).
 - **With the crowd as well** (24 November): `bigworld_reading_test.js` **passes** (60 s); `bigworld_signs_test.js` **passes** (48 walks); `bigworld_play_test.js` **passes** at all three sizes, no faults (1073 s).
-- **With the new start** (the meadow welcome, Skip the start): played by a script of mine at iPad and phone sizes, no errors; the big world's reading and play tests running.
+- **With the new start** (the meadow welcome, Skip the start), 24 November:
+  - `bigworld_reading_test.js` **passes**.
+  - `bigworld_play_test.js`: **3 faults, one check, by design:** "no lesson at the ship after the story", at each size. That check expects the practice machine straight after the story; now the Mender's welcome on the meadow comes first. Everything after it passes at all three sizes (the lesson, the machines, the bridge, the old stones, closing and opening again).
+  - `checks/world_opening_test.js` (new, mine) **passes** at all three sizes: it checks the new start in that check's place (the story; the welcome on the meadow, with no task and no walking away; then the practice machine and 3 making 5; Skip the start only once seen or with #skip, small inside the card; after a skip the cadet can walk, the Mender says where to go, and the report says it was skipped).
+  - **If Marc takes the new start into the real big world,** the big world thread changes that one check to: after the story, two pages from "A Mender" on the meadow with no task open; then the lesson.
 - `checks/world_look_check.js` **passes** with the crowd in.
 - Pictures: `content/art_test_2026-11-24/cast_in_village.jpg` (the elder and Pim) and `content/art_test_2026-11-24/crowd_in_game.jpg` (the crowd).
