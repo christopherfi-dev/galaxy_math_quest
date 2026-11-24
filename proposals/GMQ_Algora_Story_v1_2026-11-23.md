@@ -61,7 +61,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 | The Rillfolk | the Reach: Stilt Town, Reed Town, Mud Town | river rice, fish, roof reed, mats | They sing their counts [Built: they sing]. Houses on legs [Built]. Their tally keepers count on sticks. On Market day their children play Shells. |
 | The Furrows | the Terrace Hills | beans, stone | They hire out their carts. They lay a white stone on the wall for each load. Their tally keeper sells the oil. |
 | The Twinseers | the Lake of Two Suns | nothing | They watch the suns. At New Year they say how strong the gold sun is, and how high the water will come. |
-| The Eights | the Pattern Woods, by their ship | wood | Guests. The ship's crew. No plots and no store. |
+| The Eights | the Pattern Woods, by their ship | nothing | Guests. The ship's crew. No plots and no store. They stay by their ship (the peoples note, `proposals/GMQ_Algora_Story_Peoples_v1_2026-11-24.md`). |
 
 - **Each town has a tally keeper,** a man or a woman. **The tally keeper is the town's speaker** [Built: "the speaker of Stilt Town"]. A child talks to "the speaker", so never meets the harbour keeper or the orchard keeper [Built] by mistake. At the lake the cadet speaks only with their own town's speaker and the seller. This note says "the keeper" and "she" for short.
 - **At the lake, every count is a stick.** At home each people counts its own way: pips, songs, white stones. At the Lake Market all five read a tally stick.
@@ -76,7 +76,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 | 4 | Fruit [Built: the orchard] | tree | count day | jars | eating |
 | 5 | Roof reed | plot | count day | bundles | new roofs, before the rain. Roofs rot each wet season. |
 | 6 | Stone [Source: "how much stone do we need in the 12th month", 22 November, in `INFO_FROM_MARC.md`] | cart | count day | blocks | the flood wall. The high water rolls it down every year. |
-| 7 | Wood | cutter | count day | logs | cooking fires, by day. The Eights cut it. No decision here uses it yet. |
+| 7 | Wood | cutter | count day | logs | cooking fires, by day. Cut at the edge of the Woods. No decision here uses it yet. |
 | 8 | Reed mats [Built: the net weaver; the reed cutter] | weaver | count day | mats | the Furrows' oil presses. Nuts are pressed between green mats, and a mat presses for one year: this year's mats press next year's oil. The Furrows keep them green in the hill pools. A dry mat cracks in the press. |
 | 9 | Lamp oil | press | count day | pots | lamps, in the white months. One pot fills one lamp. The Furrows press it from hill nuts. |
 
@@ -214,7 +214,7 @@ The five peoples, their names and their regions are [Built]. You have confirmed 
 - **Each people has a custom of its own** (the table in section 1), so they are not one people in five costumes. This is a start, not enough. Homes, food and play are still to write.
 - **Each town has one tally keeper.** The keeper makes the count day's cut, and can tell the cadet what the town needs, from the Twinseers' words and the old rows. No keeper has worked out what will come in.
 - **The Twinseers watch the suns.** At New Year they say two things: how strong the gold sun is this year, and how high the water will come. They say "stronger" or "weaker", never a number. So a plot brings in a different amount each year, the river gives more or less reed, and the wall needs a different height. That is why an old row on a wall is never this year's answer.
-- **The Eights are the ship's crew.** Guests. Extra mouths in every town's need. They cut wood for their keep. Their ship did their counting, as the Year Machine did here, and the ship is dark. They cannot carry a row on either. They do not know a plot from a pond, and they ask the cadet too.
+- **The Eights are the ship's crew.** Guests. Extra mouths in every town's need: the towns feed their guests. They stay by their ship. Their ship did their counting, as the Year Machine did here, and the ship is dark. They cannot carry a row on either. They do not know a plot from a pond, and they ask the cadet too.
 
 **The same need in many places:** the first kind is asked in the three Rillfolk towns, which weave. The other two kinds are parked; the Mender village and the Furrows' terraces wait for them. A kind is asked again, with new numbers, until it comes out right. Whether three towns are enough is the big world thread's to judge.
 

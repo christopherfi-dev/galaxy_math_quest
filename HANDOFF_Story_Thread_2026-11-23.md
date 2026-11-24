@@ -97,6 +97,11 @@ Every one of these cost a review round.
 - **The second and third kinds are still parked.** Section 14 has the offers.
 - **Marc decided on 24 November** (the note's 16j): the Year Machine, the step-down year, no month length or ages said, Shells keeps its name, Elder Rivet is renamed (Elder Thimble proposed, his to confirm). **Every other decision goes on the note's pick, for the trial only.** Nothing is confirmed for good.
 
+### Algora's five peoples (24 November)
+
+- **The note:** `proposals/GMQ_Algora_Story_Peoples_v1_2026-11-24.md`. One history for four peoples (each handed a skill to a Makers' machine and kept a piece of it); the Eights are guests, outside it. Four finds for the big world thread's empty places: a painted shutter (D), two pairs of footprints (E), a sheet of ship's paper (G), white pebbles (H). One teller each.
+- **One review:** "not yet" (one blocker: the paper gave away why the Gate broke). Rewritten; the rewrite is not re-read. **Marc accepted its four decisions on 24 November**, each with its reason (section 8).
+
 ### What may come next
 
 - **More from the big world thread,** through Marc: likely small story lines for version 5, then the parked kinds.
