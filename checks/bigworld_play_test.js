@@ -54,6 +54,10 @@ const st = p => p.evaluate(() => { const b = window.__bw, S = b.S(); return { S:
 const idle = p => p.waitForFunction(() => window.__bw.idle(), null, { timeout: 30000 }).catch(async e => { const d = await p.evaluate(() => ({ route: P.route.length, at: [Math.round(P.px), Math.round(P.py)], to: P.route.slice(-1)[0], scto: SC.to, ma: MA.phase, fade: FADE, pic: PIC && PIC.title, task: TASK && TASK.kind, reading: READ.q.length, held: READ.held, big: BIG, place: S.at })).catch(() => ({}));
   throw new Error('the game was not idle after 30 seconds: ' + JSON.stringify(d)); });      /* say why, so a stall can be found */
 const shot = async (p, name) => { if (SHOTS) { await p.waitForTimeout(120); await p.screenshot({ path: path.join(SHOTS, name + '.png') }); } };
+// the first lesson at the ship, played the plain way (the first child's play checks each step; a second child just does it)
+async function doLesson(p) { await readAll(p); await p.waitForFunction(() => window.__bw.S().lesson && window.__bw.S().lesson.step >= 1, null, { timeout: 15000 }); await readAll(p); await press(p, 'write'); await readAll(p);
+  await pad(p, 6); await press(p, 'pull'); await p.waitForTimeout(60); await idle(p); await p.waitForFunction(() => window.__bw.S().lesson.step === 3, null, { timeout: 15000 }); await press(p, 'write'); await readAll(p);
+  await p.click('#task [data-sign="plus"]'); await pad(p, 2); await p.waitForTimeout(80); await readAll(p); }
 // read every page of a reading card, the way a child does: OK, OK, OK. Returns the pages.
 async function readAll(p, max) { const got = []; for (let i = 0; i < (max || 30); i++) { const s = await st(p); if (!s.reading) break; got.push(s.page); await p.click('#readok'); await p.waitForTimeout(40); } return got; }
 // tap a square of the map, if it is on the screen; otherwise tap toward it
@@ -103,7 +107,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
 
     // 1. the story first
     say(s.reading && s.pages === 6, `${name}: the story at the start has ${s.pages} pages, not 6`); await layout(p, `${name}, the first page`); await shot(p, tag + '01_story');
-    const intro = await readAll(p); say(intro.length === 6 && /broken/.test(intro[0]) && /S\.S\. Infinity/.test(intro[2]) && /mission/i.test(intro[4]), `${name}: the story pages are not as written`); say(!intro.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the story`);
+    const intro = await readAll(p, 6); say(intro.length === 6 && /broken/.test(intro[0]) && /S\.S\. Infinity/.test(intro[2]) && /mission/i.test(intro[4]), `${name}: the story pages are not as written`); say(!intro.some(t => /\d\s*[×+−÷]\s*\d/.test(t)), `${name}: there is a sum in the story`);
     // 1a. the first lesson
     let ls = await st(p); say(ls.task && ls.task.kind === 'lesson' && ls.reading, `${name}: no lesson at the ship after the story`);
     await readAll(p); await p.waitForFunction(() => window.__bw.S().lesson && window.__bw.S().lesson.step === 1, null, { timeout: 15000 });
@@ -113,7 +117,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
     await pad(p, 6); await press(p, 'pull'); await p.waitForTimeout(60); await idle(p); await p.waitForTimeout(80); ls = await st(p); say(/6 went in\. 8 came out/.test(ls.task.msg), `${name}: 6 did not make 8 in the practice machine: ${ls.task.msg}`); await shot(p, tag + '02a_lesson'); await layout(p, `${name}, the first lesson`);
     await press(p, 'write'); lp = await readAll(p); say(/\+ 2/.test(lp.join(' ')) && /3 makes 5\. 6 makes 8/.test(lp.join(' ')), `${name}: the Mender did not read the notes and name the pattern: ${lp.join(' | ')}`);
     await p.click('#task [data-sign="times"]'); ls = await st(p); say(/sign is \+/.test(ls.task.msg), `${name}: a wrong sign was not turned back`);
-    await p.click('#task [data-sign="plus"]'); await pad(p, 5); ls = await st(p); say(/How many more/.test(ls.task.msg), `${name}: a wrong number was not turned back`);
+    await p.click('#task [data-sign="plus"]'); await pad(p, 5); await p.waitForTimeout(80); ls = await st(p); say(/How many more/.test(ls.task.msg), `${name}: a wrong number was not turned back`);
     await pad(p, 2); await p.waitForTimeout(80); await shot(p, tag + '02a_lesson_labelled'); lp = await readAll(p); say(/Elder Rivet/.test(lp.join(' ')), `${name}: the lesson does not send the cadet to the elder`);
     ls = await st(p); say(ls.S.flags.lessonDone && !ls.task && ls.S.lesson.notes.length === 2, `${name}: the lesson did not end with two notes`);
     s = await st(p); say(!s.reading && s.x === 13 && s.y === 82 && s.place === 'Mender Meadow', `${name}: after the story the cadet is not at the ship in the Mender Meadow`); await layout(p, `${name}, the map`); await shot(p, tag + '02_map');
@@ -260,7 +264,7 @@ async function layout(p, where) { const L = await p.evaluate(() => { const r = e
   // 13, 14. a second child: the old stones only
   console.log('--- the old stones, iPad sideways and phone');
   for (const [w, h, name, seed] of [[1180, 745, 'stones, iPad sideways', 101], [390, 760, 'stones, phone', 202]].filter(q => q[2].toLowerCase().indexOf(ONLY.toLowerCase()) >= 0)) { played++; const p = await open(b, w, h, seed); const tag = SHOTS ? `${w}x${h}_` : '';
-    await readAll(p); await useThing(p, 'cutter'); let pg0 = await readAll(p); say(/reeds/.test(pg0.join(' ')), `${name}: the reed cutter says nothing about reeds`); await useThing(p, 'post'); let s = await st(p); say(s.reading && s.pic === 'The old post', `${name}: the finished example (the old rope) did not come first`); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '22_stones_example'); let pg = await readAll(p); say(/go down/.test(pg.join(' ')), `${name}: the example does not say a pattern can go down`);
+    await readAll(p, 6); await doLesson(p); await useThing(p, 'cutter'); let pg0 = await readAll(p); say(/reeds/.test(pg0.join(' ')), `${name}: the reed cutter says nothing about reeds`); await useThing(p, 'post'); let s = await st(p); say(s.reading && s.pic === 'The old post', `${name}: the finished example (the old rope) did not come first`); await p.click('#readok'); await p.click('#readok'); await shot(p, tag + '22_stones_example'); let pg = await readAll(p); say(/go down/.test(pg.join(' ')), `${name}: the example does not say a pattern can go down`);
     s = await st(p); say(s.task && s.task.kind === 'stones', `${name}: the stones did not open`); await layout(p, name); await shot(p, tag + '23_stones');
     const rounds = await p.evaluate(seed => [0, 1, 2].map(r => window.__bw.stones(seed, r)), seed);
     say(s.tasktext.indexOf(rounds[0].shown.join(', ')) >= 0, `${name}: the post's numbers are not on the desk`);
