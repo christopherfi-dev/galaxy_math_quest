@@ -28,11 +28,13 @@
 2. In the middle of the screen, high up, with a timer. It blocked the scenes. [Marc: "it's blocking some of these scenes"]
 3. Beside the picture (now). Children do not notice it. [Marc, now]
 
-**What you said works:** the station's card [Marc, 24 November: "This other space station works. This thing pops up and they can't do anything is clear."]. It is also the closest thing in the game to Prodigy's box: inside the picture, at the bottom, wide, with a clear button.
+**Corrected, 24 November.** I first wrote that you said the station's card works. You corrected me: [Source: Marc, 24 November: "No. I'm not saying that works. I'm saying the … Prodigy Math text box works. I'm not sure if it's the size or the border around the box or the finger pointing up it or something."] So the model is Prodigy's box, and nobody yet knows which part of it does the work.
+
+**The card lab** (`prototypes/card_lab.html`, private page https://claude.ai/artifact/DtkznMV9HeWKUENxbo8KRT): the big world's real first lesson, with every part of the card on its own switch: where it sits, size, border, a pointing finger at the button, the button, darkening the picture, a ring round the speaker, how it arrives, and the wait. Try one switch at a time and see which one pulls the eye. "Today's card" and "Everything on" are quick settings. [Proposal: show the class two or three versions and watch where their eyes go first.]
 
 ---
 
-## 2. Options [Proposal]
+## 2. Options [Proposal] (written before the correction above; test them in the lab first)
 
 ### A. The station's card, in the big world too (recommended)
 - In the picture, at the bottom, wide, over a darkened band, as on the station. The same look, the same "Read…" bar, the same wait.
