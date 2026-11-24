@@ -37,7 +37,7 @@ All of it is paint. **The squares underneath are the same.**
 - **Paths** have a worn edge and a few marks.
 - **Where two lands meet** (the Meadow and the Pattern Woods, the Meadow and the Reach), the colour changes softly over one square, not along a ruler line.
 - **Trees:** each one a little different in size, shape and colour, with one outline round the whole tree and a highlight from the suns. Orchard trees stay in their rows, because an orchard is planted in rows.
-- **A button on the top bar, "New look" / "Old look",** switches between the two at the same spot. It is for comparing. It is in the sample only.
+- **"Look: new" / "Look: old" on the Ship panel** (beside Sound and Music) switches between the two at the same spot. It is for comparing, and in the sample only. (It was first on the top bar. On a phone that made the bar taller, and the play test's tap on the ground hit it. A child's tap would too. So it moved.)
 
 **What did not change:**
 - where a child can walk, what is solid, what can be tapped
@@ -53,10 +53,10 @@ All of it is paint. **The squares underneath are the same.**
 
 ## 3. How to try it
 
-- **The sample, to play:** the private page linked in my message (Claude artifact). It is the whole big world, with the new look.
+- **The sample, to play:** https://claude.ai/artifact/SbDUmiUkCQAcX2ZXG5gPx1 (private). It is the whole big world, with the new look.
 - **In this folder:** `prototypes/world_look_sample.html`.
 - **It has its own save.** It never touches a child's big world game.
-- **Tap "New look"** on the top bar to see the old look at the same spot. Tap again to come back.
+- **Tap Ship, then "Look: new"** to see the old look at the same spot. Tap again to come back.
 
 ---
 
@@ -81,9 +81,10 @@ Measured in a test browser on a server, not on an iPad. [Proposal: these numbers
 
 ## 5. Tests
 
-Run on the sample, 24 November (see section 9 for results):
-- `checks/bigworld_play_test.js prototypes/world_look_sample.html`: the whole big world played by taps and typing, on three screens
-- `checks/bigworld_signs_test.js`, `bigworld_reading_test.js`, `bigworld_boxes_test.js`, `bigworld_wander_check.js`, each on the sample
+Run on the sample, 24 November. **All pass.**
+- `checks/bigworld_play_test.js prototypes/world_look_sample.html`: the whole big world played by taps and typing, on three screens. **Passes** (18 minutes). The first run failed on the phone: the "New look" button on the top bar took a tap meant for the ground. Fixed by moving it to the Ship panel.
+- `checks/bigworld_signs_test.js`: **passes** (48 walks). `bigworld_reading_test.js`: **passes**. `bigworld_boxes_test.js`: **passes**. `bigworld_wander_check.js`: a measure, not a pass or fail; it ran.
+- `checks/world_look_check.js` (new): all 12,288 squares painted and read; water looks like water, and nothing else does; the look switch leaves walking alone; the top bar is the big world's own. **Passes.** Its first run found a bridge square in the Reach drawn as plain water, with the pier post standing in the river. Fixed.
 
 Not run: the game's own tests. The game was not touched.
 
@@ -132,9 +133,7 @@ Then run the big world's tests again.
 
 ---
 
-## 9. Results and what I did not check
-
-**Results:** see the end of this section (filled in when the tests finished).
+## 9. What I did not check
 
 **Not checked:**
 - a real iPad, or Safari. All pictures and times come from Chromium on a server.
