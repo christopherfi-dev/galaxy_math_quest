@@ -28,12 +28,13 @@ body.wide #desk { width: clamp(300px, 32vw, 400px); border-left: 2px solid var(-
 body.tall #desk { height: 46%; border-top: 2px solid var(--gold); }
 #toy { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; -webkit-overflow-scrolling: touch; }
 #toy p, #toy h3 { margin: 0; }
+#toy > * { flex: none; }      /* as in the game's .msg: a squeezed item spilled its second line under the number pad */
 .eyebrow { font-family: var(--display); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 #toy h3 { font-family: var(--display); font-size: 1.05rem; color: var(--gold); }
 .story { font-size: 1.08rem; line-height: 1.35; }
 .q { font-weight: 700; font-size: 1.08rem; line-height: 1.3; }
-.note { font-size: .9rem; color: var(--muted); line-height: 1.3; }
-.mw { font-size: .9rem; color: var(--muted); border-left: 3px solid var(--gold); padding-left: 8px; }
+.note { font-size: .95rem; color: #c4d0e2; line-height: 1.3; }
+.mw { font-size: 1rem; color: var(--ink); border-left: 3px solid var(--gold); padding-left: 8px; }
 .field { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .field label { display: flex; flex-direction: column; gap: 2px; font-size: .85rem; color: var(--muted); }
 .field input { width: 5.6em; font: inherit; font-size: 1.3rem; font-weight: 700; text-align: center; padding: 6px; border: 2px solid var(--ink); border-radius: 10px; background: #04060e; color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -45,7 +46,7 @@ body.tall #desk { height: 46%; border-top: 2px solid var(--gold); }
 .chips .btn { min-width: 3.4em; padding: 7px 10px; }
 .chips .btn.on { background: var(--gold); color: #2b1a00; border-color: var(--gold); }
 .msg { min-height: 1.3em; font-weight: 700; }
-.msg.bad { color: var(--bad); } .msg.good { color: var(--good); }
+.msg.bad { color: var(--bad); } .msg.good { color: var(--good); } .msg.warn { color: #ffd98a; }
 .buy { display: flex; flex-direction: column; gap: 4px; border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 10px; }
 .buy b { font-family: var(--display); }
 table.log { border-collapse: collapse; font-size: .9rem; } table.log th, table.log td { text-align: left; padding: 3px 8px 3px 0; border-bottom: 1px solid var(--line); vertical-align: top; } table.log th { color: var(--muted); font-weight: 400; }
@@ -56,6 +57,7 @@ table.log { border-collapse: collapse; font-size: .9rem; } table.log th, table.l
 #pad button { font-family: var(--display); font-weight: 700; font-size: 1.15rem; height: 42px; border-radius: 9px; border: 1.5px solid var(--line); background: #132035; color: var(--ink); }
 #pad button.ok { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 body.tall #pad button { height: 38px; }
+@media (min-width: 600px) { body.tall #desk { height: 40%; } }
 @media (max-width: 560px) { body.tall #desk { height: 51%; } #foot { padding: 2px 12px 4px; font-size: .7rem; } }
 @media (max-width: 560px), (max-height: 560px) { #toy { padding: 8px 12px; gap: 5px; } .story { font-size: 1rem; } .q { font-size: 1rem; } .note { font-size: .84rem; } .btn { padding: 7px 11px; font-size: .95rem; } .field input { font-size: 1.15rem; width: 5em; } #pad button { height: 36px; } }
 </style>
@@ -77,7 +79,8 @@ body.tall #pad button { height: 38px; }
               say(text)  beep(freq, secs, type)  card()  give(item)  has(item)  save()  toy(html)  closeToy()
               and, read each frame: cx (the picture's 2D context), vw, vh (its size in CSS pixels), tNow (seconds). Give them as getters.
      state  one plain object the game keeps for the child (S.market). Start it as {} or { seed: S.seed }; the piece fills it in and calls host.save().
-            Optional: state.lastSeason = the gems of an old version 97 season; the ship's log shows it.
+            Optional: state.lastSeason = the gems of an old version 97 season. [pick] It is kept for the teacher; the ship's log says only
+            that there was an older season, because a child cannot place 2,000 gems beside a ship that carries 999.
      done   called once, when the child leaves: done('leave') or done('finished').
    While it is open, the game calls GMQTrade.frame(dt) on every frame (in place of drawTrade) and GMQTrade.tap(x, y) on a tap on the picture
    (x, y in CSS pixels, in place of tradeTap). GMQTrade.isOpen() says whether it is open.
@@ -95,11 +98,14 @@ var GMQTrade = (function () {
     var DIST = { A: 12, B: 26, C: 33, D: 18, E: 44, F: 5, G: 22, H: 25, I: 45, J: 17, K: 37, L: 53, M: 28, N: 66, O: 52, P: 71, Q: 48, R: 59, S: 41, T: 64 };
     var ORDER = ['F', 'S', 'J', 'I', 'G', 'O', 'B', 'R', 'C', 'N', 'P', 'K', 'T', 'M', 'L', 'H', 'Q', 'D', 'E', 'A'];
     var LY = {}; Object.keys(DIST).forEach(function (n) { LY[n] = Math.floor((DIST[n] + 5) / 10) * 10; });
-    var K = { gift: 100, crates: 3, perLy: 2, full: 600, low: 60, stone: 'R', stonePrice: 300, supplies: 500, offers: 5, margin: 20, tries: 8000 };
+    var K = { gift: 100, crates: 3, perLy: 2, full: 600, low: 60, stone: 'R', stonePrice: 300, supplies: 500, offers: 5, margin: 20, tries: 8000, apart: .16 };
     var WANTS = ['fruit', 'glass', 'rope', 'lamps', 'seeds', 'cloth', 'bells', 'paint'];
     function rng(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
     function hash(a, b, c) { var h = Math.imul((a >>> 0) ^ 0x9E3779B9, 0x85EBCA6B); h = Math.imul(h ^ (b + 0x27D4EB2F), 0xC2B2AE35); h = Math.imul(h ^ (c + 0x165667B1), 0x27D4EB2F); return (h ^ h >>> 16) >>> 0; }
     function fuelOf(n) { return K.perLy * LY[n]; }
+    /* where a planet sits on the map, as a share of its radius (the same fan as the game's trPos), and whether two sit far enough apart */
+    function npos(n) { var a = (-78 + ORDER.indexOf(n) * (156 / 19)) * Math.PI / 180, r = .2 + .8 * LY[n] / 71; return [Math.sin(a) * r, Math.cos(a) * r]; }
+    function apart(a, b) { var p = npos(a), q = npos(b); return Math.hypot(p[0] - q[0], p[1] - q[1]) >= K.apart; }
     /* every choice a child can make on a board: one, two or three offers */
     function choices(offers, B) { var out = [], m = offers.length;
       for (var mask = 1; mask < (1 << m); mask++) { var pick = [], fuel = 0, pay = 0;
@@ -119,12 +125,13 @@ var GMQTrade = (function () {
         netGreedy: greedy(offers, B, offers.map(function (o, i) { return i; }).sort(function (a, b) { return (offers[b].pay - fuelOf(offers[b].n)) - (offers[a].pay - fuelOf(offers[a].n)); })) }; }
     /* the net (pay minus fuel) a planet tends to give, by its distance: [lowest, highest] */
     var NET1 = { 10: [70, 170], 20: [60, 180], 30: [50, 190], 40: [50, 200], 50: [60, 210] };
-    var NET2 = { 10: [30, 115], 20: [25, 120], 30: [15, 125], 40: [10, 130], 50: [-10, 130], 60: [-30, 120], 70: [-40, 110] };
+    var NET2 = { 10: [30, 115], 20: [25, 120], 30: [15, 125], 40: [10, 130], 50: [5, 130], 60: [5, 120], 70: [5, 110] };      /* only the one planned offer loses (15 to 45 gems): a loss of 1 gem teaches nothing */
     function draw(r, first, near, decoy) { var ri = function (a, b) { return a + Math.floor(r() * (b - a + 1)); };
-      var pool = ORDER.filter(function (n) { return n !== K.stone && (!first || LY[n] <= 50); }), at = function (n) { return ORDER.indexOf(n); }, got = [];
+      /* [pick] I, O and Q stay on the map but are never offered: "Planet I paid" reads as "I paid", O looks like zero, and on a phone O and Q look alike (the review, 24 November) */
+      var pool = ORDER.filter(function (n) { return n !== K.stone && 'IOQ'.indexOf(n) < 0 && (!first || LY[n] <= 50); }), at = function (n) { return ORDER.indexOf(n); }, got = [];
       for (var i = pool.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
-      /* spread on the map: no two offers side by side in the fan, and none beside the stone's planet */
-      pool.forEach(function (n) { if (got.length < K.offers && Math.abs(at(n) - at(K.stone)) >= 2 && got.every(function (g) { return Math.abs(at(g) - at(n)) >= 2; })) got.push(n); });
+      /* spread on the map: no two offers (and no offer and Planet R) closer than 0.16 of the map's radius, so their rings never touch at any size */
+      pool.forEach(function (n) { if (got.length < K.offers && apart(n, K.stone) && got.every(function (g) { return apart(g, n); })) got.push(n); });
       if (got.length < K.offers) return null;
       got.sort(function (a, b) { return at(a) - at(b); });      /* left to right, as they sit in the fan: the cards above the map are in the same order */
       if (!first && (!got.some(function (n) { return LY[n] >= 60; }) || !got.some(function (n) { return LY[n] <= 20; }))) return null;
@@ -137,7 +144,7 @@ var GMQTrade = (function () {
       return { n: n, pay: pay, want: w[k] }; });
     /* the biggest-pay decoy, on later trips: a far planet pays the most, but leaves little after its fuel */
     if (decoy && !first) { var bigs = out.map(function (o, k) { return LY[o.n] >= 50 && k !== lossAt && k !== nearAt ? k : -1; }).filter(function (k) { return k >= 0; });
-      if (bigs.length) { var bk = bigs[Math.floor(r() * bigs.length)], top = Math.max.apply(null, out.map(function (o, k) { return k === bk ? 0 : o.pay; })), bp = top + ri(5, 50); if (bp % 10 === 0) bp += 3; if (bp <= 399) out[bk].pay = bp; } }
+      if (bigs.length) { var bk = bigs[Math.floor(r() * bigs.length)], top = Math.max.apply(null, out.map(function (o, k) { return k === bk ? 0 : o.pay; })), bp = Math.max(top + ri(5, 50), fuelOf(out[bk].n) + ri(5, 30)); if (bp % 10 === 0) bp += 3; if (bp <= 399) out[bk].pay = bp; } }
     /* and on the other boards, a planet that pays the most and is worth it: not far, so its fuel is small */
     if (!decoy && !first) { var good = out.map(function (o, k) { return LY[o.n] <= 40 && k !== lossAt && k !== nearAt ? k : -1; }).filter(function (k) { return k >= 0; });
       if (good.length) { var gk = good[Math.floor(r() * good.length)], top2 = Math.max.apply(null, out.map(function (o, k) { return k === gk ? 0 : o.pay; })), gp = top2 + ri(5, 30); if (gp % 10 === 0) gp += 3; if (gp <= 399 && gp - fuelOf(out[gk].n) <= 170) out[gk].pay = gp; } }
@@ -171,7 +178,7 @@ var GMQTrade = (function () {
       return null; }
     /* what the page calls: the child's own board, or, in the rare case that none is found, the board of a nearby seed (the check counts how often) */
   function boardFor(seed, trip, B) { for (var k = 0; k < 6; k++) { var b = board(seed + k * 7919, trip, B); if (b) { b.other = k; return b; } } return null; }
-  return { K: K, LY: LY, DIST: DIST, ORDER: ORDER, WANTS: WANTS, fuelOf: fuelOf, choices: choices, judge: judge, board: board, boardFor: boardFor, rng: rng, hash: hash };
+  return { K: K, LY: LY, DIST: DIST, ORDER: ORDER, WANTS: WANTS, fuelOf: fuelOf, npos: npos, choices: choices, judge: judge, board: board, boardFor: boardFor, rng: rng, hash: hash };
   })();
   var K = RULE.K, LY = RULE.LY, ORDER = RULE.ORDER;
   /* [Source] the game's planet colours (TR_COL), by a planet's place in Marc's list A to T */
@@ -193,7 +200,7 @@ var GMQTrade = (function () {
   function fuelFor(os) { return os.reduce(function (a, o) { return a + RULE.fuelOf(o.n); }, 0); }
   function numBox(id, label) { return '<label for="' + id + '">' + label + '<input id="' + id + '" inputmode="numeric" autocomplete="off" maxlength="4"></label>'; }
   function val(id) { var e = $(id); return e && e.value !== '' ? +e.value : null; }
-  function msg(text, good) { var m = $('msg'); if (m) { m.className = 'msg ' + (good ? 'good' : 'bad'); m.textContent = text; try { m.scrollIntoView({ block: 'nearest' }); } catch (e) {} } }      /* on a phone the message can sit under the number pad: bring it into view */
+  function msg(text, good) { var m = $('msg'); if (m) { m.className = 'msg ' + (good === 'warn' ? 'warn' : good ? 'good' : 'bad'); m.textContent = text; try { m.scrollIntoView({ block: 'nearest' }); } catch (e) {} } }      /* on a phone the message can sit under the number pad: bring it into view */
   function onlyDigits() { Array.prototype.forEach.call(document.querySelectorAll('#toy input'), function (i) { i.oninput = function () { i.value = i.value.replace(/[^0-9]/g, '').slice(0, 4); };
     i.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); var t = $('try'); if (t) t.click(); } }; }); var f = document.querySelector('#toy input'); if (f) try { f.focus({ preventScroll: true }); } catch (e) {} }
   function on(id, fn) { var e = $(id); if (e) e.onclick = fn; }
@@ -221,11 +228,11 @@ var GMQTrade = (function () {
       '<div class="field"><button class="btn" type="button" id="try">Next</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
     on('try', function () { go('hold'); }); on('trleave', leave); }
   function hold() { W.look = 'hold';
-    toy(eyebrow('a call from Voltara') + '<h3>Trade for Voltara</h3><p class="story">"Your hold carries 3 crates of our goods. Planets will buy them. They pay in gems."</p><p class="story">"Bring us supplies for the city. They cost 500 gems."</p>' +
+    toy(eyebrow('a call from Voltara') + '<h3>Trade for Voltara</h3><p class="story">"Your ship carries 3 crates of our goods. Planets will buy them. They pay in gems."</p><p class="story">"Bring us supplies for the city. A supply ship at the beacon sells them, for 500 gems."</p>' +
       '<div class="field"><button class="btn" type="button" id="try">Next</button><button class="btn quiet" type="button" id="trback">Back</button></div>');
     on('try', function () { go('list'); }); on('trback', function () { go('call'); }); }
   function priceList() { W.look = 'stone';
-    toy(eyebrow('a call from Voltara') + '<h3>Gems to start</h3>' + (hasStone() ? '<p class="story">You have a glow stone already. So you only need the supplies.</p>' : '<p class="story">Planet R sells glow stones, for 300 gems. A glow stone lights a lantern.</p>') +
+    toy(eyebrow('a call from Voltara') + '<h3>Gems to start</h3>' + (hasStone() ? '<p class="story">You have a glow stone already. So you only need the supplies.</p>' : '<p class="story">Planet R sells glow stones, for 300 gems. A glow stone lights a lantern, for dark places.</p>') +
       '<p class="story">The Council gives you 100 gems for fuel. It is a gift.</p>' +
       '<div class="field"><button class="btn" type="button" id="try">Next</button><button class="btn quiet" type="button" id="trback">Back</button></div>');
     on('try', function () { if (!S.gems && !S.log.length) { S.gems = K.gift; logAdd({ kind: 'gift', gems: S.gems }); } go('rules'); }); on('trback', function () { go('hold'); }); }
@@ -236,26 +243,28 @@ var GMQTrade = (function () {
     on('try', function () { go('demo'); }); on('trback', function () { go('list'); }); }
 
   /* ---------- SEE IT FIRST (his rule 3): one solved choice about something else. Coins and rent at a fruit market, not gems and fuel.
-     Recomputed in checks/trade_market_check.js: every choice of one or two stalls. P alone ends with 52; Q and R end with 63, the most; Q and S, and R and S, cost too much rent. ---------- */
-  var DEMO = { coins: 10, baskets: 2, stalls: [['P', 52, 10], ['Q', 35, 6], ['R', 28, 4], ['S', 30, 7]], lines: [
+     Recomputed in checks/trade_market_check.js: every choice of one or two stalls. Red alone ends with 52; blue and yellow end with 63, the most;
+     blue and green, and yellow and green, cost too much rent. The stalls have colours, not letters, so none is mixed up with a planet. ---------- */
+  var DEMO = { coins: 10, baskets: 2, stalls: [['red', 52, 10], ['blue', 35, 6], ['yellow', 28, 4], ['green', 30, 7]], lines: [
     'I have 10 coins for rent. My cart holds 2 baskets.',
-    'P alone: rent 10.   10 − 10 = 0.   0 + 52 = 52',
-    'Q and R: rent 6 + 4 = 10.   10 − 10 = 0.   0 + 35 + 28 = 63',
-    'Q and S: rent 6 + 7 = 13. Too much!',
-    'R and S: rent 4 + 7 = 11. Too much!',
-    '63 is more than 52. I take Q and R.'] };
+    'Red alone: rent 10.  10 − 10 = 0.  0 + 52 = 52',
+    'Blue alone: rent 6.  10 − 6 = 4.  4 + 35 = 39',
+    'Blue and yellow: rent 6 + 4 = 10.  10 − 10 = 0.  0 + 35 + 28 = 63',
+    'Blue and green: rent 6 + 7 = 13. Too much!',
+    'Yellow and green: rent 4 + 7 = 11. Too much!',
+    '63 is more than 52. I take blue and yellow.'] };
   function demo() { W.look = 'demo';
     toy('<p class="eyebrow">See it first</p><h3>Tavi sells fruit</h3><p class="story">Tavi sells fruit at Voltara\'s market. Her cart holds 2 baskets. She has 10 coins to pay rent for the stalls.</p>' +
-      '<p class="story">Look at her paper. Stall P pays the most. But Q and R together leave her more.</p>' +
+      '<p class="story">Look at her paper. At the red stall she earns the most. But the blue and yellow stalls together leave her more.</p>' +
       '<div class="field"><button class="btn" type="button" id="try">My turn</button><button class="btn quiet" type="button" id="trback">Back</button></div>');
     on('try', function () { S.seenDemo = true; go('plan'); }); on('trback', function () { go('rules'); }); }
 
   /* ---------- A TRIP: choose, buy fuel, fly, count ---------- */
-  /* [pick] a chest holds 999 gems; with 600 or more, a good trip could fill it, so the child buys first. Every number stays within 1,000.
+  /* [pick] the ship carries up to 999 gems; with 600 or more, a good trip could bring more, so the child buys first. Every number stays within 1,000.
      [pick] below 60 gems the Council sends 100 more for fuel, as a gift, so no child is left unable to fly. */
   function canBuyAll() { return S.bought.supplies && (S.bought.stone || hasStone()); }
   function newBoard() { var B = S.gems, note = '';
-    if (B < K.low) { S.gems = B = B + K.gift; S.gifts++; logAdd({ kind: 'gift', gems: S.gems }); note = 'The Council sees your chest is nearly empty. It sends 100 gems for fuel, as a gift.'; }
+    if (B < K.low) { S.gems = B = B + K.gift; S.gifts++; logAdd({ kind: 'gift', gems: S.gems }); note = 'The Council sees you are low on gems. It sends 100 gems for fuel, as a gift.'; }
     var b = RULE.boardFor(S.seed, S.trip, B);
     S.board = { trip: S.trip, B: B, offers: b.offers }; S.sel = []; save(); return note; }
   function plan(info) { W.look = 'board'; if (canBuyAll()) return go('done');
@@ -263,7 +272,7 @@ var GMQTrade = (function () {
     var note = (!S.board || S.board.trip !== S.trip) ? newBoard() : '', o = offers();
     var chips = o.map(function (x, i) { var onn = S.sel.indexOf(i) >= 0; return '<button class="btn quiet' + (onn ? ' on' : '') + '" type="button" data-i="' + i + '" aria-pressed="' + onn + '">' + x.n + ' · ' + x.want + '</button>'; }).join('');
     toy(eyebrow('trip ' + S.trip) + '<h3>Choose your planets</h3>' + (note ? '<p class="note">' + note + '</p>' : '') +
-      '<p class="q">You have ' + num(S.gems) + ' gems. Your hold carries up to 3 crates, one for each planet.</p>' +
+      '<p class="q">You have ' + num(S.gems) + ' gems. Your ship carries up to 3 crates. Each crate goes to a different planet.</p>' +
       '<p class="note">Fuel costs 2 gems for each light-year. Tap a planet to load a crate for it. Tap it again to take the crate off.</p>' +
       '<div class="chips" role="group" aria-label="Planets on the trade board">' + chips + '</div><div class="msg" id="msg" role="status">' + (info || '') + '</div>' +
       '<div class="field"><button class="btn" type="button" id="try">Fly</button><button class="btn quiet" type="button" id="trhint">A hint</button><button class="btn quiet" type="button" id="trbuy">To buy</button><button class="btn quiet" type="button" id="trlog">Ship\'s log</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
@@ -275,11 +284,11 @@ var GMQTrade = (function () {
     'The planet that pays the most may cost the most fuel. Check it.', 'Compare the gems each plan brings home. The most is the best plan.',
     'To compare fast, round each pay to the nearest ten. Then count exactly before you choose.'];      /* [pick] rounding as a trader's tool, offered only when asked (Marc, 24 November: rounding need not be the focus) */
   function toggle(i) { if (S.step !== 'plan' || !S.board) return; var o = offers()[i]; if (!o) return; var k = S.sel.indexOf(i);
-    if (k >= 0) S.sel.splice(k, 1); else { if (S.sel.length >= K.crates) { beep(140, .2, 'square'); return msgNow('Your hold has only 3 crates. Take one off first.'); } S.sel.push(i); }
+    if (k >= 0) S.sel.splice(k, 1); else { if (S.sel.length >= K.crates) { beep(140, .2, 'square'); return msgNow('Your ship carries only 3 crates. Take one off first.'); } S.sel.push(i); }
     S.sel.sort(); beep(k >= 0 ? 300 : 520, .05); save(); plan(k >= 0 ? 'The crate for Planet ' + o.n + ' is off.' : 'A crate for Planet ' + o.n + ' is loaded.'); }
   function msgNow(t) { msg(t, false); }
   function full() { W.look = 'board';
-    toy(eyebrow('trip ' + S.trip) + '<h3>Your chest is nearly full</h3><p class="q">You have ' + num(S.gems) + ' gems. A chest holds 999 gems, and a good trip could fill it.</p><p class="story">Buy something on your list first.</p>' +
+    toy(eyebrow('trip ' + S.trip) + '<h3>Buy something first</h3><p class="q">You have ' + num(S.gems) + ' gems. Your ship can carry up to 999 gems, and a good trip could bring more than that.</p><p class="story">Buy something on your list first.</p>' +
       '<div class="field"><button class="btn" type="button" id="trbuy">To buy</button><button class="btn quiet" type="button" id="trlog">Ship\'s log</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
     on('trbuy', buyList); on('trlog', shipLog); on('trleave', leave); }
 
@@ -293,7 +302,7 @@ var GMQTrade = (function () {
     on('try', function () { var a = val('ans'), b = val('ans2'); if (a === null) return msg('Type the fuel first.'); W.tries++;
       if (a !== fuel) { beep(140, .2, 'square'); return msg(os.length > 1 ? 'Not yet. Find the light-years to each planet. Each light-year costs 2 gems.' : 'Not yet. Find the light-years to the planet. Each light-year costs 2 gems.'); }
       if (fuel > S.gems) { beep(140, .2, 'square'); logAdd({ kind: 'short', trip: S.trip, route: os.map(function (o) { return o.n; }), fuel: fuel, gems: S.gems }); save();
-        return msg('Right, the fuel is ' + num(fuel) + ' gems. But you have only ' + num(S.gems) + '. That is too far. Change your plan.'); }
+        return msg('Right, the fuel is ' + num(fuel) + ' gems. But you have only ' + num(S.gems) + '. That is too far. Change your plan.', 'warn'); }
       if (b === null) return msg('Right. Now type the gems left after fuel.', true);
       if (b !== S.gems - fuel) { beep(140, .2, 'square'); return msg('Not yet. Take the fuel away from the gems you have.'); }
       beep(880, .1); $('try').outerHTML = '<button class="btn" type="button" id="trfly">Pay and fly</button>'; msg('Right. Fuel: ' + num(fuel) + ' gems. You will have ' + num(b) + ' left.', true);
@@ -310,7 +319,7 @@ var GMQTrade = (function () {
       logAdd({ kind: 'trade', trip: S.trip, route: os.map(function (o) { return [o.n, o.pay]; }), fuel: S.paid, start: S.board.B, gems: end, lost: lost, tries: W.tries });
       S.gems = end; S.last = { start: S.board.B, lost: lost, route: os.map(function (o) { return o.n; }), offers: S.board.offers, sel: S.sel.slice() }; S.trip++; S.board = null; S.sel = []; go('result'); }); }
   function result() { W.look = 'map'; var L = S.last || { start: 0, lost: [] }, e = S.log.filter(function (x) { return x.kind === 'trade'; }).pop() || { route: [] };
-    var lossLine = e.route.filter(function (r) { return r[1] < RULE.fuelOf(r[0]); }).map(function (r) { return 'Planet ' + r[0] + ' paid ' + num(r[1]) + ', but its fuel cost ' + num(RULE.fuelOf(r[0])) + '. That planet lost you ' + num(RULE.fuelOf(r[0]) - r[1]) + ' gems.'; }).join(' ');
+    var lossLine = e.route.filter(function (r) { return r[1] < RULE.fuelOf(r[0]); }).map(function (r) { return 'Planet ' + r[0] + ' paid ' + num(r[1]) + ', but its fuel cost ' + num(RULE.fuelOf(r[0])) + '. You lost ' + num(RULE.fuelOf(r[0]) - r[1]) + ' gems at Planet ' + r[0] + '.'; }).join(' ');
     toy(eyebrow('trip ' + e.trip + ' is done') + '<h3>Home again</h3><p class="q">You set off with ' + num(L.start) + ' gems. You came home with ' + num(S.gems) + '.</p>' +
       (lossLine ? '<p class="story">' + lossLine + '</p>' : '') + '<p class="note">Your ship\'s log keeps every trip, so you can compare them.</p>' +
       '<div class="field"><button class="btn" type="button" id="try">Next trip</button><button class="btn quiet" type="button" id="trbuy">To buy</button><button class="btn quiet" type="button" id="trlog">Ship\'s log</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
@@ -320,12 +329,12 @@ var GMQTrade = (function () {
   function shipLog() { W.look = S.board ? 'board' : 'map';
     var rows = S.log.map(function (e) {
       if (e.kind === 'gift') return '<tr><td>Gift</td><td>From the Council</td><td></td><td>' + num(e.gems) + '</td></tr>';
-      if (e.kind === 'short') return '<tr><td>' + e.trip + '</td><td>' + e.route.join(', ') + ': too far</td><td>' + num(e.fuel) + '</td><td>stayed home</td></tr>';
+      if (e.kind === 'short') return '<tr><td></td><td>' + e.route.join(', ') + ': too far, not flown</td><td>' + num(e.fuel) + '</td><td></td></tr>';
       if (e.kind === 'trade') return '<tr><td>' + e.trip + '</td><td>' + e.route.map(function (r) { return r[0] + ' paid ' + num(r[1]); }).join('<br>') + '</td><td>' + num(e.fuel) + '</td><td>' + num(e.gems) + '</td></tr>';
       if (e.kind === 'stone') return '<tr><td>R</td><td>' + (e.got ? 'Bought a glow stone' : 'Not enough for the stone') + '</td><td>' + num(e.fuel) + '</td><td>' + num(e.gems) + '</td></tr>';
       if (e.kind === 'supplies') return '<tr><td>Home</td><td>Bought the supplies</td><td></td><td>' + num(e.gems) + '</td></tr>';
       return ''; }).join('');
-    toy(eyebrow('ship\'s log') + '<h3>Every trip</h3>' + (S.lastSeason ? '<p class="note">Last season, before the market: ' + num(S.lastSeason) + ' gems.</p>' : '') +
+    toy(eyebrow('ship\'s log') + '<h3>Every trip</h3>' + (S.lastSeason ? '<p class="note">Before the market, you traded in an older season. Its gems stay with it.</p>' : '') +
       '<table class="log"><thead><tr><th>Trip</th><th>Planets</th><th>Fuel</th><th>Gems after</th></tr></thead><tbody>' + rows + '</tbody></table>' +
       '<div class="field"><button class="btn" type="button" id="try">Back</button></div>');
     on('try', function () { show(); }); }
@@ -335,8 +344,8 @@ var GMQTrade = (function () {
     var sup = S.bought.supplies ? '<span class="note">Bought ✓</span>' : '<button class="btn" type="button" id="trsup">Buy the supplies</button>';
     var st = hasStone() || S.bought.stone ? '<span class="note">You have one ✓</span>' : '<button class="btn" type="button" id="trstone">Fly to Planet R</button>';
     toy(eyebrow('to buy') + '<h3>Your list</h3><p class="q">You have ' + num(S.gems) + ' gems.</p>' +
-      '<div class="buy"><b>Supplies for Voltara: 500 gems</b><span class="note">Bought here, at Voltara. No fuel.</span>' + sup + '</div>' +
-      '<div class="buy"><b>A glow stone: 300 gems</b><span class="note">Only Planet R sells them. It is 60 light-years away.</span>' + st + '</div>' +
+      '<div class="buy"><b>Supplies for Voltara: 500 gems</b><span class="note">A supply ship at the beacon sells them. No fuel.</span>' + sup + '</div>' +
+      '<div class="buy"><b>A glow stone: 300 gems</b><span class="note">Only Planet R sells them. It is 60 light-years away, so you need fuel too.</span>' + st + '</div>' +
       '<div class="msg" id="msg" role="status"></div><div class="field"><button class="btn quiet" type="button" id="trback">Back</button></div>');
     on('trsup', supplies); on('trstone', function () { go('spump'); }); on('trback', function () { if (S.step === 'result' || S.step === 'plan') show(); else go('plan'); }); }
   function supplies() { if (S.gems < K.supplies) { beep(140, .2, 'square'); return msg('The supplies cost 500 gems. You have ' + num(S.gems) + '. Not enough yet.'); }
@@ -348,7 +357,7 @@ var GMQTrade = (function () {
       if (a !== S.gems - K.supplies) { beep(140, .2, 'square'); return msg('Not yet. Take the price away from the gems you have.'); }
       beep(880, .1); S.gems -= K.supplies; S.bought.supplies = true; logAdd({ kind: 'supplies', gems: S.gems }); S.board = null; save(); try { if (H.card) H.card(); } catch (e) {}
       W.look = 'lit'; W.litAt = tNow();
-      toy(eyebrow('Voltara') + '<h3>The lights come back</h3><p class="story">The supplies land in Voltara. Window by window, the city lights up.</p><p class="story">The Council calls: "Thank you, trader!"</p>' +
+      toy(eyebrow('Voltara') + '<h3>The lights come back</h3><p class="story">The supply ship flies the supplies down to Voltara. Window by window, the city lights up.</p><p class="story">The Council calls: "Thank you, trader!"</p>' +
         '<div class="field"><button class="btn" type="button" id="try">' + (canBuyAll() ? 'Next' : 'Back to the market') + '</button></div>');
       on('try', function () { go(canBuyAll() ? 'done' : 'plan'); }); }); }
 
@@ -360,16 +369,16 @@ var GMQTrade = (function () {
     onlyDigits(); on('trback', function () { go('plan'); });
     on('try', function () { var a = val('ans'), b = val('ans2'); if (a === null) return msg('Type the fuel first.'); W.tries++;
       if (a !== fuel) { beep(140, .2, 'square'); return msg('Not yet. Find the light-years to Planet R. Each light-year costs 2 gems.'); }
-      if (fuel > S.gems) { beep(140, .2, 'square'); return msg('Right, the fuel is ' + num(fuel) + ' gems. But you have only ' + num(S.gems) + '. That is too far for now.'); }
+      if (fuel > S.gems) { beep(140, .2, 'square'); return msg('Right, the fuel is ' + num(fuel) + ' gems. But you have only ' + num(S.gems) + '. That is too far for now.', 'warn'); }
       if (b === null) return msg('Right. Now type the gems left after fuel.', true);
       if (b !== S.gems - fuel) { beep(140, .2, 'square'); return msg('Not yet. Take the fuel away from the gems you have.'); }
-      beep(880, .1); $('try').outerHTML = '<button class="btn" type="button" id="trfly">Pay and fly</button>'; msg('Right. You will have ' + num(b) + ' gems when you land on Planet R.', true);
+      beep(880, .1); $('try').outerHTML = '<button class="btn" type="button" id="trfly">Pay and fly</button>'; msg('Right. You will have ' + num(b) + ' gems when you land on Planet R. The glow stone costs 300 gems.', true);
       on('trfly', function () { S.paid = fuel; S.gems -= fuel; go('sfly'); }); }); }
   function stoneFly() { W.look = 'stone-trip'; startFly([K.stone], true);
     toy(eyebrow('to Planet R') + '<h3>On your way</h3><p class="q">Your ship flies out to Planet R.</p><p class="note">Watch the map.</p>'); }
   function stonePay() { W.look = 'stone-trip'; W.tries = 0; W.shipAt = K.stone;
     if (S.gems < K.stonePrice) { logAdd({ kind: 'stone', got: false, fuel: S.paid, gems: S.gems }); S.step = 'shome'; save();
-      toy(eyebrow('Planet R') + '<h3>The glow stone trader</h3><p class="story">A trader holds up a glow stone. "300 gems, please."</p><p class="q">You have ' + num(S.gems) + ' gems. That is not enough.</p><p class="story">The beacon pulls your ship home.</p>' +
+      toy(eyebrow('Planet R') + '<h3>The glow stone trader</h3><p class="story">A trader holds up a glow stone. "300 gems, please."</p><p class="q">You have ' + num(S.gems) + ' gems. The stone costs 300. That is not enough.</p><p class="story">The fuel here cost ' + num(S.paid) + ' gems. Next time, work out the fuel and the price together before you fly.</p><p class="story">The beacon pulls your ship home.</p>' +
         '<div class="field"><button class="btn" type="button" id="try">Home</button></div>');
       return on('try', function () { startFly([], true, true); }); }
     toy(eyebrow('Planet R') + '<h3>The glow stone trader</h3><p class="story">A trader holds up a glow stone. "300 gems, please."</p><p class="q">You have ' + num(S.gems) + ' gems. How many will you have left?</p>' +
@@ -424,9 +433,9 @@ var GMQTrade = (function () {
     c.fillStyle = '#fff4b8'; c.beginPath(); c.ellipse(x, y, s, s * .78, .3, 0, 7); c.fill(); ol(c, 1.5); }
 
   /* where everything sits, worked out from the picture's size each frame */
-  function lay() { var w = H.vw, h = H.vh, m = Math.min(w, h), fs = Math.max(11, Math.min(17, m * .025)), pad = Math.max(6, m * .012);
+  function lay() { var w = H.vw, h = H.vh, m = Math.min(w, h), fs = Math.max(12, Math.min(17, m * .025)), pad = Math.max(6, m * .012);
     var cols = w >= 560 ? 5 : 3, rows = Math.ceil(K.offers / cols), cw = (w - pad * (cols + 1)) / cols, cfs = Math.max(11, Math.min(fs, cw / 9.2)), ch = cfs * 4.6, band = rows * ch + (rows + 1) * pad;
-    var base = h - fs * 2.7, top = band + fs * .6, rx = w * .47, ry = Math.max(40, base - top);
+    var base = h - fs * 2.7, top = band + fs * .6, rad = Math.max(40, Math.min(w * .47, base - top)), rx = rad, ry = rad;      /* true circles: the same light-years look the same distance (the review) */
     var R = Math.max(11, Math.min(26, m * .03)), corner = w >= 560 && ry >= 300;
     return { w: w, h: h, m: m, fs: fs, cfs: cfs, pad: pad, cols: cols, rows: rows, cw: cw, ch: ch, band: band, base: base, top: top, ox: w / 2, rx: rx, ry: ry, R: R, corner: corner }; }
   function ringR(ly) { return .2 + .8 * ly / 71; }      /* [Source] the game's trR: rings for each ten */
@@ -446,7 +455,8 @@ var GMQTrade = (function () {
     /* the rings, one for each ten light-years */
     for (var d = 10; d <= 70; d += 10) { var r = ringR(d); c.strokeStyle = look === 'rings' ? 'rgba(255,200,110,' + (.45 + .4 * pulse) + ')' : 'rgba(170,200,255,.28)'; c.lineWidth = look === 'rings' ? 2.5 : 1.5; c.setLineDash([4, 7]);
       c.beginPath(); c.ellipse(l.ox, l.base, r * l.rx, r * l.ry, 0, Math.PI, 2 * Math.PI); c.stroke(); c.setLineDash([]);
-      c.fillStyle = look === 'rings' ? '#ffd98a' : 'rgba(210,222,255,.85)'; font(c, l.fs * .95, true, true); c.fillText(d, l.ox - r * l.rx, l.base + l.fs * 1.1); c.fillText(d, l.ox + r * l.rx, l.base + l.fs * 1.1); }
+      font(c, l.fs * .95, true, true); c.strokeStyle = 'rgba(4,6,14,.95)'; c.lineWidth = 4; c.lineJoin = 'round'; c.strokeText(d, l.ox - r * l.rx, l.base + l.fs * 1.1); c.strokeText(d, l.ox + r * l.rx, l.base + l.fs * 1.1);
+      c.fillStyle = look === 'rings' ? '#ffd98a' : 'rgba(210,222,255,.9)'; c.fillText(d, l.ox - r * l.rx, l.base + l.fs * 1.1); c.fillText(d, l.ox + r * l.rx, l.base + l.fs * 1.1); }
     c.fillStyle = 'rgba(210,222,255,.8)'; font(c, l.fs * .9); c.textAlign = 'left'; c.fillText('light-years from Voltara', l.pad, l.base + l.fs * 2.3, l.ox - l.pad - Math.max(16, l.m * .05) * 1.2); c.textAlign = 'center';
     /* the other planets of the map, faint, so the map is the game's map */
     ORDER.forEach(function (n) { if (n === K.stone || o.some(function (x) { return x.n === n; })) return; planet(c, l, n, l.R * .62, false); });
@@ -468,15 +478,24 @@ var GMQTrade = (function () {
     c.fillStyle = '#ff8fb8'; circ(c, l.ox, vy, vr); c.fill(); ol(c, 2); c.fillStyle = 'rgba(8,4,40,.4)'; c.beginPath(); c.arc(l.ox, vy, vr, -.6, 2.5); c.fill();
     for (var k = 0; k < 9; k++) { var wx = l.ox + (k - 4) * vr * .19, wy = vy - vr * (.12 + (k % 3) * .2); c.fillStyle = lit > k / 9 ? '#ffe9a0' : 'rgba(30,20,50,.8)'; c.fillRect(wx - vr * .07, wy - vr * .08, vr * .13, vr * .13); }
     if (lit > 0) { var gl = c.createRadialGradient(l.ox, vy, vr * .8, l.ox, vy, vr * 2.2); gl.addColorStop(0, 'rgba(255,225,140,' + (.45 * lit) + ')'); gl.addColorStop(1, 'rgba(255,225,140,0)'); c.fillStyle = gl; circ(c, l.ox, vy, vr * 2.2); c.fill(); }
+    /* at Planet R: the glow stone the trader holds up, or, once bought, the stone in the ship */
+    if (W.shipAt === K.stone && !W.fly) { var gx = rp[0] - l.R * .2, gy = rp[1] - l.R * 2.3; stoneIcon(c, gx, gy, l.R * .55, t); c.fillStyle = '#ffe7a0'; font(c, l.fs, true); c.fillText(S.bought.stone ? 'in your bag' : 'a glow stone', gx, gy - l.R * 1.1); }
     /* the ship */
     drawShip(c, l, t, dt, o);
+    if (look === 'lit' && S.bought.supplies) skyline(c, l, lit);
     /* the trade board: a card for each offer, in the same order as on the map */
     if (o.length) o.forEach(function (x, i) { drawCard(c, l, x, i, sel.indexOf(i) >= 0, (W.fly && W.fly.paidAt[x.n]) || (last && sel.indexOf(i) >= 0)); });
     else if (look !== 'demo') banner(c, l, look);
     if (l.corner) corners(c, l, o, sel, look, pulse);
     /* what a planet pays, as it pays it */
-    W.pops = W.pops.filter(function (p) { return t - p.t < 1.6; }); W.pops.forEach(function (p) { var q = pos(l, p.n), a = Math.min(1, 1.6 - (t - p.t)), y = q[1] - l.R * 1.3 - (t - p.t) * l.fs * 1.6;
+    W.pops = W.pops.filter(function (p) { return t - p.t < 1.6; }); W.pops.forEach(function (p) { var q = pos(l, p.n), a = Math.min(1, 1.6 - (t - p.t)), y = q[1] - l.R * 1.35;
       c.globalAlpha = a; gemIcon(c, q[0] - l.fs * 1.9, y - l.fs * .35, l.fs * .45); c.fillStyle = '#d8f6ff'; font(c, l.fs * 1.05, true, true); c.textAlign = 'left'; c.fillText(p.text, q[0] - l.fs * 1.3, y); c.textAlign = 'center'; c.globalAlpha = 1; }); }
+  /* Voltara's city, close up, lighting window by window */
+  function skyline(c, l, lit) { var w = Math.min(l.w * .7, l.fs * 26), h = Math.min(l.rx * .55, l.fs * 9), X = l.ox - w / 2, Y = l.base - l.rx * .5 - h, k, wins = 0;
+    c.fillStyle = 'rgba(8,12,26,.9)'; rr(c, X - 8, Y - 8, w + 16, h + 16, 12); c.fill(); c.strokeStyle = 'rgba(255,200,110,.8)'; c.lineWidth = 2; c.stroke();
+    var hs = [.55, .8, .62, 1, .7, .9, .5, .75], bw = w / hs.length;
+    for (k = 0; k < hs.length; k++) { var bh = h * hs[k], bx = X + k * bw; c.fillStyle = '#2a2350'; c.fillRect(bx + 2, Y + h - bh, bw - 4, bh);
+      for (var r2 = 0; r2 < Math.floor(bh / (l.fs * 1.1)); r2++) for (var q2 = 0; q2 < 2; q2++) { wins++; var on = ((wins * 7) % 23) / 23 < lit; c.fillStyle = on ? '#ffe9a0' : 'rgba(10,8,30,.9)'; c.fillRect(bx + bw * (.22 + q2 * .36), Y + h - bh + l.fs * (.35 + r2 * 1.1), bw * .2, l.fs * .55); } } }
   function drawCard(c, l, x, i, on, sold) { var r = cardRect(l, i), X = r[0], Y = r[1], w = r[2], h = r[3], fs = l.cfs, lh = fs * 1.3, y1 = Y + fs * .35 + lh * .5, dr = fs * .62, mw = w - fs * .9;
     c.fillStyle = 'rgba(8,12,26,.92)'; rr(c, X, Y, w, h, 9); c.fill(); c.strokeStyle = on ? '#ffb23e' : 'rgba(150,175,215,.55)'; c.lineWidth = on ? 3 : 1.5; c.stroke();
     c.fillStyle = pcol(x.n); circ(c, X + fs * .45 + dr, y1, dr); c.fill(); ol(c, 1.5); c.fillStyle = '#10142c'; font(c, dr * 1.25, true, true); c.textBaseline = 'middle'; c.fillText(x.n, X + fs * .45 + dr, y1 + 1); c.textBaseline = 'alphabetic';
@@ -487,7 +506,7 @@ var GMQTrade = (function () {
     if (on) crate(c, X + w - fs * 1.45, y1 + lh * 2 - fs * .5, fs * 1.1, null);
     if (sold) { c.fillStyle = '#6fd08a'; font(c, fs * 1.2, true); c.textAlign = 'right'; c.fillText('✓', X + w - fs * .35, y1 + fs * .45); }
     c.textAlign = 'center'; }
-  function banner(c, l, look) { var text = look === 'voltara' ? 'Voltara calls: "We are low on supplies."' : look === 'hold' ? 'Your hold: 3 crates of Voltaran goods' : look === 'stone' ? (l.corner ? (hasStone() ? 'You have a glow stone already' : 'Planet R sells glow stones') : hasStone() ? 'Supplies: 500 gems' : 'Supplies: 500 gems.  Glow stone: 300 gems.') : look === 'rings' ? 'Fuel: 2 gems for each light-year' : look === 'lit' ? (S.bought.supplies ? 'Voltara\'s lights are back' : '') : look === 'stone-trip' ? 'Planet R: glow stones, 300 gems' : look === 'map' ? 'Home at Voltara' : '';
+  function banner(c, l, look) { var text = look === 'voltara' ? 'Voltara calls: "We are low on supplies."' : look === 'hold' ? 'Your ship carries 3 crates of Voltaran goods' : look === 'stone' ? (l.corner ? (hasStone() ? 'You have a glow stone already' : 'Planet R sells glow stones') : hasStone() ? 'Supplies: 500 gems' : 'Supplies: 500 gems.  Glow stone: 300 gems.') : look === 'rings' ? 'Fuel: 2 gems for each light-year' : look === 'lit' ? (S.bought.supplies ? 'Voltara\'s lights are back' : '') : look === 'stone-trip' ? 'Planet R: glow stones, 300 gems' : look === 'map' ? 'Home at Voltara' : '';
     if (!text) return; font(c, l.fs * 1.15, true, true); var w = Math.min(l.w - l.pad * 2, c.measureText(text).width + l.fs * 2), h = l.fs * 2.4, y = l.pad + Math.max(0, (l.band - h) / 2 - l.pad);
     c.fillStyle = 'rgba(8,12,26,.88)'; rr(c, l.ox - w / 2, y, w, h, 10); c.fill(); c.strokeStyle = 'rgba(255,178,62,.8)'; c.lineWidth = 2; c.stroke();
     c.fillStyle = '#ffd98a'; c.textBaseline = 'middle'; c.fillText(text, l.ox, y + h / 2 + 1, l.w - l.pad * 4); c.textBaseline = 'alphabetic';
@@ -497,8 +516,8 @@ var GMQTrade = (function () {
     if (S.gems || S.log.length) { c.fillStyle = 'rgba(8,12,26,.86)'; rr(c, l.pad, y, bw, bh, 9); c.fill(); c.strokeStyle = look === 'hold' ? 'rgba(255,200,110,' + (.5 + .5 * pulse) + ')' : 'rgba(150,175,215,.5)'; c.lineWidth = 1.5; c.stroke();
       c.textAlign = 'left'; c.fillStyle = '#ffb23e'; font(c, fs, true, true); c.fillText('YOUR SHIP', l.pad + fs * .6, y + fs * 1.25);
       gemIcon(c, l.pad + fs * 1, y + fs * 2.25, fs * .42); c.fillStyle = '#fff'; font(c, fs, true); c.fillText(num(S.gems) + ' gems', l.pad + fs * 1.7, y + fs * 2.6);
-      c.fillStyle = '#c9d6ee'; font(c, fs); c.fillText('Hold:', l.pad + fs * .6, y + fs * 3.95); var bo = offers(), ns = (W.look === 'map' ? [] : S.sel || []).map(function (i) { return bo[i] ? bo[i].n : ''; });
-      for (var k = 0; k < 3; k++) { var cx0 = l.pad + fs * 3.4 + k * fs * 1.75; if (ns[k]) crate(c, cx0, y + fs * 2.95, fs * 1.45, ns[k]); else { c.strokeStyle = 'rgba(181,121,58,.8)'; c.setLineDash([3, 3]); c.lineWidth = 1.2; rr(c, cx0, y + fs * 2.95, fs * 1.45, fs * 1.45, 3); c.stroke(); c.setLineDash([]); } } }
+      c.fillStyle = '#c9d6ee'; font(c, fs); c.fillText('Crates:', l.pad + fs * .6, y + fs * 3.95); var bo = offers(), ns = (W.look === 'map' ? [] : S.sel || []).map(function (i) { return bo[i] ? bo[i].n : ''; });
+      for (var k = 0; k < 3; k++) { var cx0 = l.pad + fs * 4 + k * fs * 1.75; if (ns[k]) crate(c, cx0, y + fs * 2.95, fs * 1.45, ns[k]); else { c.strokeStyle = 'rgba(181,121,58,.8)'; c.setLineDash([3, 3]); c.lineWidth = 1.2; rr(c, cx0, y + fs * 2.95, fs * 1.45, fs * 1.45, 3); c.stroke(); c.setLineDash([]); } } }
     var lw = Math.min(l.w * .32, fs * 14), X = l.w - l.pad - lw; c.fillStyle = 'rgba(8,12,26,.86)'; rr(c, X, y, lw, bh, 9); c.fill(); c.strokeStyle = look === 'stone' || look === 'buy' ? 'rgba(255,200,110,' + (.5 + .5 * pulse) + ')' : 'rgba(150,175,215,.5)'; c.lineWidth = 1.5; c.stroke();
     c.textAlign = 'left'; c.fillStyle = '#ffb23e'; font(c, fs, true, true); c.fillText('TO BUY', X + fs * .6, y + fs * 1.25); font(c, fs, true);
     c.fillStyle = S.bought.supplies ? '#6fd08a' : '#fff'; c.fillText((S.bought.supplies ? '✓ ' : '') + 'Supplies: 500 gems', X + fs * .6, y + fs * 2.6, lw - fs);
@@ -519,12 +538,12 @@ var GMQTrade = (function () {
   function drawDemo(c, l, t) { var w = l.w, h = l.h, pad = l.pad, fs = Math.max(11, Math.min(20, w / 40, h / 30)), sw = Math.min((w - pad * 5) / 4, fs * 10), gap = (w - sw * 4) / 5, st = h * .035, sh = Math.min(h * .36, fs * 9.5);
     var sy = st + sh * .24, sgh = fs * 3.9, cols = ['#ff7a8a', '#6fc2ff', '#ffd25e', '#8fe0a0'];
     c.fillStyle = '#2a2140'; c.fillRect(0, st + sh, w, h); c.fillStyle = '#3a2d55'; c.fillRect(0, st + sh, w, fs * .5);
-    DEMO.stalls.forEach(function (s, i) { var X = gap + i * (sw + gap), best = s[0] === 'Q' || s[0] === 'R';
+    DEMO.stalls.forEach(function (s, i) { var X = gap + i * (sw + gap), best = s[0] === 'blue' || s[0] === 'yellow';
       c.fillStyle = '#5a4630'; c.fillRect(X + sw * .06, st + sh * .2, sw * .06, sh * .8); c.fillRect(X + sw * .88, st + sh * .2, sw * .06, sh * .8);
       for (var k = 0; k < 5; k++) { c.fillStyle = k % 2 ? '#f4efe6' : cols[i]; c.beginPath(); c.moveTo(X + k * sw / 5, st); c.lineTo(X + (k + 1) * sw / 5, st); c.lineTo(X + (k + 1) * sw / 5, st + sh * .17); c.quadraticCurveTo(X + (k + .5) * sw / 5, st + sh * .24, X + k * sw / 5, st + sh * .17); c.fill(); }
       c.fillStyle = '#7a5a3a'; c.fillRect(X + sw * .03, sy + sgh + fs * .5, sw * .94, Math.max(6, sh * .08));
       c.fillStyle = '#fbf4e2'; rr(c, X + sw * .1, sy, sw * .8, sgh, 6); c.fill(); ol(c, 1.5);
-      c.fillStyle = INK; font(c, fs * 1.1, true, true); c.fillText('Stall ' + s[0], X + sw / 2, sy + fs * 1.15, sw * .74); font(c, fs * .92, true); c.fillText('pays ' + s[1] + ' coins', X + sw / 2, sy + fs * 2.3, sw * .74); font(c, fs * .92); c.fillText('rent ' + s[2] + ' coins', X + sw / 2, sy + fs * 3.4, sw * .74);
+      c.fillStyle = INK; font(c, fs * 1.1, true, true); c.fillText(s[0][0].toUpperCase() + s[0].slice(1) + ' stall', X + sw / 2, sy + fs * 1.15, sw * .74); font(c, fs * .92, true); c.fillText('earn ' + s[1] + ' coins', X + sw / 2, sy + fs * 2.3, sw * .74); font(c, fs * .92); c.fillText('rent ' + s[2] + ' coins', X + sw / 2, sy + fs * 3.4, sw * .74);
       if (best) { c.strokeStyle = '#ffb23e'; c.lineWidth = 3; rr(c, X - 3, st - 2, sw + 6, sh + 4, 8); c.stroke(); } });
     /* Tavi's cart: two baskets of fruit */
     var cs = fs * 1.4, cy = st + sh + fs * 1.9, cxp = gap; c.fillStyle = '#8a5a2a'; rr(c, cxp, cy, cs * 4.4, cs * 1.1, 5); c.fill(); ol(c, 1.5);
@@ -575,7 +594,8 @@ var GMQTrade = (function () {
     closeToy: function () { document.getElementById('toy').innerHTML = ''; pad.hidden = true; }, fast: !!Q.fast,
     get cx() { return ctx; }, get vw() { return VW; }, get vh() { return VH; }, get tNow() { return tNow; } };
   function start() { GMQTrade.open(host, saved.state, function (why) { store(); document.getElementById('toy').innerHTML = '<p class="eyebrow">Galactic Trade</p><h3>' + (why === 'finished' ? 'You leave the quiet market.' : 'You leave the trade beacon.') + '</h3><p class="story">Come back when you are ready.</p><div class="field"><button class="btn" type="button" id="reopen">Open the market</button></div>'; document.getElementById('reopen').onclick = start; }); }
-  document.getElementById('again').onclick = function () { saved = { state: { seed: 0 }, bag: {} }; store(); start(); };
+  var sure = 0; document.getElementById('again').onclick = function () { var b = this; if (Date.now() - sure > 4000) { sure = Date.now(); b.textContent = 'Tap again to wipe your trips'; setTimeout(function () { b.textContent = 'Start again'; }, 4000); return; }
+    sure = 0; b.textContent = 'Start again'; saved = { state: { seed: 0 }, bag: {} }; store(); start(); };
   cv.addEventListener('pointerdown', function (e) { var r = cv.getBoundingClientRect(); GMQTrade.tap(e.clientX - r.left, e.clientY - r.top); });
   window.addEventListener('resize', layout); layout();
   function loop(now) { var dt = Math.max(0, Math.min(.1, (now - last) / 1000)); last = now; tNow = (now - T0) / 1000; if (GMQTrade.isOpen()) GMQTrade.frame(dt); else { ctx.fillStyle = '#04060e'; ctx.fillRect(0, 0, VW, VH); } requestAnimationFrame(loop); }
