@@ -40,7 +40,7 @@ From the Algora page, by search [Built]. All of it is kept.
 | **The Twinseers** | "watchers of the two suns". From the lookout: "a great lake. It shines blue on one side and gold on the other" |
 | **The Eights** | "the crew of the S.S. Infinity". The hedge in the old wall: "KNOCK THE WAY THE WOODS COUNT." "You do not know that knock yet." |
 | **The day the Gate broke** | "every rule plate burnt black"; "The bridge over the Rill went up"; the harbour's loading board "went dark"; "Something black fell" by the old wall: a piece of the Gate's own plate |
-| **The Gate's code** | In the Makers' box in the well: "The Gate's code is five rules in a row. Each people keeps one." |
+| **The Gate's code** | In the Makers' box in the well: "The Gate's code is five rules in a row. Each people keeps one." **Marc, 25 November: a gate should not need rules; it needs five stones, one from each people** (section 2) |
 
 **From the design note, not built [Design]:** the Furrows' "big-fact wheel burnt out", and their finished example is "a quilt, not a field"; the Eights' ship "came down in the woods", its "log pages are torn", and the captain has sayings; the Twinseers' "watch house keeps the two suns in step... The dials have drifted". **Why the Gate broke is learned "on the main road": "each lit stone shows one picture of that day in the Gate's ring."**
 
@@ -69,7 +69,7 @@ From the Algora page, by search [Built]. All of it is kept.
 - **The Eights are not in this table.** They are guests from beyond the Gate. Their ship does their counting, as the Year Machine did for the peoples (the Algora note). So the cadet meets the same trouble in them, from the outside.
 - **The arc:** peoples handed skills to machines, and each kept a piece in something ordinary. The cadet finds the pieces, and gives the skills back.
 - **Why it is not random:** each kept piece is that people's way into its own quest. The rhyme teaches the count. The painted board is the finished example. The quilt is the Furrows' [Design]. The Eights' log is their first problem [Design].
-- **It does not change the built Gate story:** each people still keeps one Rule Stone, and one rule of the Gate's code [Built].
+- **The Gate needs each people's stone, not a code** [Source: Marc, 25 November]. Why [Proposal]: the Makers built the Gate from all five peoples' work. A people's stone lights when that people is whole again, with its skill given back. So the cadet mends the Gate by helping the peoples, not by cracking a code. The rules a child finds are how each people's machines work, never parts of the Gate.
 
 ---
 
