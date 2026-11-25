@@ -144,7 +144,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 'use strict';
 const $ = id => document.getElementById(id);
 const PLANET = 'Planet Algora';          /* [Proposal] the name is Marc's to choose. It is used from here only. */
-const VERSION = 'big world 12';
+const VERSION = 'big world 13';
 const KEY = 'gmq-bigworld-v1', GAMEKEY = 'gmq-station-sketch-v5';      /* its own save. The game's save is read for the cadet's name only, and never written. */
 
 /*MAP-BEGIN (painted by checks/bigworld_map_build.js; change that file, not these letters)*/
@@ -1261,7 +1261,13 @@ function fleetRules(then) { tell(['My harbour has three kinds of raft. The numbe
 function bakerPic() { return { title: 'The baker\'s oven', inset: '#7a3a2a', draw(w, h) { const st = READ.i, u = Math.min(w, h * 1.4), fs = Math.max(13, u * .04); cx.fillStyle = '#f3e7cf'; rr(w * .04, h * .03, w * .92, h * .78, 12); cx.fill(); ol(3);
     text('24 loaves', w / 2, h * .1, fs * 1.2, '#6b4a22'); for (let i = 0; i < 24; i++) { const X = w * (.5 - .345 + (i % 12) * .0627), Y = h * (.17 + Math.floor(i / 12) * .055); cx.fillStyle = '#c98a4a'; cx.beginPath(); cx.ellipse(X, Y, u * .02, u * .013, 0, 0, 7); cx.fill(); ol(1.2); }
     const rows = [['trays for 5', '4 trays: 20.  5 trays: 25.', 'no number of full trays', st >= 1, false], ['trays for 6', '4 × 6 = 24', 'but only 3 trays', st >= 2, false], ['trays for 8', '3 × 8 = 24', '3 trays: yes!', st >= 3, true]];
-    rows.forEach((rw, i) => { if (!rw[3]) return; const y = h * (.34 + i * .135); cx.fillStyle = rw[4] ? '#dff2d8' : '#f6dcd6'; rr(w * .08, y - h * .05, w * .84, h * .11, 8); cx.fill(); ol(2); text(rw[0], w * .11, y, fs * .9, INK, 'left'); text(rw[1], w * .5, y, fs * .9, INK, 'center'); text(rw[2], w * .89, y, fs * .78, rw[4] ? '#1c7c3a' : '#b3261e', 'right', FONT_B); }); } }; }
+    /* each row: the trays on the left; beside them the working, and under it what it means. One size for all three rows, as big as fits, so no words meet
+       [Marc, 25 November, a photo: "4 trays: 20. 5 trays: 25." was drawn over "no number of full trays"; checks/bigworld_picture_words_check.js now looks] */
+    const wid = (t, px, font) => { cx.font = `700 ${px}px ${font}`; return cx.measureText(t).width; }, rh = h * .145, pad = w * .03, gap = w * .03, avail = w * .84 - pad * 2;
+    let f = Math.min(fs * .9, rh / 2.7); const need = px => Math.max(...rows.map(r => wid(r[0], px, FONT_D))) + gap + Math.max(...rows.map(r => Math.max(wid(r[1], px, FONT_D), wid(r[2], px * .9, FONT_B)))); const n0 = need(f); if (n0 > avail) f *= avail / n0;
+    const lx = w * .08 + pad, rx = lx + Math.max(...rows.map(r => wid(r[0], f, FONT_D))) + gap;
+    rows.forEach((rw, i) => { if (!rw[3]) return; const y = h * (.34 + i * .165); cx.fillStyle = rw[4] ? '#dff2d8' : '#f6dcd6'; rr(w * .08, y - rh / 2, w * .84, rh, 8); cx.fill(); ol(2);
+      text(rw[0], lx, y, f, INK, 'left'); text(rw[1], rx, y - f * .62, f, INK, 'left'); text(rw[2], rx, y + f * .66, f * .9, rw[4] ? '#1c7c3a' : '#b3261e', 'left', FONT_B); }); } }; }
 function showBaker(then) { const back = PIC; PIC = bakerPic(); setPlace(); tell(['I bake 24 loaves. I have trays for 5, trays for 6 and trays for 8. A tray goes in full, or it burns.', 'Trays for 5? 4 trays hold 20. 5 trays hold 25. No number of full trays makes 24.', 'Trays for 6? 4 times 6 is 24. But I have only 3 trays for 6.', 'Trays for 8? 3 times 8 is 24. And I have 3 of them. So: 3 trays of 8.', 'Your rafts are my trays. Your orders are my loaves.'], () => { setFlag('sawBaker'); PIC = back; setPlace(); if (then) then(); }, 'The baker'); }
 /* the fleet: the harbour's rafts in rows by kind; each town's line of rafts in its channel; the water gate with three lamps */
 function fleetPic() { return { title: 'The loading board', readDesk: true, sail: 0, busy() { return this.sail > 0 && this.sail < 1; }, draw(w, h, dt) { const F = S.fleet, nm = { stilt: 'Stilt Town', reed: 'Reed Town', mud: 'Mud Town' }, top = 58; cx.fillStyle = '#2f6fd0'; cx.fillRect(0, 0, w, h); cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { const yy = h * (i + .5) / 14, o = ((tNow * .15 + i * .37) % 1) * w; cx.beginPath(); cx.moveTo(o, yy); cx.lineTo(o + w * .05, yy); cx.stroke(); }
