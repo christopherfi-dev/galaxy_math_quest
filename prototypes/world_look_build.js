@@ -5,7 +5,7 @@
 const fs = require('fs'), path = require('path');
 const here = __dirname, src = path.join(here, 'big_world.html'), kitFile = path.join(here, 'world_look_kit.js'), out = process.argv[2] ? path.resolve(process.argv[2]) : path.join(here, 'world_look_sample.html');      /* another place to write it: for trying a change while a test runs on the sample */
 let html = fs.readFileSync(src, 'utf8'); const kit = fs.readFileSync(kitFile, 'utf8');
-const cast = fs.readFileSync(path.join(here, 'world_cast_sprites.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_cast_kit.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_opening_kit.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_walk_kit.js'), 'utf8');      /* Elder Thimble and Pim from Gemini, alive in the village */
+const cast = fs.readFileSync(process.env.CAST_SPRITES_FILE || path.join(here, 'world_cast_sprites.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_cast_kit.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_opening_kit.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_walk_kit.js'), 'utf8');      /* Elder Thimble and Pim from Gemini, alive in the village */
 const once = (what, from, to) => { const n = typeof from === 'string' ? html.split(from).length - 1 : (html.match(new RegExp(from.source, 'g')) || []).length;
   if (n !== 1) { console.error(`STOP: "${what}" matched ${n} times, not once. The big world page has changed; look at it before going on.`); process.exit(1); }
   html = html.replace(from, typeof from === 'string' ? () => to : to); };      /* a plain text change is put in as it is: no $ patterns */
@@ -23,11 +23,17 @@ once('the elder in the village', "else if (t.id === 'elder') mender(X, base - r 
 // 3b2. the crowd: on the walking map (the Rillfolk keep the page's drawing), and the Mender at the first lesson
 once('the crowd on the map', "else if (t.kind === 'being') (t.folk === 'rill' ? rillfolk : mender)(X, Y + ts * .02, ts * .3, t.col || '#c9793a', t.x * 3 + t.y, '');",
   "else if (t.kind === 'being') { if (!CAST.crowd(t, X, Y, ts)) (t.folk === 'rill' ? rillfolk : mender)(X, Y + ts * .02, ts * .3, t.col || '#c9793a', t.x * 3 + t.y, ''); }");
+// the Rillfolk of the Reach, from Marc's Gemini pictures once they are in (prototypes/world_cast_build.py); until then CAST.draw says no, and the game draws its own [Proposal, 25 November]
+once('the baker in the harbour', "rillfolk(X, base - r * .8, r * .78, '#5aa8c8', 1, 'hat');", "if (!CAST.draw('baker', X, base, r)) rillfolk(X, base - r * .8, r * .78, '#5aa8c8', 1, 'hat');");
+once('the net weaver in the harbour', "rillfolk(X, base - r * .8, r * .78, '#4f9fb8', 2, '');", "if (!CAST.draw('netmender', X, base, r)) rillfolk(X, base - r * .8, r * .78, '#4f9fb8', 2, '');");
+once('the harbour keeper', "else if (id === 'keeper2') rillfolk(X, base - r * 1.0, r * 1.0, '#2f7fc0', 3, 'cap');", "else if (id === 'keeper2') { if (!CAST.draw('keeper2', X, base, r)) rillfolk(X, base - r * 1.0, r * 1.0, '#2f7fc0', 3, 'cap'); }");
+once('the old singer', "else if (id === 'singer') rillfolk(X, base - r * .76, r * .74, '#8fa8b8', 5, 'old');", "else if (id === 'singer') { if (!CAST.draw('singer', X, base, r)) rillfolk(X, base - r * .76, r * .74, '#8fa8b8', 5, 'old'); }");
+once('the net weaver at her bench (the rope task)', "rillfolk(w * .15, gy - u * .15, u * .15, '#4f9fb8', 2, '');", "if (!CAST.draw('netmender', w * .15, gy, u * .15)) rillfolk(w * .15, gy - u * .15, u * .15, '#4f9fb8', 2, '');");
 once('the Mender at the first lesson', "mender(w * .08 + bw * .62, h * .84, bw * .1, '#c9793a', 5, '');",
   "if (!CAST.mender('lesson', '#c9793a', w * .08 + bw * .62, h * .84 + bw * .098, bw * .27, 'A Mender')) mender(w * .08 + bw * .62, h * .84, bw * .1, '#c9793a', 5, '');");
 // 3d. the start [Marc, 24 November]: land on the meadow and be met there; a way to skip the start once it has been seen (prototypes/world_opening_kit.js)
 once('the reading card\'s top line', '<div id="readwho"></div>', '<button class="btn quiet" id="readskip" type="button" hidden>Skip the start ›</button><div id="readwho"></div>');
-once('the reading card shown', "function showRead() { const rd = $('read');", "function showRead() { const rd = $('read'); $('readskip').hidden = !OPENING.canSkip();");
+once('the reading card shown', "function showRead() { const rd = $('read');", "function showRead() { const rd = $('read'); OPENING.showSkip();");
 once('a tap on the card while OK sleeps', "e.target.closest('#readsay')", "e.target.closest('#readsay, #readskip')");
 once('the story\'s pictures', "function introPic() { return { title: 'Galaxy Patternox', draw(w, h) { const s = READ.i;",
   "function introPic() { return { title: 'Galaxy Patternox', draw(w, h) { const s = READ.i; if (s >= 5) { if (this.title !== hereName()) { this.title = hereName(); setPlace(); } drawMap(.016); return; }      /* the last page, \"You land in a green meadow\": the meadow itself */");

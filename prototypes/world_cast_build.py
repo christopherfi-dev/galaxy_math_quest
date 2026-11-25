@@ -7,7 +7,12 @@ For every frame (a whole-body picture of one feeling):
   - its anchor: the middle of the lid's knob (left and right) and the feet line (up and down; a jumping frame keeps its jump)
   - its eyes (white, round, in the face), for blinking in code, and the colour of the face around them
   - every frame of one character keeps one scale: the knob is the same size in every frame
+THE RILLFOLK (the Reach) [Proposal, 25 November 2026; prompts: proposals/GMQ_Character_Test_Rillfolk_v1_2026-11-25.md]: no knob, so
+  - left and right: the middle of the two eyes (or, with no eyes found, the middle of the body)
+  - scale: one scale for each picture, from the space between the eyes against the calm frame's (Gemini draws everyone in one picture the same size)
+  - a character is built only when all its pictures are in content/art_test_2026-11-25/; until then the game draws its own
 Run:  python3 -I prototypes/world_cast_build.py      (also writes a check picture to the folder given as its first argument, if any)
+      For a trial: CAST_RILL_ART=<folder of pictures> CAST_OUT=<sprites file> python3 -I prototypes/world_cast_build.py
 """
 import base64, io, json, os, sys
 import numpy as np
@@ -15,7 +20,8 @@ from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ART = os.path.join(HERE, '..', 'content', 'art_test_2026-11-24')
-OUT = os.path.join(HERE, 'world_cast_sprites.js')
+RILL_ART = os.environ.get('CAST_RILL_ART') or os.path.join(HERE, '..', 'content', 'art_test_2026-11-25')
+OUT = os.environ.get('CAST_OUT') or os.path.join(HERE, 'world_cast_sprites.js')
 CHECK = sys.argv[1] if len(sys.argv) > 1 else None
 INK = (14, 22, 38)
 
@@ -26,6 +32,17 @@ FRAMES = {   # character: [(frame name, file, figure number in the row (None: th
             ('secret', 'pim_6_feelings.png', 2, 'green'), ('excited', 'pim_6_feelings.png', 3, 'green'), ('spinner', 'pim_7_spinner.png', None, 'green')],
     'mender': [('idle', 'mender_9_sheet.png', 0, 'green'), ('happy', 'mender_10_feelings.png', 0, 'green'), ('worried', 'mender_10_feelings.png', 1, 'green'),
                ('thinking', 'mender_10_feelings.png', 2, 'green'), ('surprised', 'mender_10_feelings.png', 3, 'green')]}
+# the Rillfolk, by the game's own names for them (THINGS and the harbour scene); file names as Marc saves them
+R12, R13, R14, R15, R16, R17, R18 = 'rill_12_keeper_sheet.png', 'rill_13_keeper_feelings.png', 'rill_14_baker.png', 'rill_15_weaver.png', 'rill_16_singer.png', 'rill_17_reach_calm.png', 'rill_18_reach_happy.png'
+RILL = {
+    'keeper2': [('idle', R12, 1), ('happy', R13, 0), ('worried', R13, 1), ('thinking', R13, 2), ('surprised', R13, 3)],
+    'baker': [('idle', R14, 0), ('happy', R14, 1), ('worried', R14, 2), ('thinking', R14, 3)],
+    'netmender': [('idle', R15, 0), ('happy', R15, 1), ('worried', R15, 2), ('thinking', R15, 3)],
+    'singer': [('idle', R16, 0), ('sad', R16, 1), ('remember', R16, 2), ('sing', R16, 3)],
+    'guard': [('idle', R17, 0), ('happy', R18, 0)], 'sp_stilt': [('idle', R17, 1), ('happy', R18, 1)], 'sp_reed': [('idle', R17, 2), ('happy', R18, 2)],
+    'sp_mud': [('idle', R17, 3), ('happy', R18, 3)], 'rafter': [('idle', R17, 4), ('happy', R18, 4)]}
+RILL_H = {'keeper2': 280, 'baker': 260, 'netmender': 260, 'singer': 250}      # the calm frame's height in the sprite, in pixels: enough for the harbour scene on an iPad's sharp screen.
+MAP_H = 190       # the five on the map are drawn smaller there, so their pictures are smaller (a lighter page). How tall each stands in the game is set in the kit
 PROPS = ['hat', 'apron', 'shawl', 'can', 'rod', 'reeds', 'basket', 'toolbox']      # picture 11, row by row
 PROP_FILE = 'mender_11_things.png'
 IDLE_H = {'elder': 300, 'pim': 260, 'mender': 260}      # the idle frame's height in the sprite, in pixels (enough for an iPad's sharp screen)
@@ -188,6 +205,80 @@ for ch, frames in FRAMES.items():
             d.line([ax - 12, ay, ax + 12, ay], fill=(0, 120, 255), width=3); d.line([ax, ay - 12, ax, ay], fill=(0, 120, 255), width=3)
             bgc = Image.new('RGBA', t.size, (96, 170, 92, 255)); bgc.alpha_composite(t); check_tiles.append((f'{ch} {name}', bgc))
 
+def find_eye_pair(fig):
+    """the Rillfolk's two eyes: white pieces with a pupil, the pair most alike in size and height (a white hat, apron or shawl with a fold line is not an eye).
+    Also the body's colour round the eyes, for the eyelids when they blink."""
+    rgb = fig[:, :, :3].astype(int); a = fig[:, :, 3]; h, w = a.shape
+    white = (a > 200) & (rgb.min(axis=2) >= 232) & ((rgb.max(axis=2) - rgb.min(axis=2)) <= 18)
+    c = []
+    for n, cx, cy, box, comp in white_components(white):
+        x0, y0, x1, y1 = box; bw, bh = x1 - x0 + 1, y1 - y0 + 1
+        if n < h * w * .0006 or n > h * w * .05: continue
+        if not (.1 * w < cx < .9 * w and .08 * h < cy < .75 * h): continue
+        if not (.45 < bw / bh < 2.2): continue
+        if not has_pupil(rgb, comp, box): continue
+        c.append((cx, cy, bw / 2, bh / 2, n))
+    best = None
+    for i in range(len(c)):
+        for j in range(i + 1, len(c)):
+            e1, e2 = c[i], c[j]; dx = abs(e1[0] - e2[0])
+            if dx < (e1[2] + e2[2]) * .9 or dx > w * .6: continue
+            score = abs(e1[4] - e2[4]) / max(e1[4], e2[4]) + abs(e1[1] - e2[1]) / h * 4
+            if best is None or score < best[0]: best = (score, e1, e2)
+    if not best: return [], None
+    eyes = sorted([best[1][:4], best[2][:4]], key=lambda e: e[0])
+    yy, xx = np.mgrid[0:h, 0:w]; ring = np.zeros((h, w), dtype=bool)
+    for ex, ey, rx, ry in eyes:
+        d = ((xx - ex) / max(rx, 1)) ** 2 + ((yy - ey) / max(ry, 1)) ** 2; ring |= (d > 1.6) & (d < 3.2)
+    body = ring & (a > 200) & (rgb.max(axis=2) > 90) & (rgb.min(axis=2) < 225)
+    lid = '#%02x%02x%02x' % tuple(int(v) for v in np.median(rgb[body], axis=0)) if body.any() else None
+    return eyes, lid
+
+def body_mid(fig):
+    """the middle of the body, left to right: the middle of the solid rows between a fifth and two thirds of the way down"""
+    a = fig[:, :, 3] > 100; h, w = a.shape; xs = np.nonzero(a[int(h * .2):int(h * .67)])[1]
+    return float(np.median(xs)) if len(xs) else w / 2
+
+missing = {}
+for ch, frames in RILL.items():
+    files = sorted(set(f[1] for f in frames)); gone = [f for f in files if not os.path.exists(os.path.join(RILL_ART, f))]
+    if gone: missing[ch] = gone; continue
+    raw, cache = {}, {}
+    for name, fn, idx in frames:
+        if fn not in cache:
+            rgba = cut(os.path.join(RILL_ART, fn), 'green'); cache[fn] = (rgba, figures(rgba))
+        rgba, figs = cache[fn]
+        if idx >= len(figs): print(f'STOP: {fn} has {len(figs)} figures, not {idx + 1} or more. Look at the picture.'); sys.exit(1)
+        box = figs[idx]; ground = max(f[3] for f in figs); fig = rgba[box[1]:box[3], box[0]:box[2]].copy()
+        eyes, lid = find_eye_pair(fig)
+        raw[name] = dict(fn=fn, fig=fig, eyes=eyes, lid=lid, lift=ground - box[3], mid=body_mid(fig),
+                         d=(eyes[1][0] - eyes[0][0]) if len(eyes) == 2 else None, ex=(eyes[0][0] + eyes[1][0]) / 2 if len(eyes) == 2 else None)
+    idle = raw['idle']; base_scale = RILL_H.get(ch, MAP_H) / idle['fig'].shape[0]
+    ratio = {}      # one scale for each picture: the calm frame's eye spacing against this picture's (the median of its frames)
+    for fn in files:
+        rs = [idle['d'] / r['d'] for r in raw.values() if r['fn'] == fn and r['d'] and idle['d']]
+        hs = [idle['fig'].shape[0] / r['fig'].shape[0] for r in raw.values() if r['fn'] == fn]
+        ratio[fn] = 1.0 if fn == idle['fn'] else float(np.median(rs)) if rs else float(np.median(hs))
+        ratio[fn] = max(.6, min(1.6, ratio[fn]))
+    off = (idle['ex'] - idle['mid']) if idle['ex'] is not None else 0.0      # where the eyes sit from the body's middle, for a frame with closed eyes
+    data[ch] = {'h': RILL_H.get(ch, MAP_H), 'folk': 'rill', 'frames': {}}
+    for name, r in raw.items():
+        s = base_scale * ratio[r['fn']]
+        im = Image.fromarray(r['fig'], 'RGBA'); im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
+        im, pad = outline(im, OUTLINE)
+        kx = r['ex'] if r['ex'] is not None else r['mid'] + off / ratio[r['fn']]
+        ax = kx * s + pad; ay = im.height - pad + r['lift'] * s
+        eyes = [[round(e[0] * s + pad, 1), round(e[1] * s + pad, 1), round(e[2] * s, 1), round(e[3] * s, 1)] for e in r['eyes']]
+        src, n = png64(im); total += n
+        data[ch]['frames'][name] = {'src': src, 'w': im.width, 'h': im.height, 'ax': round(ax, 1), 'ay': round(ay, 1), 'eyes': eyes, 'lid': r['lid'] or idle['lid'] or '#2f7fc0'}
+        print(f'{ch:9} {name:9} {im.width}x{im.height}  eyes {len(eyes)}  scale {s:.3f} (picture {ratio[r["fn"]]:.2f})  lift {r["lift"]}  {n // 1024} KB')
+        if CHECK:
+            t = im.copy(); d = ImageDraw.Draw(t)
+            for e in eyes: d.ellipse([e[0] - e[2], e[1] - e[3], e[0] + e[2], e[1] + e[3]], outline=(255, 0, 0), width=2)
+            d.line([ax - 12, ay, ax + 12, ay], fill=(0, 120, 255), width=3); d.line([ax, ay - 12, ax, ay], fill=(0, 120, 255), width=3)
+            bgc = Image.new('RGBA', t.size, (96, 170, 92, 255)); bgc.alpha_composite(t); check_tiles.append((f'{ch} {name}', bgc))
+for ch, gone in missing.items(): print(f'{ch:9} waiting for: {", ".join(gone)} (the game draws its own until then)')
+
 def pieces2d(rgba, step=8):
     """separate objects on one picture, row by row: found on a coarse grid, then cut at full size"""
     al = rgba[:, :, 3] > 60; h, w = al.shape; small = al[:h - h % step, :w - w % step].reshape(h // step, step, w // step, step).any(axis=(1, 3))
@@ -213,7 +304,7 @@ for name, b in zip(PROPS, boxes):
         bgc = Image.new('RGBA', im.size, (96, 170, 92, 255)); bgc.alpha_composite(im); check_tiles.append(('thing ' + name, bgc))
 
 with open(OUT, 'w') as fh:
-    fh.write('/* Elder Thimble and Pim, cut out from Marc\'s Gemini pictures by prototypes/world_cast_build.py. Do not edit by hand. [Proposal, 24 November 2026] */\n')
+    fh.write('/* Elder Thimble and Pim' + (', the Mender crowd and the Rillfolk' if any(c in data for c in RILL) else '') + ', cut out from Marc\'s Gemini pictures by prototypes/world_cast_build.py. Do not edit by hand. [Proposal, 24 November 2026] */\n')
     fh.write('const CAST_SPRITES = ' + json.dumps(data, separators=(',', ':')) + ';\n')
     fh.write('const CAST_PROPS = ' + json.dumps(props, separators=(',', ':')) + ';\n')
 print(f'wrote {os.path.relpath(OUT)}: {total // 1024} KB of pictures')

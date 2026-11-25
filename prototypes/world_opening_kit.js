@@ -17,6 +17,7 @@ const OPENING = (() => {
   const inStart = () => !!S && (S.intro < 9 || greeting || (!flag('lessonDone') && !flag('metElder')));
   const canSkip = () => inStart() && (seen() || location.hash === '#skip');
   function skip() {
+    if (!canSkip()) return;      /* only during the start: never in the middle of the game */
     clearTimeout(READ.tm); READ.q = []; READ.i = 0; READ.then = null; READ.who = ''; $('read').hidden = true; $('veil').hidden = true;
     greeting = false; S.intro = 9; PIC = null; TASK = null; S.open = null; BOX.on = ''; BOX.v = {};
     const L = S.lesson || (S.lesson = { step: 0, notes: [], last: null }); L.step = 6; L.greeted = 1; setFlag('lessonDone');
@@ -34,10 +35,14 @@ const OPENING = (() => {
     if (!(greeting || (S.intro < 9 && READ.i >= 5 && reading()))) return;
     const talk = reading() && READ.who === 'A Mender'; grow += ((talk ? 1.35 : 1) - grow) * .12;
     const gx = P.px + 1.3, gy = P.py; CAST.mender('lesson', '#c9793a', X(gx) + ts / 2, Y(gy) + ts * .84, ts * .82 * grow, 'A Mender'); }
-  const css = document.createElement('style'); css.textContent = '#read #readskip { float: right; width: auto; display: inline-block; flex: none; font-size: .78rem; padding: 4px 10px; min-height: 30px; margin: -4px -4px 4px 8px; }'; document.head.appendChild(css);
+  const css = document.createElement('style'); css.textContent = '#read #readskip { float: right; width: auto; flex: none; font-size: .78rem; padding: 4px 10px; min-height: 30px; margin: -4px -4px 4px 8px; }'; document.head.appendChild(css);
   const b = document.getElementById('readskip');
   if (b) { b.onclick = e => { e.stopPropagation(); skip(); };      /* small, in the card's corner: set on the button itself, so the page's own button style (full width on a phone) does not win */
-    [['float', 'right'], ['width', 'auto'], ['min-width', '0'], ['display', 'inline-block'], ['flex', 'none'], ['font-size', '.78rem'], ['padding', '4px 10px'], ['min-height', '30px'], ['margin', '-4px -4px 4px 8px'], ['align-self', 'flex-end'], ['justify-self', 'end']].forEach(([k, v]) => b.style.setProperty(k, v, 'important')); }
-  return { canSkip, skip, greet, drawGreeter, mark, get greeting() { return greeting; } };
+    [['float', 'right'], ['width', 'auto'], ['min-width', '0'], ['flex', 'none'], ['font-size', '.78rem'], ['padding', '4px 10px'], ['min-height', '30px'], ['margin', '-4px -4px 4px 8px'], ['align-self', 'flex-end'], ['justify-self', 'end']].forEach(([k, v]) => b.style.setProperty(k, v, 'important')); }
+  /* shown or not, on each card: set on the button itself, so no style of the page can show it when it should be hidden
+     [fault found 25 November: the button's own style showed it on every card, even on a first time, and a tap later in the game reset the start] */
+  function showSkip() { const on = canSkip(); if (b) { b.hidden = !on; b.style.setProperty('display', on ? 'inline-block' : 'none', 'important'); } }
+  if (b) { b.hidden = true; b.style.setProperty('display', 'none', 'important'); }      /* hidden until a card asks (the game's save may not be read yet) */
+  return { canSkip, showSkip, skip, greet, drawGreeter, mark, get greeting() { return greeting; } };
 })();
 /*WORLD-OPENING-END*/

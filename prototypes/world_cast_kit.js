@@ -8,9 +8,17 @@
   - Pim, until his spinner is given back: sad. After: playing with it. (What the child did shows in the picture.)
   - "Look: old" on the Ship panel shows the game's own drawing, as today. If a picture has not loaded, the game's own drawing is used.
   THE CROWD [Marc's pictures 9 to 11]: one ordinary Mender, made into each Mender of the crowd: the game's own copper for each (its col), and one or two things that fit their job.
-  Things they wear sit on the lid; things they carry stand on the ground beside them, so they stay put when the face changes. On the walking map and at the first lesson. */
+  Things they wear sit on the lid; things they carry stand on the ground beside them, so they stay put when the face changes. On the walking map and at the first lesson.
+  THE RILLFOLK [Proposal, 25 November 2026; Marc: "Can we try to upgrade the characters on the next village." Prompts: proposals/GMQ_Character_Test_Rillfolk_v1_2026-11-25.md]
+  - In the harbour: the harbour keeper, the baker, the net weaver and the old singer, each from their own pictures (also the net weaver at her bench, in the rope task).
+  - On the map: the guard, the three speakers and the child, calm, and happy for their happy lines; each grows a little while talking, as the Menders do.
+  - The same breathing, blinking, hop and faces by words as Elder Thimble. The old singer sings once the rice is out (what the child did shows in the picture).
+  - Each one is drawn from a picture only when its pictures are in the page (prototypes/world_cast_sprites.js); until then, the game's own drawing. */
 const CAST = (() => {
-  const NAME = { elder: 'Elder Thimble', pim: 'Pim' }, HEIGHT = { elder: 2.3, pim: 1.7 };      /* on-screen height of the calm frame, in the scene's r (about 130 and 95 pixels on an iPad held sideways); taller, the elder covers the pip store */
+  const NAME = { elder: 'Elder Thimble', pim: 'Pim', keeper2: 'The harbour keeper', baker: 'The baker', netmender: 'The net weaver', singer: 'An old singer',
+    guard: 'A Rillfolk guard', sp_stilt: 'The speaker of Stilt Town', sp_reed: 'The speaker of Reed Town', sp_mud: 'The speaker of Mud Town', rafter: 'A Rillfolk child' };      /* the name their words come under */
+  const HEIGHT = { elder: 2.3, pim: 1.7, keeper2: 2.35, baker: 1.95, netmender: 1.95, singer: 1.75 };      /* on-screen height of the calm frame, in the scene's r (about 130 and 95 pixels on an iPad held sideways); taller, the elder covers the pip store */
+  const MAPH = { rafter: .62 };      /* on the map, in squares: the Rillfolk are "tall" (a Mender is .82); the child is smaller */
   const IMG = {}, PROP = {};
   Object.keys(CAST_PROPS).forEach(k => { const im = new Image(); im.src = CAST_PROPS[k].src; PROP[k] = im; });
   Object.keys(CAST_SPRITES).forEach(c => Object.keys(CAST_SPRITES[c].frames).forEach(f => { const im = new Image(); im.src = CAST_SPRITES[c].frames[f].src; IMG[c + '.' + f] = im; }));
@@ -22,20 +30,35 @@ const CAST = (() => {
       [/^You know how already|^Look: our Rule Stone|^And for you|^You have made|^Long ago I found|^3 times 4 is 12/, 'happy'],
       [/^Four machines stand|^Here are our last|^Use only a machine|^The other four|^Keep it safe|^The Rillfolk are over|^I poured in 2|^Now you\./, 'idle']],
     pim: [[/lost my spinner/, 'sad'], [/That is my spinner|You found it|I will write back/, 'joy'], [/Want a secret|Shh|Push the old post|The big kids cross/, 'secret'],
-      [/^Whee! Look at it spin/, 'spinner'], [/count to 100 by fives|A bottle\? With a note|Wim!/, 'excited'], [/^Hello! I am Pim\.$/, 'idle']] };
+      [/^Whee! Look at it spin/, 'spinner'], [/count to 100 by fives|A bottle\? With a note|Wim!/, 'excited'], [/^Hello! I am Pim\.$/, 'idle']],
+    /* the Rillfolk [Proposal: Claude's reading of each line; the table is in the prompts note, section 4] */
+    keeper2: [[/^My harbour has three kinds|^Rule (one|two|three)|^The water gate has a lamp|^Three towns have sent|Year Machine's hand/, 'thinking'],
+      [/high water is coming|went dark|nobody can load/, 'worried'], [/^The rice is out/, 'surprised'],
+      [/^A visitor from the sky! I am the harbour keeper|^All three tags hang|Good\.|Your raft is tied|One day it will carry you far/, 'happy'], [/^Go to each town|^The board has/, 'idle']],
+    baker: [[/^Trays for 6\?/, 'worried'], [/^Trays for 8\?|^Your rafts are my trays/, 'happy'], [/^I bake|^Trays for 5\?/, 'thinking']],
+    netmender: [[/Long reeds|The rope is yours|Not one more, not one less|bundles\. Good/, 'happy'], [/too short|too long|not enough|will not reach/, 'worried'],
+      [/How deep|You do not know\?|A knot is a number|shortest reed|Need a rope\?|I need \d+ bundles|The longest reeds grow/, 'thinking']],
+    singer: [[/throat is dry|No song/, 'sad'], [/I knew a song|forget how|footprints|When I was small/, 'remember'], [/^La, la|^Sing with me/, 'sing']],
+    guard: [[/^A visitor from the sky|Rillfolk thank you|is mended|I will open the gate/, 'happy']],
+    sp_stilt: [[/^The rice came|will eat this season|^Welcome to/, 'happy']], sp_reed: [[/^The rice came|will eat this season|^Welcome to/, 'happy']],
+    sp_mud: [[/^The rice came|will eat this season|^Welcome to/, 'happy']],
+    rafter: [[/^The fleet went out|^Do you really come from the sky|^I can pole|One day I will steer/, 'happy']] };
   const st = {};
   Object.keys(NAME).forEach((c, i) => { st[c] = { page: '', hop: -9, blinkAt: 1.5 + i * 1.7, phase: i * 1.3 }; });
+  const shown = {};      /* the frame each one shows now (for checks) */
   function faceFor(c, text) { for (const [re, f] of LINES[c]) if (re.test(text)) return f; return /\?\s*$/.test(text) ? 'thinking' : /!/.test(text) ? 'happy' : 'idle'; }
-  function rest(c) { return c === 'pim' ? (flag('spinGiven') ? 'spinner' : 'sad') : 'idle'; }
+  function rest(c) { return c === 'pim' ? (flag('spinGiven') ? 'spinner' : 'sad') : c === 'singer' && flag('fleetDone') ? 'sing' : 'idle'; }
   function speaking(c) { return reading() && READ.who === NAME[c]; }
   /* draw one of them with the feet on the line base, at x X; r is the scene's size. Returns false to let the game draw its own. */
-  function draw(c, X, base, r) {
+  function draw(c, X, base, r) { return paint(c, X, base, HEIGHT[c] * r); }
+  /* the same, H tall (in pixels) */
+  function paint(c, X, base, H) {
     if (!WL.on || !CAST_SPRITES[c]) return false;
     const s = st[c], talk = speaking(c), text = talk ? READ.q[READ.i] || '' : '', key = talk ? READ.i + '|' + text : '';
     if (key && key !== s.page) s.hop = tNow; s.page = key;
     const fname = talk ? faceFor(c, text) : rest(c), fr = CAST_SPRITES[c].frames[fname] || CAST_SPRITES[c].frames.idle, im = IMG[c + '.' + (CAST_SPRITES[c].frames[fname] ? fname : 'idle')];
     if (!im || !im.complete || !im.naturalWidth) return false;
-    const H = HEIGHT[c] * r, k = H / CAST_SPRITES[c].frames.idle.h;
+    shown[c] = CAST_SPRITES[c].frames[fname] ? fname : 'idle'; const k = H / CAST_SPRITES[c].frames.idle.h;
     const br = Math.sin(tNow * 2.2 + s.phase), tb = talk ? Math.sin(tNow * 9) * .012 : 0, sy = 1 + .016 * br + tb, sx = 1 - .011 * br;
     const th = tNow - s.hop, dy = th < .42 ? -Math.sin(th / .42 * Math.PI) * H * .09 : 0, land = th >= .42 && th < .56 ? 1 - .07 * Math.sin((th - .42) / .14 * Math.PI) : 1;
     cx.fillStyle = 'rgba(0,0,0,.24)'; cx.beginPath(); cx.ellipse(X, base, fr.w * k * .3 * (1 + dy / H), Math.max(3, H * .05), 0, 0, 7); cx.fill();
@@ -84,10 +107,11 @@ const CAST = (() => {
     if (tNow >= s.blinkAt && tNow < s.blinkAt + .14) for (const [ex, ey, erx, ery] of fr.eyes) { const ox = ex - fr.ax, oy = ey - fr.ay;
       cx.fillStyle = col; cx.beginPath(); cx.ellipse(ox, oy, erx * 1.12, ery * 1.12, 0, 0, 7); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = Math.max(2.5, ery * .2); cx.lineCap = 'round'; cx.beginPath(); cx.moveTo(ox - erx * .95, oy + ery * .1); cx.quadraticCurveTo(ox, oy + ery * .55, ox + erx * .95, oy + ery * .1); cx.stroke(); cx.lineCap = 'butt'; }
     cx.restore(); return true; }
-  /* on the walking map: a Mender of the crowd stands on its square (the Rillfolk are another people, and keep the game's drawing) */
-  const grows = {};      /* a Mender talking on the map grows a little, so the face and the hop can be seen [Proposal, after Marc: "right now they're not really moving in any way"] */
-  function crowd(t, X, Y, ts) { if (t.folk === 'rill') return false; const talk = reading() && READ.who.toLowerCase() === String(t.name).toLowerCase(), g = grows[t.id] = (grows[t.id] || 1) + ((talk ? 1.35 : 1) - (grows[t.id] || 1)) * .12;
+  /* on the walking map: a Mender of the crowd, or one of the Rillfolk with pictures of their own, stands on its square */
+  const grows = {};      /* talking on the map, they grow a little, so the face and the hop can be seen [Proposal, after Marc: "right now they're not really moving in any way"] */
+  function crowd(t, X, Y, ts) { const talk = reading() && READ.who.toLowerCase() === String(t.name).toLowerCase(), g = grows[t.id] = (grows[t.id] || 1) + ((talk ? 1.35 : 1) - (grows[t.id] || 1)) * .12;
+    if (t.folk === 'rill') return !!NAME[t.id] && paint(t.id, X, Y + ts * .34, ts * (MAPH[t.id] || .95) * g);
     return mender(t.id, t.col || '#c9793a', X, Y + ts * .34, ts * .82 * g, t.name); }
-  return { draw, faceFor, mender, crowd, crowdFace, test: { blinkNow: c => { st[c].blinkAt = tNow; } } };      /* test: for checks only */
+  return { draw, paint, faceFor, mender, crowd, crowdFace, test: { blinkNow: c => { st[c].blinkAt = tNow; }, shown: c => shown[c] || '', clear: () => { Object.keys(shown).forEach(k => delete shown[k]); } } };      /* test: for checks only */
 })();
 /*WORLD-CAST-END*/

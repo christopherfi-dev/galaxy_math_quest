@@ -123,6 +123,22 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 - **Why A:** it answers "how would it stop" (the child lifts the finger); children know it from other games; nothing new on the screen; the child, not the game, decides where to stop. B lets the game decide (it may walk past what the child wanted). C skips the walk, where the finds are; it may still be good for long trips later.
 - **Tests:** `checks/world_walk_test.js` passes on a phone and an iPad. With hold to walk in (25 November): `bigworld_reading_test.js` passes; `bigworld_signs_test.js` passes (48 walks); `bigworld_play_test.js` has only the 3 known faults ("no lesson at the ship after the story", the new start, by design) and passes everything else at all three sizes.
 
+## 3e. The Rillfolk of the Reach: ready, waiting for pictures [Source: Marc, 25 November: "Can we try to upgrade the characters on the next village."]
+
+- **Prompts 12 to 18:** `proposals/GMQ_Character_Test_Rillfolk_v1_2026-11-25.md`. Round 1 is the harbour (the keeper, the baker, the net weaver, the old singer). Round 2 is the map (the guard, the three speakers, the child).
+- **Ready in the sample, before the pictures come** [Proposal]. Each one is drawn from a picture once its pictures are in; until then, the game's own drawing.
+  - `prototypes/world_cast_build.py`: cuts them out. The Rillfolk have no knob, so the eyes set the scale and the middle. It builds only the characters whose pictures are in `content/art_test_2026-11-25/`.
+  - `prototypes/world_cast_kit.js`: the same breathing, blinking, hop and faces by words as Elder Thimble. Their lines and faces are in the prompts note, section 4. The old singer sings once the rice is out.
+  - `prototypes/world_look_build.js`: five lines changed: the four in the harbour, and the net weaver at her bench in the rope task.
+- **Tried with stand-ins only:** the game's own Rillfolk drawing, drawn big on green and cut out the same way. Never published. `checks/world_rill_test.js` passes with them on three screens.
+- **Found while checking:** the baker speaks only over his oven picture, so his faces are never seen in the harbour. Choice for Marc: put him in the oven picture too (as the net weaver is at her bench), or keep only his calm picture.
+
+## 3f. A fault in "Skip the start", found and fixed (25 November)
+
+- **The fault:** "Skip the start" showed on **every** reading card, even on a child's first time, and a tap on it later in the game started the skip again: it replaced the card being read and set the start as done. It was on the demo link.
+- **Why it was missed:** my test checked the button's hidden setting, not whether it could be seen. My own style rule for the button overrode that setting.
+- **Fixed:** the button is shown or hidden on each card by the kit itself, and a skip is refused after the start. `checks/world_opening_test.js` now checks what a child can see, on later cards too. It finds 10 faults in yesterday's copy, and none now.
+
 ## 4. Tests
 
 - `checks/world_look_check.js`: **passes.** Now also: both characters' pictures load and draw, and three lines get the right face.
