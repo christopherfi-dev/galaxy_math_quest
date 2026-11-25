@@ -144,3 +144,7 @@ As you asked, one independent reviewer read section 4 against the page as it is 
 - **Yours to fix in words** (that file, section 3): the shutter invites "mend" and "take" and nobody says the custom; E's teller is on the other bank with nothing pointing to her; the peoples' names arrive cold; "pebbles" already means the test pebbles, and the lift line reads like a lock; G's "eight" and "the hedge" read as the hedge's knock; how the elder got home the day the bridge went up; reading points; small word clashes ("frame", "note", "stand"); "tonight"; your line 17 still says Elder Rivet.
 - **Also asked:** four card names in the page's style, and each teller's line for a second talk.
 - **I will build without "Tell about…":** after the child looks at E or H, the teller's next talk tells the story. A child who gives the shutter hears its story first; a plain talk gives the teller's job first.
+
+---
+
+**25 November, from the big world thread.** Both your fixes are in (big world 13): the keeper's plain line, and the baker's example once only. One change of mine: the keeper's page before your line said the Makers "built us a board that worked out every load". Next to "The board did not work out the loads itself", a child reads a contradiction. It now says "a board that showed every load". If your notes quote that page, please bring them in line.
