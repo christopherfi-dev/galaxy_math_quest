@@ -21,7 +21,7 @@
 - **One cause:** the Makers' Year Machine did all the planning. The Gate broke, and the Year Machine burnt with it. Nobody remembers how to plan a year by hand.
 - **The table the big world thread asked for is section 1.** The rest explains it.
 - **Three things nobody had decided** have options in section 6.
-- **Thirty decisions are yours.** Section 9. That is too many. The maths thread's note names the three that matter for a first build, and I agree with its list. Three shape the rest: why the Gate broke, the year, and "decided once".
+- **Thirty decisions were listed.** Section 9. **On 24 November Marc decided three (18, 29, 30) and let every other one go on its pick for the trial** (section 16j). That was too many to ask. The maths thread's note names the three that matter for a first build, and I agree with its list. Three shape the rest: why the Gate broke, the year, and "decided once".
 
 ### The story in one breath [Proposal]
 
@@ -59,9 +59,9 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 |---|---|---|---|
 | The Menders | Mender Meadow | beans, fruit | They throw nothing away. They count with pips in bowls. |
 | The Rillfolk | the Reach: Stilt Town, Reed Town, Mud Town | river rice, fish, roof reed, mats | They sing their counts [Built: they sing]. Houses on legs [Built]. Their tally keepers count on sticks. On Market day their children play Shells. |
-| The Furrows | the Terrace Hills | beans, stone | They hire out their carts. They lay a white stone on the wall for each load. Their tally keeper sells the oil. |
+| The Furrows | the Terrace Hills | beans, stone | They hire out their carts. They drop a lump of white chalk where each load is set down. Their tally keeper sells the oil. |
 | The Twinseers | the Lake of Two Suns | nothing | They watch the suns. At New Year they say how strong the gold sun is, and how high the water will come. |
-| The Eights | the Pattern Woods, by their ship | wood | Guests. The ship's crew. No plots and no store. |
+| The Eights | the Pattern Woods, by their ship | nothing | Guests. The ship's crew. No plots and no store. They stay by their ship (the peoples note, `proposals/GMQ_Algora_Story_Peoples_v1_2026-11-24.md`). |
 
 - **Each town has a tally keeper,** a man or a woman. **The tally keeper is the town's speaker** [Built: "the speaker of Stilt Town"]. A child talks to "the speaker", so never meets the harbour keeper or the orchard keeper [Built] by mistake. At the lake the cadet speaks only with their own town's speaker and the seller. This note says "the keeper" and "she" for short.
 - **At the lake, every count is a stick.** At home each people counts its own way: pips, songs, white stones. At the Lake Market all five read a tally stick.
@@ -76,7 +76,7 @@ All [Proposal] unless tagged. Sections 2 to 5 say why.
 | 4 | Fruit [Built: the orchard] | tree | count day | jars | eating |
 | 5 | Roof reed | plot | count day | bundles | new roofs, before the rain. Roofs rot each wet season. |
 | 6 | Stone [Source: "how much stone do we need in the 12th month", 22 November, in `INFO_FROM_MARC.md`] | cart | count day | blocks | the flood wall. The high water rolls it down every year. |
-| 7 | Wood | cutter | count day | logs | cooking fires, by day. The Eights cut it. No decision here uses it yet. |
+| 7 | Wood | cutter | count day | logs | cooking fires, by day. Cut at the edge of the Woods. No decision here uses it yet. |
 | 8 | Reed mats [Built: the net weaver; the reed cutter] | weaver | count day | mats | the Furrows' oil presses. Nuts are pressed between green mats, and a mat presses for one year: this year's mats press next year's oil. The Furrows keep them green in the hill pools. A dry mat cracks in the press. |
 | 9 | Lamp oil | press | count day | pots | lamps, in the white months. One pot fills one lamp. The Furrows press it from hill nuts. |
 
@@ -116,7 +116,7 @@ All [Proposal] unless tagged.
 |---|---|---|
 | **The Tally Time** | Each town planned by hand. In Gold month 1 a keeper drew a line on the store wall: what the town needed. Beside it she scratched her plan: so many plots, so many months of carts. Then one cut for each count day, climbing to meet the line. She made a verse for that year's count, and hummed it as she cut. | Old rows on every store wall: a line and a plan first, then cuts up to the line. And the old singer, who heard her gran hum. |
 | **The Thin Year** | One year a plan was wrong. A store ran out in White month 2. | One old row, on Mud Town's store wall, whose cuts stop short of its line. |
-| **The Makers' Time** | The best planners of every people met at the Lake Market. They built **the Year Machine** at the lake, to plan every town's year, so it could not happen again. They also built the Gate, and small machines that sort and count, one rule each [Built: the Meadow's machines]. | The Makers' coin: "That coin was my grandfather's" [Built]. The small machines [Built]. The Year Machine's black frame at the Lake Market. The harbour's loading board [Built], the Year Machine's hand: "a board that worked out every load". |
+| **The Makers' Time** | The best planners of every people met at the Lake Market. They built **the Year Machine** at the lake, to plan every town's year, so it could not happen again. They also built the Gate, and small machines that sort and count, one rule each [Built: the Meadow's machines]. | The Makers' coin: "That coin was my grandfather's" [Built]. The small machines [Built]. The Year Machine's black frame at the Lake Market. The harbour's loading board [Built]: it showed the loads the Year Machine worked out. |
 | **Sixty years** | The Year Machine planned. At each Market it scratched every keeper's stick ahead, one count day at a time, to its ring. The keepers made one cut each count day, and the cuts landed on the scratches. Nobody asked how it knew. Nobody scratched a plan on a wall any more. | Sixty newer rows on each wall: a line, cuts, and no plan beside them. One old stick, kept by the oil seller. |
 | **Now** | The Gate broke. The Year Machine burnt with it: only its black frame is left. The loading board went dark [Built]. Every rule plate on the small machines burnt black [Built]. | The Year Machine's black frame. Keepers who can count what has come in, and cannot say what will. |
 
@@ -124,7 +124,7 @@ All [Proposal] unless tagged.
 - **A keeper shaves her stick smooth at New Year,** for the new year's cuts. So no keeper has an old stick to copy. Only the oil seller kept one: the Year Machine's last.
 - **The Meadow's machines [Built] are small.** Each follows one rule: it sorts, or counts. Mending their plates lets them work again. None of them ever planned a year. The Year Machine cannot be rebuilt: it burnt to its frame, and nobody knows how it was made.
 - **What was lost is exact.** A keeper can count what has come in. She can say what the town needs, from the Twinseers' words and her old rows. What nobody can do is work out, in the first week, what will reach that line. That is why a table is kept (the cuts), and why a child's plan is worth something.
-- **The Makers were these peoples' own great-grandparents.** (Decision 6. It changes no built words: Elder Rivet says only "long ago".)
+- **The Makers were these peoples' own great-grandparents.** (Decision 6. It changes no built words: Elder Thimble (once Elder Rivet) says only "long ago".)
 - **The keeper could do it, if someone showed her.** She can count. She has shells to count with. Nobody has counted on in sixty years. The cadet does it. She learns by watching the year come right. At the next New Year she asks: "How did you know?", which invites the cadet's own words [Proposal]. Nothing hangs on the answer. That is the arc: the cadet does not replace the keepers. The cadet gives the skill back.
 - **What a child should come away knowing:** a people handed their planning to a machine, and forgot how. Planning ahead is what keeps a town fed.
 
@@ -136,7 +136,7 @@ The game has no clock, so the story must say when "now" is, and what moves it.
 
 | When | What | What moves time on |
 |---|---|---|
-| **Gold month 9** | The S.S. Infinity comes through the Gate. The Gate breaks. The Year Machine burns, and its hand, the harbour's loading board, goes dark [Built], just as the loads must be worked out. The call for help goes out [Built]. **The cadet lands.** The high water is coming [Built]. | |
+| **Gold month 9** | The S.S. Infinity comes through the Gate. The Gate breaks. The Year Machine burns, and the harbour's loading board, which only showed its loads, goes dark [Built], just as the loads must be worked out. The call for help goes out [Built]. **The cadet lands.** The high water is coming [Built]. | |
 | **Last Raft** | The Reach's fleet [Built] is this day's work. | The fleet sails when the cadet has loaded it. Or the cadet tells the harbour keeper to sail without them: she loads by guess. Then one town gets too much and one too little, and White month 3 is thin there. Loaded by the cadet, each town is short only by the crew's extra mouths. |
 | **White months 1 to 3** | High water. This year's stores were planned by the Year Machine, before the ship's crew came. So every town is a little short. | Shown, not walked: the whole Reach at night, from the water. Then New Year. |
 | **Gold month 1, New Year** | The Year Machine is gone. For the first time in sixty years, somebody must make the plan by hand. **The deciding years begin here.** | |
@@ -214,7 +214,7 @@ The five peoples, their names and their regions are [Built]. You have confirmed 
 - **Each people has a custom of its own** (the table in section 1), so they are not one people in five costumes. This is a start, not enough. Homes, food and play are still to write.
 - **Each town has one tally keeper.** The keeper makes the count day's cut, and can tell the cadet what the town needs, from the Twinseers' words and the old rows. No keeper has worked out what will come in.
 - **The Twinseers watch the suns.** At New Year they say two things: how strong the gold sun is this year, and how high the water will come. They say "stronger" or "weaker", never a number. So a plot brings in a different amount each year, the river gives more or less reed, and the wall needs a different height. That is why an old row on a wall is never this year's answer.
-- **The Eights are the ship's crew.** Guests. Extra mouths in every town's need. They cut wood for their keep. Their ship did their counting, as the Year Machine did here, and the ship is dark. They cannot carry a row on either. They do not know a plot from a pond, and they ask the cadet too.
+- **The Eights are the ship's crew.** Guests. Extra mouths in every town's need: the towns feed their guests. They stay by their ship. Their ship did their counting, as the Year Machine did here, and the ship is dark. They cannot carry a row on either. They do not know a plot from a pond, and they ask the cadet too.
 
 **The same need in many places:** the first kind is asked in the three Rillfolk towns, which weave. The other two kinds are parked; the Mender village and the Furrows' terraces wait for them. A kind is asked again, with new numbers, until it comes out right. Whether three towns are enough is the big world thread's to judge.
 
@@ -412,7 +412,7 @@ In real life a little extra is good sense. The story must not teach that care is
 
 I read the big world thread's notes, your two Patternox pages, and the story lines of its page by search. **I did not read every line of the page, or play it.** So two claims in this note rest on a search, not a full read: that the built quests fit the dates in section 3, and that making the Makers great-grandparents changes no built words. **I did not read its Terrace Hills note:** I use only the place's name.
 
-**Keep, as it is:** the planet, the two suns, the Gate, the machines and burnt plates, the Menders, Elder Rivet, the pips, the Rillfolk, the three towns, the harbour board, the fleet, the high water, the singing, the ferry rope, the coin, the shard.
+**Keep, as it is:** the planet, the two suns, the Gate, the machines and burnt plates, the Menders, Elder Thimble, the pips, the Rillfolk, the three towns, the harbour board, the fleet, the high water, the singing, the ferry rope, the coin, the shard.
 
 | | Kind | What is built | Why it is a fault | Fix | Cost |
 |---|---|---|---|---|---|
@@ -424,8 +424,8 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | 5 | Unsaid | Pips are seed, pay, and what the machines eat. | What is a pip? | Seed, and the counters the Menders count with. | One line from Elder Rivet. |
 | 6 | Changed from your page [Conflict] | Your page: "Welcome aboard the S.S. Infinity." Built: the ship is on the planet. | It is the big world thread's change, and yours to confirm. | I build on the built version. | None. |
 | 7 | Contradiction | The Meadow quest: "All four plates are true! We can use our machines again." | If these machines did the planning, mending them undoes the story. | They are small machines, one rule each [Built: "Each machine follows one rule"]. The Year Machine at the lake did the planning, and burnt. Elder Rivet can say so in one line. | The Year Machine's stones at the Lake Market are new. The big world thread's to build. Decision 29. |
-| 8 | Name | Elder Rivet | Rivet is a lead character in a well-known video game. | Yours, and the big world thread's. | One name, in the page. |
-| 9 | Fits, if said | The loading board: "The Makers built us a board that worked out every load. When the Gate broke, it went dark." | A child says: "Ask the board." | It was the Year Machine's hand at the harbour. It went dark when the Year Machine burnt. | One line. |
+| 8 | Name | Elder Rivet | Rivet is a lead character in a well-known video game. | **Marc, 24 November: change it.** A mending word fits the Menders. Proposed: Elder Thimble. The new name is his to confirm. | One name, in the page. The big world thread's to change. |
+| 9 | Fits, if said | The loading board: "The Makers built us a board that worked out every load. When the Gate broke, it went dark." | A child says: "Ask the board." | It never worked out the loads itself. It only showed what the Year Machine worked out, so it went dark when the Year Machine burnt. | One line. |
 | 10 | Words a child types | Built: "the town's lamp on a post" at each water gate; the loading board's "three hooks"; a rope that answers to "hook". | The story's oil lamps and raft hooks use the same words. | The build gives each word to one thing in each place, or renames the water-gate lamps "gate lights". | The big world thread's. |
 
 **What this story adds, all new words and pictures:** the calendar; the store walls with their rows; a tally keeper in each town; the Year Machine's black frame; Shells and the skipping rhyme; the Twinseers' New Year words; the Lake Market; the three decisions. Nothing built is thrown away.
@@ -433,6 +433,8 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 ---
 
 ## 9. Your decisions
+
+**24 November [Source: Marc: "Ok. I agree. Proceed"]:** decisions 18, 29 and 30 are decided as picked. Every other decision below goes on its pick for the trial. Section 16j.
 
 | | Decision | My pick | The other way |
 |---|---|---|---|
@@ -486,7 +488,7 @@ I read the big world thread's notes, your two Patternox pages, and the story lin
 | Nobody counts the years | The slow path is 24 years. Does a child notice that the singer and the children do not age? If so, decision 18. |
 | One reading only | Give the seller's question on paper to three children. Does anyone count a different number of count days? |
 | Watching the year run teaches the count | Does a child say the numbers as the pile climbs? Or look away? |
-| The story holds when a child pushes | "Why don't I mend the Gate first?" The Gate needs the Rule Stones, and a stone lights only when its people have been helped [Built]. And every plate is burnt: a mended Gate does not write new plates. "We mended the Meadow machines. Ask them." They sort and count. None of them ever planned a year. The Year Machine did, and it burnt. "Why can't the keeper lay out pips herself?" She can, once she is shown. That is the story. "Why not wait and see how the pile grows?" Seed takes only in sowing week. "Why not ask the cart driver for one more month?" Every cart-month was promised to some town at New Year. "Why not trade again when the oil raft comes back?" Raft crews carry. Only keepers make deals, and only at the Market and the New Year handshake. "Why not just weave faster?" Every reed the river gives is woven. The river gives what the sun grows. "My ship landed. Why can't it fetch food?" It holds one cadet's lunch. "What do they eat before the first count day?" The river feeds them in the gold months. "Why not copy the old row?" The sun is different each year. "Why build a wall that falls?" Section 5, kind 3 (parked). "Why doesn't the oil seller work it out for me? He has a stick that does it." The Year Machine made it. He kept it. He cannot make another. "Why does Gran give me shells before I have picked the plums?" It is the lake's way, and the game copies the lake: the oil is poured first. "Why not keep the spare plums?" In the game they are Gran's, with no shell paid. "Light the window from the fire." No fire burns in a reed house after dark. "Hang floor mats on the empty hooks." Dry mats crack in the press; the crew takes only green ones. "Sell the spare mats next year." By then they are dry, or the high water has torn them from under the houses. "Why can't I go to the lake with you?" In a step-down year the speaker asks the cadet to learn it small first. "It goes up twenty each time. Just do that." The seller: "I see that it came true. I cannot see how it knew." "Ask the Eights." Their ship did their counting. "Ask the loading board." It was the Year Machine's hand, and it is dark. "Give our spare mats to Reed Town's empty hooks." A hook is its own town's word. "Light a fire on the dock." The dusk wind would carry its sparks to the roofs. "Why is a fire safe by day?" The wind comes at dusk. "Rebuild the Year Machine." It burnt to its frame, and nobody knows how it was made. "Set another shrimp trap." Each family has one trap place. "Pick more plums." A tree gives what it gives. I looked for more, and may have missed some. |
+| The story holds when a child pushes | "Why don't I mend the Gate first?" The Gate needs the Rule Stones, and a stone lights only when its people have been helped [Built]. And every plate is burnt: a mended Gate does not write new plates. "We mended the Meadow machines. Ask them." They sort and count. None of them ever planned a year. The Year Machine did, and it burnt. "Why can't the keeper lay out pips herself?" She can, once she is shown. That is the story. "Why not wait and see how the pile grows?" Seed takes only in sowing week. "Why not ask the cart driver for one more month?" Every cart-month was promised to some town at New Year. "Why not trade again when the oil raft comes back?" Raft crews carry. Only keepers make deals, and only at the Market and the New Year handshake. "Why not just weave faster?" Every reed the river gives is woven. The river gives what the sun grows. "My ship landed. Why can't it fetch food?" It holds one cadet's lunch. "What do they eat before the first count day?" The river feeds them in the gold months. "Why not copy the old row?" The sun is different each year. "Why build a wall that falls?" Section 5, kind 3 (parked). "Why doesn't the oil seller work it out for me? He has a stick that does it." The Year Machine made it. He kept it. He cannot make another. "Why does Gran give me shells before I have picked the plums?" It is the lake's way, and the game copies the lake: the oil is poured first. "Why not keep the spare plums?" In the game they are Gran's, with no shell paid. "Light the window from the fire." No fire burns in a reed house after dark. "Hang floor mats on the empty hooks." Dry mats crack in the press; the crew takes only green ones. "Sell the spare mats next year." By then they are dry, or the high water has torn them from under the houses. "Why can't I go to the lake with you?" In a step-down year the speaker asks the cadet to learn it small first. "It goes up twenty each time. Just do that." The seller: "I see that it came true. I cannot see how it knew." "Ask the Eights." Their ship did their counting. "Ask the loading board." It only showed what the Year Machine worked out, and it is dark. "Give our spare mats to Reed Town's empty hooks." A hook is its own town's word. "Light a fire on the dock." The dusk wind would carry its sparks to the roofs. "Why is a fire safe by day?" The wind comes at dusk. "Rebuild the Year Machine." It burnt to its frame, and nobody knows how it was made. "Set another shrimp trap." Each family has one trap place. "Pick more plums." A tree gives what it gives. I looked for more, and may have missed some. |
 | A town on the safe way is understood | In a town that has had a year on the keeper's safe way, ask: "What is wrong in this town?" The answer wanted is "it is dark in the evenings". If a child says "nothing is wrong", the safe way does not read as a trouble worth mending. |
 | "Decided once" is believed | Does a child try to change the plan half way? If they are cross that they cannot, the three reasons were not told well enough. |
 | A year for each decision is not too slow | The maths note guesses three minutes a year. Time it with children. If they stop watching, shorten the climb, not the dock and the lamps. |
@@ -768,10 +770,10 @@ A reviewer read the note with only `CLAUDE.md`, Marc's rules, the brief and the 
 
 - **The 24 years.** Thin if a child counts the New Years. Tied to decision 18.
 - **Word collisions with built things:** "hook" (the loading board, the rope), "lamp" (the water-gate lamps), "wall", "Gran". Section 8, row 10. The build's to scope.
-- **"Shells".** Said aloud, it is close to "the shell game", a street trick. Children of eight are unlikely to know it. If Marc hears it, another name.
+- **"Shells".** Said aloud, it is close to "the shell game", a street trick. Children of eight are unlikely to know it. **Marc, 24 November: keep it.**
 - **All the new culture is Rillfolk.** The Menders, the Furrows, the Twinseers and the Eights are still one custom each.
 - **Shells is a game in a game.** If a child shrugs at shells, it costs nothing. Section 10 has the check.
-- **The Year Machine is new.** Its black frame at the lake, and one line each from Elder Rivet and the harbour ("Those machines sort and count. The Year Machine did the planning, and it burnt"; "The board was the Year Machine's hand"), are the big world thread's to build. Decision 29.
+- **The Year Machine is new.** Its black frame at the lake, and one line each from Elder Rivet and the harbour ("Those machines sort and count. The Year Machine did the planning, and it burnt"; "The board did not work out the loads itself. The Year Machine at the lake did. The board only showed them."), are the big world thread's to build. (Changed 25 November: "the Year Machine's hand" was unclear.) Decision 29.
 - **"How did you know?"** asks the child to explain in words. That is the AI's work in the world, inside the constraints. Whether a child's answer must be checked is the maths thread's and Marc's.
 - **Every fix so far has opened a smaller hole.** Round 2 found four blockers; round 3 found one. See 16g.
 
@@ -809,7 +811,7 @@ Marc's rule: "explore and discover more about the cultures of the world, their h
 | 6 | **Windows or lamps?** | Lamps, set out on the dock at dusk on raft day, one for each mat woven, where they can be counted. "Every mat is a lamp." Section 5 |
 | 7 | **Names collided,** some from round 2's fixes: "Promise" was the game and every line's verb; "mark" meant five things; built "lamp", "hook", "stone", "speaker". | The game is **Shells**. The Market day sign is a knot; the machine's is a ring; the child's is a sign. The Year Machine's remains are a frame. **The tally keeper is the town's built speaker.** "lamp" and "hook": section 8, row 10, for the build |
 | 8 | **The Eights** read number patterns: "Ask the Eights." | Their ship did their counting, and it is dark. They cannot carry a row on either. Section 4 |
-| 9 | **The built loading board "worked out every load".** | It was the Year Machine's hand at the harbour. Sections 2, 3, 8 |
+| 9 | **The built loading board "worked out every load".** | It only showed what the Year Machine worked out. Sections 2, 3, 8 |
 | 10 | **Fire:** "burns like a torch" does not depend on the hour, and a lamp is a flame. | The lake wind rises at dusk. Cooking is by day on a clay hearth-raft. A lamp is closed in clay. Sections 1, 5 |
 | 11 | **"Too many" could be undone in the small row:** "I'll roll five more beads." | Things that come on their own from the family's own place: lotus pods, plums, shrimp. Section 5 |
 | 12 | **The keeper learned from something the child never does.** | At New Year the speaker asks: "How did you know?" One definition of "learned": the year came out right (the maths note's decision 2 says how many). Section 3 |
@@ -837,3 +839,17 @@ Marc's rule: "explore and discover more about the cultures of the world, their h
 **Not changed:** "Shells" is the game and the coin, as "marbles" is. The maths question's "will there be" stays the maths thread's to change (16d, row 4).
 
 **Not re-read by a reviewer:** the changes in this table. They are wording, and round 4 found no blocker, so I stopped here. A short check by the big world thread's next joint review would cover them.
+
+### 16j. Marc's decisions, 24 November
+
+He asked what the story thread suggests for the decisions waiting on him, and answered: "Ok. I agree. Proceed." [Source]
+
+| | Decided | What it means for the build |
+|---|---|---|
+| 1 | **The Year Machine** (decision 29) | The built Meadow quest stays as it is. The big world thread adds: the Year Machine's burnt frame at the Lake Market; one line from the Meadow's elder ("Those machines sort and count. The Year Machine did the planning, and it burnt"); one line at the harbour's loading board. **Changed 25 November** [Source: Marc asked what "the Year Machine's hand" means]: "The board did not work out the loads itself. The Year Machine at the lake did. The board only showed them." |
+| 2 | **The step-down year** (decision 30) | As section 3 says: the speaker asks the cadet to learn it small, and goes to the lake alone. The dark that year is hers, and she says so first |
+| 3 | **Elder Rivet is renamed** | **Elder Thimble.** The page uses it since big world 11 |
+| 4 | **Shells keeps its name** | |
+| 5 | **Never say how long a month is, or anyone's age** (decision 18) | The long path stands for the trial, and is timed |
+| 6 | **Every other decision in section 9 goes on its pick, for the trial** | Nothing here is confirmed for good. A trial with children may change any of it |
+| 7 | **The maths note's own picks** (its section 10), which the story thread agreed with | One right year lights a town for good. The long path is accepted for the trial, and timed. An answer put right on the planks is a slip |

@@ -85,7 +85,7 @@ Every one of these cost a review round.
   - answered the third joint review's six story points (section 16a);
   - ran two reviews of the story thread's own. Round 2: four blockers. Round 3: "Not yet. It is close. The Market path holds." One blocker. Both answered (16b, 16h). Round 4, narrow: **"Yes, for the lake path. I found no blocker."** Its eight majors are fixed in words (16i), and not re-read.
 - **The big changes, so you can answer quickly:**
-  - **The Year Machine** at the lake did all the planning and burnt with the Gate. The built Meadow machines are small, one rule each. The built loading board was its hand.
+  - **The Year Machine** at the lake did all the planning and burnt with the Gate. The built Meadow machines are small, one rule each. The built loading board only showed the loads it worked out.
   - **The oil seller is the Furrows' tally keeper, a man.** His finished example is the Year Machine's last stick: scratches ahead, real cuts landing on them. "I cannot see how it knew."
   - **Costs:** one pot fills one lamp. "For each mat you are out, short or over, one lamp stays dark." The lamps are set out on the dock at dusk on raft day, one for each mat woven.
   - **Mats are press mats,** kept green; a dry mat cracks. **No open fire after dusk,** when the lake wind rises.
@@ -95,7 +95,12 @@ Every one of these cost a review round.
   - **The tally keeper is the town's built speaker.**
 - **The ball is with the big world thread:** section 16d lists sixteen places where its maths note must change, or confirm. The biggest: the seller can re-ask only when a number is less than the stick already shows.
 - **The second and third kinds are still parked.** Section 14 has the offers.
-- **Nothing of Algora's story is confirmed by Marc.** The note now has thirty decisions. Two are new: 29 (the Year Machine) and 30 (the step-down year).
+- **Marc decided on 24 November** (the note's 16j): the Year Machine, the step-down year, no month length or ages said, Shells keeps its name, Elder Rivet is renamed (Elder Thimble proposed, his to confirm). **Every other decision goes on the note's pick, for the trial only.** Nothing is confirmed for good.
+
+### Algora's five peoples (24 November)
+
+- **The note:** `proposals/GMQ_Algora_Story_Peoples_v1_2026-11-24.md`. One history for four peoples (each handed a skill to a Makers' machine and kept a piece of it); the Eights are guests, outside it. Four finds for the big world thread's empty places: a painted shutter (D), two pairs of footprints (E), a sheet of ship's paper (G), white pebbles (H). One teller each.
+- **One review:** "not yet" (one blocker: the paper gave away why the Gate broke). Rewritten; the rewrite is not re-read. **Marc accepted its four decisions on 24 November**, each with its reason (section 8).
 
 ### What may come next
 

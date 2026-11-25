@@ -6,7 +6,7 @@
 //   - no two tunes share a melody; none is a tune of the game's (the game's first voices are compared, if the game file is there)
 //   - every tune is used by the page (musPick can return it)
 //   - loudness is low: no voice louder than .06 (the game's beeps are louder)
-// How it SOUNDS only a person can judge. The switch (off at first, on, off) is played in checks/bigworld_play_test.js.
+// How it SOUNDS only a person can judge. The switches (on at first; the top bar and the ship panel, off and on again) are played in checks/bigworld_play_test.js.
 //
 // Run:  node checks/bigworld_music_check.js
 const fs = require('fs'), path = require('path'), vm = require('vm');

@@ -114,3 +114,37 @@ Not built tonight: the Year Machine's stones and Elder Rivet's line about it (yo
 2. **After a misreading the seller cannot see** (66: "seven more count days from today"), my code still gives the child the planks the next year, because the engine can see it. Is his reason that he saw the year go wrong (empty hooks)?
 3. **Why does he accept a second number that is still under the stick?** The code accepts it once, as 16d says ("Any other number runs" after one re-ask).
 4. **His jars.** The code assumes they hold at least twice what any town makes. Then "the crew takes it all back" and the oil rule agree.
+
+---
+
+**24 November, from the big world thread.** Marc confirmed the name ("Ok. Change his name."). In the page ("big world 11") the elder is **Elder Thimble**. "rivet" is still understood when typed, and never shown. The Year Machine's two lines from your 16j are in: the elder's, when the Menders' Rule Stone lights; the harbour keeper's, in her first meeting. Your story note still says Elder Rivet in places: that is yours to change.
+
+---
+
+**24 November, from the big world thread: a request, on Marc's decision.**
+
+Marc saw that a child can cross the old stones and skip all four machines. He decided [Source, `INFO_FROM_MARC.md`, 24 November]:
+1. **Elder Thimble gives a Mender's tool** when all four plates are true, and **a later task cannot be done without it.** ("I think a tool for the later task.")
+2. The old stones work only after Pim's spinner is found and Pim tells the cadet to use them. **Built** in big world 12: the stones lie under the water until Pim's secret ("Push the old post, and the stones come up").
+
+**What I need from you, to build part 1:**
+- **The tool.** What it is and its name (a Mender's thing; Elder Thimble's own?), and the elder's words when he gives it.
+- **The later task.** On the Reach's main path, so that the Rillfolk's Rule Stone cannot be lit without it. Something Rillfolk with a burnt plate, where the cadet finds the rule (test it, write it down, label it) and makes the plate with the tool. Why only the Menders' tool can make it. One idea only, yours to take or leave: the harbour's water gate, which opens for the fleet, has a burnt plate, so a right load still cannot sail until the gate has its plate.
+- **A child who came by the stones without the tool.** Who says what, kindly, so the child knows to go back to Elder Thimble and why. Nobody says "wrong".
+
+**Limits:** no new place (the built Reach only); the maths is finding a rule (3.OA.9), one step on from the Meadow's machines (for example a rule a child sees as a table), which also prepares the deciding years. The maths I fit when your words are written.
+
+---
+
+**24 November, from the big world thread: the review of your four finds.**
+
+As you asked, one independent reviewer read section 4 against the page as it is today. **Verdict: "Yes, with these fixes."** The places and tellers all match. The full review, Marc's decision, and how I will build each part are in `proposals/GMQ_Big_World_Finds_Review_2026-11-24.md`.
+
+- **Marc decided: a card for each find,** after its teller's story.
+- **Yours to fix in words** (that file, section 3): the shutter invites "mend" and "take" and nobody says the custom; E's teller is on the other bank with nothing pointing to her; the peoples' names arrive cold; "pebbles" already means the test pebbles, and the lift line reads like a lock; G's "eight" and "the hedge" read as the hedge's knock; how the elder got home the day the bridge went up; reading points; small word clashes ("frame", "note", "stand"); "tonight"; your line 17 still says Elder Rivet.
+- **Also asked:** four card names in the page's style, and each teller's line for a second talk.
+- **I will build without "Tell about…":** after the child looks at E or H, the teller's next talk tells the story. A child who gives the shutter hears its story first; a plain talk gives the teller's job first.
+
+---
+
+**25 November, from the big world thread.** Both your fixes are in (big world 13): the keeper's plain line, and the baker's example once only. One change of mine: the keeper's page before your line said the Makers "built us a board that worked out every load". Next to "The board did not work out the loads itself", a child reads a contradiction. It now says "a board that showed every load". If your notes quote that page, please bring them in line.
