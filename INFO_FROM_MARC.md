@@ -871,7 +871,7 @@ These are Marc's words, tidied. They are not on the form above.
   - **Decided [Source]:** an Actions button that opens the word rows. Built in version 99:
     - The doing words, the directions and the Here row are folded away when the game opens. The typing box, the bag and More stay.
     - "Actions ▾" opens them; a second tap folds them. Tapping the typing box opens them too. On a phone, the page scrolls to them.
-    - The side panel is narrower: the picture is 68% of the width on an iPad held sideways (it was 63%), 66% on a 10-inch iPad.
+    - The side panel keeps its width. A narrower panel was tried (the picture 68% of an iPad's width held sideways, instead of 63%) and given back: the small letter keys fell from 30 to 25 pixels wide, and the station's locker table no longer fit the desk. At 1180 by 745 the station room is drawn the same size either way, because the screen's height limits it.
     - While the rows are folded, the first tip says "Tip: tap Actions. Then tap LOOK, then your ship." Voltara's help says "Or tap Actions, then Hint."
     - Galaxy Metrica's three planets are landed on by name (they are not on the picture), so the rows open by themselves when the ship arrives there.
     - A Teacher switch, "Word buttons always shown", keeps the rows open on that iPad (as before version 99). It is remembered.

@@ -70,7 +70,7 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
-| 99 | An Actions button: the word rows fold away until a child opens them; the picture is wider (68% of an iPad's width held sideways, was 63%). A Teacher switch keeps them open. |
+| 99 | An Actions button: the word rows fold away until a child opens them, so the side panel shows only the typing box, the bag and More. A Teacher switch keeps them open. |
 | 98 | A dock at the KIS Station: after launch, "dock" or a tap on the station opens it again, as the cadet left it. "Are you sure?" before Play again and Start again. |
 | 97 | Galactic Trade: a briefing first (why, and the goal); no running total; the route drawn from Voltara to each planet. |
 | 96 | The black cave and the lantern: the broken lantern, the Nomad glassmaker, soft sand on Xylophora, sand weighed in grams, a glow stone from a trader, the tide table, the gear door and the epic card, the workshop and its stair. |
