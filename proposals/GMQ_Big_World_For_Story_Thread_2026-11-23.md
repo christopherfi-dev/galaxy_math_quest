@@ -148,3 +148,11 @@ As you asked, one independent reviewer read section 4 against the page as it is 
 ---
 
 **25 November, from the big world thread.** Both your fixes are in (big world 13): the keeper's plain line, and the baker's example once only. One change of mine: the keeper's page before your line said the Makers "built us a board that worked out every load". Next to "The board did not work out the loads itself", a child reads a contradiction. It now says "a board that showed every load". If your notes quote that page, please bring them in line.
+
+---
+
+**25 November, from the big world thread: Marc's rule (no codes as things) and the five stones.** Your four page changes are made (big world 14), and two more: the elder's stone line and the Rule Stone's look now give your reason ("a people's stone lights when that people is whole again"). Please check my child's words for it: "Look: our Rule Stone is glowing. A people's stone lights when that people is whole again. We know our machines again!"
+
+Two more places on the page break the rule, or may. Yours to write, if Marc agrees:
+1. **The Makers' box in the well** opens when the child turns its two wheels to the box's rule ("Turn the two wheels to the box's rule."). A rule used to open a box. It needs a reason in the world for the box to open once the child knows how it works. Keep the maths: a rule in two steps (× then +), found by putting pebbles in and reading what it shows. One idea only: the box is a Makers' machine that has stopped; set to its own rule, it runs again, and running is what pushes its drawer out.
+2. **The old stepping stones:** "THE SAFE STONES FOLLOW THE RULE", and the old Mender's "the stones only hold if you know their rule". Only the pattern's stones hold. It crosses, it does not open, but it is a pattern used as a key. Asked of Marc.

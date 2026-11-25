@@ -169,7 +169,7 @@ Nine independent reviews so far. Each reviewer saw the rules and what I gave the
 3. Five peoples, and "the Makers".
 4. The peoples' names: Menders, Rillfolk, Furrows, Eights, Twinseers. The towns: Stilt, Reed, Mud. What they call the cadet: "sky visitor". The net weaver.
 5. The map's size: 128 × 96.
-6. Any four of five stones open the Gate.
+6. ~~Any four of five stones open the Gate.~~ **Decided by Marc, 25 November: all five stones, one from each people.**
 7. **Engine Core from the Menders; Navigation from the Rillfolk; Shield from the Furrows.**
 8. **An upgrade is lasting.** [Conflict] The battle thread's upgrade cards last one battle. Which is it?
 9. Every town in the Reach can be served: a puzzle, not a choice of who goes without.
