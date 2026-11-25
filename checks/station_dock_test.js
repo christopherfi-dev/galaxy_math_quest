@@ -8,6 +8,7 @@
 //   - the Launch Bay launches again; the cadet is back in space at the station
 //   - tapping the station on the map while there docks too; "dock" in another galaxy says where to go
 //   - a game saved before version 98 (launched, with no "launched" mark) docks the same way
+//   - "Play again" under the Mission report asks "Are you sure?" first; No keeps the game, Yes starts a new one
 // Run: node checks/station_dock_test.js [folder for screenshots]
 const { chromium } = require('playwright'); const path = require('path');
 (async () => {
@@ -43,6 +44,11 @@ const { chromium } = require('playwright'); const path = require('path');
       // a game saved before version 98: launched, but with no "launched" mark
       await p.evaluate(() => { delete S.launched; S.ended = true; S.mode = 'space'; S.at = 'station'; SP.to = null; save(); }); await p.reload(); await p.waitForTimeout(700);
       expect(await say('dock'), /You dock at the KIS Station/, 'an old save docks'); ok(await p.evaluate(() => S.mode === 'station' && S.launched), 'and is marked launched');
+      // [v98] "Play again" under the Mission report asks first (the plan's decision 11, Marc: "Yes")
+      await p.evaluate(() => { S.mode = 'space'; S.at = 'station'; S.ended = true; save(); showEnding(); }); await p.waitForTimeout(200); const cards = await p.evaluate(() => S.cards.length);
+      await p.locator('#again').click(); await p.waitForTimeout(150); expect(await p.locator('#report').innerText(), /Are you sure\? You will lose your ship, your cards and your planets\./, 'Play again asks first');
+      ok(await p.evaluate(n => S.cards.length === n && S.mode === 'space', cards), 'asking changes nothing'); await p.locator('[data-no]').click(); await p.waitForTimeout(150); ok(await p.evaluate(n => S.cards.length === n && !document.querySelector('.askreset') && !$('again').hidden, cards), '"No, keep my game" keeps it');
+      await p.locator('#again').click(); await p.waitForTimeout(150); await p.locator('[data-yes]').click(); await p.waitForTimeout(400); ok(await p.evaluate(() => S.cards.length === 0 && S.mode !== 'space'), '"Yes, start again" starts a new game');
     } catch (e) { bad.push(`${name}: stopped: ${String(e.message).split('\n')[0]}`); }
     await ctx.close(); }
   await b.close(); if (errs.length) bad.push('script errors: ' + [...new Set(errs)].slice(0, 5).join(' | '));

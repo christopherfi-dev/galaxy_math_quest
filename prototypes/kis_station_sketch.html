@@ -2252,8 +2252,13 @@ function showEnding() {
   const t = $('report'); t.hidden = false; t.innerHTML = `<h3>Mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p><b>Secrets found: ${secCount()} of ${TOTAL_SECRETS}.</b> ${secCount() < TOTAL_SECRETS ? 'Eighteen are on the station. Six are on Voltara.' : 'You found them all!'}</p>
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
-  $('again').onclick = restart;
+  $('again').onclick = () => askRestart($('again'));
 }
+/* [Marc, 2026-11-25: "Yes" to "Are you sure?" before starting again; the plan's decision 11] One tap used to wipe a whole game. Now two buttons ask first. */
+function askRestart(btn) { if (!btn || btn.dataset.asking) return; btn.dataset.asking = '1'; const box = document.createElement('span'); box.className = 'askreset'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Are you sure?');
+  box.innerHTML = ' <b>Are you sure?</b> You will lose your ship, your cards and your planets. <button class="btn" type="button" data-yes>Yes, start again</button> <button class="btn quiet" type="button" data-no>No, keep my game</button>';
+  btn.hidden = true; btn.after(box); const done = () => { box.remove(); btn.hidden = false; delete btn.dataset.asking; };
+  box.querySelector('[data-yes]').onclick = () => { done(); restart(); }; box.querySelector('[data-no]').onclick = () => { done(); beep(500, .05); }; }
 function restart() { readOk(true); closeToy(); $('report').hidden = true; S = fresh(); save(); build(); zapD = null; P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Earth needs your help!'); introPanel(); }
 
 /* =====================================================================
@@ -6095,7 +6100,7 @@ $('kbbar').addEventListener('pointermove', e => { if (!KB.drag) return; const el
 kbPrep();
 $('cmd').addEventListener('input', () => { CHIPN = ''; });
 $('cmd').addEventListener('input', mark);
-$('reset').onclick = restart;
+$('reset').onclick = () => askRestart($('reset'));
 netStart();
 drawEvidence(); document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => drawEvidence()));
 $('ratsOn').checked = RATON.on; $('ratsOn').onchange = () => { RATON.on = $('ratsOn').checked; setKeep('gmq-rats', RATON.on ? 'on' : 'off'); RATS.due = 0; };
