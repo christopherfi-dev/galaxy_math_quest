@@ -114,6 +114,14 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 - **A Mender talking on the map grows about 1.35 times**, smoothly, and back when the words end, so the face and the hop can be seen. [Proposal, after Marc: "right now they're not really moving in any way"]
 - **Waiting on Marc:** a short zoom to the speaker in the side scenes (the village, the first lesson).
 
+## 3d. Hold to keep walking [Source: Marc, 25 November; built in the sample]
+
+- **The trouble:** on a phone about ten squares show across, so a tap at the edge walks four or five steps, and a long walk is tap after tap.
+- **Ways:** A hold to keep walking; B tap once and he walks on until something stops him (a wall, a fork, a sign, a person); C tap a place on the big map and he walks there.
+- **Built: A** [Proposal: Claude's pick]. A tap works as before. A finger held a quarter of a second keeps him walking towards it; the view follows him, so the place under the finger keeps moving ahead and he walks on; slide to steer (he finds his way round water and trees); lift to stop. Holding never uses a thing. (`prototypes/world_walk_kit.js`)
+- **Why A:** it answers "how would it stop" (the child lifts the finger); children know it from other games; nothing new on the screen; the child, not the game, decides where to stop. B lets the game decide (it may walk past what the child wanted). C skips the walk, where the finds are; it may still be good for long trips later.
+- **Test:** `checks/world_walk_test.js` passes on a phone and an iPad.
+
 ## 4. Tests
 
 - `checks/world_look_check.js`: **passes.** Now also: both characters' pictures load and draw, and three lines get the right face.

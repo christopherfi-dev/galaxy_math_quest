@@ -5,11 +5,11 @@
 const fs = require('fs'), path = require('path');
 const here = __dirname, src = path.join(here, 'big_world.html'), kitFile = path.join(here, 'world_look_kit.js'), out = process.argv[2] ? path.resolve(process.argv[2]) : path.join(here, 'world_look_sample.html');      /* another place to write it: for trying a change while a test runs on the sample */
 let html = fs.readFileSync(src, 'utf8'); const kit = fs.readFileSync(kitFile, 'utf8');
-const cast = fs.readFileSync(path.join(here, 'world_cast_sprites.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_cast_kit.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_opening_kit.js'), 'utf8');      /* Elder Thimble and Pim from Gemini, alive in the village */
+const cast = fs.readFileSync(path.join(here, 'world_cast_sprites.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_cast_kit.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_opening_kit.js'), 'utf8') + fs.readFileSync(path.join(here, 'world_walk_kit.js'), 'utf8');      /* Elder Thimble and Pim from Gemini, alive in the village */
 const once = (what, from, to) => { const n = typeof from === 'string' ? html.split(from).length - 1 : (html.match(new RegExp(from.source, 'g')) || []).length;
   if (n !== 1) { console.error(`STOP: "${what}" matched ${n} times, not once. The big world page has changed; look at it before going on.`); process.exit(1); }
   html = html.replace(from, typeof from === 'string' ? () => to : to); };      /* a plain text change is put in as it is: no $ patterns */
-for (const name of ['WL', 'tallOld', 'CAST', 'CAST_SPRITES', 'OPENING', 'readskip']) if (new RegExp('\\b' + name + '\\b').test(html)) { console.error(`STOP: the big world page already uses the name ${name}.`); process.exit(1); }
+for (const name of ['WL', 'tallOld', 'CAST', 'CAST_SPRITES', 'OPENING', 'readskip', 'HOLD']) if (new RegExp('\\b' + name + '\\b').test(html)) { console.error(`STOP: the big world page already uses the name ${name}.`); process.exit(1); }
 // 1. the page's own tree, rock and house drawing stays, under a new name; the new look draws trees and hands the rest back to it
 once('the tall function', 'function tall(t, x, y, px, py, ts) {', 'function tallOld(t, x, y, px, py, ts) {');
 // 2. the new look itself, just after the page's drawing tools for the map
