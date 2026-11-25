@@ -138,6 +138,7 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 - **The fault:** "Skip the start" showed on **every** reading card, even on a child's first time, and a tap on it later in the game started the skip again: it replaced the card being read and set the start as done. It was on the demo link.
 - **Why it was missed:** my test checked the button's hidden setting, not whether it could be seen. My own style rule for the button overrode that setting.
 - **Fixed:** the button is shown or hidden on each card by the kit itself, and a skip is refused after the start. `checks/world_opening_test.js` now checks what a child can see, on later cards too. It finds 10 faults in yesterday's copy, and none now.
+- **The demo link was updated with Marc's OK** ("Update the demo link", 25 November; commit bd39c0b on the main branch, `docs/lookdemo/` only). Built on big world 13. Checked live at phone size: no skip button on a first time; with #skip it shows at the start, then never again; the pictures load; no errors. Big world 14 arrived during the tests; the demo follows it at its next update.
 
 ## 4. Tests
 
