@@ -120,7 +120,7 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 - **Ways:** A hold to keep walking; B tap once and he walks on until something stops him (a wall, a fork, a sign, a person); C tap a place on the big map and he walks there.
 - **Built: A** [Proposal: Claude's pick]. A tap works as before. A finger held a quarter of a second keeps him walking towards it; the view follows him, so the place under the finger keeps moving ahead and he walks on; slide to steer (he finds his way round water and trees); lift to stop. Holding never uses a thing. (`prototypes/world_walk_kit.js`)
 - **Why A:** it answers "how would it stop" (the child lifts the finger); children know it from other games; nothing new on the screen; the child, not the game, decides where to stop. B lets the game decide (it may walk past what the child wanted). C skips the walk, where the finds are; it may still be good for long trips later.
-- **Test:** `checks/world_walk_test.js` passes on a phone and an iPad.
+- **Tests:** `checks/world_walk_test.js` passes on a phone and an iPad. With hold to walk in (25 November): `bigworld_reading_test.js` passes; `bigworld_signs_test.js` passes (48 walks); `bigworld_play_test.js` has only the 3 known faults ("no lesson at the ship after the story", the new start, by design) and passes everything else at all three sizes.
 
 ## 4. Tests
 
