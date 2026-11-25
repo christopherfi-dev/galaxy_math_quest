@@ -5,6 +5,7 @@
 **Marc's ask** [Source: Marc, 24 November]: "You can do this: 'Put Elder Thimble and Pim into my copy of the big world now, with breathing, blinking, a hop when they talk, and faces that change with their words.'"
 
 **Where to see it:** the sample of the big world (private page in my message; in this folder `prototypes/world_look_sample.html`). Walk to Mender Village. "Look: old" on the Ship panel shows the game's own drawing, as today.
+- **On GitHub (25 November, with Marc's OK):** https://christopherfi-dev.github.io/galaxy_math_quest/lookdemo/ (`docs/lookdemo/index.html` on the main branch; add #skip to jump past the start). Nothing else on the main branch changed.
 
 ---
 
