@@ -13,7 +13,7 @@ const { chromium } = require('playwright'); const path = require('path');
   for (const [name, w, h, calm] of [['ipad', 1180, 745, false], ['phone', 390, 760, false], ['calm', 1180, 745, true]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 1, reducedMotion: calm ? 'reduce' : 'no-preference' }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    await p.addInitScript(() => { try { if (!localStorage.getItem('gmq-test-set')) { localStorage.setItem('gmq-test-set', '1'); ['gmq-cards', 'gmq-hazards', 'gmq-rats', 'gmq-wisps', 'gmq-flyin'].forEach(k => localStorage.setItem(k, 'off')); } } catch (e) {} });
+    await p.addInitScript(() => { try { if (!localStorage.getItem('gmq-test-set')) { localStorage.setItem('gmq-test-set', '1'); ['gmq-cards', 'gmq-hazards', 'gmq-rats', 'gmq-wisps', 'gmq-flyin'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-words', 'open'); } } catch (e) {} });
     await p.goto(FILE); await p.waitForTimeout(300); await p.evaluate(() => skipIntro()); await p.waitForTimeout(200);
     const ok = (c, what) => { if (!c) bad.push(`${name}: ${what}`); }, expect = (got, re, what) => { if (!re.test(String(got))) bad.push(`${name}: ${what}: got "${got}"`); };
     const last = () => p.evaluate(() => lines[lines.length - 1].text || ''), shot = async n => { if (out) await p.screenshot({ path: path.join(out, `lucky_${name}_${n}.png`) }); };

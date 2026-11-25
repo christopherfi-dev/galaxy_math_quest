@@ -59,7 +59,7 @@ body.sidecol #side .toy .mw { font-size: .84rem; } body.sidecol #side .toy { gap
 body.sidecol #pad.mini { width: auto !important; }
 #panels > .chips { gap: 6px; } #panels > .chips .chip { font-size: .9rem; border: 1.5px solid var(--line); border-radius: 999px; padding: 3px 10px; }
 @media (orientation: landscape) and (min-width: 900px) {
-  body .wrap { max-width: 1500px; display: grid; grid-template-columns: minmax(0, 1fr) clamp(340px, 31vw, 400px); column-gap: 14px; row-gap: 8px; align-items: start; padding-block: 8px 8px; }
+  body .wrap { max-width: 1500px; display: grid; grid-template-columns: minmax(0, 1fr) clamp(300px, 26vw, 350px); column-gap: 14px; row-gap: 8px; align-items: start; padding-block: 8px 8px; }
   body .wrap > #netbar, body .wrap > #toold { grid-column: 1 / -1; }
   body .wrap > .console { height: calc(100vh - 34px); height: calc(100dvh - 34px); min-height: 300px; }
   body #side { max-height: calc(100vh - 34px); max-height: calc(100dvh - 34px); overflow-y: auto; padding: 2px 4px 2px 2px; }
@@ -116,6 +116,8 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 @media (max-width: 560px), (max-height: 560px) { .toy #onlist, .toy label.note { display: none; } .toy .field { gap: 8px; } .log { min-height: 0; }
   .toy { padding: 8px 12px; gap: 5px; } .toy .q { font-size: 1.02rem; } .toy .scale { font-size: 1rem; } .toy .note { font-size: .84rem; } .toy .btn { padding: 7px 12px; } .toy .field input { font-size: 1.15rem; padding: 6px; width: 5.2em; } .chip { font-size: .72rem; } }
 .sayrow { display: flex; gap: 8px; }
+#wbtn { align-self: stretch; min-height: 44px; font-size: 1.02rem; }      /* [Marc, 2026-11-25: "Maybe just like an action button that opens up the menu."] about 1 cm under a finger */
+body.wfold #verbs, body.wfold #dirs, body.wfold #nouns { display: none !important; } body.wopen #wbtn { display: none; }
 .sayrow input { flex: 1; min-width: 0; font: inherit; font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 10px; background: var(--panel); color: var(--ink); }
 .sayrow input::placeholder { text-transform: none; font-family: var(--body); font-weight: 400; letter-spacing: 0; color: var(--muted); }
 .words { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -322,11 +324,12 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
       <button class="btn" type="submit">Do it</button>
     </div>
   </form>
+  <button class="btn quiet" type="button" id="wbtn" aria-expanded="false" aria-controls="verbs dirs nouns">Actions ▾</button>
   <div class="words" id="verbs"></div>
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 98</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 99</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -366,6 +369,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     <p><label class="note"><input type="checkbox" id="wispOn" checked> Chronosia: time wisps. Quick practice a cadet can walk into, for a quarter of a credit.</label></p>
     <p><label class="note"><input type="checkbox" id="bookOn" checked> Chronosia: the Council's book can be read on screen. Switch off to use printed copies only.</label></p>
     <p><label class="note"><input type="checkbox" id="flyOn" checked> The fly-in: a short flight down to Voltara when a cadet lands (the full one the first time, two seconds after that). It skips itself on an iPad that cannot draw it, or that asks for less motion.</label></p>
+    <p><label class="note"><input type="checkbox" id="wordsOn"> Word buttons always shown. Off: the doing words, the directions and the places open with the Actions button, or when a cadet taps the typing box.</label></p>
     <p><label class="note"><input type="checkbox" id="hazOn" checked> Space hazards: quick sums against the clock on flights between galaxies</label></p>
     <p><label class="note"><input type="checkbox" id="realOn"> Station: real-life tasks, with your codes. Off: the four are played on screen. For a whole class, add ?real to the end of the link.</label></p>
     <p><label class="note"><input type="checkbox" id="cardsOn" checked> Reading cards: new words come up over the picture and wait for OK</label></p>
@@ -776,7 +780,10 @@ $('cardok').addEventListener('click', () => { if (!$('cardok').disabled) readOk(
 $('card').addEventListener('pointerdown', e => { if (!(e.target.closest && e.target.closest('#cardok'))) readNudge(); });
 document.addEventListener('keydown', e => { if (!READ.open || (e.key !== 'Enter' && e.key !== ' ')) return; e.preventDefault(); e.stopPropagation(); if ($('cardok').disabled) readNudge(); else readOk(); }, true);
 const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your ship. Or type: look ship.', 'Tip: now try your own idea. Push, open, take or use something.'];
-function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); const L = $('log').parentNode; if (L) L.scrollTop = L.scrollHeight; }
+/* [v99] with the word rows folded, a tip that names a word says where it is */
+function wordsHid() { return typeof WFOLD !== 'undefined' && !WFOLD.always && !WFOLD.shown; }
+function tipText(n) { return n === 1 && wordsHid() ? 'Tip: tap Actions. Then tap LOOK, then your ship. Or type: look ship.' : TIPS[n]; }
+function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${tipText(S.tut)}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); const L = $('log').parentNode; if (L) L.scrollTop = L.scrollHeight; }
 const MENU = { open: null, seen: {} }, FIT = { ctl: 0, key: '' };
 function menuCounts() { return { cards: S.cards.length + (S.q4 || 0), ship: S.parts.length * 100 + tasksDone() }; }
 function drawMenu() { const p = $('panels'); if (!p || !S) return; const mhere = (S.mode === 'star' && !!S.sd) || (S.mode === 'chrono' && !!S.c) || (S.mode === 'xylo' && !!S.xy) || (S.mode === 'len' && !!S.ln), mb = $('m_mission'); if (MENU.open === 'mission' && !S.v && !mhere) MENU.open = null; if (MENU.open) p.dataset.open = MENU.open; else delete p.dataset.open; mb.hidden = !(S.v || mhere); { const lab = mhere || S.mode === 'planet' ? 'Mission' : 'Voltara mission'; if (mb.textContent !== lab) mb.textContent = lab; }      /* away from Voltara the button says whose mission it holds */
@@ -2642,8 +2649,8 @@ function drawSpace(dt) {
     if (vw >= 520 || S.at === id || SP.to === id) { cx.font = `${Math.max(12, vw * .017)}px "Andika", sans-serif`; const tw2 = cx.measureText(g.line).width + 12; cx.fillStyle = 'rgba(6,9,18,.7)'; rr(X - tw2 / 2, ly + 15, tw2, 20, 6); cx.fill(); cx.fillStyle = '#dfe6f0'; cx.textAlign = 'center'; cx.fillText(g.line, X, ly + 29); } }
   for (const gh of GHOSTS) { const [gx, gy, dir] = ghostPos(gh); rocket(gx * vw, gy * vh, R * .42, dir > 0 ? .3 : Math.PI - .3, { flame: true, col: '#c4cfdf', col2: '#5f7aa8' }); cx.font = `700 ${Math.max(11, vw * .015)}px "Chakra Petch", sans-serif`; cx.fillStyle = '#c4cfdf'; cx.textAlign = 'center'; cx.fillText(gh.n, gx * vw, gy * vh - R * .3); }
   if (SP.to) { const T = GAL[SP.to], dx = T.x - SP.x, dy = T.y - SP.y, d = Math.hypot(dx, dy), step = .2 * dt; SP.ang = Math.atan2(dy * vh, dx * vw); TRAIL.push([SP.x, SP.y, 1]);
-    if (d <= step + .075) { const id = SP.to; SP.to = null; S.at = id; save(); beep(520, .15);
-      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home. Tap it, or type dock, to go inside.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planets Chronosia, Xylophora and Lengthar are open. Tap a word below to land.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'A mission ship floats here: Operation Stardust. Tap the galaxy again to dock. Or type: dock.' }[id] || ''}`); }
+    if (d <= step + .075) { const id = SP.to; SP.to = null; S.at = id; save(); beep(520, .15); if (id === 'metrica') wordsSet(true);      /* [v99] Metrica's planets are landed on by name: show the names */
+      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home. Tap it, or type dock, to go inside.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planets Chronosia, Xylophora and Lengthar are open. Tap a planet\'s name to land.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'A mission ship floats here: Operation Stardust. Tap the galaxy again to dock. Or type: dock.' }[id] || ''}`); }
     else { SP.x += dx / d * step; SP.y += dy / d * step; } }
   cx.globalCompositeOperation = 'lighter'; for (const t of TRAIL) { t[2] -= dt * .9; cx.fillStyle = `rgba(255,190,90,${Math.max(0, t[2]) * .7})`; circ(t[0] * vw, t[1] * vh, R * .05 * (1.4 - t[2])); cx.fill(); } cx.globalCompositeOperation = 'source-over'; while (TRAIL.length && TRAIL[0][2] <= 0) TRAIL.shift();
   SP.zoom = Math.max(0, Math.min(1, SP.zoom + (S.at === 'numerix' && !SP.to ? .9 : -3) * dt));
@@ -3189,7 +3196,7 @@ function tapSpace(e) {
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .2) * vw, (y - .26) * vh) < Math.min(vw, vh) * .1) return say(tradeTry());
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .56) * vw, (y - .5) * vh) < Math.min(vw, vh) * .34) return landSay('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.', say);
   if (GHOSTS.some(g => { const [gx, gy] = ghostPos(g); return Math.hypot(x - gx, y - gy) < .05; })) return say('Another cadet. Battles between ships come later. They will use your cards.');
-  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'databa' && S.at === 'databa' && !SP.to) return landStar(); if (id === 'metrica' && S.at === 'metrica' && !SP.to) return say('Three planets are open here. Tap a word below: land on Chronosia, Xylophora or Lengthar.'); if (id) flyTo(id, s);
+  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'databa' && S.at === 'databa' && !SP.to) return landStar(); if (id === 'metrica' && S.at === 'metrica' && !SP.to) { wordsSet(true); return say('Three planets are open here. Tap a planet\'s name: land on Chronosia, Xylophora or Lengthar.'); } if (id) flyTo(id, s);
 }
 
 /* =====================================================================
@@ -3623,7 +3630,7 @@ function actPlanet(text, out) {
   if (v === 'hint') return out('The butterfly whispers: ' + planetHint());
   if (v === 'leave') return out(sc === 'hall' ? VDO.exit.go() : sc === 'meadow' ? 'To leave Voltara, type: fly.' : 'Walk west to go back.');
   if (v === 'fly' || (best && best.id === 'ship' && ['use', 'go', 'open'].includes(v))) { if (sc !== 'meadow') return out('Your ship is back in the Landing Meadow.'); if (lastDay()) { startEnding(); return out('Before you go, look back at what you did here.'); } liftOff(); return out(`You lift off. Voltara shrinks below you. ${planetState()}`); }
-  if (v === 'help') return out('Type a doing word and a thing. Like: talk butterfly. take fruit. give fruit to fish. go east. Or tap Hint.');
+  if (v === 'help') return out('Type a doing word and a thing. Like: talk butterfly. take fruit. give fruit to fish. go east. Or tap ' + (wordsHid() ? 'Actions, then Hint.' : 'Hint.'));
   if (v === 'dig') { if (sc !== 'meadow') return out(VSC[sc].inside ? 'The floor is solid rock.' : 'The street is paved. You can dig in the meadow.'); S.holes.push(+PL.x.toFixed(3)); if (S.holes.length > 14) S.holes.shift(); save(); beep(180, .12, 'square');
     if (Math.abs(PL.x - VT.tree.x) < .08 && !S.secrets.includes('stone')) { out(null); give('stone'); secret('stone', 'You dig by the tall tree. A glow stone! It lights up the dark.'); card(); return; } return out('You dig a small hole. It will stay here.'); }
   if (v === 'silly') return out('You jump high! Voltara has soft, bouncy ground.');
@@ -6090,6 +6097,15 @@ function kbShow() { if (!KB.touch || KB.big) return; $('kb').hidden = false; kbP
 function kbHide() { $('kb').hidden = true; }
 function kbKey(k) { const c = $('cmd'); if (k === 'ok') return sayGo(); let v = c.value; if (k === 'del') v = v.slice(0, -1); else if (k === 'space') { if (v && !/ $/.test(v)) v += ' '; } else if (v.length < 50) v += k; c.value = v; CHIPN = ''; mark(); beep(k === 'del' ? 300 : 620, .03); if (document.activeElement !== c) c.focus({ preventScroll: true }); }
 function kbSwitch() { KB.big = !KB.big; setKeep('gmq-kb', KB.big ? 'big' : 'small'); kbPrep(); const c = $('cmd'); c.blur(); kbHide(); setTimeout(() => c.focus({ preventScroll: true }), 30); }
+/* THE ACTIONS BUTTON (version 99).   [Source: Marc, 2026-11-25: "Maybe just like an action button that opens up the menu. ... they don't need to see or look at the menu
+   of places to visit." Measured: the panel took 31% of the width on an iPad held sideways.] [Proposal: closed when the game opens; opened by the button or by tapping the
+   typing box, since a cadet who types needs the words; a Teacher switch keeps them open for a cadet who needs them.] Taps on the picture do the same things as before. */
+const WFOLD = { always: getKeep('gmq-words') === 'open', shown: false };
+function wordsSet(open) { WFOLD.shown = !!open; if (S) try { drawLog(); } catch (e) {} const on = WFOLD.always || WFOLD.shown; document.body.classList.toggle('wfold', !on); document.body.classList.toggle('wopen', WFOLD.always); const b = $('wbtn'); b.textContent = on ? 'Actions ▴' : 'Actions ▾'; b.setAttribute('aria-expanded', String(on)); fitSoon(); }
+$('wbtn').onclick = () => { beep(560, .04); wordsSet(!(WFOLD.always || WFOLD.shown)); if (WFOLD.shown) setTimeout(() => { try { $('nouns').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }, 60); };      /* on a phone the rows open below the screen's edge: bring them into view */
+$('wordsOn').checked = WFOLD.always; $('wordsOn').onchange = () => { WFOLD.always = $('wordsOn').checked; setKeep('gmq-words', WFOLD.always ? 'open' : 'fold'); wordsSet(WFOLD.shown); };
+wordsSet(false);
+$('cmd').addEventListener('focus', () => { if (!WFOLD.always && !WFOLD.shown) wordsSet(true); });
 $('cmd').addEventListener('focus', kbShow); $('cmd').addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== $('cmd')) kbHide(); }, 150));
 $('kbkeys').addEventListener('pointerdown', e => { e.preventDefault(); });                      /* a tap on a key must not take the cursor out of the box */
 $('kbkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b) kbKey(b.dataset.k); });

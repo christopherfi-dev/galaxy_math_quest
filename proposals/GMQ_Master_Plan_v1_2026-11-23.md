@@ -1,6 +1,6 @@
 # Galaxy Math Quest: the whole plan
 
-**Date:** 23 November 2026 (version 97). **For:** Marc, and every thread.
+**Date:** 23 November 2026 (brought up to date on 25 November, version 99). **For:** Marc, and every thread.
 **What this is:** one list of everything:
 - what is built
 - who is doing what
@@ -57,7 +57,7 @@ Everything is **[Proposal]** unless it says [Source].
 - Xylophora
 - Operation Stardust
 
-**Added in versions 82 to 93 (now on the class link too):**
+**Added in versions 82 to 99 (all on the class link):**
 
 | Version | What |
 |---|---|
@@ -70,6 +70,8 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
+| 99 | An Actions button: the word rows fold away until a child opens them; the picture is wider (68% of an iPad's width held sideways, was 63%). A Teacher switch keeps them open. |
+| 98 | A dock at the KIS Station: after launch, "dock" or a tap on the station opens it again, as the cadet left it. "Are you sure?" before Play again and Start again. |
 | 97 | Galactic Trade: a briefing first (why, and the goal); no running total; the route drawn from Voltara to each planet. |
 | 96 | The black cave and the lantern: the broken lantern, the Nomad glassmaker, soft sand on Xylophora, sand weighed in grams, a glow stone from a trader, the tide table, the gear door and the epic card, the workshop and its stair. |
 | 95 | The Voltara fly-in: a short flight down when a cadet lands, the full one the first time. A tap skips it. A Teacher switch turns it off. |
@@ -183,7 +185,8 @@ Each note lays out the choices and recommends one.
 | 8 | Music: off or on at first; headphones; tunes for single places; a teacher switch (needs the server) | `GMQ_Music_v1_2026-11-22.md`, section 5 |
 | 9 | Mistakes: the five rules; offer the smaller problem, or go to it; which quests first | `GMQ_Mistakes_and_Consequences_v1_2026-11-22.md`, section 7 |
 | 10 | The server: the split as the long-term shape; one class or a grade per world; when to try step 1; what children may do across classes | `GMQ_Server_Layers_Analysis_v1_2026-11-22.md`, section 5 |
-| 11 | "Start again": should it ask "Are you sure?" first | not written up yet |
+| 11 | ~~"Start again": should it ask "Are you sure?" first~~: answered 25 November, "Yes". Built in version 98. | `INFO_FROM_MARC.md` |
+| 18 | **The number pad's labels** [Proposal]: "ABC" becomes "iPad keys" and "123" becomes "Number pad", so a child knows what the button does before tapping it (a child in class shrank the pad by mistake). | `INFO_FROM_MARC.md`, 25 November |
 | 13 | ~~**The lantern's recipe**~~: answered 23 November. Marc approved the Chronosia story (rule R18: a lantern is a glow stone behind Nomad glass), and its glow stone from a trader at Galactic Trade. So the recipe is soft sand and the glow stone, and the glow stone alone stops lighting the passage. **Tell Marc this reading;** he can still change it. | the Chronosia story note, R18 and decision 6 |
 | 14 | ~~The glow stone's price~~: answered 23 November. The glow stone moves to a far planet in the rebuilt market (the trade thread). Until then the game keeps 200 gems. | `HANDOFF_Trade_2026-11-23.md` |
 | 15 | **Lengthar's measuring tape** has no use yet (the Chronosia story note, decision 6, pick A). Leave it as a prize, or design a quest that needs it? | the Chronosia story note, decision 6 |

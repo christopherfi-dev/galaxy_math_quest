@@ -865,3 +865,15 @@ These are Marc's words, tidied. They are not on the form above.
   - The QR code: scanning it again gave a new game. The game has no link that resets it, so the same browser should have kept the game. Not explained yet; a two-minute test was asked of Marc.
   - Found while testing: after launch, the Mission report under the panel has "Play again", which wipes the whole game with one tap and no question. This is the plan's open decision 11 ("Start again: should it ask 'Are you sure?' first").
   - The menu: researched (point-and-click games went from a verb list beside the picture, 1987, to a verb coin at the cursor by 1995 to 1997; children's games by the same makers had no verbs at all, only taps on the picture; children's UX research asks for large, easy targets). The main thread's guess and pick in chat.
+- **"Are you sure?", and an Actions button (Marc, 2026-11-25, to the main thread).** "Yes. For the are you sure. Maybe just like an action button that opens up the menu . I could expand and they could choose? She would like a little menu to flick on like where they want to go like that because they don't need to see or look at the menu of places to visit?"
+  - Read as: "She would like" is "it would be like" (talk to text). He wants the word rows hidden behind one button that opens them; children choose from them when they need to, and do not look at the list of places all the time.
+  - **Decided [Source]:** "Are you sure?" before Play again and before the Teacher's Start again (the plan's decision 11). Built in version 98.
+  - **Decided [Source]:** an Actions button that opens the word rows. Built in version 99:
+    - The doing words, the directions and the Here row are folded away when the game opens. The typing box, the bag and More stay.
+    - "Actions ▾" opens them; a second tap folds them. Tapping the typing box opens them too. On a phone, the page scrolls to them.
+    - The side panel is narrower: the picture is 68% of the width on an iPad held sideways (it was 63%), 66% on a 10-inch iPad.
+    - While the rows are folded, the first tip says "Tip: tap Actions. Then tap LOOK, then your ship." Voltara's help says "Or tap Actions, then Hint."
+    - Galaxy Metrica's three planets are landed on by name (they are not on the picture), so the rows open by themselves when the ship arrives there.
+    - A Teacher switch, "Word buttons always shown", keeps the rows open on that iPad (as before version 99). It is remembered.
+    - `checks/words_fold_test.js`, on four screens.
+  - **[Proposal], not built:** shorter labels on the number pad ("ABC" to "iPad keys", "123" to "Number pad"), so a child knows what the button does before tapping it. Waits on Marc.

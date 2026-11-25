@@ -13,7 +13,7 @@ const path = require('path');
 (async () => {
   const b = await chromium.launch(), bad = [], errs = [], p = await b.newPage({ viewport: { width: 1180, height: 745 } });
   p.on('pageerror', e => errs.push(e.message));
-  await p.addInitScript(() => { window.GMQ_NO_PV = true; try { localStorage.clear(); localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-rats', 'off'); } catch (e) {} });
+  await p.addInitScript(() => { window.GMQ_NO_PV = true; try { localStorage.clear(); localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); } catch (e) {} });
   await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(400);
   await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); }); await p.waitForTimeout(600);
   const r = await p.evaluate(() => {
