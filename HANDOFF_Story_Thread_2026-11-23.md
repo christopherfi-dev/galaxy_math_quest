@@ -104,7 +104,7 @@ Every one of these cost a review round.
 
 ### The 20 small worlds (26 November)
 
-- **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md` (a new file of the story thread's own). The shell box and its number lock go. Each world's creature, its trader, has a trouble that needs that world's maths, in three scenes: where to stop (rounding), fill the pod (difference), balance the scale (sum). Star seeds are for Project Second Home. Three decisions for Marc.
+- **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md` (a new file of the story thread's own). The shell box and its number lock go. Version 2, after one review ("not yet": three blockers). Each world's creature keeps its star seed and cannot count; the cadet works it out and does the doing. Two scenes, each answer fixed before anything happens: plant the flag (nearest ten, nearest hundred, sum; no halfway numbers) and one trip before dark (difference). Finished examples on landing, about the ship. Star seeds are for Project Second Home. Four decisions for Marc. Version 2 is not re-read.
 - **Next, as the main thread suggested:** the KIS Station against the 25 November rule (the locker's crate count, the Engine Core's colour lock, the cannons' lock), then Xylophora and Lengthar.
 
 ### What may come next
