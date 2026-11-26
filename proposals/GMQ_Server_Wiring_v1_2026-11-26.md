@@ -78,6 +78,13 @@ Never write the refused game over the server's. The server keeps it as an older 
 
 ## 3. For the battle thread: a battle against a classmate's saved deck
 
+**Done by the battle thread on 26 November** (`proposals/GMQ_Card_Battle_Wiring_v1_2026-11-26.md`, section 8): `GMQBattleOwn.open(host, { ..., rival }, done)` takes the server's `battle_start` answer, shows both cards at stake with "I agree" and "Back out", calls `host.accept`, and ends with `done({ why, result, log })`. The server's test page (`engines/gmq-world/server/cards-test.html`) uses it, and `checks/server_cards_page_test.js` plays it with the server. Two things added on the server's side since:
+- `rivals` now also answers `mine`: the cadet's own battle still open, in the same shape as `battle_start`, so a page closed and opened again can go back to it (the piece goes on from the same `battle` id).
+- `battle_end` keeps a `log` in words (the piece's), up to 20,000 letters; the teacher reads it on the Desk.
+- Still asked of the battle thread: the words "The winner gets both cards" are right only for the rule `swap`. The server's `battle_start` answers `rule` (`'swap'` or `'away-safe'`); the test page passes it as `rival.rule`. Under `away-safe` the words could be: "If you win, you get a copy of their card, and they keep theirs. If their deck wins, your card goes to them."
+
+The calls, as first written:
+
 The battle itself is yours, and its rules are Marc's. The server keeps decks, picks the cards at stake, moves cards, and tells the classmate who was away.
 
 **The calls, in order:**

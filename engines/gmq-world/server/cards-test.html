@@ -59,15 +59,9 @@
     <section class="panel" id="boardbox"><h2>The class card board</h2><div id="board"></div></section>
 
     <section class="panel" id="battlebox"><h2>Battle a classmate's deck</h2>
-      <p class="warnbox" id="foenote"></p>
+      <p class="note" id="foenote"></p>
+      <div id="resume" hidden class="warnbox" style="margin-bottom:10px"><p style="margin:0 0 8px">You have a battle open with <b id="resumename"></b>.</p><button type="button" id="resumego">Go back to the battle</button></div>
       <div id="rivals"></div><p class="msg" id="battlemsg" role="status"></p></section>
-
-    <section class="panel" id="offer" hidden>
-      <h2>A challenge</h2>
-      <div class="vs"><div><p class="note">You put up</p><div id="mystake"></div></div><div class="mid">and</div><div><p class="note" id="theirlabel"></p><div id="theirstake"></div></div></div>
-      <p id="rule"></p>
-      <div class="row"><button type="button" id="agree">Agree and battle</button><button type="button" class="quiet" id="backout">Back out</button></div>
-    </section>
 
     <section class="panel" id="resultbox" hidden><h2 id="resulthead"></h2><div id="result"></div><button type="button" id="resultok">OK</button></section>
   </section>
@@ -105,9 +99,8 @@ function show(r) {
   var news = r.news || []; $('newsbox').hidden = !news.length; $('news').innerHTML = news.map(function (n) { return '<p>' + esc(n.say) + '</p>'; }).join('');
   $('boardbox').hidden = !sh.board; if (sh.board) drawBoard(cards);
   $('battlebox').hidden = sh.battles === 'off'; if (sh.battles !== 'off') drawRivals();
-  var hasFoe = typeof GMQBattleOwn !== 'undefined' && GMQBattleOwn.canFoe;
   $('foenote').textContent = typeof GMQBattleOwn === 'undefined' ? 'The battle (battle-piece.js) is missing from this folder, so battles cannot be played here.' :
-    hasFoe ? 'The computer plays your classmate\'s real deck.' : 'For now the computer plays a deck like yours, not your classmate\'s real deck. The battle thread has been asked to add that. The cards at stake are real.';
+    'The computer flies your classmate\'s own deck. Nobody has to be online at the same time. In a challenge, you see both cards at stake before you agree.';
 }
 $('shipform').onsubmit = function (e) { e.preventDefault(); call({ action: 'name', ship: $('shipname').value }).then(function (r) { $('shipname').value = ''; if (!r.ok) { $('offmsg').textContent = r.error; return; } if (r.status === 'refused') { $('offmsg').textContent = 'Pick a kind name.'; return; } start(); }); };
 $('newsok').onclick = function () { call({ action: 'news_seen' }).then(function () { $('newsbox').hidden = true; }); };
@@ -130,6 +123,7 @@ function drawRivals() {
   call({ action: 'deck' }).then(function (d) { if (d.ok) $('open').checked = !!d.deck.open; });
   call({ action: 'rivals' }).then(function (r) {
     if (!r.ok) { $('rivals').innerHTML = '<p class="note">' + esc(r.error) + '</p>'; return; }
+    if (r.mine) { BATTLE = r.mine; $('resume').hidden = false; $('resumename').textContent = r.mine.rival.name + "'s deck"; } else $('resume').hidden = true;
     if (!r.rivals.length) { $('rivals').innerHTML = '<p class="note">No classmate has opened their deck yet. A classmate needs an approved ship name, and the switch "Classmates may battle my deck".</p>'; return; }
     var canC = r.battles === 'swap' || r.battles === 'away-safe';
     $('rivals').innerHTML = r.rivals.map(function (v) { return '<div class="rival"><span><b>' + esc(v.name) + '</b> <span class="note">' + v.deck + ' cards in the deck' + (v.busy ? ' · in a battle now' : '') + '</span></span><span class="row">' +
@@ -139,35 +133,31 @@ function drawRivals() {
     Array.prototype.forEach.call(document.querySelectorAll('#rivals button'), function (b) { b.onclick = function () { begin(b.getAttribute('data-r'), b.getAttribute('data-k')); }; });
   });
 }
+/* The battle thread's piece shows the cards at stake and "I agree" / "Back out" itself, then plays the battle over the whole screen.
+   This page tells the server each step: battle_accept, battle_cancel, battle_end with the result and what happened. */
 function begin(rival, kind) {
   $('battlemsg').textContent = '';
-  call({ action: 'battle_start', rival: rival, kind: kind }).then(function (r) {
-    if (!r.ok) { $('battlemsg').textContent = r.error; return; }
-    BATTLE = r;
-    if (r.status === 'on') return fight();
-    $('offer').hidden = false; $('battlebox').hidden = true;
-    $('mystake').innerHTML = cardHtml(r.you.stake, 'stake'); $('theirlabel').textContent = r.rival.name + "'s deck puts up"; $('theirstake').innerHTML = cardHtml(r.rival.stake, 'stake');
-    $('rule').textContent = r.rule === 'away-safe' ? 'If you win, you get a copy of their card, and they keep theirs. If their deck wins, your card goes to them.' : 'The winner gets both cards. In a tie, nobody does. You may still play the card you put up.';
-    $('offer').scrollIntoView({ behavior: 'smooth' });
-  });
+  call({ action: 'battle_start', rival: rival, kind: kind }).then(function (r) { if (!r.ok) { $('battlemsg').textContent = r.error; return; } fight(r); });
 }
-$('backout').onclick = function () { call({ action: 'battle_cancel', battle: BATTLE.battle }).then(function () { BATTLE = null; $('offer').hidden = true; $('battlebox').hidden = false; drawRivals(); }); };
-$('agree').onclick = function () { call({ action: 'battle_accept', battle: BATTLE.battle }).then(function (r) { if (!r.ok) { $('battlemsg').textContent = r.error; return; } $('offer').hidden = true; fight(); }); };
-function fight() {
+function fight(b) {
   if (typeof GMQBattleOwn === 'undefined') { $('battlemsg').textContent = 'The battle is missing from this folder.'; return; }
-  var b = BATTLE; try { localStorage.removeItem('gmq_battle_own_v1'); } catch (e) {}          /* each challenge is a new battle, not the practice battle left in the middle */
-  GMQBattleOwn.open({}, { cards: b.you.deck.concat(b.you.parts || []), seed: b.seed, upgrades: 'card', back: 'Back to the test page',
-    foe: { cards: b.rival.deck.concat(b.rival.parts || []), name: b.rival.name } },
+  BATTLE = b; var refused = null; $('resume').hidden = true;
+  GMQBattleOwn.open({ accept: function () { call({ action: 'battle_accept', battle: b.battle }).then(function (r) { if (!r.ok) { refused = r.error; GMQBattleOwn.close(); } }); } },
+    { cards: b.you.deck.concat(b.you.parts || []), seed: b.seed, upgrades: 'card', back: 'Back to the test page',
+      rival: { name: b.rival.name, cards: b.rival.deck.concat(b.rival.parts || []), kind: b.kind, rule: b.rule, stake: { mine: b.you.stake, theirs: b.rival.stake }, battle: b.battle, seed: b.seed, minutes: b.minutes } },     /* rule: 'swap' or 'away-safe' (the battle's words do not use it yet) */
     function (res) {
-      if (res.winner === null || res.winner === undefined) { $('battlemsg').textContent = 'You left the battle. It ends with nothing moved after ' + b.minutes + ' minutes.'; $('battlebox').hidden = false; return; }
-      var result = res.winner === 0 ? 'won' : res.winner === 1 ? 'lost' : 'tie';
-      call({ action: 'battle_end', battle: b.battle, result: result, log: { rounds: res.rounds } }).then(function (r) {
+      if (refused) { $('battlemsg').textContent = refused; BATTLE = null; return drawRivals(); }
+      if (res.why === 'backed out') return call({ action: 'battle_cancel', battle: b.battle }).then(function () { BATTLE = null; drawRivals(); });
+      if (res.why !== 'finished' || !res.result) { $('battlemsg').textContent = 'You left the battle in the middle. It is kept: go back to it to finish. After ' + b.minutes + ' minutes it ends with nothing moved.'; return drawRivals(); }
+      call({ action: 'battle_end', battle: b.battle, result: res.result, log: res.log || '' }).then(function (r) {
         BATTLE = null; $('resultbox').hidden = false; $('battlebox').hidden = true;
-        $('resulthead').textContent = result === 'won' ? 'You won!' : result === 'lost' ? b.rival.name + "'s deck won." : 'A tie.';
-        $('result').innerHTML = !r.ok ? '<p class="msg">' + esc(r.error) + '</p>' : r.moved ? '<p>' + (result === 'won' ? (b.rule === 'away-safe' ? 'You got a copy of:' : 'You got:') : 'Your card went to ' + esc(b.rival.name) + ':') + '</p>' + cardHtml(r.moved) : '<p>No card moved.</p>';
+        $('resulthead').textContent = res.result === 'won' ? 'You won!' : res.result === 'lost' ? b.rival.name + "'s deck won." : 'A tie.';
+        $('result').innerHTML = !r.ok ? '<p class="msg">' + esc(r.error) + '</p>' : r.moved ? '<p>' + (res.result === 'won' ? (b.rule === 'away-safe' ? 'You got a copy of:' : 'You got:') : 'Your card went to ' + esc(b.rival.name) + ':') + '</p>' + cardHtml(r.moved) : '<p>No card moved.</p>';
+        $('resultbox').scrollIntoView({ behavior: 'smooth' });
       });
     });
 }
+$('resumego').onclick = function () { if (BATTLE) fight(BATTLE); };
 $('resultok').onclick = function () { $('resultbox').hidden = true; start(); };
 loadList().then(start);
 </script>
