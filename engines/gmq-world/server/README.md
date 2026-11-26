@@ -1,4 +1,4 @@
-# GMQ world server: version 0.2 (26 November 2026)
+# GMQ world server: version 0.3 (26 November 2026, night)
 
 **Stage:** tested only on Claude's machine. It has never run on your site. **[Proposal]**
 **It never touches your live server.** You upload it to a TEST folder yourself: `../READ_ME_FIRST.md`, with the zip `../GMQ_Server_Test_Folder.zip`.
@@ -27,6 +27,9 @@ A small PHP server, built like your Math Skills engine: one API, flat JSON files
 | `teacher.html` | the Commander's Desk: the server check, your classes, every cadet, the settings, older copies, battles |
 | `api/gmq-world-api.php` | the server |
 | `api/gmq-world-cards.php` | the card board and battles. The server loads it; it is never opened by itself. |
+| `api/gmq-world-cardlist.php` | reads the card list, and makes the starter pack by the battle thread's rule (the same pack as `GMQBattleOwn.starter`, seed for seed) |
+| `api/cards.json` | (in the zip only) a copy of the battle thread's `docs/battle/cards.json`. With it, the server, not the page, says which cards are rare or epic. |
+| `cards-test.html`, `battle-piece.js` | (the page here; the piece in the zip only) a test page where pretend cadets try the card board and challenge battles, with the battle thread's `GMQBattleOwn`. Off until the teacher turns it on. |
 | `api/config.sample.php` | settings. Copy it to `api/config.php` **on the server** and fill it in there. |
 | `tools/set-teacher-password.php` | sets the teacher password from the command line, if you prefer that to the setup word |
 | `../constraints/gmq-world.txt` | the constraint file the AI runs inside. In the zip it is in `api/constraints/`. |
@@ -79,6 +82,8 @@ On the Desk: "Older copies", then "Bring this back".
 cd engines/gmq-world/server
 cp api/config.sample.php api/config.php        # then set 'setup_code' to a word of your own
 cp ../../../docs/index.html play.html
+cp ../../../docs/battle/cards.json api/cards.json                              # the card list (optional)
+sh ../battle_piece.sh ../../../docs/battle/own.html > battle-piece.js          # the battle, for cards-test.html (optional)
 php -S localhost:8080
 ```
 
@@ -94,6 +99,9 @@ Open `http://localhost:8080/teacher.html`. The server check says what is missing
 | `checks/server_game_test.js` | the game as it is today against 0.2: two devices, leaving and coming back, the teacher clearing a game and bringing it back |
 | `checks/server_desk_test.js` | the Commander's Desk in a browser, at three screen sizes, including a data folder anyone could read |
 | `checks/server_zip_test.js` | the steps in `READ_ME_FIRST.md`, done on the zip itself |
-| `checks/server_php_check.py` | every PHP file parses, and uses nothing newer than PHP 7.4 (a search; there is no PHP 7.4 here) |
+| `checks/server_php_check.py` | every PHP file parses, and uses nothing newer than PHP 7.4 (a search; there is no PHP 7.4 here); every page's script parses, with no `?.` or `??` |
+| `checks/server_cards_check.js` | (0.3) the server knows all 118 cards as the list has them, and its starter pack is the battle thread's on 20,000 seeds |
+| `checks/server_catalogue_test.js` | (0.3) with the card list: a card by id or name is one card; the list, not the page, says the kind; ship parts stay out of decks; the test starter pack |
+| `checks/server_cards_page_test.js` | (0.3) the test page in a browser: two pretend cadets, a starter pack each, the board, a challenge backed out and then won, the battle over the whole screen, the news, three sizes |
 
 **Not tested:** your host, a real iPad on school wifi, PHP 7.4 itself, a real AI model, and real children.

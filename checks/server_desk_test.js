@@ -66,7 +66,8 @@ const api = URL => { let cookie = ''; return async body => { const r = await fet
     ok(/The winner takes both/.test(await p.textContent('#sharenote')), 'the note under the settings says what the battle setting means');
     ok(/4 cadets/.test(await p.textContent('#classlist')), 'Refresh also updates the count of cadets in the class list', await p.textContent('#classlist'));
     await p.selectOption('#battles', 'away-safe'); await p.selectOption('#show', 'ship'); ok(/never loses one/.test(await p.textContent('#sharenote')), 'the note changes with the setting');
-    await p.click('#savecodes'); await p.waitForTimeout(700); ok((await T({ action: 't_class', class: CODE })).class.battles === 'away-safe', 'the settings are saved');
+    await p.selectOption('#testtools', '1'); ok(/made-up cadets only/.test(await p.textContent('#sharenote')), 'turning on the test page says it is for made-up cadets only');
+    await p.click('#savecodes'); await p.waitForTimeout(700); const saved = (await T({ action: 't_class', class: CODE })).class; ok(saved.battles === 'away-safe' && saved.test_tools === true, 'the settings are saved', saved);
     await p.screenshot({ path: path.join(SHOTS, 'server_desk_class_ipad.png'), fullPage: true });
     // an older copy brought back
     const copyBtn = p.locator('#cadets button[data-a="copies"]'); ok((await copyBtn.count()) === 1, 'only the cadet whose game went back has older copies', await copyBtn.count());

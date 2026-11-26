@@ -68,6 +68,7 @@
       <label>Class card board<select id="board"><option value="0">off</option><option value="1">on</option></select></label>
       <label>Battles against a classmate's deck<select id="battles"><option value="off">off</option><option value="friendly">friendly only</option><option value="swap">challenge: winner takes both</option><option value="away-safe">challenge: away cadet keeps card</option></select></label>
       <label>Classmates are shown by<select id="show"><option value="ship">ship name only</option><option value="first">first name</option></select></label>
+      <label>Test page for cards and battles<select id="testtools"><option value="0">off</option><option value="1">on: pretend cadets only</option></select></label>
     </div>
     <div class="box note" id="sharenote"></div>
     <div class="row" style="margin-top:10px"><button type="button" id="savecodes">Save these settings</button><span class="note" id="codesmsg" role="status"></span></div>
@@ -108,6 +109,7 @@ async function health() {
   line(h.sessions_ok ? 'good' : 'warn', h.sessions_ok ? `A log in lasts ${h.session_hours} hours.` : 'Log ins are kept in the server\'s usual place.', h.sessions_ok ? '' : 'They may end after 24 minutes without use. This goes away when saved games can be written.');
   line(h.https ? 'good' : 'warn', h.https ? 'This page is on https.' : 'This page is not on https.', h.https ? '' : 'Log ins travel without a lock. Use the https address of your site.');
   line(h.teacher_set ? 'good' : 'warn', h.teacher_set ? 'The teacher password is set.' : 'The teacher password is not set yet.', h.teacher_set ? '' : h.setup_ready ? 'Set it in the box below.' : 'Write a setup word in api/config.php first (step 4), then reload this page.');
+  line(h.card_list ? 'good' : 'warn', h.card_list ? `The card list is there: ${h.card_list} cards.` : 'The card list (api/cards.json) is not there.', h.card_list ? '' : 'The game still works. Cards between classmates then trust the page for which cards are rare or epic.');
   line(h.ai === 'off' ? 'good' : 'warn', h.ai === 'off' ? 'The AI is off. The game answers as it does on the class link.' : 'The AI is on.', h.ai === 'off' ? '' : 'Every reply is checked before a cadet sees it. Keep it off on a test folder until you have read the constraint file.');
   if (!h.constraint_file && h.ai !== 'off') line('bad', 'The constraint file is missing, so the AI will not answer.');
   $('checks').innerHTML = L.join(''); return h;
@@ -128,12 +130,13 @@ function shareNote() { const b = $('battles').value, show = $('show').value === 
   $('sharenote').innerHTML = [
     $('board').value === '1' ? `The card board shows each card's count and up to five finders, by ${show}. A card a cadet has not found yet shows only as an empty shape in their game.` : 'The card board is off.',
     b === 'off' ? 'Battles are off.' : `A cadet battles a classmate's saved deck. The computer plays the deck, so nobody has to be online at the same time. Only a cadet who turns on "classmates may battle my deck" can be battled.` +
-      (b === 'friendly' ? ' Nothing is at stake.' : b === 'swap' ? ' In a challenge, each side puts up one rare or epic card, picked at random. The winner takes both. The classmate who is away can lose a card.' : ' In a challenge, the challenger can lose their card. The classmate who is away never loses one: if the challenger wins, they get a copy.')
-  ].map(t => `<p style="margin:4px 0">${t}</p>`).join(''); }
-['board', 'battles', 'show'].forEach(id => $(id).onchange = shareNote);
+      (b === 'friendly' ? ' Nothing is at stake.' : b === 'swap' ? ' In a challenge, each side puts up one rare or epic card, picked at random. The winner takes both. The classmate who is away can lose a card.' : ' In a challenge, the challenger can lose their card. The classmate who is away never loses one: if the challenger wins, they get a copy.'),
+    $('testtools').value === '1' ? 'The test page (cards-test.html) is on: a cadet can take a starter pack of 15 cards there, once, to try the board and battles before the game gives out the new cards. Use it with made-up cadets only, and turn it off before a class uses this folder.' : ''
+  ].filter(Boolean).map(t => `<p style="margin:4px 0">${t}</p>`).join(''); }
+['board', 'battles', 'show', 'testtools'].forEach(id => $(id).onchange = shareNote);
 async function openClass(code) { const r = await call({ action: 't_class', class: code }); if (!r.ok) { $('classmsg').textContent = r.error; return; } current = code; rows = r.cadets; $('class').hidden = false; $('classname').textContent = r.class.name; $('classcode').textContent = r.class.code.toUpperCase();
   $('codes').innerHTML = Object.keys(TASKS).map(k => `<label>${esc(TASKS[k])}<input inputmode="numeric" maxlength="4" data-k="${k}" value="${esc(r.class.codes[k])}"></label>`).join('');
-  $('names').value = r.class.names; $('closed').value = r.class.closed ? '1' : '0'; $('board').value = r.class.board ? '1' : '0'; $('battles').value = r.class.battles || 'off'; $('show').value = r.class.show || 'ship'; shareNote();
+  $('names').value = r.class.names; $('closed').value = r.class.closed ? '1' : '0'; $('board').value = r.class.board ? '1' : '0'; $('battles').value = r.class.battles || 'off'; $('show').value = r.class.show || 'ship'; $('testtools').value = r.class.test_tools ? '1' : '0'; shareNote();
   $('cadets').innerHTML = r.cadets.length ? r.cadets.map(c => { const s = c.summary || {}, ship = c.ship || {}, k = s.card_kinds || {};
     return `<tr><td><b>${esc(c.name)}</b>${c.locked ? ' <span class="warn">locked</span>' : ''}</td><td>${when(c.saved_at)}</td><td>${s.tasks == null ? '<span class="note">not started</span>' : `${s.tasks} of 15 tasks · ${s.parts} of 5 parts`}</td>
       <td>${s.voltara ? `<span class="${s.voltara === 'Voltara shines' ? 'good' : s.voltara === 'Worse off' ? 'bad' : ''}">${esc(s.voltara)}</span> · day ${s.voltara_day}` : s.voltara_day ? 'day ' + s.voltara_day : '<span class="note">not yet</span>'}</td>
@@ -161,7 +164,7 @@ async function showCopies(id, name) { const r = await call({ action: 't_backups'
   $('closecopies').onclick = () => { box.hidden = true; };
   box.querySelectorAll('button[data-n]').forEach(b => b.onclick = async () => { if (!confirm(`Bring back this copy of ${name}'s game?`)) return; const x = await call({ action: 't_restore', class: current, id, n: Number(b.dataset.n) }); $('cadetmsg').textContent = x.ok ? '' : x.error; box.hidden = true; openClass(current); }); }
 $('savecodes').onclick = async () => { const codes = {}; document.querySelectorAll('#codes input').forEach(i => codes[i.dataset.k] = i.value.trim());
-  const r = await call({ action: 't_set', class: current, codes, names: $('names').value, closed: $('closed').value === '1', board: $('board').value === '1', battles: $('battles').value, show: $('show').value }); $('codesmsg').textContent = r.ok ? 'Saved.' : r.error; openClass(current); };
+  const r = await call({ action: 't_set', class: current, codes, names: $('names').value, closed: $('closed').value === '1', board: $('board').value === '1', battles: $('battles').value, show: $('show').value, test_tools: $('testtools').value === '1' }); $('codesmsg').textContent = r.ok ? 'Saved.' : r.error; openClass(current); };
 $('refresh').onclick = () => { listClasses(); openClass(current); };
 (async () => { const h = await health(); if (!h) return; const r = await call({ action: 't_classes' }); if (r.ok) return showClasses();
   if (!h.teacher_set) { $('setup').hidden = !h.setup_ready; return; } $('login').hidden = false; })();
