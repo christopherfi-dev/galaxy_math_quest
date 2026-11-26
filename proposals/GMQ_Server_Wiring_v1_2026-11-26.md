@@ -9,14 +9,14 @@ Everything is **[Proposal]**. The server is `engines/gmq-world/server/` (README 
 
 ## 1. For the main thread: small changes in the NET block (about 30 lines)
 
-**Ready as tested code (26 November, night):** `engines/gmq-world/wiring/net_v03.js` holds all of section 1 as 11 exact changes, each with its reason (the eleventh, added after the review: the log-in box leaves the name to the server, which no longer refuses real names such as Siriporn, Pornthip or Poo). To make them: `node engines/gmq-world/wiring/apply.js prototypes/kis_station_sketch.html`. It refuses, and changes nothing, if the game has moved on and an old text no longer fits. `checks/server_wiring_test.js` makes them in a copy of the game and plays it against the server on an iPad and a phone:
+**Ready as tested code (26 November, night):** `engines/gmq-world/wiring/net_v03.js` holds all of section 1 as 10 exact changes, each with its reason (one, added after the review: the log-in box leaves the name to the server, which no longer refuses real names such as Siriporn, Pornthip or Poo). To make them: `node engines/gmq-world/wiring/apply.js prototypes/kis_station_sketch.html`. It refuses, and changes nothing, if the game has moved on and an old text no longer fits. `checks/server_wiring_test.js` makes them in a copy of the game and plays it against the server on an iPad and a phone:
 - "Your game is open on another iPad." with "Bring it here"
 - a reload takes a newer game, and asks at once if another device holds it
 - nothing can be typed or tapped behind that box (today the game would answer "Finish this first. Or tap Leave.", and there is no Leave)
 - the teacher's clear and bring-back reach the open device, with "Your Commander changed your game."
 - a card that leaves or arrives in a challenge, and the news said once
 
-When the cards thread's `GMQCards.record` replaces `card()`, change 7 no longer fits: give the new card its mark (`u: netMark()`) there instead.
+Every card gets its mark just before a save is sent, so it does not matter how the card came (`card()`, the starter pack, practice credits, or anything added later). The changes fit version 102 (the cards wired in) and version 101.
 
 The same section, in words:
 

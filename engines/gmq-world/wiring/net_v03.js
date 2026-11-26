@@ -41,19 +41,15 @@ function netMoved() { NET.on = false; NET.moved = true; clearTimeout(NET.tm); $(
   'remember the count; give old cards a mark; say why the game changed; say the news; if another device holds the game, ask before the child plays'],
   [
 `const r = await netCall({ action: 'save', state: S });`,
-`const r = await netCall({ action: 'save', state: S, rev: NET.rev, caps: ['rev', 'cards'] });`,
-  'every save says which count of saves it builds on'],
+`(S.cards || []).forEach(c => { if (c && typeof c === 'object' && !c.u) c.u = netMark(); }); const r = await netCall({ action: 'save', state: S, rev: NET.rev, caps: ['rev', 'cards'] });`,
+  'every save says which count of saves it builds on; and every card, however it came (card(), the starter pack, practice credits), has its own mark before it is sent'],
   [
 `if (r && r.ok) { $('netstate').textContent = 'saved'; netShip(r.ship); } else if (r && r.status === 401)`,
-`if (r && r.ok) { $('netstate').textContent = 'saved'; netRevSet(NET.name, r.rev); if (r.cards) { S.cards = r.cards; save(); drawCards(); } netShip(r.ship); netNews(r.news); }
+`if (r && r.ok) { $('netstate').textContent = 'saved'; netRevSet(NET.name, r.rev); if (r.cards) { S.cards = r.cards; save(); drawCards(); if (typeof cardsSoon === 'function') cardsSoon(); } netShip(r.ship); netNews(r.news); }
     else if (r && r.status === 409 && r.moved) netMoved();
     else if (r && r.status === 409 && r.newer) { NET.on = false; netCall({ action: 'load' }).then(x => { if (x && x.ok) netTake(x, 'Your Commander changed your game.'); }); }
     else if (r && r.status === 401)`,
-  'the two refusals get their own words and a way forward, instead of "not saved yet: no connection"; cards that moved in a battle reach the book'],
-  [
-`S.cards.push({ r, n: pick(DECK[r]) }); save(); drawCards(S.cards.length - 1);`,
-`S.cards.push({ r, n: pick(DECK[r]), u: netMark() }); save(); drawCards(S.cards.length - 1);`,
-  'each new card gets its own mark (when the cards thread\'s GMQCards.record takes over, give its card a mark the same way)'],
+  'the two refusals get their own words and a way forward, instead of "not saved yet: no connection"; cards that moved in a battle reach the book, and a card won pops up with why it came (cardsSoon, version 102)'],
   [
 `if (rude(name, true)) { m.textContent = 'Please use your own name.'; return; } m.textContent = '';`,
 `m.textContent = '';      /* [server 0.3.1] the server checks the name: whole words only, so real names such as Siriporn, Pornthip or Poo are not refused */`,

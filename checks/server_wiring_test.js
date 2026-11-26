@@ -84,8 +84,13 @@ const api = () => { let c = ''; return async body => { const r = await fetch(URL
     ok(!a.cards.includes(lost), 'the card that left in the challenge leaves Nova\'s book on the iPad', [lost, a.cards]);
     const s1 = await said(A); ok(/Blue Fox challenged your deck and won\./.test(s1), 'the news is said in the log', s1.slice(-300));
     await push(A); ok(((await said(A)).match(/Blue Fox challenged your deck and won\./g) || []).length === 1, 'and said once only');
+    await A.evaluate(() => { S.cards.forEach(c => { delete c.unseen; }); save(); window.GMQ_NO_CARDPOP = false; });       /* every card so far has been seen; the card pop-up on (the play tests turn it off) */
     ch = await O({ action: 'battle_start', rival: nova.rival, kind: 'challenge' });
-    if (ch.ok) { await O({ action: 'battle_accept', battle: ch.battle }); await O({ action: 'battle_end', battle: ch.battle, result: 'lost' }); await push(A); await A.waitForTimeout(500);
+    if (ch.ok) { await O({ action: 'battle_end', battle: (await O({ action: 'battle_accept', battle: ch.battle }), ch.battle), result: 'lost' }); await push(A); await A.waitForTimeout(500);
+      if (await A.evaluate(() => typeof cardsSoon === 'function' && typeof GMQCards !== 'undefined')) {      /* version 102 and later: the card pop-up */
+        await A.waitForFunction(() => GMQCards.isOpen(), null, { timeout: 8000 }).catch(() => {});
+        const pop = await A.evaluate(() => GMQCards.isOpen() ? document.body.innerText : ''); ok(/Your deck won it from Blue Fox in a challenge\./.test(pop), 'the card won pops up by itself, with why it came', pop.slice(0, 200));
+        await A.screenshot({ path: path.join(SHOTS, 'server_wiring_card_won_ipad.png') }); }
       const got = await A.evaluate(u => S.cards.find(c => c.u === u), ch.you.stake.u); ok(got && got.unseen === 1 && /Your deck won it from Blue Fox/.test(got.why || ''), 'a card won by Nova\'s deck arrives in the book, with why and unseen', got); }
     else ok(false, 'a second challenge starts', ch.error);
     ok(((await T({ action: 't_class', class: CODE })).cadets.find(c => c.name === 'Nova') || {}).summary.cards === (await st(A)).cards.length, 'the iPad\'s book and the server\'s agree');
