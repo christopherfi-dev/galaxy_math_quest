@@ -46,5 +46,5 @@ The Math Skills engine's notes say its student records are in `api/math-students
 
 ## 5. Tested, and not
 
-- **Tested here:** 14 checks, all passing (`checks/RUN_ALL.md`). They include pictures at iPad and phone size, a whole grade of 60 pretend cadets, and your steps done word for word on the zip.
+- **Tested here:** 14 checks, all passing at 16:13 UTC with the class link's version 103 (`checks/RUN_ALL.md`). The zip carries version 103. They include pictures at iPad and phone size, a whole grade of 60 pretend cadets, and your steps done word for word on the zip.
 - **Not tested:** your server itself, PHP 7.4, a real iPad on school wifi, the AI (it stays off), and real children.
