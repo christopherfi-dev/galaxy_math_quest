@@ -61,12 +61,13 @@
 **Option A (my pick): the cage opens by hand; the counts make the core run.**
 - **Told first:** "The storm shook the core's alien artifacts out onto the floor. The core runs on them. It used to count them itself, but the storm knocked out its counters. Count each kind, and set the core's four dials."
 - **The cage:** it opens by hand. Nothing in the bay is locked.
-- **What the dials do:** they tell the core how many of each kind to pull back in. The artifacts slip from your glove, so only the core can take them.
+- **What the dials do:** before it pulls, the core readies one socket inside for each artifact, from the dials. Then it pulls them all in at once. An empty socket, or an artifact with no socket, jams it. So it needs the numbers first. The artifacts slip from your glove [Built], so only the core can take them.
 - **While the child counts,** the floor and its artifacts fill the picture, as now.
-- **Right:** "The core pulls the artifacts in, one kind at a time. Every one clicks into place. The Engine Core hums. Your ship has an engine again."
+- **Told first, as well:** "It readies one socket for each artifact before it pulls."
+- **Right:** "The core pulls the artifacts in. Every one clicks into its socket. The Engine Core hums. Your ship has an engine again." The floor is then empty: today's "They glow softly now" changes (section 6).
 - **Wrong:** before anything moves, the core reaches for the wrong number of one kind, and jams. "The Engine Core rumbles!" The screen shakes, and the wrong dials are marked, as now. **No slots are drawn,** so the picture never shows the count.
 - **What it keeps:** your counting, your four kinds, your four dials, and your temper.
-- **What it drops, yours to decide:** "a code", and the putting in order of the four counts. The ordering is a skill. If you want it kept, the core can pull the kinds in your 2023 order, red, blue, green and gold, and the child sets the dials in that order.
+- **What it drops:** "a code". (The built dials are already in your 2023 order, red, blue, green and gold, so nothing about order changes.)
 
 **B:** keep the cage locked, with a safety reason ("it will not let you near loose parts"). It is still a lock opened by numbers.
 
@@ -80,21 +81,23 @@
 
 **What odd means, already in the game:** Ammo Count says "An odd number in a rack leaves one shot with no partner" [Built]. **Odd means "one left over when you make pairs".** That is the real meaning of odd and even, and it fits twin cannons.
 
-**Option A (my pick): the twin cannons fire in pairs.**
-- **Told first:** "Your ship must fly through the storm's wreckage to reach Voltara. Its twin cannons will clear the way. They fire two charges at a time."
-- "The screen shows how many charges each piece of wreckage needs. An even number goes in pairs. An odd number leaves one charge over, and needs one single shot at the end."
-- "The storm scrambled the screen. Light every odd number, so the cannons know where to add a single shot."
-- **Right:** the cannons fire, and every piece of wreckage breaks up. No charge is wasted.
-- **Wrong, told as counts only, never which number:** "3 pieces of wreckage are still there: each needed one more shot." Or: "2 single shots hit nothing: those pieces were even." So lighting everything does not win: it wastes a shot on every even piece, and the count shows it.
+**Option A (my pick): the twin cannons fire in pairs, as the game already says.**
+- **Built, in Ammo Count:** "Your ship has twin cannons, one on each side. They fire in pairs. An odd number in a rack leaves one shot with no partner, and a shot fired alone pushes the ship sideways."
+- **Told first:** "This is the practice program for your twin cannons. Each number is how many shots a practice drone needs."
+- "An odd number leaves one shot with no partner, and it would push the ship sideways. For those, the other cannon must fire a blank beside it."
+- "The storm broke the cannons' sorter. They still read the numbers. They cannot tell odd from even any more. You can. Light every odd number."
+- **Where it is seen:** the practice cannon in the bay, on its mount, and the drones [Built: "Practice drones. Each one can show a number."]. The ship stays in the dock.
+- **Right:** the practice runs. Every drone is hit, and the mount never jolts. No blank is wasted.
+- **Wrong, told as counts only, never which number:** "The mount jolted sideways 3 times: 3 odd numbers were dark." Or: "2 blanks were fired for nothing: those numbers were even." So lighting everything does not win: every even number wastes a blank, and the count shows it.
 - **The V goes.** It was a pattern used as a sign, and your rule of 26 November covers it.
-- **What it keeps:** your odd and even, the grid, the numbers and the finished example. The cannons fire at wreckage, not at drones or ships.
+- **What it keeps:** your odd and even, the grid, the numbers, the finished example, and the game's own meaning of odd in Ammo Count.
 
 **B: friends and targets** (version 1's pick): odd for drones, even for station ships. It fails three ways:
 - "That is how the station numbers them" is a rule.
 - Your home page says "The spaceships are broken", so no station ships are flying.
 - Your 4-3 has drones "marked with different numbers", so drones are not all odd.
 
-**Tone is yours:** cannons are built, and A aims them at wreckage only.
+**Tone is yours:** the cannons are built, and A keeps them on practice drones.
 
 ---
 
@@ -102,10 +105,10 @@
 
 | | Decision | My pick |
 |---|---|---|
-| 1 | **The locker** | **A:** it opens by hand. No count |
+| 1 | **The locker** | **A:** it opens by hand. No count. **Its cost:** the first link of the secret chain then asks nothing of the child |
 | 2 | **The Engine Core** | **A:** the cage opens by hand; the four counts tell the core how many to pull in; a wrong count jams it (the temper) |
-| 3 | **The Engine Core's ordering** (your 2023 "put the counts in order") | **Keep it:** the core pulls the kinds in your order, and the dials are set in that order |
-| 4 | **The cannons** | **A:** twin cannons fire in pairs; odd leaves one over; light the odd ones for a single shot. The V goes |
+| 3 | **The Engine Core's other 2023 version,** "Space Debris Count... The sum of these numbers will unlock the Engine Core" | **Leave it out:** the built task is the Alien Artifacts version. If you want the sum, the core could need the total too: "How many sockets in all?" |
+| 4 | **The cannons** | **A:** the practice program; odd leaves a shot with no partner, which pushes the ship sideways, so the other cannon fires a blank; light the odd ones. The V goes |
 | 5 | **"A number needs a lock"** | Change it to: "Type numbers in a task's box. Walk to the task first." |
 
 **Also yours:** the title "Weapons Coding" could stay as your 2023 name, or become "Weapons Aiming".
@@ -120,20 +123,24 @@
   - the screen "A lock in the world";
   - line 1023's number routing in the dock;
   - the teacher page ("The locker code is the number of stacked crates");
-  - the per-player stack.
+  - the per-player stack;
+  - the locker's drawn number lock.
 - **The Engine Core:**
   - the STORY line;
   - the hint "Then open the cage";
   - the core's look ("locked in a cage. The lock has four dials");
   - the screen's heading "The Engine Core lock";
   - the buttons "Open the lock" and "Leave and count";
-  - the ship's log ("out of its cage, and running").
+  - the ship's log ("out of its cage, and running");
+  - "The lock wants four numbers.";
+  - after a win, the floor: "Alien artifacts. They glow softly now." (they are in the core now, so the floor is empty).
 - **The cannons:**
   - the STORY line;
   - the screen's title "THE CANNONS' LOCK";
   - the button "Try the lock";
   - the right and wrong lines;
-  - the ship's log ("Its sign was a V, for Voltara").
+  - the ship's log ("Its sign was a V, for Voltara");
+  - the cannon's use line ("The cannons' lock lights up. It is full of numbers.").
 - **Everywhere:** "A number needs a lock. Walk to a lock and open it first."
 
 ---
@@ -142,7 +149,6 @@
 
 - **Read:** `CLAUDE.md`; your words of 21 and 25 November; the main thread's check of 26 November. A helper searched the game for every lock and code on the station, and your 2023 station pages for Alien Artifacts and Weapons Coding, and quoted each.
 - **Not done:** I did not play the game. No new numbers.
-- **Read against itself once:** added section 5b, after finding no answer to "why not put the artifacts back one at a time?".
 - **Review:** section 7a.
 
 ### 7a. The review of version 1, and what changed
@@ -167,4 +173,4 @@
 | Minor | Your 26 November picks were not read | Read, and used as the model |
 | Minor | "which is kinder" decided tone; "volley" | Tone is yours; "the cannons fire" |
 
-**Not re-read by a reviewer:** version 2.
+**Then a re-check of version 2: "Not yet."** Six findings: the core could pull until the floor is clear; "a single shot" against the game's own Ammo Count; where the firing is seen; built lines missing from section 6; the locker's cost; decision 3 changed nothing. **All six are answered above, in a last pass. I stopped the review loop there:** these are built tasks with many fixed details, and the main thread, building them, is best placed to settle what is left. Not re-read.
