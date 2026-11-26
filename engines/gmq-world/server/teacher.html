@@ -78,8 +78,13 @@
     <p class="msg" id="cadetmsg" role="status"></p>
     <div class="box" id="copies" hidden></div>
 
+    <div id="cardsbox" hidden>
+      <h2>Cards in the class</h2>
+      <details><summary class="note" id="cardsum"></summary><div class="scroll"><table><thead><tr><th>Card</th><th>Kind</th><th>Found by</th></tr></thead><tbody id="cardlist"></tbody></table></div></details>
+    </div>
+
     <div id="battlebox" hidden>
-      <h2>Battles</h2>
+      <div class="row"><h2 style="margin-right:auto">Battles</h2><button type="button" class="quiet" id="checkall" hidden>Check all challenges</button><span class="note" id="checkallmsg"></span></div>
       <div class="scroll"><table><thead><tr><th>When</th><th>Who</th><th>Kind</th><th>What happened</th></tr></thead><tbody id="battlelist"></tbody></table></div>
     </div>
   </section>
@@ -148,8 +153,12 @@ async function openClass(code) { const r = await call({ action: 't_class', class
   document.querySelectorAll('#cadets button').forEach(b => b.onclick = () => cadetAct(b.dataset.a, b.dataset.id, b.dataset.n));
   const bt = await call({ action: 't_battles', class: code }), all = bt.ok ? bt.open.concat(bt.done) : [];
   $('battlebox').hidden = !all.length && (r.class.battles || 'off') === 'off';
+  const tbd = await call({ action: 't_board', class: code }), cl = tbd.ok ? tbd.cards : [];        /* every card in the class, and who has it (first names: for you only) */
+  $('cardsbox').hidden = !cl.length; $('cardsum').textContent = `${cl.length} different cards in the class. Open to see who has each.`;
+  $('cardlist').innerHTML = cl.map(c => `<tr><td>${esc(c.card || c.key)}</td><td>${esc(c.kind)}</td><td>${esc(c.names.join(', '))}</td></tr>`).join('');
   $('battlelist').innerHTML = all.length ? all.slice(0, 60).map(b => `<tr><td>${when(b.when)}</td><td>${esc(b.a)} battled ${esc(b.b)}'s deck</td><td>${esc(RULES[b.rule] || b.kind)}</td>
     <td>${b.status === 'done' ? `${b.result === 'won' ? esc(b.a) + ' won' : b.result === 'lost' ? esc(b.b) + "'s deck won" : 'a tie'}${b.moved ? ` · ${esc(b.moved)} ${b.rule === 'away-safe' && b.result === 'won' ? 'copied to' : 'moved to'} ${esc(b.result === 'won' ? b.a : b.b)}` : ''}` : `<span class="note">${esc(b.status === 'on' || b.status === 'offered' ? 'playing now' : b.status)}</span>`}${b.log ? `<details><summary class="note">What happened</summary><div class="note" style="white-space:pre-wrap">${esc(b.log)}</div></details>` : ''}${b.checkable ? `<div class="row" style="margin-top:4px"><button type="button" class="quiet" data-check="${esc(b.battle)}">Check who won</button><span class="note" data-checked="${esc(b.battle)}"></span></div>` : ''}</td></tr>`).join('') : '<tr><td colspan="4" class="note">No battles yet.</td></tr>';
+  $('checkall').hidden = !document.querySelector('#battlelist button[data-check]'); $('checkallmsg').textContent = '';
   document.querySelectorAll('#battlelist button[data-check]').forEach(btn => btn.onclick = async () => { const out = document.querySelector(`[data-checked="${btn.dataset.check}"]`); btn.disabled = true; out.textContent = 'Playing it again…';
     const said = await checkBattle(btn.dataset.check); out.textContent = said; out.className = /^✓/.test(said) ? 'good' : /^✗/.test(said) ? 'bad' : 'note'; btn.disabled = false; }); }
 /* Check who won a challenge: the battle's record (its start and the challenger's choices) is played again with the battle thread's own
@@ -178,6 +187,10 @@ async function checkBattle(bid) {
     return notes.length ? '✗ Does not match: ' + notes.join('; ') + '.' : `✓ Checked: played again from its record, it ends the same way (${{ won: 'the challenger won', lost: "the classmate's deck won", tie: 'a tie' }[r.claimed]}).`;
   } catch (e) { return 'The record could not be played again (' + e.message + ').'; } finally { GMQBattleOwn.close(); }
 }
+$('checkall').onclick = async () => { const btns = [...document.querySelectorAll('#battlelist button[data-check]')]; let good = 0, wrong = 0;
+  $('checkall').disabled = true; for (const b of btns) { b.click(); await new Promise(res => { const out = document.querySelector(`[data-checked="${b.dataset.check}"]`), tm = setInterval(() => { if (out.textContent && !/Playing it again/.test(out.textContent)) { clearInterval(tm); res(); } }, 200); });
+    const t = document.querySelector(`[data-checked="${b.dataset.check}"]`).textContent; if (/^✓/.test(t)) good++; else wrong++; }
+  $('checkall').disabled = false; $('checkallmsg').textContent = `${good} checked${wrong ? `, ${wrong} do not match: see the red lines` : ''}.`; $('checkallmsg').className = wrong ? 'bad' : 'good'; };
 async function cadetAct(a, id, name) { let r;
   if (a === 'yes' || a === 'no') r = await call({ action: 't_name', class: current, id, ok: a === 'yes' });
   else if (a === 'number') { const pin = prompt('New 4-digit secret number for this cadet:'); if (pin == null) return; r = await call({ action: 't_reset', class: current, id, what: 'number', pin }); }

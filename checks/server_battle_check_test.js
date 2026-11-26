@@ -66,6 +66,10 @@ function play(st) {
     ok(/^✓ Checked/.test(byKind.honest || ''), 'an honest battle checks', byKind.honest);
     ok(/^✗ Does not match/.test(byKind['false claim'] || '') && /but the page said/.test(byKind['false claim']), 'a false claim does not match', byKind['false claim']);
     ok(/^✗ Does not match/.test(byKind.weakened || '') && /classmate's deck in the record is not the one the server sent/.test(byKind.weakened), 'a weakened classmate deck is found out', byKind.weakened);
+    await p.click('#checkall'); await p.waitForFunction(() => /checked/.test(document.getElementById('checkallmsg').textContent), null, { timeout: 60000 }).catch(() => {});
+    ok(/^1 checked, 2 do not match/.test(await p.textContent('#checkallmsg')), '"Check all challenges" counts one that checks and two that do not', await p.textContent('#checkallmsg'));
+    ok(!(await p.isHidden('#cardsbox')) && /different cards in the class/.test(await p.textContent('#cardsum')), 'the Desk shows the cards in the class', await p.textContent('#cardsum'));
+    const firstCard = await p.locator('#cardlist td').first().textContent(); ok(CD.cards.concat(CD.upgrades, CD.parts).some(c => c.name === firstCard), 'by their names, not their ids', firstCard);
     console.log('  NOTE results:', JSON.stringify(results)); console.log('  NOTE the Desk said:', JSON.stringify(said));
     await p.screenshot({ path: path.join(process.env.SHOTS || os.tmpdir(), 'server_battle_check_ipad.png'), fullPage: true });
   } finally { await br.close(); srv.kill(); fs.rmSync(TMP, { recursive: true, force: true }); }

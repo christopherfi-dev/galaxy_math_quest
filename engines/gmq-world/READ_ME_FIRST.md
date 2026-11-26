@@ -127,7 +127,7 @@ This uses a test page, `cards-test.html`, made for trying cards between classmat
 4. On the iPad, under "Battle a classmate's deck", press **Challenge** beside Orbit's ship. The battle opens over the whole screen, on both cards at stake. Press **Back out** once (nothing moves). Then press **Challenge** again, and **I agree: start the battle**.
 5. Play the battle. The computer flies Orbit's own deck. At the end, the card moves.
 6. On the phone, reload the page: Orbit is told what happened.
-7. On the Desk, press Refresh: the Battles list shows it.
+7. On the Desk, press Refresh: the Battles list shows it. Press **Check who won**: the Desk plays the battle again from its record and says whether the result holds (a green tick, or a red line saying why not).
 8. Also try: leave a battle in the middle, close the page, open it again. It offers to go back to the same battle.
 
 **Known for now:** the battle's words always say "The winner gets both cards", even when the Desk is set to "away cadet keeps card". The server follows the Desk. The battle thread is asked to change the words.

@@ -197,8 +197,8 @@ function teacherCards(string $action, string $code, array $class): void {
             'decks' => $found['decks'] ?? null, 'record' => $found['record']]);
     }
     if ($action === 't_board') {
-        $map = []; foreach (cadetsOf($code) as $s) { $keys = []; foreach (cardsOf($s['state']) as $c) $keys[cardKey($c)] = cardKind($c);
-            foreach ($keys as $k => $r) { if (!isset($map[$k])) $map[$k] = ['key' => $k, 'kind' => $r, 'found_by' => 0, 'names' => []]; $map[$k]['found_by']++; $map[$k]['names'][] = $s['name']; } }
+        $map = []; foreach (cadetsOf($code) as $s) { $keys = []; foreach (cardsOf($s['state']) as $c) $keys[cardKey($c)] = [cardKind($c), (string)($c['n'] ?? cardKey($c))];
+            foreach ($keys as $k => $kn) { if (!isset($map[$k])) $map[$k] = ['key' => $k, 'card' => $kn[1], 'kind' => $kn[0], 'found_by' => 0, 'names' => []]; $map[$k]['found_by']++; $map[$k]['names'][] = $s['name']; } }
         ksort($map); out(['ok' => true, 'cards' => array_values($map)]);
     }
     $open = array_filter(readJson(openPath($code)) ?? [], static function ($b) { return !late($b); }); $done = [];
