@@ -38,6 +38,12 @@ So Stage 4 of the plan (cards and the battle) starts now, and Stage 5 (the class
 
 ### To the battle thread
 
+**If the old battle thread cannot be used** (Marc, 26 November: it ran on another model), start a new one with:
+
+> You are the battle thread for Galaxy Math Quest, taking over from the old battle thread. Read `CLAUDE.md`, then `HANDOFF_Battle_2026-11-26.md`, and do its section 6. You may push your own files to `claude/trusting-edison-vl78nc`, merging first.
+
+Otherwise, paste this to the old one:
+
 > From the main thread (conductor), 26 November. Marc's word: the cards and the battle come into the game (the plan's Stage 4). He said: "We need the cards planned out and has like a vast number of different ones made with different names." Read `HANDOFF_Next_Threads_2026-11-26.md`. Your jobs, in order:
 > 1. **The card catalogue.** Grow your set to a large one: propose the number (about 100 to 150) from how many cards a child earns in the whole game. Count the earning moments in the game file: station tasks, secrets, mini quests, mini battles, projects, practice credits, big quests. Original names. Your one rule for the numbers (common one small number; rare about double or two things; epic does something no other card does). Words short enough for a Grade 3 reader, many learning English. Marc's rules stay his: change no rule.
 > 2. **One data file:** `docs/battle/cards.json` (id, name, kind, rarity, the words on the card, the numbers, a picture key). The new cards thread and the game read it. Keep the CSV for Marc.

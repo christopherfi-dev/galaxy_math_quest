@@ -42,7 +42,9 @@ One piece, `GMQCards`, on its own page `docs/cards/index.html` (a demo a child c
    - Random within the kind, so two children's books differ.
    - [pick] Fewer doubles while a kind has cards left to find. Check it on thousands of made-up children: how many cards it takes to fill each kind, and that nobody gets stuck on doubles.
    - The odds stay the game's (70, 25, 5) unless Marc changes them.
-4. **Old saved games.** Children already hold the 6 old cards. Lay out options for Marc (keep them as "first cards", swap each for a new card of the same kind, or another way). Build so that any of them works.
+4. **The starter pack** [Source: Marc, 23 November]: every child earns 15 cards on the KIS Station, always with 1 Spy, 1 Policeman (the set calls it Guard: ask Marc which name), 1 epic and 1 rare. The battle thread writes the rule in its data file; you show it: how the 15 arrive (one by one as the station's tasks are done, or as a pack) is a choice to lay out for Marc.
+5. **Challenge battles, later** [Source: Marc, 23 November]: two children each put up one rare or epic card; the winner gets both. So the book must handle a card that leaves, and one that arrives from a classmate.
+6. **Old saved games.** Children already hold the 6 old cards. Lay out options for Marc (keep them as "first cards", swap each for a new card of the same kind, or another way). Build so that any of them works.
 
 **The card list:** the battle thread owns it and is growing it into a catalogue (`docs/battle/cards.json`, when it lands). Start with the 70 cards that exist today (45 battle cards, 20 ship parts, 5 upgrades). Read the list from one place, so the bigger list drops in. Never change what a card does: that is the battle thread's, and the rules are Marc's.
 
