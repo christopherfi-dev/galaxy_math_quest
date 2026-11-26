@@ -14,6 +14,12 @@ const bad = [], errs = []; const ok = (c, what, extra) => { if (!c) bad.push(wha
     const list = execFileSync('unzip', ['-Z1', ZIP]).toString().split('\n').filter(Boolean);
     ok(!list.some(f => /config\.php$|\/data\/|\.log$|teacher\.json|salt\.txt/.test(f)), 'the zip holds no settings file and no saved games', list);
     ok(['gmq-test/play.html', 'gmq-test/teacher.html', 'gmq-test/index.html', 'gmq-test/READ_ME_FIRST.md', 'gmq-test/api/gmq-world-api.php', 'gmq-test/api/gmq-world-cards.php', 'gmq-test/api/config.sample.php', 'gmq-test/api/constraints/gmq-world.txt', 'gmq-test/api/gmq-world-cardlist.php', 'gmq-test/api/cards.json', 'gmq-test/cards-test.html', 'gmq-test/battle-piece.js'].every(f => list.includes(f)), 'the zip holds every file the steps name', list);
+    // the zip carries copies of other threads' files; an old copy would be uploaded without anyone knowing
+    const inZip = f => execFileSync('unzip', ['-p', ZIP, f], { maxBuffer: 64 * 1024 * 1024 }).toString('latin1');
+    const piece = execFileSync('sh', [path.join(ROOT, 'engines', 'gmq-world', 'battle_piece.sh'), path.join(ROOT, 'docs', 'battle', 'own.html')], { maxBuffer: 64 * 1024 * 1024 }).toString('latin1');
+    const fresh = [['gmq-test/play.html', fs.readFileSync(path.join(ROOT, 'docs', 'index.html'), 'latin1'), 'the class link (docs/index.html)'], ['gmq-test/api/cards.json', fs.readFileSync(path.join(ROOT, 'docs', 'battle', 'cards.json'), 'latin1'), 'the card list (docs/battle/cards.json)'],
+      ['gmq-test/battle-piece.js', piece, 'the battle piece (docs/battle/own.html)'], ['gmq-test/api/gmq-world-api.php', fs.readFileSync(path.join(ROOT, 'engines', 'gmq-world', 'server', 'api', 'gmq-world-api.php'), 'latin1'), 'the server']];
+    for (const [f, want, what] of fresh) ok(inZip(f) === want, `the zip carries the newest copy of ${what}: if not, run sh engines/gmq-world/build_test_folder.sh`);
     const all = execFileSync('unzip', ['-p', ZIP], { maxBuffer: 64 * 1024 * 1024 }).toString('latin1'); ok(!/sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|BEGIN (RSA|OPENSSH) PRIVATE/.test(all), 'no key of any kind is in the zip');
     // step 2
     execFileSync('unzip', ['-q', ZIP, '-d', ENG]); ok(fs.existsSync(path.join(ENG, 'gmq-test', 'play.html')), 'step 2: unzipping gives the folder gmq-test');
