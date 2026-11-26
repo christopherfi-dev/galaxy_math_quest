@@ -88,6 +88,10 @@ button{font-family:inherit}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .deckgrid{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .deckgrid .dc{width:88px;position:relative;cursor:pointer}
+.stakes{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0}
+.stakes .st{width:150px;text-align:center;font-weight:800;font-size:15px}
+.stakes .st svg{display:block;width:100%;height:auto;margin-top:4px}
+.stakes .st .plain{margin-top:4px;border:4px solid #b388ff;border-radius:12px;padding:30px 8px;background:#111a33;font-size:17px}
 .deckgrid .dc.pick{outline:3px solid #fde68a;outline-offset:2px;border-radius:8px}
 #pop.top{z-index:30}
 .deckgrid .dc svg{display:block;width:100%;height:auto}
@@ -141,8 +145,9 @@ button{font-family:inherit}
 <div id="pop"></div>
 
 <div class="ov" id="ownsetup"><div class="in">
-  <h2>A practice battle with your own cards</h2>
-  <p>Another crew from the KIS Station has asked for a practice battle. This time you fly with your own cards. In this training run their ship is "the enemy". No ship is really harmed. You win when all five of the enemy's parts are at 0.</p>
+  <h2 id="otitle">A practice battle with your own cards</h2>
+  <p id="ostory">Another crew from the KIS Station has asked for a practice battle. This time you fly with your own cards. In this training run their ship is "the enemy". No ship is really harmed. You win when all five of the enemy's parts are at 0.</p>
+  <div id="ostake" style="display:none"><h3>At stake</h3><div class="stakes" id="ostakes"></div><p id="ostakep"></p></div>
   <div class="row"><button class="btn go" id="ogo" type="button">Start the battle</button><button class="btn" id="oback" type="button">Back</button></div>
   <h3 id="oshiph">Your ship</h3>
   <div class="ship" id="oship"></div>
@@ -150,7 +155,7 @@ button{font-family:inherit}
   <p id="odeck"></p>
   <div class="deckgrid" id="ogrid"></div>
   <h3>The enemy</h3>
-  <p>The enemy's deck looks like yours: the same number of attack, shield, repair, Spy and police cards, and of common, rare and epic. But they are not the same cards.</p>
+  <p id="oenemy">The enemy's deck looks like yours: the same number of attack, shield, repair, Spy and police cards, and of common, rare and epic. But they are not the same cards.</p>
 </div></div>
 
 <div class="ov" id="setup"><div class="in">
@@ -917,15 +922,19 @@ var el=function(id){return document.getElementById(id);};
    {cards:[card ids], parts:[ship part ids], seed:n, upgrades:'card'|'lasting', back:'words on the way out'}. Without it, this is Marc's practice battle. */
 var OWN=window.GMQ_OWN||null;
 function tell(m){try{if(OWN&&window.parent&&window.parent!==window)window.parent.postMessage(m,'*');}catch(e){}}
-var KEY=OWN?'gmq_battle_own_v1':'gmq_battle_v5',FAST=/[?&]fast/.test(location.search);
+var RIVAL=OWN&&OWN.rival?OWN.rival:null,BID=RIVAL?'rival:'+(RIVAL.battle||''):'practice',PKEY='gmq_battle_prefs_v1';   /* a battle against a classmate's saved deck (the server's battle_start) */
+var KEY=OWN?(RIVAL?'gmq_battle_rival_v1':'gmq_battle_own_v1'):'gmq_battle_v5',FAST=/[?&]fast/.test(location.search);
 var KINDKEYS=['standard','guardian','striker','lucky'];
 var U={S:null,opts:B.defaults(),phase:'setup',sel:-1,cpuLead:-1,kinds:['standard','standard','standard','standard','standard'],foeMode:'same',anim:false,finale:false,pick:null,req:null,alloc:null,seed:0,L:null,tray:null};
 var RULE={'Weapons System':'cannot attack','Engine Core':'lose 1 card','Navigation':'lose 1 card','Shield Generator':'cannot defend','Power Module':'cannot heal'};
 var KCOL=['#7ed957','#b388ff','#ffd23f'],KNAME=['COMMON','RARE','EPIC'],KWORD=['common','rare','epic'];
 var SLOT=[0,4,2,1,3];   /* from the back of the ship to the front: Engine, Power, Shield Generator, Navigation, Weapons */
 
-function save(){try{localStorage.setItem(KEY,JSON.stringify({S:U.S,opts:U.opts,kinds:U.kinds,foeMode:U.foeMode,own:U.own||null,spy:U.spy||null}));}catch(e){}}
-function loadSaved(){try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.opts){var df=B.defaults(),kk;for(kk in df){if(d.opts[kk]===undefined)d.opts[kk]=df[kk];}if(d.S&&d.S.opts){for(kk in df){if(d.S.opts[kk]===undefined){d.S=null;break;}}}U.opts=OWN?B.defaults():d.opts;U.kinds=d.kinds||U.kinds;U.foeMode=d.foeMode||'same';U.own=d.own||null;U.spy=d.spy||null;if(d.S&&!d.S.over){d.S.cur=null;U.S=d.S;return true;}}}catch(e){}return false;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({S:U.S,opts:U.opts,kinds:U.kinds,foeMode:U.foeMode,own:U.own||null,bid:BID}));if(OWN)localStorage.setItem(PKEY,JSON.stringify({spy:U.spy||null,kinds:U.kinds}));}catch(e){}}
+function loadSaved(){try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.opts){var df=B.defaults(),kk;for(kk in df){if(d.opts[kk]===undefined)d.opts[kk]=df[kk];}if(d.S&&d.S.opts){for(kk in df){if(d.S.opts[kk]===undefined){d.S=null;break;}}}U.opts=OWN?B.defaults():d.opts;U.kinds=d.kinds||U.kinds;U.foeMode=d.foeMode||'same';U.own=d.own||null;if(OWN&&d.bid!==BID)d.S=null;   /* a saved battle goes on only if it is the same battle */
+  if(d.S&&!d.S.over){d.S.cur=null;U.S=d.S;return true;}}}catch(e){}return false;}
+/* the child's choices (which Spy flies, which part cards) are kept for every battle with their own cards */
+function loadPrefs(){if(!OWN)return;try{var p=JSON.parse(localStorage.getItem(PKEY)||'null');if(p){U.spy=p.spy||null;if(p.kinds&&p.kinds.length===5)U.kinds=p.kinds;}}catch(e){}}
 function wait(ms){return new Promise(function(r){if(FAST){r();}else{setTimeout(r,ms);}});}
 function tween(ms,fn){return new Promise(function(res){if(FAST){fn(1);res();return;}var t0=performance.now();function f(now){var t=Math.max(0,Math.min(1,(now-t0)/ms));   /* a frame can start a moment before t0: never a negative size */fn(t);if(t<1){requestAnimationFrame(f);}else{res();}}requestAnimationFrame(f);});}
 function say(t){el('msg').textContent=t||'';}
@@ -1268,7 +1277,8 @@ function endRound(){
  var S=U.S;U.pick=null;U.req=null;U.alloc=null;
  if(S.over){U.phase='over';save();say(S.over.why);U.anim=true;tray('<div class="row"></div>');
   finale().then(function(){U.anim=false;
-  if(OWN){tell({gmqBattle:'over',winner:S.over.winner,rounds:S.log.length});tray('<div class="row"><button class="btn go" id="again" type="button">Battle again</button><button class="btn" id="goback" type="button">'+esc(OWN.back||'Back')+'</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){el('again').addEventListener('click',openSetup);el('goback').addEventListener('click',function(){tell({gmqBattle:'close',winner:S.over.winner,rounds:S.log.length});});el('seelog').addEventListener('click',openLog);});}
+  if(OWN){var res={winner:S.over.winner,rounds:S.log.length,result:resultWord(S.over.winner),log:logText()};tell({gmqBattle:'over',winner:res.winner,rounds:res.rounds,result:res.result,log:res.log});
+   tray('<div class="row">'+(RIVAL?'':'<button class="btn go" id="again" type="button">Battle again</button>')+'<button class="btn'+(RIVAL?' go':'')+'" id="goback" type="button">'+esc(OWN.back||'Back')+'</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){if(el('again'))el('again').addEventListener('click',openSetup);el('goback').addEventListener('click',function(){tell({gmqBattle:'close',winner:res.winner,rounds:res.rounds,result:res.result,log:res.log});});el('seelog').addEventListener('click',openLog);});}
   else tray('<div class="row"><button class="btn go" id="again" type="button">New battle</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){el('again').addEventListener('click',openSetup);el('seelog').addEventListener('click',openLog);});
   render();snd(S.over.winner===0?'win':'lose');if(S.over.winner===0){var bn=el('banner'),bb=bn?bn.getBBox():null;if(bb){[0.15,0.5,0.85].forEach(function(f,i){setTimeout(function(){debris({x:bb.x+bb.width*f,y:bb.y+bb.height/2},14,'#ffd84a');},i*220);});}}});return;}
  U.phase='roundend';save();
@@ -1453,13 +1463,30 @@ function openSetup(){show('rules',false);show('logv',false);show('help',false);e
 function ownKinds(i){var k=['standard'];(OWN.parts||[]).forEach(function(id){DATA.parts.forEach(function(p){if(p.id===id&&p.part===B.PARTS[i]&&k.indexOf(p.kind)<0)k.push(p.kind);});});return k;}
 function ownPlan(){return B.ownDeck(OWN.cards,OWN.seed||1,OWN.upgrades==='lasting'?'lasting':'card',U.spy||null);}
 function ownSpies(){var o=[];(OWN.cards||[]).forEach(function(id){var c=B.card(id);if(c&&c.type==='spy'&&o.indexOf(id)<0)o.push(id);});return o;}
+function deckWords(d,who){var n={attack:0,defence:0,repair:0,spy:0,guard:0,upgrade:0};d.forEach(function(id){n[B.card(id).type]++;});
+ var parts=[n.attack+' attack',n.defence+' shield',n.repair+' repair',n.spy===1?'1 Spy':n.spy+' Spy',n.guard===1?'1 policeman':n.guard+' policemen'];if(n.upgrade)parts.push(n.upgrade===1?'1 upgrade':n.upgrade+' upgrades');
+ return who+' deck has '+d.length+' cards: '+parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]+'.';}
+function stakeBox(c,label,k){var h='<div class="st">'+esc(label);if(c&&c.id&&B.card(c.id)){h+=cardSVG(B.card(c.id),'K'+k);}else{h+='<div class="plain">'+esc(c?(c.name||'a card'):'a card')+(c&&c.kind?'<br><small>'+esc(c.kind)+'</small>':'')+'</div>';}return h+'</div>';}
+function rivalParts(){var k=['standard','standard','standard','standard','standard'];(RIVAL.parts||[]).forEach(function(id){DATA.parts.forEach(function(p){if(p.id===id){var i=B.PARTS.indexOf(p.part);if(k[i]==='standard')k[i]=p.kind;}});});return k;}
+function rivalPlan(seed){return B.ownDeck(RIVAL.cards,seed,OWN.upgrades==='lasting'?'lasting':'card',null);}
+function drawRival(){
+ var nm=RIVAL.name||'Your classmate',ch=RIVAL.kind==='challenge';
+ el('otitle').textContent=(ch?'A challenge battle':'A friendly battle')+' against '+nm+'\u2019s deck';
+ el('ostory').textContent=nm+' is not here, so the computer flies '+nm+'\u2019s ship, with '+nm+'\u2019s own cards. In the battle, that ship is called "the enemy". '+(ch?'':'Nothing is at stake: it is a friendly battle. ')+'You win when all five of the enemy\u2019s parts are at 0.';
+ el('ostake').style.display=ch?'':'none';
+ if(ch){var st=RIVAL.stake||{};el('ostakes').innerHTML=stakeBox(st.mine,'You put up',0)+stakeBox(st.theirs,nm+' puts up',1);
+  el('ostakep').textContent='Each card was picked at random from a deck. The winner gets both cards. In a tie, nobody does. Your card stays in your deck, so you may still play it.'+(RIVAL.minutes?' Finish within '+RIVAL.minutes+' minutes, or nothing moves.':'');
+  el('ogo').textContent='I agree: start the battle';el('oback').textContent='Back out';}
+ else{el('ogo').textContent='Start the battle';}
+ var R=rivalPlan(RIVAL.seed||1);el('oenemy').textContent=deckWords(R.deck,nm+'\u2019s')+' You see the cards only when they are played.';
+}
 function drawOwn(){
+ if(RIVAL)drawRival();
  var any=[],h='';U.kinds.forEach(function(k,i){var ks=ownKinds(i);if(ks.indexOf(k)<0)U.kinds[i]='standard';if(ks.length>1)any.push(B.PARTS[i]);var p=DATA.parts.filter(function(x){return x.part===B.PARTS[i]&&x.kind===U.kinds[i];})[0];h+='<button type="button" data-i="'+i+'">'+partSVG(p,'O'+i)+'</button>';});
  el('oship').innerHTML=h;el('oshiph').textContent=any.length?'Your ship. You have more than one '+any.join(' and more than one ')+': tap '+(any.length>1?'them':'it')+' to change.':'Your ship';
  var bs=el('oship').children;for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){var j=+this.getAttribute('data-i'),ks=ownKinds(j);U.kinds[j]=ks[(ks.indexOf(U.kinds[j])+1)%ks.length];save();drawOwn();});}
- var P=ownPlan(),n={attack:0,defence:0,repair:0,spy:0,guard:0,upgrade:0};P.deck.forEach(function(id){n[B.card(id).type]++;});
- var parts=[n.attack+' attack',n.defence+' shield',n.repair+' repair',n.spy===1?'1 Spy':n.spy+' Spy',n.guard===1?'1 policeman':n.guard+' policemen'];if(n.upgrade)parts.push(n.upgrade===1?'1 upgrade':n.upgrade+' upgrades');
- var t='Your deck has '+P.deck.length+' cards: '+parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]+'. It is shuffled, and you hold 5.';
+ var P=ownPlan();
+ var t=deckWords(P.deck,'Your')+' It is shuffled, and you hold 5.';
  if(P.lent.length)t+=' You have '+P.own+' battle card'+(P.own===1?'':'s')+' of your own, so the station lends you '+P.lent.length+'. They are marked "lent".';
  var sps=ownSpies(),nsp=(OWN.cards||[]).filter(function(id){var c=B.card(id);return c&&c.type==='spy';}).length;if(sps.length>1)t+=' You have '+nsp+' Spy cards, and one goes in: '+P.deck.filter(B.isSpy).map(function(id){return B.card(id).name;})[0]+'. That is the rule: one Spy in each deck. Tap your Spy to choose another of yours.';
  if(P.lvl2.length)t+=' Your upgrades make '+P.lvl2.map(function(pn){return 'your '+B.SHORT[pn];}).join(' and ')+' Level 2.';
@@ -1472,9 +1499,17 @@ function drawOwn(){
  var ds=el('ogrid').children;for(var d=0;d<ds.length;d++){ds[d].addEventListener('click',function(){var id=this.getAttribute('data-id');if(B.isSpy(id)&&sps.length>1){U.spy=sps[(sps.indexOf(id)+1)%sps.length];snd('tap');save();drawOwn();return;}zoom(id);el('pop').className='open top';});}
 }
 function ownBattle(seed){
- var P=ownPlan(),foe=B.foeDeck(P.deck,seed+101);U.own={deck:P.deck,lvl2:P.lvl2,lent:P.lent};U.opts=B.defaults();
- U.S=B.newBattle(U.opts,U.kinds,U.kinds.slice(),seed,[P.deck,foe],[P.lvl2,P.lvl2]);show('ownsetup',false);startPick();
+ var P=ownPlan(),foe,fk=U.kinds.slice(),fl=P.lvl2;
+ if(RIVAL){seed=RIVAL.seed||seed;var R=rivalPlan(seed);foe=R.deck;fk=rivalParts();fl=R.lvl2;}   /* the classmate's own deck, ship and upgrades; the server's seed, so the deal can be played again */
+ else foe=B.foeDeck(P.deck,seed+101);
+ U.own={deck:P.deck,lvl2:P.lvl2,lent:P.lent};U.opts=B.defaults();
+ U.S=B.newBattle(U.opts,U.kinds,fk,seed,[P.deck,foe],[P.lvl2,fl]);show('ownsetup',false);
+ if(RIVAL&&RIVAL.kind==='challenge')tell({gmqBattle:'accept',battle:RIVAL.battle||''});   /* now it counts: the game tells the server (battle_accept) */
+ save();startPick();
 }
+/* what happened, in words, for the teacher (the server keeps under 20,000 letters) */
+function logText(){var S=U.S,o=[];if(!S)return '';S.log.forEach(function(L){o.push('Round '+L.round+'. You: '+B.card(L.card[0]).name+'. The enemy: '+B.card(L.card[1]).name+'. '+L.lines.join(' '));});if(S.over)o.push(S.over.why);var t=o.join('\n');return t.length>19000?t.slice(0,19000):t;}
+function resultWord(w){return w===0?'won':(w===1?'lost':'tie');}
 function newBattle(){
  if(OWN)return ownBattle(U.seed||Math.floor(Math.random()*2147483000)+1);
  var seed=U.seed||Math.floor(Math.random()*2147483000)+1,r=rnd(seed+17),foe=U.foeMode==='same'?U.kinds.slice():[0,1,2,3,4].map(function(){return KINDKEYS[Math.floor(r()*4)];});
@@ -1506,10 +1541,10 @@ el('lclose2').addEventListener('click',function(){show('logv',false);});
 el('bhelp').addEventListener('click',function(){var ht=el('hturn');if(ht)ht.textContent=(U.opts.bothFall==='turn'&&U.opts.guard==='lead')?'The attack of the player who went first lands first. A ship that loses its last part does not strike back.':'Both attacks land together. Going second does not make your attack later: it lets you answer the card you have seen. If both ships lose their last part in the same round, nobody wins.';show('help',true);});
 el('hclose').addEventListener('click',function(){show('help',false);});
 el('hclose2').addEventListener('click',function(){show('help',false);});
-el('bnew').addEventListener('click',function(){if(OWN){if(!U.S||U.S.over||window.confirm('Leave the battle? It is saved. You can finish it later.')){save();tell({gmqBattle:'close',winner:null,rounds:U.S?U.S.log.length:0});}return;}if(!U.S||U.S.over||window.confirm('Leave this battle and start a new one?')){openSetup();}});
+el('bnew').addEventListener('click',function(){if(OWN){if(!U.S||U.S.over||window.confirm('Leave the battle? It is saved. You can finish it later.')){save();tell({gmqBattle:'close',winner:U.S&&U.S.over?U.S.over.winner:null,rounds:U.S?U.S.log.length:0,saved:!!(U.S&&!U.S.over),result:U.S&&U.S.over?resultWord(U.S.over.winner):null,log:U.S&&U.S.over?logText():''});}return;}if(!U.S||U.S.over||window.confirm('Leave this battle and start a new one?')){openSetup();}});
 el('ogo').addEventListener('click',newBattle);
-el('oback').addEventListener('click',function(){tell({gmqBattle:'close',winner:null,rounds:0});});
-if(OWN){el('brules').style.display='none';el('bnew').textContent='Leave';el('oback').textContent=OWN.back||'Back';}   /* in the game, the battle plays Marc's rules: no switches */
+el('oback').addEventListener('click',function(){tell({gmqBattle:'close',winner:null,rounds:0,saved:false,why:RIVAL&&RIVAL.kind==='challenge'?'backed out':'left'});});
+if(OWN){el('brules').style.display='none';el('bnew').textContent='Leave';el('oback').textContent=OWN.back||'Back';loadPrefs();}   /* in the game, the battle plays Marc's rules: no switches */
 window.addEventListener('resize',function(){if(!U.anim)render();});
 el('bsound').addEventListener('click',function(){SND.on=!SND.on;try{localStorage.setItem(SKEY,SND.on?'on':'off');}catch(e){}drawSound();if(SND.on)snd('tap');});
 ['touchend','click'].forEach(function(ev){document.addEventListener(ev,function(){if(SND.on&&!FAST){try{audio();}catch(e){}}},true);});
