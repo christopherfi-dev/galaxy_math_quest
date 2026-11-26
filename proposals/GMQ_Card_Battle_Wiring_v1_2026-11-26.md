@@ -89,3 +89,31 @@ Also:
 | A play in the game, at the three sizes | open the battle, play a round, leave, close the game, open it again, finish |
 
 **If the battle thread changes the battle page later,** it rebuilds the piece (`python3 checks/battle_piece_build.py`). Copy the block again. To see if the game's copy is current, compare the text between the markers in the game with the same text in `docs/battle/own.html`.
+
+---
+
+## 8. Added later on 26 November: a battle against a classmate's saved deck (section 6, job 5, the battle's side)
+
+The server thread built the other side (`proposals/GMQ_Server_Wiring_v1_2026-11-26.md`, section 3). The piece now takes what the server's `battle_start` answers, as `opts.rival`. Marc's rules [Source: 23 November]: in a challenge each side puts up one rare or epic card, picked at random; the winner gets both; in a tie nobody does; the card put up may still be played; each player sees it before agreeing.
+
+**How the server's calls meet the piece:**
+
+| The server | The piece |
+|---|---|
+| `battle_start` answers `{ battle, kind, seed, minutes, you: { deck, stake }, rival: { name, deck, stake } }` | `GMQBattleOwn.open(host, { cards: S.cards, seed: S.seed, back: 'Back', rival: { name: r.rival.name, cards: r.rival.deck, kind: r.kind, stake: { mine: r.you.stake, theirs: r.rival.stake }, battle: r.battle, seed: r.seed, minutes: r.minutes } }, done)` |
+| a challenge is `offered` | The first screen shows both cards at stake, the rule in words, "I agree: start the battle" and "Back out". Friendly: "Nothing is at stake". |
+| `battle_accept` | `host.accept(battle)` is called when the child agrees. Call `battle_accept` then. If the server refuses, call `GMQBattleOwn.close()` and say the server's words. |
+| `battle_cancel` | `done({ why: 'backed out' })`. Call `battle_cancel`. |
+| `battle_end`, `result`, `log` | `done({ why: 'finished', result: 'won' / 'lost' / 'tie', log })`: the result is from the child's side, as the server wants; the log is what happened, in words, under 19,000 letters. `host.over(...)` gets the same when the battle ends, before the child taps out. |
+
+**What the piece does:**
+- The computer flies the classmate's own deck, by the same deck rules as the child's (one Spy, at least as many Policemen, lent cards up to 15). Their ship uses the part cards in their deck.
+- The deal comes from the server's `seed`, so the server could play the battle again later and check who won (the server thread's known gap).
+- The classmate's cards are not shown before the battle; only how many of each kind.
+- A battle left in the middle is saved by its `battle` id. It goes on only when the same battle is opened again. A practice battle left open is kept apart, and goes on too. `done` says `saved: true`.
+- After a classmate's battle there is no "Battle again": a new one starts on the server.
+- A card at stake that is not in the catalogue (one of the 6 old cards) shows as a plain box with its name and kind.
+
+**Still for Marc** (the battle thread's report): in a classmate's battle, the page still calls their ship "the enemy" (the story says so first). It could carry the classmate's ship name instead.
+
+**Test:** `node checks/battle_own_test.js` now also plays a friendly battle and a challenge against a made-up classmate (Blue Fox) at the three sizes.

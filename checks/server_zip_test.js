@@ -13,7 +13,7 @@ const bad = [], errs = []; const ok = (c, what, extra) => { if (!c) bad.push(wha
     ok(fs.existsSync(ZIP), 'the zip is built'); fs.mkdirSync(ENG, { recursive: true });
     const list = execFileSync('unzip', ['-Z1', ZIP]).toString().split('\n').filter(Boolean);
     ok(!list.some(f => /config\.php$|\/data\/|\.log$|teacher\.json|salt\.txt/.test(f)), 'the zip holds no settings file and no saved games', list);
-    ok(['gmq-test/play.html', 'gmq-test/teacher.html', 'gmq-test/index.html', 'gmq-test/READ_ME_FIRST.md', 'gmq-test/api/gmq-world-api.php', 'gmq-test/api/gmq-world-cards.php', 'gmq-test/api/config.sample.php', 'gmq-test/api/constraints/gmq-world.txt'].every(f => list.includes(f)), 'the zip holds every file the steps name', list);
+    ok(['gmq-test/play.html', 'gmq-test/teacher.html', 'gmq-test/index.html', 'gmq-test/READ_ME_FIRST.md', 'gmq-test/api/gmq-world-api.php', 'gmq-test/api/gmq-world-cards.php', 'gmq-test/api/config.sample.php', 'gmq-test/api/constraints/gmq-world.txt', 'gmq-test/api/gmq-world-cardlist.php', 'gmq-test/api/cards.json', 'gmq-test/cards-test.html', 'gmq-test/battle-piece.js'].every(f => list.includes(f)), 'the zip holds every file the steps name', list);
     const all = execFileSync('unzip', ['-p', ZIP], { maxBuffer: 64 * 1024 * 1024 }).toString('latin1'); ok(!/sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|BEGIN (RSA|OPENSSH) PRIVATE/.test(all), 'no key of any kind is in the zip');
     // step 2
     execFileSync('unzip', ['-q', ZIP, '-d', ENG]); ok(fs.existsSync(path.join(ENG, 'gmq-test', 'play.html')), 'step 2: unzipping gives the folder gmq-test');
@@ -32,6 +32,7 @@ const bad = [], errs = []; const ok = (c, what, extra) => { if (!c) bad.push(wha
     b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: 1180, height: 745 } })).newPage(); p.on('pageerror', e => errs.push(e.message));
     await p.goto(BASE + '/'); ok(/Sketch version \d+/.test(await p.textContent('#gamever')), 'the front page says which game version is inside', await p.textContent('#gamever'));
     await p.goto(BASE + '/teacher.html'); await p.waitForTimeout(1000); const checks = await p.textContent('#checks');
+    ok(/The card list is there: 118 cards/.test(checks), 'step 5: the card list is in the folder', checks);
     ok(/Saved games can be written/.test(checks) && /outside the web folder/.test(checks) && /config\.php is there/.test(checks) && /A log in lasts 10 hours/.test(checks), 'step 5: the server check is green', checks);
     ok(!/✗/.test(checks), 'step 5: no red line', checks);
     // step 6
