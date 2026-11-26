@@ -116,6 +116,8 @@ button:focus-visible, input:focus-visible, canvas:focus-visible, summary:focus-v
 @media (max-width: 560px), (max-height: 560px) { .toy #onlist, .toy label.note { display: none; } .toy .field { gap: 8px; } .log { min-height: 0; }
   .toy { padding: 8px 12px; gap: 5px; } .toy .q { font-size: 1.02rem; } .toy .scale { font-size: 1rem; } .toy .note { font-size: .84rem; } .toy .btn { padding: 7px 12px; } .toy .field input { font-size: 1.15rem; padding: 6px; width: 5.2em; } .chip { font-size: .72rem; } }
 .sayrow { display: flex; gap: 8px; }
+#wbtn { align-self: stretch; min-height: 44px; font-size: 1.02rem; }      /* [Marc, 2026-11-25: "Maybe just like an action button that opens up the menu."] about 1 cm under a finger */
+body.wfold #verbs, body.wfold #dirs, body.wfold #nouns { display: none !important; } body.wopen #wbtn { display: none; }
 .sayrow input { flex: 1; min-width: 0; font: inherit; font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 10px; background: var(--panel); color: var(--ink); }
 .sayrow input::placeholder { text-transform: none; font-family: var(--body); font-weight: 400; letter-spacing: 0; color: var(--muted); }
 .words { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -190,6 +192,10 @@ ul.report2 { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; f
 /* THE PICTURE SHOWS THE TASK [Source: Marc, 2026-11-21]. A task's pictures sit here, big, over the scene, while the task is open. */
 #stageview { position: absolute; inset: 0; z-index: 4; background: radial-gradient(circle at 50% 45%, #18224a, #070b18); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; padding: 58px 14px 14px; overflow: hidden; color: #e8eef8; }
 #stageview[hidden] { display: none; } .hud { z-index: 5; }
+body.market .hud { display: none; }
+#toy table.log { display: table; height: auto; min-height: 0; overflow: visible; background: none; padding: 0; border: 0; margin: 6px 0 10px; border-collapse: collapse; font-size: .95rem; grid-column: auto; grid-row: auto; }      /* [v100] the market's ship's log: the game's own .log is the words strip under the picture */
+#toy table.log th, #toy table.log td { color: #eef2ff; text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid rgba(255,255,255,.16); vertical-align: top; background: none; }
+#toy table.log th { color: #a9b9d0; font-weight: 400; }      /* [v100] the market draws its own planet cards along the top of the picture */
 #flycv { z-index: 7; } #flycv[hidden], #flyhint[hidden] { display: none; }
 #flyhint { position: absolute; right: 10px; top: 10px; z-index: 8; margin: 0; background: rgba(6, 9, 18, .78); color: #e8eef8; border-radius: 8px; padding: 4px 10px; font-weight: 700; pointer-events: none; }
 #stageview > * { flex: 1 1 240px; max-width: 100%; max-height: 100%; min-width: 0; min-height: 0; width: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
@@ -252,6 +258,7 @@ details.box ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: 
 /* Galactic Trade: the star map is part of the task, so the panel stays short and the map keeps its room */
 .toy:has(.trmap) { max-height: 42vh; max-height: 42dvh; } .console:has(.toy:not([hidden]) .trmap) .stage { min-height: 34vh; min-height: 34dvh; }
 @media (max-width: 600px) and (orientation: portrait) { .toy:has(.trmap) .key, .toy:has(.trmap) h3 { display: none; } .toy:has(.trmap) .q { font-size: .98rem; } }
+@media (max-width: 599px) { body.market .console { height: auto; grid-template-rows: 47vh auto auto; grid-template-rows: 47dvh auto auto; } body.market .toy { max-height: none; overflow: visible; } }      /* [v100] the market's map keeps its room on a phone, as version 97's trade map did */
 /* the reading card: new words come up over the picture and wait for OK */
 #card { position: absolute; inset: 0; z-index: 6; display: flex; align-items: flex-end; justify-content: center; padding: 10px; background: linear-gradient(rgba(4,8,20,0) 25%, rgba(4,8,20,.6)); }
 #card[hidden] { display: none; }
@@ -294,7 +301,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
 </style>
 
 <div id="kb" hidden role="group" aria-label="Small keyboard"><div id="kbbar"><span id="kbgrip">⠿ move me</span><span><button type="button" id="kbbig" aria-label="Use the big keyboard">Big keys</button> <button type="button" id="kbx" aria-label="Hide the keyboard">✕</button></span></div><div id="kbkeys"></div></div>
-<div id="pad" hidden role="group" aria-label="Number pad"><div id="padbar"><span id="padgrip">⠿ move me</span><button type="button" id="padkb" aria-label="Use the full keyboard">ABC</button></div>
+<div id="pad" hidden role="group" aria-label="Number pad"><div id="padbar"><span id="padgrip">⠿ move me</span><button type="button" id="padkb" aria-label="Use the full keyboard">iPad keys</button></div>
   <div id="padkeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="x" id="padx" disabled></button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="rub out">⌫</button><button type="button" class="wide" data-k="next" id="padnext">Next box →</button><button type="button" class="wide ok" data-k="ok">Check</button></div></div>
 <div class="wrap">
   <p id="netbar" hidden><span>Flying as <b id="netname"></b></span><span class="note" id="netstate"></span><button class="word" type="button" id="netout">Log out</button></p>
@@ -322,11 +329,12 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
       <button class="btn" type="submit">Do it</button>
     </div>
   </form>
+  <button class="btn quiet" type="button" id="wbtn" aria-expanded="false" aria-controls="verbs dirs nouns">Actions ▾</button>
   <div class="words" id="verbs"></div>
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 97</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 100</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -366,6 +374,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     <p><label class="note"><input type="checkbox" id="wispOn" checked> Chronosia: time wisps. Quick practice a cadet can walk into, for a quarter of a credit.</label></p>
     <p><label class="note"><input type="checkbox" id="bookOn" checked> Chronosia: the Council's book can be read on screen. Switch off to use printed copies only.</label></p>
     <p><label class="note"><input type="checkbox" id="flyOn" checked> The fly-in: a short flight down to Voltara when a cadet lands (the full one the first time, two seconds after that). It skips itself on an iPad that cannot draw it, or that asks for less motion.</label></p>
+    <p><label class="note"><input type="checkbox" id="wordsOn"> Word buttons always shown. Off: the doing words, the directions and the places open with the Actions button, or when a cadet taps the typing box.</label></p>
     <p><label class="note"><input type="checkbox" id="hazOn" checked> Space hazards: quick sums against the clock on flights between galaxies</label></p>
     <p><label class="note"><input type="checkbox" id="realOn"> Station: real-life tasks, with your codes. Off: the four are played on screen. For a whole class, add ?real to the end of the link.</label></p>
     <p><label class="note"><input type="checkbox" id="cardsOn" checked> Reading cards: new words come up over the picture and wait for OK</label></p>
@@ -745,7 +754,7 @@ function hereWords() { if (!S || widget || S.mode === 'intro' || S.mode === 'arr
   if (S.mode === 'len') return lHere();
   if (S.mode === 'star') return sHere();
   if (S.mode === 'world') return wThings(wKit(WORLD().at)).map(t => [t.words[t.words.length - 1].indexOf(' ') > 0 ? t.words[0] : t.words[0], t.label]);
-  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(tradeOpen() && (has('blantern') || (S.lant || {}).glass) && !has('stone') && !has('lantern') ? [['buy glow stone', 'glow stone trader']] : []).concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia'], ['land xylophora', 'land on Xylophora'], ['land lengthar', 'land on Lengthar']] : S.at === 'databa' && !SP.to ? [['dock', 'dock with the mission ship']] : []).concat(Object.keys(GAL).map(g => ['fly to ' + g, GAL[g].name])); }
+  return S.at === 'numerix' && !SP.to ? [['land', 'land on Voltara'], ['trade', 'trade beacon'], ['practice', 'quick sums']].concat(tradeOpen() && (has('blantern') || (S.lant || {}).glass) && !has('stone') && !has('lantern') ? [['trade glow stone', 'glow stones']] : []).concat(worldsOpen().length ? [['land small worlds', 'small worlds']] : []).concat(Object.keys(GAL).filter(g => g !== 'numerix').map(g => ['fly to ' + g, GAL[g].name])) : (S.at === 'metrica' && !SP.to ? [['land', 'land on Chronosia'], ['land xylophora', 'land on Xylophora'], ['land lengthar', 'land on Lengthar']] : S.at === 'databa' && !SP.to ? [['dock', 'dock with the mission ship']] : S.at === 'station' && !SP.to ? [['dock', 'dock at the station']] : []).concat(Object.keys(GAL).filter(g => SP.to || g !== S.at).map(g => ['fly to ' + g, GAL[g].name])); }
 /* ways to go, as words to tap [Source: Marc, 2026-11-19: "Can you also add West East north and south as buttons to tap?"] */
 function dirWords() { if (!S || widget) return []; return S.mode === 'station' ? ['north', 'south', 'east', 'west'] : S.mode === 'len' ? ['west', 'east'].filter(d => LSC[LEN().sc][d[0]]) : S.mode === 'planet' || S.mode === 'world' ? ['west', 'east'] : (S.mode === 'chrono' && C().at === 'map') || S.mode === 'xylo' || (S.mode === 'star' && SD().at === 'map') ? ['north', 'south', 'east', 'west'] : []; }
 function drawDirs() { const el = $('dirs'); let d = []; try { d = dirWords(); } catch (e) {} const sig = d.join(); if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.hidden = !d.length; el.innerHTML = '<span class="lab">Go</span>' + d.map(x => `<button class="word dir" type="button" data-d="${x}">${x}</button>`).join(''); el.querySelectorAll('button').forEach(b => b.onclick = () => act('go ' + b.dataset.d)); }
@@ -776,7 +785,10 @@ $('cardok').addEventListener('click', () => { if (!$('cardok').disabled) readOk(
 $('card').addEventListener('pointerdown', e => { if (!(e.target.closest && e.target.closest('#cardok'))) readNudge(); });
 document.addEventListener('keydown', e => { if (!READ.open || (e.key !== 'Enter' && e.key !== ' ')) return; e.preventDefault(); e.stopPropagation(); if ($('cardok').disabled) readNudge(); else readOk(); }, true);
 const TIPS = ['Tip: tap the floor to walk there.', 'Tip: tap LOOK, then tap your ship. Or type: look ship.', 'Tip: now try your own idea. Push, open, take or use something.'];
-function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${TIPS[S.tut]}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); const L = $('log').parentNode; if (L) L.scrollTop = L.scrollHeight; }
+/* [v99] with the word rows folded, a tip that names a word says where it is */
+function wordsHid() { return typeof WFOLD !== 'undefined' && !WFOLD.always && !WFOLD.shown; }
+function tipText(n) { return n === 1 && wordsHid() ? 'Tip: tap Actions. Then tap LOOK, then your ship. Or type: look ship.' : TIPS[n]; }
+function drawLog() { const last = lines[lines.length - 1], prev = lines[lines.length - 2], tip = S && S.mode === 'station' && !widget && S.tut < 3 ? `<span class="tip">${tipText(S.tut)}</span>` : ''; $('log').innerHTML = tip + (prev && prev.you ? `<span class="you">&gt; ${esc(prev.you)}</span>` : '') + (last && last.text ? (READ.open ? '' : `<span class="new">${esc(last.text)}</span>`) : last && last.you ? `<span class="you">&gt; ${esc(last.you)}</span>` : ''); const L = $('log').parentNode; if (L) L.scrollTop = L.scrollHeight; }
 const MENU = { open: null, seen: {} }, FIT = { ctl: 0, key: '' };
 function menuCounts() { return { cards: S.cards.length + (S.q4 || 0), ship: S.parts.length * 100 + tasksDone() }; }
 function drawMenu() { const p = $('panels'); if (!p || !S) return; const mhere = (S.mode === 'star' && !!S.sd) || (S.mode === 'chrono' && !!S.c) || (S.mode === 'xylo' && !!S.xy) || (S.mode === 'len' && !!S.ln), mb = $('m_mission'); if (MENU.open === 'mission' && !S.v && !mhere) MENU.open = null; if (MENU.open) p.dataset.open = MENU.open; else delete p.dataset.open; mb.hidden = !(S.v || mhere); { const lab = mhere || S.mode === 'planet' ? 'Mission' : 'Voltara mission'; if (mb.textContent !== lab) mb.textContent = lab; }      /* away from Voltara the button says whose mission it holds */
@@ -795,7 +807,7 @@ function fit() { deskSet(); const c = document.querySelector('.console'); if (!c
 function fitSoon() { if (FIT.t) return; FIT.t = requestAnimationFrame(() => { FIT.t = 0; try { fit(); } catch (e) {} }); }
 function drawStatus() { setTimeout(drawMenu, 0); fitSoon();
   $('status').innerHTML = `<span class="chip${secCount() ? ' on' : ''}">Secrets ${secCount()} of ${TOTAL_SECRETS}</span>` +
-    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.trade && S.trade.log.length ? `<span class="chip on">Gems ${num(S.trade.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.xy ? `<span class="chip${xCount() ? ' on' : ''}">Xylophora ${xCount()} of 5</span>` : ''}${S.sd ? `<span class="chip${sCount() ? ' on' : ''}">Stardust ${sCount()} of 5</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
+    `<span class="chip${S.parts.length ? ' on' : ''}">Parts ${S.parts.length} of 5</span><span class="chip${tasksDone() ? ' on' : ''}">Tasks ${tasksDone()} of 15</span>${S.v ? `<span class="chip on">Mission ${STEPS.filter(x => vDone(x[0])).length} of ${STEPS.length}</span>` : ''}<span class="chip${S.cards.length ? ' on' : ''}">Cards ${S.cards.length}</span>${S.market && S.market.log && S.market.log.length ? `<span class="chip on">Gems ${num(S.market.gems)}</span>` : ''}${S.q4 ? `<span class="chip on">Credits ${fmtQ(S.q4)}</span>` : ''}${S.c ? `<span class="chip${Object.keys(S.c.done).length ? ' on' : ''}">Chronosia ${Object.keys(CQ).filter(q => S.c.done[q]).length} of ${Object.keys(CQ).length}</span>` : ''}${S.xy ? `<span class="chip${xCount() ? ' on' : ''}">Xylophora ${xCount()} of 5</span>` : ''}${S.sd ? `<span class="chip${sCount() ? ' on' : ''}">Stardust ${sCount()} of 5</span>` : ''}${S.w && S.w.seen.length ? `<span class="chip${S.w.finds.length ? ' on' : ''}">Star seeds ${S.w.finds.length} of 20</span>` : ''}`;
   drawMission();
   $('partsbox').innerHTML = `<h3>Your ship: ${S.parts.length} of 5 parts fitted</h3><p class="note">Each part needs three tasks. Each task gives a card. ${REALON.on ? 'Purple tasks are done in real life, with your teacher.' : 'Every task is played here.'}</p>` +
     (S.parts.length ? `<div class="vmsg"><b>Voltara's message so far</b>${VMSG.slice(0, S.parts.length).map(m => `<p class="note">${m}</p>`).join('')}${S.parts.length < 5 ? '<p class="note"><i>Fit more parts to hear more.</i></p>' : ''}</div>` : '') +
@@ -930,7 +942,7 @@ const DO = {
      It is a helper for curious cadets: in the console's slot it shows where things are still hidden, as stars on the station map. [Proposal] */
   console: { look: () => (S.parts.includes('Navigation') ? 'The launch console. Your navigation work set the course: Voltara, in Galaxy Numerix.' : 'The launch console. One big button. The course comes from the ship\'s Navigation part.') + (S.course ? ' The old chart glows in its slot.' : ' There is a thin slot on its side.'),
     use: it => { if (it === 'chart') { if (S.course) return 'The chart is already in the slot. Look at your map: the small stars show where things are still hidden.'; S.course = true; save(); const n = Object.keys(SEC_ROOM).filter(k => k !== 'course' && !S.secrets.includes(k)).length; secret('course', n ? `The chart slides into the slot. The screen shows the whole station. ${n === 1 ? 'One small gold star glows' : 'Small gold stars glow'} on it: ${n === 1 ? 'a place' : 'places'} where something is still hidden. Your map shows them now.` : 'The chart slides into the slot. The screen shows the whole station. No stars glow on it. You have found every hidden thing here already.'); return; } if (it) return 'That does not fit.';
-      if (missing().length) return `The ship cannot fly yet. It still needs: ${missing().join(', ')}.`; S.ended = true; if (!S.v) S.vFirst = true; S.mode = 'space'; S.at = 'station'; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return S.vFirst ? 'Three. Two. One. Lift off! You are in space. Voltara is in Galaxy Numerix. Tap it to fly there.' : 'Three. Two. One. Lift off! You are in space. Tap a galaxy to fly there.'; },
+      if (missing().length) return `The ship cannot fly yet. It still needs: ${missing().join(', ')}.`; S.ended = true; S.launched = true; if (!S.v) S.vFirst = true; S.mode = 'space'; S.at = 'station'; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return S.vFirst ? 'Three. Two. One. Lift off! You are in space. Voltara is in Galaxy Numerix. Tap it to fly there.' : 'Three. Two. One. Lift off! You are in space. Tap a galaxy to fly there.'; },
     push: () => DO.console.use(), open: 'It has no door.' },
   chest: { look: () => S.chest ? 'The old chest is open and empty.' : 'An old chest. Dust covers it.', open: () => { if (S.chest) return 'It is open.'; S.chest = true; give('badge'); secret('chest', 'The lid creaks. A captain’s badge! You pin it on.'); card(); },
     push: 'It is too heavy.', take: 'It is too heavy.' },
@@ -1496,7 +1508,7 @@ function toySee() { const t = $('toy'); if (!t || t.hidden || t.querySelector('[
   const tr = t.getBoundingClientRect(); let low = 0; ['ans', 'try', 'msg'].forEach(id => { const e = $(id); if (e && t.contains(e)) low = Math.max(low, e.getBoundingClientRect().bottom); }); if (low > tr.bottom - 6) t.scrollTop += low - tr.bottom + 10; }      /* the answer box and Check are never below the edge of the task */
 try { new MutationObserver(ms => { const t = $('toy'), m = $('msg'); document.body.classList.toggle('task', !t.hidden); if (m && ms.some(x => x.target === m || x.target.parentNode === m)) msgSee(); }).observe($('toy'), { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['hidden'] }); } catch (e) {}
 
-function toy(html) { readOk(true); const t = $('toy'); t.hidden = false; t.innerHTML = html; try { caseHelp(t); } catch (e) {} stageTake(t); t.scrollTop = 0; document.body.classList.add('task'); setTimeout(toySee, 40); try { fit(); } catch (e) {}      /* give the task its room now, before the number pad is placed */
+function toy(html) { readOk(true); const t = $('toy'); if (t.hidden) PAD.mini = false; t.hidden = false; t.innerHTML = html; try { caseHelp(t); } catch (e) {} stageTake(t); t.scrollTop = 0; document.body.classList.add('task'); setTimeout(toySee, 40); try { fit(); } catch (e) {}      /* give the task its room now, before the number pad is placed */
   padPrep(); drawWords(); if (typeof kbHide === 'function') kbHide(); }
 /* THE PICTURE SHOWS THE TASK.  [Source: Marc, 2026-11-21: "Every mini-game quest must be that way. Whatever you're doing takes up the full screen."]
    When a task opens, its pictures move from the desk into the picture area, big: the number lines, the station's task pictures, the skills' pictures,
@@ -1506,7 +1518,7 @@ function stageTake(t) { const sv = $('stageview'); if (!sv) return; sv.innerHTML
   const els = all.filter(e => !all.some(o => o !== e && o.contains(e)) && !e.querySelector('button, input, select, textarea'));
   if (!els.length) { sv.hidden = true; sv.dataset.title = ''; return; } els.forEach(e => sv.appendChild(e)); const h = t.querySelector('h3'); sv.dataset.title = h ? h.textContent.trim() : ''; sv.hidden = false; }
 function stageClear() { const sv = $('stageview'); if (sv) { sv.innerHTML = ''; sv.hidden = true; sv.dataset.title = ''; } }
-function closeToy() { widget = null; $('toy').hidden = true; $('toy').innerHTML = ''; stageClear(); document.body.classList.remove('task'); padHide(); drawWords(); }
+function closeToy() { widget = null; document.body.classList.remove('market'); $('toy').hidden = true; $('toy').innerHTML = ''; stageClear(); document.body.classList.remove('task'); padHide(); drawWords(); }
 /* THE WORLD SERVER (only when the page sits beside one). [Proposal: engines/gmq-world/server]
    With no server, as on the sketch's own link, nothing here runs and the game is kept on the device as before.
    With a server: a cadet logs in, and their game follows them to any device. The teacher's codes are checked by the server.
@@ -1554,7 +1566,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && NET
 /* THE NUMBER PAD.  [Source: Marc, 2026-11-17: "a little number keypad... floating, they can move around... it's annoying that they get the full keyboard"]
    Every number box uses it. The iPad keyboard stays away. Drag the top bar to move it; the place is remembered on this device. "ABC" brings the full keyboard back. */
 const PAD = { target: null, mini: false, pos: null, drag: null };
-try { PAD.mini = getKeep('gmq-pad-mini') === '1'; PAD.pos = JSON.parse(getKeep('gmq-pad-pos') || 'null'); } catch (e) {}
+try { PAD.pos = JSON.parse(getKeep('gmq-pad-pos') || 'null'); } catch (e) {}      /* [v100] the small pad is not remembered: every new task opens the full pad [Marc, 2026-11-26: yes; a child had shrunk it by mistake] */
 const padBoxes = () => Array.prototype.slice.call(document.querySelectorAll('#toy input')).filter(i => i.getAttribute('inputmode') === 'numeric' || i.getAttribute('inputmode') === 'none');
 function padPrep() { const ins = padBoxes(); ins.forEach(i => i.setAttribute('inputmode', PAD.mini ? 'numeric' : 'none')); if (!ins.length) padHide(); }
 function padHide() { PAD.target = null; $('pad').hidden = true; { const t = $('toy'); t.style.marginBottom = ''; t.style.marginRight = ''; $('pad').style.width = ''; } if (PAD.back != null) { if (Math.abs(window.scrollY - PAD.at) < 8) window.scrollTo(0, PAD.back); PAD.back = null; } }      /* if the pad moved the page, the page goes back when the pad leaves */
@@ -1571,7 +1583,8 @@ function padPlace() { const el = $('pad');
     if (over(t) || over(b)) { x = W - w - 4; y = H - h - 4; const dy = Math.max(t ? t.bottom : 0, b ? b.bottom : 0) + 8 - y; if (dy > 0) { if (PAD.back == null) PAD.back = window.scrollY; window.scrollBy(0, dy); PAD.at = window.scrollY; } } }
   el.style.left = Math.max(4, Math.min(W - w - 4, x)) + 'px'; el.style.top = Math.max(4, Math.min(H - h - 4, y)) + 'px'; }
 function padShow(t) { PAD.target = t; const el = $('pad'), k = widget && widget.akind, x = $('padx'), extra = k === 'time' ? ':' : k === 'money' ? '.' : ''; x.textContent = extra; x.disabled = !extra; x.dataset.k = extra || 'x';
-  $('padnext').hidden = padBoxes().length < 2; { const okb = $('padkeys').querySelector('[data-k="ok"]') || $('pad').querySelector('[data-k="ok"]'); if (okb) okb.style.visibility = $('try') ? '' : 'hidden'; } el.classList.toggle('mini', PAD.mini); $('padkb').textContent = PAD.mini ? '123' : 'ABC'; $('padkb').setAttribute('aria-label', PAD.mini ? 'Use the number pad' : 'Use the full keyboard'); $('padgrip').textContent = PAD.mini ? '⠿' : '⠿ move me'; el.hidden = false; padPlace(); }
+  $('padnext').hidden = padBoxes().length < 2; { const okb = $('padkeys').querySelector('[data-k="ok"]') || $('pad').querySelector('[data-k="ok"]'); if (okb) okb.style.visibility = $('try') ? '' : 'hidden'; } el.classList.toggle('mini', PAD.mini); $('padkb').textContent = PAD.mini ? 'Number pad' : 'iPad keys';      /* [v100] was 123 and ABC */
+  $('padkb').setAttribute('aria-label', PAD.mini ? 'Use the number pad' : 'Use the full keyboard'); $('padgrip').textContent = PAD.mini ? '⠿' : '⠿ move me'; el.hidden = false; padPlace(); }
 function padKey(k) { const t = PAD.target; if (!t || !document.body.contains(t)) return padHide();
   if (k === 'ok') { const b = $('try'); if (b) b.click(); return; }
   if (k === 'next') { const ins = padBoxes(), n = ins[(ins.indexOf(t) + 1) % ins.length]; if (n) n.focus({ preventScroll: true }); return; }
@@ -1582,7 +1595,7 @@ document.addEventListener('focusin', e => { const t = e.target; if (!t) return; 
 $('padkeys').addEventListener('pointerdown', e => { e.preventDefault(); });                 /* a tap on the pad must not take the cursor out of the box */
 $('padkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b && !b.disabled) padKey(b.dataset.k); });
 $('padkb').addEventListener('pointerdown', e => { e.stopPropagation(); });
-$('padkb').addEventListener('click', () => { PAD.mini = !PAD.mini; setKeep('gmq-pad-mini', PAD.mini ? '1' : '0'); const t = PAD.target; padPrep(); if (t && document.body.contains(t)) { t.blur(); padShow(t); t.focus({ preventScroll: true }); } });
+$('padkb').addEventListener('click', () => { PAD.mini = !PAD.mini; const t = PAD.target; padPrep(); if (t && document.body.contains(t)) { t.blur(); padShow(t); t.focus({ preventScroll: true }); } });
 $('padbar').addEventListener('pointerdown', e => { if (DESK.on) { e.preventDefault(); return; } const r = $('pad').getBoundingClientRect(); PAD.drag = [e.clientX - r.left, e.clientY - r.top]; try { $('padbar').setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
 $('padbar').addEventListener('pointermove', e => { if (!PAD.drag) return; const el = $('pad'), W = window.innerWidth, H = window.innerHeight, x = Math.max(4, Math.min(W - el.offsetWidth - 4, e.clientX - PAD.drag[0])), y = Math.max(4, Math.min(H - el.offsetHeight - 4, e.clientY - PAD.drag[1])); el.style.left = x + 'px'; el.style.top = y + 'px'; PAD.pos = [x / W, y / H]; });
 const padDrop = () => { if (!PAD.drag) return; PAD.drag = null; setKeep('gmq-pad-pos', JSON.stringify(PAD.pos)); if (PAD.target && document.body.contains(PAD.target)) PAD.target.focus({ preventScroll: true }); };
@@ -2252,8 +2265,13 @@ function showEnding() {
   const t = $('report'); t.hidden = false; t.innerHTML = `<h3>Mission report</h3><div class="tablewrap"><table class="report"><thead><tr><th>What you did</th><th>Math</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p><b>Secrets found: ${secCount()} of ${TOTAL_SECRETS}.</b> ${secCount() < TOTAL_SECRETS ? 'Eighteen are on the station. Six are on Voltara.' : 'You found them all!'}</p>
     <div class="field"><button class="btn quiet" type="button" id="again">Play again</button></div>`;
-  $('again').onclick = restart;
+  $('again').onclick = () => askRestart($('again'));
 }
+/* [Marc, 2026-11-25: "Yes" to "Are you sure?" before starting again; the plan's decision 11] One tap used to wipe a whole game. Now two buttons ask first. */
+function askRestart(btn) { if (!btn || btn.dataset.asking) return; btn.dataset.asking = '1'; const box = document.createElement('span'); box.className = 'askreset'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Are you sure?');
+  box.innerHTML = ' <b>Are you sure?</b> You will lose your ship, your cards and your planets. <button class="btn" type="button" data-yes>Yes, start again</button> <button class="btn quiet" type="button" data-no>No, keep my game</button>';
+  btn.hidden = true; btn.after(box); const done = () => { box.remove(); btn.hidden = false; delete btn.dataset.asking; };
+  box.querySelector('[data-yes]').onclick = () => { done(); restart(); }; box.querySelector('[data-no]').onclick = () => { done(); beep(500, .05); }; }
 function restart() { readOk(true); closeToy(); $('report').hidden = true; S = fresh(); save(); build(); zapD = null; P.x = S.x; P.y = S.y; P.route = []; BOT.x = 9; BOT.y = 11; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; SP.zoom = 0; PL.x = .1; PL.to = null; lines = []; drawStatus(); drawBag(); drawCards(); drawStars(); say('Earth needs your help!'); introPanel(); }
 
 /* =====================================================================
@@ -2383,7 +2401,7 @@ function drawObj(id) {
   if (id === 'stack') t.forEach((p, i) => crateBox(sx(p[0]), sy(p[1]), s, i % 3 === 1 ? '#b98042' : '#a8743a'));
   else if (id === 'crate') crateBox(X, Y, s, '#cf9a55');
   else if (id === 'gap') { f('#04060b'); cx.beginPath(); cx.moveTo(X + s * .1, Y + s); cx.lineTo(X + s * .16, Y + s * .3); cx.lineTo(X + s * .34, Y + s * .1); cx.lineTo(X + s * .66, Y + s * .14); cx.lineTo(X + s * .88, Y + s * .36); cx.lineTo(X + s * .9, Y + s); cx.fill(); f('#6f7f99'); for (const [i, j, w] of [[.02, .92, .16], [.86, .9, .14], [.3, 1.02, .1]]) { rr(X + s * i, Y + s * j, s * w, s * w * .7, 2); cx.fill(); ol(1.5); } }
-  else if (id === 'ship') { f('rgba(0,0,0,.32)'); cx.beginPath(); cx.ellipse(X + s * 3.1, Y + s * 2.8, s * 2.9, s * 1.5, 0, 0, 7); cx.fill(); rocket(X + s * 3, Y + s * 2.5, s * 5.7, 0, { damage: !S.ended }); if (!S.secrets.includes('wrench')) { f('#f0c23b'); rr(X + s * 2.0, Y + s * 3.55, s * .5, s * .32, 3); cx.fill(); ol(1.5); f(INK); cx.fillRect(X + s * 2.36, Y + s * 3.67, s * .08, s * .08); } }
+  else if (id === 'ship') { f('rgba(0,0,0,.32)'); cx.beginPath(); cx.ellipse(X + s * 3.1, Y + s * 2.8, s * 2.9, s * 1.5, 0, 0, 7); cx.fill(); rocket(X + s * 3, Y + s * 2.5, s * 5.7, 0, { damage: !(S.ended || S.launched) }); if (!S.secrets.includes('wrench')) { f('#f0c23b'); rr(X + s * 2.0, Y + s * 3.55, s * .5, s * .32, 3); cx.fill(); ol(1.5); f(INK); cx.fillRect(X + s * 2.36, Y + s * 3.67, s * .08, s * .08); } }
   else if (id === 'sign') { f('#f2c94c'); rr(X + s * .08, Y + s * .1, s * .84, s * .62, 4); cx.fill(); ol(2); f(INK); cx.font = `700 ${s * .2}px "Chakra Petch", sans-serif`; cx.textAlign = 'center'; cx.fillText('LOCKER', X + s * .5, Y + s * .36); cx.fillText('CODE', X + s * .5, Y + s * .6); }
   else if (id === 'vent') { f(S.vent ? '#04060b' : '#59657a'); rr(X + s * .1, Y + s * .12, s * .8, s * .6, 4); cx.fill(); ol(2); if (!S.vent) { f('#2a3346'); for (let i = 0; i < 4; i++) cx.fillRect(X + s * .18, Y + s * (.2 + i * .12), s * .64, s * .05); f('#d4dde9'); for (const [i, j] of [[.14, .16], [.82, .16], [.14, .64], [.82, .64]]) { circ(X + s * i, Y + s * j, s * .035); cx.fill(); } f(`rgba(255,220,110,${.5 + .5 * Math.sin(tNow * 4)})`); circ(X + s * .5, Y + s * .44, s * .05); cx.fill(); } }
   else if (id === 'locker') { shadow(.36, .12); f('#7f90aa'); rr(X + s * .14, Y - s * .12, s * .72, s * 1.02, 5); cx.fill(); ol(2); f(S.locker ? '#0d131d' : '#9fb0c8'); rr(X + s * .2, Y - s * .06, s * .6, s * .9, 3); cx.fill(); ol(1.5); if (!S.locker) { f('#59657a'); for (let i = 0; i < 3; i++) cx.fillRect(X + s * .28, Y + s * (.02 + i * .07), s * .44, s * .03); f('#101826'); rr(X + s * .56, Y + s * .36, s * .18, s * .24, 2); cx.fill(); f('#ffb23e'); for (let i = 0; i < 6; i++) cx.fillRect(X + s * (.585 + (i % 2) * .07), Y + s * (.39 + (i >> 1) * .065), s * .04, s * .035); } else { f('#9fb0c8'); rr(X + s * .8, Y - s * .06, s * .16, s * .9, 3); cx.fill(); ol(1.5); } }
@@ -2625,6 +2643,7 @@ function voltaraBall(X, Y, R) {         // Voltara from orbit: a lit sphere with
   for (const [d, ph, r2, c] of [[1.45, 0, .09, '#e8e0ff'], [1.75, 2.6, .055, '#ffd9c4']]) { const an = (calm ? 0 : tNow * .15) + ph, mx = X + Math.cos(an) * R * d, my = Y + Math.sin(an) * R * d * .35; if (Math.sin(an) < 0 && Math.hypot(mx - X, my - Y) < R) continue; cx.fillStyle = c; circ(mx, my, R * r2); cx.fill(); ol(1.5); cx.fillStyle = 'rgba(8,4,40,.5)'; cx.beginPath(); cx.arc(mx, my, R * r2, -.6, 2.5); cx.fill(); }
 }
 function drawSpace(dt) {
+  if (widget && widget.kind === 'market') return GMQTrade.frame(dt);
   if (widget && widget.kind === 'trade') return drawTrade(dt);
   spaceBack(1);
   const R = Math.min(vw, vh) * .135, S0 = GAL.station;
@@ -2637,8 +2656,8 @@ function drawSpace(dt) {
     if (vw >= 520 || S.at === id || SP.to === id) { cx.font = `${Math.max(12, vw * .017)}px "Andika", sans-serif`; const tw2 = cx.measureText(g.line).width + 12; cx.fillStyle = 'rgba(6,9,18,.7)'; rr(X - tw2 / 2, ly + 15, tw2, 20, 6); cx.fill(); cx.fillStyle = '#dfe6f0'; cx.textAlign = 'center'; cx.fillText(g.line, X, ly + 29); } }
   for (const gh of GHOSTS) { const [gx, gy, dir] = ghostPos(gh); rocket(gx * vw, gy * vh, R * .42, dir > 0 ? .3 : Math.PI - .3, { flame: true, col: '#c4cfdf', col2: '#5f7aa8' }); cx.font = `700 ${Math.max(11, vw * .015)}px "Chakra Petch", sans-serif`; cx.fillStyle = '#c4cfdf'; cx.textAlign = 'center'; cx.fillText(gh.n, gx * vw, gy * vh - R * .3); }
   if (SP.to) { const T = GAL[SP.to], dx = T.x - SP.x, dy = T.y - SP.y, d = Math.hypot(dx, dy), step = .2 * dt; SP.ang = Math.atan2(dy * vh, dx * vw); TRAIL.push([SP.x, SP.y, 1]);
-    if (d <= step + .075) { const id = SP.to; SP.to = null; S.at = id; save(); beep(520, .15);
-      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planets Chronosia, Xylophora and Lengthar are open. Tap a word below to land.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'A mission ship floats here: Operation Stardust. Tap the galaxy again to dock. Or type: dock.' }[id] || ''}`); }
+    if (d <= step + .075) { const id = SP.to; SP.to = null; S.at = id; save(); beep(520, .15); if (id === 'metrica') wordsSet(true);      /* [v99] Metrica's planets are landed on by name: show the names */
+      say(id === 'numerix' ? 'Galaxy Numerix. One planet shines here: Voltara. A trade beacon floats beside it. Tap the planet to land. Or tap the beacon to trade.' : id === 'station' ? 'The KIS Station. Home. Tap it, or type dock, to go inside.' : `${GAL[id].name}. ${GAL[id].line} ${{ metrica: 'Planets Chronosia, Xylophora and Lengthar are open. Tap a planet\'s name to land.', geometrica: 'One planet waits here: Zephyron. It is not built yet.', databa: 'A mission ship floats here: Operation Stardust. Tap the galaxy again to dock. Or type: dock.' }[id] || ''}`); }
     else { SP.x += dx / d * step; SP.y += dy / d * step; } }
   cx.globalCompositeOperation = 'lighter'; for (const t of TRAIL) { t[2] -= dt * .9; cx.fillStyle = `rgba(255,190,90,${Math.max(0, t[2]) * .7})`; circ(t[0] * vw, t[1] * vh, R * .05 * (1.4 - t[2])); cx.fill(); } cx.globalCompositeOperation = 'source-over'; while (TRAIL.length && TRAIL[0][2] <= 0) TRAIL.shift();
   SP.zoom = Math.max(0, Math.min(1, SP.zoom + (S.at === 'numerix' && !SP.to ? .9 : -3) * dt));
@@ -2697,9 +2716,15 @@ function softTry(word, label, can) { const g = softKind(word), tail = ` Here you
   if (!g) return `Start with a doing word: ${can}.`;
   return (g === 'tool' ? `You have no tool to ${word} the ${label}. It stays as it is.` : g === 'rough' ? `Cadets do no harm. You leave the ${label} alone.` : `You try to ${SOFT_TO[word] || word} the ${label}. Nothing happens.`) + tail; }
 function softNone(word) { const g = softKind(word); return !g ? null : word === 'dig' ? 'You dig a small hole. Nothing is under it. You fill it in again.' : g === 'tool' ? `There is nothing here to ${word}.` : g === 'rough' ? 'Cadets do no harm.' : `You ${word}. Nothing happens here.`; }
+/* DOCKING AT THE STATION (version 98).   [Source: Marc, 2026-11-25: "How would I fly to the KIS station? It says that you're already here. I don't know what to do now."
+   "I think we need to have a dock at the KIS station. Obviously."] Before version 98, after launch, nothing took a cadet back inside: 18 of the 24 secrets are on the station.
+   [Proposal] Docking opens the station again, as the cadet left it. The Launch Bay sends them out again, as before. */
+function dockStation(out) { tidy(); flyStop(); S.mode = 'station'; S.ended = false; S.launched = true; S.room = 'dock'; S.x = 14; S.y = 10; P.x = S.x; P.y = S.y; S.beat = 0; if (S.tut == null) S.tut = 3; if (S.seen.indexOf('dock') < 0) S.seen.push('dock'); snap = true; save(); drawStatus(); drawWords(); beep(300, .3);
+  out(`You dock at the KIS Station. Everything is as you left it. ${secCount() < TOTAL_SECRETS ? 'Some secrets may still be hidden here. ' : ''}When you are ready, launch again from the Launch Bay.`); }
 function flyTo(id, out) {
   if (id === 'patternox') return out('The wormhole to Patternox is broken. It is closed for now.');
   if (S.vFirst && id !== 'numerix' && id !== 'station') return out('Voltara is waiting for you. Fly to Galaxy Numerix first, and land on Planet Voltara.');      /* [Marc, 2026-11-21, agreed] Voltara first, then free */
+  if (id === 'station' && S.at === 'station' && !SP.to) return dockStation(out);
   if (id === S.at && !SP.to) return out('You are here already.');
   const hz = HAZON.on && !widget && FLU().lvl <= 4 ? FLU().lvl : 0;
   if (hz) { out(`You set off for ${GAL[id].name}. But something is in the way!`); return startHaz(hz, id); }
@@ -3154,13 +3179,16 @@ function actSpace(text, out) {
   if (/\b(hazard|hazards|practice|practise|sums|asteroid|asteroids|worm|worms|wormhole)\b/.test(text)) { if (widget || SP.to) return out('Finish this first.'); const f = FLU(), top = Math.min(4, f.lvl), want = +(text.match(/\b[1-4]\b/) || [0])[0]; out('You steer into a practice hazard.'); return startHaz(want && want <= top ? want : top, null); }
   const tk = text.split(/\s+/), id = Object.keys(GAL).find(g => tk.some(t => t.length > 2 && GAL[g].name.toLowerCase().split(' ').some(w => w !== 'galaxy' && w.startsWith(t))));
   if (S.at === 'databa' && !SP.to && ['dock', 'land', 'stardust', 'board'].some(t => tk.includes(t))) return landStar();
-  if (tk.includes('stardust') || tk.includes('dock')) return out('The mission ship is in Galaxy Databa. Fly there first.');
+  if (S.at === 'station' && !SP.to && ['dock', 'land', 'enter', 'inside', 'home'].some(t => tk.includes(t))) return dockStation(out);      /* [v98] the station's dock */
+  if (tk.includes('stardust') || tk.includes('dock')) return out(tk.includes('station') ? 'Fly to the KIS Station first. Then dock.' : 'The mission ship is in Galaxy Databa. Fly there first. To go into the KIS Station, fly there and dock.');
   if (S.at === 'metrica' && !SP.to && tk.includes('lengthar')) return landLen();
   if (tk.includes('lengthar')) return out('Planet Lengthar is in Galaxy Metrica. Fly there first.');
   if (S.at === 'metrica' && !SP.to && tk.includes('xylophora')) return landXylo();
   if (tk.includes('xylophora')) return out('Planet Xylophora is in Galaxy Metrica. Fly there first.');
   if (S.at === 'metrica' && !SP.to && (tk.includes('land') || tk.includes('chronosia'))) return landChrono();
   if (tk.includes('chronosia')) return out('Planet Chronosia is in Galaxy Metrica. Fly there first.');
+  if (/\bsmall worlds?\b/.test(text)) return out(worldsList());      /* [v100] the small worlds: planets traded with */
+  { const m = text.match(/^(?:land|visit|go)(?: (?:on|to))?(?: planet)? ([a-t])$/) || text.match(/^planet ([a-t])$/); if (m) { const r = worldLand(m[1].toUpperCase()); return r ? out(r) : undefined; } }
   if (tk.includes('land') || tk.includes('voltara')) { if (S.at !== 'numerix' || SP.to) return out('There is no planet to land on here. Fly to Galaxy Numerix.'); return landSay('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.', out); }
   if (tk.some(t => ['glow', 'stone'].includes(t))) return out(tradeStone());
   if (tk.some(t => ['trade', 'beacon', 'routes', 'route', 'trader', 'traders', 'gems'].includes(t))) return out(tradeTry());
@@ -3172,12 +3200,13 @@ function actSpace(text, out) {
 }
 function tapSpace(e) {
   const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / vw, y = (e.clientY - r.top) / vh, s = t => say(t);
+  if (widget && widget.kind === 'market') return GMQTrade.tap(x * vw, y * vh);
   if (widget && widget.kind === 'trade') return tradeTap(x, y);
   if (widget && widget.kind === 'haz') return;
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .2) * vw, (y - .26) * vh) < Math.min(vw, vh) * .1) return say(tradeTry());
   if (S.at === 'numerix' && SP.zoom > .6 && Math.hypot((x - .56) * vw, (y - .5) * vh) < Math.min(vw, vh) * .34) return landSay('You land on Planet Voltara. Rainbow skies! But the city across the river is dark. Look around.', say);
   if (GHOSTS.some(g => { const [gx, gy] = ghostPos(g); return Math.hypot(x - gx, y - gy) < .05; })) return say('Another cadet. Battles between ships come later. They will use your cards.');
-  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'databa' && S.at === 'databa' && !SP.to) return landStar(); if (id === 'metrica' && S.at === 'metrica' && !SP.to) return say('Three planets are open here. Tap a word below: land on Chronosia, Xylophora or Lengthar.'); if (id) flyTo(id, s);
+  const id = Object.keys(GAL).find(g => Math.hypot(x - GAL[g].x, (y - GAL[g].y) * vh / vw) < .11); if (id === 'databa' && S.at === 'databa' && !SP.to) return landStar(); if (id === 'metrica' && S.at === 'metrica' && !SP.to) { wordsSet(true); return say('Three planets are open here. Tap a planet\'s name: land on Chronosia, Xylophora or Lengthar.'); } if (id) flyTo(id, s);
 }
 
 /* =====================================================================
@@ -3198,13 +3227,12 @@ const trR = d => .2 + .8 * d / 71, trPos = n => { const a = (-78 + TR_ORDER.inde
 const trShown = () => Object.keys(TR).filter(n => TRADE().trip > 1 || !TR[n].far);
 const trCan = () => TRADE().trip === 1 ? 50 : Math.min(100, Math.floor(TRADE().gems / 200) * 10);
 const trFuel = sel => sel.reduce((a, n) => a + TR[n].f, 0), trList = sel => sel.map(n => 'Planet ' + n).join(sel.length > 2 ? ', ' : ' and ').replace(/, ([^,]*)$/, ' and $1');
-function tradeStone() { if (S.at !== 'numerix' || SP.to) return 'Glow stones are sold at the trade beacon, at Galaxy Numerix. Fly there first.';
-  if (!tradeOpen()) return 'The trade beacon is silent. Voltaran traders stay home while their city is dark.'; if (has('stone') || has('lantern')) return 'You have a glow stone already.'; const t = TRADE();
-  if ((t.gems || 0) < LANPRICE) return `A Voltaran trader calls over the beacon: "Glow stones! ${LANPRICE} gems each." You have ${t.gems || 0} gems. A trade trip can earn more.`;
-  t.gems -= LANPRICE; give('stone'); S.log.push({ what: 'Galactic Trade: a glow stone', skill: `${LANPRICE} gems`, result: 'bought' }); save(); chime(); drawBag(); return `You pay ${LANPRICE} gems. A little drone brings up a glow stone. It glows as far as your hand.`; }
+function tradeStone() { if (has('stone') || has('lantern')) return 'You have a glow stone already.';      /* [v100] Planet R sells it, through the market (was: 200 gems at the beacon) */
+  if (S.at !== 'numerix' || SP.to) return 'Planet R sells glow stones, for 300 gems. You trade with it through the beacon at Galaxy Numerix. Fly there first.';
+  if (!tradeOpen()) return 'The trade beacon is silent. Voltaran traders stay home while their city is dark.'; return 'Planet R sells glow stones, for 300 gems. ' + tradeTry(); }
 function tradeTry() { if (S.at !== 'numerix' || SP.to) return 'The trade beacon is at Galaxy Numerix. Fly there first.';
   if (!tradeOpen()) return 'The trade beacon is silent. Voltaran traders stay home while their city is dark. Land on Voltara and make an energy plan with the Council first.';
-  const t = TRADE(); widget = { kind: 'trade', sel: [], fly: null }; if (!t.brief) tradeBrief(); else if (!t.demo) tradeDemo(); else if (t.done) tradeSeason(); else tradePlan(); return 'You hail the trade beacon. A map of trade planets opens.'; }
+  marketOpen(); return 'You hail the trade beacon. The trade board opens.'; }      /* [v100] the market; version 97's season (tradeBrief ... tradeSeason) is no longer opened */
 /* THE BRIEFING (version 97). [Source: Marc's Task 2 page: "an urgent message from the Galactic Council. We've just left Planet Voltara, and they have sent out a
    galaxy-wide SOS! They're low on essential supplies"; "set up trade routes with different planets and make the most"; "50 fuel tokens. Each token lets you travel 1
    light-year".] [Proposal: the goods in the hold; the beacon that pulls a ship home, so that a planet's fuel is its distance from Voltara, as on Marc's Trade Data Sheet.]
@@ -3298,6 +3326,525 @@ function drawTrade(dt) { const w = widget, t = TRADE(), m = Math.min(vw, vh), ox
   rocket(sx, sy, m * .1, ang, { flame }); pill(`Trip ${Math.min(t.trip, 3)} of 3 · ${num(t.gems)} gems`, vw * .5, Math.max(16, vh * .05), true); }
 function tradeTap(x, y) { const w = widget; if (w.step !== 'plan') return; const R = Math.max(13, Math.min(vw, vh) * .034) * 1.7, n = trShown().find(k => { const p = trPos(k); return Math.hypot(x * vw - p[0], y * vh - p[1]) < R; }); if (n) tradeToggle(n); }
 function goSpace() { S.mode = 'space'; S.ended = true; S.at = 'numerix'; S.beat = 0; S.tTrade = true; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; tidy(); say('Teacher shortcut. You are in space, at Galaxy Numerix. The trade beacon is open. Tap it. Or tap the planet to land.'); $('place').scrollIntoView({ block: 'nearest' }); }
+
+/* ===== GMQ TRADE: start =====
+   Galactic Trade, rebuilt as the galaxy's market. One entry point:  GMQTrade.open(host, state, done)
+     host   the game's own functions, which the piece calls:
+              say(text)  beep(freq, secs, type)  card()  give(item)  has(item)  save()  toy(html)  closeToy()
+              and, read each frame: cx (the picture's 2D context), vw, vh (its size in CSS pixels), tNow (seconds). Give them as getters.
+     state  one plain object the game keeps for the child (S.market). Start it as {} or { seed: S.seed }; the piece fills it in and calls host.save().
+            Optional: state.lastSeason = the gems of an old version 97 season. [pick] It is kept for the teacher; the ship's log says only
+            that there was an older season, because a child cannot place 2,000 gems beside a ship that carries 999.
+     done   called once, when the child leaves: done('leave') or done('finished').
+   While it is open, the game calls GMQTrade.frame(dt) on every frame (in place of drawTrade) and GMQTrade.tap(x, y) on a tap on the picture
+   (x, y in CSS pixels, in place of tradeTap). GMQTrade.isOpen() says whether it is open.
+   GMQTrade.visited(state) lists the planets the child has sold to (and R, once flown to): the game may let these be landed on.
+   Items it gives: 'stone' (the glow stone; the game's lantern chain uses it). It reads has('stone') and has('lantern').
+   It uses no optional chaining and no nullish operator (older iPads cannot read them).
+   Everything is [Proposal] unless it says [Source]. Choices made without Marc are marked [pick]. */
+var GMQTrade = (function () {
+  'use strict';
+  /* ---------- THE NUMBER RULE (checked on 20,000 seeds by checks/trade_market_check.js, which reads this block) ---------- */
+  var RULE = (function () {
+    'use strict';
+    /* [Source] Marc's Trade Data Sheet: the letters and distances (the game's TR). [Proposal] a planet's light-years are its distance to the nearest ten,
+       so fuel is 2 x a ten (3.NBT.3), and the planet is drawn on that ring. */
+    var DIST = { A: 12, B: 26, C: 33, D: 18, E: 44, F: 5, G: 22, H: 25, I: 45, J: 17, K: 37, L: 53, M: 28, N: 66, O: 52, P: 71, Q: 48, R: 59, S: 41, T: 64 };
+    var ORDER = ['F', 'S', 'J', 'I', 'G', 'O', 'B', 'R', 'C', 'N', 'P', 'K', 'T', 'M', 'L', 'H', 'Q', 'D', 'E', 'A'];
+    var LY = {}; Object.keys(DIST).forEach(function (n) { LY[n] = Math.floor((DIST[n] + 5) / 10) * 10; });
+    var K = { gift: 100, crates: 3, perLy: 2, full: 600, low: 60, stone: 'R', stonePrice: 300, supplies: 500, offers: 5, margin: 20, tries: 8000, apart: .16 };
+    var WANTS = ['fruit', 'glass', 'rope', 'lamps', 'seeds', 'cloth', 'bells', 'paint'];
+    function rng(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    function hash(a, b, c) { var h = Math.imul((a >>> 0) ^ 0x9E3779B9, 0x85EBCA6B); h = Math.imul(h ^ (b + 0x27D4EB2F), 0xC2B2AE35); h = Math.imul(h ^ (c + 0x165667B1), 0x27D4EB2F); return (h ^ h >>> 16) >>> 0; }
+    function fuelOf(n) { return K.perLy * LY[n]; }
+    /* where a planet sits on the map, as a share of its radius (the same fan as the game's trPos), and whether two sit far enough apart */
+    function npos(n) { var a = (-78 + ORDER.indexOf(n) * (156 / 19)) * Math.PI / 180, r = .2 + .8 * LY[n] / 71; return [Math.sin(a) * r, Math.cos(a) * r]; }
+    function apart(a, b) { var p = npos(a), q = npos(b); return Math.hypot(p[0] - q[0], p[1] - q[1]) >= K.apart; }
+    /* every choice a child can make on a board: one, two or three offers */
+    function choices(offers, B) { var out = [], m = offers.length;
+      for (var mask = 1; mask < (1 << m); mask++) { var pick = [], fuel = 0, pay = 0;
+        for (var i = 0; i < m; i++) if (mask & (1 << i)) { pick.push(i); fuel += fuelOf(offers[i].n); pay += offers[i].pay; }
+        if (pick.length <= K.crates) out.push({ pick: pick, fuel: fuel, pay: pay, fits: fuel <= B, left: B - fuel, end: B - fuel + pay }); }
+      return out; }
+    function byPay(offers) { return offers.map(function (o, i) { return i; }).sort(function (a, b) { return offers[b].pay - offers[a].pay; }); }
+    /* a child who takes the biggest pay first, while the fuel fits */
+    function greedy(offers, B, order) { var pick = [], fuel = 0, pay = 0;
+      order.forEach(function (i) { var f = fuelOf(offers[i].n); if (pick.length < K.crates && fuel + f <= B) { pick.push(i); fuel += f; pay += offers[i].pay; } });
+      return { pick: pick.sort(), fuel: fuel, pay: pay, end: B - fuel + pay }; }
+    function judge(offers, B) { var all = choices(offers, B).filter(function (c) { return c.fits; }).sort(function (a, b) { return b.end - a.end; });
+      var big = byPay(offers)[0];
+      return { all: all, best: all[0], second: all[1], margin: all[1] ? all[0].end - all[1].end : 999, big: big, bigInBest: all[0].pick.indexOf(big) >= 0,
+        payGreedy: greedy(offers, B, byPay(offers)),
+      nearGreedy: greedy(offers, B, offers.map(function (o, i) { return i; }).sort(function (a, b) { return LY[offers[a].n] - LY[offers[b].n] || offers[b].pay - offers[a].pay; })),
+        netGreedy: greedy(offers, B, offers.map(function (o, i) { return i; }).sort(function (a, b) { return (offers[b].pay - fuelOf(offers[b].n)) - (offers[a].pay - fuelOf(offers[a].n)); })) }; }
+    /* the net (pay minus fuel) a planet tends to give, by its distance: [lowest, highest] */
+    var NET1 = { 10: [70, 170], 20: [60, 180], 30: [50, 190], 40: [50, 200], 50: [60, 210] };
+    var NET2 = { 10: [30, 115], 20: [25, 120], 30: [15, 125], 40: [10, 130], 50: [5, 130], 60: [5, 120], 70: [5, 110] };      /* only the one planned offer loses (15 to 45 gems): a loss of 1 gem teaches nothing */
+    function draw(r, first, near, decoy) { var ri = function (a, b) { return a + Math.floor(r() * (b - a + 1)); };
+      /* [pick] I, O and Q stay on the map but are never offered: "Planet I paid" reads as "I paid", O looks like zero, and on a phone O and Q look alike (the review, 24 November) */
+      var pool = ORDER.filter(function (n) { return n !== K.stone && 'IOQ'.indexOf(n) < 0 && (!first || LY[n] <= 50); }), at = function (n) { return ORDER.indexOf(n); }, got = [];
+      for (var i = pool.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+      /* spread on the map: no two offers (and no offer and Planet R) closer than 0.16 of the map's radius, so their rings never touch at any size */
+      pool.forEach(function (n) { if (got.length < K.offers && apart(n, K.stone) && got.every(function (g) { return apart(g, n); })) got.push(n); });
+      if (got.length < K.offers) return null;
+      got.sort(function (a, b) { return at(a) - at(b); });      /* left to right, as they sit in the fan: the cards above the map are in the same order */
+      if (!first && (!got.some(function (n) { return LY[n] >= 60; }) || !got.some(function (n) { return LY[n] <= 20; }))) return null;
+      var w = WANTS.slice(); for (i = w.length - 1; i > 0; i--) { j = Math.floor(r() * (i + 1)); t = w[i]; w[i] = w[j]; w[j] = t; }
+      var lossAt = -1; if (!first) { var far = got.map(function (n, k) { return LY[n] >= 50 ? k : -1; }).filter(function (k) { return k >= 0; }); lossAt = far[Math.floor(r() * far.length)]; }
+      /* the nearest-planets decoy: one of the nearest planets wants little, so it pays only a little more than its fuel */
+    var nearAt = -1; if (near) { var lo = Math.min.apply(null, got.map(function (n) { return LY[n]; })), nk = got.map(function (n, k) { return LY[n] === lo ? k : -1; }).filter(function (k) { return k >= 0; }); nearAt = nk[Math.floor(r() * nk.length)]; }
+    var out = got.map(function (n, k) { var R = (first ? NET1 : NET2)[LY[n]], net = k === lossAt ? -ri(15, 45) : k === nearAt ? ri(Math.max(5, 41 - fuelOf(n)), 40) : ri(R[0], R[1]), pay = fuelOf(n) + net;
+      if (pay % 10 === 0) pay += (k === lossAt ? -1 : 1) * ri(1, 3);
+      return { n: n, pay: pay, want: w[k] }; });
+    /* the biggest-pay decoy, on later trips: a far planet pays the most, but leaves little after its fuel */
+    if (decoy && !first) { var bigs = out.map(function (o, k) { return LY[o.n] >= 50 && k !== lossAt && k !== nearAt ? k : -1; }).filter(function (k) { return k >= 0; });
+      if (bigs.length) { var bk = bigs[Math.floor(r() * bigs.length)], top = Math.max.apply(null, out.map(function (o, k) { return k === bk ? 0 : o.pay; })), bp = Math.max(top + ri(5, 50), fuelOf(out[bk].n) + ri(5, 30)); if (bp % 10 === 0) bp += 3; if (bp <= 399) out[bk].pay = bp; } }
+    /* and on the other boards, a planet that pays the most and is worth it: not far, so its fuel is small */
+    if (!decoy && !first) { var good = out.map(function (o, k) { return LY[o.n] <= 40 && k !== lossAt && k !== nearAt ? k : -1; }).filter(function (k) { return k >= 0; });
+      if (good.length) { var gk = good[Math.floor(r() * good.length)], top2 = Math.max.apply(null, out.map(function (o, k) { return k === gk ? 0 : o.pay; })), gp = top2 + ri(5, 30); if (gp % 10 === 0) gp += 3; if (gp <= 399 && gp - fuelOf(out[gk].n) <= 170) out[gk].pay = gp; } }
+    return out; }
+    function fine(offers, j, B, first, decoy, near) {
+      if (!j.best || j.all.length < 4) return false;
+      if (offers.some(function (o) { return o.pay < 40 || o.pay > 399 || o.pay % 10 === 0; })) return false;
+      if (offers.filter(function (o) { return fuelOf(o.n) <= B; }).length < 2) return false;
+      var pays = offers.map(function (o) { return o.pay; }).sort(function (a, b) { return b - a; }); if (pays[0] === pays[1]) return false;
+      if (j.margin < K.margin) return false;
+      if (j.all.some(function (c) { return c.end > 999 || c.pay > 999; })) return false;
+      var net = j.best.end - B;
+      if (first) { if (j.best.end < 300 || j.best.end > 390 || j.best.pick.length < 2) return false; }
+      else { if (net < 160 || net > 280) return false; if (!offers.some(function (o) { return o.pay < fuelOf(o.n); })) return false; }
+      if (decoy === j.bigInBest) return false;
+      if (decoy && j.payGreedy.end > j.best.end - 40) return false;
+    if (near && j.nearGreedy.end > j.best.end - 30) return false;
+      return true; }
+    /* one board for one trip: from the child's seed, the trip number and the gems they fly with.
+       The biggest pay is a decoy (not part of the best choice) on 7 first boards in 10 and on 6 later boards in 10. On the rest it is part of it,
+     so "never take the biggest" is not a rule either. The nearest planets are a decoy (a child who only saves fuel comes home 30 gems or more behind)
+     on half the first boards and on 3 later boards in 10. No one shortcut works. A later board teaches one of the two at a time: once the hold, not
+     the fuel, is the limit, a planet that pays the most and also leaves the least is too rare to ask for alongside a poor near planet.
+       If no board is found in 5,000 draws, the decoy is turned the other way, and after 6,500 the nearest-planets decoy is dropped (the check counts how often: it must be never). */
+    function board(seed, trip, B) { var r = rng(hash(seed, trip, B)), first = trip === 1, u = r(), decoy = first ? u < 0.7 : u < 0.6, near = first ? r() < 0.5 : u >= 0.6 && u < 0.9;
+      for (var tries = 1; tries <= K.tries; tries++) { var d = tries > 5000 ? !decoy : decoy, nr = tries > 6500 ? false : near, offers = draw(r, first, nr, d); if (!offers) continue; var j = judge(offers, B);
+      /* a near miss: the best plan leads by less than 20 gems. Raise the pay of one planet in the best plan and not in the next, then judge the board again. */
+      if (j.second && j.margin < K.margin) { var sp = j.second.pick, kk = j.best.pick.filter(function (k) { return sp.indexOf(k) < 0; })[0];
+        if (kk !== undefined) { var np = offers[kk].pay + K.margin - j.margin + Math.floor(r() * 13); if (np % 10 === 0) np++; if (np <= 399) { offers[kk].pay = np; j = judge(offers, B); } } }
+        if (fine(offers, j, B, first, d, nr)) return { offers: offers, tries: tries, judge: j, decoy: d, near: nr, eased: tries > 5000 }; }
+      return null; }
+    /* what the page calls: the child's own board, or, in the rare case that none is found, the board of a nearby seed (the check counts how often) */
+  function boardFor(seed, trip, B) { for (var k = 0; k < 6; k++) { var b = board(seed + k * 7919, trip, B); if (b) { b.other = k; return b; } } return null; }
+  return { K: K, LY: LY, DIST: DIST, ORDER: ORDER, WANTS: WANTS, fuelOf: fuelOf, npos: npos, choices: choices, judge: judge, board: board, boardFor: boardFor, rng: rng, hash: hash };
+  })();
+  var K = RULE.K, LY = RULE.LY, ORDER = RULE.ORDER;
+  /* [Source] the game's planet colours (TR_COL), by a planet's place in Marc's list A to T */
+  var COL = ['#ff9ec4', '#9fd3ff', '#ffe58a', '#a8e6b0', '#b9a3ff', '#ffb37a', '#8fe0d8', '#f4a0a0', '#c9e2ff', '#d8c4ff'], LETTERS = 'ABCDEFGHIJKLMNOPQRST';
+  var INK = '#0e1626';
+  var H = null, S = null, DONE = null, W = { fly: null, pops: [], hint: 0 }, OPEN = false;
+
+  /* ---------- small helpers ---------- */
+  function $(id) { return document.getElementById(id); }
+  function num(n) { return Number(n).toLocaleString('en'); }
+  function beep(f, d, t) { try { if (H.beep) H.beep(f, d, t); } catch (e) {} }
+  function save() { try { if (H.save) H.save(); } catch (e) {} }
+  function has(it) { try { return !!(H.has && H.has(it)); } catch (e) { return false; } }
+  function hasStone() { return has('stone') || has('lantern'); }
+  function list(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+  function planets(ns) { return (ns.length > 1 ? 'Planets ' : 'Planet ') + list(ns); }
+  function offers() { return S.board ? S.board.offers : []; }
+  function chosen() { var o = offers(); return S.sel.map(function (i) { return o[i]; }); }
+  function fuelFor(os) { return os.reduce(function (a, o) { return a + RULE.fuelOf(o.n); }, 0); }
+  function numBox(id, label) { return '<label for="' + id + '">' + label + '<input id="' + id + '" inputmode="numeric" autocomplete="off" maxlength="4"></label>'; }
+  function val(id) { var e = $(id); return e && e.value !== '' ? +e.value : null; }
+  function msg(text, good) { var m = $('msg'); if (m) { m.className = 'msg ' + (good === 'warn' ? 'warn' : good ? 'good' : 'bad'); m.textContent = text; try { m.scrollIntoView({ block: 'nearest' }); } catch (e) {} } }      /* on a phone the message can sit under the number pad: bring it into view */
+  function onlyDigits() { Array.prototype.forEach.call(document.querySelectorAll('#toy input'), function (i) { i.oninput = function () { i.value = i.value.replace(/[^0-9]/g, '').slice(0, 4); };
+    i.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); var t = $('try'); if (t) t.click(); } }; }); var f = document.querySelector('#toy input'); if (f) try { f.focus({ preventScroll: true }); } catch (e) {} }
+  function on(id, fn) { var e = $(id); if (e) e.onclick = fn; }
+  function toy(html) { H.toy(html); }
+  function eyebrow(t) { return '<p class="eyebrow">Galactic Trade · ' + t + '</p>'; }
+  function logAdd(e) { S.log.push(e); }
+
+  /* ---------- opening, and where the child is ---------- */
+  function open(host, state, done) { H = host; S = state; DONE = done; OPEN = true; W = { fly: null, pops: [], hint: 0 };
+    if (!S.v) { var seed = S.seed >>> 0 || (Math.floor(Math.random() * 1e9) + 1); for (var k in S) if (S.hasOwnProperty(k) && k !== 'lastSeason') delete S[k];
+      S.v = 1; S.seed = seed; S.step = 'call'; S.gems = 0; S.trip = 1; S.board = null; S.sel = []; S.left = 0; S.log = []; S.bought = { supplies: false, stone: false }; S.gifts = 0; save(); }
+    show(); }
+  function show() { var s = S.step;
+    if (s === 'call') return call(); if (s === 'hold') return hold(); if (s === 'list') return priceList(); if (s === 'rules') return rules(); if (s === 'demo') return demo();
+    if (s === 'pump') return pump(); if (s === 'fly') return fly(); if (s === 'count') return count(); if (s === 'result') return result();
+    if (s === 'spump') return stonePump(); if (s === 'sfly') return stoneFly(); if (s === 'spay') return stonePay(); if (s === 'shome') return stoneHome(); if (s === 'done') return finished();
+    return plan(); }
+  function go(step) { S.step = step; save(); show(); }
+  function leave() { OPEN = false; W.fly = null; try { if (H.closeToy) H.closeToy(); } catch (e) {} save(); var d = DONE; DONE = null; if (d) d(S.step === 'done' ? 'finished' : 'leave'); }
+
+  /* ---------- THE STORY, told first. [Source: Marc's Task 2 page: "they have sent out a galaxy-wide SOS! They're low on essential supplies"]
+     A sentence or two at a time (his rule 7). The goal is shown at once, as a price list, so every trip has a reason. ---------- */
+  function call() { W.look = 'voltara';
+    toy(eyebrow('a call from Voltara') + '<h3>Voltara needs help</h3><p class="story">Voltara\'s Energy Council calls your ship.</p><p class="story">"Our city is low on supplies. Will you trade for us?"</p>' +
+      '<div class="field"><button class="btn" type="button" id="try">Next</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
+    on('try', function () { go('hold'); }); on('trleave', leave); }
+  function hold() { W.look = 'hold';
+    toy(eyebrow('a call from Voltara') + '<h3>Trade for Voltara</h3><p class="story">"Your ship carries 3 crates of our goods. Planets will buy them. They pay in gems."</p><p class="story">"Bring us supplies for the city. A supply ship at the beacon sells them, for 500 gems."</p>' +
+      '<div class="field"><button class="btn" type="button" id="try">Next</button><button class="btn quiet" type="button" id="trback">Back</button></div>');
+    on('try', function () { go('list'); }); on('trback', function () { go('call'); }); }
+  function priceList() { W.look = 'stone';
+    toy(eyebrow('a call from Voltara') + '<h3>Gems to start</h3>' + (hasStone() ? '<p class="story">You have a glow stone already. So you only need the supplies.</p>' : '<p class="story">Planet R sells glow stones, for 300 gems. A glow stone lights a lantern, for dark places.</p>') +
+      '<p class="story">The Council gives you 100 gems for fuel. It is a gift.</p>' +
+      '<div class="field"><button class="btn" type="button" id="try">Next</button><button class="btn quiet" type="button" id="trback">Back</button></div>');
+    on('try', function () { if (!S.gems && !S.log.length) { S.gems = K.gift; logAdd({ kind: 'gift', gems: S.gems }); } go('rules'); }); on('trback', function () { go('hold'); }); }
+  function rules() { W.look = 'rings';
+    toy(eyebrow('how trading works') + '<h3>Fuel</h3><p class="story">Fuel costs 2 gems for each light-year. The rings on the map show the light-years.</p><p class="story">You pay for fuel to fly out. The trade beacon pulls you home for free.</p>' +
+      '<p class="mw">Get some paper and a pencil. Traders write their sums down.</p>' +
+      '<div class="field"><button class="btn" type="button" id="try">Show me</button><button class="btn quiet" type="button" id="trback">Back</button></div>');
+    on('try', function () { go('demo'); }); on('trback', function () { go('list'); }); }
+
+  /* ---------- SEE IT FIRST (his rule 3): one solved choice about something else. Coins and rent at a fruit market, not gems and fuel.
+     Recomputed in checks/trade_market_check.js: every choice of one or two stalls. Red alone ends with 52; blue and yellow end with 63, the most;
+     blue and green, and yellow and green, cost too much rent. The stalls have colours, not letters, so none is mixed up with a planet. ---------- */
+  var DEMO = { coins: 10, baskets: 2, stalls: [['red', 52, 10], ['blue', 35, 6], ['yellow', 28, 4], ['green', 30, 7]], lines: [
+    'I have 10 coins for rent. My cart holds 2 baskets.',
+    'Red alone: rent 10.  10 − 10 = 0.  0 + 52 = 52',
+    'Blue alone: rent 6.  10 − 6 = 4.  4 + 35 = 39',
+    'Blue and yellow: rent 6 + 4 = 10.  10 − 10 = 0.  0 + 35 + 28 = 63',
+    'Blue and green: rent 6 + 7 = 13. Too much!',
+    'Yellow and green: rent 4 + 7 = 11. Too much!',
+    '63 is more than 52. I take blue and yellow.'] };
+  function demo() { W.look = 'demo';
+    toy('<p class="eyebrow">See it first</p><h3>Tavi sells fruit</h3><p class="story">Tavi sells fruit at Voltara\'s market. Her cart holds 2 baskets. She has 10 coins to pay rent for the stalls.</p>' +
+      '<p class="story">Look at her paper. At the red stall she earns the most. But the blue and yellow stalls together leave her more.</p>' +
+      '<div class="field"><button class="btn" type="button" id="try">My turn</button><button class="btn quiet" type="button" id="trback">Back</button></div>');
+    on('try', function () { S.seenDemo = true; go('plan'); }); on('trback', function () { go('rules'); }); }
+
+  /* ---------- A TRIP: choose, buy fuel, fly, count ---------- */
+  /* [pick] the ship carries up to 999 gems; with 600 or more, a good trip could bring more, so the child buys first. Every number stays within 1,000.
+     [pick] below 60 gems the Council sends 100 more for fuel, as a gift, so no child is left unable to fly. */
+  function canBuyAll() { return S.bought.supplies && (S.bought.stone || hasStone()); }
+  function newBoard() { var B = S.gems, note = '';
+    if (B < K.low) { S.gems = B = B + K.gift; S.gifts++; logAdd({ kind: 'gift', gems: S.gems }); note = 'The Council sees you are low on gems. It sends 100 gems for fuel, as a gift.'; }
+    var b = RULE.boardFor(S.seed, S.trip, B);
+    S.board = { trip: S.trip, B: B, offers: b.offers }; S.sel = []; save(); return note; }
+  function plan(info) { W.look = 'board'; if (canBuyAll()) return go('done');
+    if (S.gems >= K.full && (!S.board || S.board.trip !== S.trip)) return full();
+    var note = (!S.board || S.board.trip !== S.trip) ? newBoard() : '', o = offers();
+    var chips = o.map(function (x, i) { var onn = S.sel.indexOf(i) >= 0; return '<button class="btn quiet' + (onn ? ' on' : '') + '" type="button" data-i="' + i + '" aria-pressed="' + onn + '">' + x.n + ' · ' + x.want + '</button>'; }).join('');
+    toy(eyebrow('trip ' + S.trip) + '<h3>Choose your planets</h3>' + (note ? '<p class="note">' + note + '</p>' : '') +
+      '<p class="q">You have ' + num(S.gems) + ' gems. Your ship carries up to 3 crates. Each crate goes to a different planet.</p>' +
+      '<p class="note">Fuel costs 2 gems for each light-year. Tap a planet to load a crate for it. Tap it again to take the crate off.</p>' +
+      '<div class="chips" role="group" aria-label="Planets on the trade board">' + chips + '</div><div class="msg" id="msg" role="status">' + (info || '') + '</div>' +
+      '<div class="field"><button class="btn" type="button" id="try">Fly</button><button class="btn quiet" type="button" id="trhint">A hint</button><button class="btn quiet" type="button" id="trbuy">To buy</button><button class="btn quiet" type="button" id="trlog">Ship\'s log</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
+    Array.prototype.forEach.call(document.querySelectorAll('#toy .chips .btn'), function (b) { b.onclick = function () { toggle(+b.dataset.i); }; });
+    on('try', function () { if (!S.sel.length) { beep(140, .2, 'square'); return msg('Load a crate for one planet first.'); } go('pump'); });
+    on('trhint', function () { msg(HINTS[W.hint % HINTS.length], true); W.hint++; }); on('trbuy', buyList); on('trlog', shipLog); on('trleave', leave); }
+  /* nudges only when asked, and never a number (his rule of 19 November) */
+  var HINTS = ['Write each plan on your paper. Work out its fuel. Then work out the gems you would come home with.',
+    'The planet that pays the most may cost the most fuel. Check it.', 'Compare the gems each plan brings home. The most is the best plan.',
+    'To compare fast, round each pay to the nearest ten. Then count exactly before you choose.'];      /* [pick] rounding as a trader's tool, offered only when asked (Marc, 24 November: rounding need not be the focus) */
+  function toggle(i) { if (S.step !== 'plan' || !S.board) return; var o = offers()[i]; if (!o) return; var k = S.sel.indexOf(i);
+    if (k >= 0) S.sel.splice(k, 1); else { if (S.sel.length >= K.crates) { beep(140, .2, 'square'); return msgNow('Your ship carries only 3 crates. Take one off first.'); } S.sel.push(i); }
+    S.sel.sort(); beep(k >= 0 ? 300 : 520, .05); save(); plan(k >= 0 ? 'The crate for Planet ' + o.n + ' is off.' : 'A crate for Planet ' + o.n + ' is loaded.'); }
+  function msgNow(t) { msg(t, false); }
+  function full() { W.look = 'board';
+    toy(eyebrow('trip ' + S.trip) + '<h3>Buy something first</h3><p class="q">You have ' + num(S.gems) + ' gems. Your ship can carry up to 999 gems, and a good trip could bring more than that.</p><p class="story">Buy something on your list first.</p>' +
+      '<div class="field"><button class="btn" type="button" id="trbuy">To buy</button><button class="btn quiet" type="button" id="trlog">Ship\'s log</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
+    on('trbuy', buyList); on('trlog', shipLog); on('trleave', leave); }
+
+  /* the fuel: the child works it out, and what is left. [Source: Marc, 21 November: "Never show the adding for the child."] */
+  function pump() { W.look = 'board'; var os = chosen(), fuel = fuelFor(os); W.tries = 0;
+    toy(eyebrow('trip ' + S.trip + ' · fuel') + '<h3>Buy your fuel</h3><p class="q">Your crates go to ' + planets(os.map(function (o) { return o.n; })) + '. You have ' + num(S.gems) + ' gems.</p>' +
+      '<p class="note">Fuel costs 2 gems for each light-year.</p>' +
+      '<div class="field">' + numBox('ans', 'Fuel, in gems') + numBox('ans2', 'Gems left after fuel') + '</div>' +
+      '<div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="trback">Change my plan</button></div><div class="msg" id="msg" role="status"></div>');
+    onlyDigits(); on('trback', function () { go('plan'); });
+    on('try', function () { var a = val('ans'), b = val('ans2'); if (a === null) return msg('Type the fuel first.'); W.tries++;
+      if (a !== fuel) { beep(140, .2, 'square'); return msg(os.length > 1 ? 'Not yet. Find the light-years to each planet. Each light-year costs 2 gems.' : 'Not yet. Find the light-years to the planet. Each light-year costs 2 gems.'); }
+      if (fuel > S.gems) { beep(140, .2, 'square'); logAdd({ kind: 'short', trip: S.trip, route: os.map(function (o) { return o.n; }), fuel: fuel, gems: S.gems }); save();
+        return msg('Right, the fuel is ' + num(fuel) + ' gems. But you have only ' + num(S.gems) + '. That is too far. Change your plan.', 'warn'); }
+      if (b === null) return msg('Right. Now type the gems left after fuel.', true);
+      if (b !== S.gems - fuel) { beep(140, .2, 'square'); return msg('Not yet. Take the fuel away from the gems you have.'); }
+      beep(880, .1); $('try').outerHTML = '<button class="btn" type="button" id="trfly">Pay and fly</button>'; msg('Right. Fuel: ' + num(fuel) + ' gems. You will have ' + num(b) + ' left.', true);
+      on('trfly', function () { S.left = S.gems - fuel; S.paid = fuel; S.gems = S.left; go('fly'); }); }); }
+  function fly() { W.look = 'fly'; startFly(chosen().map(function (o) { return o.n; }), false);
+    toy(eyebrow('trip ' + S.trip) + '<h3>On your way</h3><p class="q">Your ship flies to ' + planets(chosen().map(function (o) { return o.n; })) + ', one at a time.</p><p class="note">After each planet, the beacon pulls the ship home. Watch the map.</p>'); }
+  function count() { W.look = 'board'; var os = chosen(), end = S.left + os.reduce(function (a, o) { return a + o.pay; }, 0); W.tries = 0;
+    toy(eyebrow('trip ' + S.trip) + '<h3>Count your gems</h3><p class="q">After fuel you had ' + num(S.left) + ' gems. ' + os.map(function (o) { return 'Planet ' + o.n + ' paid ' + num(o.pay) + '.'; }).join(' ') + '</p>' +
+      '<p class="story">How many gems do you have now?</p><div class="field">' + numBox('ans', 'Gems now') + '<button class="btn" type="button" id="try">Check</button></div><div class="msg" id="msg" role="status"></div>');
+    onlyDigits();
+    on('try', function () { var a = val('ans'); if (a === null) return msg('Type a number first.'); W.tries++;
+      if (a !== end) { beep(140, .2, 'square'); return msg(W.tries < 2 ? 'Not yet. Start with the gems you had after fuel. Add what each planet paid.' : 'Not yet. Add the hundreds, then the tens, then the ones. Check each one on your paper.'); }
+      beep(880, .1); var lost = os.filter(function (o) { return o.pay < RULE.fuelOf(o.n); }).map(function (o) { return o.n; });
+      logAdd({ kind: 'trade', trip: S.trip, route: os.map(function (o) { return [o.n, o.pay]; }), fuel: S.paid, start: S.board.B, gems: end, lost: lost, tries: W.tries });
+      S.gems = end; S.last = { start: S.board.B, lost: lost, route: os.map(function (o) { return o.n; }), offers: S.board.offers, sel: S.sel.slice() }; S.trip++; S.board = null; S.sel = []; go('result'); }); }
+  function result() { W.look = 'map'; var L = S.last || { start: 0, lost: [] }, e = S.log.filter(function (x) { return x.kind === 'trade'; }).pop() || { route: [] };
+    var lossLine = e.route.filter(function (r) { return r[1] < RULE.fuelOf(r[0]); }).map(function (r) { return 'Planet ' + r[0] + ' paid ' + num(r[1]) + ', but its fuel cost ' + num(RULE.fuelOf(r[0])) + '. You lost ' + num(RULE.fuelOf(r[0]) - r[1]) + ' gems at Planet ' + r[0] + '.'; }).join(' ');
+    toy(eyebrow('trip ' + e.trip + ' is done') + '<h3>Home again</h3><p class="q">You set off with ' + num(L.start) + ' gems. You came home with ' + num(S.gems) + '.</p>' +
+      (lossLine ? '<p class="story">' + lossLine + '</p>' : '') + '<p class="note">Your ship\'s log keeps every trip, so you can compare them.</p>' +
+      '<div class="field"><button class="btn" type="button" id="try">Next trip</button><button class="btn quiet" type="button" id="trbuy">To buy</button><button class="btn quiet" type="button" id="trlog">Ship\'s log</button><button class="btn quiet" type="button" id="trleave">Leave</button></div>');
+    on('try', function () { go('plan'); }); on('trbuy', buyList); on('trlog', shipLog); on('trleave', leave); }
+
+  /* ---------- THE SHIP'S LOG: the child's own trips, as they counted them. No sums of the game's own. ---------- */
+  function shipLog() { W.look = S.board ? 'board' : 'map';
+    var rows = S.log.map(function (e) {
+      if (e.kind === 'gift') return '<tr><td>Gift</td><td>From the Council</td><td></td><td>' + num(e.gems) + '</td></tr>';
+      if (e.kind === 'short') return '<tr><td></td><td>' + e.route.join(', ') + ': too far, not flown</td><td>' + num(e.fuel) + '</td><td></td></tr>';
+      if (e.kind === 'trade') return '<tr><td>' + e.trip + '</td><td>' + e.route.map(function (r) { return r[0] + ' paid ' + num(r[1]); }).join('<br>') + '</td><td>' + num(e.fuel) + '</td><td>' + num(e.gems) + '</td></tr>';
+      if (e.kind === 'stone') return '<tr><td>R</td><td>' + (e.got ? 'Bought a glow stone' : 'Not enough for the stone') + '</td><td>' + num(e.fuel) + '</td><td>' + num(e.gems) + '</td></tr>';
+      if (e.kind === 'supplies') return '<tr><td>Home</td><td>Bought the supplies</td><td></td><td>' + num(e.gems) + '</td></tr>';
+      return ''; }).join('');
+    toy(eyebrow('ship\'s log') + '<h3>Every trip</h3>' + (S.lastSeason ? '<p class="note">Before the market, you traded in an older season. Its gems stay with it.</p>' : '') +
+      '<table class="log"><thead><tr><th>Trip</th><th>Planets</th><th>Fuel</th><th>Gems after</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<div class="field"><button class="btn" type="button" id="try">Back</button></div>');
+    on('try', function () { show(); }); }
+
+  /* ---------- BUYING. The price list is in view from the first trip (on the map, and here). ---------- */
+  function buyList() { W.look = 'buy';
+    var sup = S.bought.supplies ? '<span class="note">Bought ✓</span>' : '<button class="btn" type="button" id="trsup">Buy the supplies</button>';
+    var st = hasStone() || S.bought.stone ? '<span class="note">You have one ✓</span>' : '<button class="btn" type="button" id="trstone">Fly to Planet R</button>';
+    toy(eyebrow('to buy') + '<h3>Your list</h3><p class="q">You have ' + num(S.gems) + ' gems.</p>' +
+      '<div class="buy"><b>Supplies for Voltara: 500 gems</b><span class="note">A supply ship at the beacon sells them. No fuel.</span>' + sup + '</div>' +
+      '<div class="buy"><b>A glow stone: 300 gems</b><span class="note">Only Planet R sells them. It is 60 light-years away, so you need fuel too.</span>' + st + '</div>' +
+      '<div class="msg" id="msg" role="status"></div><div class="field"><button class="btn quiet" type="button" id="trback">Back</button></div>');
+    on('trsup', supplies); on('trstone', function () { go('spump'); }); on('trback', function () { if (S.step === 'result' || S.step === 'plan') show(); else go('plan'); }); }
+  function supplies() { if (S.gems < K.supplies) { beep(140, .2, 'square'); return msg('The supplies cost 500 gems. You have ' + num(S.gems) + '. Not enough yet.'); }
+    W.look = 'buy'; W.tries = 0;
+    toy(eyebrow('to buy') + '<h3>Supplies for Voltara</h3><p class="q">The supplies cost 500 gems. You have ' + num(S.gems) + ' gems.</p><p class="story">How many gems will you have left?</p>' +
+      '<div class="field">' + numBox('ans', 'Gems left') + '<button class="btn" type="button" id="try">Pay</button><button class="btn quiet" type="button" id="trback">Back</button></div><div class="msg" id="msg" role="status"></div>');
+    onlyDigits(); on('trback', buyList);
+    on('try', function () { var a = val('ans'); if (a === null) return msg('Type a number first.'); W.tries++;
+      if (a !== S.gems - K.supplies) { beep(140, .2, 'square'); return msg('Not yet. Take the price away from the gems you have.'); }
+      beep(880, .1); S.gems -= K.supplies; S.bought.supplies = true; logAdd({ kind: 'supplies', gems: S.gems }); S.board = null; save(); try { if (H.card) H.card(); } catch (e) {}
+      W.look = 'lit'; W.litAt = tNow();
+      toy(eyebrow('Voltara') + '<h3>The lights come back</h3><p class="story">The supply ship flies the supplies down to Voltara. Window by window, the city lights up.</p><p class="story">The Council calls: "Thank you, trader!"</p>' +
+        '<div class="field"><button class="btn" type="button" id="try">' + (canBuyAll() ? 'Next' : 'Back to the market') + '</button></div>');
+      on('try', function () { go(canBuyAll() ? 'done' : 'plan'); }); }); }
+
+  /* the glow stone: a far trip, and the big planning question: is it enough? The pump shows what is left before the child flies. */
+  function stonePump() { W.look = 'stone-trip'; var fuel = RULE.fuelOf(K.stone); W.tries = 0;
+    toy(eyebrow('to Planet R') + '<h3>Fuel for Planet R</h3><p class="q">Planet R is 60 light-years away. You have ' + num(S.gems) + ' gems.</p><p class="note">Fuel costs 2 gems for each light-year. The glow stone costs 300 gems.</p>' +
+      '<div class="field">' + numBox('ans', 'Fuel, in gems') + numBox('ans2', 'Gems left after fuel') + '</div>' +
+      '<div class="field"><button class="btn" type="button" id="try">Check</button><button class="btn quiet" type="button" id="trback">Back</button></div><div class="msg" id="msg" role="status"></div>');
+    onlyDigits(); on('trback', function () { go('plan'); });
+    on('try', function () { var a = val('ans'), b = val('ans2'); if (a === null) return msg('Type the fuel first.'); W.tries++;
+      if (a !== fuel) { beep(140, .2, 'square'); return msg('Not yet. Find the light-years to Planet R. Each light-year costs 2 gems.'); }
+      if (fuel > S.gems) { beep(140, .2, 'square'); return msg('Right, the fuel is ' + num(fuel) + ' gems. But you have only ' + num(S.gems) + '. That is too far for now.', 'warn'); }
+      if (b === null) return msg('Right. Now type the gems left after fuel.', true);
+      if (b !== S.gems - fuel) { beep(140, .2, 'square'); return msg('Not yet. Take the fuel away from the gems you have.'); }
+      beep(880, .1); $('try').outerHTML = '<button class="btn" type="button" id="trfly">Pay and fly</button>'; msg('Right. You will have ' + num(b) + ' gems when you land on Planet R. The glow stone costs 300 gems.', true);
+      on('trfly', function () { S.paid = fuel; S.gems -= fuel; go('sfly'); }); }); }
+  function stoneFly() { W.look = 'stone-trip'; startFly([K.stone], true);
+    toy(eyebrow('to Planet R') + '<h3>On your way</h3><p class="q">Your ship flies out to Planet R.</p><p class="note">Watch the map.</p>'); }
+  function stonePay() { W.look = 'stone-trip'; W.tries = 0; W.shipAt = K.stone;
+    if (S.gems < K.stonePrice) { logAdd({ kind: 'stone', got: false, fuel: S.paid, gems: S.gems }); S.step = 'shome'; save();
+      toy(eyebrow('Planet R') + '<h3>The glow stone trader</h3><p class="story">A trader holds up a glow stone. "300 gems, please."</p><p class="q">You have ' + num(S.gems) + ' gems. The stone costs 300. That is not enough.</p><p class="story">The fuel here cost ' + num(S.paid) + ' gems. Next time, work out the fuel and the price together before you fly.</p><p class="story">The beacon pulls your ship home.</p>' +
+        '<div class="field"><button class="btn" type="button" id="try">Home</button></div>');
+      return on('try', function () { startFly([], true, true); }); }
+    toy(eyebrow('Planet R') + '<h3>The glow stone trader</h3><p class="story">A trader holds up a glow stone. "300 gems, please."</p><p class="q">You have ' + num(S.gems) + ' gems. How many will you have left?</p>' +
+      '<div class="field">' + numBox('ans', 'Gems left') + '<button class="btn" type="button" id="try">Pay</button></div><div class="msg" id="msg" role="status"></div>');
+    onlyDigits();
+    on('try', function () { var a = val('ans'); if (a === null) return msg('Type a number first.'); W.tries++;
+      if (a !== S.gems - K.stonePrice) { beep(140, .2, 'square'); return msg('Not yet. Take the price away from the gems you have.'); }
+      beep(880, .1); S.gems -= K.stonePrice; S.bought.stone = true; try { if (H.give) H.give('stone'); } catch (e) {} logAdd({ kind: 'stone', got: true, fuel: S.paid, gems: S.gems }); S.step = 'shome'; save();
+      toy(eyebrow('Planet R') + '<h3>A glow stone</h3><p class="story">The stone glows as far as your hand. You put it in your bag.</p><p class="story">The beacon pulls your ship home.</p><div class="field"><button class="btn" type="button" id="try">Home</button></div>');
+      on('try', function () { startFly([], true, true); }); }); }
+  function stoneHome() { W.shipAt = K.stone; var got = S.bought.stone;
+    toy(eyebrow('Planet R') + '<h3>' + (got ? 'A glow stone' : 'The glow stone trader') + '</h3><p class="story">' + (got ? 'The glow stone is in your bag.' : 'You did not have enough gems for the stone.') + ' The beacon pulls your ship home.</p><div class="field"><button class="btn" type="button" id="try">Home</button></div>');
+    on('try', function () { startFly([], true, true); }); }
+  function homeFromStone() { W.shipAt = null; S.board = null; go(canBuyAll() ? 'done' : 'plan'); }
+  function finished() { W.look = 'lit';
+    toy(eyebrow('the market') + '<h3>Your work for Voltara is done</h3><p class="story">Voltara has its supplies, and you have a glow stone.</p><p class="note">The market is quiet now. Your ship\'s log keeps every trip.</p>' +
+      '<div class="field"><button class="btn" type="button" id="try">Leave</button><button class="btn quiet" type="button" id="trlog">Ship\'s log</button></div>');
+    on('try', leave); on('trlog', shipLog); }
+
+  /* ---------- THE FLIGHT: out to each planet under its own fuel; home on the beacon's pull, with no flame (as in the game's drawTrade) ---------- */
+  function startFly(ns, stone, home) { W.fly = { ns: ns, stone: stone, home: !!home, t: 0, seg: 0, paidAt: {} }; W.pops = []; }
+  function landed(f) { W.fly = null;
+    if (f.stone && !f.home) { go('spay'); return; }
+    if (f.stone && f.home) { homeFromStone(); return; }
+    go('count'); }
+
+  /* ---------- THE PICTURE ---------- */
+  var STARS = [], NEB = [[.22, .3, '#7a3fd0', .42], [.8, .26, '#4a2f9e', .36], [.82, .76, '#1f5fd0', .44], [.2, .8, '#1f9e6a', .38], [.5, .12, '#d0503f', .36], [.6, .9, '#a02f7a', .4]];
+  (function () { var r = RULE.rng(20231117); for (var i = 0; i < 140; i++) STARS.push({ x: r(), y: r(), s: 1 + r() * 2.2, p: r() * 40 }); })();
+  function tNow() { try { return +H.tNow || 0; } catch (e) { return 0; } }
+  function rgba(hex, a) { var n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; }
+  function rr(c, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function circ(c, x, y, r) { c.beginPath(); c.arc(x, y, r, 0, 7); }
+  function ol(c, w) { c.strokeStyle = INK; c.lineWidth = w || 2; c.stroke(); }
+  function font(c, px, bold, disp) { c.font = (bold ? '700 ' : '') + Math.round(px) + 'px ' + (disp ? '"Chakra Petch", "Trebuchet MS", sans-serif' : '"Andika", "Trebuchet MS", sans-serif'); }
+  function space(c, w, h, t) { var g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#050814'); g.addColorStop(1, '#0e0922'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    c.globalCompositeOperation = 'lighter'; NEB.forEach(function (n) { var R = n[3] * Math.max(w, h), gr = c.createRadialGradient(n[0] * w, n[1] * h, 0, n[0] * w, n[1] * h, R); gr.addColorStop(0, rgba(n[2], .26)); gr.addColorStop(.5, rgba(n[2], .09)); gr.addColorStop(1, rgba(n[2], 0)); c.fillStyle = gr; c.fillRect(0, 0, w, h); });
+    STARS.forEach(function (s) { c.fillStyle = 'rgba(255,240,220,' + (.35 + .45 * Math.sin(t * 1.5 + s.p)) + ')'; c.fillRect(s.x * w, s.y * h, s.s, s.s); }); c.globalCompositeOperation = 'source-over'; }
+  /* [Source] the game's ship (rocket), with its own line weights */
+  function rocket(c, X, Y, L, ang, flame, t) { c.save(); c.translate(X, Y); c.rotate(ang); c.lineJoin = 'round';
+    if (flame) { var f = 1 + Math.sin(t * 40) * .2; [-.055, .055].forEach(function (yy) { c.fillStyle = 'rgba(255,170,60,.95)'; c.beginPath(); c.moveTo(-L * .5, L * (yy - .035)); c.lineTo(-L * (.5 + .24 * f), L * yy); c.lineTo(-L * .5, L * (yy + .035)); c.fill(); c.fillStyle = '#fff3b0'; c.beginPath(); c.moveTo(-L * .5, L * (yy - .018)); c.lineTo(-L * (.5 + .11 * f), L * yy); c.lineTo(-L * .5, L * (yy + .018)); c.fill(); }); }
+    c.fillStyle = '#4b566b'; [-.055, .055].forEach(function (yy) { rr(c, -L * .53, L * (yy - .04), L * .1, L * .08, 2); c.fill(); ol(c, 1.5); });
+    c.fillStyle = '#d2553a'; [-1, 1].forEach(function (sg) { c.beginPath(); c.moveTo(L * .08, sg * L * .08); c.lineTo(-L * .3, sg * L * .35); c.lineTo(-L * .45, sg * L * .35); c.lineTo(-L * .36, sg * L * .08); c.closePath(); c.fill(); ol(c, 2); });
+    c.fillStyle = '#eef2f7'; c.beginPath(); c.moveTo(L * .5, 0); c.quadraticCurveTo(L * .34, -L * .115, L * .14, -L * .115); c.lineTo(-L * .4, -L * .1); c.lineTo(-L * .46, -L * .06); c.lineTo(-L * .46, L * .06); c.lineTo(-L * .4, L * .1); c.lineTo(L * .14, L * .115); c.quadraticCurveTo(L * .34, L * .115, L * .5, 0); c.fill(); ol(c, 2);
+    c.fillStyle = '#f08a2c'; c.fillRect(-L * .06, -L * .106, L * .05, L * .212); c.fillStyle = '#d2553a'; c.fillRect(-L * .45, -L * .012, L * .22, L * .024);
+    c.fillStyle = '#2d6fb4'; c.beginPath(); c.ellipse(L * .27, 0, L * .085, L * .055, 0, 0, 7); c.fill(); ol(c, 1.5); c.fillStyle = 'rgba(255,255,255,.65)'; c.beginPath(); c.ellipse(L * .3, -L * .02, L * .03, L * .014, 0, 0, 7); c.fill();
+    c.restore(); }
+  function crate(c, x, y, s, letter) { c.fillStyle = '#b5793a'; rr(c, x, y, s, s, s * .12); c.fill(); ol(c, 1.5); c.strokeStyle = 'rgba(60,30,10,.55)'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(x + s * .15, y + s * .15); c.lineTo(x + s * .85, y + s * .85); c.moveTo(x + s * .85, y + s * .15); c.lineTo(x + s * .15, y + s * .85); c.stroke();
+    if (letter) { c.fillStyle = '#fff6e0'; rr(c, x + s * .22, y + s * .22, s * .56, s * .56, 3); c.fill(); c.fillStyle = INK; font(c, s * .48, true, true); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(letter, x + s / 2, y + s / 2 + 1); c.textBaseline = 'alphabetic'; } }
+  function gemIcon(c, x, y, s) { c.fillStyle = '#7fe3ff'; c.beginPath(); c.moveTo(x, y - s); c.lineTo(x + s * .8, y - s * .2); c.lineTo(x, y + s); c.lineTo(x - s * .8, y - s * .2); c.closePath(); c.fill(); ol(c, 1.2); c.fillStyle = 'rgba(255,255,255,.6)'; c.beginPath(); c.moveTo(x, y - s); c.lineTo(x + s * .3, y - s * .2); c.lineTo(x, y - s * .1); c.closePath(); c.fill(); }
+  function stoneIcon(c, x, y, s, t) { var g = c.createRadialGradient(x, y, 0, x, y, s * 2.4); g.addColorStop(0, 'rgba(255,248,190,.85)'); g.addColorStop(1, 'rgba(255,220,120,0)'); c.fillStyle = g; circ(c, x, y, s * 2.4); c.fill();
+    c.fillStyle = '#fff4b8'; c.beginPath(); c.ellipse(x, y, s, s * .78, .3, 0, 7); c.fill(); ol(c, 1.5); }
+
+  /* where everything sits, worked out from the picture's size each frame */
+  function lay() { var w = H.vw, h = H.vh, m = Math.min(w, h), fs = Math.max(12, Math.min(17, m * .025)), pad = Math.max(6, m * .012);
+    var cols = w >= 560 ? 5 : 3, rows = Math.ceil(K.offers / cols), cw = (w - pad * (cols + 1)) / cols, cfs = Math.max(11, Math.min(fs, cw / 9.2)), ch = cfs * 4.6, band = rows * ch + (rows + 1) * pad;
+    var base = h - fs * 2.7, top = band + fs * .6, rad = Math.max(40, Math.min(w * .47, base - top)), rx = rad, ry = rad;      /* true circles: the same light-years look the same distance (the review) */
+    var R = Math.max(11, Math.min(26, m * .03)), corner = w >= 560 && ry >= 300;
+    return { w: w, h: h, m: m, fs: fs, cfs: cfs, pad: pad, cols: cols, rows: rows, cw: cw, ch: ch, band: band, base: base, top: top, ox: w / 2, rx: rx, ry: ry, R: R, corner: corner }; }
+  function ringR(ly) { return .2 + .8 * ly / 71; }      /* [Source] the game's trR: rings for each ten */
+  function pos(l, n) { var a = (-78 + ORDER.indexOf(n) * (156 / 19)) * Math.PI / 180, r = ringR(LY[n]); return [l.ox + Math.sin(a) * r * l.rx, l.base - Math.cos(a) * r * l.ry]; }
+  function cardRect(l, i) { var row = Math.floor(i / l.cols), col = i % l.cols, inRow = Math.min(l.cols, K.offers - row * l.cols), off = (l.w - inRow * l.cw - (inRow + 1) * l.pad) / 2;
+    return [off + l.pad + col * (l.cw + l.pad), l.pad + row * (l.ch + l.pad), l.cw, l.ch]; }
+  function pcol(n) { return COL[LETTERS.indexOf(n) % 10]; }
+  function planet(c, l, n, R, bright) { var p = pos(l, n); c.globalAlpha = bright ? 1 : .22; c.fillStyle = pcol(n); circ(c, p[0], p[1], R); c.fill(); ol(c, bright ? 2 : 1); c.fillStyle = 'rgba(0,0,30,.3)'; c.beginPath(); c.arc(p[0], p[1], R, -.9, 2.2); c.fill();
+    c.fillStyle = '#10142c'; font(c, R * 1.05, true, true); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(n, p[0], p[1] + 1); c.textBaseline = 'alphabetic'; c.globalAlpha = 1; return p; }
+
+  function frame(dt) { if (!OPEN || !H) return; var c = H.cx, t = tNow(); if (!c) return; var l = lay();
+    dt = Math.max(0, Math.min(.1, +dt || 0));      /* a first frame can come with a time before the last one (seen when the page reopens mid-flight): never step back */
+    c.save(); space(c, l.w, l.h, t); c.textAlign = 'center';
+    if (W.look === 'demo') drawDemo(c, l, t); else drawMap(c, l, t, dt || 0);
+    c.restore(); }
+  function drawMap(c, l, t, dt) { var look = W.look, last = look === 'map' && S.last && S.last.offers ? S.last : null, o = last ? last.offers : (look === 'board' || look === 'fly' || look === 'buy') ? offers() : [], sel = last ? last.sel : S.sel || [], pulse = .5 + .5 * Math.sin(t * 3.2);
+    /* the rings, one for each ten light-years */
+    for (var d = 10; d <= 70; d += 10) { var r = ringR(d); c.strokeStyle = look === 'rings' ? 'rgba(255,200,110,' + (.45 + .4 * pulse) + ')' : 'rgba(170,200,255,.28)'; c.lineWidth = look === 'rings' ? 2.5 : 1.5; c.setLineDash([4, 7]);
+      c.beginPath(); c.ellipse(l.ox, l.base, r * l.rx, r * l.ry, 0, Math.PI, 2 * Math.PI); c.stroke(); c.setLineDash([]);
+      font(c, l.fs * .95, true, true); c.strokeStyle = 'rgba(4,6,14,.95)'; c.lineWidth = 4; c.lineJoin = 'round'; c.strokeText(d, l.ox - r * l.rx, l.base + l.fs * 1.1); c.strokeText(d, l.ox + r * l.rx, l.base + l.fs * 1.1);
+      c.fillStyle = look === 'rings' ? '#ffd98a' : 'rgba(210,222,255,.9)'; c.fillText(d, l.ox - r * l.rx, l.base + l.fs * 1.1); c.fillText(d, l.ox + r * l.rx, l.base + l.fs * 1.1); }
+    c.fillStyle = 'rgba(210,222,255,.8)'; font(c, l.fs * .9); c.textAlign = 'left'; c.fillText('light-years from Voltara', l.pad, l.base + l.fs * 2.3, l.ox - l.pad - Math.max(16, l.m * .05) * 1.2); c.textAlign = 'center';
+    /* the other planets of the map, faint, so the map is the game's map */
+    ORDER.forEach(function (n) { if (n === K.stone || o.some(function (x) { return x.n === n; })) return; planet(c, l, n, l.R * .62, false); });
+    /* the route: one line from Voltara to each planet with a crate (a planet's fuel is its distance from Voltara) */
+    var route = W.fly ? W.fly.ns : sel.map(function (i) { return o[i] ? o[i].n : null; }).filter(Boolean);
+    if (route.length) { c.strokeStyle = 'rgba(255,190,90,.9)'; c.lineWidth = 2.5; c.setLineDash([6, 6]); c.lineDashOffset = -t * 14; c.beginPath(); route.forEach(function (n) { var p = pos(l, n); c.moveTo(l.ox, l.base); c.lineTo(p[0], p[1]); }); c.stroke(); c.setLineDash([]); c.lineDashOffset = 0; }
+    /* Planet R, which sells glow stones */
+    var rp = pos(l, K.stone), want = look === 'stone' || look === 'stone-trip' || look === 'buy';
+    if (want) { c.strokeStyle = 'rgba(255,230,140,' + (.5 + .5 * pulse) + ')'; c.lineWidth = 3; circ(c, rp[0], rp[1], l.R * 1.55); c.stroke(); }
+    planet(c, l, K.stone, l.R, true); if (!(S.bought.stone || hasStone())) stoneIcon(c, rp[0] + l.R * .95, rp[1] - l.R * .85, l.R * .32, t);
+    c.fillStyle = '#ffe7a0'; font(c, l.fs * .85, true); c.fillText(S.bought.stone || hasStone() ? 'glow stones' : 'glow stones: 300 gems', rp[0], rp[1] + l.R + l.fs * 1.05);
+    /* the offers on the board */
+    o.forEach(function (x, i) { var p = planet(c, l, x.n, l.R, true), on = sel.indexOf(i) >= 0;
+      if (on) { c.strokeStyle = '#ffb23e'; c.lineWidth = 4; circ(c, p[0], p[1], l.R + 5); c.stroke(); }
+      if ((W.fly && W.fly.paidAt[x.n]) || (last && on)) { c.fillStyle = '#6fd08a'; font(c, l.fs * 1.1, true); c.fillText('✓', p[0] + l.R * 1.1, p[1] - l.R * .7); } });
+    /* Voltara, at the foot of the map; its windows light when the supplies come */
+    var vr = Math.max(16, l.m * .05), vy = l.base + vr * .35, lit = S.bought.supplies ? Math.min(1, W.litAt ? (t - W.litAt) / 2.5 : 1) : 0;
+    if (look === 'voltara') { c.strokeStyle = 'rgba(255,200,110,' + (.4 + .5 * pulse) + ')'; c.lineWidth = 3; circ(c, l.ox, vy, vr * 1.35); c.stroke(); }
+    c.fillStyle = '#ff8fb8'; circ(c, l.ox, vy, vr); c.fill(); ol(c, 2); c.fillStyle = 'rgba(8,4,40,.4)'; c.beginPath(); c.arc(l.ox, vy, vr, -.6, 2.5); c.fill();
+    for (var k = 0; k < 9; k++) { var wx = l.ox + (k - 4) * vr * .19, wy = vy - vr * (.12 + (k % 3) * .2); c.fillStyle = lit > k / 9 ? '#ffe9a0' : 'rgba(30,20,50,.8)'; c.fillRect(wx - vr * .07, wy - vr * .08, vr * .13, vr * .13); }
+    if (lit > 0) { var gl = c.createRadialGradient(l.ox, vy, vr * .8, l.ox, vy, vr * 2.2); gl.addColorStop(0, 'rgba(255,225,140,' + (.45 * lit) + ')'); gl.addColorStop(1, 'rgba(255,225,140,0)'); c.fillStyle = gl; circ(c, l.ox, vy, vr * 2.2); c.fill(); }
+    /* at Planet R: the glow stone the trader holds up, or, once bought, the stone in the ship */
+    if (W.shipAt === K.stone && !W.fly) { var gx = rp[0] - l.R * .2, gy = rp[1] - l.R * 2.3; stoneIcon(c, gx, gy, l.R * .55, t); c.fillStyle = '#ffe7a0'; font(c, l.fs, true); c.fillText(S.bought.stone ? 'in your bag' : 'a glow stone', gx, gy - l.R * 1.1); }
+    /* the ship */
+    drawShip(c, l, t, dt, o);
+    if (look === 'lit' && S.bought.supplies) skyline(c, l, lit);
+    /* the trade board: a card for each offer, in the same order as on the map */
+    if (o.length) o.forEach(function (x, i) { drawCard(c, l, x, i, sel.indexOf(i) >= 0, (W.fly && W.fly.paidAt[x.n]) || (last && sel.indexOf(i) >= 0)); });
+    else if (look !== 'demo') banner(c, l, look);
+    if (l.corner) corners(c, l, o, sel, look, pulse);
+    /* what a planet pays, as it pays it */
+    W.pops = W.pops.filter(function (p) { return t - p.t < 1.6; }); W.pops.forEach(function (p) { var q = pos(l, p.n), a = Math.min(1, 1.6 - (t - p.t)), y = q[1] - l.R * 1.35;
+      c.globalAlpha = a; gemIcon(c, q[0] - l.fs * 1.9, y - l.fs * .35, l.fs * .45); c.fillStyle = '#d8f6ff'; font(c, l.fs * 1.05, true, true); c.textAlign = 'left'; c.fillText(p.text, q[0] - l.fs * 1.3, y); c.textAlign = 'center'; c.globalAlpha = 1; }); }
+  /* Voltara's city, close up, lighting window by window */
+  function skyline(c, l, lit) { var w = Math.min(l.w * .7, l.fs * 26), h = Math.min(l.rx * .55, l.fs * 9), X = l.ox - w / 2, Y = l.base - l.rx * .5 - h, k, wins = 0;
+    c.fillStyle = 'rgba(8,12,26,.9)'; rr(c, X - 8, Y - 8, w + 16, h + 16, 12); c.fill(); c.strokeStyle = 'rgba(255,200,110,.8)'; c.lineWidth = 2; c.stroke();
+    var hs = [.55, .8, .62, 1, .7, .9, .5, .75], bw = w / hs.length;
+    for (k = 0; k < hs.length; k++) { var bh = h * hs[k], bx = X + k * bw; c.fillStyle = '#2a2350'; c.fillRect(bx + 2, Y + h - bh, bw - 4, bh);
+      for (var r2 = 0; r2 < Math.floor(bh / (l.fs * 1.1)); r2++) for (var q2 = 0; q2 < 2; q2++) { wins++; var on = ((wins * 7) % 23) / 23 < lit; c.fillStyle = on ? '#ffe9a0' : 'rgba(10,8,30,.9)'; c.fillRect(bx + bw * (.22 + q2 * .36), Y + h - bh + l.fs * (.35 + r2 * 1.1), bw * .2, l.fs * .55); } } }
+  function drawCard(c, l, x, i, on, sold) { var r = cardRect(l, i), X = r[0], Y = r[1], w = r[2], h = r[3], fs = l.cfs, lh = fs * 1.3, y1 = Y + fs * .35 + lh * .5, dr = fs * .62, mw = w - fs * .9;
+    c.fillStyle = 'rgba(8,12,26,.92)'; rr(c, X, Y, w, h, 9); c.fill(); c.strokeStyle = on ? '#ffb23e' : 'rgba(150,175,215,.55)'; c.lineWidth = on ? 3 : 1.5; c.stroke();
+    c.fillStyle = pcol(x.n); circ(c, X + fs * .45 + dr, y1, dr); c.fill(); ol(c, 1.5); c.fillStyle = '#10142c'; font(c, dr * 1.25, true, true); c.textBaseline = 'middle'; c.fillText(x.n, X + fs * .45 + dr, y1 + 1); c.textBaseline = 'alphabetic';
+    c.textAlign = 'left'; var tx = X + fs * .45 + dr * 2 + fs * .35;
+    c.fillStyle = '#fff'; font(c, fs, true); c.fillText('wants ' + x.want, tx, y1 + fs * .36, X + w - tx - fs * .3);
+    c.fillStyle = '#d8f6ff'; font(c, fs, true); c.fillText('pays ' + num(x.pay) + ' gems', X + fs * .45, y1 + lh + fs * .36, mw);
+    c.fillStyle = '#c9d6ee'; font(c, fs); c.fillText(LY[x.n] + ' light-years', X + fs * .45, y1 + lh * 2 + fs * .36, mw - (on ? fs * 1.3 : 0));
+    if (on) crate(c, X + w - fs * 1.45, y1 + lh * 2 - fs * .5, fs * 1.1, null);
+    if (sold) { c.fillStyle = '#6fd08a'; font(c, fs * 1.2, true); c.textAlign = 'right'; c.fillText('✓', X + w - fs * .35, y1 + fs * .45); }
+    c.textAlign = 'center'; }
+  function banner(c, l, look) { var text = look === 'voltara' ? 'Voltara calls: "We are low on supplies."' : look === 'hold' ? 'Your ship carries 3 crates of Voltaran goods' : look === 'stone' ? (l.corner ? (hasStone() ? 'You have a glow stone already' : 'Planet R sells glow stones') : hasStone() ? 'Supplies: 500 gems' : 'Supplies: 500 gems.  Glow stone: 300 gems.') : look === 'rings' ? 'Fuel: 2 gems for each light-year' : look === 'lit' ? (S.bought.supplies ? 'Voltara\'s lights are back' : '') : look === 'stone-trip' ? 'Planet R: glow stones, 300 gems' : look === 'map' ? 'Home at Voltara' : '';
+    if (!text) return; font(c, l.fs * 1.15, true, true); var w = Math.min(l.w - l.pad * 2, c.measureText(text).width + l.fs * 2), h = l.fs * 2.4, y = l.pad + Math.max(0, (l.band - h) / 2 - l.pad);
+    c.fillStyle = 'rgba(8,12,26,.88)'; rr(c, l.ox - w / 2, y, w, h, 10); c.fill(); c.strokeStyle = 'rgba(255,178,62,.8)'; c.lineWidth = 2; c.stroke();
+    c.fillStyle = '#ffd98a'; c.textBaseline = 'middle'; c.fillText(text, l.ox, y + h / 2 + 1, l.w - l.pad * 4); c.textBaseline = 'alphabetic';
+    if (look === 'hold') for (var k = 0; k < 3; k++) crate(c, l.ox - l.fs * 2.6 + k * l.fs * 1.9, y + h + l.fs * .6, l.fs * 1.5, null); }
+  /* the corners, when there is room: the ship (gems and hold), and the list of what to buy */
+  function corners(c, l, o, sel, look, pulse) { var fs = l.fs * .95, bw = Math.min(l.w * .3, fs * 13), bh = fs * 4.6, y = l.top + fs * .2;
+    if (S.gems || S.log.length) { c.fillStyle = 'rgba(8,12,26,.86)'; rr(c, l.pad, y, bw, bh, 9); c.fill(); c.strokeStyle = look === 'hold' ? 'rgba(255,200,110,' + (.5 + .5 * pulse) + ')' : 'rgba(150,175,215,.5)'; c.lineWidth = 1.5; c.stroke();
+      c.textAlign = 'left'; c.fillStyle = '#ffb23e'; font(c, fs, true, true); c.fillText('YOUR SHIP', l.pad + fs * .6, y + fs * 1.25);
+      gemIcon(c, l.pad + fs * 1, y + fs * 2.25, fs * .42); c.fillStyle = '#fff'; font(c, fs, true); c.fillText(num(S.gems) + ' gems', l.pad + fs * 1.7, y + fs * 2.6);
+      c.fillStyle = '#c9d6ee'; font(c, fs); c.fillText('Crates:', l.pad + fs * .6, y + fs * 3.95); var bo = offers(), ns = (W.look === 'map' ? [] : S.sel || []).map(function (i) { return bo[i] ? bo[i].n : ''; });
+      for (var k = 0; k < 3; k++) { var cx0 = l.pad + fs * 4 + k * fs * 1.75; if (ns[k]) crate(c, cx0, y + fs * 2.95, fs * 1.45, ns[k]); else { c.strokeStyle = 'rgba(181,121,58,.8)'; c.setLineDash([3, 3]); c.lineWidth = 1.2; rr(c, cx0, y + fs * 2.95, fs * 1.45, fs * 1.45, 3); c.stroke(); c.setLineDash([]); } } }
+    var lw = Math.min(l.w * .32, fs * 14), X = l.w - l.pad - lw; c.fillStyle = 'rgba(8,12,26,.86)'; rr(c, X, y, lw, bh, 9); c.fill(); c.strokeStyle = look === 'stone' || look === 'buy' ? 'rgba(255,200,110,' + (.5 + .5 * pulse) + ')' : 'rgba(150,175,215,.5)'; c.lineWidth = 1.5; c.stroke();
+    c.textAlign = 'left'; c.fillStyle = '#ffb23e'; font(c, fs, true, true); c.fillText('TO BUY', X + fs * .6, y + fs * 1.25); font(c, fs, true);
+    c.fillStyle = S.bought.supplies ? '#6fd08a' : '#fff'; c.fillText((S.bought.supplies ? '✓ ' : '') + 'Supplies: 500 gems', X + fs * .6, y + fs * 2.6, lw - fs);
+    c.fillStyle = S.bought.stone || hasStone() ? '#6fd08a' : '#fff'; c.fillText((S.bought.stone || hasStone() ? '✓ ' : '') + 'Glow stone: 300 gems', X + fs * .6, y + fs * 3.95, lw - fs); c.textAlign = 'center'; }
+  function drawShip(c, l, t, dt, o) { var L0 = Math.max(26, l.m * .085), home = [l.ox, l.base - Math.max(16, l.m * .05) * .9], sx = home[0], sy = home[1] - L0 * .3, ang = -Math.PI / 2, flame = false, f = W.fly;
+    if (W.shipAt && !f) { var q = pos(l, W.shipAt); sx = q[0] + l.R * 2.4; sy = q[1] - l.R * .2; ang = Math.PI; }
+    if (f) { var pts = []; if (f.home) { var a = pos(l, K.stone); pts = [[a[0], a[1]], [home[0], home[1]]]; } else { f.ns.forEach(function (n) { pts.push(home, pos(l, n)); }); if (!f.stone) pts.push(home); }
+      var speed = H.fast ? 4 : 1; f.t += dt * speed;
+      var segLen = 1.15, k = Math.max(0, Math.floor(f.t / segLen)); if (k > f.seg && !f.home && !f.stone) { /* the ship has just reached a planet */ var idx = f.seg; if (idx % 2 === 0) { var n = f.ns[idx / 2], x = o.filter(function (y) { return y.n === n; })[0]; if (x) { f.paidAt[n] = true; W.pops.push({ n: n, text: num(x.pay), t: t }); beep(660, .08); } } }
+      f.seg = Math.max(f.seg, k);
+      if (k >= pts.length - 1) { landed(f); return drawShip(c, l, t, 0, o); }
+      var A = pts[k], B = pts[k + 1], u = (f.t - k * segLen) / segLen, back = f.home || (!f.stone && k % 2 === 1);
+      sx = A[0] + (B[0] - A[0]) * u; sy = A[1] + (B[1] - A[1]) * u; ang = back ? Math.atan2(A[1] - B[1], A[0] - B[0]) : Math.atan2(B[1] - A[1], B[0] - A[0]); flame = !back;
+      if (back) { c.strokeStyle = 'rgba(120,230,255,' + (.5 + .3 * Math.sin(t * 8)) + ')'; c.lineWidth = 2; c.beginPath(); c.moveTo(home[0], home[1]); c.lineTo(sx, sy); c.stroke(); } }
+    rocket(c, sx, sy, L0, ang, flame, t); }
+
+  /* the solved example, drawn: four stalls with their signs, Tavi's cart, and her paper */
+  function drawDemo(c, l, t) { var w = l.w, h = l.h, pad = l.pad, fs = Math.max(11, Math.min(20, w / 40, h / 30)), sw = Math.min((w - pad * 5) / 4, fs * 10), gap = (w - sw * 4) / 5, st = h * .035, sh = Math.min(h * .36, fs * 9.5);
+    var sy = st + sh * .24, sgh = fs * 3.9, cols = ['#ff7a8a', '#6fc2ff', '#ffd25e', '#8fe0a0'];
+    c.fillStyle = '#2a2140'; c.fillRect(0, st + sh, w, h); c.fillStyle = '#3a2d55'; c.fillRect(0, st + sh, w, fs * .5);
+    DEMO.stalls.forEach(function (s, i) { var X = gap + i * (sw + gap), best = s[0] === 'blue' || s[0] === 'yellow';
+      c.fillStyle = '#5a4630'; c.fillRect(X + sw * .06, st + sh * .2, sw * .06, sh * .8); c.fillRect(X + sw * .88, st + sh * .2, sw * .06, sh * .8);
+      for (var k = 0; k < 5; k++) { c.fillStyle = k % 2 ? '#f4efe6' : cols[i]; c.beginPath(); c.moveTo(X + k * sw / 5, st); c.lineTo(X + (k + 1) * sw / 5, st); c.lineTo(X + (k + 1) * sw / 5, st + sh * .17); c.quadraticCurveTo(X + (k + .5) * sw / 5, st + sh * .24, X + k * sw / 5, st + sh * .17); c.fill(); }
+      c.fillStyle = '#7a5a3a'; c.fillRect(X + sw * .03, sy + sgh + fs * .5, sw * .94, Math.max(6, sh * .08));
+      c.fillStyle = '#fbf4e2'; rr(c, X + sw * .1, sy, sw * .8, sgh, 6); c.fill(); ol(c, 1.5);
+      c.fillStyle = INK; font(c, fs * 1.1, true, true); c.fillText(s[0][0].toUpperCase() + s[0].slice(1) + ' stall', X + sw / 2, sy + fs * 1.15, sw * .74); font(c, fs * .92, true); c.fillText('earn ' + s[1] + ' coins', X + sw / 2, sy + fs * 2.3, sw * .74); font(c, fs * .92); c.fillText('rent ' + s[2] + ' coins', X + sw / 2, sy + fs * 3.4, sw * .74);
+      if (best) { c.strokeStyle = '#ffb23e'; c.lineWidth = 3; rr(c, X - 3, st - 2, sw + 6, sh + 4, 8); c.stroke(); } });
+    /* Tavi's cart: two baskets of fruit */
+    var cs = fs * 1.4, cy = st + sh + fs * 1.9, cxp = gap; c.fillStyle = '#8a5a2a'; rr(c, cxp, cy, cs * 4.4, cs * 1.1, 5); c.fill(); ol(c, 1.5);
+    [0, 1].forEach(function (k) { var bx = cxp + cs * .4 + k * cs * 2.1; c.fillStyle = '#c99a5a'; rr(c, bx, cy - cs * .7, cs * 1.6, cs * .8, 4); c.fill(); ol(c, 1.2); ['#ff6a5a', '#ffd25e', '#8fe06a'].forEach(function (fc, j) { c.fillStyle = fc; circ(c, bx + cs * (.35 + j * .45), cy - cs * .78, cs * .24); c.fill(); }); });
+    c.fillStyle = '#4a3a2a'; circ(c, cxp + cs * .9, cy + cs * 1.2, cs * .3); c.fill(); circ(c, cxp + cs * 3.5, cy + cs * 1.2, cs * .3); c.fill();
+    c.fillStyle = '#ffd98a'; font(c, fs, true); c.textAlign = 'left'; c.fillText('Tavi\'s cart holds 2 baskets. She has 10 coins for rent.', cxp + cs * 4.8, cy + cs * .55, w - cxp - cs * 4.8 - pad);
+    /* her paper */
+    var n = DEMO.lines.length, px = Math.max(pad, w * .04), py = cy + cs * 1.9, pw = w - px * 2, ph = h - py - pad, lh = ph / (n + 1.6), pfs = Math.min(fs * 1.05, lh * .58);
+    c.fillStyle = '#fbf8ef'; rr(c, px, py, pw, ph, 8); c.fill(); ol(c, 1.5);
+    c.strokeStyle = 'rgba(80,130,200,.35)'; c.lineWidth = 1; for (var k = 0; k < n; k++) { c.beginPath(); c.moveTo(px + 10, py + lh * (k + 1.6) + pfs * .35); c.lineTo(px + pw - 10, py + lh * (k + 1.6) + pfs * .35); c.stroke(); }
+    c.fillStyle = '#7a5a3a'; font(c, pfs * .9, true, true); c.fillText('TAVI\'S PAPER', px + pfs, py + lh * .7);
+    DEMO.lines.forEach(function (s, k) { c.fillStyle = k === n - 1 ? '#1c6a30' : /Too much/.test(s) ? '#a3261e' : '#1a2a48'; font(c, pfs, k === n - 1); c.fillText(s, px + pfs, py + lh * (k + 1.6), pw - pfs * 2); });
+    c.textAlign = 'center'; }
+  /* a tap on the picture: a planet on the board, or its card */
+  function tap(x, y) { if (!OPEN || S.step !== 'plan' || !S.board) return false; var l = lay(), o = offers();
+    for (var i = 0; i < o.length; i++) { var r = cardRect(l, i); if (x >= r[0] && x <= r[0] + r[2] && y >= r[1] && y <= r[1] + r[3]) { toggle(i); return true; } }
+    var best = -1, bd = 1e9; o.forEach(function (x2, i2) { var p = pos(l, x2.n), d = Math.hypot(x - p[0], y - p[1]); if (d < l.R * 1.8 && d < bd) { bd = d; best = i2; } });
+    if (best >= 0) { toggle(best); return true; } return false; }
+
+  /* the planets a child has sold to, and Planet R once they have flown there: for the game, if it lets trading open the small worlds (a choice for the main thread) */
+  function visited(state) { var out = []; ((state || {}).log || []).forEach(function (e) { if (e.kind === 'trade') e.route.forEach(function (r) { if (out.indexOf(r[0]) < 0) out.push(r[0]); }); if (e.kind === 'stone' && out.indexOf(K.stone) < 0) out.push(K.stone); }); return out; }
+  return { open: open, frame: frame, tap: tap, isOpen: function () { return OPEN; }, visited: visited, rule: RULE, demo: DEMO, _state: function () { return S; } };
+})();
+/* ===== GMQ TRADE: end ===== */
+
+/* [v100] GALACTIC TRADE AS A MARKET, wired in.  [Source: Marc, 2026-11-26: "I agree with your things."] The piece above is the trade thread's, copied as it is
+   from docs/trade/index.html (proposals/GMQ_Trade_Market_Report_v1_2026-11-24.md; the wiring: GMQ_Trade_Wiring_v1_2026-11-24.md). Version 97's season (above it) is no longer opened.
+   [Source, Marc's picks of 26 November] a planet the child has sold to can be landed on, as a small world; old saves start the market fresh, with the old season one line
+   in the ship's log; the far planet stays "Planet R"; the glow stone is sold there, for 300 gems. [Marc, 2026-11-26, his class: "the two that I chosen before were
+   [crossed] off"] The market draws a new board every trip: new planets, new goods, new pay. */
+const MARKET_HOST = { say: t => say(t), beep: (f, d, ty) => beep(f, d, ty), card: () => card(), give: it => give(it), has: it => has(it), save: () => save(), toy: h => toy(h), closeToy: () => closeToy(),
+  get fast() { return !!window.GMQ_FAST_TRADE; }, get cx() { return cx; }, get vw() { return vw; }, get vh() { return vh; }, get tNow() { return tNow; } };
+const trLetters = list => list.map(n => 'Planet ' + n).join(list.length > 2 ? ', ' : ' and ').replace(/, ([^,]*)$/, ' and $1');
+function marketOpen() { if (!S.market) S.market = { seed: (S.seed >>> 0) || 1 }; if (S.trade && S.trade.log && S.trade.log.length && S.market.lastSeason === undefined) S.market.lastSeason = S.trade.best || S.trade.gems || 0;
+  const before = worldsOpen(); widget = { kind: 'market' }; document.body.classList.add('market');
+  GMQTrade.open(MARKET_HOST, S.market, why => { widget = null; document.body.classList.remove('market'); closeToy(); save(); drawStatus(); drawWords(); const now = worldsOpen().filter(n => before.indexOf(n) < 0);
+    say((why === 'finished' ? 'Your work at the market is done.' : 'You leave the trade beacon. Come back when you are ready.') + (now.length ? ` You can land on ${trLetters(now)} now: you traded there. Tap small worlds. Or type: land on ${now[0]}.` : '')); }); }
+/* the small worlds a child may land on: the planets sold to in the market, the planets scanned in version 97's season (an old save keeps them), and any already landed on */
+function worldsOpen() { const t = S.trade || {}, v = S.market && S.market.log ? GMQTrade.visited(S.market) : [], seen = WORLD().seen; return Object.keys(TR).filter(n => v.indexOf(n) >= 0 || (t.scan || []).indexOf(n) >= 0 || seen.indexOf(n) >= 0); }
+function worldLand(n) { if (!TR[n]) return 'No trade planet has that letter.'; if (S.at !== 'numerix' || SP.to) return 'The trade planets are in Galaxy Numerix. Fly there first.';
+  if (worldsOpen().indexOf(n) < 0) return `You have not traded with Planet ${n} yet. Sell it a crate at the trade beacon first. Then you can land there.`; landWorld(n); return ''; }
+function worldsList() { if (S.at !== 'numerix' || SP.to) return 'The small worlds are the trade planets of Galaxy Numerix. Fly there first.'; const open = worldsOpen(), w = WORLD();
+  if (!open.length) return 'Every planet you trade with becomes a small world you can visit. Trade at the beacon first.';
+  toy(`<p class="eyebrow">Small worlds</p><h3>Planets you have traded with</h3><p class="q">Land on one to look around. No trade, and no fuel.</p>
+    <p class="chips">${open.map(n => `<button class="btn quiet land" type="button" data-land="${n}">Planet ${n}${w.finds.indexOf(n) >= 0 ? ' ★' : ''}</button>`).join('')}</p>
+    <p class="note">Each planet hides one star seed. ★ means you found it. Trade with more planets to visit more.</p><div class="field"><button class="btn quiet" type="button" id="leave">Close</button></div>`);
+  document.querySelectorAll('#toy .land').forEach(b => b.onclick = () => landWorld(b.dataset.land)); $('leave').onclick = () => closeToy(); return 'Your small worlds: the planets you have traded with.'; }
 
 /* =====================================================================
    SMALL WORLDS FROM A KIT.  [Source: Marc, 2026-11-17: "It's a huge universe. They should be able to explore things... could there be five or
@@ -3589,7 +4136,7 @@ function spotDo(p, verb, it) { const on = powered(p.i), hurt = lastDay() && last
   if (p.name === 'Amusement Park' && verb === 'use') { if (!on) return 'The big wheel has no power.'; if (!S.secrets.includes('wheel')) { secret('wheel', 'You ride the big wheel! From the top you see the whole of Voltara.'); return; } return 'Round you go again. Whee!'; }
   return base; }
 function vLit() { return has('stone') || has('lantern'); }      /* on Voltara a glow stone is enough for a narrow tunnel with a cable to follow; so is the lantern */
-function planetHint() { const v = V(); if (v.sc === 'hollow' && has('blantern') && !has('lantern')) return (S.lant || {}).glass && !has('stone') ? 'The glass needs a whole glow stone. A trader sells them at the trade beacon.' : 'The glassmaker by the furnace knows that lantern.'; return !v.crossed ? (!v.fed ? (has('burst') ? 'Give the FlavorBurst to the Gumblefish at the river.' : 'The Gumblefish at the river is hungry. Take a FlavorBurst from the tree by your ship.') : 'Talk to the Gumblefish. Hop across the stones.')
+function planetHint() { const v = V(); if (v.sc === 'hollow' && has('blantern') && !has('lantern')) return (S.lant || {}).glass && !has('stone') ? 'The glass needs a whole glow stone. Planet R sells them, through the trade beacon.' : 'The glassmaker by the furnace knows that lantern.'; return !v.crossed ? (!v.fed ? (has('burst') ? 'Give the FlavorBurst to the Gumblefish at the river.' : 'The Gumblefish at the river is hungry. Take a FlavorBurst from the tree by your ship.') : 'Talk to the Gumblefish. Hop across the stones.')
   : !v.met ? 'Walk east to the Power Plaza. Go into the Council Hall and talk to the Council.' : !v.count ? 'Open the energy tower in the plaza. Count what is in it.'
   : !vDone('survey') ? `Use the board at the west end of ${CITY['RCI'.split('').find(c => !v.need[c])].street}.` : !v.plan ? 'Go to the Council Hall. Use the plan table.' : !v.lost ? 'Night must pass. Read the tower log in the Council Hall for the morning report.'
   : !v.houses ? (V().sc === 'hollow' ? 'Talk to the elder.' : V().sc === 'tunnel' && !vLit() ? 'Keep one hand on the humming cable and walk east. It is slow in the dark. A glow stone would light the way: the butterfly knows where one is.' : 'Open the hatch at the east end of Factory Row. Follow the cable east.')
@@ -3611,7 +4158,7 @@ function actPlanet(text, out) {
   if (v === 'hint') return out('The butterfly whispers: ' + planetHint());
   if (v === 'leave') return out(sc === 'hall' ? VDO.exit.go() : sc === 'meadow' ? 'To leave Voltara, type: fly.' : 'Walk west to go back.');
   if (v === 'fly' || (best && best.id === 'ship' && ['use', 'go', 'open'].includes(v))) { if (sc !== 'meadow') return out('Your ship is back in the Landing Meadow.'); if (lastDay()) { startEnding(); return out('Before you go, look back at what you did here.'); } liftOff(); return out(`You lift off. Voltara shrinks below you. ${planetState()}`); }
-  if (v === 'help') return out('Type a doing word and a thing. Like: talk butterfly. take fruit. give fruit to fish. go east. Or tap Hint.');
+  if (v === 'help') return out('Type a doing word and a thing. Like: talk butterfly. take fruit. give fruit to fish. go east. Or tap ' + (wordsHid() ? 'Actions, then Hint.' : 'Hint.'));
   if (v === 'dig') { if (sc !== 'meadow') return out(VSC[sc].inside ? 'The floor is solid rock.' : 'The street is paved. You can dig in the meadow.'); S.holes.push(+PL.x.toFixed(3)); if (S.holes.length > 14) S.holes.shift(); save(); beep(180, .12, 'square');
     if (Math.abs(PL.x - VT.tree.x) < .08 && !S.secrets.includes('stone')) { out(null); give('stone'); secret('stone', 'You dig by the tall tree. A glow stone! It lights up the dark.'); card(); return; } return out('You dig a small hole. It will stay here.'); }
   if (v === 'silly') return out('You jump high! Voltara has soft, bouncy ground.');
@@ -3789,7 +4336,7 @@ function drawMission() { const el = $('mission');      /* the mission of the pla
   if (S.mode === 'xylo' && S.xy) { el.hidden = false; el.setAttribute('aria-label', 'Your mission on Xylophora'); el.innerHTML = xMissionHtml(); return; }
   if (S.mode === 'len' && S.ln) { el.hidden = false; el.setAttribute('aria-label', 'Your mission on Lengthar'); el.innerHTML = lMissionHtml(); return; } el.setAttribute('aria-label', 'Your mission on Voltara');
   if (!S.v) { el.hidden = true; return; } el.hidden = false; const v = V(), n = STEPS.filter(s => vDone(s[0])).length, notes = [v.count && 'The tower holds 1,650', ...'RCI'.split('').map(k => v.need[k] && `${CITY[k].street} needs ${CITY[k].total}`), v.short && 'The city is 570 short', v.lost && '240 goes missing each night: 30 an hour', v.houses && '30 tiny houses use 30 an hour'].filter(Boolean);
-  el.innerHTML = `<h3>Mission Voltara: ${n} of ${STEPS.length} steps</h3><div class="const">${STEPS.map(s => `<span class="star ${vDone(s[0]) ? 'lit' : 'off'}${s[0] === 'final' && REALON.on ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${s[1]}</span>`).join('')}</div>${notes.length ? `<p class="note"><b>Your notebook:</b> ${notes.join(' · ')}.</p>` : ''}${v.plan ? `<p class="note"><b>Voltara, day ${v.day}:</b> ${planetState()}</p>` : ''}${S.trade && S.trade.log.length ? `<p class="note"><b>Galactic Trade:</b> season ${S.trade.season}, ${S.trade.done ? 'all 3 trips done' : `trip ${S.trade.trip} of 3`}. You have ${num(S.trade.gems)} gems.</p>` : ''}`; }
+  el.innerHTML = `<h3>Mission Voltara: ${n} of ${STEPS.length} steps</h3><div class="const">${STEPS.map(s => `<span class="star ${vDone(s[0]) ? 'lit' : 'off'}${s[0] === 'final' && REALON.on ? ' real' : ''}"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg>${s[1]}</span>`).join('')}</div>${notes.length ? `<p class="note"><b>Your notebook:</b> ${notes.join(' · ')}.</p>` : ''}${v.plan ? `<p class="note"><b>Voltara, day ${v.day}:</b> ${planetState()}</p>` : ''}${S.market && S.market.log && S.market.log.some(e => e.kind === 'trade') ? `<p class="note"><b>Galactic Trade:</b> ${(n => n + (n === 1 ? ' trip' : ' trips'))(S.market.log.filter(e => e.kind === 'trade').length)}. You have ${num(S.market.gems)} gems.${S.market.bought && S.market.bought.supplies ? ' Voltara has its supplies.' : ''}</p>` : ''}`; }
 
 /* ---------- drawing Voltara ---------- */
 const TUFTS = Array.from({ length: 70 }, (_, i) => [(i * .6180339) % 1, (i * .37 % 1), i % 5]);
@@ -3946,7 +4493,7 @@ function vGlass() { const L = LANT(), dark = !!(V().final && !powered(NOMAD.i)),
   if (has('lantern')) return 'The glassmaker says: "Your lantern is our best work. Take it into the dark."';
   if (L.glass && has('stone')) { S.inv = S.inv.filter(i => i !== 'stone' && i !== 'blantern'); give('lantern'); L.made = 1; S.log.push({ what: 'Voltara: the Clockmaker\'s lantern, mended', skill: 'A mini quest across three planets', result: 'done' }); save(); drawBag(); chime();
     return 'You give the glassmaker your glow stone. It goes in behind the new glass. The lantern blazes. "A glow stone lights your hand," says the glassmaker. "Behind our glass, it lights a whole room." You have a lantern.'; }
-  if (L.glass) return `The glassmaker says: "The glass is ready. But glass gives no light. The old stone is cracked. It needs a whole glow stone. Ours are only crumbs." Then: "Voltaran traders sell glow stones at the trade beacon, for ${LANPRICE} gems."`;
+  if (L.glass) return `The glassmaker says: "The glass is ready. But glass gives no light. The old stone is cracked. It needs a whole glow stone. Ours are only crumbs." Then: "Glow stones come from Planet R. Its traders sell them for 300 gems. Trade at the beacon to earn them."`;
   if (has('blantern') && has('sand')) { startScale(); return 'The glassmaker leads you to the furnace. A scale stands beside it.'; }
   if (has('blantern')) return pre + 'The glassmaker turns the tag over. "Our mark! We made this lantern, long ago, for a Clockmaker. New glass needs soft sand. Ours is all grit." Then: "The softest sand lies where round cacti stand in a ring."';
   return 'The glassmaker says: "We make glass. Our little lights are crumbs of glow stone behind glass. Behind glass, a little light looks big."'; }
@@ -6078,6 +6625,15 @@ function kbShow() { if (!KB.touch || KB.big) return; $('kb').hidden = false; kbP
 function kbHide() { $('kb').hidden = true; }
 function kbKey(k) { const c = $('cmd'); if (k === 'ok') return sayGo(); let v = c.value; if (k === 'del') v = v.slice(0, -1); else if (k === 'space') { if (v && !/ $/.test(v)) v += ' '; } else if (v.length < 50) v += k; c.value = v; CHIPN = ''; mark(); beep(k === 'del' ? 300 : 620, .03); if (document.activeElement !== c) c.focus({ preventScroll: true }); }
 function kbSwitch() { KB.big = !KB.big; setKeep('gmq-kb', KB.big ? 'big' : 'small'); kbPrep(); const c = $('cmd'); c.blur(); kbHide(); setTimeout(() => c.focus({ preventScroll: true }), 30); }
+/* THE ACTIONS BUTTON (version 99).   [Source: Marc, 2026-11-25: "Maybe just like an action button that opens up the menu. ... they don't need to see or look at the menu
+   of places to visit." Measured: the panel took 31% of the width on an iPad held sideways.] [Proposal: closed when the game opens; opened by the button or by tapping the
+   typing box, since a cadet who types needs the words; a Teacher switch keeps them open for a cadet who needs them.] Taps on the picture do the same things as before. */
+const WFOLD = { always: getKeep('gmq-words') === 'open', shown: false };
+function wordsSet(open) { WFOLD.shown = !!open; if (S) try { drawLog(); } catch (e) {} const on = WFOLD.always || WFOLD.shown; document.body.classList.toggle('wfold', !on); document.body.classList.toggle('wopen', WFOLD.always); const b = $('wbtn'); b.textContent = on ? 'Actions ▴' : 'Actions ▾'; b.setAttribute('aria-expanded', String(on)); fitSoon(); }
+$('wbtn').onclick = () => { beep(560, .04); wordsSet(!(WFOLD.always || WFOLD.shown)); if (WFOLD.shown) setTimeout(() => { try { $('nouns').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }, 60); };      /* on a phone the rows open below the screen's edge: bring them into view */
+$('wordsOn').checked = WFOLD.always; $('wordsOn').onchange = () => { WFOLD.always = $('wordsOn').checked; setKeep('gmq-words', WFOLD.always ? 'open' : 'fold'); wordsSet(WFOLD.shown); };
+wordsSet(false);
+$('cmd').addEventListener('focus', () => { if (!WFOLD.always && !WFOLD.shown) wordsSet(true); });
 $('cmd').addEventListener('focus', kbShow); $('cmd').addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== $('cmd')) kbHide(); }, 150));
 $('kbkeys').addEventListener('pointerdown', e => { e.preventDefault(); });                      /* a tap on a key must not take the cursor out of the box */
 $('kbkeys').addEventListener('click', e => { const b = e.target.closest ? e.target.closest('button') : null; if (b) kbKey(b.dataset.k); });
@@ -6088,7 +6644,7 @@ $('kbbar').addEventListener('pointermove', e => { if (!KB.drag) return; const el
 kbPrep();
 $('cmd').addEventListener('input', () => { CHIPN = ''; });
 $('cmd').addEventListener('input', mark);
-$('reset').onclick = restart;
+$('reset').onclick = () => askRestart($('reset'));
 netStart();
 drawEvidence(); document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => drawEvidence()));
 $('ratsOn').checked = RATON.on; $('ratsOn').onchange = () => { RATON.on = $('ratsOn').checked; setKeep('gmq-rats', RATON.on ? 'on' : 'off'); RATS.due = 0; };
@@ -6117,9 +6673,9 @@ if (S.tut == null) S.tut = 3;
 if (S.xy) { XM.px = S.xy.x; XM.py = S.xy.y; XM.cx = -1; if (S.mode === 'xylo') setTimeout(() => { if (!widget && S.mode === 'xylo' && xIntroDue()) xIntro(0); }, 400); }      /* a cadet who reloads before the arrival screens are done sees them again */
 if (S.ln && S.mode === 'len') setTimeout(() => { if (!widget && S.mode === 'len' && lIntroDue()) lIntro(0); }, 400);
 if (S.sd) { SM.px = S.sd.x; SM.py = S.sd.y; SM.snap = true; S.sd.at = 'map'; }
-say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'chrono' ? 'You are on Planet Chronosia.' : S.mode === 'xylo' ? 'You are on Planet Xylophora.' : S.mode === 'len' ? 'You are on Planet Lengthar.' : S.mode === 'star' ? 'You are on the mission ship.' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : 'Your ship limps into the dock. The station is a mess. Look around.');
+say(S.mode === 'intro' ? 'Earth needs your help!' : S.mode === 'world' ? `You are on ${wKit(WORLD().at).name}.` : S.mode === 'chrono' ? 'You are on Planet Chronosia.' : S.mode === 'xylo' ? 'You are on Planet Xylophora.' : S.mode === 'len' ? 'You are on Planet Lengthar.' : S.mode === 'star' ? 'You are on the mission ship.' : S.mode === 'planet' ? 'You are on Planet Voltara.' : S.ended ? 'You are in space. Tap a galaxy to fly there.' : S.launched ? `You are on the KIS Station, in the ${ROOMS[S.room].name}. To fly again, launch from the Launch Bay.` : 'Your ship limps into the dock. The station is a mess. Look around.');
 if (S.mode === 'intro' || S.mode === 'arrive') { S.mode = 'intro'; introPanel(); }
-else if (S.mode === 'station' && !S.ended && !S.storyTold) { S.storyTold = true; save(); say('Mission Control: "A cosmic storm swept through this part of space. It wrecked KIS Station and broke its ships. It knocked out the power on Planet Voltara. Now Voltara is calling for help, but the message keeps breaking up. Yours is the only ship that can be fixed. Fit its parts, and you will hear more of the message."'); }
+else if (S.mode === 'station' && !S.ended && !S.storyTold && !S.launched) { S.storyTold = true; save(); say('Mission Control: "A cosmic storm swept through this part of space. It wrecked KIS Station and broke its ships. It knocked out the power on Planet Voltara. Now Voltara is calling for help, but the message keeps breaking up. Yours is the only ship that can be fixed. Fit its parts, and you will hear more of the message."'); }
 if (S.ended) showEnding();
 requestAnimationFrame(frame);
 </script>
