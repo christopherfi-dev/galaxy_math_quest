@@ -475,13 +475,13 @@ async function act(page, name, flags, size) {
     async function watch(until) {
       const t0 = Date.now(); let n = 0;
       while (Date.now() - t0 < 45000) {
-        const s2 = await p2.evaluate(() => { const U = window.GMQB.U, f = document.getElementById('fxg'), q = s => !!(f && f.querySelector(s)); return { phase: U.phase, fly: q('.fly'), beam: q('.beam'), pop: q('.pop'), wall: q('circle[r="74"]'), banner: !!document.getElementById('banner'), booms: f ? f.childNodes.length : 0, pick: U.pick ? { side: U.pick.side, among: U.pick.among, n: U.pick.n, chosen: U.pick.chosen.length } : null, cgo: document.getElementById('cgo') ? !document.getElementById('cgo').disabled : null, alloc: U.alloc ? { cells: U.alloc.cells.length, among: U.alloc.among, arm: U.alloc.arm } : null, fire: document.getElementById('fire') ? !document.getElementById('fire').disabled : false }; });
+        const s2 = await p2.evaluate(() => { const U = window.GMQB.U, f = document.getElementById('fxg'), q = s => !!(f && f.querySelector(s)); return { phase: U.phase, fly: q('.fly'), beam: q('.beam'), pop: q('.pop'), wall: q('circle[r="74"]'), banner: !!document.getElementById('banner'), booms: f ? f.childNodes.length : 0, pick: U.pick ? { side: U.pick.side, among: U.pick.among, n: U.pick.n, chosen: U.pick.chosen.length, list: U.pick.chosen.slice() } : null, cgo: document.getElementById('cgo') ? !document.getElementById('cgo').disabled : null, alloc: U.alloc ? { cells: U.alloc.cells.length, among: U.alloc.among, arm: U.alloc.arm } : null, fire: document.getElementById('fire') ? !document.getElementById('fire').disabled : false }; });
         if (s2.fly) { if (!seen.shotSpy) { seen.shotSpy = true; await shot(p2, name + '_10_spy_flies'); } seen.fly = true; }
         if (s2.wall) { if (!seen.shotWall) { seen.shotWall = true; await shot(p2, name + '_11_block'); } seen.wall = true; }
         if (s2.beam) { if (!seen.shotBeam) { seen.shotBeam = true; await shot(p2, name + '_12_laser'); } seen.beam = true; }
         if (s2.pop) seen.pop = true;
         if (until(s2)) return s2;
-        if (s2.pick && s2.pick.chosen < s2.pick.n) await p2.locator(podSel(s2.pick.side, s2.pick.among[0])).tap();
+        if (s2.pick && s2.pick.chosen < s2.pick.n) await p2.locator(podSel(s2.pick.side, s2.pick.among.filter(i => s2.pick.list.indexOf(i) < 0)[0])).tap();   // a Spy that hits two or three parts: tap a part not chosen yet
         else if (s2.cgo) await p2.locator('#cgo').tap();
         else if (s2.alloc && s2.alloc.cells) await p2.locator(podSel(0, s2.alloc.arm >= 0 ? s2.alloc.arm : s2.alloc.among[(n++) % s2.alloc.among.length])).tap();
         else if (s2.fire) await p2.locator('#fire').tap();
