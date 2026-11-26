@@ -3,7 +3,7 @@
 **Date:** 26 November 2026. **From:** the cards thread. **For:** the main thread.
 **What:** how to put the card pop-up and the card book (`docs/cards/index.html`) into the game.
 Everything here is **[Proposal]**. My choices without Marc are marked **[pick]**.
-**Wait for Marc** on decisions 1, 2, 3 and 5 in the report (`GMQ_Cards_Report_v1_2026-11-26.md`, section 7) before you wire the parts they touch. The piece works with every option.
+**Decisions 1 to 6** in the report (`GMQ_Cards_Report_v1_2026-11-26.md`, section 7) were answered overnight by the main thread for Marc, undoable: one card per task, swap old cards, a double is a spare, doubles rule B, exactly 1 epic and 1 rare, keep the wait on Add. The piece works with every option. Still Marc's: the name Policeman or Station Guard; ship parts in the book.
 
 ---
 
@@ -146,7 +146,7 @@ widget = { kind: 'cards' }; GMQCards.book(CARDS_HOST, S.cards, () => { if (widge
 
 ### 3.6 Old saved games
 
-Before wiring this, ask Marc (report, decision 2). Then, once, after the save is read:
+The answer for tonight is `'swap'` (report, decision 2). Once, after the save is read:
 
 ```js
 if (S.cards.some(c => c && !c.id) && !S.cardsMoved) { const m = GMQCards.migrate(S.cards, WAY, rnd(2147483647)); S.cards = m.cards; S.cardsMoved = true; save();
