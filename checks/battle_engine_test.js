@@ -395,7 +395,9 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   }
   ok(same === tried, 'a battle played again from its record ends exactly the same: the winner, the round, every HP and shield (1,500 battles)', same + ' of ' + tried);
   { const start = { seed: 5, opts: B.defaults(), kinds: [STD, STD], decks: [B.ownDeck(all.slice(0, 20), 5, 'card').deck, B.ownDeck(all.slice(20, 40), 6, 'card').deck], lvl2: [[], []] };
-    const S = B.replay(start, [{ p: 9, c: [] }]); ok(S.round === 1 && !S.log.length, 'a record with a card that is not in the hand plays nothing further'); }
+    const S = B.replay(start, [{ p: 9, c: [] }]); ok(S.round === 1 && !S.log.length && S.bad === 1, 'a record with a card that is not in the hand plays nothing further, and says bad');
+    const odd = [B.replay(null, []), B.replay({}, []), B.replay(Object.assign({}, start, { kinds: [STD] }), []), B.replay(start, 'x'), B.replay(Object.assign({}, start, { decks: [start.decks[0], null] }), [])];
+    ok(odd.every(q => q && q.bad && !q.over), 'a broken or changed record never throws: the answer says bad'); }
   // a ship given as five parts with their own numbers (the ship a child fitted at the station)
   const own = [['Stellar Reactor', 30, 10], ['Standard Navigator', 15, 5], ['Neutron Wall', 30, 0], ['Pulsar Phaser', 0, 20], ['Standard Battery', 15, 10]].map(q => ({ name: q[0], hp: q[1], ap: q[2], kind: 'own' }));
   const T2 = B.newBattle(D, own, STD, 3);
