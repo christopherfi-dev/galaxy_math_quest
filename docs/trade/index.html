@@ -249,10 +249,13 @@ var GMQTrade = (function () {
     'I have 10 coins for rent. My cart holds 2 baskets.',
     'Red alone: rent 10.  10 − 10 = 0.  0 + 52 = 52',
     'Blue alone: rent 6.  10 − 6 = 4.  4 + 35 = 39',
+    'Yellow alone: rent 4.  10 − 4 = 6.  6 + 28 = 34',
+    'Green alone: rent 7.  10 − 7 = 3.  3 + 30 = 33',
     'Blue and yellow: rent 6 + 4 = 10.  10 − 10 = 0.  0 + 35 + 28 = 63',
     'Blue and green: rent 6 + 7 = 13. Too much!',
     'Yellow and green: rent 4 + 7 = 11. Too much!',
-    '63 is more than 52. I take blue and yellow.'] };
+    'Red and any other: rent more than 10. Too much!',
+    '63 is the most. I take blue and yellow.'] };      /* [main thread, 26 November, night] every choice on her paper (yellow alone, green alone and red with another were missing), so the example shows the whole list a trader makes */
   function demo() { W.look = 'demo';
     toy('<p class="eyebrow">See it first</p><h3>Tavi sells fruit</h3><p class="story">Tavi sells fruit at Voltara\'s market. Her cart holds 2 baskets. She has 10 coins to pay rent for the stalls.</p>' +
       '<p class="story">Look at her paper. At the red stall she earns the most. But the blue and yellow stalls together leave her more.</p>' +
