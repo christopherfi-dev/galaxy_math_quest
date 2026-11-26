@@ -15,6 +15,7 @@
 //   7. in a task, the question, the answer box, Check and the words after a wrong answer can all be seen
 // A phone is too small for two fixed parts. It keeps the old layout, and the test checks a task still works there.
 //
+// WORDSIDE=on node checks/still_picture_test.js  runs it with the Teacher try-out of version 101 (the words beside the picture).
 // Run:  node checks/still_picture_test.js [folder for screenshots]
 // Needs Node with Playwright and Chromium.
 const { chromium } = require('playwright');
@@ -25,6 +26,7 @@ const path = require('path');
   for (const [name, w, h, touch] of SCREENS) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: touch }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
+    if (process.env.WORDSIDE === 'on') await p.addInitScript(() => { try { localStorage.setItem('gmq-wordside', 'on'); } catch (e) {} });      /* [v101] WORDSIDE=on: the words beside the picture (a Teacher try-out) */
     await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); localStorage.setItem('gmq-wisps', 'off'); } catch (e) {} });
     await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(500);
     await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); }); await p.waitForTimeout(700);
