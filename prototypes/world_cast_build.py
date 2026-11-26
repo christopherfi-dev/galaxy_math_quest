@@ -41,6 +41,7 @@ RILL = {
     'singer': [('idle', R16, 0), ('sad', R16, 1), ('remember', R16, 2), ('sing', R16, 3)],
     'guard': [('idle', R17, 0), ('happy', R18, 0)], 'sp_stilt': [('idle', R17, 1), ('happy', R18, 1)], 'sp_reed': [('idle', R17, 2), ('happy', R18, 2)],
     'sp_mud': [('idle', R17, 3), ('happy', R18, 3)], 'rafter': [('idle', R17, 4), ('happy', R18, 4)]}
+BG = {}      # a picture's background when it is not green: 'white' or 'magenta' (the file name, as Marc saves it)
 RILL_H = {'keeper2': 280, 'baker': 260, 'netmender': 260, 'singer': 250}      # the calm frame's height in the sprite, in pixels: enough for the harbour scene on an iPad's sharp screen.
 MAP_H = 190       # the five on the map are drawn smaller there, so their pictures are smaller (a lighter page). How tall each stands in the game is set in the kit
 PROPS = ['hat', 'apron', 'shawl', 'can', 'rod', 'reeds', 'basket', 'toolbox']      # picture 11, row by row
@@ -75,6 +76,11 @@ def white_components(mask):
 
 def cut(path, bg):
     rgb = np.array(Image.open(path).convert('RGB')); h, w, _ = rgb.shape; f = rgb.astype(float)
+    if bg == 'magenta':      # magenta (#FF00FF): for pictures with green in them (plants). Red and blue high, green low; the pink tint is taken off the edges
+        R, G, B = f[:, :, 0], f[:, :, 1], f[:, :, 2]; m = np.minimum(R, B); ex = m - G
+        alpha = np.clip(255 - (ex - 60) * 255 / 90, 0, 255); alpha[(R > 170) & (B > 170) & (G < 110)] = 0
+        both = (R > G) & (B > G); f[:, :, 0] = np.where(both, G + (R - G) * .35, R); f[:, :, 2] = np.where(both, G + (B - G) * .35, B)
+        return np.dstack([f, alpha]).astype(np.uint8)
     if bg == 'green':
         R, G, B = f[:, :, 0], f[:, :, 1], f[:, :, 2]; m = np.maximum(R, B); ex = G - m
         alpha = np.clip(255 - (ex - 40) * 255 / 80, 0, 255); alpha[(G > 170) & (R < 110) & (B < 110)] = 0
@@ -274,7 +280,8 @@ for ch, frames in RILL.items():
     raw, cache = {}, {}
     for name, fn, idx in frames:
         if fn not in cache:
-            rgba = cut(os.path.join(RILL_ART, fn), 'green'); figs, masks = figures(rgba), None
+            rgba = cut(os.path.join(RILL_ART, fn), BG.get(fn, 'green')); figs, masks = figures(rgba), None
+            if BG.get(fn) == 'white': rgba = holes_away(rgba)      # white closed in between an arm and the body
             if len(figs) < NEED[fn]: f2 = figures2d(rgba, NEED[fn]); figs, masks = [b for b, m in f2], [m for b, m in f2]; print(f'{fn}: figures overlap left to right; separated by shape')
             cache[fn] = (rgba, figs, masks)
         rgba, figs, masks = cache[fn]

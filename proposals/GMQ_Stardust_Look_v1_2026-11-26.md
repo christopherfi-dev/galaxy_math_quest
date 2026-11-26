@@ -130,6 +130,8 @@ One wide picture (16:9), plain flat bright green background (#00FF00), no green 
 4. THINKING: eyes looking up and to one side, tapping one of her pencils against her chin
 ```
 
+**Ready for them** (tested overnight): the cutter now handles the magenta background. On a stand-in of green things on magenta, no magenta was left and every green pixel was kept. Marc's other pictures' cut-outs came out byte-for-byte the same.
+
 **What I will do with them:**
 - cut each object out, and stand it on its square in place of the game's own drawing;
 - the planter shows dry or watered, as the game does now;
