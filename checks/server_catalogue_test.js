@@ -47,6 +47,14 @@ let n = 0; const u = () => 'm' + (++n) + 'abcdef';
       ok(st.rival.parts.length === 1 && st.rival.parts[0].id === part.id && !st.rival.deck.some(c => c.id === part.id), 'the ship part is sent for the ship, not in the deck', st.rival.parts);
       ok(st.rival.deck.every(c => c.n === byId[c.id].name), 'every card sent carries its name from the list');
       await B({ action: 'battle_cancel', battle: st.battle }); if (i >= 2) break; }
+    // a card that arrives says why, and is marked unseen, as the cards thread's book keeps a card (so the game's pop-up shows it)
+    await T({ action: 't_set', class: CODE, battles: 'swap' });
+    const st2 = await B({ action: 'battle_start', rival: nova.rival, kind: 'challenge' }); await B({ action: 'battle_accept', battle: st2.battle }); await B({ action: 'battle_end', battle: st2.battle, result: 'lost' });
+    const nb = (await A({ action: 'load' })).state.cards.find(c => c.u === st2.you.stake.u);
+    ok(nb && nb.unseen === 1 && /^Your deck won it from Blue Fox in a challenge\.$/.test(nb.why), 'a card won by a deck while its owner was away arrives with why, and unseen', nb);
+    const st3 = await B({ action: 'battle_start', rival: nova.rival, kind: 'challenge' }); ok(st3.ok, 'a second challenge starts (Nova now has two cards to put up)', st3.error);
+    if (st3.ok) { await B({ action: 'battle_accept', battle: st3.battle }); const e3 = await B({ action: 'battle_end', battle: st3.battle, result: 'won' }); const got = (e3.cards || []).find(c => c.u === st3.rival.stake.u);
+      ok(got && got.unseen === 1 && /^Won from Red Kite's deck in a challenge\.$/.test(got.why), 'a card won arrives with why it came, and unseen', got); }
     // the test starter pack
     ok((await C({ action: 'test_starter' })).status === 403, 'the test starter pack is refused until the teacher turns on the test page');
     await T({ action: 't_set', class: CODE, test_tools: true });

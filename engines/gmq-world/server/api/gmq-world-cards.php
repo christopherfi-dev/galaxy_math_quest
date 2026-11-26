@@ -44,7 +44,9 @@ function expireOpen(string $code, array $open): array {        // call only whil
     return $open;
 }
 /* a card leaves one book and arrives in another. Both books are fixed now, and both ledgers remember it for iPads that still show the old book. */
-function moveCard(array &$from, array &$to, array $card, bool $copy): ?array {
+/* The card that arrives carries why it came and unseen: 1, as the cards thread's book keeps a card (GMQCards.record),
+   so the game's card pop-up shows it by itself, with its reason. */
+function moveCard(array &$from, array &$to, array $card, bool $copy, string $why = ''): ?array {
     $u = (string)($card['u'] ?? ''); $have = false; foreach (cardsOf($from['state']) as $c) if (($c['u'] ?? '') === $u) $have = true;
     if (!$have) return null;                                                         // it is no longer there: nothing moves
     if ($copy) { $card['u'] = 'c' . token(5); }
@@ -53,6 +55,7 @@ function moveCard(array &$from, array &$to, array $card, bool $copy): ?array {
         $from['state']['cards'] = array_values(array_filter($from['state']['cards'], static function ($c) use ($u) { return !is_array($c) || ($c['u'] ?? '') !== $u; }));
         $from['summary'] = summary($from['state']);
     }
+    if ($why !== '') { $card['why'] = $why; $card['unseen'] = 1; }
     $nu = $card['u']; $to['ledger']['gone'] = array_values(array_diff($to['ledger']['gone'] ?? [], [$nu])); $to['ledger']['came'][] = $card;
     if (!is_array($to['state'])) $to['state'] = ['cards' => []]; if (!is_array($to['state']['cards'] ?? null)) $to['state']['cards'] = [];
     $to['state']['cards'][] = $card; $to['summary'] = summary($to['state']);
@@ -159,8 +162,9 @@ function cardsAction(string $action, array $in, string $code, string $id, array 
             $result = (string)($in['result'] ?? ''); if (!in_array($result, ['won', 'lost', 'tie'], true)) fail('Who won?');
             $me = needStudent(); $them = readJson(studentPath($code, $rid)); $who = $b['a']['name'] !== '' ? $b['a']['name'] : 'A classmate'; $moved = null;
             if (!$them) { $b['status'] = 'classmate removed'; $b['ended'] = date('c'); battleLog($code, $b); unset($open[$bid]); writeJson(openPath($code), $open); return ['ok' => true, 'status' => 'done', 'result' => $result, 'moved' => null, 'cards' => $me['state']['cards'] ?? []]; }
-            if ($b['kind'] === 'challenge' && $result === 'won') $moved = moveCard($them, $me, $b['b']['stake'], $b['rule'] === 'away-safe');
-            if ($b['kind'] === 'challenge' && $result === 'lost') $moved = moveCard($me, $them, $b['a']['stake'], false);
+            $theirName = $b['b']['name'] !== '' ? $b['b']['name'] : 'a classmate';
+            if ($b['kind'] === 'challenge' && $result === 'won') $moved = moveCard($them, $me, $b['b']['stake'], $b['rule'] === 'away-safe', $b['rule'] === 'away-safe' ? "A copy, won from $theirName's deck in a challenge." : "Won from $theirName's deck in a challenge.");
+            if ($b['kind'] === 'challenge' && $result === 'lost') $moved = moveCard($me, $them, $b['a']['stake'], false, "Your deck won it from $who in a challenge.");
             if ($b['kind'] === 'friendly') news($them, $result === 'won' ? "$who had a friendly battle with your deck. $who won." : ($result === 'lost' ? "$who had a friendly battle with your deck. Your deck won!" : "$who had a friendly battle with your deck. It was a tie."));
             elseif ($result === 'tie') news($them, "$who challenged your deck. It was a tie. No card moved.");
             elseif ($result === 'lost') news($them, $moved ? "$who challenged your deck, and your deck won! You got " . cardName($moved) . '.' : "$who challenged your deck, and your deck won!");
