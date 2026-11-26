@@ -18,7 +18,7 @@ const stats = { battles: 0, rounds: [], win: [0, 0], none: 0, both: 0, limit: 0,
 function play(opts, k0, k1, sd, keep) {
   const S = B.newBattle(opts, k0, k1, sd), size = B.cardCount(S.P[0]);
   const start = S.P.map(p => p.deck.concat(p.hand).sort().join(','));
-  ok(size === 39 + Math.min(opts.spies, 7) + opts.guards + (opts.upgrades ? 5 : 0), 'each deck starts with the right number of cards', size);
+  ok(size === DATA.cards.filter(c => c.type !== 'spy' && c.type !== 'guard').length + Math.min(opts.spies, 7) + opts.guards + (opts.upgrades ? 5 : 0), 'each deck starts with the right number of cards', size);
   ok(S.P.every(p => p.deck.concat(p.hand).filter(B.isSpy).length === Math.min(opts.spies, 7) && p.deck.concat(p.hand).filter(B.isGuard).length === opts.guards), 'each deck has the Spy and Guard cards the switches say');
   ok(S.P[0].hand.length === 5 && S.P[1].hand.length === 5, 'a hand of 5 at the start');
   ok(S.P[0].shield === 100 && S.P[1].shield === 100, 'both shields start at 100');
@@ -309,6 +309,69 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   // two Spies: the leader's acts first
   S = last({ bothFall: 'turn' }, 1, null, 'spy', 'spy');
   ok(S.over && S.over.winner === 1 && hp(S, 1) === '0,0,0,1,0' && /Your ship is beaten\. Its Spy does nothing/.test(S.said.join(' ')), 'two Spies and one part each: the Spy of the player who went first acts first, and the other Spy does nothing', JSON.stringify([S.over, hp(S, 0), hp(S, 1), S.said]));
+})();
+// ---------- 26 November: the starter pack, a child's own deck, and the two new effects ----------
+(function () {
+  const C = {}; DATA.cards.concat(DATA.upgrades).forEach(c => { C[c.id] = c; });
+  // the starter pack (Marc, 23 November): 15 cards, always 1 Spy, 1 Policeman, 1 epic and 1 rare
+  let bad1 = 0, bad2 = 0;
+  for (let sd = 1; sd <= 10000; sd++) {
+    const pk = B.starterPack(DATA, sd * 7919), t = {}, r = {};
+    pk.forEach(id => { t[C[id].type] = (t[C[id].type] || 0) + 1; r[C[id].rarity] = (r[C[id].rarity] || 0) + 1; });
+    if (pk.length !== 15 || new Set(pk).size !== 15 || t.spy !== 1 || t.guard !== 1 || r.epic !== 1 || r.rare !== 1) bad1++;
+    if (JSON.stringify(pk) !== JSON.stringify(B.starterPack(DATA, sd * 7919))) bad2++;
+  }
+  ok(bad1 === 0, '10,000 starter packs: 15 different cards, 1 Spy, 1 Policeman, 1 epic, 1 rare', bad1 + ' wrong');
+  ok(bad2 === 0, 'the same child always gets the same starter pack');
+  // the same pack as the Python check makes for seed 1 (checks/battle_cards_set_check.py prints it)
+  ok(B.starterPack(DATA, 1).map(id => C[id].name).join(', ') === 'Probe Drone, Station Guard, Repair Bay, Star Mechanic, Spark Shot, Tens Torpedo, Comet Jab, Pebble Popper, Wormhole Zip, Bubble Patch, Moon Rock Wall, Dust Screen, Bolt Beetles, Quick Patch, Hull Tape', 'the battle page and the set check make the same starter pack', B.starterPack(DATA, 1).join(','));
+  // a child's own deck, for 4,000 made-up children: from no cards to 150, with repeats, extra Spies, upgrades, ship parts and unknown names
+  const all = DATA.cards.map(c => c.id), ups = DATA.upgrades.map(c => c.id), spies = DATA.cards.filter(c => c.type === 'spy').map(c => c.id);
+  const shape = d => d.map(id => C[id].type + '/' + (C[id].type === 'upgrade' ? '' : C[id].rarity)).sort().join(',');
+  let lens = [];
+  for (let k = 0; k < 4000; k++) {
+    const n = Math.floor(rnd() * 150), mine = [];
+    for (let i = 0; i < n; i++) mine.push(all[Math.floor(rnd() * all.length)]);
+    if (rnd() < 0.3) mine.push(spies[Math.floor(rnd() * spies.length)], spies[Math.floor(rnd() * spies.length)]);
+    if (rnd() < 0.3) mine.push(ups[Math.floor(rnd() * ups.length)], ups[Math.floor(rnd() * ups.length)]);
+    mine.push('EC-4', 'nothing at all');
+    const mode = rnd() < 0.5 ? 'card' : 'lasting', sd = 1 + Math.floor(rnd() * 99999), P = B.ownDeck(mine, sd, mode), d = P.deck;
+    const battleCards = d.filter(id => C[id].type !== 'upgrade'), nSpy = d.filter(id => C[id].type === 'spy').length, nGuard = d.filter(id => C[id].type === 'guard').length;
+    ok(d.every(id => C[id]), 'an own deck holds only cards of the set (no ship part, no unknown name)');
+    ok(battleCards.length >= 15, 'an own deck has at least 15 battle cards', battleCards.length);
+    ok(nSpy <= 1, 'an own deck has one Spy at most (Marc, 22 November)', nSpy);
+    ok(nGuard >= nSpy, 'an own deck has at least as many Policemen as Spies (Marc, 22 November)');
+    const ownBattle = mine.filter(id => C[id] && C[id].type !== 'upgrade' && C[id].type !== 'spy');
+    ok(ownBattle.every(id => d.indexOf(id) >= 0) && ownBattle.length + P.lent.filter(id => C[id].type !== 'spy' && C[id].type !== 'guard').length <= battleCards.length, 'every battle card the child owns is in their deck');
+    ok(P.lent.every(id => C[id].type === 'guard' || B.starterPack(DATA, sd).indexOf(id) >= 0), 'a lent card comes from the child\'s starter pack (or is a lent Policeman)');
+    ok(mode === 'lasting' ? d.filter(id => C[id].type === 'upgrade').length === 0 : d.filter(id => C[id].type === 'upgrade').length === mine.filter(id => ups.indexOf(id) >= 0).length, 'upgrades: in the deck as cards, or (lasting) out of it');
+    const foe = B.foeDeck(d, sd + 101);
+    ok(shape(foe) === shape(d), 'the computer\'s deck has the same shape: the same types and kinds', shape(d) + ' / ' + shape(foe));
+    const ownAfter = mine.filter(id => C[id] && C[id].type !== 'upgrade' && C[id].type !== 'spy').length + Math.min(1, mine.filter(id => C[id] && C[id].type === 'spy').length);
+    ok(ownAfter >= 15 ? P.lent.every(id => C[id].type === 'guard') : true, 'a child with 15 battle cards or more (one Spy counted) is lent no card but a Policeman');
+    ok(battleCards.length === (ownAfter >= 15 ? ownAfter + P.lent.length : 15), 'an own deck: the child\'s battle cards with one Spy, topped up to exactly 15 when there are fewer', battleCards.length + ' (own ' + ownAfter + ', lent ' + P.lent.length + ')');
+    if (k < 600) {
+      const S = B.newBattle(D, STD, STD, sd, [d, foe], [P.lvl2, P.lvl2]);
+      ok(B.cardCount(S.P[0]) === d.length && B.cardCount(S.P[1]) === foe.length, 'a battle starts with exactly the own decks');
+      if (mode === 'lasting') ok(S.P[0].parts.every(q => (P.lvl2.indexOf(q.part) >= 0) === (q.lvl === 2)) && S.P[0].parts.every(q => q.lvl === 1 || q.max === DATA.parts.filter(x => x.part === q.part && x.kind === 'standard')[0].hp + 4), 'lasting upgrades: those parts start at Level 2, with 4 more HP');
+      let r = 0; while (!S.over && r < 70) { B.autoRound(S); r++; ok(S.P.every(pl => pl.hand.length <= 5), 'never more than 5 cards in a hand'); }
+      ok(!!S.over, 'a battle with own decks comes to an end', r + ' rounds'); lens.push(r);
+    }
+  }
+  lens.sort((x, y) => x - y); console.log('     own decks, 600 battles: rounds in the middle ' + lens[300] + ', 9 in 10 by round ' + lens[540] + ', longest ' + lens[599]);
+  // by hand: Comeback Crew brings back every lost part with 5 HP; Star Harbour puts the shield and every working part back to full
+  function hand(c0, setup) {
+    const S = B.newBattle(Object.assign({}, D, { guard: 'swap' }), STD, STD, 5); setup(S);
+    const p = S.P[0]; p.hand[0] = c0; const q = S.P[1]; q.hand[0] = 'D11';
+    B.startRound(S, 0, 0); B.steps(S).forEach(st => { const req = B.need(S, st); B.run(S, st, req ? B.cpuChoose(S, req) : null); }); return S;
+  }
+  let S = hand('R27', T => { T.P[0].parts[0].hp = 0; T.P[0].parts[1].hp = 0; T.P[0].parts[2].hp = 7; });
+  ok(S.P[0].parts[0].hp === 5 && S.P[0].parts[1].hp === 5 && S.P[0].parts[2].hp === 7, 'Comeback Crew: both lost parts come back with 5 HP; a working part is not touched', S.P[0].parts.map(q => q.hp).join(','));
+  // (the enemy has lost its Weapons, so nothing hits the shield after the card)
+  S = hand('D27', T => { T.P[1].parts[3].hp = 0; T.P[0].shield = 0; T.P[0].parts[0].hp = 3; T.P[0].parts[1].hp = 0; });
+  ok(S.P[0].shield === 100 && S.P[0].parts[0].hp === 20 && S.P[0].parts[1].hp === 0, 'Star Harbour: the shield goes to 100, a working part to full, a lost part stays lost', S.P[0].shield + ' ' + S.P[0].parts.map(q => q.hp).join(','));
+  S = hand('D27', T => { T.P[1].parts[3].hp = 0; T.P[0].shield = 0; T.P[0].parts[2].hp = 0; T.P[0].parts[0].hp = 3; });
+  ok(S.P[0].shield === 0 && S.P[0].parts[0].hp === 20, 'Star Harbour with its Shield Generator lost: no shield, but the parts are still repaired');
 })();
 const names = Object.keys(bad);
 console.log('     ' + checks + ' checks made');
