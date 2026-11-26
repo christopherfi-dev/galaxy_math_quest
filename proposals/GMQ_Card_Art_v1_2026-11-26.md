@@ -92,8 +92,21 @@ The battle thread's catalogue landed today: `docs/battle/cards.json`, with 93 ba
 
 ---
 
+## 5b. Where the picture goes on a card (found later that night)
+
+**The card face today has no picture area.** The cards thread's pop-up and card book (`docs/cards/index.html`) draw each card's face with the battle thread's own drawing (its DRAW block): a big symbol for the card's type, the number in a white circle, the name and the words. So the pictures need a place on the face [Proposal; the face is the battle thread's, and the choice is Marc's]:
+
+| Option | What it is | Cost |
+|---|---|---|
+| A | The picture fills the big middle of the face; the type's symbol moves small to a corner | The battle thread changes its DRAW block once; every card looks like a picture card |
+| B | The picture sits above the name; the big symbol stays | The face gets taller, or the words smaller |
+| C | The face stays as it is; the picture shows only in the card book's close-up | No change to the face; children see the picture only when they open a card |
+
+My pick, if asked: A. The picture is what a child remembers and talks about; the symbol only sorts the cards.
+
 ## 6. Decisions for Marc
 
 1. **The style:** one look for all cards, in the game's own drawing. Does it look right in your card book's size? The demo page shows them.
 2. **The rule for numbers** (section 2): keep it?
 3. **The "count your working parts" pictures** (section 3).
+4. **Where the picture goes on a card** (section 5b): A, B or C.

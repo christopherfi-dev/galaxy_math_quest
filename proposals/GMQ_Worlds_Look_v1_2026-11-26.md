@@ -1,6 +1,6 @@
 # The worlds of the class game: a new look for Chronosia (and why not Xylophora)
 
-**Date:** 26 November 2026, while Marc slept. **For:** Marc and the main thread. **The class game is not changed:** this is a copy, `prototypes/worlds_look_sample.html`, on the demo link.
+**Date:** 26 November 2026, while Marc slept. **For:** Marc and the main thread. **The class game is not changed:** this is a copy, `prototypes/worlds_look_sample.html`, on the demo link. **Rebuilt on version 101** when the class link moved to it that night; the four tests below were run again on it, and pass.
 
 **Marc's asks** [Source: Marc, 26 November]:
 - "Can you look at the other worlds? Should we start updating the characters on those? Or filling them in or looking at the visual design?"
