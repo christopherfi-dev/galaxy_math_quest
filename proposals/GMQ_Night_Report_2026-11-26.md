@@ -87,3 +87,4 @@ Pictures, if you would rather not open links:
 ## 7. Check-ins
 
 - **15:30 UTC:** nothing my demos depend on had changed. The class link is still version 101 (the game file's version 102 is being tested); the card list and the big world page are the same. Nothing rebuilt.
+- **16:20 UTC:** the class link had moved to **version 103** (102: the card pop-up, the card book and the station's starter pack; 103: the market's worked example). The worlds copy was rebuilt on 103, and the game's `chronosia_test.js`, `chronosia_story_test.js`, `chronosia_links_test.js` and `stardust_test.js` passed on it again, then it went to `lookdemo/worlds/`. The card list and the big world page had not changed. The class game's card book does not use the card pictures yet: that waits on Marc's choice of where the picture goes (section 3, decision 1).
