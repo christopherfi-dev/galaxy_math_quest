@@ -48,7 +48,7 @@ const bad = [], errs = []; const ok = (c, what, extra) => { if (!c) bad.push(wha
     await p.fill('#newname', 'Test'); await p.click('#newclass button'); await p.waitForTimeout(700); const CODE = (await p.textContent('#classcode')).trim(); ok(/^[A-Z2-9]{5}$/.test(CODE), 'step 7: a class code', CODE);
     // step 8.1
     const dev = async (w, h) => { const q = await (await b.newContext({ viewport: { width: w, height: h }, hasTouch: true })).newPage(); q.on('pageerror', e => errs.push(e.message));
-      await q.addInitScript(() => { window.GMQ_NO_PV = true; try { ['gmq-hazards', 'gmq-flyin', 'gmq-rats'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-words', 'open'); } catch (e) {} });
+      await q.addInitScript(() => { window.GMQ_NO_CARDPOP = true; window.GMQ_NO_PV = true; try { ['gmq-hazards', 'gmq-flyin', 'gmq-rats'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-words', 'open'); } catch (e) {} });
       await q.goto(BASE + '/play.html'); await q.waitForTimeout(900); return q; };
     const login = async (q, name, pin) => { await q.fill('#lc', CODE); await q.fill('#ln', name); await q.fill('#lp', pin); await q.click('#try'); await q.waitForTimeout(1300); };
     const ipad = await dev(820, 1180); ok(await ipad.evaluate(() => NET.found && widget && widget.kind === 'login'), 'step 8: play.html finds the server and asks who is flying');

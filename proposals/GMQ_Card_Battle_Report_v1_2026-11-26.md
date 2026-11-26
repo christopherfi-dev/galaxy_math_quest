@@ -66,3 +66,12 @@ See the catalogue note, section 6: the size; epics; Spy cards; the starter pack'
 ## Added later: the independent review, and what it changed
 
 A second reviewer saw only the rules, the card list and the pictures. It found 16 points. Fixed: the enemy's dodge cards said the wrong thing ("It still fire"); "Or bring back a broken shield" read as a choice (19 cards); dodge cards did not say what still hits; the child had to count the enemy's hidden hand; Rounding Rover's "next ten"; "lent" (now "borrowed"); "shield" in the deck line (now "defence"); the challenge words. Found while fixing: six cards' words were cut off above the ships. Left for Marc: badges that read two ways (2× and ×2), one card with three names, the word "order", the phone's top bar, and whether Star Harbour and Comeback Crew are unique enough to be epics. Details: the catalogue note, section 8.
+
+## Added later: the cards thread's points, and the ship parts
+
+- **The starter pack's seed:** the cards thread is right: `S.seed` changes, so the pack would change. Both pieces should get `S.packSeed`. The wiring note says so (section 9).
+- **Ship parts:** the game's station gives each child a ship with the 2023 site's numbers (green: 70 HP, 40 AP); the battle's part cards use the chat table (100 HP, 55 AP). Same names, different numbers. The station's red Pulsar Phaser has 0 HP: in a battle that ship could never attack. Measured and laid out for Marc (catalogue note, decision 10). The piece can now fly the child's station ship, so any choice works.
+- **For the cards thread** (its eight lines of words for each type, `TYPEW`), checked against Marc's rules: six are right. Two could mislead:
+  - defence: "it keeps your ship safe from an attack". A block card stops part of an attack (Dust Screen stops 8). Suggest: "In a battle, it blocks some of an attack, or makes your Main Shield stronger."
+  - dodge: "the other ship's attack misses you". Marc's rulings: the dodging ship still fires, and a rare or epic attack card can still hit through the two cheaper dodge cards. Suggest: "In a battle, the other ship's attack misses you, and you still fire."
+- **"Count the other cards in your hand"** (the cards thread's note): the cards now say "Block 4 for each other card in your hand", which is a battle word, but the card says what it does. No change.

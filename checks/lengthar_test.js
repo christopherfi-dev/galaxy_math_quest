@@ -22,7 +22,7 @@ const path = require('path');
   for (const [name, w, h] of [['sideways', 1180, 745], ['upright', 820, 1180], ['phone', 390, 760]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    await p.addInitScript(() => { window.GMQ_NO_PV = true; try { localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); localStorage.setItem('gmq-cards', 'off'); } catch (e) {} });
+    await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; window.GMQ_NO_PV = true; try { localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); localStorage.setItem('gmq-cards', 'off'); } catch (e) {} });
     await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(400);
     await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); }); await p.waitForTimeout(400);
     const ok = (c, what) => { if (!c) bad.push(`${name}: ${what}`); };

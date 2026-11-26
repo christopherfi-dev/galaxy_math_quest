@@ -16,7 +16,7 @@ const { chromium } = require('playwright'); const path = require('path');
   const open = async (name, w, h, o) => { o = o || {}; const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 1, reducedMotion: o.calm ? 'reduce' : 'no-preference' }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
     await p.addInitScript(fly => { try { if (!localStorage.getItem('gmq-test-set')) { localStorage.setItem('gmq-test-set', '1'); ['gmq-cards', 'gmq-hazards', 'gmq-rats', 'gmq-wisps'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-flyin', fly); } } catch (e) {} }, o.fly || 'on');
-    if (o.nogl) await p.addInitScript(() => { const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (k, ...a) { return k === 'webgl2' ? null : g.call(this, k, ...a); }; });
+    if (o.nogl) await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (k, ...a) { return k === 'webgl2' ? null : g.call(this, k, ...a); }; });
     await p.goto(FILE); await p.waitForTimeout(400); return p; };
   const toNumerix = async p => { await p.evaluate(() => { skipIntro(); goSpace(); S.at = 'numerix'; SP.to = null; SP.x = GAL.numerix.x; SP.y = GAL.numerix.y; save(); }); await p.waitForTimeout(300); };
   const land = async p => { await p.fill('#cmd', 'land'); await p.press('#cmd', 'Enter'); await p.waitForTimeout(250); };

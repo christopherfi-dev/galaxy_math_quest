@@ -368,6 +368,11 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   let S = hand('R27', T => { T.P[0].parts[0].hp = 0; T.P[0].parts[1].hp = 0; T.P[0].parts[2].hp = 7; });
   ok(S.P[0].parts[0].hp === 5 && S.P[0].parts[1].hp === 5 && S.P[0].parts[2].hp === 7, 'Comeback Crew: both lost parts come back with 5 HP; a working part is not touched', S.P[0].parts.map(q => q.hp).join(','));
   // (the enemy has lost its Weapons, so nothing hits the shield after the card)
+  // a ship given as five parts with their own numbers (the ship a child fitted at the station)
+  const own = [['Stellar Reactor', 30, 10], ['Standard Navigator', 15, 5], ['Neutron Wall', 30, 0], ['Pulsar Phaser', 0, 20], ['Standard Battery', 15, 10]].map(q => ({ name: q[0], hp: q[1], ap: q[2], kind: 'own' }));
+  const T2 = B.newBattle(D, own, STD, 3);
+  ok(T2.P[0].parts.map(p => p.name + ' ' + p.max + '/' + p.ap).join(', ') === 'Stellar Reactor 30/10, Standard Navigator 15/5, Neutron Wall 30/0, Pulsar Phaser 0/20, Standard Battery 15/10', 'a ship can be given as five parts with their own numbers');
+  ok(!B.has(T2.P[0], 'Weapons System') && B.shipAP(T2.P[0]) === 25, 'a part given with 0 HP starts lost (the station\'s red Pulsar Phaser): no attack from it', B.shipAP(T2.P[0]));
   S = hand('D27', T => { T.P[1].parts[3].hp = 0; T.P[0].shield = 0; T.P[0].parts[0].hp = 3; T.P[0].parts[1].hp = 0; });
   ok(S.P[0].shield === 100 && S.P[0].parts[0].hp === 20 && S.P[0].parts[1].hp === 0, 'Star Harbour: the shield goes to 100, a working part to full, a lost part stays lost', S.P[0].shield + ' ' + S.P[0].parts.map(q => q.hp).join(','));
   S = hand('D27', T => { T.P[1].parts[3].hp = 0; T.P[0].shield = 0; T.P[0].parts[2].hp = 0; T.P[0].parts[0].hp = 3; });

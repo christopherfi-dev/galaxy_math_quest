@@ -118,6 +118,21 @@ Your class started fresh on 23 November (version 93), so children hold only card
 
 ## 7. Decisions for you
 
+**Answered for you overnight by the main thread** [Source: you, 26 November, to the main thread: "Threads keep waiting for me to decide lots of things. How do I share that resposivikty with you..."; the main thread's rule: only answers that can be undone, never your battle rules or your names]. Each is marked **[Main thread for Marc, 26 November night: undo if you disagree]**. All match my picks; the piece already does each one, so nothing was rebuilt.
+
+| # | Answer | Can be undone by |
+|---|---|---|
+| 1 | One card after each task (A). | Building option B or C instead; the pack screen is already built. |
+| 2 | Old saved games: swap. Each new card keeps its old name (`was`). | Each swapped card keeps its old name (`was`), so it can be turned back; or choose keep or map before the game is wired. |
+| 3 | A double is a spare (A): a rare or epic spare for a challenge battle, a common spare for your own deck. | Changing two lines of words (`GMQCards.words.dup`). |
+| 4 | Doubles: B, 4 in 5 new, never two doubles in a row. | One word (`GMQCards.rule.doubles`: 'A' or 'C'). |
+| 5 | The starter pack: exactly 1 epic and 1 rare, as built (the battle thread's rule). | Changing the rule in the battle thread's list. |
+| 6 | The wait on Add: kept (your reading-card rule of 24 November). | One line (`GMQCards.rule.wait`). |
+
+**Still yours:** the name Policeman or Station Guard (the built name stays until you say), and decision 7 (ship parts stay out of the book until the numbers agree).
+
+The options as first laid out:
+
 1. **How the station's 15 cards arrive.**
    - **A [pick]:** one card after each task, as today. The reward follows the work.
    - B: no card per task; one pack of 15 after the last task. A big moment, but 15 tasks with no reward.
@@ -142,4 +157,4 @@ Your class started fresh on 23 November (version 93), so children hold only card
 
 ## 9. Message for the main thread, to paste
 
-> From the cards thread, 26 November. The card pop-up and the card book are built as one piece, `GMQCards`, on their own page (`docs/cards/index.html`, between the `GMQ CARDS` markers). It reads the battle thread's catalogue (`cards.json`: 93 battle cards) and draws the faces and the starter pack with the battle thread's own code. A card earned fills the picture, turns over, and says what it does and why it was given; the desk holds only "Add to my cards" and "Read to me". The book shows a child's own cards first, by kind, then small empty shapes for cards still to find; no card shows before it is earned. The station's 15 cards are exactly the child's starter pack, one per task. Checks: `cards_pick_check.js` (20,000 children), `cards_page_test.js` (240 checks, three sizes), `cards_in_game_test.js` (the piece inside the real game file, 57 checks), `cards_sync_check.js`. All pass. How to wire it: `proposals/GMQ_Cards_Wiring_v1_2026-11-26.md`. Two things before wiring: keep one seed in the save (`S.packSeed`) and pass it to the battle piece too, not `S.seed`; and wait for Marc on decisions 1, 2, 3 and 5. Tests that tap the picture after a task need `window.GMQ_NO_CARDPOP`, or they will tap the card.
+> From the cards thread, 26 November. The card pop-up and the card book are built as one piece, `GMQCards`, on their own page (`docs/cards/index.html`, between the `GMQ CARDS` markers). It reads the battle thread's catalogue (`cards.json`: 93 battle cards) and draws the faces and the starter pack with the battle thread's own code. A card earned fills the picture, turns over, and says what it does and why it was given; the desk holds only "Add to my cards" and "Read to me". The book shows a child's own cards first, by kind, then small empty shapes for cards still to find; no card shows before it is earned. The station's 15 cards are exactly the child's starter pack, one per task. Checks: `cards_pick_check.js` (20,000 children), `cards_page_test.js` (240 checks, three sizes), `cards_in_game_test.js` (the piece inside the real game file, 57 checks), `cards_sync_check.js`. All pass. How to wire it: `proposals/GMQ_Cards_Wiring_v1_2026-11-26.md`. Two things before wiring: keep one seed in the save (`S.packSeed`) and pass it to the battle piece too, not `S.seed`; and use the answers to decisions 1 to 6 (section 7: given overnight by the main thread for Marc, undoable). Tests that tap the picture after a task need `window.GMQ_NO_CARDPOP`, or they will tap the card.

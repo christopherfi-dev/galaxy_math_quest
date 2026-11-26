@@ -15,11 +15,11 @@ const { chromium } = require('playwright'); const path = require('path');
   for (const [name, w, h] of [['ipad', 1180, 745], ['ipad-10', 1080, 810], ['upright', 820, 1180], ['phone', 390, 760]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 1 }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    await p.addInitScript(() => { try { if (!localStorage.getItem('gmq-test-set')) { localStorage.setItem('gmq-test-set', '1'); ['gmq-cards', 'gmq-hazards', 'gmq-rats', 'gmq-wisps', 'gmq-flyin'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-words', 'open'); } } catch (e) {} });
+    await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; try { if (!localStorage.getItem('gmq-test-set')) { localStorage.setItem('gmq-test-set', '1'); ['gmq-cards', 'gmq-hazards', 'gmq-rats', 'gmq-wisps', 'gmq-flyin'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-words', 'open'); } } catch (e) {} });
     await p.goto(FILE); await p.waitForTimeout(400);
     const ok = (c, what) => { if (!c) bad.push(`${name}: ${what}`); };
     const shot = async n => { if (out) { await p.waitForTimeout(300); await p.screenshot({ path: path.join(out, `wside_${name}_${n}.png`) }); } };
-    const where = () => p.evaluate(() => { const lg = document.querySelector('.log'), r = lg.getBoundingClientRect(), c = cv.getBoundingClientRect(); return { side: lg.parentNode.id === 'side', top: Math.round(r.top), bottom: Math.round(r.bottom), shown: getComputedStyle(lg).display !== 'none' && r.height > 0, picH: Math.round(c.height), picW: Math.round(c.width), ts, wide: document.body.classList.contains('sidecol'), cls: document.body.classList.contains('wside') }; });
+    const where = () => p.evaluate(() => { const lg = $('log').parentNode, r = lg.getBoundingClientRect(), c = cv.getBoundingClientRect(); return { side: lg.parentNode.id === 'side', top: Math.round(r.top), bottom: Math.round(r.bottom), shown: getComputedStyle(lg).display !== 'none' && r.height > 0, picH: Math.round(c.height), picW: Math.round(c.width), ts, wide: document.body.classList.contains('sidecol'), cls: document.body.classList.contains('wside') }; });
     const sw = async on => { await p.evaluate(on => { $('wsideOn').checked = on; $('wsideOn').onchange(); }, on); await p.waitForTimeout(400); };
     try {
       await p.evaluate(() => { skipIntro(); }); await p.waitForTimeout(400);

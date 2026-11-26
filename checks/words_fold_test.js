@@ -18,7 +18,7 @@ const { chromium } = require('playwright'); const path = require('path');
   for (const [name, w, h] of [['ipad', 1180, 745], ['ipad-10', 1080, 810], ['upright', 820, 1180], ['phone', 390, 760]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 1 }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    await p.addInitScript(() => { try { if (!localStorage.getItem('gmq-test-set')) { localStorage.setItem('gmq-test-set', '1'); ['gmq-cards', 'gmq-hazards', 'gmq-rats', 'gmq-wisps', 'gmq-flyin'].forEach(k => localStorage.setItem(k, 'off')); } } catch (e) {} });
+    await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; try { if (!localStorage.getItem('gmq-test-set')) { localStorage.setItem('gmq-test-set', '1'); ['gmq-cards', 'gmq-hazards', 'gmq-rats', 'gmq-wisps', 'gmq-flyin'].forEach(k => localStorage.setItem(k, 'off')); } } catch (e) {} });
     await p.goto(FILE); await p.waitForTimeout(400);
     const ok = (c, what) => { if (!c) bad.push(`${name}: ${what}`); };
     const shown = id => p.evaluate(id => { const e = $(id); return !!e && getComputedStyle(e).display !== 'none' && !e.hidden; }, id);

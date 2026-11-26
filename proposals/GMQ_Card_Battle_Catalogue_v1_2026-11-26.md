@@ -137,7 +137,27 @@ The rule is in `cards.json` (`starter_pack`), so the game and the cards thread r
 7. **Where in the game the battle opens.** The main thread asks you.
 8. **Two new epics to confirm.** Comeback Crew (every lost part back) uses your revival rule for all parts at once. Star Harbour puts two epic effects on one card. **The independent review is right that neither is fully "something no other card does":** Star Harbour is Shield Reborn and Repair Bay together, and Comeback Crew does all that Stellar Revival does, and more. Keep them, or leave epics at 7 until you give a rule for a new kind of epic?
 9. **In a classmate's battle, their ship is called "the enemy"** (the first screen says so). It could carry the classmate's ship name. [pick: keep for now; long names could break the phone's top bar]
-10. **Still open from 22 November:** "Pulsar Phaser" and "Inertial Dampener" use words from a famous television series (your 2023 names). How a child gets a ship part card.
+10. **Ship parts: two sets of numbers with the same names.** **[Conflict]** (found by the cards thread, 26 November night)
+    - **The game's station** gives each child their own ship: your lucky draw of 20 and 21 November, four levels (red, green, light blue, gold), with the 2023 site's numbers. A green ship has 70 HP and 40 AP. [Source: the game, `PVER`; your words "There should be four levels"]
+    - **The battle's 20 part cards** use the 2023 chat table and a kind rule (Standard, Guardian, Striker, Lucky Draw). A Standard ship has 100 HP and 55 AP. [Proposal, 22 November]
+    - The same names, different numbers: Neutron Reactor is 15 HP and 0 AP at the station, 25 and 0 on its card.
+    - **What I measured** (two computer players, 2,000 battles each, your rules):
+
+      | Ships | A battle lasts (middle; 9 in 10 by) | Who wins |
+      |---|---|---|
+      | the battle's Standard part cards, both ships | 12 rounds; 15 | even |
+      | the station's green parts, both ships | 12 rounds; 16 | even |
+      | each part drawn from your bag of 10, both ships | 13 rounds; 19 (a few reach the 60-round limit) | even over many battles |
+      | all gold against all green | 11 rounds | gold wins 93 in 100 |
+      | all red against all green | 12 rounds | red never wins |
+
+    - **One real fault:** the station's red weapon, the Pulsar Phaser, has **0 HP** (and 20 AP). In a battle a part at 0 is lost, so a child who drew it **could never attack**.
+    - **Choices:**
+      - **A.** The battle keeps its own part cards (as built). The station's draw is the story. Cost: two sets of numbers with the same names.
+      - **B.** The station's parts become the battle's numbers and kinds (the main thread changes `PVER`). Cost: the station's red, green, light blue and gold become Standard, Guardian, Striker and Lucky Draw, which trade HP for AP rather than being worse or better.
+      - **C.** The battle flies the ship the child fitted at the station, with the station's numbers, once every part has at least 5 HP. Cost: the lucky draw decides many battles (gold beats green 93 in 100).
+    - **Built so that any choice works:** the piece takes the child's station ship (`opts.ship`). The demo page has a cadet with one. Without it, the battle uses part cards as before.
+11. **Still open from 22 November:** "Pulsar Phaser" and "Inertial Dampener" use words from a famous television series (your 2023 names). How a child gets a ship part card.
 
 ## 7. What could prove this wrong
 

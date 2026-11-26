@@ -28,7 +28,7 @@ const api = () => { let c = ''; return async body => { const r = await fetch(URL
   try {
     const T = api(); await T({ action: 't_login', password: 'orbit-teacher-77' }); const CODE = (await T({ action: 't_new_class', name: 'Pretend 3C' })).code; await T({ action: 't_set', class: CODE, names: 'auto', battles: 'swap' });
     const dev = async (w, h) => { const p = await (await b.newContext({ viewport: { width: w, height: h }, hasTouch: true })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error' && !/40[1349]|Failed to load resource/.test(m.text())) errs.push(m.text()); });
-      await p.addInitScript(() => { window.GMQ_NO_PV = true; try { ['gmq-cards', 'gmq-hazards', 'gmq-flyin', 'gmq-rats'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-words', 'open'); } catch (e) {} });
+      await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; window.GMQ_NO_PV = true; try { ['gmq-cards', 'gmq-hazards', 'gmq-flyin', 'gmq-rats'].forEach(k => localStorage.setItem(k, 'off')); localStorage.setItem('gmq-words', 'open'); } catch (e) {} });
       await p.goto(URL + '/play.html'); await p.waitForTimeout(900); return p; };
     const login = async (p, name, pin) => { await p.fill('#lc', CODE); await p.fill('#ln', name); await p.fill('#lp', pin); await p.click('#try'); await p.waitForTimeout(1400); };
     const push = async p => { await p.evaluate(() => { save(); netPush(true); }); await p.waitForTimeout(900); };
