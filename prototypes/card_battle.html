@@ -697,15 +697,22 @@ function ownDeck(ids,seed,upgrades,spy){
    start: { seed, opts, kinds: [k0, k1], decks: [d0, d1], lvl2: [l0, l1] }; rec: [{ p: the card played (hand position), c: [each choice asked of the child] }, ...] for each finished round.
    So a challenge battle's result can be checked from what the page sends (the server thread's known gap). Only with "one player leads". */
 function replay(start,rec){
- var S=newBattle(start.opts||{},start.kinds[0],start.kinds[1],start.seed,start.decks,start.lvl2);
- for(var r=0;r<(rec||[]).length&&!S.over;r++){
+ /* a record that is broken or changed never throws: the answer says bad */
+ function broken(){return {over:null,bad:1,broken:true,round:0,P:[],log:[]};}
+ var ok2=function(k){return !!k&&k.length===5;};
+ if(!start||!start.kinds||!ok2(start.kinds[0])||!ok2(start.kinds[1])||!start.decks||!start.decks[0]||!start.decks[1]||!Array.isArray(rec))return broken();   /* Array.isArray: the record may come from another page (the Desk runs this inside the battle's frame) */
+ var S;try{S=newBattle(start.opts||{},start.kinds[0],start.kinds[1],start.seed||1,start.decks,start.lvl2);}catch(e){return broken();}
+ try{
+ for(var r=0;r<rec.length&&!S.over;r++){
   var R=rec[r],a=R.p,b,k=0;
   if(S.opts.guard!=='lead')return S;
-  if(a<0||a>=S.P[0].hand.length)return S;
+  a=R?+R.p:NaN;   /* a record that went through the server may carry its numbers as words: "3" */
+  if(!R||a!==Math.floor(a)||a<0||a>=S.P[0].hand.length){S.bad=(S.bad||0)+1;return S;}
   b=S.leader===1?cpuPick(S,1,null):cpuPick(S,1,S.P[0].hand[a]);
   startRound(S,a,b);
   steps(S).forEach(function(st){var req=need(S,st),ch=null;if(req)ch=req.who===0?(R.c||[])[k++]:cpuChoose(S,req);if(req&&req.who===0&&validate(S,req,ch)){ch=cpuChoose(S,req);S.bad=(S.bad||0)+1;}var Q=run(S,st,ch);if(S.cur)S.cur.lines=S.cur.lines.concat(Q.lines);});
  }
+ }catch(e){S.bad=(S.bad||0)+1;S.broken=true;}
  return S;
 }
 /* The computer's deck has the same shape: for each of the child's cards, a card of the same type and kind, drawn at random (few repeats). */

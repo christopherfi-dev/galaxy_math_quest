@@ -131,7 +131,7 @@ The Math Skills engine's notes in this repository say its student records sit in
 - **A test page, `cards-test.html`, in the test folder:** two pretend cadets take a starter pack each, see the class card board, and battle each other's saved decks with the battle thread's battle. It is off until you turn it on, and is for made-up cadets only. It is step 9 of `READ_ME_FIRST.md`.
 - **On the Desk:** a server-check line for the card list, a switch for the test page, and "What happened" for each battle.
 
-**Checked:** every server check passes (14 of them, listed in `checks/RUN_ALL.md`), and the three that play the game against the server pass with version 101 too (the main thread's newest, not yet on the class link). I looked at the test page's pictures, at iPad and phone size.
+**Checked:** every server check passes (14 of them, listed in `checks/RUN_ALL.md`), after two independent reviews, and the three that play the game against the server pass with version 101 too (the main thread's newest, not yet on the class link). I looked at the test page's pictures, at iPad and phone size.
 
 **One fault found and fixed:** the Desk once showed a blank page after a missing comma in its script. A new check now reads every script in the server's pages.
 
@@ -167,6 +167,14 @@ The others, in short:
 - ✗ "Does not match", and why: a false claim, a classmate's deck that is not the one the server sent, choices the rules do not allow, or a record that cannot be played again
 
 Tested on three real battles played by a made-up child (`checks/server_battle_check_test.js`): an honest one, a false claim, and a weakened classmate deck. Each verdict was right. The check runs on the Desk, not on the server (the server is PHP; the engine is JavaScript), so it happens when you press the button, not by itself. [Proposal, later: run it for every challenge when the Desk opens, and mark the ones that do not match.]
+
+**A second independent review, and version 0.3.2.** The reviewer looked only at tonight's new code, and found that "Check who won" could be fooled. A record could give the challenger a giant ship, all-Level-2 parts, a deck filled with lent epic cards, or a seed that was only nearly the server's, and still get ✓. One record could even freeze your browser tab. Now the Desk takes only the child's choices from a record. It builds everything else again from what the server dealt: the seed, the rules, both decks (from the cards sent, and the challenger's starter-pack seed), and each ship from its part cards. The test plays all of the reviewer's crafted records: each gets ✗ with its reason, and the honest battle still gets ✓.
+
+It also found the name check both too narrow and too wide:
+- **Too narrow:** curses with endings got through ("fucked", "motherfucker", "bullshit", "smartass").
+- **Too wide:** a name with an initial was refused ("Poo P"), which my own "add a letter" message invites.
+
+Now strong roots are refused inside any word, and milder words only as whole words. 83 real names from many languages pass and 45 curses are refused. A few real names still look like curses (the Thai nickname Porn, the Cantonese name Fuk, the Dutch name Dick). For those, the Desk has **Real names to allow**, for your class. Ship names now use the same check, since the main thread eased the game's own check for real names the same night.
 
 **Before a real class, one privacy point** [Proposal]: when you remove a cadet on the Desk, their saved game and its copies are deleted, but the battle log (in the data folder) still holds the mark made from their first name, for the battles they were in. On a test folder with made-up names this does not matter. Before children use the server, decide how long battle logs are kept; the server can then delete a removed cadet's lines, or keep logs for a set number of weeks.
 

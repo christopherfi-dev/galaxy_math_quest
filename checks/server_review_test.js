@@ -39,9 +39,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const st = JSON.parse(raw).state; st.done.calib = true; r = await B({ action: 'save', state: st }); const C2 = await kid('Nova');
     ok(C2.j.state && C2.j.state.done && C2.j.state.done.calib === true, 'a task finished on the second device is kept (it was lost before)', C2.j.state && C2.j.state.done);
     // 2. names
-    for (const n of ['Pornthip', 'Siriporn', 'Supaporn', 'Kanokporn', 'Pornpimol', 'Poo', 'Pee', 'Bum', 'Fu', 'Shital', 'Fukuda', 'Wankaew', 'Assadawut', 'Phassakorn', 'Dickson', 'Ali Butt']) {
+    for (const n of ['Pornthip', 'Siriporn', 'Supaporn', 'Kanokporn', 'Pornpimol', 'Poo', 'Pee', 'Bum', 'Fu', 'Shital', 'Harshit', 'Fukuda', 'Wankaew', 'Assadawut', 'Phassakorn', 'Dickson', 'Ali Butt', 'Poo P', 'Fu K', 'Phuc', 'Bich', 'Titus']) {
       const c = await kid(n, '2468'); ok(c.j.ok, `a real name is not refused: ${n}`, c.j.error); }
-    for (const n of ['Fuck', 'Shit Head', 'F U C K', 'B1tch', 'Porn', 'Poop Head', 'Fuuuck', 'Sexy', 'Stupid', 'Idiot']) { const c = await kid(n, '2468'); ok(c.j.status === 400 && /own name/.test(c.j.error), `a curse or an insult is still refused: ${n}`, c.j); }
+    for (const n of ['Fuck', 'Shit Head', 'F U C K', 'B1tch', 'Porn', 'Poop Head', 'Fuuuck', 'Sexy', 'Stupid', 'Idiot', 'Fucked', 'Motherfucker', 'Bullshit', 'Pissed', 'Smartass', 'Crappy', 'Dammit', 'Douchebag', 'Retarded', 'Fatso']) {
+      const c = await kid(n, '2468'); ok(c.j.status === 400 && /own name/.test(c.j.error), `a curse or an insult is still refused: ${n}`, c.j); }
+    // a real name the check refuses can be allowed by the teacher, for the class
+    await T({ action: 't_set', class: CODE, allow: 'Porn, Fuk' }); ok((await kid('Porn', '2468')).j.ok && (await kid('Fuk', '2468')).j.ok, 'a real name the teacher allows can log in (Porn, Fuk)');
+    ok((await T({ action: 't_class', class: CODE })).class.allow === 'Porn, Fuk', 'the Desk shows the names allowed');
+    const SH = await kid('Pimchanok', '2468'); const said = async ship => JSON.parse((await SH({ action: 'name', ship })).text).status;      /* the server's own status, not the web status */
+    ok((await said('Siriporn')) !== 'refused' && (await said('Fucked Up')) === 'refused', 'ship names: Siriporn is allowed, a curse is not');
+    // odd input made by hand gets a plain answer, never an empty page
+    for (const body of [{ action: 'save', state: { mode: {}, cards: [] }, caps: [{}] }, { action: 'code', task: 'calib', code: {} }]) { const x = await SH(body); ok(x.text.length > 0 && /"ok":false/.test(x.text), 'odd input gets a plain answer', [body, x.status, x.text.slice(0, 80)]); }
     // 3. a game refused after a clear is kept
     const D = await kid('Orbit'); await D({ action: 'save', state: { mode: 'station', done: { a: true, b: true, c: true }, cards: [] } });
     await T({ action: 't_reset', class: CODE, id: 'orbit', what: 'game' });
