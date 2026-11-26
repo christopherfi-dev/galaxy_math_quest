@@ -2,140 +2,139 @@
 
 **Date:** 26 November 2026. **For:** Marc, and the main thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the main thread's.
-**Reviewed:** see section 7.
+**Version 2,** rewritten after one review ("not yet": two blockers) and after reading your picks of 26 November, which version 1 missed. Section 7 says what changed. Version 2 is not re-read.
 
 **Tags:** [Built] is in the game today (version 100). [Source] is your words or pages. [Proposal] is mine. [Conflict] is two things that disagree.
 
-**No new numbers.** Every task below keeps the numbers it has today.
+**No new numbers.** Every task keeps the numbers it has today.
 
 ---
 
 ## 0. In short
 
-- **Your rule** [Source: Marc, 25 November]: "The code and the pattern should not be referred to as things. Those are just understanding the technology to be able to make things happen in this world."
-- **Three station locks break it** (the main thread's check, confirmed in the game):
-  - **The locker in the dock:** its code is the number of stacked crates.
-  - **The Engine Core's cage** (task 1-1): four counts make a four-number code.
-  - **The cannons' lock** (task 4-1): light every odd number, and a V unlocks it.
-- **[Conflict] Your 2023 pages are built around codes:** "count them and use them to make a code to start our spaceship"; "the spaceship's weapon system needs precise codes". Your rule that 2023 is the floor, not a template, applies. **Each fix below keeps your maths, and changes only why it is needed.**
-- **One more line breaks the rule,** and every child can meet it. Typing a number in the wrong place says: "A number needs a lock. Walk to a lock and open it first." It teaches that numbers open locks.
-- **Four decisions are yours** (section 5). My picks are marked.
+- **Your rule, and your model for keeping it** [Source: Marc, 26 November]: "Counts and patterns aren't keys or things to open things. Those are like... the things that make the answers run."
+  - For the Makers' box on Algora you picked: **"Opens by hand; the maths makes it run."**
+  - For the old stones: **"The post lifts stones."**
+  - **This note uses the same model for the station:** things open by hand or with a tool, and the maths makes a machine work.
+- **Three station locks break the rule** [Built]:
+  - the locker in the dock (the code is the number of stacked crates);
+  - the Engine Core's cage (four counts make a code);
+  - the cannons' lock (light every odd number, and a V unlocks it).
+- **And one line:** "A number needs a lock. Walk to a lock and open it first."
+- **[Conflict] Your 2023 pages are built around codes.** Your rule that 2023 is the floor, not a template, applies. Where a fix drops part of a 2023 task, it says so, and it is yours (section 5).
+- **Your decisions:** section 5. Five.
 
 ---
 
-## 1. What I checked, and what passes
-
-A helper searched the game for every lock, code, dial, keypad and "opens" on the station, and quoted each [Built].
+## 1. What passes, and what is found
 
 | | Built | Under the rule |
 |---|---|---|
-| The drawer in the Navigation Bay | Opens with a key card, found with the magnet | **Passes.** A key is a thing; no number opens it |
-| The Launch Bay door | Unlocks when the Navigation part is fitted | **Passes.** The ship is ready, so the door opens |
-| The hatch, vent, toolbox, ammo box, chest, floor plate | Open with a tool, or by hand | **Pass** |
-| The teacher's codes for the real-life tasks | "When you pass, your teacher gives you a code" | **Passes** (the main thread's reading): a classroom check, not a thing in the story |
-| Ammo Count's "Lock the racks" | A button. It opens nothing | Passes |
-| **The locker** | A count of crates opens it | **Breaks** |
-| **The Engine Core's cage** | Four counts open it | **Breaks** |
-| **The cannons' lock** | A pattern opens it | **Breaks** |
-| **"A number needs a lock"** | Said whenever a number is typed away from a task | **Breaks** |
+| The drawer (a key card), the Launch Bay door (opens when the Navigation part is fitted), the hatch, vent, toolbox, ammo box, chest, floor plate | Open with a thing, a tool, or by hand | **Pass** |
+| The teacher's codes for real-life tasks | A classroom check | **Pass** (the main thread's reading) |
+| **The locker; the Engine Core's cage; the cannons' lock** | A number or a pattern opens each | **Break** |
+| **"A number needs a lock"** | Said when a number is typed away from a task | **Breaks** |
+| **Found, not changed: the Asteroid Field** | "Before your shield can brace, it must know how many are coming." | The same shape as the cage's "It will not open until it knows". It is not a lock, but its reason is a rule. Listed for a later look |
 
-**Not searched:** a lock in other words that none of those words catch. The station's 15 tasks were read for a reason before the maths on 21 November [Built: `proposals/GMQ_Station_Story_v2_2026-11-21.md`, which you agreed]. That check came before this rule.
+**No skill is lost:** the Asteroid Field asks for an array ("N rows. M rocks in each row."), so the dock's crate count is not the station's only array.
 
 ---
 
 ## 2. The locker in the dock
 
-**Built:** a sign, "LOCKER CODE. COUNT THE STACKED CRATES." The crates stand in 2 to 4 rows of 3 or 4. The answer is rows × crates in each row. Inside is a magnet, the first step of a secret chain: the magnet lifts a key card from the grate, the key card opens the drawer, and the drawer holds the star chart. It is one of the station's secrets, not one of the 15 tasks. **No 2023 source:** your pages have no locker.
-
-**Why it breaks the rule:** a count of crates opens a locker for no reason. Nobody needs the count.
+**Built:** "LOCKER CODE. COUNT THE STACKED CRATES." Rows × crates in a row. Inside, a magnet: the first step of a secret chain (magnet, key card, drawer, star chart). It is a secret, not one of the 15 tasks. Your 2023 pages have no locker.
 
 | Option | What it is | What it costs |
 |---|---|---|
-| **A (my pick)** | **No number at all.** In the storm a crate fell against the locker. It will not open. Once the robot is awake, it can push the crate away: "use robot on crate". The magnet is inside. The crates keep their look: "3 rows. 4 crates in each row." | The dock loses one count of an array. It is a secret, so no child misses maths they need. Found by doing, as your Novus engine says |
-| B | **The count has a job.** The storm wiped the crate store's board, and Mission Control needs to know what the station still has. Count the stack for the board. The locker is a separate thing (option A) | One more small task, in the first room. The station already has its 15 |
-| C | Keep it, with a reason line | The count still opens the locker. It still breaks the rule |
+| **A (my pick)** | **It opens by hand,** like your Makers' box. "open locker": "The locker door is stiff. You pull. It opens. A magnet is inside." No sign, no code. The crates keep their look line, and lose their per-player stack | The dock has no count. No skill is lost (the Asteroid Field has arrays). The shortest change |
+| B | It is jammed, and the robot helps | Version 1's pick. It clashes with the game's words: "crate" already names the loose crate ("push crate"), "use robot on" goes to the robot's hint, and a "small repair robot" pushing what the child cannot needs a reason |
+| C | Keep it | It breaks the rule |
 
 ---
 
-## 3. The Engine Core's cage (task 1-1, Alien Artifacts)
+## 3. The Engine Core (task 1-1, Alien Artifacts)
 
-**Built:** "The storm shook the Engine Core loose. Its cage locked itself. It will not open until it knows how many artifacts spilled out, of each kind." Four kinds, each 2 to 7. Four boxes, red, blue, green and gold. Wrong: "The Engine Core rumbles! Count again", and the screen shakes. That rumble is your "temper" [Source: your 2023 form, "The Engine core might explode! Please count again."].
+**Built:** "The storm shook the Engine Core loose. Its cage locked itself. It will not open until it knows how many artifacts spilled out, of each kind." Four kinds, four dials. Wrong: "The Engine Core rumbles! Count again", the screen shakes, and the wrong dials are marked. Touching an artifact: "It hums and slips from your glove. Better to count them."
 
-**[Source] your 2023 task:** "We got a box of alien artifacts. There are 4 kinds... count them and use them to make a code to start our spaceship."
+**[Source] your 2023 task:** "count them and use them to make a code to start our spaceship"; "Put the counts in order (red-blue-green-yellow) to make a code". **[Conflict]** Your Engine Core page has another version: "Space Debris Count... The sum of these numbers will unlock the Engine Core."
 
-**Why it breaks the rule:** "It will not open until it knows how many" is a rule, not a reason. The four counts are a code.
+**Option A (my pick): the cage opens by hand; the counts make the core run.**
+- **Told first:** "The storm shook the core's alien artifacts out onto the floor. The core runs on them. It used to count them itself, but the storm knocked out its counters. Count each kind, and set the core's four dials."
+- **The cage:** it opens by hand. Nothing in the bay is locked.
+- **What the dials do:** they tell the core how many of each kind to pull back in. The artifacts slip from your glove, so only the core can take them.
+- **While the child counts,** the floor and its artifacts fill the picture, as now.
+- **Right:** "The core pulls the artifacts in, one kind at a time. Every one clicks into place. The Engine Core hums. Your ship has an engine again."
+- **Wrong:** before anything moves, the core reaches for the wrong number of one kind, and jams. "The Engine Core rumbles!" The screen shakes, and the wrong dials are marked, as now. **No slots are drawn,** so the picture never shows the count.
+- **What it keeps:** your counting, your four kinds, your four dials, and your temper.
+- **What it drops, yours to decide:** "a code", and the putting in order of the four counts. The ordering is a skill. If you want it kept, the core can pull the kinds in your 2023 order, red, blue, green and gold, and the child sets the dials in that order.
 
-| Option | What it is | What it costs |
-|---|---|---|
-| **A (my pick)** | **The artifacts are what the core runs on.** The storm shook them out onto the floor. Before they go back, the core must open one slot for each artifact, of each kind. **The four dials say how many slots to open.** Then the artifacts go in. **Right:** every artifact has a slot, and every slot is full; the core hums. **Wrong:** some artifacts have no slot, or some slots are empty. Either way the core rumbles: its temper. The screen shows which kind was wrong, as it does now ("2 of 4 dials are right") | **Words, and one picture:** the four rows of slots, filling. The counting, the four dials, the kinds and the temper all stay. Your 2023 task stays; only "a code" goes |
-| B | **Keep the cage, give it a safety reason:** it will not let you near a core with loose parts until it knows how many are loose | Still a lock opened by numbers. Closer to the rule than today, not inside it |
-| C | Keep it as it is | It breaks the rule |
-
-**The lines for A** [Proposal]:
-- Told first: "The storm shook the core's alien artifacts out onto the floor. The core runs on them. It must open one slot for each artifact before they go back in."
-- The question: "How many of each kind? Set each dial. The core opens that many slots."
-- Wrong: "The core rumbles! Some slots are empty, or some artifacts have nowhere to go." Then, as now, how many dials are right.
-- Right: "Every artifact clicks into its slot. The Engine Core hums. Your ship has an engine again."
-- The cage is gone. Nothing in the bay is locked.
+**B:** keep the cage locked, with a safety reason ("it will not let you near loose parts"). It is still a lock opened by numbers.
 
 ---
 
-## 4. The cannons' lock (task 4-1, Weapons Coding)
+## 4. The cannons (task 4-1, Weapons Coding)
 
-**Built:** "The storm scrambled the cannons' lock. Its screen is a grid of numbers. Light every odd number, and the unlock sign appears." A 6 by 6 grid, numbers up to 999. Right: "The odd numbers glow. A sign appears: V, for Voltara. The lock clicks open." There is a finished example ("58 ends in 8, so it is even...").
+**Built:** "The storm scrambled the cannons' lock. Its screen is a grid of numbers. Light every odd number, and the unlock sign appears." A 6 by 6 grid, numbers up to 999; a finished example ("58 ends in 8, so it is even..."). Right: "A sign appears: V, for Voltara." The cannon in the bay: "A practice cannon. It points at the drones." At the end: "Your twin cannons are ready."
 
-**[Source] your 2023 page:** "Identify sequences of odd and even numbers to code the weapon system."
+**[Source] your 2023 pages:** "Identify sequences of odd and even numbers to code the weapon system"; and in 4-3, "target drones marked with different numbers".
 
-**Why it breaks the rule:** the pattern of odd numbers unlocks a lock.
+**What odd means, already in the game:** Ammo Count says "An odd number in a rack leaves one shot with no partner" [Built]. **Odd means "one left over when you make pairs".** That is the real meaning of odd and even, and it fits twin cannons.
 
-| Option | What it is | What it costs |
-|---|---|---|
-| **A (my pick)** | **The screen is the cannons' aim.** On KIS Station, practice drones carry odd numbers, and station ships carry even numbers. The storm scrambled the cannons' screen: they cannot tell which is which. **Light the odd numbers, and the cannons aim only at those.** **Right:** a practice volley hits only drones, and they scatter into a V, for Voltara. **Wrong:** a lit even number makes a cannon swing toward a station ship, and stop ("That one is a friend!"). An odd number left dark is a drone that flies past untouched. Both are shown, counted, in the same picture | **Words, and the volley:** the grid, the numbers, the finished example and the V stay. The V becomes the drones' shape, not a key |
-| B | **Twin cannons:** the left one fires at odd numbers, the right at even. Sort the drones between them | Its reason ("each cannon reads one kind of number") is a rule. A is more real: never aim at a friend |
-| C | Keep it as it is | It breaks the rule |
+**Option A (my pick): the twin cannons fire in pairs.**
+- **Told first:** "Your ship must fly through the storm's wreckage to reach Voltara. Its twin cannons will clear the way. They fire two charges at a time."
+- "The screen shows how many charges each piece of wreckage needs. An even number goes in pairs. An odd number leaves one charge over, and needs one single shot at the end."
+- "The storm scrambled the screen. Light every odd number, so the cannons know where to add a single shot."
+- **Right:** the cannons fire, and every piece of wreckage breaks up. No charge is wasted.
+- **Wrong, told as counts only, never which number:** "3 pieces of wreckage are still there: each needed one more shot." Or: "2 single shots hit nothing: those pieces were even." So lighting everything does not win: it wastes a shot on every even piece, and the count shows it.
+- **The V goes.** It was a pattern used as a sign, and your rule of 26 November covers it.
+- **What it keeps:** your odd and even, the grid, the numbers and the finished example. The cannons fire at wreckage, not at drones or ships.
 
-**The lines for A** [Proposal]:
-- Told first: "The storm scrambled the cannons' screen. Practice drones carry odd numbers. Station ships carry even numbers. Now the cannons cannot tell them apart."
-- The question: "Light every odd number. The cannons will aim only at what you light."
-- Wrong, a lit even number: "A cannon swings toward a station ship! It stops. That one is a friend."
-- Wrong, an odd number left dark: "A drone flies past. Nothing aimed at it."
-- Right: "Every drone is hit. They scatter into a V, for Voltara. Your twin cannons are ready."
+**B: friends and targets** (version 1's pick): odd for drones, even for station ships. It fails three ways:
+- "That is how the station numbers them" is a rule.
+- Your home page says "The spaceships are broken", so no station ships are flying.
+- Your 4-3 has drones "marked with different numbers", so drones are not all odd.
 
-**Is shooting right for 8-year-olds?** The drones are practice drones, as today, and the cannons already exist [Built]. Option A adds a reason to be careful, which is kinder than what is built.
+**Tone is yours:** cannons are built, and A aims them at wreckage only.
 
 ---
 
 ## 5. Your decisions
 
-| | Decision | My pick | Why |
-|---|---|---|---|
-| 1 | The locker | **A:** no number; the robot pushes away the fallen crate | It is a secret with no 2023 source. Found by doing |
-| 2 | The Engine Core | **A:** the dials say how many slots the core opens | Your task and its temper stay, with a reason in place of "a code" |
-| 3 | The cannons | **A:** the screen is the cannons' aim; odd is a drone, even is a friend | Your odd and even task stays; the V stays; a wrong light shows why |
-| 4 | **"A number needs a lock"** | Change it to: "Numbers are for working things out. Walk to a task first." | Every child can meet it, and today it teaches the opposite of your rule |
+| | Decision | My pick |
+|---|---|---|
+| 1 | **The locker** | **A:** it opens by hand. No count |
+| 2 | **The Engine Core** | **A:** the cage opens by hand; the four counts tell the core how many to pull in; a wrong count jams it (the temper) |
+| 3 | **The Engine Core's ordering** (your 2023 "put the counts in order") | **Keep it:** the core pulls the kinds in your order, and the dials are set in that order |
+| 4 | **The cannons** | **A:** twin cannons fire in pairs; odd leaves one over; light the odd ones for a single shot. The V goes |
+| 5 | **"A number needs a lock"** | Change it to: "Type numbers in a task's box. Walk to the task first." |
 
-**Also yours:** the task's title "Weapons Coding" is your 2023 name. It could stay as a name, or become "Weapons Aiming".
+**Also yours:** the title "Weapons Coding" could stay as your 2023 name, or become "Weapons Aiming".
 
 ---
 
-## 5b. Pushing like a child
+## 6. For the main thread: every built line that changes
 
-| A child asks | The story answers |
-|---|---|
-| "Why not put the artifacts back one at a time?" | The core opens all its slots at once, from its dials, before anything goes in. An empty slot lets its heat out; an artifact with no slot cannot go in. Both make it rumble |
-| "Why not just count the slots?" | The slots are closed until the dials open them. The artifacts are on the floor, where you can count them |
-| "Why is the cannons' screen full of numbers?" | It shows every ship and drone near the station, each by its number |
-| "Why not just light everything?" | Then the cannons aim at station ships too. Each one stops in time, and you see it |
-| "Why are drones odd and ships even?" | That is how the station numbers them, so nobody mixes them up. The storm only scrambled the screen |
-| "Why can't I open the locker?" | A crate fell against it in the storm. Something strong could push it away |
-
-## 6. What could prove this wrong
-
-| Claim | What to check |
-|---|---|
-| A child knows why the core needs the counts | Before they type, ask: "What will the dials do?" The answer wanted is "open the slots" |
-| The friend-or-drone reason makes care matter | Watch a child who lights an even number. Do they slow down after the cannon stops? |
-| Nobody misses the locker's count | The station's other tasks already have arrays. The main thread can say if the dock's was the only one |
+- **The locker:**
+  - the sign ("LOCKER CODE...");
+  - the locker's look and open lines;
+  - the screen "A lock in the world";
+  - line 1023's number routing in the dock;
+  - the teacher page ("The locker code is the number of stacked crates");
+  - the per-player stack.
+- **The Engine Core:**
+  - the STORY line;
+  - the hint "Then open the cage";
+  - the core's look ("locked in a cage. The lock has four dials");
+  - the screen's heading "The Engine Core lock";
+  - the buttons "Open the lock" and "Leave and count";
+  - the ship's log ("out of its cage, and running").
+- **The cannons:**
+  - the STORY line;
+  - the screen's title "THE CANNONS' LOCK";
+  - the button "Try the lock";
+  - the right and wrong lines;
+  - the ship's log ("Its sign was a V, for Voltara").
+- **Everywhere:** "A number needs a lock. Walk to a lock and open it first."
 
 ---
 
@@ -144,4 +143,28 @@ A helper searched the game for every lock, code, dial, keypad and "opens" on the
 - **Read:** `CLAUDE.md`; your words of 21 and 25 November; the main thread's check of 26 November. A helper searched the game for every lock and code on the station, and your 2023 station pages for Alien Artifacts and Weapons Coding, and quoted each.
 - **Not done:** I did not play the game. No new numbers.
 - **Read against itself once:** added section 5b, after finding no answer to "why not put the artifacts back one at a time?".
-- **Review:** not yet run.
+- **Review:** section 7a.
+
+### 7a. The review of version 1, and what changed
+
+**Verdict: "Not yet."** What it found, and what version 2 does:
+
+| | It found | Version 2 |
+|---|---|---|
+| **Blocker** | **Cannons: lighting everything won,** because each friend was shown | Feedback is counts only, never which number. Lighting everything wastes a shot on every even piece |
+| **Blocker** | **Core: the slots picture gave the count away** | No slots are drawn. A wrong count jams the core before anything moves |
+| Major | Cannons against the sources: no flying station ships; the 8 drones in the bay against 16 odd numbers; drones with even numbers in 4-3 | Option A: wreckage, not drones or ships. B is listed with its three faults |
+| Major | "That is how the station numbers them" is a rule; the game's own meaning of odd is pairs | Option A uses pairs: "An odd number... leaves one shot with no partner" [Built] |
+| Major | The V is still a pattern used as a thing | The V goes |
+| Major | Whose cannons, and who needs them | Your ship's, to clear the storm's wreckage on the way to Voltara, told first |
+| Major | The locker clashes with the parser ("crate", "use robot on") | Option A: it opens by hand, your own model for the box. No new noun |
+| Major | Who puts the artifacts in; why the core does not count itself | The core pulls them in; the storm knocked out its counters |
+| Major | Your 2023 ordering and the Space Debris version were dropped without saying so | Listed; decision 3 keeps the ordering |
+| Minor | "Numbers are for working things out" misleads a child holding a teacher's code | "Type numbers in a task's box. Walk to the task first." |
+| Minor | "Each fix keeps your maths" against "the dock loses a count"; the kept crate line leads nowhere | The Asteroid Field keeps the array skill; the locker has no count |
+| Minor | The Asteroid Field's "must know how many are coming" has the same shape | Listed in section 1, as found |
+| Minor | Built words left out | Section 6 lists them |
+| Minor | Your 26 November picks were not read | Read, and used as the model |
+| Minor | "which is kinder" decided tone; "volley" | Tone is yours; "the cannons fire" |
+
+**Not re-read by a reviewer:** version 2.
