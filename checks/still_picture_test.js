@@ -26,8 +26,8 @@ const path = require('path');
   for (const [name, w, h, touch] of SCREENS) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: touch }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
-    if (process.env.WORDSIDE === 'on') await p.addInitScript(() => { try { localStorage.setItem('gmq-wordside', 'on'); } catch (e) {} });      /* [v101] WORDSIDE=on: the words beside the picture (a Teacher try-out) */
-    await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); localStorage.setItem('gmq-wisps', 'off'); } catch (e) {} });
+    if (process.env.WORDSIDE === 'on') await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; try { localStorage.setItem('gmq-wordside', 'on'); } catch (e) {} });      /* [v101] WORDSIDE=on: the words beside the picture (a Teacher try-out) */
+    await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); localStorage.setItem('gmq-wisps', 'off'); } catch (e) {} });
     await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(500);
     await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); }); await p.waitForTimeout(700);
     const look = () => p.evaluate(() => {
@@ -111,7 +111,7 @@ const path = require('path');
   }
   // a phone keeps the old layout: a task opens under the picture, and its answer box and Check are on the screen
   { const ctx = await b.newContext({ viewport: { width: 390, height: 760 }, deviceScaleFactor: 1, hasTouch: true }), p = await ctx.newPage(); p.on('pageerror', e => errs.push('phone: ' + e.message));
-    await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); } catch (e) {} }); await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(500);
+    await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; try { localStorage.setItem('gmq-cards', 'off'); } catch (e) {} }); await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(500);
     await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); }); await p.waitForTimeout(600);
     await p.evaluate(() => { widget = { kind: 'grid', hits: 0, need: 3, tries: 0, g: 5, e: 8, next: nextGrid }; nextGrid(); }); await p.waitForTimeout(300); await p.tap('#ans'); await p.waitForTimeout(300);
     const v = await p.evaluate(() => { const t = document.getElementById('toy'), vis = e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= window.innerHeight; }; return { inConsole: !!t.closest('.console'), desk: document.body.classList.contains('desk'), ans: vis(document.getElementById('ans')), btn: vis(document.getElementById('try')), counts: (() => { const r = document.getElementById('status').getBoundingClientRect(); return r.height > 0; })() }; });

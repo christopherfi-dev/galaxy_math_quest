@@ -15,7 +15,7 @@ const path = require('path');
   const b = await chromium.launch(), errs = [];
   const p = await (await b.newContext({ viewport: { width: 820, height: 1180 }, deviceScaleFactor: 1 })).newPage();
   p.on('pageerror', e => errs.push('pageerror: ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-  await p.addInitScript(() => { try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); } catch (e) {} }); /* reading cards have their own test: reading_card_test.js */ await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
+  await p.addInitScript(() => { window.GMQ_NO_CARDPOP = true; try { localStorage.setItem('gmq-cards', 'off'); localStorage.setItem('gmq-hazards', 'off'); localStorage.setItem('gmq-flyin', 'off'); localStorage.setItem('gmq-words', 'open'); localStorage.setItem('gmq-rats', 'off'); } catch (e) {} }); /* reading cards have their own test: reading_card_test.js */ await p.goto('file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html')); await p.waitForTimeout(300);
   await p.evaluate(() => { if (S.mode === 'intro') skipIntro(); S.bot = true; S.botName = 'Zip'; save(); });
   // answer the question on screen, right or wrong, through the panel's own controls
   const answer = right => p.evaluate(right => {
