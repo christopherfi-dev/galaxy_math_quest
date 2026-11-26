@@ -1,4 +1,4 @@
-# Galaxy Math Quest: the test folder (server version 0.2)
+# Galaxy Math Quest: the test folder (server version 0.3)
 
 **For:** Marc. **Time:** about 20 minutes. **Who plays:** made-up cadets only, never a child.
 Everything here is **[Proposal]**. Nothing on your site changes until you upload it yourself.
@@ -18,7 +18,7 @@ Everything here is **[Proposal]**. Nothing on your site changes until you upload
   - ship names that wait for you
   - the server check
   - clearing a game, and bringing back an older copy
-- **What you cannot try yet:** the card board and battles. The server has them, and the Desk can switch them on. But the game has no buttons for them yet. The main thread adds those later.
+- **What you can try on a test page only:** the class card board, and battles against a classmate's deck (step 9). The game has no buttons for them yet. The main thread adds those later.
 
 ## What you need
 
@@ -112,11 +112,31 @@ Try each of these. Note what works.
 5. **A copy to bring back.** On the Desk, press "Clear game" for Orbit. Then press "Older copies", then "Bring this back". Log out and in as Orbit: the game is back.
 6. **A lock.** Type five wrong numbers for Nova. Nova is locked for ten minutes. "New secret number" on the Desk lets Nova in again.
 
-## Step 9. Tell the server thread
+## Step 9 (if you like). Two pretend cadets battle each other's decks
+
+This uses a test page, `cards-test.html`, made for trying cards between classmates before the game has its own buttons. **Made-up cadets only.**
+
+1. On the Desk, in your Test class, set:
+   - Ship names: **accept kind names at once**
+   - Class card board: **on**
+   - Battles: **challenge: winner takes both** (or the other challenge rule, to try it)
+   - Test page for cards and battles: **on**
+   - then press **Save these settings**
+2. On the iPad, open `.../gmq-test/cards-test.html`. Log in as **Nova**. Type a ship name. Press **Take a starter pack**: 15 cards. Tick **Classmates may battle my deck**.
+3. On the phone, do the same as **Orbit**.
+4. On the iPad, under "Battle a classmate's deck", press **Challenge** beside Orbit's ship. Both cards at stake show. Press **Back out** once (nothing moves), then **Challenge** and **Agree and battle**.
+5. Play the battle. At the end, the card moves. On the phone, reload the page: Orbit is told what happened.
+6. On the Desk, press Refresh: the Battles list shows it.
+
+**Known for now:** the computer plays a deck like Nova's, not Orbit's real deck. The battle thread has been asked to add that (a few lines on their side). The cards at stake are real.
+
+When you have tried it, set the test page to **off**.
+
+## Step 10. Tell the server thread
 
 Paste back only:
 - which lines of step 5 were green, and the words of any red one
-- which of the six tries in step 8 worked
+- which of the six tries in step 8 worked, and, if you tried it, step 9
 
 No password, no setup word and no class code are needed.
 
@@ -133,6 +153,6 @@ Nothing else on your site was changed.
 ## What the test folder does not do
 
 - **No AI.** It stays off.
-- **No cards between cadets yet.** The Desk has the switches. The game has no buttons yet.
+- **No cards between cadets in the game yet.** The Desk has the switches, and the test page (step 9) lets pretend cadets try them. The game has no buttons yet.
 - **It is not the class's game.** The class keeps playing on the GitHub Pages link. Games saved here stay here.
 - **The game in `play.html` does not update by itself.** It is the class link's copy from the day the zip was built. The folder's front page (`index.html`) says which version it is.

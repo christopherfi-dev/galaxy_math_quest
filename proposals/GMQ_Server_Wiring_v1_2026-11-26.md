@@ -1,4 +1,4 @@
-# Wiring the game to server 0.2
+# Wiring the game to server 0.2 (and 0.3)
 
 **Date:** 26 November 2026. **From:** the server thread. **For:** the main thread (the game), the cards thread (the card book) and the battle thread (the battle).
 Everything is **[Proposal]**. The server is `engines/gmq-world/server/` (README there). No thread but the main thread edits the game file.
@@ -18,7 +18,7 @@ netCall({ action: 'save', state: S, rev: NET.rev, caps: ['rev', 'cards'] })
 ```
 
 - `NET.rev`: the number the server sends back in `join`, `load`, `claim` and every good `save` (`r.rev`). Keep it in `NET.rev`, and also in `localStorage` under its own key (for example `gmq-net-rev`), so a reload knows it.
-- `caps` tells the server this page understands the rules below. Without it, the server treats the page as today's, and a cadet cannot be in a challenge.
+- `caps` tells the server this page understands the rules below. It is kept for the teacher's information. (Since server 0.3 a cadet can be in a challenge without it: the server's own list of moved cards keeps every book right, and only a card with its own mark is ever put up.)
 
 ### 1b. When a save is refused (status 409)
 
@@ -98,7 +98,7 @@ The battle itself is yours, and its rules are Marc's. The server keeps decks, pi
 - at most 6 battles started in an hour by one cadet [pick]
 
 **Errors a child may meet** (show the server's `error` words; they are written for children):
-"That classmate is in another battle. Try again soon." · "Finish your other battle first." · "You need a rare or epic card in your deck to challenge." · "That is enough battles for one hour. Try again later." · "Challenge battles need the newest game on both iPads."
+"That classmate is in another battle. Try again soon." · "Finish your other battle first." · "You need a rare or epic card in your deck to challenge." · "That is enough battles for one hour. Try again later."
 
 **A known gap:** the server cannot check who won. The page says so. A child with the know-how could claim a win. Fixing it needs the battle engine on the server, to replay the battle from `seed` and `log`. [Proposal, later]
 
