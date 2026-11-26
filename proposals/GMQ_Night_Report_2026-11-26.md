@@ -51,7 +51,18 @@ Pictures, if you would rather not open links:
 
 ## 4. For the morning: Gemini prompts for Voltara's and Chronosia's characters
 
-*(Section filled in below when the prompts are written.)*
+**In `proposals/GMQ_Character_Prompts_Voltara_Chronosia_v1_2026-11-26.md`:** twelve prompts, 22 to 33, for the same Gemini chat.
+- **Voltara:** the Energy Council (three councillors: calm, worried, happy), the Gumblefish, the blue butterfly, two Number Nomads.
+- **Chronosia:** the Tower Keeper, the Quake Watcher, the four Timekeepers (Sara, Tim, Alex, Zara: calm, then one feeling each), the Temporal Tortoise, the Clockwork Cougar.
+- **Every look is the game's own words.** Examples: "Old, with kind eyes. A ring of tower keys hangs at the belt"; "Three eyes, all of them tired"; "One big eye, and star charts in every pocket".
+- **Rules built into the prompts, so no picture gives an answer away:**
+  - every clock face is blank (reading the Cougar's chest clock is its task);
+  - nothing countable (the Nomads' houses, the Tortoise's eggs);
+  - no writing on the Watcher's log;
+  - nobody holds the night traveller's clue.
+- **Two choices for you** [Proposal]:
+  - **A white background**, because these people come in green, pink and blue.
+  - **Small mitten hands**, because the game's words give them hands ("One hand holds a rope") but its drawings have none.
 
 ---
 
