@@ -144,7 +144,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 'use strict';
 const $ = id => document.getElementById(id);
 const PLANET = 'Planet Algora';          /* [Proposal] the name is Marc's to choose. It is used from here only. */
-const VERSION = 'big world 12, new look sample';
+const VERSION = 'big world 13, new look sample';
 const KEY = 'gmq-bigworld-looksample-v1', GAMEKEY = 'gmq-station-sketch-v5';      /* its own save. The game's save is read for the cadet's name only, and never written. */
 
 /*MAP-BEGIN (painted by checks/bigworld_map_build.js; change that file, not these letters)*/
@@ -881,9 +881,17 @@ const CAST_PROPS = {"hat":{"src":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA
   - Pim, until his spinner is given back: sad. After: playing with it. (What the child did shows in the picture.)
   - "Look: old" on the Ship panel shows the game's own drawing, as today. If a picture has not loaded, the game's own drawing is used.
   THE CROWD [Marc's pictures 9 to 11]: one ordinary Mender, made into each Mender of the crowd: the game's own copper for each (its col), and one or two things that fit their job.
-  Things they wear sit on the lid; things they carry stand on the ground beside them, so they stay put when the face changes. On the walking map and at the first lesson. */
+  Things they wear sit on the lid; things they carry stand on the ground beside them, so they stay put when the face changes. On the walking map and at the first lesson.
+  THE RILLFOLK [Proposal, 25 November 2026; Marc: "Can we try to upgrade the characters on the next village." Prompts: proposals/GMQ_Character_Test_Rillfolk_v1_2026-11-25.md]
+  - In the harbour: the harbour keeper, the baker, the net weaver and the old singer, each from their own pictures (also the net weaver at her bench, in the rope task).
+  - On the map: the guard, the three speakers and the child, calm, and happy for their happy lines; each grows a little while talking, as the Menders do.
+  - The same breathing, blinking, hop and faces by words as Elder Thimble. The old singer sings once the rice is out (what the child did shows in the picture).
+  - Each one is drawn from a picture only when its pictures are in the page (prototypes/world_cast_sprites.js); until then, the game's own drawing. */
 const CAST = (() => {
-  const NAME = { elder: 'Elder Thimble', pim: 'Pim' }, HEIGHT = { elder: 2.3, pim: 1.7 };      /* on-screen height of the calm frame, in the scene's r (about 130 and 95 pixels on an iPad held sideways); taller, the elder covers the pip store */
+  const NAME = { elder: 'Elder Thimble', pim: 'Pim', keeper2: 'The harbour keeper', baker: 'The baker', netmender: 'The net weaver', singer: 'An old singer',
+    guard: 'A Rillfolk guard', sp_stilt: 'The speaker of Stilt Town', sp_reed: 'The speaker of Reed Town', sp_mud: 'The speaker of Mud Town', rafter: 'A Rillfolk child' };      /* the name their words come under */
+  const HEIGHT = { elder: 2.3, pim: 1.7, keeper2: 2.35, baker: 1.95, netmender: 1.95, singer: 1.75 };      /* on-screen height of the calm frame, in the scene's r (about 130 and 95 pixels on an iPad held sideways); taller, the elder covers the pip store */
+  const MAPH = { rafter: .62 };      /* on the map, in squares: the Rillfolk are "tall" (a Mender is .82); the child is smaller */
   const IMG = {}, PROP = {};
   Object.keys(CAST_PROPS).forEach(k => { const im = new Image(); im.src = CAST_PROPS[k].src; PROP[k] = im; });
   Object.keys(CAST_SPRITES).forEach(c => Object.keys(CAST_SPRITES[c].frames).forEach(f => { const im = new Image(); im.src = CAST_SPRITES[c].frames[f].src; IMG[c + '.' + f] = im; }));
@@ -895,20 +903,35 @@ const CAST = (() => {
       [/^You know how already|^Look: our Rule Stone|^And for you|^You have made|^Long ago I found|^3 times 4 is 12/, 'happy'],
       [/^Four machines stand|^Here are our last|^Use only a machine|^The other four|^Keep it safe|^The Rillfolk are over|^I poured in 2|^Now you\./, 'idle']],
     pim: [[/lost my spinner/, 'sad'], [/That is my spinner|You found it|I will write back/, 'joy'], [/Want a secret|Shh|Push the old post|The big kids cross/, 'secret'],
-      [/^Whee! Look at it spin/, 'spinner'], [/count to 100 by fives|A bottle\? With a note|Wim!/, 'excited'], [/^Hello! I am Pim\.$/, 'idle']] };
+      [/^Whee! Look at it spin/, 'spinner'], [/count to 100 by fives|A bottle\? With a note|Wim!/, 'excited'], [/^Hello! I am Pim\.$/, 'idle']],
+    /* the Rillfolk [Proposal: Claude's reading of each line; the table is in the prompts note, section 4] */
+    keeper2: [[/^My harbour has three kinds|^Rule (one|two|three)|^The water gate has a lamp|^Three towns have sent|Year Machine's hand/, 'thinking'],
+      [/high water is coming|went dark|nobody can load/, 'worried'], [/^The rice is out/, 'surprised'],
+      [/^A visitor from the sky! I am the harbour keeper|^All three tags hang|Good\.|Your raft is tied|One day it will carry you far/, 'happy'], [/^Go to each town|^The board has/, 'idle']],
+    baker: [[/^Trays for 6\?/, 'worried'], [/^Trays for 8\?|^Your rafts are my trays/, 'happy'], [/^I bake|^Trays for 5\?/, 'thinking']],
+    netmender: [[/Long reeds|The rope is yours|Not one more, not one less|bundles\. Good/, 'happy'], [/too short|too long|not enough|will not reach/, 'worried'],
+      [/How deep|You do not know\?|A knot is a number|shortest reed|Need a rope\?|I need \d+ bundles|The longest reeds grow/, 'thinking']],
+    singer: [[/throat is dry|No song/, 'sad'], [/I knew a song|forget how|footprints|When I was small/, 'remember'], [/^La, la|^Sing with me/, 'sing']],
+    guard: [[/^A visitor from the sky|Rillfolk thank you|is mended|I will open the gate/, 'happy']],
+    sp_stilt: [[/^The rice came|will eat this season|^Welcome to/, 'happy']], sp_reed: [[/^The rice came|will eat this season|^Welcome to/, 'happy']],
+    sp_mud: [[/^The rice came|will eat this season|^Welcome to/, 'happy']],
+    rafter: [[/^The fleet went out|^Do you really come from the sky|^I can pole|One day I will steer/, 'happy']] };
   const st = {};
   Object.keys(NAME).forEach((c, i) => { st[c] = { page: '', hop: -9, blinkAt: 1.5 + i * 1.7, phase: i * 1.3 }; });
+  const shown = {};      /* the frame each one shows now (for checks) */
   function faceFor(c, text) { for (const [re, f] of LINES[c]) if (re.test(text)) return f; return /\?\s*$/.test(text) ? 'thinking' : /!/.test(text) ? 'happy' : 'idle'; }
-  function rest(c) { return c === 'pim' ? (flag('spinGiven') ? 'spinner' : 'sad') : 'idle'; }
+  function rest(c) { return c === 'pim' ? (flag('spinGiven') ? 'spinner' : 'sad') : c === 'singer' && flag('fleetDone') ? 'sing' : 'idle'; }
   function speaking(c) { return reading() && READ.who === NAME[c]; }
   /* draw one of them with the feet on the line base, at x X; r is the scene's size. Returns false to let the game draw its own. */
-  function draw(c, X, base, r) {
+  function draw(c, X, base, r) { return paint(c, X, base, HEIGHT[c] * r); }
+  /* the same, H tall (in pixels) */
+  function paint(c, X, base, H) {
     if (!WL.on || !CAST_SPRITES[c]) return false;
     const s = st[c], talk = speaking(c), text = talk ? READ.q[READ.i] || '' : '', key = talk ? READ.i + '|' + text : '';
     if (key && key !== s.page) s.hop = tNow; s.page = key;
     const fname = talk ? faceFor(c, text) : rest(c), fr = CAST_SPRITES[c].frames[fname] || CAST_SPRITES[c].frames.idle, im = IMG[c + '.' + (CAST_SPRITES[c].frames[fname] ? fname : 'idle')];
     if (!im || !im.complete || !im.naturalWidth) return false;
-    const H = HEIGHT[c] * r, k = H / CAST_SPRITES[c].frames.idle.h;
+    shown[c] = CAST_SPRITES[c].frames[fname] ? fname : 'idle'; const k = H / CAST_SPRITES[c].frames.idle.h;
     const br = Math.sin(tNow * 2.2 + s.phase), tb = talk ? Math.sin(tNow * 9) * .012 : 0, sy = 1 + .016 * br + tb, sx = 1 - .011 * br;
     const th = tNow - s.hop, dy = th < .42 ? -Math.sin(th / .42 * Math.PI) * H * .09 : 0, land = th >= .42 && th < .56 ? 1 - .07 * Math.sin((th - .42) / .14 * Math.PI) : 1;
     cx.fillStyle = 'rgba(0,0,0,.24)'; cx.beginPath(); cx.ellipse(X, base, fr.w * k * .3 * (1 + dy / H), Math.max(3, H * .05), 0, 0, 7); cx.fill();
@@ -957,11 +980,12 @@ const CAST = (() => {
     if (tNow >= s.blinkAt && tNow < s.blinkAt + .14) for (const [ex, ey, erx, ery] of fr.eyes) { const ox = ex - fr.ax, oy = ey - fr.ay;
       cx.fillStyle = col; cx.beginPath(); cx.ellipse(ox, oy, erx * 1.12, ery * 1.12, 0, 0, 7); cx.fill(); cx.strokeStyle = INK; cx.lineWidth = Math.max(2.5, ery * .2); cx.lineCap = 'round'; cx.beginPath(); cx.moveTo(ox - erx * .95, oy + ery * .1); cx.quadraticCurveTo(ox, oy + ery * .55, ox + erx * .95, oy + ery * .1); cx.stroke(); cx.lineCap = 'butt'; }
     cx.restore(); return true; }
-  /* on the walking map: a Mender of the crowd stands on its square (the Rillfolk are another people, and keep the game's drawing) */
-  const grows = {};      /* a Mender talking on the map grows a little, so the face and the hop can be seen [Proposal, after Marc: "right now they're not really moving in any way"] */
-  function crowd(t, X, Y, ts) { if (t.folk === 'rill') return false; const talk = reading() && READ.who.toLowerCase() === String(t.name).toLowerCase(), g = grows[t.id] = (grows[t.id] || 1) + ((talk ? 1.35 : 1) - (grows[t.id] || 1)) * .12;
+  /* on the walking map: a Mender of the crowd, or one of the Rillfolk with pictures of their own, stands on its square */
+  const grows = {};      /* talking on the map, they grow a little, so the face and the hop can be seen [Proposal, after Marc: "right now they're not really moving in any way"] */
+  function crowd(t, X, Y, ts) { const talk = reading() && READ.who.toLowerCase() === String(t.name).toLowerCase(), g = grows[t.id] = (grows[t.id] || 1) + ((talk ? 1.35 : 1) - (grows[t.id] || 1)) * .12;
+    if (t.folk === 'rill') return !!NAME[t.id] && paint(t.id, X, Y + ts * .34, ts * (MAPH[t.id] || .95) * g);
     return mender(t.id, t.col || '#c9793a', X, Y + ts * .34, ts * .82 * g, t.name); }
-  return { draw, faceFor, mender, crowd, crowdFace, test: { blinkNow: c => { st[c].blinkAt = tNow; } } };      /* test: for checks only */
+  return { draw, paint, faceFor, mender, crowd, crowdFace, test: { blinkNow: c => { st[c].blinkAt = tNow; }, shown: c => shown[c] || '', clear: () => { Object.keys(shown).forEach(k => delete shown[k]); } } };      /* test: for checks only */
 })();
 /*WORLD-CAST-END*/
 /*WORLD-OPENING-BEGIN  The start of the big world: landing on the meadow, a Mender to meet you, and a way to skip it.   [Proposal, 24 November 2026]
@@ -983,6 +1007,7 @@ const OPENING = (() => {
   const inStart = () => !!S && (S.intro < 9 || greeting || (!flag('lessonDone') && !flag('metElder')));
   const canSkip = () => inStart() && (seen() || location.hash === '#skip');
   function skip() {
+    if (!canSkip()) return;      /* only during the start: never in the middle of the game */
     clearTimeout(READ.tm); READ.q = []; READ.i = 0; READ.then = null; READ.who = ''; $('read').hidden = true; $('veil').hidden = true;
     greeting = false; S.intro = 9; PIC = null; TASK = null; S.open = null; BOX.on = ''; BOX.v = {};
     const L = S.lesson || (S.lesson = { step: 0, notes: [], last: null }); L.step = 6; L.greeted = 1; setFlag('lessonDone');
@@ -1000,11 +1025,15 @@ const OPENING = (() => {
     if (!(greeting || (S.intro < 9 && READ.i >= 5 && reading()))) return;
     const talk = reading() && READ.who === 'A Mender'; grow += ((talk ? 1.35 : 1) - grow) * .12;
     const gx = P.px + 1.3, gy = P.py; CAST.mender('lesson', '#c9793a', X(gx) + ts / 2, Y(gy) + ts * .84, ts * .82 * grow, 'A Mender'); }
-  const css = document.createElement('style'); css.textContent = '#read #readskip { float: right; width: auto; display: inline-block; flex: none; font-size: .78rem; padding: 4px 10px; min-height: 30px; margin: -4px -4px 4px 8px; }'; document.head.appendChild(css);
+  const css = document.createElement('style'); css.textContent = '#read #readskip { float: right; width: auto; flex: none; font-size: .78rem; padding: 4px 10px; min-height: 30px; margin: -4px -4px 4px 8px; }'; document.head.appendChild(css);
   const b = document.getElementById('readskip');
   if (b) { b.onclick = e => { e.stopPropagation(); skip(); };      /* small, in the card's corner: set on the button itself, so the page's own button style (full width on a phone) does not win */
-    [['float', 'right'], ['width', 'auto'], ['min-width', '0'], ['display', 'inline-block'], ['flex', 'none'], ['font-size', '.78rem'], ['padding', '4px 10px'], ['min-height', '30px'], ['margin', '-4px -4px 4px 8px'], ['align-self', 'flex-end'], ['justify-self', 'end']].forEach(([k, v]) => b.style.setProperty(k, v, 'important')); }
-  return { canSkip, skip, greet, drawGreeter, mark, get greeting() { return greeting; } };
+    [['float', 'right'], ['width', 'auto'], ['min-width', '0'], ['flex', 'none'], ['font-size', '.78rem'], ['padding', '4px 10px'], ['min-height', '30px'], ['margin', '-4px -4px 4px 8px'], ['align-self', 'flex-end'], ['justify-self', 'end']].forEach(([k, v]) => b.style.setProperty(k, v, 'important')); }
+  /* shown or not, on each card: set on the button itself, so no style of the page can show it when it should be hidden
+     [fault found 25 November: the button's own style showed it on every card, even on a first time, and a tap later in the game reset the start] */
+  function showSkip() { const on = canSkip(); if (b) { b.hidden = !on; b.style.setProperty('display', on ? 'inline-block' : 'none', 'important'); } }
+  if (b) { b.hidden = true; b.style.setProperty('display', 'none', 'important'); }      /* hidden until a card asks (the game's save may not be read yet) */
+  return { canSkip, showSkip, skip, greet, drawGreeter, mark, get greeting() { return greeting; } };
 })();
 /*WORLD-OPENING-END*/
 /*WORLD-WALK-BEGIN  Hold to keep walking.   [Proposal, 25 November 2026]
@@ -1127,10 +1156,10 @@ function reachBack(w, h, hz, gy, r, bare) { ['#3b78c9', '#5b97d9', '#86b8e6', '#
   for (const [fx, sz] of bare ? [[.18, 1]] : [[.18, 1], [.5, 1.2], [.84, 1]]) { const X = w * fx, bw = r * 3.2 * sz, bh = r * 1.9 * sz, by = gy - h * .1; cx.strokeStyle = '#6b4a22'; cx.lineWidth = Math.max(4, r * .14); for (const a of [-.36, .36]) { cx.beginPath(); cx.moveTo(X + bw * a, by); cx.lineTo(X + bw * a, gy + h * .02); cx.stroke(); } cx.fillStyle = '#dfe9ee'; rr(X - bw / 2, by - bh, bw, bh, 6); cx.fill(); ol(2); cx.fillStyle = '#3f8fd0'; cx.beginPath(); cx.moveTo(X - bw * .62, by - bh); cx.lineTo(X, by - bh - bw * .36); cx.lineTo(X + bw * .62, by - bh); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#ffd25e'; for (const sg of [-1, 1]) { rr(X + sg * bw * .26 - r * .2, by - bh * .7, r * .4, r * .45, 3); cx.fill(); ol(1.5); } }
   cx.fillStyle = '#a8713f'; cx.fillRect(0, gy - h * .02, w, h * .1); cx.strokeStyle = INK; cx.lineWidth = 2; cx.strokeRect(-2, gy - h * .02, w + 4, h * .1); cx.strokeStyle = '#6b4424'; for (let i = 1; i < 16; i++) { cx.beginPath(); cx.moveTo(w * i / 16, gy - h * .02); cx.lineTo(w * i / 16, gy + h * .08); cx.stroke(); } }
 function reachThing(t, X, base, r) { const id = t.id;
-  if (id === 'baker') { cx.fillStyle = '#b9543a'; rr(X + r * .6, base - r * 1.7, r * .9, r * 1.7, 6); cx.fill(); ol(2); cx.fillStyle = '#2b1a12'; cx.beginPath(); cx.arc(X + r * 1.05, base - r * .7, r * .3, Math.PI, 0); cx.lineTo(X + r * 1.35, base - r * .3); cx.lineTo(X + r * .75, base - r * .3); cx.closePath(); cx.fill(); cx.fillStyle = '#ffb23e'; circ(X + r * 1.05, base - r * .5, r * .12 + Math.sin(tNow * 6) * r * .02); cx.fill(); rillfolk(X, base - r * .8, r * .78, '#5aa8c8', 1, 'hat'); }
-  else if (id === 'netmender') { cx.strokeStyle = '#d9c9a0'; cx.lineWidth = 1.5; for (let i = 0; i < 5; i++) { cx.beginPath(); cx.moveTo(X - r * 1.4 + i * r * .3, base - r * 2.2); cx.lineTo(X - r * 1.7 + i * r * .42, base - r * .5); cx.stroke(); cx.beginPath(); cx.moveTo(X - r * 1.6, base - r * 2 + i * r * .34); cx.lineTo(X - r * .1, base - r * 2 + i * r * .34); cx.stroke(); } rillfolk(X, base - r * .8, r * .78, '#4f9fb8', 2, ''); if (has('rope')) { } }
-  else if (id === 'keeper2') rillfolk(X, base - r * 1.0, r * 1.0, '#2f7fc0', 3, 'cap');
-  else if (id === 'singer') rillfolk(X, base - r * .76, r * .74, '#8fa8b8', 5, 'old');
+  if (id === 'baker') { cx.fillStyle = '#b9543a'; rr(X + r * .6, base - r * 1.7, r * .9, r * 1.7, 6); cx.fill(); ol(2); cx.fillStyle = '#2b1a12'; cx.beginPath(); cx.arc(X + r * 1.05, base - r * .7, r * .3, Math.PI, 0); cx.lineTo(X + r * 1.35, base - r * .3); cx.lineTo(X + r * .75, base - r * .3); cx.closePath(); cx.fill(); cx.fillStyle = '#ffb23e'; circ(X + r * 1.05, base - r * .5, r * .12 + Math.sin(tNow * 6) * r * .02); cx.fill(); if (!CAST.draw('baker', X, base, r)) rillfolk(X, base - r * .8, r * .78, '#5aa8c8', 1, 'hat'); }
+  else if (id === 'netmender') { cx.strokeStyle = '#d9c9a0'; cx.lineWidth = 1.5; for (let i = 0; i < 5; i++) { cx.beginPath(); cx.moveTo(X - r * 1.4 + i * r * .3, base - r * 2.2); cx.lineTo(X - r * 1.7 + i * r * .42, base - r * .5); cx.stroke(); cx.beginPath(); cx.moveTo(X - r * 1.6, base - r * 2 + i * r * .34); cx.lineTo(X - r * .1, base - r * 2 + i * r * .34); cx.stroke(); } if (!CAST.draw('netmender', X, base, r)) rillfolk(X, base - r * .8, r * .78, '#4f9fb8', 2, ''); if (has('rope')) { } }
+  else if (id === 'keeper2') { if (!CAST.draw('keeper2', X, base, r)) rillfolk(X, base - r * 1.0, r * 1.0, '#2f7fc0', 3, 'cap'); }
+  else if (id === 'singer') { if (!CAST.draw('singer', X, base, r)) rillfolk(X, base - r * .76, r * .74, '#8fa8b8', 5, 'old'); }
   else if (id === 'board') { cx.fillStyle = '#6b4a22'; cx.fillRect(X - r * 1.2, base - r * 1.2, r * .16, r * 1.2); cx.fillRect(X + r * 1.04, base - r * 1.2, r * .16, r * 1.2); cx.fillStyle = '#8a5f34'; rr(X - r * 1.4, base - r * 3, r * 2.8, r * 2, 6); cx.fill(); ol(2); TOWNS.forEach((tw, i) => { const hx = X + (i - 1) * r * .85; cx.fillStyle = '#3b2a12'; circ(hx, base - r * 2.55, r * .07); cx.fill(); if ((S.tags || {})[tw] === 'hung') { cx.fillStyle = '#fff7dc'; rr(hx - r * .3, base - r * 2.45, r * .6, r * .5, 3); cx.fill(); ol(1.5); text(String(FLEET.order[tw]), hx, base - r * 2.2, r * .3, INK); } cx.fillStyle = flag('fleetDone') ? '#6fd08a' : '#4a4f66'; circ(hx, base - r * 1.5, r * .13); cx.fill(); ol(1.5); }); }
   else return false; return true; }
 
@@ -1197,7 +1226,7 @@ function tell(pages, then, who) { READ.q = pages.filter(Boolean); READ.i = 0; RE
 /* OK sleeps while a bar fills: 2.5 seconds for a short card, a little more for each word, at most 3.5 seconds (the main game's longest). Tapping anything else shakes the card.
    [Marc, 24 November: "that 4-5 second timer that the main game has"; then, with a photo of the station: "they cannot click OK until like three or four seconds. It's in the space station initial station quest code."] */
 function readWait(t) { const w = String(t || '').trim().split(/\s+/).filter(Boolean).length; return FASTREAD ? 60 : Math.max(2500, Math.min(3500, 1500 + w * 80)); }      /* 2.5 seconds for a short card, up to 3.5 for a long one [Marc, 24 November: "maybe 2.5 seconds or so just so they have to hesitate for a second before clicking"] */
-function showRead() { const rd = $('read'); $('readskip').hidden = !OPENING.canSkip();
+function showRead() { const rd = $('read'); OPENING.showSkip();
   if (PIC && PIC.busy && PIC.busy()) { rd.hidden = true; $('veil').hidden = true; READ.held = true; return; }      /* the picture is moving (the fleet sails): the words wait until it stops, so the child sees what they tell */
   READ.held = false; $('veil').hidden = false; $('veil').classList.toggle('clear', !!(PIC && PIC.inset)); placeRead(rd); rd.hidden = false; rd.classList.remove('nudge'); $('readwho').textContent = READ.who; $('readtext').textContent = READ.q[READ.i]; $('readn').textContent = READ.q.length > 1 ? (READ.i + 1) + ' of ' + READ.q.length : '';
   const b = $('readok'), fl = $('readfill'); READ.wait = readWait(READ.q[READ.i]); b.disabled = true; $('readlab').textContent = 'Read…'; fl.style.animation = 'none'; void fl.offsetWidth; fl.style.animation = `readfill ${READ.wait}ms linear forwards`;
@@ -1575,7 +1604,13 @@ function fleetRules(then) { tell(['My harbour has three kinds of raft. The numbe
 function bakerPic() { return { title: 'The baker\'s oven', inset: '#7a3a2a', draw(w, h) { const st = READ.i, u = Math.min(w, h * 1.4), fs = Math.max(13, u * .04); cx.fillStyle = '#f3e7cf'; rr(w * .04, h * .03, w * .92, h * .78, 12); cx.fill(); ol(3);
     text('24 loaves', w / 2, h * .1, fs * 1.2, '#6b4a22'); for (let i = 0; i < 24; i++) { const X = w * (.5 - .345 + (i % 12) * .0627), Y = h * (.17 + Math.floor(i / 12) * .055); cx.fillStyle = '#c98a4a'; cx.beginPath(); cx.ellipse(X, Y, u * .02, u * .013, 0, 0, 7); cx.fill(); ol(1.2); }
     const rows = [['trays for 5', '4 trays: 20.  5 trays: 25.', 'no number of full trays', st >= 1, false], ['trays for 6', '4 × 6 = 24', 'but only 3 trays', st >= 2, false], ['trays for 8', '3 × 8 = 24', '3 trays: yes!', st >= 3, true]];
-    rows.forEach((rw, i) => { if (!rw[3]) return; const y = h * (.34 + i * .135); cx.fillStyle = rw[4] ? '#dff2d8' : '#f6dcd6'; rr(w * .08, y - h * .05, w * .84, h * .11, 8); cx.fill(); ol(2); text(rw[0], w * .11, y, fs * .9, INK, 'left'); text(rw[1], w * .5, y, fs * .9, INK, 'center'); text(rw[2], w * .89, y, fs * .78, rw[4] ? '#1c7c3a' : '#b3261e', 'right', FONT_B); }); } }; }
+    /* each row: the trays on the left; beside them the working, and under it what it means. One size for all three rows, as big as fits, so no words meet
+       [Marc, 25 November, a photo: "4 trays: 20. 5 trays: 25." was drawn over "no number of full trays"; checks/bigworld_picture_words_check.js now looks] */
+    const wid = (t, px, font) => { cx.font = `700 ${px}px ${font}`; return cx.measureText(t).width; }, rh = h * .145, pad = w * .03, gap = w * .03, avail = w * .84 - pad * 2;
+    let f = Math.min(fs * .9, rh / 2.7); const need = px => Math.max(...rows.map(r => wid(r[0], px, FONT_D))) + gap + Math.max(...rows.map(r => Math.max(wid(r[1], px, FONT_D), wid(r[2], px * .9, FONT_B)))); const n0 = need(f); if (n0 > avail) f *= avail / n0;
+    const lx = w * .08 + pad, rx = lx + Math.max(...rows.map(r => wid(r[0], f, FONT_D))) + gap;
+    rows.forEach((rw, i) => { if (!rw[3]) return; const y = h * (.34 + i * .165); cx.fillStyle = rw[4] ? '#dff2d8' : '#f6dcd6'; rr(w * .08, y - rh / 2, w * .84, rh, 8); cx.fill(); ol(2);
+      text(rw[0], lx, y, f, INK, 'left'); text(rw[1], rx, y - f * .62, f, INK, 'left'); text(rw[2], rx, y + f * .66, f * .9, rw[4] ? '#1c7c3a' : '#b3261e', 'left', FONT_B); }); } }; }
 function showBaker(then) { const back = PIC; PIC = bakerPic(); setPlace(); tell(['I bake 24 loaves. I have trays for 5, trays for 6 and trays for 8. A tray goes in full, or it burns.', 'Trays for 5? 4 trays hold 20. 5 trays hold 25. No number of full trays makes 24.', 'Trays for 6? 4 times 6 is 24. But I have only 3 trays for 6.', 'Trays for 8? 3 times 8 is 24. And I have 3 of them. So: 3 trays of 8.', 'Your rafts are my trays. Your orders are my loaves.'], () => { setFlag('sawBaker'); PIC = back; setPlace(); if (then) then(); }, 'The baker'); }
 /* the fleet: the harbour's rafts in rows by kind; each town's line of rafts in its channel; the water gate with three lamps */
 function fleetPic() { return { title: 'The loading board', readDesk: true, sail: 0, busy() { return this.sail > 0 && this.sail < 1; }, draw(w, h, dt) { const F = S.fleet, nm = { stilt: 'Stilt Town', reed: 'Reed Town', mud: 'Mud Town' }, top = 58; cx.fillStyle = '#2f6fd0'; cx.fillRect(0, 0, w, h); cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; for (let i = 0; i < 14; i++) { const yy = h * (i + .5) / 14, o = ((tNow * .15 + i * .37) % 1) * w; cx.beginPath(); cx.moveTo(o, yy); cx.lineTo(o + w * .05, yy); cx.stroke(); }
@@ -1612,7 +1647,7 @@ function ropePic() { return { title: 'The net weaver', draw(w, h) { const u = Ma
     if (!told) { /* the child's notebook: the marks made at the well */ const nx = bx + bw * .5, nw = bw * .45, ny = by + bh * .14, nh = bh * .7, fs = Math.max(10, Math.min(u * .032, nw / 11)); cx.fillStyle = '#fff7dc'; rr(nx, ny, nw, nh, 6); cx.fill(); ol(2.5); text('my notebook', nx + nw / 2, ny + nh * .13, fs, '#6b4a22', 'center', FONT_B); text('my turns at the well:', nx + nw / 2, ny + nh * .3, fs * .85, '#6b4a22', 'center', FONT_B); tally(nx + nw * .1, ny + nh * .4, WELL.turns, nh * .22, Math.min(u * .03, nw / 13.5)); text('one turn: ' + WELL.per + ' arm-lengths', nx + nw / 2, ny + nh * .82, fs * .85, '#6b4a22', 'center', FONT_B); }
     if (told) { /* one bundle, and the rope it makes: one piece for each arm-length */ const rx0 = bx + bw * .41, rx1 = bx + bw * .96, ry = by + bh * .68, sz = Math.min(bh * .34, bw * .2), n = WELL.each, av = rx1 - rx0 - sz, fs = Math.max(10, Math.min(u * .036, av / 8.2)), fs2 = Math.max(10, Math.min(u * .036, (rx1 - rx0) / 12)); bundle10(rx0 + sz * .45, by + bh * .27, sz); text('1 bundle makes', rx0 + sz + av / 2, by + bh * .27, fs, '#4a3418', 'center', FONT_B);
       for (let i = 0; i < n; i++) { const a = rx0 + (rx1 - rx0) * i / n, b2 = rx0 + (rx1 - rx0) * (i + 1) / n, g = (rx1 - rx0) / n * .1; inkLine([[a + g, ry], [b2 - g, ry]], INK, Math.max(9, u * .026)); inkLine([[a + g, ry], [b2 - g, ry]], i % 2 ? '#e0b877' : '#a8763a', Math.max(6, u * .018)); } text(n + ' arm-lengths of rope', (rx0 + rx1) / 2, ry + bh * .15, fs2, '#4a3418', 'center', FONT_B); }
-    rillfolk(w * .15, gy - u * .15, u * .15, '#4f9fb8', 2, ''); } }; }
+    if (!CAST.draw('netmender', w * .15, gy, u * .15)) rillfolk(w * .15, gy - u * .15, u * .15, '#4f9fb8', 2, ''); } }; }
 /* the reed cutter by the reed bed. Each bundle is drawn with its ten reeds. */
 function cutPic() { return { title: 'The reed cutter', draw(w, h) { const u = Math.min(w, h), hz = h * .4; backdrop(w, h, hz); for (let i = 0; i < 46; i++) { const X = w * (.34 + .66 * ((i * 37) % 46) / 46), top = hz - u * (.1 + ((i * 13) % 7) * .014); inkLine([[X, hz + u * .05], [X + Math.sin(tNow * 1.3 + i) * 2, top]], i % 3 ? '#3f7d3a' : '#2f6b34', 3); inkLine([[X + Math.sin(tNow * 1.3 + i) * 2, top], [X + Math.sin(tNow * 1.3 + i) * 2, top + u * .035]], '#6b4a22', 5); }
     const n = WELL.bundles, per = n <= 4 ? n : Math.ceil(n / 2), sw = Math.min(w * .6 / per, u * .3), cut = !!(TASK && TASK.kind === 'reedcut' && TASK.cut); for (let i = 0; i < n; i++) { const X = w * .64 + ((i % per) - (per - 1) / 2) * sw, Y = h * (n > per ? .58 : .66) + Math.floor(i / per) * sw * 1.02; cx.fillStyle = 'rgba(0,0,0,.2)'; cx.beginPath(); cx.ellipse(X, Y + sw * .36, sw * .34, sw * .07, 0, 0, 7); cx.fill();
@@ -1680,7 +1715,7 @@ const ACT = {
   gate2() { tell(['A gate of tied reeds, shut with a loop of rope.', 'The Rillfolk guard beside it holds the rope. You should talk to the guard.']); },
   harbour() { S.at = 'harbour'; SC.x = .15; SC.to = null; SC.dir = 'right'; FADE = 1; beep(420, .08); setPlace(); drawWords(); save(); if (!flag('sawHarbour')) { setFlag('sawHarbour'); tell(['The harbour. Houses on legs stand over the water.', 'Rafts are tied up in rows. A big wooden board hangs by the water gate.']); } },
   keeper2(t, v, item) { const who = 'The harbour keeper', hung = TOWNS.filter(q => S.tags[q] === 'hung').length;
-    if (!flag('metKeeper')) return tell(['A visitor from the sky! I am the harbour keeper. We need every hand.', 'Everything here moves by raft. The high water is coming. After it, no raft can sail for a long time.', 'Three towns have sent for baskets of river rice: Stilt Town, Reed Town and Mud Town.', 'The Makers built us a board that worked out every load. When the Gate broke, it went dark. Now nobody can load the fleet.', 'The board was the Year Machine\'s hand.', 'Go to each town. Its speaker will give you an order tag. Hang the tags on my board. Then load the fleet.'], () => { setFlag('metKeeper'); need('fleet', 'The harbour keeper: load the fleet so all three towns get their rice.'); need('tags', 'Fetch the order tags from Stilt Town, Reed Town and Mud Town, and hang them on the loading board (0 of 3 hung).'); report('Met the harbour keeper', 'the job: load the fleet for three towns', ''); }, who);
+    if (!flag('metKeeper')) return tell(['A visitor from the sky! I am the harbour keeper. We need every hand.', 'Everything here moves by raft. The high water is coming. After it, no raft can sail for a long time.', 'Three towns have sent for baskets of river rice: Stilt Town, Reed Town and Mud Town.', 'The Makers built us a board that showed every load. When the Gate broke, it went dark. Now nobody can load the fleet.', 'The board did not work out the loads itself. The Year Machine at the lake did. The board only showed them.', 'Go to each town. Its speaker will give you an order tag. Hang the tags on my board. Then load the fleet.'], () => { setFlag('metKeeper'); need('fleet', 'The harbour keeper: load the fleet so all three towns get their rice.'); need('tags', 'Fetch the order tags from Stilt Town, Reed Town and Mud Town, and hang them on the loading board (0 of 3 hung).'); report('Met the harbour keeper', 'the job: load the fleet for three towns', ''); }, who);
     if (item && /^tag_/.test(item)) { hangTags(); return tell(['The keeper hangs the tag on the board. “Good.”'], null, who); }
     if (flag('fleetDone')) return tell([['The rice is out. Three towns will eat this season, thanks to you.', 'Your raft is tied at the end of the pier. The north channels will open one day.'][(S.said.keeper2 = ((S.said.keeper2 || 0) + 1) % 2)]], null, who);
     hangTags(); tell([hung < 3 ? `The board has ${TOWNS.filter(q => S.tags[q] === 'hung').length} of 3 order tags. The towns are north, east and south of here.` : 'All three tags hang on the board. Now load the fleet. Mind the rules.'], null, who); },
@@ -1692,7 +1727,7 @@ const ACT = {
   board(t, v, item) { if (!flag('metKeeper')) return tell(['A big wooden board with three hooks. Over the water gate are three lamps, all dark.', 'The harbour keeper is watching you. You should talk to her first.']);
     if (flag('fleetDone')) return tell(['The loading board. Three green lamps. The harbour is empty: the fleet is at sea.']);
     hangTags(); const open = () => { TASK = { kind: 'fleet', msg: '', title: 'The loading board' }; BOX.v = { n: S.fleet.plan[S.fleet.tab].n ? String(S.fleet.plan[S.fleet.tab].n) : '' }; BOX.on = 'n'; PIC = fleetPic(); S.open = { kind: 'fleet' }; drawWords(); drawTask(); setPlace(); save(); };
-    if (!flag('sawRules')) return fleetRules(() => showBaker(open)); open(); },
+    if (!flag('sawRules')) return fleetRules(() => flag('sawBaker') ? open() : showBaker(open)); open(); },      /* the baker's example once only: a child who heard it from the baker goes straight to the board [Marc, 25 November: "It's not needed"] */
   baker() { showBaker(() => {}); },
   bottle() { if (has('bottle') || flag('bottleGiven')) return; tell(['A green bottle, stuck in the reeds. There is a note inside.', 'The note says: “To my friend Pim, over the river. I miss you. From Wim, of Mud Town.”', 'You keep the bottle. Pim lives in the Menders\' village.'], () => { S.bag.push('bottle'); need('letter', 'A bottle with a note for Pim, in the Menders\' village.'); report('Found a bottle with a note in the reeds', '', 'a secret'); }); },
   lift() { need('lift', 'The lift under the hill wall: it rises on the right count.', true); tell(['A wooden cage hangs on a rope against the hill wall. High above are fields in steps.', 'A sign: IT RISES ON THE RIGHT COUNT.', 'The rope is slack. Nobody is up there to pull. Not yet.']); },

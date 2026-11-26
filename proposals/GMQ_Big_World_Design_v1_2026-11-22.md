@@ -101,9 +101,10 @@ Nothing in the game was touched. A child cannot reach regions 3 to 9 yet.
 **No people's job is ever needed to reach another people.** [The 2023 lesson: Patternox waited on a quest that was never written.]
 
 - Every border has two ways across. Each way is a lock at the door, opened by maths, needing nothing carried.
+  - **Changed by Marc, 25 November [Source]:** a code, a count, a pattern or a rule is never a thing in the story, and nothing is found, collected or opened with one. It is how the world's technology works, and the child works it out so that something can happen. So a way across is not a lock: it is something of the world's that works once the child works out its maths (the bridge pan is a balance that comes down under exactly the right weight).
 - **Tools never open the main road, and a tool is never one of a border's two ways.** The raft, the rope ladder and the star lamp open short cuts, extra layers and old places seen again [Source: Marc, 21 November: "go back to your previous places... get better things"].
-- **Any four of the five Rule Stones open the Gate.**
-- **The test of the law:** leave any one people's job undone. Every people can still be reached, and four stones can still be lit. The page's check will test this as regions are built. Today it tests the one border that exists.
+- ~~Any four of the five Rule Stones open the Gate.~~ **Decided by Marc, 25 November [Source]: the Gate needs five stones, one from each people.** Its cost (section 8, row 6): every people's main job is needed for the end, so a child stuck in one region cannot finish without it.
+- **The test of the law:** leave any one people's job undone. Every people can still be reached, and four stones can still be lit. (Since 25 November the Gate needs all five, so this test is now only: every people can still be reached.) The page's check will test this as regions are built. Today it tests the one border that exists.
 
 ### The ways across
 
@@ -369,7 +370,7 @@ I read each standard again. The first draft's table was too sure.
 | 3 | **Five peoples, and "the Makers" who built the machines** | Fewer peoples; no Makers | The Meadow's words. Its maths stays |
 | 4 | The peoples' names: Menders, Rillfolk, Furrows, Eights, Twinseers | Yours | A few lines each. (My first name for the Menders was one letter away from a character in a famous game. Changed.) |
 | 5 | 128 × 96 squares | Bigger or smaller | Bigger is free now. Smaller means painting the map again |
-| 6 | Any four stones open the Gate | All five | One line. All five brings back the hard chain |
+| 6 | Any four stones open the Gate | All five | One line. All five brings back the hard chain. **Decided by Marc, 25 November: all five** |
 
 **Choices not made yet.**
 
