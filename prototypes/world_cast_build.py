@@ -234,6 +234,27 @@ def find_eye_pair(fig):
     lid = '#%02x%02x%02x' % tuple(int(v) for v in np.median(rgb[body], axis=0)) if body.any() else None
     return eyes, lid
 
+def figures2d(rgba, want):
+    """when figures overlap from left to right (a loaf held out over a neighbour's fin), the empty columns between them are gone: separate them by shape instead.
+    The want biggest pieces are the figures; small loose pieces (a rope's end) join the nearest. Returns (box, mask) for each, left to right."""
+    al = rgba[:, :, 3] > 40; h, w = al.shape; st = 4
+    small = al[:h - h % st, :w - w % st].reshape(h // st, st, w // st, st).any(axis=(1, 3))
+    comps = sorted([c for c in white_components(small) if c[0] > 30], key=lambda c: -c[0])
+    if len(comps) < want: print(f'STOP: only {len(comps)} separate figures in a picture that should have {want}. Look at the picture.'); sys.exit(1)
+    big, groups = comps[:want], [[c] for c in comps[:want]]
+    for r in comps[want:]: groups[min(range(want), key=lambda i: (big[i][1] - r[1]) ** 2 + (big[i][2] - r[2]) ** 2)].append(r)
+    out = []
+    for g in groups:
+        m = np.zeros_like(small)
+        for c in g: m |= c[4]
+        full = np.kron(m, np.ones((st, st), dtype=bool)); full = np.pad(full, ((0, h - full.shape[0]), (0, w - full.shape[1]))) & al
+        ys, xs = np.nonzero(full); out.append(((int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1), full))
+    return sorted(out, key=lambda o: o[0][0])
+
+NEED = {}      # how many figures each picture holds
+for _frames in RILL.values():
+    for _n, _f, _i in _frames: NEED[_f] = max(NEED.get(_f, 0), _i + 1)
+
 def body_mid(fig):
     """the middle of the body, left to right: the middle of the solid rows between a fifth and two thirds of the way down"""
     a = fig[:, :, 3] > 100; h, w = a.shape; xs = np.nonzero(a[int(h * .2):int(h * .67)])[1]
@@ -253,10 +274,13 @@ for ch, frames in RILL.items():
     raw, cache = {}, {}
     for name, fn, idx in frames:
         if fn not in cache:
-            rgba = cut(os.path.join(RILL_ART, fn), 'green'); cache[fn] = (rgba, figures(rgba))
-        rgba, figs = cache[fn]
+            rgba = cut(os.path.join(RILL_ART, fn), 'green'); figs, masks = figures(rgba), None
+            if len(figs) < NEED[fn]: f2 = figures2d(rgba, NEED[fn]); figs, masks = [b for b, m in f2], [m for b, m in f2]; print(f'{fn}: figures overlap left to right; separated by shape')
+            cache[fn] = (rgba, figs, masks)
+        rgba, figs, masks = cache[fn]
         if idx >= len(figs): print(f'STOP: {fn} has {len(figs)} figures, not {idx + 1} or more. Look at the picture.'); sys.exit(1)
         box = figs[idx]; ground = max(f[3] for f in figs); fig = rgba[box[1]:box[3], box[0]:box[2]].copy()
+        if masks: fig[:, :, 3] = np.where(masks[idx][box[1]:box[3], box[0]:box[2]], fig[:, :, 3], 0)      # only this figure: not a neighbour's loaf
         eyes, lid = find_eye_pair(fig)
         raw[name] = dict(fn=fn, fig=fig, eyes=eyes, lid=lid, lift=ground - box[3], mid=body_mid(fig),
                          d=(eyes[1][0] - eyes[0][0]) if len(eyes) == 2 else None, ex=(eyes[0][0] + eyes[1][0]) / 2 if len(eyes) == 2 else None)

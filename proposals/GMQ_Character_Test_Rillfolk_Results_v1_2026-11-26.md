@@ -65,6 +65,12 @@ Checked against the prompts, and against the game's own words: "tall and smooth,
 - **In the game:** at harbour size he now reads as one of the same people, slimmer than the net weaver and the keeper. In the sample now; the Rillfolk and look checks pass.
 - **If a drop-shaped baker is wanted** [Proposal]: use that editing habit. Ask Gemini to start from the net weaver (picture 15) and turn her into the baker. The prompt is in the chat of 26 November.
 
+## 3c. The baker, a third time (26 November): the one in the game
+
+- **Marc sent a third baker.** This one has the drop shape: a rounded point under the hat, shorter and rounder than the keeper, with short orange legs. He keeps his apron, the flour on his fins, the loaf and his four feelings. Saved as `rill_14_baker.png`; the second is kept as `rill_14_baker_second.png`.
+- **Found while cutting him out:** the loaf in the second figure overlaps the first figure's fin from left to right, so the cutter (which splits a picture at empty columns) saw 3 figures, not 4. It now separates figures by shape when that happens, and cuts each one out without its neighbour's loaf. No other character's cut-out changed (checked).
+- **In the game:** the harbour now reads as one people. The Rillfolk and look checks pass.
+
 ## 4. Tests
 
 - `checks/world_rill_test.js` passes on three screens, with your pictures.
@@ -76,7 +82,7 @@ Checked against the prompts, and against the game's own words: "tall and smooth,
 
 ## 5. Decisions for you
 
-1. **Redo the baker?** [Proposal: yes, one picture.] He stands next to the net weaver in the harbour, and he looks like another people. The prompt is below.
+1. **Redo the baker?** Done: the third picture is in (section 3c). He stands next to the net weaver in the harbour, and he looks like another people. The prompt is below.
 2. **The keeper's egg shape:** keep it, or redo pictures 12 and 13 with the drop's point showing? [Proposal: keep. She reads well as the boss, and the drops around her make the people clear.]
 3. **The child's thumb:** redo picture 17, or let it be? [Proposal: let it be. It is too small to see on the map.]
 4. **The baker in the oven picture** (from the prompts note): put him there, so his faces are seen? Or keep only his calm picture in the harbour?
