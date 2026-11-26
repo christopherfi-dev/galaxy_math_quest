@@ -152,7 +152,7 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     await fr.locator('#oback').click(); await closed();
     await page.locator('#vs button[data-v="cpu"]').click();
     // the order box over a ship shows 3 lines of 30 letters: every card's words, and the enemy's words for it, must fit (from the independent review)
-    await page.locator('#open').click(); await fr.locator('#ownsetup.open').waitFor(); await fr.locator('#ogo').click(); await fr.locator('.hc.mine').first().waitFor();
+    await page.locator('#open').click(); await fr.locator('#stage').waitFor();   // (the practice battle left open earlier goes on: that is right)
     const long = await inner(() => GMQB.B && window.GMQB ? (function () { const D = JSON.parse(document.getElementById('carddata').textContent), out = []; D.cards.concat(D.upgrades).forEach(c => { if (GMQB.wrap(c.text, 30).length > 3) out.push(c.id + ' own'); if (GMQB.wrap(GMQB.theirs(c), 30).length > 3) out.push(c.id + ' enemy'); }); return out; })() : ['no page']);
     want(name + ': every card\'s words fit the order box, on both sides', long.length === 0, long.join(', '));
     await fr.locator('#bnew').click(); await closed();
