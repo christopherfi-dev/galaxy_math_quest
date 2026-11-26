@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GMQ new cards: first draft</title>
+<title>GMQ card catalogue</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#0b1020;color:#e8ecf5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
@@ -96,7 +96,7 @@ Every card here is a proposal. Tap a card to see it large. Mark it <b>Keep</b>, 
 
 <h2>3. The battle cards: <span id="nplay"></span> to choose from</h2>
 <p class="lead">The <b>big symbol</b> is what the card does: a laser gun attacks, a shield blocks, a heart repairs, a spy sneaks past the shield, a policeman stops a spy, a ship slipping aside dodges. The <b>thick rim</b> is the kind: green for common, purple for rare, gold for epic. Those are the colours of your 2023 cards. The <b>Guard</b> is your Policeman under a new name; change it back if you prefer.</p>
-<p class="lead"><b>In a battle</b> each deck has one Spy card, drawn at random from the <span id="nspies"></span> here, and at least as many Guards. [Marc, 22 November: one Spy card each, and at least as many Policemen.]</p>
+<p class="lead"><b>In a battle</b> each deck has one Spy card, drawn at random from the <span id="nspies"></span> here (with your own cards, you choose which of yours), and at least as many Guards. [Marc, 22 November: one Spy card each, and at least as many Policemen.]</p>
 <div class="chips" id="chips"></div>
 <div id="play" class="grid"></div>
 
@@ -530,7 +530,7 @@ function closeZoom(){el('zoom').className='';zi=-1;paint();}
  document.addEventListener('keydown',function(ev){if(zi<0)return;if(ev.key==='Escape')closeZoom();});
  el('clear').addEventListener('click',function(){if(window.confirm('Clear all your picks and notes on this device?')){picks={};save();paint();el('out').style.display='none';}});
  el('copy').addEventListener('click',function(){
-  var lines=['GMQ new cards, v1: Marc\'s picks'],g={keep:[],change:[],drop:[]};
+  var lines=['GMQ card catalogue v1: Marc\'s picks'],g={keep:[],change:[],drop:[]};
   ALL.forEach(function(e){var p=picks[e.d.id];if(!p)return;var s=e.d.id+' '+e.d.name+(p.note?' : '+p.note:'');if(p.p){g[p.p].push(s);}else if(p.note){g.change.push(s);}});
   ['keep','change','drop'].forEach(function(k){lines.push('');lines.push(k.toUpperCase()+' ('+g[k].length+')');g[k].forEach(function(s){lines.push('- '+s);});});
   var none=ALL.filter(function(e){var p=picks[e.d.id];return !(p&&(p.p||p.note));}).length;
