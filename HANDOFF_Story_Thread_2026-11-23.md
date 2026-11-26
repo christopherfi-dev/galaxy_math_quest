@@ -22,7 +22,7 @@ Everything here is **[Proposal]** unless it says [Source].
 | Rule | Why |
 |---|---|
 | **Write only.** Never edit `prototypes/*`, `docs/*`, `checks/*`, any `HANDOFF_2026-11-20.md`, the plan, the zip, or any `proposals/GMQ_Big_World_*` file. | Each has one owner. `HANDOFF_2026-11-20.md`, section 2b, has the table. |
-| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, `proposals/GMQ_Small_Worlds_Story_*`, `proposals/GMQ_Station_Locks_Story_*` (and one such prefix for each world you write), this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
+| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, `proposals/GMQ_Small_Worlds_Story_*`, `proposals/GMQ_Station_Locks_Story_*`, `proposals/GMQ_Metrica_Story_*` (and one such prefix for each world you write), this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
 | **You may push those files to `claude/trusting-edison-vl78nc`** (the main branch). Marc gave this for the Chronosia files on 23 November; the Algora note went there because he passed on the big world thread's request for it. If you are unsure, ask him for one line. | |
 | **Before every push:** `git fetch origin claude/trusting-edison-vl78nc && git merge --no-edit FETCH_HEAD`. Never force-push. | Other threads push there all day. |
 | **`INFO_FROM_MARC.md` clashes on almost every merge.** Keep both sides: the other thread's lines first, then yours. Never drop a line. | It happened eight times in one day. |
@@ -104,9 +104,9 @@ Every one of these cost a review round.
 
 ### The 20 small worlds (26 November)
 
-- **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md`, **version 3**. Versions 1 and 2 each failed a review (scenes far from the built layout). Version 3: the trade post's scale, on screen in every world. The creature brings its goods; the cadet reads the scale and calls the number up; the ship pays by that word, then checks. Nearest ten or hundred (read to the nearest mark; halfway goes up, as the market says), a sum (one weight for two bags), a difference (the goods without the jar). A "See it first" each time. Star seeds for Project Second Home. Three decisions for Marc. Version 3 not re-read.
+- **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md`. **Three versions each failed a review; redesign stopped.** Decision 0 for Marc: A (my pick), no maths at the secret, found by doing; B, a shape chosen first by the main thread and Marc; C, keep the lock for now. Section 8 lists every trap the three versions fell into: read it before any new design.
+- **Xylophora and Lengthar:** `proposals/GMQ_Metrica_Story_Check_v1_2026-11-26.md`. Xylophora mostly passes (four small fixes); Lengthar fails the consequence test everywhere, and the fix is Marc's own Chaos Guardian: a careless answer feeds it. Three decisions for Marc. Not yet reviewed.
 - **The KIS Station against the 25 November rule:** `proposals/GMQ_Station_Locks_Story_v1_2026-11-26.md`. Options for the locker (no number: the robot pushes a fallen crate away), the Engine Core (the dials open the core's slots; its temper is a real rumble), the cannons (the screen is the cannons' aim: odd is a practice drone, even is a station ship), and the built line "A number needs a lock". Four decisions for Marc.
-- **Next:** Xylophora and Lengthar, which have never had a story check.
 
 ### What may come next
 

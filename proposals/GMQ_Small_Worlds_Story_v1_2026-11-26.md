@@ -2,7 +2,25 @@
 
 **Date:** 26 November 2026. **For:** Marc, and the main thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the main thread's.
-**Version 3.** Version 1 and version 2 each failed one review (section 8). Version 3 moves the maths to the trade post's scale, which is on screen in every world. **Version 3 has not been reviewed.**
+**Version 3, and where this stands.** All three versions failed their reviews (section 8). **I have stopped redesigning,** and I put the choice of direction to you, in decision 0 below.
+
+## Where this stands (read this first)
+
+- **Version 1** (a hop line, a pod, a scale): the creature "could not count" but acted on numbers; halfway broke "nearest"; the pod and the scale could be filled until right.
+- **Version 2** (a flag; one trip for berries): it fought the built layout, where the spot is on screen beside the creature; the sum's flag let the cadet see the spot; too many berries could be kept.
+- **Version 3** (the trade post's scale): if the crew can check the scale, it can read it; "the nearest mark" is a rule, not a need, when the weight is known exactly; halfway came back; the scale's own pointer gives the sum and the difference away; the example was about the same thing.
+
+**The cause under all three:** a creature that does not use words, in a small world seen from the side, has no natural need for rounding. A sum or a difference needs a believable source for its two numbers, and an answer that must be fixed before it can be checked. Each version I added made more to defend.
+
+**Decision 0, yours: which way now?**
+
+| | Way | What it costs |
+|---|---|---|
+| **A (my pick)** | **No maths at the small worlds' secret.** The seed is found by watching the creature and doing, as the game's hint already guides ("Talk to it twice"; "Touch it"). The four skills (rounding, adding and taking away within 1,000) live where the story needs them: Voltara, the market, the deep planets. The seed keeps its purpose (Project Second Home) | The small worlds stop practising four skills, and four teacher-evidence lines lose their place. It goes against your idea of 17 November, that small worlds cover every skill |
+| B | **Keep maths there, with a shape the main thread and you choose first** (how much it will build). Then the story thread writes to it, with the three versions' faults (section 8) as the list of traps | Another design round, and more tokens |
+| C | **Keep the lock as it is for now,** marked as breaking your rule, until children's play shows how much the small worlds matter | Nothing now. The rule stays broken there |
+
+The rest of this note (sections 0 to 7) is version 3, kept as a record of what was tried.
 
 **Tags:** [Built] is in the game today (version 100). [Source] is your words or pages. [Proposal] is mine.
 
@@ -206,3 +224,16 @@ The majors pointed the same way:
 **What version 3 does:** it stops fighting the built layout. The post and its scale are on screen in every world. Nothing is far away, nothing depends on how the creature moves, and the marks are the beacon's scale. Each answer is fixed because the ship pays by the cadet's word. Halfway goes up, as the market says. The finished example is a "See it first".
 
 **Not re-read by a reviewer:** version 3.
+
+### 8c. The review of version 3
+
+**Verdict: "Not yet."** Five blockers:
+1. If the crew can check the scale, it can read it; and why doesn't the cadet's own ship buy the goods?
+2. "The nearest mark" is a rule: the exact weight is known, so paying for it is fairer.
+3. Halfway reads two ways again, and a pointer at 45 looks like one at 44.
+4. A scale with a pointer gives the sum and the difference away, and nothing says where the part weights came from.
+5. The "See it first" was about the same quantity, on the same scale.
+
+Majors: misses that tell instead of show; 3b's ship both leaves and stays; a creature "paid" in nothing it can use; one scale cannot have both 10 and 100 gram marks; the game's AI facts line (line 1559) would not know any of it.
+
+**What I did:** stopped, and wrote decision 0.
