@@ -693,6 +693,21 @@ function ownDeck(ids,seed,upgrades,spy){
  if(upgrades==='lasting'){ups.forEach(function(id){if(lvl2.indexOf(CARD[id].part)<0)lvl2.push(CARD[id].part);});}else{deck=deck.concat(ups);}
  return {deck:deck,lvl2:lvl2,lent:lent,left:left,own:own};
 }
+/* replay: play a battle again from its start and the choices the child made (the other side is the computer, which plays the same again).
+   start: { seed, opts, kinds: [k0, k1], decks: [d0, d1], lvl2: [l0, l1] }; rec: [{ p: the card played (hand position), c: [each choice asked of the child] }, ...] for each finished round.
+   So a challenge battle's result can be checked from what the page sends (the server thread's known gap). Only with "one player leads". */
+function replay(start,rec){
+ var S=newBattle(start.opts||{},start.kinds[0],start.kinds[1],start.seed,start.decks,start.lvl2);
+ for(var r=0;r<(rec||[]).length&&!S.over;r++){
+  var R=rec[r],a=R.p,b,k=0;
+  if(S.opts.guard!=='lead')return S;
+  if(a<0||a>=S.P[0].hand.length)return S;
+  b=S.leader===1?cpuPick(S,1,null):cpuPick(S,1,S.P[0].hand[a]);
+  startRound(S,a,b);
+  steps(S).forEach(function(st){var req=need(S,st),ch=null;if(req)ch=req.who===0?(R.c||[])[k++]:cpuChoose(S,req);if(req&&req.who===0&&validate(S,req,ch)){ch=cpuChoose(S,req);S.bad=(S.bad||0)+1;}var Q=run(S,st,ch);if(S.cur)S.cur.lines=S.cur.lines.concat(Q.lines);});
+ }
+ return S;
+}
 /* The computer's deck has the same shape: for each of the child's cards, a card of the same type and kind, drawn at random (few repeats). */
 function foeDeck(deck,seed){
  var S={seed:(Math.abs(Math.floor(seed||0))%2147483646)+1},pools={},out=[];
@@ -778,7 +793,7 @@ function autoRound(S){
  steps(S).forEach(function(st){var req=need(S,st),ch=req?cpuChoose(S,req):null;var R=run(S,st,ch);if(S.cur)S.cur.lines=S.cur.lines.concat(R.lines);});
 }
 return {PARTS:PARTS,SHORT:SHORT,SWITCHES:SWITCHES,defaults:defaults,load:load,card:card,newBattle:newBattle,startRound:startRound,canSwap:canSwap,doSwap:doSwap,swapBoth:swapBoth,steps:steps,need:need,validate:validate,run:run,
- cpuPick:cpuPick,cpuChoose:cpuChoose,starterPack:starterPack,ownDeck:ownDeck,foeDeck:foeDeck,autoRound:autoRound,shipAP:shipAP,has:has,aliveIdx:aliveIdx,handSize:handSize,shieldWorks:shieldWorks,cardCount:cardCount,needOf:needOf,opWorks:opWorks,isSpy:isSpy,isGuard:isGuard,canHurt:canHurt,rank:rank,outranked:outranked,guardTooLow:guardTooLow,KINDWORD:KINDWORD,AKIND:AKIND,turnOrder:turnOrder,pierce:pierce,shieldKindOf:shieldKindOf,roomOf:roomOf,otherCards:otherCards,rand:rand};
+ cpuPick:cpuPick,cpuChoose:cpuChoose,replay:replay,starterPack:starterPack,ownDeck:ownDeck,foeDeck:foeDeck,autoRound:autoRound,shipAP:shipAP,has:has,aliveIdx:aliveIdx,handSize:handSize,shieldWorks:shieldWorks,cardCount:cardCount,needOf:needOf,opWorks:opWorks,isSpy:isSpy,isGuard:isGuard,canHurt:canHurt,rank:rank,outranked:outranked,guardTooLow:guardTooLow,KINDWORD:KINDWORD,AKIND:AKIND,turnOrder:turnOrder,pierce:pierce,shieldKindOf:shieldKindOf,roomOf:roomOf,otherCards:otherCards,rand:rand};
 })();
 /* ENGINE-END */
 
@@ -1256,6 +1271,7 @@ function playCard(){
  var S=U.S,h=U.sel,c;if(h<0||U.phase!=='pick')return;
  if(S.opts.guard==='lead'){c=S.leader===1?U.cpuLead:B.cpuPick(S,1,S.P[0].hand[h]);}else{c=B.cpuPick(S,1,null);}
  U.phase='resolve';U.sel=-1;U.cpuLead=-1;U.tray=null;
+ if(S.rec)S.rec.push({p:h,c:[]});   /* the card the child played, by its place in the hand */
  B.startRound(S,h,c);
  say(S.opts.guard!=='lead'||S.leader===0?'Your order: '+B.card(S.cur.card[0]).name+'. The enemy answers: '+B.card(S.cur.card[1]).name+'.':'You answer with '+B.card(S.cur.card[0]).name+'.');
  render();
@@ -1277,6 +1293,7 @@ function runRound(){
   var st=queue[qi++],req=B.need(S,st);
   function go(ch){
    var had=U.pick||U.alloc;U.anim=true;U.phase='resolve';U.pick=null;U.req=null;U.alloc=null;U.tray=null;drawTray();if(had)drawStage();
+   if(req&&req.who===0&&S.rec&&S.rec.length)S.rec[S.rec.length-1].c.push(ch);   /* each choice asked of the child */
    var R=B.run(S,st,ch);if(S.cur){S.cur.lines=S.cur.lines.concat(R.lines);}
    animate(st,R).then(function(){render();next();});
   }
@@ -1288,8 +1305,8 @@ function endRound(){
  var S=U.S;U.pick=null;U.req=null;U.alloc=null;
  if(S.over){U.phase='over';save();say(S.over.why);U.anim=true;tray('<div class="row"></div>');
   finale().then(function(){U.anim=false;
-  if(OWN){var res={winner:S.over.winner,rounds:S.log.length,result:resultWord(S.over.winner),log:logText()};tell({gmqBattle:'over',winner:res.winner,rounds:res.rounds,result:res.result,log:res.log});
-   tray('<div class="row">'+(RIVAL?'':'<button class="btn go" id="again" type="button">Battle again</button>')+'<button class="btn'+(RIVAL?' go':'')+'" id="goback" type="button">'+esc(OWN.back||'Back')+'</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){if(el('again'))el('again').addEventListener('click',openSetup);el('goback').addEventListener('click',function(){tell({gmqBattle:'close',winner:res.winner,rounds:res.rounds,result:res.result,log:res.log});});el('seelog').addEventListener('click',openLog);});}
+  if(OWN){var res={winner:S.over.winner,rounds:S.log.length,result:resultWord(S.over.winner),log:logText(),record:S.start?{start:S.start,rec:S.rec}:null};tell({gmqBattle:'over',winner:res.winner,rounds:res.rounds,result:res.result,log:res.log,record:res.record});
+   tray('<div class="row">'+(RIVAL?'':'<button class="btn go" id="again" type="button">Battle again</button>')+'<button class="btn'+(RIVAL?' go':'')+'" id="goback" type="button">'+esc(OWN.back||'Back')+'</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){if(el('again'))el('again').addEventListener('click',openSetup);el('goback').addEventListener('click',function(){tell({gmqBattle:'close',winner:res.winner,rounds:res.rounds,result:res.result,log:res.log,record:res.record});});el('seelog').addEventListener('click',openLog);});}
   else tray('<div class="row"><button class="btn go" id="again" type="button">New battle</button><button class="btn" id="seelog" type="button">See the log</button></div>',function(){el('again').addEventListener('click',openSetup);el('seelog').addEventListener('click',openLog);});
   render();snd(S.over.winner===0?'win':'lose');if(S.over.winner===0){var bn=el('banner'),bb=bn?bn.getBBox():null;if(bb){[0.15,0.5,0.85].forEach(function(f,i){setTimeout(function(){debris({x:bb.x+bb.width*f,y:bb.y+bb.height/2},14,'#ffd84a');},i*220);});}}});return;}
  U.phase='roundend';save();
@@ -1520,7 +1537,8 @@ function ownBattle(seed){
  if(RIVAL){seed=RIVAL.seed||seed;var R=rivalPlan(seed);foe=R.deck;fk=shipOf(RIVAL.ship)||rivalParts();fl=R.lvl2;}   /* the classmate's own deck, ship and upgrades; the server's seed, so the deal can be played again */
  else foe=B.foeDeck(P.deck,seed+101);
  U.own={deck:P.deck,lvl2:P.lvl2,lent:P.lent};U.opts=B.defaults();
- U.S=B.newBattle(U.opts,U.kinds,fk,seed,[P.deck,foe],[P.lvl2,fl]);show('ownsetup',false);
+ U.S=B.newBattle(U.opts,U.kinds,fk,seed,[P.deck,foe],[P.lvl2,fl]);
+ U.S.start={seed:seed,opts:B.defaults(),kinds:[U.kinds.slice(),fk.slice()],decks:[P.deck.slice(),foe.slice()],lvl2:[P.lvl2.slice(),fl.slice()]};U.S.rec=[];   /* so the battle can be played again and checked (B.replay) */show('ownsetup',false);
  if(RIVAL&&RIVAL.kind==='challenge')tell({gmqBattle:'accept',battle:RIVAL.battle||''});   /* now it counts: the game tells the server (battle_accept) */
  save();startPick();
 }

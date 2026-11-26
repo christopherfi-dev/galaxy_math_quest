@@ -127,3 +127,19 @@ The server thread built the other side (`proposals/GMQ_Server_Wiring_v1_2026-11-
 **The starter pack's seed** (the cards thread found it). `S.seed` changes every time the game picks a number, so a child's starter pack would change. Keep one seed that never changes in the save, `S.packSeed`, and give it to both pieces: `GMQBattleOwn.open(host, { cards: S.cards, seed: S.packSeed, ... })` and `GMQBattleOwn.starter(S.packSeed)`. The cards thread's wiring note says how to make it. Section 3's example should read `seed: S.packSeed`.
 
 **The ship a child fitted at the station** (`opts.ship`). Optional: five parts, each `{ part, name, hp, ap, tier, colour }`, with the game's part names ('Engine Core', 'Navigation', 'Shield', 'Weapons', 'Power') or the battle's. From the game today: `PARTS.map(p => { const o = pvOf(p), v = o ? PVER[p][o.i] : null, t = o ? PTIER[o.i] : null; return v ? { part: p, name: v[0], hp: v[1], ap: v[2], tier: t[0], colour: t[1] } : null; })`, given only when all five are fitted. **Do not pass it until Marc chooses** (the catalogue note, decision 10): the station's numbers and the battle's part cards disagree, and the station's red Pulsar Phaser has 0 HP, which in a battle means no attack at all. A classmate's ship can come the same way, as `rival.ship`.
+
+
+---
+
+## 10. Added later on 26 November: checking who won (the server thread's known gap)
+
+The server cannot tell who won a challenge: the page says so, and a child with the know-how could claim a win and take a classmate's card. The battle side now makes the result checkable.
+
+- **The record.** `done(result)` and `host.over(result)` carry `result.record = { start, rec }`:
+  - `start`: the battle's seed, rules, both ships, both decks as played (with any borrowed cards and the Spy chosen) and any lasting upgrades;
+  - `rec`: for each finished round, the card the child played (its place in the hand) and each choice the child made (which parts a Spy hits, how a hit is shared, and so on).
+  - It is small: a few thousand letters for a long battle with big decks.
+- **Playing it again.** `GMQBattle.replay(record.start, record.rec)` plays the battle again. The computer's side plays exactly as it did, because its choices come from the seed. The answer's `over` says who won. A choice in the record that the rules do not allow is replaced, and counted in `bad`: a record with `bad` above 0 was changed.
+- **Checked:** 1,500 battles played by a made-up child, then played again from their records, end exactly the same (winner, round, every HP and shield). A round played on the screen, played again, ends the same at the three sizes.
+- **Where it could run:** `GMQBattle` is in the battle page, and inside the piece. The server is PHP, so it cannot run it. The teacher's Desk (a web page) could: for each challenge, check the record's seed and decks against what the server holds, play it again, and compare the winner with the one claimed. That is the server thread's to wire. [Proposal]
+- **Limits:** only "one player leads" (Marc's rule, the default). A battle left in the middle and finished later still checks: the page saves at the start of each round, so a round left half-way is played again from its start.

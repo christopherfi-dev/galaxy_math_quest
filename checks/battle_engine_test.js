@@ -368,6 +368,34 @@ ok(JSON.stringify(a.log) === JSON.stringify(b.log), 'the same seed gives the sam
   let S = hand('R27', T => { T.P[0].parts[0].hp = 0; T.P[0].parts[1].hp = 0; T.P[0].parts[2].hp = 7; });
   ok(S.P[0].parts[0].hp === 5 && S.P[0].parts[1].hp === 5 && S.P[0].parts[2].hp === 7, 'Comeback Crew: both lost parts come back with 5 HP; a working part is not touched', S.P[0].parts.map(q => q.hp).join(','));
   // (the enemy has lost its Weapons, so nothing hits the shield after the card)
+  // a battle played again from its record (so a challenge's result can be checked): the child's side plays as the page does, the computer as always
+  let same = 0, tried = 0, xr = 99;
+  const ext = () => { xr = (xr * 48271) % 2147483647; return xr / 2147483647; };   // the child's own choices: never the battle's dice
+  for (let k = 0; k < 1500; k++) {
+    const mine = [], theirs = [], n = 10 + Math.floor(ext() * 60);
+    for (let i = 0; i < n; i++) { mine.push(all[Math.floor(ext() * all.length)]); theirs.push(all[Math.floor(ext() * all.length)]); }
+    const sd = 1 + Math.floor(ext() * 99999), P0 = B.ownDeck(mine, sd, 'card'), P1 = B.ownDeck(theirs, sd + 7, 'card');
+    const opts = Object.assign(B.defaults(), { cpu: k % 2 ? 'clever' : 'gentle' });
+    const start = { seed: sd, opts: opts, kinds: [STD, STD], decks: [P0.deck, P1.deck], lvl2: [[], []] }, rec = [];
+    const S = B.newBattle(opts, STD, STD, sd, start.decks, start.lvl2);
+    let r = 0;
+    while (!S.over && r < 60) {
+      let a, b;
+      if (S.leader === 1) { b = B.cpuPick(S, 1, null); a = Math.floor(ext() * S.P[0].hand.length); } else { a = Math.floor(ext() * S.P[0].hand.length); b = B.cpuPick(S, 1, S.P[0].hand[a]); }
+      const R = { p: a, c: [] }; rec.push(R); B.startRound(S, a, b);
+      B.steps(S).forEach(st => { const req = B.need(S, st); let ch = null;
+        if (req && req.who === 0) { const T = JSON.parse(JSON.stringify(S)); T.opts.cpu = 'clever'; ch = B.cpuChoose(T, req); R.c.push(ch); }   // the child decides on a copy: the battle's dice are not touched
+        else if (req) ch = B.cpuChoose(S, req);
+        B.run(S, st, ch); });
+      r++;
+    }
+    const Q = B.replay(JSON.parse(JSON.stringify(start)), JSON.parse(JSON.stringify(rec)));
+    tried++;
+    if (JSON.stringify(Q.over) === JSON.stringify(S.over) && Q.round === S.round && JSON.stringify(Q.P.map(p => p.parts.map(x => x.hp).concat([p.shield]))) === JSON.stringify(S.P.map(p => p.parts.map(x => x.hp).concat([p.shield]))) && !Q.bad) same++;
+  }
+  ok(same === tried, 'a battle played again from its record ends exactly the same: the winner, the round, every HP and shield (1,500 battles)', same + ' of ' + tried);
+  { const start = { seed: 5, opts: B.defaults(), kinds: [STD, STD], decks: [B.ownDeck(all.slice(0, 20), 5, 'card').deck, B.ownDeck(all.slice(20, 40), 6, 'card').deck], lvl2: [[], []] };
+    const S = B.replay(start, [{ p: 9, c: [] }]); ok(S.round === 1 && !S.log.length, 'a record with a card that is not in the hand plays nothing further'); }
   // a ship given as five parts with their own numbers (the ship a child fitted at the station)
   const own = [['Stellar Reactor', 30, 10], ['Standard Navigator', 15, 5], ['Neutron Wall', 30, 0], ['Pulsar Phaser', 0, 20], ['Standard Battery', 15, 10]].map(q => ({ name: q[0], hp: q[1], ap: q[2], kind: 'own' }));
   const T2 = B.newBattle(D, own, STD, 3);
