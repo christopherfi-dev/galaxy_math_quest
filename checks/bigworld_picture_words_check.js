@@ -29,16 +29,16 @@ const bad = []; let pics = 0, steps = 0;
         if (String(t).trim()) window.__words.push({ t: String(t), x0: Math.min(a.x, z.x), x1: Math.max(a.x, z.x), y0: Math.min(a.y, z.y), y1: Math.max(a.y, z.y) }); return fill(t, x, y, mw); }; });
     const makers = await p.evaluate(() => Object.getOwnPropertyNames(window).filter(k => /^[a-z][A-Za-z]*Pic$/.test(k) && typeof window[k] === 'function'));
     const cases = [];
-    for (const mk of makers) { if (mk === 'machinePic') { cases.push({ mk, args: ['lesson'] }); for (const s of await p.evaluate(() => SITES.slice())) cases.push({ mk, args: [s] }); } else cases.push({ mk, args: [] }); }
+    for (const mk of makers) { if (mk === 'machinePic') { cases.push({ mk, args: ['lesson'] }); for (const s of await p.evaluate(() => SITES.slice())) cases.push({ mk, args: [s] }); } else { cases.push({ mk, args: [] }); if (await p.evaluate(mk => { try { return 'open' in window[mk](); } catch (e) { return false; } }, mk)) cases.push({ mk, args: [], open: true }); } }      /* a picture that can open (the Makers' box) is drawn open too */
     for (const c of cases) {
       let drew = false;
       for (let i = 0; i <= 7; i++) {
-        const r = await p.evaluate(async ([mk, args, i]) => { try { PIC = window[mk](...(mk === 'machinePic' && args[0] === 'lesson' ? ['lesson', typeof LESSON !== 'undefined' ? LESSON : undefined] : args)); } catch (e) { return { err: 'could not make: ' + e.message }; }
+        const r = await p.evaluate(async ([mk, args, i, open]) => { try { PIC = window[mk](...(mk === 'machinePic' && args[0] === 'lesson' ? ['lesson', typeof LESSON !== 'undefined' ? LESSON : undefined] : args)); if (open) PIC.open = true; } catch (e) { return { err: 'could not make: ' + e.message }; }
           READ.i = i; const d = PIC.draw; let got = null; PIC.draw = function () { window.__words = []; const out = d.apply(this, arguments); got = window.__words.slice(); return out; };
           await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(res, 30))));
           if (PIC.busy) for (let k = 0; k < 40 && PIC.busy(); k++) await new Promise(res => setTimeout(res, 100));      /* a moving picture: judge it when it stops */
           await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
-          const title = PIC.title || ''; PIC = null; return { words: got, W: cx.canvas.width, H: cx.canvas.height, title }; }, [c.mk, c.args, i]);
+          const title = (PIC.title || '') + (open ? ', open' : ''); PIC = null; return { words: got, W: cx.canvas.width, H: cx.canvas.height, title }; }, [c.mk, c.args, i, !!c.open]);
         if (r.err) { bad.push(`${name}: ${c.mk}(${c.args.join(', ')}): ${r.err}`); break; }
         if (!r.words) { bad.push(`${name}: ${c.mk}(${c.args.join(', ')}) drew nothing`); break; }
         drew = true; steps++;

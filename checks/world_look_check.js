@@ -26,7 +26,7 @@ const FILE = process.argv.find(a => /\.html$/.test(a)) || path.resolve(__dirname
   await p.evaluate(() => WL.toggle());
   // Elder Thimble and Pim: their pictures load (the page's safety rule lets pictures held in the page through), and they draw in place of the old drawing
   await p.waitForTimeout(400);
-  const cast = await p.evaluate(() => ({ loaded: Object.keys(CAST_SPRITES).every(c => Object.keys(CAST_SPRITES[c].frames).length >= 5), drawsElder: CAST.draw('elder', 100, 200, 50), drawsPim: CAST.draw('pim', 200, 200, 50),
+  const cast = await p.evaluate(() => ({ loaded: ['elder', 'pim', 'mender'].every(c => CAST_SPRITES[c] && Object.keys(CAST_SPRITES[c].frames).length >= 5) && Object.keys(CAST_SPRITES).every(c => CAST_SPRITES[c].frames.idle),      /* the Rillfolk have 1 to 5 faces (25 November) */ drawsElder: CAST.draw('elder', 100, 200, 50), drawsPim: CAST.draw('pim', 200, 200, 50),
     faces: ['One machine ate some of our pips! We do not dare to use them.', 'I lost my spinner by the pond. It is red. Have you seen it?', 'Push the old post, and the stones come up. Shh!'].map((t, i) => CAST.faceFor(i ? 'pim' : 'elder', t)).join(',') }));
   const faults = [];
   if (!cast.loaded || !cast.drawsElder || !cast.drawsPim) faults.push('Elder Thimble and Pim do not draw: ' + JSON.stringify(cast));

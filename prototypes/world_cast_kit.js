@@ -18,7 +18,7 @@ const CAST = (() => {
   const NAME = { elder: 'Elder Thimble', pim: 'Pim', keeper2: 'The harbour keeper', baker: 'The baker', netmender: 'The net weaver', singer: 'An old singer',
     guard: 'A Rillfolk guard', sp_stilt: 'The speaker of Stilt Town', sp_reed: 'The speaker of Reed Town', sp_mud: 'The speaker of Mud Town', rafter: 'A Rillfolk child' };      /* the name their words come under */
   const HEIGHT = { elder: 2.3, pim: 1.7, keeper2: 2.35, baker: 1.95, netmender: 1.95, singer: 1.75 };      /* on-screen height of the calm frame, in the scene's r (about 130 and 95 pixels on an iPad held sideways); taller, the elder covers the pip store */
-  const MAPH = { rafter: .62 };      /* on the map, in squares: the Rillfolk are "tall" (a Mender is .82); the child is smaller */
+  const MAPT = 1.0;      /* on the map, in squares: the tallest of the Rillfolk in their picture (a Mender is .82: the Rillfolk are "tall"); the others keep their sizes from the picture, so the child is smaller */
   const IMG = {}, PROP = {};
   Object.keys(CAST_PROPS).forEach(k => { const im = new Image(); im.src = CAST_PROPS[k].src; PROP[k] = im; });
   Object.keys(CAST_SPRITES).forEach(c => Object.keys(CAST_SPRITES[c].frames).forEach(f => { const im = new Image(); im.src = CAST_SPRITES[c].frames[f].src; IMG[c + '.' + f] = im; }));
@@ -110,7 +110,7 @@ const CAST = (() => {
   /* on the walking map: a Mender of the crowd, or one of the Rillfolk with pictures of their own, stands on its square */
   const grows = {};      /* talking on the map, they grow a little, so the face and the hop can be seen [Proposal, after Marc: "right now they're not really moving in any way"] */
   function crowd(t, X, Y, ts) { const talk = reading() && READ.who.toLowerCase() === String(t.name).toLowerCase(), g = grows[t.id] = (grows[t.id] || 1) + ((talk ? 1.35 : 1) - (grows[t.id] || 1)) * .12;
-    if (t.folk === 'rill') return !!NAME[t.id] && paint(t.id, X, Y + ts * .34, ts * (MAPH[t.id] || .95) * g);
+    if (t.folk === 'rill') { const cs = CAST_SPRITES[t.id]; return !!NAME[t.id] && !!cs && paint(t.id, X, Y + ts * .34, ts * MAPT * g * cs.frames.idle.h / (cs.ref || cs.frames.idle.h)); }
     return mender(t.id, t.col || '#c9793a', X, Y + ts * .34, ts * .82 * g, t.name); }
   return { draw, paint, faceFor, mender, crowd, crowdFace, test: { blinkNow: c => { st[c].blinkAt = tNow; }, shown: c => shown[c] || '', clear: () => { Object.keys(shown).forEach(k => delete shown[k]); } } };      /* test: for checks only */
 })();

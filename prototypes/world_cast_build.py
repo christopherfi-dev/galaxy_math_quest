@@ -10,7 +10,7 @@ For every frame (a whole-body picture of one feeling):
 THE RILLFOLK (the Reach) [Proposal, 25 November 2026; prompts: proposals/GMQ_Character_Test_Rillfolk_v1_2026-11-25.md]: no knob, so
   - left and right: the middle of the two eyes (or, with no eyes found, the middle of the body)
   - scale: one scale for each picture, from the space between the eyes against the calm frame's (Gemini draws everyone in one picture the same size)
-  - a character is built only when all its pictures are in content/art_test_2026-11-25/; until then the game draws its own
+  - a character is built once its calm picture is in content/art_test_2026-11-25/ (until then the game draws its own); a feeling still to come shows the calm frame
 Run:  python3 -I prototypes/world_cast_build.py      (also writes a check picture to the folder given as its first argument, if any)
       For a trial: CAST_RILL_ART=<folder of pictures> CAST_OUT=<sprites file> python3 -I prototypes/world_cast_build.py
 """
@@ -240,9 +240,16 @@ def body_mid(fig):
     return float(np.median(xs)) if len(xs) else w / 2
 
 missing = {}
+TOGETHER = {}      # characters drawn together in one picture keep their sizes from it (the tall Stilt Town speaker, the small child): one scale, from the tallest calm figure
 for ch, frames in RILL.items():
-    files = sorted(set(f[1] for f in frames)); gone = [f for f in files if not os.path.exists(os.path.join(RILL_ART, f))]
-    if gone: missing[ch] = gone; continue
+    if frames[0][1] == R17 and os.path.exists(os.path.join(RILL_ART, R17)):
+        rgba = cut(os.path.join(RILL_ART, R17), 'green'); TOGETHER['h'] = max(f[3] - f[1] for f in figures(rgba)); break
+for ch, frames in RILL.items():
+    have = lambda f: os.path.exists(os.path.join(RILL_ART, f))
+    if not have(frames[0][1]): missing[ch] = sorted(set(f[1] for f in frames if not have(f[1]))); continue      # no calm picture yet: the game draws its own
+    gone = sorted(set(f[1] for f in frames if not have(f[1])))
+    if gone: missing[ch] = gone; frames = [f for f in frames if have(f[1])]      # a feeling whose picture is still to come: the calm frame shows instead
+    files = sorted(set(f[1] for f in frames))
     raw, cache = {}, {}
     for name, fn, idx in frames:
         if fn not in cache:
@@ -253,7 +260,7 @@ for ch, frames in RILL.items():
         eyes, lid = find_eye_pair(fig)
         raw[name] = dict(fn=fn, fig=fig, eyes=eyes, lid=lid, lift=ground - box[3], mid=body_mid(fig),
                          d=(eyes[1][0] - eyes[0][0]) if len(eyes) == 2 else None, ex=(eyes[0][0] + eyes[1][0]) / 2 if len(eyes) == 2 else None)
-    idle = raw['idle']; base_scale = RILL_H.get(ch, MAP_H) / idle['fig'].shape[0]
+    idle = raw['idle']; base_scale = MAP_H / TOGETHER['h'] if idle['fn'] == R17 and TOGETHER else RILL_H.get(ch, MAP_H) / idle['fig'].shape[0]
     ratio = {}      # one scale for each picture: the calm frame's eye spacing against this picture's (the median of its frames)
     for fn in files:
         rs = [idle['d'] / r['d'] for r in raw.values() if r['fn'] == fn and r['d'] and idle['d']]
@@ -262,6 +269,7 @@ for ch, frames in RILL.items():
         ratio[fn] = max(.6, min(1.6, ratio[fn]))
     off = (idle['ex'] - idle['mid']) if idle['ex'] is not None else 0.0      # where the eyes sit from the body's middle, for a frame with closed eyes
     data[ch] = {'h': RILL_H.get(ch, MAP_H), 'folk': 'rill', 'frames': {}}
+    if idle['fn'] == R17: data[ch]['ref'] = MAP_H      # the tallest of the five is MAP_H; the rest keep their sizes against it
     for name, r in raw.items():
         s = base_scale * ratio[r['fn']]
         im = Image.fromarray(r['fig'], 'RGBA'); im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
@@ -277,7 +285,7 @@ for ch, frames in RILL.items():
             for e in eyes: d.ellipse([e[0] - e[2], e[1] - e[3], e[0] + e[2], e[1] + e[3]], outline=(255, 0, 0), width=2)
             d.line([ax - 12, ay, ax + 12, ay], fill=(0, 120, 255), width=3); d.line([ax, ay - 12, ax, ay], fill=(0, 120, 255), width=3)
             bgc = Image.new('RGBA', t.size, (96, 170, 92, 255)); bgc.alpha_composite(t); check_tiles.append((f'{ch} {name}', bgc))
-for ch, gone in missing.items(): print(f'{ch:9} waiting for: {", ".join(gone)} (the game draws its own until then)')
+for ch, gone in missing.items(): print(f'{ch:9} waiting for: {", ".join(gone)}' + (' (calm until then)' if ch in data else ' (the game draws its own until then)'))
 
 def pieces2d(rgba, step=8):
     """separate objects on one picture, row by row: found on a coarse grid, then cut at full size"""

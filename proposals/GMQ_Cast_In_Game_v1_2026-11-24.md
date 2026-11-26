@@ -133,6 +133,8 @@ Seen in pictures at iPad sideways (1180 × 745), iPad upright (820 × 1180) and 
 - **Tried with stand-ins only:** the game's own Rillfolk drawing, drawn big on green and cut out the same way. Never published. `checks/world_rill_test.js` passes with them on three screens.
 - **Found while checking:** the baker speaks only over his oven picture, so his faces are never seen in the harbour. Choice for Marc: put him in the oven picture too (as the net weaver is at her bench), or keep only his calm picture.
 
+- **26 November: Marc's pictures 12 to 17 are in** (picture 18 still to come). The check, and what is in the sample: `proposals/GMQ_Character_Test_Rillfolk_Results_v1_2026-11-26.md`.
+
 ## 3f. A fault in "Skip the start", found and fixed (25 November)
 
 - **The fault:** "Skip the start" showed on **every** reading card, even on a child's first time, and a tap on it later in the game started the skip again: it replaced the card being read and set the start as done. It was on the demo link.

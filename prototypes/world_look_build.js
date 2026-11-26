@@ -29,6 +29,7 @@ once('the net weaver in the harbour', "rillfolk(X, base - r * .8, r * .78, '#4f9
 once('the harbour keeper', "else if (id === 'keeper2') rillfolk(X, base - r * 1.0, r * 1.0, '#2f7fc0', 3, 'cap');", "else if (id === 'keeper2') { if (!CAST.draw('keeper2', X, base, r)) rillfolk(X, base - r * 1.0, r * 1.0, '#2f7fc0', 3, 'cap'); }");
 once('the old singer', "else if (id === 'singer') rillfolk(X, base - r * .76, r * .74, '#8fa8b8', 5, 'old');", "else if (id === 'singer') { if (!CAST.draw('singer', X, base, r)) rillfolk(X, base - r * .76, r * .74, '#8fa8b8', 5, 'old'); }");
 once('the net weaver at her bench (the rope task)', "rillfolk(w * .15, gy - u * .15, u * .15, '#4f9fb8', 2, '');", "if (!CAST.draw('netmender', w * .15, gy, u * .15)) rillfolk(w * .15, gy - u * .15, u * .15, '#4f9fb8', 2, '');");
+once('the harbour\'s mark on the map (the keeper)', "else if (id === 'harbour') rillfolk(X, Y - ts * .02, ts * .3, '#2f7fc0', 4, 'cap');", "else if (id === 'harbour') { if (!CAST.paint('keeper2', X, Y + ts * .3, ts * .85)) rillfolk(X, Y - ts * .02, ts * .3, '#2f7fc0', 4, 'cap'); }");
 once('the Mender at the first lesson', "mender(w * .08 + bw * .62, h * .84, bw * .1, '#c9793a', 5, '');",
   "if (!CAST.mender('lesson', '#c9793a', w * .08 + bw * .62, h * .84 + bw * .098, bw * .27, 'A Mender')) mender(w * .08 + bw * .62, h * .84, bw * .1, '#c9793a', 5, '');");
 // 3d. the start [Marc, 24 November]: land on the meadow and be met there; a way to skip the start once it has been seen (prototypes/world_opening_kit.js)
