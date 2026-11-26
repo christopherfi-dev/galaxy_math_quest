@@ -139,6 +139,8 @@ The Math Skills engine's notes in this repository say its student records sit in
 
 **Still yours** (no change): the decisions in section 6. Decision 4 (can an away child lose a card?) now shows in the battle's words, which say "The winner gets both cards" under either rule. The battle thread is asked to change that.
 
+**A whole grade in one world** (`checks/server_grade_measure.js`, a measure): 60 made-up cadets (the most one class allows), two devices each, late-game-sized saves (about 20,000 letters, 40 cards each), on PHP's small server with 8 workers. 1,271 requests in about 4 seconds. Saves: 4 ms in the middle, the slowest 71 ms. The card board and the list of decks: about 11 ms. Logging in: all 120 devices at the same moment took up to 1.6 seconds, because checking a secret number is slow on purpose (it is what makes a stolen file useless). All the saved games of the grade: 1.5 MB. This answers "are flat files enough?" for one grade, on this machine. Your Apache will differ; it is usually faster than PHP's small server.
+
 ### Messages to paste
 
 **To the battle thread:**
