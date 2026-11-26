@@ -22,7 +22,7 @@ Everything here is **[Proposal]** unless it says [Source].
 | Rule | Why |
 |---|---|
 | **Write only.** Never edit `prototypes/*`, `docs/*`, `checks/*`, any `HANDOFF_2026-11-20.md`, the plan, the zip, or any `proposals/GMQ_Big_World_*` file. | Each has one owner. `HANDOFF_2026-11-20.md`, section 2b, has the table. |
-| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, `proposals/GMQ_Small_Worlds_Story_*`, `proposals/GMQ_Station_Locks_Story_*` (and one such prefix for each world you write), this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
+| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, `proposals/GMQ_Small_Worlds_Story_*`, `proposals/GMQ_Station_Locks_Story_*`, `proposals/GMQ_Metrica_Story_*` (and one such prefix for each world you write), this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
 | **You may push those files to `claude/trusting-edison-vl78nc`** (the main branch). Marc gave this for the Chronosia files on 23 November; the Algora note went there because he passed on the big world thread's request for it. If you are unsure, ask him for one line. | |
 | **Before every push:** `git fetch origin claude/trusting-edison-vl78nc && git merge --no-edit FETCH_HEAD`. Never force-push. | Other threads push there all day. |
 | **`INFO_FROM_MARC.md` clashes on almost every merge.** Keep both sides: the other thread's lines first, then yours. Never drop a line. | It happened eight times in one day. |
@@ -104,9 +104,9 @@ Every one of these cost a review round.
 
 ### The 20 small worlds (26 November)
 
-- **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md`, **version 3**. Versions 1 and 2 each failed a review (scenes far from the built layout). Version 3: the trade post's scale, on screen in every world. The creature brings its goods; the cadet reads the scale and calls the number up; the ship pays by that word, then checks. Nearest ten or hundred (read to the nearest mark; halfway goes up, as the market says), a sum (one weight for two bags), a difference (the goods without the jar). A "See it first" each time. Star seeds for Project Second Home. Three decisions for Marc. Version 3 not re-read.
-- **The KIS Station against the 25 November rule:** `proposals/GMQ_Station_Locks_Story_v1_2026-11-26.md`. Options for the locker (no number: the robot pushes a fallen crate away), the Engine Core (the dials open the core's slots; its temper is a real rumble), the cannons (the screen is the cannons' aim: odd is a practice drone, even is a station ship), and the built line "A number needs a lock". Four decisions for Marc.
-- **Next:** Xylophora and Lengthar, which have never had a story check.
+- **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md`. **Three versions each failed a review; redesign stopped.** Decision 0 for Marc: A (my pick), no maths at the secret, found by doing; B, a shape chosen first by the main thread and Marc; C, keep the lock for now. Section 8 lists every trap the three versions fell into: read it before any new design.
+- **Xylophora and Lengthar:** `proposals/GMQ_Metrica_Story_Check_v1_2026-11-26.md`. Xylophora mostly passes (three small fixes). Lengthar: each task's own consequence, shown in what the child's number made (the foreman's beam, the workshop's cases, the Matrix's columns); the Guardian stays the last task. Version 2, a re-check, a last pass; the loop stopped. Three decisions for Marc.
+- **The KIS Station against the 25 November rule:** `proposals/GMQ_Station_Locks_Story_v1_2026-11-26.md`. On Marc's model ("opens by hand; the maths makes it run"): the locker opens by hand; the Engine Core's counts ready its sockets; the twin cannons' practice program, with the game's own meaning of odd (a shot with no partner pushes the ship sideways). The built line "A number needs a lock" changes. Version 2, a re-check, a last pass; the loop stopped. Five decisions for Marc.
 
 ### What may come next
 
@@ -144,5 +144,7 @@ Every one of these cost a review round.
 12. **Search the built page before you invent.** A role, a machine or a board may already exist. "The speaker", "the loading board" and the Meadow machines were all on the page, and two of them contradicted a fix.
 13. **For every cost, ask: "Can the child just make more, or get it elsewhere?"** Floor mats, rolled beads, plaited cups and a neighbour town's mats each undid a cost. Use things that come on their own, from a place that is someone's.
 14. **A name in a typed world must not be a common verb, or a word the page already uses.** "Promise" was the game's name and the verb in every line.
-16. **A code, a count, a pattern or a rule is never a thing in the story** [Source: Marc, 25 November]. Nothing is found, collected or opened with one. It is how the world's technology works: a child works it out so a machine or a place can do its job. A gate needs real things (each people's stone), not "five rules in a row". Check every line for "code", "count", "pattern" and "rule" used as an object.
 15. **Reviews cost Marc tokens:** about 190,000 each, done in full. Keep a re-check narrow: give it the list of changes and the sections they touch.
+16. **A code, a count, a pattern or a rule is never a thing in the story** [Source: Marc, 25 November]. Nothing is found, collected or opened with one. It is how the world's technology works: a child works it out so a machine or a place can do its job. A gate needs real things (each people's stone), not "five rules in a row". Check every line for "code", "count", "pattern" and "rule" used as an object.
+17. **Marc's model for it** [Source, 26 November]: "Opens by hand; the maths makes it run." Things open by hand or with a tool; the maths makes a machine work. Read his newest words before designing a fix: version 1 of the station note missed them.
+18. **Know when to stop a review loop.** Three versions of the small worlds each failed; the cause was a world with no natural need for the maths. Put the direction to Marc instead of a fourth try.

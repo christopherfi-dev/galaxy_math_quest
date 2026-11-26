@@ -279,6 +279,16 @@ Said aloud, none is a famous character's name, and none repeats a card on the pa
 
 ---
 
+## 6b. What the working Makers' box is for [Proposal]
+
+The big world thread asked for this [26 November: "Yours to write, when you like: what the working box is for."]. On the page (big world 15), the cadet prises the box open by hand and finds the note. Its two wheels slipped in the fall, and setting them true makes it work again [Source: Marc, "Opens by hand; the maths makes it run"].
+
+- **What it does when it works:** it is a Makers' **stone lamp.** The metal strip with five small holes is its face. **Each hole lights when one people's Rule Stone is lit,** wherever the cadet is.
+- **Why the Makers made it:** so a keeper anywhere on Algora could see which peoples were whole, and when the Gate would hold. The Gate needs five stones, one from each people [Source: Marc, 25 November].
+- **What the child sees:** "The box hums. Two of its five holes glow: gold for the Menders, blue for the Rillfolk." The light the page already sends to the Gate [Built: "Its light flies to the Gate on the mountain"] now also shows in the cadet's hand.
+- **Why it is not random:** it ties the well's find to the whole planet's story, the five peoples and the Gate. It needs no new maths, and it gives the "Rule Stones lit: N of 5" count a thing to show it.
+- **What it is not:** a key, or a code. It shows; it opens nothing.
+
 ## 7. What could prove this wrong
 
 | Claim | What to check |
