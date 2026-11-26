@@ -77,6 +77,16 @@ Everything is **[Proposal]** unless it says [Source].
 | 95 | The Voltara fly-in: a short flight down when a cadet lands, the full one the first time. A tap skips it. A Teacher switch turns it off. |
 | 94 | Chronosia's story, stages 1 and 2: the call for help on landing; the Keeper's and the Watcher's reasons; the clocks before the quake; the day turns when the quake is held; the crack fades only when the night trips stop too; the case without dates. |
 
+## 3a. Next, from 26 November [Source: Marc: "I need a conductor... We need the cards planned out... it pops up... So we need to be moving forward always."]
+
+**This replaces 3b's list.** Stage 4 (cards and the battle) starts now, side by side with the main thread's work. Who does what, the order, and the messages to paste: `HANDOFF_Next_Threads_2026-11-26.md`.
+- **Main:** version 100 (the trade market wired in; the number pad's clearer words), then the words beside the picture behind a Teacher switch, then Chronosia's stages 5 to 7; wires in each piece as it lands.
+- **Battle:** a card catalogue of about 100 to 150 named cards in one data file; then a battle with a child's own cards.
+- **Cards (new):** `HANDOFF_Cards_2026-11-26.md`: the pop-up when a card is earned, and the card book.
+- **Server (new):** `HANDOFF_Server_2026-11-26.md`: the built server on a test folder Marc uploads; then cards and challenge battles between classmates.
+- **Visual design:** the Rill characters; then the card pictures.
+- **Big world and story:** Algora; two or three children play it first.
+
 ## 3b. Next, from the afternoon of 23 November [Proposal: the main thread, as conductor]
 
 [Source: Marc, 23 November: "Can you be the conductor? ... What should be next?"] One list for every thread. Children's play decides what changes.
