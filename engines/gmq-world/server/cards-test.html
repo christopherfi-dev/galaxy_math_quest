@@ -151,6 +151,7 @@ function fight(b) {
       if (res.why !== 'finished' || !res.result) { $('battlemsg').textContent = 'You left the battle in the middle. It is kept: go back to it to finish. After ' + b.minutes + ' minutes it ends with nothing moved.'; return drawRivals(); }
       call({ action: 'battle_end', battle: b.battle, result: res.result, log: res.log || '' }).then(function (r) {
         BATTLE = null; $('resultbox').hidden = false; $('battlebox').hidden = true;
+        if (r.ok && r.status === 'too late') { $('resulthead').textContent = 'Too late'; $('result').innerHTML = '<p>' + esc(r.say) + '</p>'; return; }
         $('resulthead').textContent = res.result === 'won' ? 'You won!' : res.result === 'lost' ? b.rival.name + "'s deck won." : 'A tie.';
         $('result').innerHTML = !r.ok ? '<p class="msg">' + esc(r.error) + '</p>' : r.moved ? '<p>' + (res.result === 'won' ? (b.rule === 'away-safe' ? 'You got a copy of:' : 'You got:') : 'Your card went to ' + esc(b.rival.name) + ':') + '</p>' + cardHtml(r.moved) : '<p>No card moved.</p>';
         $('resultbox').scrollIntoView({ behavior: 'smooth' });

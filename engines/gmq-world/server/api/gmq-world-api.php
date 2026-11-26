@@ -40,7 +40,7 @@
 declare(strict_types=1);
 error_reporting(E_ALL); ini_set('display_errors', '0');
 
-const VERSION = '0.3';
+const VERSION = '0.3.1';
 $CONFIG = file_exists(__DIR__ . '/config.php') ? (require __DIR__ . '/config.php') : [];
 if (!is_array($CONFIG)) $CONFIG = [];
 $DATA = rtrim((string)($CONFIG['data_dir'] ?? (__DIR__ . '/data')), '/');
@@ -65,15 +65,29 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') { exit; }
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') { out(['ok' => false, 'error' => 'Use POST.'], 405); }
 
 /* ---------------------------------------------------------------- small tools */
-function out(array $a, int $code = 200): void { http_response_code($code); echo json_encode($a, JSON_UNESCAPED_UNICODE); exit; }
+/* JSON in and out. An empty object {} in a saved game must come back as {}: PHP would make it [], and the game then loses what it
+   writes into it, such as a finished task (found by an independent review, 26 November; it was in 0.1 too). Text that is not
+   proper UTF-8 is replaced, never allowed to make an answer or a file empty. */
+function keepObjects($v) {
+    if ($v instanceof stdClass) { $a = get_object_vars($v); if (!$a) return $v;                    // {} stays an object
+        $list = array_keys($a) === range(0, count($a) - 1);                                              // {"0":..,"1":..} stays an object too
+        foreach ($a as $k => $x) { if ($list) $v->{$k} = keepObjects($x); else $a[$k] = keepObjects($x); } return $list ? $v : $a; }
+    if (is_array($v)) { foreach ($v as $k => $x) $v[$k] = keepObjects($x); return $v; }
+    return $v;
+}
+function jdecode(string $t) { return keepObjects(json_decode($t, false, 512)); }
+function jencode($d, int $flags = 0) { return json_encode($d, $flags | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE); }
+/* cut text to a number of bytes without breaking a letter in two */
+function cut(string $t, int $n): string { $t = substr($t, 0, $n); for ($i = 0; $i < 4 && $t !== '' && @preg_match('//u', $t) !== 1; $i++) $t = substr($t, 0, -1); return $t; }
+function out(array $a, int $code = 200): void { $j = jencode($a); if ($j === false) { $code = 500; $j = '{"ok":false,"error":"The server could not answer."}'; } http_response_code($code); echo $j; exit; }
 function fail(string $msg, int $code = 400, array $more = []): void { out(['ok' => false, 'error' => $msg] + $more, $code); }
 function slug(string $s, int $max = 24): string { return substr(preg_replace('/[^a-z0-9]+/', '-', strtolower(trim($s))) ?? '', 0, $max); }
-function readJson(string $path): ?array { if (!is_file($path)) return null; $t = @file_get_contents($path); $d = json_decode($t === false ? '' : $t, true); return is_array($d) ? $d : null; }
+function readJson(string $path): ?array { if (!is_file($path)) return null; $t = @file_get_contents($path); $d = jdecode($t === false ? '' : $t); return is_array($d) ? $d : null; }
 /* The whole file is written beside the old one, then swapped in. A reader sees the old file or the new one, never half of one. */
 function writeJson(string $path, array $d): void {
     $dir = dirname($path); if (!is_dir($dir) && !@mkdir($dir, 0770, true) && !is_dir($dir)) fail('The server could not save.', 500);
-    $tmp = $path . '.' . bin2hex(random_bytes(4)) . '.tmp';
-    if (@file_put_contents($tmp, json_encode($d, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) === false || !@rename($tmp, $path)) { @unlink($tmp); fail('The server could not save.', 500); }
+    $tmp = $path . '.' . bin2hex(random_bytes(4)) . '.tmp'; $j = jencode($d, JSON_PRETTY_PRINT); if ($j === false) fail('The server could not save.', 500);
+    if (@file_put_contents($tmp, $j) === false || !@rename($tmp, $path)) { @unlink($tmp); fail('The server could not save.', 500); }
 }
 /* One lock file for each thing that is changed. Locks are always taken in the same (sorted) order, so two requests can never wait for each other for ever. */
 function withLocks(array $names, callable $fn) {
@@ -105,12 +119,12 @@ ini_set('session.gc_maxlifetime', (string)($HOURS * 3600)); ini_set('session.use
 $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 $cpath = rtrim(str_replace('\\', '/', dirname((string)($_SERVER['SCRIPT_NAME'] ?? '/api/x.php'))), '/') . '/';       // the cookie belongs to this folder only, so a test folder and a class folder never share a log in
 session_name('gmqworld');
-session_set_cookie_params(['lifetime' => $HOURS * 3600, 'path' => $cpath, 'secure' => $https, 'httponly' => true, 'samesite' => 'Lax']);
+session_set_cookie_params(['lifetime' => $HOURS * 3600, 'path' => $cpath, 'secure' => $https, 'httponly' => true, 'samesite' => !empty($CONFIG['allow_origin']) && $https ? 'None' : 'Lax']);
 session_start();
 
 $raw = file_get_contents('php://input') ?: '';
 if (strlen($raw) > MAX_STATE_BYTES + 20000) { out(['ok' => false, 'error' => 'Too big.'], 413); }
-$in = json_decode($raw, true);
+$in = jdecode($raw);
 if (!is_array($in)) { out(['ok' => false, 'error' => 'Send JSON.'], 400); }
 $action = (string)($in['action'] ?? '');
 
@@ -126,6 +140,18 @@ function rude(string $t, bool $strict = false): bool {
     $run = '';
     foreach (array_merge($words, ['']) as $w) { if (strlen($w) === 1) { $run .= $w; } else { if ($bad($run)) return true; $run = ''; } }
     return $strict && count($words) > 1 && $bad(implode('', $words));
+}
+/* A child's own first name. Only a whole word that is a curse or an insult is refused: a real name that happens to hold such
+   letters is fine (Pornthip, Siriporn, Supaporn, Kanokporn, Shital, Fukuda, Wankaew), and so are the nicknames Poo, Pee, Bum
+   and Fu (found by the review: the old check refused them all, at a school in Bangkok). Ship names keep the strict check. */
+function rudeName(string $t): bool {
+    static $leet = ['0' => 'o', '1' => 'i', '3' => 'e', '4' => 'a', '5' => 's', '7' => 't', '8' => 'b', '@' => 'a', '$' => 's', '!' => 'i', '+' => 't', '|' => 'i'];
+    static $bad = '/^(f+[uv]+c+k+(e+r+s*|i+n+g*|s+)?|f+c+k+|f+u+k+|s+h+[iy]+t+(s+|t+y+|h+e+a+d+)?|b+[iy]+a*t+c+h+(e+s+)?|c+u+n+t+s*|n+[iy]+g+g+(a+|e+r+)s*|w+h+o+r+e+s*|s+l+u+t+s*|b+a+s+t+a+r+d+s*|p+e+n+[iy]+s+|v+a+g+[iy]+n+a*|p+o+r+n+o*|p+u+s+s+y+|w+a+n+k+(e+r+)?|t+w+a+t+|a+s+s+h+o+l+e+s*|a+r+s+e+(h+o+l+e+)?|d+[iy]+c+k+(h+e+a+d+)?s*|c+o+c+k+s*|d+[iy]+l+d+o+|r+e+t+a+r+d+s*|f+a+g+(g+o+t+)?s*|b+o+o+b+s*|t+[iy]+t+s+|t+[iy]+t+t+[iy]+e+s+|s+e+x+y*|a+s+s+(e+s+)?|p+o+o+p+(s+|y+|h+e+a+d+)?|b+u+t+t+(h+e+a+d+|h+o+l+e+|f+a+c+e+)|d+u+m+b+a+s+s+|j+a+c+k+a+s+s+|s+t+u+p+[iy]+d+|[iy]+d+[iy]+o+t+s*|d+u+m+m+y+|l+o+s+e+r+s*|u+g+l+y+|m+o+r+o+n+s*|n+a+z+[iy]+|k+k+k+|w+t+f+|s+t+f+u+|f+a+r+t+s*|c+r+a+p+|d+a+m+n+|h+e+l+l+|s+u+c+k+s*|s+u+c+k+e+r+)$/';
+    $words = [];
+    foreach (preg_split('/\s+/', strtolower(trim($t))) ?: [] as $w) { $w = preg_replace('/[^a-z]/', '', strtr($w, $leet)) ?? ''; if ($w !== '') $words[] = $w; }
+    foreach ($words as $w) if (preg_match($bad, $w)) return true;
+    $run = ''; foreach (array_merge($words, ['']) as $w) { if (strlen($w) === 1) $run .= $w; else { if ($run !== '' && preg_match($bad, $run)) return true; $run = ''; } }   // f u c k
+    return count($words) > 1 && preg_match($bad, implode('', $words)) === 1;                                                                    // poop head
 }
 function cleanName(string $s, int $max): string { $s = trim(preg_replace('/\s+/', ' ', preg_replace('/[^A-Za-z0-9 ]/', '', $s) ?? '') ?? ''); return substr(ucwords(strtolower($s)), 0, $max); }
 
@@ -190,7 +216,8 @@ function progress(?array $state): int { $m = summary($state); if (!$m) return 0;
 function backup(array &$s, ?array $state, string $why): void {
     if (!is_array($state) || progress($state) === 0) return;
     $b = is_array($s['backups'] ?? null) ? $s['backups'] : [];
-    if ($b && ($b[0]['why'] ?? '') === $why && strtotime((string)$b[0]['at']) > time() - 600) array_shift($b);   // one copy per reason in ten minutes is enough
+    if ($b && ($b[0]['why'] ?? '') === $why && strtotime((string)$b[0]['at']) > time() - 600) {      // one copy per reason in ten minutes is enough: the bigger one
+        if (progress($state) < progress(is_array($b[0]['state'] ?? null) ? $b[0]['state'] : null)) return; array_shift($b); }
     array_unshift($b, ['at' => date('c'), 'why' => $why, 'summary' => summary($state), 'state' => $state]); $s['backups'] = array_slice($b, 0, MAX_BACKUPS);
 }
 
@@ -210,8 +237,11 @@ function shareOf(array $class): array { return ['board' => !empty($class['board'
 if ($action === 'health') {                                     // anyone may ask: it says what works, never a path, a key or a name
     $probe = ''; $word = '';
     $writable = is_dir($DATA) && is_writable($DATA); $root = realpath((string)($_SERVER['DOCUMENT_ROOT'] ?? '')) ?: ''; $real = realpath($DATA) ?: '';
-    $inside = $root !== '' && $real !== '' && strpos($real . '/', rtrim($root, '/') . '/') === 0;
-    if ($inside && $writable) { $word = token(6); @file_put_contents("$DATA/probe.txt", $word); $probe = substr($real, strlen(rtrim($root, '/'))) . '/probe.txt'; }
+    $inside = $root !== '' && $real !== '' && strpos($real . '/', rtrim($root, '/') . '/') === 0; $api = realpath(__DIR__) ?: '';
+    $inApi = $api !== '' && $real !== '' && strpos($real . '/', $api . '/') === 0;                     // under the API's own folder: always reachable the way the API is (an Alias too)
+    if (($inside || $inApi) && $writable) { $word = token(6); @file_put_contents("$DATA/probe.txt", $word);
+        $probe = $inApi ? rtrim(str_replace('\\', '/', dirname((string)($_SERVER['SCRIPT_NAME'] ?? ''))), '/') . substr($real, strlen($api)) . '/probe.txt' : substr($real, strlen(rtrim($root, '/'))) . '/probe.txt'; }
+    $inside = $inside || $inApi;
     $t = readJson("$DATA/teacher.json"); $file = (string)($CONFIG['constraint_file'] ?? (__DIR__ . '/constraints/gmq-world.txt'));
     out(['ok' => true, 'version' => VERSION, 'php' => PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION, 'php_ok' => version_compare(PHP_VERSION, '7.4.0', '>='), 'config' => file_exists(__DIR__ . '/config.php'),
         'data_writable' => $writable, 'data_inside_web' => $inside, 'probe_url' => $probe, 'probe_word' => $probe ? $word : '', 'sessions_ok' => is_dir($SESS) && is_writable($SESS), 'session_hours' => $HOURS,
@@ -221,11 +251,11 @@ if ($action === 'join') {
     $code = slug((string)($in['class'] ?? ''), 12); $name = cleanName((string)($in['name'] ?? ''), 16); $pin = (string)($in['pin'] ?? '');
     $class = $code === '' ? null : readJson(classPath($code)); if (!$class) fail('That class code is not known. Ask your teacher.', 404);
     if (strlen($name) < 2) fail('Type your name: letters only, at least 2.');
-    if (rude($name, true)) fail('Please use your own name.');
+    if (rudeName($name)) fail('Please use your own name.');
     if (!preg_match('/^[0-9]{4}$/', $pin)) fail('Your secret number has 4 digits.');
     $id = slug($name); $path = studentPath($code, $id); $lg = token();
     $s = withLocks([cadetLock($code, $id)], static function () use ($path, $class, $code, $id, $name, $pin, $lg) {
-        $s = readJson($path);
+        $s = readJson($path); if (!$s && is_file($path)) fail('This name cannot be opened just now. Ask your teacher.', 500);      // never treat a file that cannot be read as a new cadet
         if (!$s) {
             if (!empty($class['closed'])) fail('This class is not taking new cadets. Ask your teacher.', 403);
             if (count(glob(dirname($path) . '/*.json') ?: []) >= 60) fail('This class is full.', 403);
@@ -234,13 +264,13 @@ if ($action === 'join') {
             logLine("new cadet $code/$id");
         } else {
             if (($s['locked_until'] ?? 0) > time()) fail('Too many wrong tries. Wait ten minutes, or ask your teacher.', 429);
-            if (!password_verify($pin, (string)$s['pin_hash'])) { $s['tries'] = ($s['tries'] ?? 0) + 1; if ($s['tries'] >= MAX_TRIES) { $s['locked_until'] = time() + LOCK_SECONDS; $s['tries'] = 0; logLine("locked $code/$id"); } writeJson($path, $s); fail('That is not the secret number for this name.', 403); }
+            if (!password_verify($pin, (string)$s['pin_hash'])) { $s['tries'] = ($s['tries'] ?? 0) + 1; if ($s['tries'] >= MAX_TRIES) { $s['locked_until'] = time() + LOCK_SECONDS; $s['tries'] = 0; logLine("locked $code/$id"); } writeJson($path, $s); fail("That is not the secret number for this name. If this is not your game, add a letter to your name, like $name B.", 403); }
             $s['tries'] = 0;
         }
         $s['login'] = $lg; $s['login_at'] = date('c');               // this device is now the one that saves; an older one is told the game moved
         writeJson($path, $s); return $s;
     });
-    session_regenerate_id(true); $_SESSION = ['class' => $code, 'id' => $id, 'lg' => $lg, 'joined' => time()];
+    session_regenerate_id(true); $_SESSION = ['class' => $code, 'id' => $id, 'lg' => $lg, 'joined' => microtime(true)];
     out(cadetOut($s, $class));
 }
 if ($action === 'logout') { $_SESSION = []; session_destroy(); out(['ok' => true]); }
@@ -259,7 +289,8 @@ if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 
 
     if ($action === 'save') {
         $state = $in['state'] ?? null; if (!is_array($state)) fail('Nothing to save.');
-        if (strlen(json_encode($state) ?: '') > MAX_STATE_BYTES) fail('That game is too big to save.', 413);
+        $enc = jencode($state); if ($enc === false || json_decode($enc, false, 500) === null) fail('That game cannot be saved.');     // it must be readable again, with room to spare
+        if (strlen($enc) > MAX_STATE_BYTES) fail('That game is too big to save.', 413);
         $hasRev = array_key_exists('rev', $in) && is_int($in['rev']); $caps = is_array($in['caps'] ?? null) ? array_values(array_intersect($in['caps'], ['rev', 'cards'])) : null;
         $res = withLocks([cadetLock($code, $id)], static function () use ($path, $state, $hasRev, $in, $caps) {
             $s = needStudent();
@@ -267,8 +298,9 @@ if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 
             if (!newest($s)) { if (progress($state) > progress($s['state'])) { backup($s, $state, 'from another iPad, not kept'); writeJson($path, $s); }
                 return [409, ['ok' => false, 'moved' => true, 'error' => 'Your game is open on another iPad. Log out and in again to bring it here.']]; }
             /* 2. the server's game changed since this page last had it (the teacher cleared or brought back a game) */
-            if ($hasRev && (int)$in['rev'] !== (int)($s['rev'] ?? 0)) return [409, ['ok' => false, 'newer' => true, 'error' => 'There is a newer game on the server.', 'state' => $s['state'], 'rev' => (int)($s['rev'] ?? 0)]];
-            if (!$hasRev && !empty($s['reset_at']) && (int)($_SESSION['joined'] ?? 0) < (int)$s['reset_at']) return [409, ['ok' => false, 'newer' => true, 'error' => 'Your Commander changed your game. Log out and in again.']];
+            $keep = static function () use (&$s, $state, $path) { if (progress($state) > progress($s['state'])) { backup($s, $state, 'from an iPad that was open, not kept'); writeJson($path, $s); } };
+            if ($hasRev && (int)$in['rev'] !== (int)($s['rev'] ?? 0)) { $keep(); return [409, ['ok' => false, 'newer' => true, 'error' => 'There is a newer game on the server.', 'state' => $s['state'], 'rev' => (int)($s['rev'] ?? 0)]]; }
+            if (!$hasRev && !empty($s['reset_at']) && (float)($_SESSION['joined'] ?? 0) < (float)$s['reset_at']) { $keep(); return [409, ['ok' => false, 'newer' => true, 'error' => 'Your Commander changed your game. Log out and in again.']]; }
             /* 3. keep it */
             $state['ship'] = (string)($s['ship']['name'] ?? '');                         // the ship's name is the server's to give: only an approved name is kept
             if (isset($state['botName']) && rude((string)$state['botName'], true)) $state['botName'] = '';
@@ -284,7 +316,8 @@ if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 
         $task = (string)($in['task'] ?? ''); $codes = ($class['codes'] ?? []) + DEFAULT_CODES; if (!isset($codes[$task])) fail('That task has no code.');
         $right = withLocks([cadetLock($code, $id)], static function () use ($path, $task, $codes, $in) {
             $s = needStudent(); if (($s['code_lock'] ?? 0) > time()) fail('Too many wrong codes. Go and see your Commander.', 429);
-            $right = (string)($in['code'] ?? '') === (string)$codes[$task];
+            $a = trim((string)($in['code'] ?? '')); $b = (string)$codes[$task];
+            $right = preg_match('/^[0-9]+$/', $a) && preg_match('/^[0-9]+$/', $b) ? ltrim($a, '0') === ltrim($b, '0') : $a === $b;      // "0420" and "420" are the same number
             if ($right) { $s['codes_ok'][$task] = date('c'); $s['code_tries'] = 0; } else { $s['code_tries'] = ($s['code_tries'] ?? 0) + 1; if ($s['code_tries'] >= 8) { $s['code_lock'] = time() + 300; $s['code_tries'] = 0; } }
             writeJson($path, $s); return $right;
         });
@@ -348,19 +381,19 @@ function setupTries(string $file, string $word, string $typed): void {     // fi
     $t = readJson($file) ?? []; if (($t['locked_until'] ?? 0) > time()) fail('Too many wrong tries. Wait ten minutes.', 429);
     if (!hash_equals($word, $typed)) { $t['tries'] = ($t['tries'] ?? 0) + 1; if ($t['tries'] >= MAX_TRIES) { $t['locked_until'] = time() + LOCK_SECONDS; $t['tries'] = 0; } writeJson($file, $t); fail('That is not the setup word in config.php.', 403); }
 }
-if ($action === 't_setup') {                                     // the first time only: the setup word from config.php lets the teacher choose a password, with no command line
+if ($action === 't_setup') { withLocks(['teacher'], static function () use ($in) { global $DATA, $CONFIG;                                     // the first time only: the setup word from config.php lets the teacher choose a password, with no command line
     $t = readJson("$DATA/teacher.json"); if ($t && !empty($t['password_hash'])) fail('The teacher password is already set.', 409);
     $word = (string)($CONFIG['setup_code'] ?? ''); if (strlen($word) < 6) fail('First write a setup word (6 letters or more) in api/config.php, on the server.', 503);
     setupTries("$DATA/setup.json", $word, (string)($in['setup_code'] ?? ''));
     $pw = (string)($in['password'] ?? ''); if (strlen($pw) < 8) fail('Choose a teacher password of at least 8 characters.');
     writeJson("$DATA/teacher.json", ['password_hash' => password_hash($pw, PASSWORD_DEFAULT), 'tries' => 0, 'locked_until' => 0, 'set' => date('c')]); @unlink("$DATA/setup.json"); logLine('teacher password set from the Desk');
-    session_regenerate_id(true); $_SESSION = ['teacher' => true]; out(['ok' => true, 'ai' => aiOn()]);
+    }); session_regenerate_id(true); $_SESSION = ['teacher' => true]; out(['ok' => true, 'ai' => aiOn()]);
 }
-if ($action === 't_login') {
+if ($action === 't_login') { withLocks(['teacher'], static function () use ($in) { global $DATA;      // five wrong tries lock the door, even when many arrive at once
     $t = readJson("$DATA/teacher.json"); if (!$t || empty($t['password_hash'])) fail('No teacher password is set on the server yet.', 503, ['setup' => true]);
     if (($t['locked_until'] ?? 0) > time()) fail('Too many wrong tries. Wait ten minutes.', 429);
     if (!password_verify((string)($in['password'] ?? ''), (string)$t['password_hash'])) { $t['tries'] = ($t['tries'] ?? 0) + 1; if ($t['tries'] >= MAX_TRIES) { $t['locked_until'] = time() + LOCK_SECONDS; $t['tries'] = 0; } writeJson("$DATA/teacher.json", $t); fail('That is not the teacher password.', 403); }
-    $t['tries'] = 0; writeJson("$DATA/teacher.json", $t); session_regenerate_id(true); $_SESSION = ['teacher' => true]; out(['ok' => true, 'ai' => aiOn()]);
+    $t['tries'] = 0; writeJson("$DATA/teacher.json", $t); }); session_regenerate_id(true); $_SESSION = ['teacher' => true]; out(['ok' => true, 'ai' => aiOn()]);
 }
 if (strpos($action, 't_') === 0) {
     if (empty($_SESSION['teacher'])) fail('Teacher log in needed.', 401);
@@ -381,7 +414,7 @@ if (strpos($action, 't_') === 0) {
     if ($action === 't_set') {
         withLocks([classLock($code)], static function () use ($code, $in) {
             $class = readJson(classPath($code)) ?? [];
-            if (isset($in['codes']) && is_array($in['codes'])) foreach (DEFAULT_CODES as $k => $_) if (isset($in['codes'][$k]) && preg_match('/^[0-9]{3,4}$/', (string)$in['codes'][$k])) $class['codes'][$k] = (int)$in['codes'][$k];
+            if (isset($in['codes']) && is_array($in['codes'])) foreach (DEFAULT_CODES as $k => $_) if (isset($in['codes'][$k]) && preg_match('/^[0-9]{3,4}$/', (string)$in['codes'][$k])) $class['codes'][$k] = (string)$in['codes'][$k];
             if (isset($in['names']) && in_array($in['names'], ['approve', 'auto'], true)) $class['names'] = $in['names'];
             if (isset($in['closed'])) $class['closed'] = (bool)$in['closed'];
             if (isset($in['board'])) $class['board'] = (bool)$in['board'];
@@ -410,10 +443,12 @@ if (strpos($action, 't_') === 0) {
             if ($what === 'number') { $new = (string)($in['pin'] ?? ''); if (!preg_match('/^[0-9]{4}$/', $new)) fail('The new secret number needs 4 digits.'); $s['pin_hash'] = password_hash($new, PASSWORD_DEFAULT); $s['tries'] = 0; $s['locked_until'] = 0; }
             else {
                 $take = null;
-                if ($what === 'restore') { $n = (int)($in['n'] ?? -1); $b = $s['backups'] ?? []; if (!isset($b[$n])) fail('No such copy.', 404); $take = $b[$n]['state']; array_splice($b, $n, 1); $s['backups'] = $b; }
+                if ($what === 'restore') { $n = (int)($in['n'] ?? -1); $b = $s['backups'] ?? []; if (!isset($b[$n])) fail('No such copy.', 404); $take = $b[$n]['state']; array_splice($b, $n, 1); $s['backups'] = $b;
+                    [$take] = applyLedger($s, $take); }                                    // a card that left since this copy was kept stays gone; one that came stays
+                if ($what === 'game') $s['ledger']['came'] = [];                       // a cleared game starts with no cards; a card that left still never comes back
                 backup($s, $s['state'], $what === 'restore' ? 'before you brought back an older copy' : 'before you cleared it');
                 $s['state'] = $take; $s['saved_at'] = $take ? date('c') : null; $s['summary'] = summary($take); if ($what === 'game') $s['codes_ok'] = [];
-                $s['rev'] = (int)($s['rev'] ?? 0) + 1; $s['reset_at'] = time();       // an iPad that still shows the old game cannot save it over this one
+                $s['rev'] = (int)($s['rev'] ?? 0) + 1; $s['reset_at'] = microtime(true);       // an iPad that still shows the old game cannot save it over this one
             }
             writeJson($path, $s);
         });
