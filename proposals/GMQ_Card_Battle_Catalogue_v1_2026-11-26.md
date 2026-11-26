@@ -149,9 +149,24 @@ The rule is in `cards.json` (`starter_pack`), so the game and the cards thread r
 
 ## 8. Checks
 
-Run on 26 November (results in the report):
+Run on 26 November. **All pass.**
+
+| Check | Result |
+|---|---|
+| `python3 checks/battle_cards_set_check.py` | ALL OK (94 checks) |
+| `python3 checks/battle_cards_review_check.py` | ALL OK |
+| `node checks/battle_engine_test.js` | ALL OK (about 147 million checks) |
+| `node checks/battle_own_test.js` (new) | ALL OK (72 checks, three sizes) |
+| `node checks/battle_page_test.js` | ALL OK (1,643 checks) after one fix to the test (below) |
+| `node checks/battle_cards_page_test.js` | ALL OK (42 checks) |
+
+**Battle length did not move with the bigger set** (computer against computer, Standard ships, your rules): gentle players 11 rounds in the middle (9 in 10 done by 15), clever players 15 (by 19). Own decks, 600 battles: 11 rounds in the middle, 9 in 10 by round 16, longest 23. On 22 November it was 12 and 15.
+
+What each check does:
 - `python3 checks/battle_cards_set_check.py`: reads `cards.json`; the counts; no two cards alike; every epic unique; the number rule; words against numbers; 20,000 random ships for each card; 10,000 starter packs; that both pages and the piece carry exactly this list.
 - `node checks/battle_engine_test.js`: every switch combination, computer against computer, with the 93-card decks; then 10,000 starter packs; 4,000 made-up children's own decks (from no cards to 150, with extra Spies, upgrades, ship parts, unknown names), 600 of them played to the end; Comeback Crew and Star Harbour by hand.
 - `node checks/battle_own_test.js` (new): the piece at three sizes, as a child: 4 cards and lent cards; 3 Spy cards and choosing one; 86 cards; a battle started, left, and found again after closing; the end; lasting upgrades.
 - `node checks/battle_page_test.js`, `node checks/battle_cards_page_test.js`, `python3 checks/battle_cards_review_check.py`: the practice battle and the cards page, as before.
+- **The page test failed once, and the fault was the test.** With the bigger set, its battle at real speed drew a Spy that hits two parts; the test tapped the same part twice, which un-chooses it, so the round never ended. It now taps a part not chosen yet. The page was right.
+- **The cards page test** failed once on the phone (picks gone after reopening) while the heavy engine test ran beside it, as the old thread also saw once. Run on its own: all pass.
 - **Fixed on the way:** a timer in the battle's movement could start a moment early and draw a circle with a negative size (an error in the browser's console, nothing a child would see).

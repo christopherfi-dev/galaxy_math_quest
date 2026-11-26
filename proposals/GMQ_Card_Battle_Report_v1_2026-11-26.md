@@ -24,12 +24,12 @@ The full note: `GMQ_Card_Battle_Catalogue_v1_2026-11-26.md`. The wiring note: `G
 
 | Check | What it does | Result |
 |---|---|---|
-| `python3 checks/battle_cards_set_check.py` | the list: counts, no two cards alike, every epic unique, the number rule, words against numbers, 20,000 random ships for each card, 10,000 starter packs, the pages and the piece carry the same list | see the run below |
-| `node checks/battle_engine_test.js` | every combination of switches with the bigger decks; 10,000 starter packs; 4,000 made-up children's own decks, 600 played to the end; the two new epics by hand | see the run below |
-| `node checks/battle_own_test.js` (new) | the piece as a child, at three sizes | see the run below |
-| `node checks/battle_page_test.js` | the practice battle as before | see the run below |
-| `node checks/battle_cards_page_test.js` | the cards page | see the run below |
-| `python3 checks/battle_cards_review_check.py` | the review of the 2023 cards | see the run below |
+| `python3 checks/battle_cards_set_check.py` | the list: counts, no two cards alike, every epic unique, the number rule, words against numbers, 20,000 random ships for each card, 10,000 starter packs, the pages and the piece carry the same list | ALL OK |
+| `node checks/battle_engine_test.js` | every combination of switches with the bigger decks; 10,000 starter packs; 4,000 made-up children's own decks, 600 played to the end; the two new epics by hand | ALL OK |
+| `node checks/battle_own_test.js` (new) | the piece as a child, at three sizes | ALL OK |
+| `node checks/battle_page_test.js` | the practice battle as before | ALL OK (1,643 checks), after a fix to the test: its Spy with two targets |
+| `node checks/battle_cards_page_test.js` | the cards page | ALL OK |
+| `python3 checks/battle_cards_review_check.py` | the review of the 2023 cards | ALL OK |
 | By eye | every new screen as pictures at iPad sideways, iPad upright and phone: the own-cards setup (4 cards, 3 Spies, 86 cards), a card opened large, the battle, the end; the cards page's rule table, the NEW cards, the starter pack | fixed what I saw |
 
 ## What I did not check
