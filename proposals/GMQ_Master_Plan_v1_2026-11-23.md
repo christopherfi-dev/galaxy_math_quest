@@ -1,6 +1,6 @@
 # Galaxy Math Quest: the whole plan
 
-**Date:** 23 November 2026 (brought up to date on 26 November, version 100). **For:** Marc, and every thread.
+**Date:** 23 November 2026 (brought up to date on 26 November, version 101). **For:** Marc, and every thread.
 **What this is:** one list of everything:
 - what is built
 - who is doing what
@@ -70,6 +70,7 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
+| 101 | A Teacher try-out, off at first: the game's words beside the picture, so the picture takes the full height (decision 19, option B). |
 | 100 | Galactic Trade is a market: a new board every trip, numbers within 1,000, the glow stone on Planet R for 300 gems; a planet you sold to can be landed on. The number pad says "iPad keys" and "Number pad", and opens full for every new task. |
 | 99 | An Actions button: the word rows fold away until a child opens them, so the side panel shows only the typing box, the bag and More. A Teacher switch keeps them open. |
 | 98 | A dock at the KIS Station: after launch, "dock" or a tap on the station opens it again, as the cadet left it. "Are you sure?" before Play again and Start again. |
@@ -203,7 +204,7 @@ Each note lays out the choices and recommends one.
 | 15 | **Lengthar's measuring tape** has no use yet (the Chronosia story note, decision 6, pick A). Leave it as a prize, or design a quest that needs it? | the Chronosia story note, decision 6 |
 | 16 | ~~Galactic Trade~~: answered 23 November, the market (option A), by a new thread. The rest of the row is history: **Galactic Trade, three choices** (version 97 fixed the rest): A, rounding as an estimate ("the scanner reads only roughly: about 10 light-years"), or as now; B, your Trade Data Sheet as the picture, every planet's numbers in view, rounding only for the planets chosen, or scan-first as now; C, what the gems buy: the Council's Power Module upgrade, from your Task 2 page. Picks: A estimate, B the data sheet, C yes. | this plan; your Task 2 page |
 | 17 | ~~Voltara's running total~~: answered 23 November, keep it (Marc will watch for children who only click). History: **Voltara's energy plan shows a running total** of the energy used as places are switched on. Your rule says never show the adding. Take it out (the child adds, then the tower checks), or keep it? Your class has played it. | the game's `startPlan` |
-| 19 | **How big the picture is** [Proposal]: A keep version 99; B the game's words beside the picture, so the room takes the full height (the main thread's pick); C the picture fills the screen, with an Actions panel over it (another thread's pick). Measured, with mock-ups. | `GMQ_Picture_Size_v1_2026-11-26.md` |
+| 19 | ~~**How big the picture is**~~: answered 26 November, B, behind a Teacher switch first. Built in version 101, off at first. History: A keep version 99; B the game's words beside the picture, so the room takes the full height (the main thread's pick); C the picture fills the screen, with an Actions panel over it (another thread's pick). Measured, with mock-ups. | `GMQ_Picture_Size_v1_2026-11-26.md` |
 | 12 | **Older decisions from 21 November, some answered since** | `GMQ_Decisions_Waiting_2026-11-21.md`. The main thread should mark which are answered (its first job). |
 
 ## 5b. The story test, for every task on every planet

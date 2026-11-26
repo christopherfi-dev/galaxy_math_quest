@@ -193,6 +193,13 @@ ul.report2 { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; f
 #stageview { position: absolute; inset: 0; z-index: 4; background: radial-gradient(circle at 50% 45%, #18224a, #070b18); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; padding: 58px 14px 14px; overflow: hidden; color: #e8eef8; }
 #stageview[hidden] { display: none; } .hud { z-index: 5; }
 body.market .hud { display: none; }
+/* [v101] WORDS BESIDE THE PICTURE (a Teacher try-out, off at first).  [Source: Marc, 2026-11-26: "I agree with your things" (option B of proposals/GMQ_Picture_Size_v1_2026-11-26.md, behind a Teacher switch first)]
+   On a wide screen the game's answers move from under the picture to the side panel, under the word rows and the bag (with the rows folded, just under the typing box and Actions);
+   the picture takes the strip's height. During a task the desk takes the whole panel, as before; the answers come back when it closes. */
+body.wside #side > .log { display: flex; height: 10.4em; min-height: 0; max-height: none; overflow-y: auto;      /* a fixed height: the word rows under it never move (Marc, 19 November) */
+  justify-content: flex-start; border: 2px solid #33476a; border-radius: 14px; margin: 0; grid-column: auto; grid-row: auto; }
+body.wside.menuopen #side > .log { display: none; }      /* under the word rows and the bag, so nothing above the rows changes height; hidden while My ship or My cards is open, and during a task (the desk takes the panel) */
+body.wside .console { grid-template-rows: minmax(0, 1fr); }
 #toy table.log { display: table; height: auto; min-height: 0; overflow: visible; background: none; padding: 0; border: 0; margin: 6px 0 10px; border-collapse: collapse; font-size: .95rem; grid-column: auto; grid-row: auto; }      /* [v100] the market's ship's log: the game's own .log is the words strip under the picture */
 #toy table.log th, #toy table.log td { color: #eef2ff; text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid rgba(255,255,255,.16); vertical-align: top; background: none; }
 #toy table.log th { color: #a9b9d0; font-weight: 400; }      /* [v100] the market draws its own planet cards along the top of the picture */
@@ -334,7 +341,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 100</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 101</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -375,6 +382,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
     <p><label class="note"><input type="checkbox" id="bookOn" checked> Chronosia: the Council's book can be read on screen. Switch off to use printed copies only.</label></p>
     <p><label class="note"><input type="checkbox" id="flyOn" checked> The fly-in: a short flight down to Voltara when a cadet lands (the full one the first time, two seconds after that). It skips itself on an iPad that cannot draw it, or that asks for less motion.</label></p>
     <p><label class="note"><input type="checkbox" id="wordsOn"> Word buttons always shown. Off: the doing words, the directions and the places open with the Actions button, or when a cadet taps the typing box.</label></p>
+    <p><label class="note"><input type="checkbox" id="wsideOn"> Words beside the picture (a try-out). On an iPad held sideways, the game's answers sit in the side panel, under the typing box, and the picture takes the full height. Held upright, or on a phone, nothing changes.</label></p>
     <p><label class="note"><input type="checkbox" id="hazOn" checked> Space hazards: quick sums against the clock on flights between galaxies</label></p>
     <p><label class="note"><input type="checkbox" id="realOn"> Station: real-life tasks, with your codes. Off: the four are played on screen. For a whole class, add ?real to the end of the link.</label></p>
     <p><label class="note"><input type="checkbox" id="cardsOn" checked> Reading cards: new words come up over the picture and wait for OK</label></p>
@@ -793,12 +801,15 @@ const MENU = { open: null, seen: {} }, FIT = { ctl: 0, key: '' };
 function menuCounts() { return { cards: S.cards.length + (S.q4 || 0), ship: S.parts.length * 100 + tasksDone() }; }
 function drawMenu() { const p = $('panels'); if (!p || !S) return; const mhere = (S.mode === 'star' && !!S.sd) || (S.mode === 'chrono' && !!S.c) || (S.mode === 'xylo' && !!S.xy) || (S.mode === 'len' && !!S.ln), mb = $('m_mission'); if (MENU.open === 'mission' && !S.v && !mhere) MENU.open = null; if (MENU.open) p.dataset.open = MENU.open; else delete p.dataset.open; mb.hidden = !(S.v || mhere); { const lab = mhere || S.mode === 'planet' ? 'Mission' : 'Voltara mission'; if (mb.textContent !== lab) mb.textContent = lab; }      /* away from Voltara the button says whose mission it holds */
   const n = menuCounts(); document.querySelectorAll('#menu .mbtn').forEach(b => { const k = b.dataset.m, on = k === MENU.open; b.classList.toggle('on', on); b.setAttribute('aria-expanded', on ? 'true' : 'false'); if (n[k] != null) { if (on || MENU.seen[k] == null) MENU.seen[k] = n[k]; b.classList.toggle('new', n[k] > MENU.seen[k]); } }); }
-function menuOpen(k) { MENU.open = k || null; drawMenu(); fitSoon(); if (MENU.open) { const el = document.querySelector(`#panels > [data-m="${MENU.open}"]`); if (el && el.scrollIntoView) setTimeout(() => el.scrollIntoView({ block: 'nearest' }), 30); } }
+function menuOpen(k) { MENU.open = k || null; document.body.classList.toggle('menuopen', !!MENU.open); drawMenu(); fitSoon(); if (MENU.open) { const el = document.querySelector(`#panels > [data-m="${MENU.open}"]`); if (el && el.scrollIntoView) setTimeout(() => el.scrollIntoView({ block: 'nearest' }), 30); } }
 /* with the controls under the picture, the picture takes the room that is left, so the box and the word rows are never below the edge of the screen */
 const DESK = { on: false, col: false };
 function deskSet() { const t = $('toy'), side = $('side'), con = document.querySelector('.console'); if (!t || !side || !con) return; const on = window.innerWidth >= 600 && window.innerHeight > 560, col = on && window.matchMedia('(orientation: landscape) and (min-width: 900px)').matches;
-  if (on === DESK.on && col === DESK.col && t.parentNode === (on ? side : con)) return; DESK.on = on; DESK.col = col; document.body.classList.toggle('desk', on); document.body.classList.toggle('sidecol', col);
-  if (on) side.insertBefore(t, side.firstChild); else { con.insertBefore(t, con.querySelector('.log')); side.style.height = ''; t.style.marginBottom = ''; t.style.marginRight = ''; } }
+  if (on === DESK.on && col === DESK.col && t.parentNode === (on ? side : con)) return wsidePlace(); DESK.on = on; DESK.col = col; document.body.classList.toggle('desk', on); document.body.classList.toggle('sidecol', col);
+  if (on) side.insertBefore(t, side.firstChild); else { con.insertBefore(t, con.querySelector('.log')); side.style.height = ''; t.style.marginBottom = ''; t.style.marginRight = ''; } wsidePlace(); }
+/* [v101] the words beside the picture: the strip under the picture moves into the side panel, under the typing box (or under the desk, during a task) */
+function wsidePlace() { const lg = document.querySelector('.log'), side = $('side'), con = document.querySelector('.console'); if (!lg || !side || !con) return; const on = !!(WSIDE && WSIDE.on) && DESK.col;
+  document.body.classList.toggle('wside', on); if (on && lg.parentNode !== side) side.insertBefore(lg, $('menu')); else if (!on && lg.parentNode !== con) con.appendChild(lg); }
 function fit() { deskSet(); const c = document.querySelector('.console'); if (!c) return; if (window.innerWidth < 600 || window.matchMedia('(orientation: landscape) and (min-width: 900px)').matches) { if (c.style.height) { c.style.height = ''; c.style.minHeight = ''; } $('side').style.height = ''; FIT.key = ''; if (DESK.on) { if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); } return; }
   if (DESK.on) { const H = window.innerHeight, top = c.getBoundingClientRect().top + window.scrollY, desk = Math.round(Math.max(350, Math.min(440, H * .4))), want = Math.max(260, Math.round(H - top - desk - 28));      /* held upright: the picture above, the desk below, both a fixed size. Nothing a child does changes them. */
     $('side').style.height = desk + 'px'; if (Math.abs((parseFloat(c.style.height) || 0) - want) > 2) { c.style.minHeight = '0'; c.style.height = want + 'px'; } if (!$('pad').hidden) padPlace(); if (!$('kb').hidden) kbPlace(); return; }      /* a phone is too small to fit it all: it keeps the old layout */
@@ -6629,8 +6640,10 @@ function kbSwitch() { KB.big = !KB.big; setKeep('gmq-kb', KB.big ? 'big' : 'smal
    of places to visit." Measured: the panel took 31% of the width on an iPad held sideways.] [Proposal: closed when the game opens; opened by the button or by tapping the
    typing box, since a cadet who types needs the words; a Teacher switch keeps them open for a cadet who needs them.] Taps on the picture do the same things as before. */
 const WFOLD = { always: getKeep('gmq-words') === 'open', shown: false };
+var WSIDE = { on: getKeep('gmq-wordside') === 'on' };      /* [v101] the words beside the picture, a Teacher try-out. var: the layout may ask before this line runs */
 function wordsSet(open) { WFOLD.shown = !!open; if (S) try { drawLog(); } catch (e) {} const on = WFOLD.always || WFOLD.shown; document.body.classList.toggle('wfold', !on); document.body.classList.toggle('wopen', WFOLD.always); const b = $('wbtn'); b.textContent = on ? 'Actions ▴' : 'Actions ▾'; b.setAttribute('aria-expanded', String(on)); fitSoon(); }
 $('wbtn').onclick = () => { beep(560, .04); wordsSet(!(WFOLD.always || WFOLD.shown)); if (WFOLD.shown) setTimeout(() => { try { $('nouns').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }, 60); };      /* on a phone the rows open below the screen's edge: bring them into view */
+$('wsideOn').checked = WSIDE.on; $('wsideOn').onchange = () => { WSIDE.on = $('wsideOn').checked; setKeep('gmq-wordside', WSIDE.on ? 'on' : 'off'); wsidePlace(); fitSoon(); };
 $('wordsOn').checked = WFOLD.always; $('wordsOn').onchange = () => { WFOLD.always = $('wordsOn').checked; setKeep('gmq-words', WFOLD.always ? 'open' : 'fold'); wordsSet(WFOLD.shown); };
 wordsSet(false);
 $('cmd').addEventListener('focus', () => { if (!WFOLD.always && !WFOLD.shown) wordsSet(true); });
