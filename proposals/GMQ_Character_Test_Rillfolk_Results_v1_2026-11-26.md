@@ -56,6 +56,15 @@ Checked against the prompts, and against the game's own words: "tall and smooth,
 
 ---
 
+## 3b. The baker, again (26 November)
+
+- **Marc sent the redo** from the prompt in section 5. Saved as `rill_14_baker.png`; the first is kept as `rill_14_baker_first.png`, and the game no longer uses it.
+- **What changed:** the blue legs are gone. His round bottom now sits on short orange legs, like the others.
+- **What did not:** everything above the apron. Only 2.9% of the pixels differ from the first picture. He is the same height and still bottle-shaped, not drop-shaped.
+- **Why:** Gemini edits the last picture in a chat rather than drawing again. It changed what the prompt named most plainly (the legs) and kept the rest.
+- **In the game:** at harbour size he now reads as one of the same people, slimmer than the net weaver and the keeper. In the sample now; the Rillfolk and look checks pass.
+- **If a drop-shaped baker is wanted** [Proposal]: use that editing habit. Ask Gemini to start from the net weaver (picture 15) and turn her into the baker. The prompt is in the chat of 26 November.
+
 ## 4. Tests
 
 - `checks/world_rill_test.js` passes on three screens, with your pictures.
