@@ -86,7 +86,8 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     // the filter, then the text to copy
     await page.locator('.chip[data-f="spy"]').tap();
     const shown = await page.evaluate(() => Array.from(document.querySelectorAll('#play .tile')).filter(t => t.style.display !== 'none').map(t => t.getAttribute('data-id')).join(','));
-    want(name + ': the Spy filter shows only Spy cards', shown === 'S01,S02,S03,S04,S05,S06,S07', shown);
+    const spyIds = await page.evaluate(() => window.GMQ_CARDS.data.cards.filter(c => c.type === 'spy').map(c => c.id).join(','));
+    want(name + ': the Spy filter shows only Spy cards, and all of them', shown === spyIds && spyIds.split(',').length === 11, shown);
     await page.locator('.chip[data-f="all"]').tap();
     await page.locator('#copy').tap();
     const text = await page.locator('#out').inputValue();
