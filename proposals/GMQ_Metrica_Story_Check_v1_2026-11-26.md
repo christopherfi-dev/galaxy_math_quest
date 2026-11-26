@@ -32,7 +32,7 @@
 
 | | Task | Need | Meaning | Consequence | Picture | Fix [Proposal] |
 |---|---|---|---|---|---|---|
-| A | **The skin:** "How many squares of skin are there? Set the number wheel." | Yes: the cutters must know how many pieces | Yes | Yes: skin left over, or it runs out | **No:** "the box has none"; the skin lies on the map | Let the skin fill the picture while the child counts. And answer "Why don't the cutters count as they cut?": "Skin cut wrong cannot be joined again. The cutters must know how many pieces before the first cut." |
+| A | **The skin:** "How many squares of skin are there? Set the number wheel." | Yes: the cutters must know how many pieces | Yes | Yes: skin left over, or it runs out | **No:** "the box has none"; the skin lies on the map | Let the skin fill the picture while the child counts. And tell first the reason the game already gives later [Built: "The Site Chief will want to know"]: "The Site Chief must know how much skin there is, to plan four buildings." |
 | B | **Floors** | Yes | Yes | Yes | Yes | None |
 | C | **Walls** (perimeter) | Yes | Yes | **Yes, both sides:** a gap, or pieces "cut too short to use" | Yes | None. The model for the others |
 | D | **Roofs** (area, stiff leaves) | Yes | Yes | Yes | Yes | None |
@@ -55,11 +55,11 @@
 
 | | Task | Need | Meaning | Consequence | Fix [Proposal] |
 |---|---|---|---|---|---|
-| A | **The finished example** (the Landing Strip): the Measuronian borrows your ruler and measures its peg | Yes | Yes | n/a | **One reason, told first:** "There is one true ruler on Lengthar now: yours. Every Measuronian is busy holding up what the storm bent. Will you measure for us?" That answers "Why can't they borrow it?" |
-| B | **The Space Ruler:** halves and quarters on the rod | Yes: "Without its halves and quarters, we cannot build" | Yes | **No** | **The foreman uses the marked rod** to cut a beam into pieces at your marks. A wrong half mark gives two pieces that are not the same, laid side by side. A wrong quarter mark gives one short piece among four. The rod itself is not cut. "Which is longer, ¼ or ¾?": "The door frame needs the longer piece." |
-| C | **Unit Alignment:** eight things in the Long Hall | **No reason told first** | Partly | **No** | **Told first:** "The storm knocked everything off its shelf. The workshop will make each thing a new case, to the length you measure, read to the nearest half centimetre." **A wrong length:** its case is made too short or too long, and the thing sits in it with a gap, or will not go in. Shown, with your number on the case |
-| D | **The Matrix** (a line plot) | Partly: "TRUE LENGTHS NEEDED" | Partly | **No** | **The Matrix reads a line plot:** an X for each true length. **When the plot is right, the Matrix settles the planet's rods** (the built line, "rods and doors settle back"). A wrong plot: the rods it settles come out wrong, and the keeper points to the length with too many or too few Xs. **Only the plot shows** while the child works. The question after ("How many are longer than N?") gets a use: "The high shelf holds only long things. How many go up there?" (exactly N is not longer, as the game says) |
-| E | **The Chaos Guardian:** "This crystal is N centimetres long. Trust me." | Yes: do not be fooled | Yes | **No** | **The child's own reading stands.** The game does not show "You measured N" before asking. The child measures, then says whether the Guardian is right. **Being fooled feeds it:** "You trust it. The Guardian grows." Catching a lie makes it shrink [Built]. This is your own Guardian, played out |
+| A | **The finished example** (the Landing Strip): the Measuronian borrows your ruler and measures its peg | Yes | Yes | n/a | **One reason, told first:** "There is one true ruler on Lengthar now: yours, and one of you. We have all of Lengthar to put right. Will you take the Long Hall?" That answers "Why can't they borrow it?" |
+| B | **The Space Ruler:** halves and quarters on the rod | Yes: "Without its halves and quarters, we cannot build" | Yes | **No** | **The foreman uses the marked rod** to cut a beam into pieces at your marks. A wrong half mark gives two pieces that are not the same, laid side by side. A wrong quarter mark gives one short and one long piece among the four. 2/4 lands on the half cut, shown as the same cut. 4/4 is the whole beam. The rod itself is not cut. "Which is longer, ¼ or ¾?": "The door frame needs the longer one: one piece, or three pieces end to end?" |
+| C | **Unit Alignment:** eight things in the Long Hall | **No reason told first** | Partly | **No** | **Told first:** "The storm bent every case in the Hall. New cases are made in the workshop, to the east, while the things stay here. So the workshop needs their lengths first." **A case fits** if it is within 2 mm of the thing. **A wrong length** (half a centimetre or more off): the case comes back with a gap, or the thing will not go in. Shown, with the child's number on the case |
+| D | **The Matrix** (a line plot) | Partly: "TRUE LENGTHS NEEDED" | Partly | **No** | **The Matrix reads a line plot, not a list:** that is how it works. **Each column of the plot tunes the rods of that length** across Lengthar. An extra X stretches those rods; a missing X leaves them short; both are seen in the picture of the planet's rods. When every column is right, the rods settle (the built line, "rods and doors settle back"). **Only the plot shows** while the child works. **The questions after** ("most often"; "longer than N") are not needed for the story: the main thread can keep them as the keeper's talk, each with a use, or drop them |
+| E | **The Chaos Guardian:** "This crystal is N centimetres long. Trust me." | Yes: do not be fooled | Yes | **No** | **The child's own reading stands:** the game stops checking the reading before the question (a build change). The child measures, then says whether the Guardian is right. **When the child is fooled,** the picture shows the child's own number beside the crystal's true end on the ruler, so the cause is seen. Catching a lie makes it shrink [Built]. **Whether being fooled makes it grow, and what that does,** is yours (decision 1) |
 
 **What is not in version 2:** a Guardian that grows on other tasks' mistakes. Decision 1.
 
@@ -69,7 +69,7 @@
 
 - **New words only:**
   - Xylophora: A's line about cutting; F's need; the herder's line about the giant.
-  - Lengthar: A's reason; B's door frame line; C's and D's reasons.
+  - Lengthar: A's reason; B's door frame line; C's and D's reasons; the 2 mm fit.
 - **New behaviour** (the main thread's to build):
   - Xylophora A: the skin fills the picture. F: the family walks to the wrong building.
   - Lengthar: the foreman's beam; the workshop's cases; the Matrix settling the rods from the plot; the Guardian's crystals with no "You measured N".
@@ -112,4 +112,4 @@
 | Major | The tape is your decision 15 | Listed as yours |
 | Minor | Asleep or dead was settled; the cutters' reason did not fit; F had no consequence; Second Home was claimed before asking | Asleep; "Skin cut wrong cannot be joined again"; a family walks to the wrong building; Second Home is decision 3, my pick "not now" |
 
-**Not re-read by a reviewer:** version 2.
+**Then a re-check of version 2: "Not yet."** One blocker (a right reading could make a case 1 mm too short: now a 2 mm fit), and majors on the Guardian, the ruler, the Matrix, the questions, the cases and the beam: each answered above, in a last pass. **I stopped the review loop there:** the main thread, building these tasks, is best placed to settle what is left. Not re-read.
