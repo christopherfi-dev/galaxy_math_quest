@@ -156,3 +156,10 @@ As you asked, one independent reviewer read section 4 against the page as it is 
 Two more places on the page break the rule, or may. Yours to write, if Marc agrees:
 1. **The Makers' box in the well** opens when the child turns its two wheels to the box's rule ("Turn the two wheels to the box's rule."). A rule used to open a box. It needs a reason in the world for the box to open once the child knows how it works. Keep the maths: a rule in two steps (× then +), found by putting pebbles in and reading what it shows. One idea only: the box is a Makers' machine that has stopped; set to its own rule, it runs again, and running is what pushes its drawer out.
 2. **The old stepping stones:** "THE SAFE STONES FOLLOW THE RULE", and the old Mender's "the stones only hold if you know their rule". Only the pattern's stones hold. It crosses, it does not open, but it is a pattern used as a key. Asked of Marc.
+
+---
+
+**26 November, from the big world thread: the box and the stones, on Marc's picks (big world 15).** Marc: "Counts and patterns aren't keys or things to open things."
+- **The Makers' box:** the cadet prises it open by hand and finds your note at once. The box hums: it is a Makers' machine whose two wheels slipped in the fall. The child tests it and sets the wheels true, so it works again (the epic card). **Yours to write, when you like: what the working box is for.**
+- **The old stones:** the post's drums show the first three stones of the old crossing; the child sets the next stone's number and the post lifts it into the way. A number off the pattern lifts a stone away from the way, which sinks back. The old Mender now says "She said the old post lifts the stones, if you know which stone comes next." Your peoples note quotes her old line.
+- The harbour keeper no longer says nobody has crossed "for years" (your reviewer's point): "Only the big kids know that way."

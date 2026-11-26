@@ -19,7 +19,7 @@
 //   - the three carved numbers and the five right stones make one pattern with one step (3, 4, 6, 7, 8 or 9), up or down
 //   - each row has three different numbers, exactly one of them right, all from 1 to 110
 //   - no stone in a row is the next row's right stone (a child could spot the chain)
-//   - a new round gives a new pattern (so a child cannot cross by trying each stone)
+//   - a new round gives a new pattern (since 26 November nothing resets: the post lifts a stone by its number. Only an old save has a round over 0)
 //   - the chance of crossing by guessing is 1 in 243
 //
 // Run:  node checks/bigworld_numbers_check.js [file]
