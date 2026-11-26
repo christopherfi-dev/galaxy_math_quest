@@ -22,7 +22,7 @@ Everything here is **[Proposal]** unless it says [Source].
 | Rule | Why |
 |---|---|
 | **Write only.** Never edit `prototypes/*`, `docs/*`, `checks/*`, any `HANDOFF_2026-11-20.md`, the plan, the zip, or any `proposals/GMQ_Big_World_*` file. | Each has one owner. `HANDOFF_2026-11-20.md`, section 2b, has the table. |
-| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
+| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, `proposals/GMQ_Small_Worlds_Story_*` (and one such prefix for each world you write), this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
 | **You may push those files to `claude/trusting-edison-vl78nc`** (the main branch). Marc gave this for the Chronosia files on 23 November; the Algora note went there because he passed on the big world thread's request for it. If you are unsure, ask him for one line. | |
 | **Before every push:** `git fetch origin claude/trusting-edison-vl78nc && git merge --no-edit FETCH_HEAD`. Never force-push. | Other threads push there all day. |
 | **`INFO_FROM_MARC.md` clashes on almost every merge.** Keep both sides: the other thread's lines first, then yours. Never drop a line. | It happened eight times in one day. |
@@ -101,6 +101,11 @@ Every one of these cost a review round.
 
 - **The note:** `proposals/GMQ_Algora_Story_Peoples_v1_2026-11-24.md`. One history for four peoples (each handed a skill to a Makers' machine and kept a piece of it); the Eights are guests, outside it. Four finds for the big world thread's empty places: a painted shutter (D), two pairs of footprints (E), a sheet of ship's paper (G), white pebbles (H). One teller each.
 - **One review:** "not yet" (one blocker: the paper gave away why the Gate broke). Rewritten; the rewrite is not re-read. **Marc accepted its four decisions on 24 November**, each with its reason (section 8).
+
+### The 20 small worlds (26 November)
+
+- **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md` (a new file of the story thread's own). The shell box and its number lock go. Each world's creature, its trader, has a trouble that needs that world's maths, in three scenes: where to stop (rounding), fill the pod (difference), balance the scale (sum). Star seeds are for Project Second Home. Three decisions for Marc.
+- **Next, as the main thread suggested:** the KIS Station against the 25 November rule (the locker's crate count, the Engine Core's colour lock, the cannons' lock), then Xylophora and Lengthar.
 
 ### What may come next
 
