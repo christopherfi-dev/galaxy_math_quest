@@ -26,7 +26,7 @@ GMQBattleOwn.open(host, opts, done)
 - `host.root`: where the battle goes. Leave it out: `document.body`.
 - `host.over(result)`: optional. Called when a battle ends, before the child taps out. `result = { winner, rounds }`.
 - `opts.cards`: what the child owns. Each may be a card id (`'A01'`), a name (`'Spark Shot'`), or an object with `id` or `n`. Unknown names are skipped (the 6 old cards, for now). Ship part cards are used for the ship; upgrade cards as section 5 says.
-- `opts.seed`: the child's seed (`S.seed`). It picks which starter cards are lent to a child with fewer than 15.
+- `opts.seed`: the child's starter-pack seed, one that never changes (`S.packSeed`, section 9). It picks which starter cards are lent to a child with fewer than 15.
 - `opts.upgrades`: `'card'` (as built) or `'lasting'`. The plan's decision 1, Marc's.
 - `opts.back`: the words on the way out. For example `'Back to the station'`.
 - `done(result)`: when the battle closes. `result.why` is `'finished'` or `'left'`; `result.winner` is `0` (the child), `1` (the computer), `-1` (nobody) or `null` (left in the middle; it is saved).
@@ -45,14 +45,14 @@ Also:
      widget = { kind: 'battle' };
      GMQBattleOwn.open(
        { over: r => { S.log.push({ what: 'Practice battle', skill: 'A battle with your own cards', result: r.winner === 0 ? 'won' : (r.winner === 1 ? 'lost' : 'nobody won') + ', ' + r.rounds + ' rounds' }); save(); } },
-       { cards: S.cards, seed: S.seed, upgrades: 'card', back: 'Back to the station' },
+       { cards: S.cards, seed: S.packSeed, upgrades: 'card', back: 'Back to the station' },
        r => { widget = null; drawStatus(); say(r.why === 'finished' ? 'Back at the station after the practice battle.' : 'You leave the practice battle. It is saved, to finish later.'); });
      return 'The other crew is ready. The battle begins.';
    }
    ```
 3. **Pause what runs under it** (optional, for the iPad's battery): in the draw loop, `if (widget && widget.kind === 'battle') return;`. Stop the game's music while it is open, and start it again in `done`: the battle has its own sounds and its own Sound button.
 4. **The cards.** Today `S.cards` holds `{ r, n }` with the 6 old names; the piece skips those, so every child is lent the starter cards until the cards thread's new cards arrive. When they do, pass the new cards (ids or names both work).
-5. **The starter pack** (when the cards thread wires its part): `GMQBattleOwn.starter(S.seed)` gives the 15 ids, in this order: the Spy, the Policeman, the epic, the rare, 4 attack, 4 shield, 3 repair.
+5. **The starter pack** (when the cards thread wires its part): `GMQBattleOwn.starter(S.packSeed)` gives the 15 ids, in this order: the Spy, the Policeman, the epic, the rare, 4 attack, 4 shield, 3 repair.
 
 ## 4. The starter pack
 
@@ -100,7 +100,7 @@ The server thread built the other side (`proposals/GMQ_Server_Wiring_v1_2026-11-
 
 | The server | The piece |
 |---|---|
-| `battle_start` answers `{ battle, kind, seed, minutes, you: { deck, stake }, rival: { name, deck, stake } }` | `GMQBattleOwn.open(host, { cards: S.cards, seed: S.seed, back: 'Back', rival: { name: r.rival.name, cards: r.rival.deck, kind: r.kind, stake: { mine: r.you.stake, theirs: r.rival.stake }, battle: r.battle, seed: r.seed, minutes: r.minutes } }, done)` |
+| `battle_start` answers `{ battle, kind, seed, minutes, you: { deck, stake }, rival: { name, deck, stake } }` | `GMQBattleOwn.open(host, { cards: S.cards, seed: S.packSeed, back: 'Back', rival: { name: r.rival.name, cards: r.rival.deck, kind: r.kind, stake: { mine: r.you.stake, theirs: r.rival.stake }, battle: r.battle, seed: r.seed, minutes: r.minutes } }, done)` |
 | a challenge is `offered` | The first screen shows both cards at stake, the rule in words, "I agree: start the battle" and "Back out". Friendly: "Nothing is at stake". |
 | `battle_accept` | `host.accept(battle)` is called when the child agrees. Call `battle_accept` then. If the server refuses, call `GMQBattleOwn.close()` and say the server's words. |
 | `battle_cancel` | `done({ why: 'backed out' })`. Call `battle_cancel`. |
@@ -118,3 +118,12 @@ The server thread built the other side (`proposals/GMQ_Server_Wiring_v1_2026-11-
 **Still for Marc** (the battle thread's report): in a classmate's battle, the page still calls their ship "the enemy" (the story says so first). It could carry the classmate's ship name instead.
 
 **Test:** `node checks/battle_own_test.js` now also plays a friendly battle and a challenge against a made-up classmate (Blue Fox) at the three sizes.
+
+
+---
+
+## 9. Added later on 26 November: two points from the cards thread
+
+**The starter pack's seed** (the cards thread found it). `S.seed` changes every time the game picks a number, so a child's starter pack would change. Keep one seed that never changes in the save, `S.packSeed`, and give it to both pieces: `GMQBattleOwn.open(host, { cards: S.cards, seed: S.packSeed, ... })` and `GMQBattleOwn.starter(S.packSeed)`. The cards thread's wiring note says how to make it. Section 3's example should read `seed: S.packSeed`.
+
+**The ship a child fitted at the station** (`opts.ship`). Optional: five parts, each `{ part, name, hp, ap, tier, colour }`, with the game's part names ('Engine Core', 'Navigation', 'Shield', 'Weapons', 'Power') or the battle's. From the game today: `PARTS.map(p => { const o = pvOf(p), v = o ? PVER[p][o.i] : null, t = o ? PTIER[o.i] : null; return v ? { part: p, name: v[0], hp: v[1], ap: v[2], tier: t[0], colour: t[1] } : null; })`, given only when all five are fitted. **Do not pass it until Marc chooses** (the catalogue note, decision 10): the station's numbers and the battle's part cards disagree, and the station's red Pulsar Phaser has 0 HP, which in a battle means no attack at all. A classmate's ship can come the same way, as `rival.ship`.

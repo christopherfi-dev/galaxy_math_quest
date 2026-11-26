@@ -153,6 +153,20 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     want(name + ': a card at stake that is not in the catalogue (an old card) shows its name and kind', /Void Vortex/.test(await fr.locator('#ostakes .plain').textContent()) && /rare card/.test(await fr.locator('#ostakes .plain').textContent()));
     await fr.locator('#oback').click(); await closed();
     await page.locator('#vs button[data-v="cpu"]').click();
+    // 8. the ship the child fitted at the station (the game's numbers today): it flies as it is, and the computer's ship is the same
+    await page.evaluate(() => localStorage.removeItem('gmq_battle_own_v1'));   // no practice battle left open on this iPad
+    await page.locator('#who button[data-k="station"]').click(); await page.locator('#vs button[data-v="cpu"]').click();
+    await page.locator('#open').click(); await fr.locator('#ownsetup.open').waitFor();
+    want(name + ': the station ship: the screen says so, and shows its five parts', (await fr.locator('#oshiph').textContent()) === 'Your ship, as you fitted it at the station' && /Stellar Reactor/.test(await fr.locator('#oship').textContent()) && /Neutron Wall/.test(await fr.locator('#oship').textContent()));
+    if (SHOTS) await page.screenshot({ path: path.join(SHOTS, name + '_own_8_station_ship.png') });
+    await fr.locator('#ogo').click(); await fr.locator('.hc.mine').first().waitFor();
+    const sp = await inner(() => GMQB.U.S.P.map(pl => pl.parts.map(p => p.name + ' ' + p.max + '/' + p.ap).join(', ')));
+    want(name + ': the battle flies those numbers, for both ships', sp[0] === 'Stellar Reactor 30/10, Standard Navigator 15/5, Neutron Wall 30/0, Standard Arsenal 10/15, Standard Battery 15/10' && sp[1] === sp[0], sp.join(' | '));
+    await page.reload(); await page.locator('#who button[data-k="station"]').click(); await page.locator('#open').click(); await fr.locator('#stage').waitFor();
+    want(name + ': closed and opened again, the station ship\'s battle goes on and draws', await inner(() => !!GMQB.U.S && document.querySelectorAll('#stage .pod').length >= 10));
+    await fr.locator('#bnew').click(); await closed();
+    await page.locator('#who button[data-k="starter"]').click();
+
     // the order box over a ship shows 3 lines of 30 letters: every card's words, and the enemy's words for it, must fit (from the independent review)
     await page.locator('#open').click(); await fr.locator('#stage').waitFor();   // (the practice battle left open earlier goes on: that is right)
     const long = await inner(() => GMQB.B && window.GMQB ? (function () { const D = JSON.parse(document.getElementById('carddata').textContent), out = []; D.cards.concat(D.upgrades).forEach(c => { if (GMQB.wrap(c.text, 30).length > 3) out.push(c.id + ' own'); if (GMQB.wrap(GMQB.theirs(c), 30).length > 3) out.push(c.id + ' enemy'); }); return out; })() : ['no page']);

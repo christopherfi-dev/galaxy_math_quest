@@ -409,7 +409,8 @@ function newBattle(opts,kinds0,kinds1,seed,decks,lvl2){
  var o=defaults(),k;for(k in opts){if(opts.hasOwnProperty(k))o[k]=opts[k];}
  var S={v:1,opts:o,seed:(seed%2147483646)+1,round:1,leader:0,P:[],log:[],over:null,cur:null};
  [kinds0,kinds1].forEach(function(kinds,i){
-  var parts=PARTS.map(function(pn,j){var d=DATA.parts.filter(function(x){return x.part===pn&&x.kind===kinds[j];})[0];return {part:pn,kind:d.kind,name:d.name,max:d.hp,hp:d.hp,ap:d.ap,lvl:1};});
+  /* a part is a kind (a part card of the set), or a part with its own numbers: { name, hp, ap, kind } (the ship a child repaired at the station, for example) */
+  var parts=PARTS.map(function(pn,j){var d=(kinds[j]&&typeof kinds[j]==='object')?kinds[j]:DATA.parts.filter(function(x){return x.part===pn&&x.kind===kinds[j];})[0];return {part:pn,kind:d.kind||'own',name:d.name,max:d.hp,hp:d.hp,ap:d.ap,lvl:1};});
   var ids=[],spy=[],g;
   if(decks&&decks[i]){ids=decks[i].filter(function(id){return !!CARD[id];});}
   else{
@@ -1075,7 +1076,7 @@ function facing(side){var a=U.L.ship[side],b=U.L.ship[1-side],dx=b.cx-a.cx,dy=b.
 
 /* ---------- drawing the ships ---------- */
 function pod(side,ix){
- var S=U.S,p=S.P[side].parts[ix],k=KIND[p.kind],lost=p.hp<=0,c=podXY(side,ix),x=c.x-52,y=c.y-59,cls='pod';
+ var S=U.S,p=S.P[side].parts[ix],k=KIND[p.kind]||{name:'',colour:'#9aa6b8'},lost=p.hp<=0,c=podXY(side,ix),x=c.x-52,y=c.y-59,cls='pod';
  if(U.pick&&U.pick.side===side&&U.pick.among.indexOf(ix)>=0){cls+=' can';if(U.pick.chosen.indexOf(ix)>=0)cls+=' sel';}
  if(U.alloc&&side===0&&U.alloc.among.indexOf(ix)>=0)cls+=' can';
  /* while a hit is being placed: what this part has been sent, and what that leaves */
@@ -1491,11 +1492,15 @@ function drawRival(){
  else{el('ogo').textContent='Start the battle';}
  var R=rivalPlan(RIVAL.seed||1);el('oenemy').textContent=deckWords(R.deck,nm+'\u2019s')+' You see the cards only when they are played.';
 }
+/* the ship a child repaired at the station, if the game gives it (OWN.ship: five parts with their own numbers). Which numbers rule is Marc's choice. */
+function shipOf(list){if(!list||list.length!==5)return null;return B.PARTS.map(function(pn,j){var q=list[j],key='own'+j+(q.tier||'');if(!KIND[key])KIND[key]={key:key,name:q.tier||'Your part',colour:q.colour||'#9aa6b8'};return {id:'S'+(j+1),part:pn,kind:key,name:q.name,hp:q.hp,ap:q.ap,text:q.text||''};});}
 function drawOwn(){
  if(RIVAL)drawRival();
- var any=[],h='';U.kinds.forEach(function(k,i){var ks=ownKinds(i);if(ks.indexOf(k)<0)U.kinds[i]='standard';if(ks.length>1)any.push(B.PARTS[i]);var p=DATA.parts.filter(function(x){return x.part===B.PARTS[i]&&x.kind===U.kinds[i];})[0];h+='<button type="button" data-i="'+i+'">'+partSVG(p,'O'+i)+'</button>';});
- el('oship').innerHTML=h;el('oshiph').textContent=any.length?'Your ship. You have more than one '+any.join(' and more than one ')+': tap '+(any.length>1?'them':'it')+' to change.':'Your ship';
- var bs=el('oship').children;for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){var j=+this.getAttribute('data-i'),ks=ownKinds(j);U.kinds[j]=ks[(ks.indexOf(U.kinds[j])+1)%ks.length];save();drawOwn();});}
+ var mine=shipOf(OWN.ship);
+ if(mine){U.kinds=mine.slice();el('oship').innerHTML=mine.map(function(p,i){return '<button type="button" data-i="'+i+'">'+partSVG(p,'O'+i)+'</button>';}).join('');el('oshiph').textContent='Your ship, as you fitted it at the station';}
+ var any=[],h='';if(!mine)U.kinds.forEach(function(k,i){var ks=ownKinds(i);if(ks.indexOf(k)<0)U.kinds[i]='standard';if(ks.length>1)any.push(B.PARTS[i]);var p=DATA.parts.filter(function(x){return x.part===B.PARTS[i]&&x.kind===U.kinds[i];})[0];h+='<button type="button" data-i="'+i+'">'+partSVG(p,'O'+i)+'</button>';});
+ if(!mine){el('oship').innerHTML=h;el('oshiph').textContent=any.length?'Your ship. You have more than one '+any.join(' and more than one ')+': tap '+(any.length>1?'them':'it')+' to change.':'Your ship';
+ var bs=el('oship').children;for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){var j=+this.getAttribute('data-i'),ks=ownKinds(j);U.kinds[j]=ks[(ks.indexOf(U.kinds[j])+1)%ks.length];save();drawOwn();});}}
  var P=ownPlan();
  var t=deckWords(P.deck,'Your')+' It is shuffled, and you hold 5. Tap a card to read it.';
  if(P.lent.length)t+=' You have '+P.own+' battle card'+(P.own===1?'':'s')+' of your own, so you borrow '+P.lent.length+' from the station. They say "borrowed". They go back after the battle.';
@@ -1510,8 +1515,9 @@ function drawOwn(){
  var ds=el('ogrid').children;for(var d=0;d<ds.length;d++){ds[d].addEventListener('click',function(){var id=this.getAttribute('data-id');if(B.isSpy(id)&&sps.length>1){U.spy=sps[(sps.indexOf(id)+1)%sps.length];snd('tap');save();drawOwn();return;}zoom(id);el('pop').className='open top';});}
 }
 function ownBattle(seed){
+ var mine=shipOf(OWN.ship);if(mine)U.kinds=mine.slice();
  var P=ownPlan(),foe,fk=U.kinds.slice(),fl=P.lvl2;
- if(RIVAL){seed=RIVAL.seed||seed;var R=rivalPlan(seed);foe=R.deck;fk=rivalParts();fl=R.lvl2;}   /* the classmate's own deck, ship and upgrades; the server's seed, so the deal can be played again */
+ if(RIVAL){seed=RIVAL.seed||seed;var R=rivalPlan(seed);foe=R.deck;fk=shipOf(RIVAL.ship)||rivalParts();fl=R.lvl2;}   /* the classmate's own deck, ship and upgrades; the server's seed, so the deal can be played again */
  else foe=B.foeDeck(P.deck,seed+101);
  U.own={deck:P.deck,lvl2:P.lvl2,lent:P.lent};U.opts=B.defaults();
  U.S=B.newBattle(U.opts,U.kinds,fk,seed,[P.deck,foe],[P.lvl2,fl]);show('ownsetup',false);
