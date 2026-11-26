@@ -10,7 +10,7 @@
 
 **Still to come:** picture 18 (the same five, happy). Until it comes, the five stay calm.
 
-**Tries:** not said yet.
+**Tries:** one each, about 2 minutes at most [Source: Marc, 26 November: "1 each. One prompt. About 2 min max"]. As with the Menders, the time goes into checking, cutting out and fitting, not into Gemini.
 
 **In the game:** `GMQ_Rillfolk_In_Game_v1_2026-11-26.jpg`.
 
