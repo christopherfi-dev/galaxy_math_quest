@@ -1,5 +1,6 @@
 <?php
-/* Sets the teacher password for the GMQ world server. Run it once on the server, from this folder:
+/* Sets the teacher password for the GMQ world server, from the command line. (Since version 0.2 the Commander's Desk can do it
+   too, with the setup word in config.php: see READ_ME_FIRST.md.) Run it once on the server, from this folder:
        php set-teacher-password.php "your password here"
    It stores only a scrambled form of the password (a hash) in the data folder. */
 if (PHP_SAPI !== 'cli') { http_response_code(403); exit("Run this from the command line.\n"); }
@@ -8,5 +9,5 @@ $config = file_exists(__DIR__ . '/../api/config.php') ? (require __DIR__ . '/../
 $data = rtrim((string)($argv[2] ?? $config['data_dir'] ?? (__DIR__ . '/../api/data')), '/');
 if (!is_dir($data)) mkdir($data, 0770, true);
 file_put_contents("$data/teacher.json", json_encode(['password_hash' => password_hash($pw, PASSWORD_DEFAULT), 'tries' => 0, 'locked_until' => 0], JSON_PRETTY_PRINT), LOCK_EX);
-if (!file_exists("$data/.htaccess")) file_put_contents("$data/.htaccess", "Require all denied\nDeny from all\n");
+if (!file_exists("$data/.htaccess")) file_put_contents("$data/.htaccess", "<IfModule mod_authz_core.c>\n  Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n  Deny from all\n</IfModule>\n");
 echo "The teacher password is set. Data folder: $data\n";
