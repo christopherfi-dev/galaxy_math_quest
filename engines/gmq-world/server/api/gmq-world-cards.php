@@ -59,6 +59,12 @@ function moveCard(array &$from, array &$to, array $card, bool $copy): ?array {
     return $card;
 }
 
+/* what the challenger's page needs to open a battle (battle_start answers it; rivals answers it again for a battle still open) */
+function offer(array $b, array $me, array $them): array {
+    return ['ok' => true, 'battle' => $b['bid'], 'kind' => $b['kind'], 'rule' => $b['rule'], 'status' => $b['status'], 'seed' => $b['seed'], 'minutes' => BATTLE_MINUTES,
+        'you' => ['deck' => deckOf($me), 'parts' => partsOf($me), 'stake' => $b['a']['stake']], 'rival' => ['name' => $b['b']['name'], 'deck' => deckOf($them), 'parts' => partsOf($them), 'stake' => $b['b']['stake']]];
+}
+
 function cardsAction(string $action, array $in, string $code, string $id, array $class): void {
     $share = shareOf($class); $path = studentPath($code, $id);
 
@@ -103,8 +109,9 @@ function cardsAction(string $action, array $in, string $code, string $id, array 
     if (in_array($action, ['rivals', 'battle_start', 'battle_accept', 'battle_cancel', 'battle_end'], true) && $share['battles'] === 'off') fail('Battles are switched off for this class.', 403);
 
     if ($action === 'rivals') {
-        $me = needStudent(); $open = readJson(openPath($code)) ?? []; $busy = [];
-        foreach ($open as $b) if (!late($b)) { $busy[$b['a']['id']] = true; $busy[$b['b']['id']] = true; }
+        $me = needStudent(); $open = readJson(openPath($code)) ?? []; $busy = []; $mine = null;
+        foreach ($open as $b) if (!late($b)) { $busy[$b['a']['id']] = true; $busy[$b['b']['id']] = true;
+            if ($b['a']['id'] === $id) { $them = readJson(studentPath($code, (string)$b['b']['id'])) ?? ['state' => null]; $mine = offer($b, $me, $them); } }
         $list = [];
         foreach (cadetsOf($code) as $s) {
             if ($s['id'] === $id || empty($s['deck']['open']) || shown($s, $class) === '') continue;           // only a classmate who said yes, with a name they chose
@@ -113,7 +120,7 @@ function cardsAction(string $action, array $in, string $code, string $id, array 
                 'challenge' => in_array($share['battles'], ['swap', 'away-safe'], true) && count(stakes($deck)) > 0, 'busy' => !empty($busy[$s['id']])];
         }
         usort($list, static function ($a, $b) { return strcmp($a['name'], $b['name']); });
-        out(['ok' => true, 'battles' => $share['battles'], 'can_challenge' => count(stakes(deckOf($me))) > 0, 'rivals' => $list]);
+        out(['ok' => true, 'battles' => $share['battles'], 'can_challenge' => count(stakes(deckOf($me))) > 0, 'rivals' => $list, 'mine' => $mine]);
     }
 
     if ($action === 'battle_start') {                           // { rival, kind: 'friendly' | 'challenge' }
@@ -134,8 +141,7 @@ function cardsAction(string $action, array $in, string $code, string $id, array 
                 $b['a']['stake'] = $sa[random_int(0, count($sa) - 1)]; $b['b']['stake'] = $sb[random_int(0, count($sb) - 1)];          // chosen at random from each deck [Source: Marc]
             }
             $open[$b['bid']] = $b; writeJson(openPath($code), $open); $starts[] = time(); $me['starts'] = $starts; writeJson($path, $me);
-            return ['ok' => true, 'battle' => $b['bid'], 'kind' => $kind, 'rule' => $b['rule'], 'status' => $b['status'], 'seed' => $b['seed'], 'minutes' => BATTLE_MINUTES,
-                'you' => ['deck' => $mine, 'parts' => partsOf($me), 'stake' => $b['a']['stake']], 'rival' => ['name' => $b['b']['name'], 'deck' => $theirs, 'parts' => partsOf($them), 'stake' => $b['b']['stake']]];
+            return offer($b, $me, $them);
         });
         out($offer);
     }
@@ -160,7 +166,8 @@ function cardsAction(string $action, array $in, string $code, string $id, array 
             elseif ($result === 'lost') news($them, $moved ? "$who challenged your deck, and your deck won! You got " . cardName($moved) . '.' : "$who challenged your deck, and your deck won!");
             elseif ($b['rule'] === 'away-safe') news($them, "$who challenged your deck and won. You keep all your cards." . ($moved ? ' ' . $who . ' got a copy of ' . cardName($moved) . '.' : ''));
             else news($them, $moved ? "$who challenged your deck and won. " . cardName($moved) . " went to $who." : "$who challenged your deck and won.");
-            $b['status'] = 'done'; $b['result'] = $result; $b['ended'] = date('c'); $b['moved'] = $moved; $b['log'] = is_array($in['log'] ?? null) && strlen((string)json_encode($in['log'])) <= 20000 ? $in['log'] : null;      // what the page says happened, for the teacher; kept small
+            $b['status'] = 'done'; $b['result'] = $result; $b['ended'] = date('c'); $b['moved'] = $moved; $lg = $in['log'] ?? null;                                    // what the battle says happened, in words (the battle piece), for the teacher; kept small
+            $b['log'] = is_string($lg) ? substr(preg_replace('/[^\P{C}\n]/u', '', $lg) ?? '', 0, 20000) : (is_array($lg) && strlen((string)json_encode($lg)) <= 20000 ? $lg : null);
             writeJson($path, $me); writeJson(studentPath($code, $rid), $them); battleLog($code, $b); unset($open[$bid]); writeJson(openPath($code), $open);
             return ['ok' => true, 'status' => 'done', 'result' => $result, 'moved' => $moved, 'cards' => $me['state']['cards'] ?? []];
         });
@@ -181,6 +188,6 @@ function teacherCards(string $action, string $code, array $class): void {
     foreach ([date('Y-m', strtotime('first day of last month')), date('Y-m')] as $m) { $f = "$DATA/battles/" . slug($code, 12) . "/log-$m.jsonl"; if (is_file($f)) foreach (file($f, FILE_IGNORE_NEW_LINES) ?: [] as $l) { $d = json_decode($l, true); if (is_array($d)) $done[] = $d; } }
     $names = []; foreach (cadetsOf($code) as $s) $names[$s['id']] = $s['name'];
     $tidy = static function ($b) use ($names) { return ['when' => $b['ended'] ?? $b['started'], 'kind' => $b['kind'], 'rule' => $b['rule'], 'status' => $b['status'], 'result' => $b['result'] ?? null,
-        'a' => $names[$b['a']['id']] ?? $b['a']['id'], 'b' => $names[$b['b']['id']] ?? $b['b']['id'], 'stakes' => [$b['a']['stake'] ? cardName($b['a']['stake']) : null, $b['b']['stake'] ? cardName($b['b']['stake']) : null], 'moved' => !empty($b['moved']) ? cardName($b['moved']) : null]; };
+        'a' => $names[$b['a']['id']] ?? $b['a']['id'], 'b' => $names[$b['b']['id']] ?? $b['b']['id'], 'stakes' => [$b['a']['stake'] ? cardName($b['a']['stake']) : null, $b['b']['stake'] ? cardName($b['b']['stake']) : null], 'moved' => !empty($b['moved']) ? cardName($b['moved']) : null, 'log' => is_string($b['log'] ?? null) ? substr($b['log'], 0, 6000) : null]; };
     out(['ok' => true, 'open' => array_values(array_map($tidy, $open)), 'done' => array_reverse(array_slice(array_map($tidy, $done), -100))]);
 }
