@@ -6,6 +6,8 @@
 - "Look at the Stardust? One of them is like a space station in space. It's a pretty bland station at the moment."
 - "Would it be better to have [Gemini] and I make images or is code good enough? You decide and then you begin."
 
+**Old and new:** `GMQ_Stardust_Old_New_v1_2026-11-26.jpg` (top left old, top right new, the same place; below, the new airlock on arrival).
+
 **Where to see it:** https://christopherfi-dev.github.io/galaxy_math_quest/lookdemo/stardust/. Open the Teacher row, tap "Go to Stardust", then walk. "Ship look: new/old" in the Teacher row switches between the two. It keeps its own saved game.
 
 ---
