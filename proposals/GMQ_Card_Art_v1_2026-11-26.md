@@ -94,15 +94,19 @@ The battle thread's catalogue landed today: `docs/battle/cards.json`, with 93 ba
 
 ## 5b. Where the picture goes on a card (found later that night)
 
-**The card face today has no picture area.** The cards thread's pop-up and card book (`docs/cards/index.html`) draw each card's face with the battle thread's own drawing (its DRAW block): a big symbol for the card's type, the number in a white circle, the name and the words. So the pictures need a place on the face [Proposal; the face is the battle thread's, and the choice is Marc's]:
+**The card face already has a big picture area.** (Corrected the same night, after earning a card on the cards thread's page: I had first written that it had none.) The cards thread's pop-up and card book (`docs/cards/index.html`) draw each card's face with the battle thread's own drawing (its DRAW block): the name at the top, a big picture area, the number in a white circle over its corner, the type's word (SPY), the words, and the rarity. Today the picture area shows **the type's symbol**, the same for every card of that type: every spy card shows a spy in a hat.
+
+**Mock-up of option A** with a real face: `GMQ_Card_Face_Option_A_v1_2026-11-26.jpg`. Five-Part Swarm today (the spy symbol), and with its own picture (five drones) in the same place.
+
+The choice [Proposal; the face is the battle thread's, and the choice is Marc's]:
 
 | Option | What it is | Cost |
 |---|---|---|
-| A | The picture fills the big middle of the face; the type's symbol moves small to a corner | The battle thread changes its DRAW block once; every card looks like a picture card |
-| B | The picture sits above the name; the big symbol stays | The face gets taller, or the words smaller |
+| A | The card's own picture in the picture area, in place of the type's symbol; the type's word stays below it | The battle thread changes one line of its DRAW block; every card looks different, and its picture shows its own number |
+| B | Both: the card's picture, with the type's symbol small in a corner of it | A little busier; the symbol still sorts the cards at a glance |
 | C | The face stays as it is; the picture shows only in the card book's close-up | No change to the face; children see the picture only when they open a card |
 
-My pick, if asked: A. The picture is what a child remembers and talks about; the symbol only sorts the cards.
+My pick, if asked: A. The picture is what a child remembers and talks about. The type's word already sorts the cards.
 
 ## 6. Decisions for Marc
 
