@@ -26,8 +26,8 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     const box = await page.evaluate(() => { const b = document.getElementById('gmqbattle').getBoundingClientRect(); return [b.left, b.top, b.width, b.height, innerWidth, innerHeight]; });
     want(name + ': the battle fills the whole screen, over the game', box[0] === 0 && box[1] === 0 && Math.abs(box[2] - box[4]) < 1 && Math.abs(box[3] - box[5]) < 1, box.join(','));
     let t = await fr.locator('#odeck').textContent();
-    want(name + ': a cadet with 4 cards: the deck is 15, and the station lends 11', /Your deck has 15 cards/.test(t) && /You have 4 battle cards of your own, so the station lends you 11/.test(t), t);
-    want(name + ': the deck shows 15 cards, 11 marked "lent"', await fr.locator('#ogrid .dc').count() === 15 && await fr.locator('#ogrid .dc i').count() === 11);
+    want(name + ': a cadet with 4 cards: the deck is 15, and the station lends 11', /Your deck has 15 cards/.test(t) && /You have 4 battle cards of your own, so you borrow 11 from the station/.test(t), t);
+    want(name + ': the deck shows 15 cards, 11 marked "borrowed"', await fr.locator('#ogrid .dc').count() === 15 && await fr.locator('#ogrid .dc i').count() === 11);
     want(name + ': the game\'s rules switches are not offered to a child', !(await fr.locator('#brules').isVisible()));
     if (SHOTS) await page.screenshot({ path: path.join(SHOTS, name + '_own_1_new.png') });
     // a card in the deck opens large, above the setup screen, and closes
@@ -134,7 +134,7 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     // a challenge: both cards at stake first; back out; then agree
     await page.locator('#vs button[data-v="challenge"]').click(); await page.locator('#open').click(); await fr.locator('#ownsetup.open').waitFor();
     want(name + ': challenge: both cards at stake are shown before agreeing', await fr.locator('#ostake').isVisible() && await fr.locator('#ostakes .st svg').count() === 2 && /You put up/.test(await fr.locator('#ostakes').textContent()) && /Blue Fox puts up/.test(await fr.locator('#ostakes').textContent()));
-    want(name + ': the rules of the stake, in words (Marc, 23 November)', /The winner gets both cards\. In a tie, nobody does\. Your card stays in your deck, so you may still play it\./.test(await fr.locator('#ostakep').textContent()));
+    want(name + ': the rules of the stake, in words (Marc, 23 November)', /yours from your deck, Blue Fox’s from Blue Fox’s deck\. The winner gets both cards\. In a tie, you each keep your own card\. Both cards stay in their decks, so you may each play yours\./.test(await fr.locator('#ostakep').textContent()));
     want(name + ': the buttons say "I agree" and "Back out"', (await fr.locator('#ogo').textContent()) === 'I agree: start the battle' && (await fr.locator('#oback').textContent()) === 'Back out');
     if (SHOTS) await page.screenshot({ path: path.join(SHOTS, name + '_own_7_challenge.png') });
     await fr.locator('#oback').click(); await closed();

@@ -63,7 +63,7 @@ A child can say it: **Common: one small number. Rare: about double, or two thing
 | **Guard** | stops a Spy | | |
 
 - **No two battle cards do the same thing.** The check tests it.
-- **Every rare beats every common** of its kind.
+- **Among the plain-number cards, every rare beats every common** of its kind. A card that counts can make less: Card Wall with 3 other cards in hand blocks 12, less than Subtraction Shield's 15; Fleet Flash with 3 working parts adds 12, less than Thirteen Zaps. That was so on 22 November too (All Hands Fire).
 - **Each half of a two-thing card is no bigger than a common card.**
 - **An attack card and a block card of the same size cancel.** 13 such pairs, some named to match: Double-Seven Ray and Double-Seven Wall (14), Quarter Cannon and Quarter Wall (25), Triple-Ten Strike and Triple-Ten Wall (30).
 - **Changed from 22 November:** the ranges are wider at both ends (common attack was 5 to 10, now 4 to 14). The rule itself is the same.
@@ -80,7 +80,7 @@ All names are new and original. No name uses a word from a famous film or show (
 | **Spy** | Tick Bug (1 on three parts) | Shadow Pair (3 on two), Dust Mites (2 on three), Night Owl (7 on one) | |
 
 - **The 47 cards of 22 November are all still there,** with the same ids, words and numbers. Your picks on them still count.
-- **Words:** short sentences in the same patterns as before ("Add 11 to your attack this round."). The longest card has 89 letters.
+- **Words:** short sentences in the same patterns as before ("Add 11 to your attack this round."). The longest card has 90 letters.
 - **Pictures:** every card has a picture key (`pic`) and a few words saying what to draw (`picture`), for the visual design thread. Example: Gum Patch, "a blob of pink space gum on a dent".
 
 ## 4. The starter pack [Source: Marc, 23 November: 15 cards, always 1 Spy, 1 Policeman, 1 epic and 1 rare]
@@ -135,8 +135,9 @@ The rule is in `cards.json` (`starter_pack`), so the game and the cards thread r
 5. **"Policeman" or "Station Guard"?** [Conflict] Your words say Policeman; the card says Station Guard.
 6. **Upgrades** (decision 1): lasting, or one battle? Both are built.
 7. **Where in the game the battle opens.** The main thread asks you.
-8. **Two new effects to confirm.** Comeback Crew (every lost part back) uses your revival rule for all parts at once. Star Harbour puts two epic effects on one card. Say if either feels like a new rule to you.
-9. **Still open from 22 November:** "Pulsar Phaser" and "Inertial Dampener" use words from a famous television series (your 2023 names). How a child gets a ship part card.
+8. **Two new epics to confirm.** Comeback Crew (every lost part back) uses your revival rule for all parts at once. Star Harbour puts two epic effects on one card. **The independent review is right that neither is fully "something no other card does":** Star Harbour is Shield Reborn and Repair Bay together, and Comeback Crew does all that Stellar Revival does, and more. Keep them, or leave epics at 7 until you give a rule for a new kind of epic?
+9. **In a classmate's battle, their ship is called "the enemy"** (the first screen says so). It could carry the classmate's ship name. [pick: keep for now; long names could break the phone's top bar]
+10. **Still open from 22 November:** "Pulsar Phaser" and "Inertial Dampener" use words from a famous television series (your 2023 names). How a child gets a ship part card.
 
 ## 7. What could prove this wrong
 
@@ -147,7 +148,30 @@ The rule is in `cards.json` (`starter_pack`), so the game and the cards thread r
 - **The frame:** the battle opens inside a frame over the game, so its words and styles never touch the game's. It works in Chromium at all three sizes. It has never run on a real iPad.
 - **The piece is big:** it carries the whole battle page, about 204 KB. The game file would grow from about 1.27 MB to 1.47 MB.
 
-## 8. Checks
+## 8. The independent review (26 November, while you slept)
+
+A second reviewer saw only the rules, the card list and pictures of the screens, not my notes.
+
+**Found, and fixed:**
+1. **The enemy's dodge cards said the wrong thing.** When the computer led with Wormhole Zip, its order box said "The enemy ship's attack misses it. It still fire." This was in the practice battle since 23 November. Each dodge card now has its own words for the enemy ("It zips into a wormhole. Your attack misses it. Your rare or epic card can still hit. It still fires."), and "It still fires" is right for every card.
+2. **"Or bring back a broken shield" read as a choice.** The battle gives none: on a broken shield the card always puts it back up. 19 cards now say "Block 8 of the attack on you. A broken shield comes back with 8 HP." Card Wall and Card Fence now say how strong ("with that many HP"). No rule changed: either reading ends the same, because nothing carries over.
+3. **The two cheaper dodge cards did not say what still hits.** Wormhole Zip: "A rare or epic card can still hit." Triple Illusion: "An epic card can still hit." Triple Illusion's badge was "×3", which reads as times three; it is now "miss".
+4. **The child had to count the enemy's hidden hand.** When the computer leads with Card Wall, Card Fence, Nano Shield or Card Castle, or a card that counts its parts, its order box now says the number: "It blocks 16 of your attack." [You: the child should not have to work out the enemy's sums.]
+5. **Rounding Rover's "the next ten" could be read two ways** (does a part at 10 go to 20?). Now: "Round each damaged part up to a ten. A part already on a ten stays."
+6. **"lent":** children learning English mix up lend and borrow. Now "you borrow 11 from the station", and the cards say "borrowed". The tag no longer covers the card's kind.
+7. **The deck line said "shield"**; the cards say DEFENCE. Now "defence". "Tap a card to read it" is on the screen.
+8. **Challenge words:** "In a tie, nobody does" could mean both cards are lost. Now "In a tie, you each keep your own card." Also: whose deck each card came from; that both may be played; "Finish within 20 minutes. If you do not, you each keep your own card" (in place of "or nothing moves"); and "Blue Fox lets classmates battle Blue Fox's deck".
+
+**Found, and left for you or for later** (no change made):
+- Badges that read two ways: "2×" (2 for each part) beside "×2" (double the AP); "4×" on both Card Wall and Fleet Flash; "100s" and "10s". A different badge would need room in the circle. Say if you want them changed.
+- One card, three names: Station Guard (name), POLICE (label), policeman (words). Waits on your choice of name.
+- The battle calls a card "an order" ("Choose your order to answer it"). A child learning English may read "order" as a sequence. It is the battle's word since 22 November.
+- On a phone the top bar says "YOU 55" and "ENEMY 55" without the word ATTACK, for room.
+- The small cards in the deck are hard to read on an iPad (tap one to read it large; the screen now says so).
+- "Standard Shield" (a part) sits beside "MAIN SHIELD" (the bubble). Your 2023 name.
+- An old card at stake (one of the 6 from before) shows only its name and kind: it has no face. The cards thread decides what the old cards become.
+
+## 9. Checks
 
 Run on 26 November. **All pass.**
 
