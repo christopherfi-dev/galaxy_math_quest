@@ -5,18 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GMQ Commander's Desk</title>
 <style>
-  :root { --bg: #f3f6fb; --panel: #fff; --ink: #18223a; --muted: #5b6885; --line: #cfd8ea; --accent: #1f5fd0; --good: #1c7a45; --bad: #b3261e; --warn: #9a5b00; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0d1424; --panel: #152038; --ink: #e8eef8; --muted: #a9b9d0; --line: #33476a; --accent: #6db3ff; --good: #6fd08a; --bad: #ff9486; --warn: #ffb23e; } }
+  :root { --bg: #f3f6fb; --panel: #fff; --ink: #18223a; --muted: #5b6885; --line: #cfd8ea; --accent: #1f5fd0; --good: #1c7a45; --bad: #b3261e; --warn: #9a5b00; --soft: #eef3fb; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0d1424; --panel: #152038; --ink: #e8eef8; --muted: #a9b9d0; --line: #33476a; --accent: #6db3ff; --good: #6fd08a; --bad: #ff9486; --warn: #ffb23e; --soft: #1b2944; } }
   * { box-sizing: border-box; } body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { max-width: 1100px; margin: 0 auto; padding: 16px; } h1 { font-size: 1.4rem; margin: 6px 0 12px; } h2 { font-size: 1.1rem; margin: 18px 0 8px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; } h1 { font-size: 1.4rem; margin: 6px 0 12px; } h2 { font-size: 1.1rem; margin: 18px 0 8px; } h3 { font-size: 1rem; margin: 14px 0 6px; }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
-  button { font: inherit; font-weight: 600; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+  button { font: inherit; font-weight: 600; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; min-height: 40px; }
   button.quiet { background: transparent; color: var(--accent); } button.danger { border-color: var(--bad); color: var(--bad); background: transparent; }
-  input, select { font: inherit; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  input, select { font: inherit; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); min-height: 40px; max-width: 100%; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .note { color: var(--muted); font-size: .92rem; } .msg { min-height: 1.4em; color: var(--bad); }
   .scroll { overflow-x: auto; } table { border-collapse: collapse; width: 100%; min-width: 760px; } th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; } th { color: var(--muted); font-weight: 600; font-size: .9rem; }
   .big { font-size: 1.5rem; font-weight: 700; letter-spacing: .12em; } .good { color: var(--good); } .bad { color: var(--bad); } .warn { color: var(--warn); font-weight: 600; }
-  .codes label { display: inline-flex; flex-direction: column; font-size: .85rem; color: var(--muted); } .codes input { width: 5.5em; }
+  .codes label, .set label { display: inline-flex; flex-direction: column; font-size: .85rem; color: var(--muted); gap: 2px; } .codes input { width: 5.5em; }
+  .checks { list-style: none; margin: 0; padding: 0; } .checks li { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); } .checks li:last-child { border-bottom: 0; }
+  .mark { flex: 0 0 1.6em; font-weight: 700; text-align: center; } .checks .why { color: var(--muted); font-size: .9rem; }
+  .set { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 10px; } .set select { width: 100%; }
+  .box { background: var(--soft); border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
+  details > summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -24,14 +29,26 @@
 <main>
   <h1>Galaxy Math Quest · Commander's Desk</h1>
 
-  <section class="panel" id="login">
-    <h2>Teacher log in</h2>
+  <section class="panel" id="health">
+    <h2 style="margin-top:0">Server check</h2>
+    <ul class="checks" id="checks"><li><span class="mark">…</span><span>Asking the server…</span></li></ul>
+  </section>
+
+  <section class="panel" id="setup" hidden>
+    <h2 style="margin-top:0">First time: choose the teacher password</h2>
+    <p class="note">Type the setup word you wrote in <b>api/config.php</b> on the server. Then choose the password you will use on this page. This box shows only until a password is set.</p>
+    <form class="row" id="setupform"><input type="password" id="sw" placeholder="setup word" autocomplete="off"><input type="password" id="np1" placeholder="new teacher password" autocomplete="new-password"><input type="password" id="np2" placeholder="the same password again" autocomplete="new-password"><button type="submit">Set the password</button></form>
+    <p class="msg" id="setupmsg" role="status"></p>
+  </section>
+
+  <section class="panel" id="login" hidden>
+    <h2 style="margin-top:0">Teacher log in</h2>
     <form class="row" id="loginform"><input type="password" id="pw" placeholder="teacher password" autocomplete="current-password"><button type="submit">Log in</button></form>
     <p class="msg" id="loginmsg" role="status"></p>
   </section>
 
   <section class="panel" id="classes" hidden>
-    <h2>Your classes</h2>
+    <h2 style="margin-top:0">Your classes</h2>
     <div class="row" id="classlist"></div>
     <form class="row" id="newclass" style="margin-top:10px"><input id="newname" placeholder="new class name, like 3B" maxlength="30"><button type="submit" class="quiet">Make a class</button></form>
     <p class="msg" id="classmsg" role="status"></p>
@@ -39,51 +56,115 @@
 
   <section class="panel" id="class" hidden>
     <div class="row"><h2 id="classname" style="margin:0"></h2><span class="note">Class code for cadets:</span><span class="big" id="classcode"></span><button class="quiet" id="refresh" type="button">Refresh</button></div>
-    <p class="note">A cadet logs in with this class code, their name, and a 4-digit secret number they choose.</p>
+    <p class="note">A cadet logs in with this class code, their first name, and a 4-digit secret number they choose. On a test folder, use made-up names only.</p>
 
-    <h2>Codes for the real-life tasks</h2>
+    <h2>Settings</h2>
+    <h3>Codes for the real-life tasks</h3>
     <form class="row codes" id="codes"></form>
-    <div class="row" style="margin-top:8px">
-      <label class="note">Ship names: <select id="names"><option value="approve">wait for me to approve</option><option value="auto">accept kind names at once</option></select></label>
-      <label class="note"><input type="checkbox" id="closed"> closed to new cadets</label>
-      <button type="button" id="savecodes" class="quiet">Save these settings</button><span class="note" id="codesmsg" role="status"></span>
+    <h3>Names and sharing</h3>
+    <div class="set">
+      <label>Ship names<select id="names"><option value="approve">wait for me to approve</option><option value="auto">accept kind names at once</option></select></label>
+      <label>New cadets<select id="closed"><option value="0">may join</option><option value="1">closed: no new cadets</option></select></label>
+      <label>Class card board<select id="board"><option value="0">off</option><option value="1">on</option></select></label>
+      <label>Battles against a classmate's deck<select id="battles"><option value="off">off</option><option value="friendly">friendly only</option><option value="swap">challenge: winner takes both</option><option value="away-safe">challenge: away cadet keeps card</option></select></label>
+      <label>Classmates are shown by<select id="show"><option value="ship">ship name only</option><option value="first">first name</option></select></label>
     </div>
+    <div class="box note" id="sharenote"></div>
+    <div class="row" style="margin-top:10px"><button type="button" id="savecodes">Save these settings</button><span class="note" id="codesmsg" role="status"></span></div>
 
     <h2>Cadets</h2>
     <div class="scroll"><table><thead><tr><th>Name</th><th>Last saved</th><th>Station</th><th>Voltara</th><th>Trade</th><th>Quick sums</th><th>Cards</th><th>Real-life tasks done</th><th>Ship name</th><th></th></tr></thead><tbody id="cadets"></tbody></table></div>
     <p class="msg" id="cadetmsg" role="status"></p>
+    <div class="box" id="copies" hidden></div>
+
+    <div id="battlebox" hidden>
+      <h2>Battles</h2>
+      <div class="scroll"><table><thead><tr><th>When</th><th>Who</th><th>Kind</th><th>What happened</th></tr></thead><tbody id="battlelist"></tbody></table></div>
+    </div>
   </section>
 </main>
 <script>
 const API = 'api/gmq-world-api.php', $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const TASKS = { calib: 'Shield Calibration', starmap: 'Star Map', target: 'Target Practice', alloc: 'Power Allocation', choice: "Voltara: the Council's choice" };
-let current = null;
-async function call(body) { try { const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) }); const j = await r.json(); j.status = r.status; return j; } catch (e) { return { ok: false, error: 'The server did not answer.' }; } }
-$('loginform').onsubmit = async e => { e.preventDefault(); const r = await call({ action: 't_login', password: $('pw').value }); $('pw').value = ''; if (!r.ok) { $('loginmsg').textContent = r.error; return; } $('login').hidden = true; $('classes').hidden = false; listClasses(); };
+const RULES = { none: 'friendly', swap: 'challenge: winner takes both', 'away-safe': 'challenge: away cadet keeps their card' };
+let current = null, rows = [];
+async function call(body) { try { const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) }); const t = await r.text(); let j; try { j = JSON.parse(t); } catch (e) { return { ok: false, status: r.status, broken: true, error: 'The server did not answer in the usual way.' }; } j.status = r.status; return j; } catch (e) { return { ok: false, offline: true, error: 'The server did not answer.' }; } }
+
+/* ---- the server check: each line says what works, and what to do if it does not */
+async function health() {
+  const h = await call({ action: 'health' }), L = [];
+  const line = (state, text, why) => L.push(`<li><span class="mark ${state}">${state === 'good' ? '✓' : state === 'bad' ? '✗' : '!'}</span><span>${text}${why ? `<br><span class="why">${why}</span>` : ''}</span></li>`);
+  if (!h.ok) {
+    line('bad', 'The server did not answer.', h.offline ? 'This page cannot reach api/gmq-world-api.php. Check that the api folder was uploaded beside this page.' : 'PHP may be off on this folder, or older than 7.4, or a file was cut short in the upload. Upload the folder again.');
+    $('checks').innerHTML = L.join(''); return null; }
+  line(h.php_ok ? 'good' : 'bad', `The server runs: version ${esc(h.version)}, on PHP ${esc(h.php)}.`, h.php_ok ? '' : 'It needs PHP 7.4 or newer.');
+  line(h.config ? 'good' : 'warn', h.config ? 'The settings file api/config.php is there.' : 'There is no api/config.php yet.', h.config ? '' : 'Copy api/config.sample.php to api/config.php on the server (step 3 of the steps).');
+  line(h.data_writable ? 'good' : 'bad', h.data_writable ? 'Saved games can be written.' : 'The server cannot write saved games.', h.data_writable ? '' : 'The data folder in config.php must exist, and the web server must be allowed to write to it (step 3).');
+  if (h.data_inside_web) {
+    let open = false; try { const r = await fetch(h.probe_url, { cache: 'no-store' }); open = r.ok && (await r.text()).indexOf(h.probe_word) >= 0; } catch (e) {}
+    line(open ? 'bad' : 'warn', open ? 'Anyone can read the saved games from the web.' : 'The saved games are inside the web folder, but they are shut.', open ? 'Do not let cadets play yet. Move the data folder outside the web folder (step 3), then reload this page.' : 'Safer: move the data folder outside the web folder (step 3).');
+  } else if (h.data_writable) line('good', 'The saved games are outside the web folder. Nobody can read them from the web.');
+  line(h.sessions_ok ? 'good' : 'warn', h.sessions_ok ? `A log in lasts ${h.session_hours} hours.` : 'Log ins are kept in the server\'s usual place.', h.sessions_ok ? '' : 'They may end after 24 minutes without use. This goes away when saved games can be written.');
+  line(h.https ? 'good' : 'warn', h.https ? 'This page is on https.' : 'This page is not on https.', h.https ? '' : 'Log ins travel without a lock. Use the https address of your site.');
+  line(h.teacher_set ? 'good' : 'warn', h.teacher_set ? 'The teacher password is set.' : 'The teacher password is not set yet.', h.teacher_set ? '' : h.setup_ready ? 'Set it in the box below.' : 'Write a setup word in api/config.php first (step 4), then reload this page.');
+  line(h.ai === 'off' ? 'good' : 'warn', h.ai === 'off' ? 'The AI is off. The game answers as it does on the class link.' : 'The AI is on.', h.ai === 'off' ? '' : 'Every reply is checked before a cadet sees it. Keep it off on a test folder until you have read the constraint file.');
+  if (!h.constraint_file && h.ai !== 'off') line('bad', 'The constraint file is missing, so the AI will not answer.');
+  $('checks').innerHTML = L.join(''); return h;
+}
+
+$('setupform').onsubmit = async e => { e.preventDefault(); const m = $('setupmsg');
+  if ($('np1').value !== $('np2').value) { m.textContent = 'The two passwords are not the same.'; return; }
+  const r = await call({ action: 't_setup', setup_code: $('sw').value, password: $('np1').value }); ['sw', 'np1', 'np2'].forEach(i => $(i).value = '');
+  if (!r.ok) { m.textContent = r.error; return; } $('setup').hidden = true; await health(); showClasses(); };
+$('loginform').onsubmit = async e => { e.preventDefault(); const r = await call({ action: 't_login', password: $('pw').value }); $('pw').value = ''; if (!r.ok) { $('loginmsg').textContent = r.error; return; } showClasses(); };
+function showClasses() { $('login').hidden = true; $('classes').hidden = false; listClasses(); }
 async function listClasses() { const r = await call({ action: 't_classes' }); if (!r.ok) { if (r.status === 401) { $('login').hidden = false; $('classes').hidden = true; $('class').hidden = true; } return; }
   $('classlist').innerHTML = r.classes.length ? r.classes.map(c => `<button type="button" class="quiet" data-c="${esc(c.code)}">${esc(c.name)} · ${c.cadets} cadets</button>`).join('') : '<span class="note">No classes yet. Make one below.</span>';
   document.querySelectorAll('#classlist button').forEach(b => b.onclick = () => openClass(b.dataset.c)); }
 $('newclass').onsubmit = async e => { e.preventDefault(); const r = await call({ action: 't_new_class', name: $('newname').value }); $('classmsg').textContent = r.ok ? '' : r.error; if (r.ok) { $('newname').value = ''; await listClasses(); openClass(r.code); } };
 const when = t => { if (!t) return '<span class="note">never</span>'; const d = new Date(t), mins = Math.round((Date.now() - d) / 60000); return mins < 2 ? 'just now' : mins < 60 ? mins + ' min ago' : mins < 1440 ? Math.round(mins / 60) + ' h ago' : d.toLocaleDateString(); };
-async function openClass(code) { const r = await call({ action: 't_class', class: code }); if (!r.ok) { $('classmsg').textContent = r.error; return; } current = code; $('class').hidden = false; $('classname').textContent = r.class.name; $('classcode').textContent = r.class.code.toUpperCase();
-  $('codes').innerHTML = Object.keys(TASKS).map(k => `<label>${esc(TASKS[k])}<input inputmode="numeric" maxlength="4" data-k="${k}" value="${esc(r.class.codes[k])}"></label>`).join(''); $('names').value = r.class.names; $('closed').checked = r.class.closed;
-  $('cadets').innerHTML = r.cadets.length ? r.cadets.map(c => { const s = c.summary || {}, ship = c.ship || {};
+function shareNote() { const b = $('battles').value, show = $('show').value === 'first' ? 'first names' : 'ship names (a cadet with no approved ship name is not shown)';
+  $('sharenote').innerHTML = [
+    $('board').value === '1' ? `The card board shows each card's count and up to five finders, by ${show}. A card a cadet has not found yet shows only as an empty shape in their game.` : 'The card board is off.',
+    b === 'off' ? 'Battles are off.' : `A cadet battles a classmate's saved deck. The computer plays the deck, so nobody has to be online at the same time. Only a cadet who turns on "classmates may battle my deck" can be battled.` +
+      (b === 'friendly' ? ' Nothing is at stake.' : b === 'swap' ? ' In a challenge, each side puts up one rare or epic card, picked at random. The winner takes both. The classmate who is away can lose a card.' : ' In a challenge, the challenger can lose their card. The classmate who is away never loses one: if the challenger wins, they get a copy.')
+  ].map(t => `<p style="margin:4px 0">${t}</p>`).join(''); }
+['board', 'battles', 'show'].forEach(id => $(id).onchange = shareNote);
+async function openClass(code) { const r = await call({ action: 't_class', class: code }); if (!r.ok) { $('classmsg').textContent = r.error; return; } current = code; rows = r.cadets; $('class').hidden = false; $('classname').textContent = r.class.name; $('classcode').textContent = r.class.code.toUpperCase();
+  $('codes').innerHTML = Object.keys(TASKS).map(k => `<label>${esc(TASKS[k])}<input inputmode="numeric" maxlength="4" data-k="${k}" value="${esc(r.class.codes[k])}"></label>`).join('');
+  $('names').value = r.class.names; $('closed').value = r.class.closed ? '1' : '0'; $('board').value = r.class.board ? '1' : '0'; $('battles').value = r.class.battles || 'off'; $('show').value = r.class.show || 'ship'; shareNote();
+  $('cadets').innerHTML = r.cadets.length ? r.cadets.map(c => { const s = c.summary || {}, ship = c.ship || {}, k = s.card_kinds || {};
     return `<tr><td><b>${esc(c.name)}</b>${c.locked ? ' <span class="warn">locked</span>' : ''}</td><td>${when(c.saved_at)}</td><td>${s.tasks == null ? '<span class="note">not started</span>' : `${s.tasks} of 15 tasks · ${s.parts} of 5 parts`}</td>
       <td>${s.voltara ? `<span class="${s.voltara === 'Voltara shines' ? 'good' : s.voltara === 'Worse off' ? 'bad' : ''}">${esc(s.voltara)}</span> · day ${s.voltara_day}` : s.voltara_day ? 'day ' + s.voltara_day : '<span class="note">not yet</span>'}</td>
-      <td>${s.gems || s.trade_best ? `${Number(s.gems).toLocaleString()} gems${s.trade_best ? ` · best ${Number(s.trade_best).toLocaleString()}` : ''}` : '<span class="note">not yet</span>'}</td><td>${s.hazards ? s.hazards + ' of 4 hazards' : '<span class="note">not yet</span>'}</td><td>${s.cards == null ? '' : s.cards}</td>
-      <td>${(c.codes_ok || []).map(k => esc(TASKS[k] || k)).join(', ') || '<span class="note">none</span>'}</td>
+      <td>${s.gems || s.trade_best ? `${Number(s.gems).toLocaleString()} gems${s.trade_best ? ` · best ${Number(s.trade_best).toLocaleString()}` : ''}` : '<span class="note">not yet</span>'}</td><td>${s.hazards ? s.hazards + ' of 4 hazards' : '<span class="note">not yet</span>'}</td>
+      <td>${s.cards == null ? '' : `${s.cards}${s.cards ? `<br><span class="note">${k.common || 0} common · ${k.rare || 0} rare · ${k.epic || 0} epic</span>` : ''}${c.deck_open ? '<br><span class="note">deck open to battles</span>' : ''}`}</td>
+      <td>${(c.codes_ok || []).map(t => esc(TASKS[t] || t)).join(', ') || '<span class="note">none</span>'}</td>
       <td>${ship.status === 'waiting' ? `<span class="warn">wants: ${esc(ship.wants)}</span><br><button type="button" data-a="yes" data-id="${esc(c.id)}">Approve</button> <button type="button" class="quiet" data-a="no" data-id="${esc(c.id)}">Refuse</button>` : esc(ship.name) || '<span class="note">no name</span>'}</td>
-      <td><button type="button" class="quiet" data-a="number" data-id="${esc(c.id)}">New secret number</button> <button type="button" class="danger" data-a="game" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Clear game</button> <button type="button" class="danger" data-a="remove" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Remove</button></td></tr>`; }).join('') : '<tr><td colspan="10" class="note">No cadets have joined yet.</td></tr>';
-  document.querySelectorAll('#cadets button').forEach(b => b.onclick = () => cadetAct(b.dataset.a, b.dataset.id, b.dataset.n)); }
+      <td><button type="button" class="quiet" data-a="number" data-id="${esc(c.id)}">New secret number</button>${c.backups ? ` <button type="button" class="quiet" data-a="copies" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Older copies (${c.backups})</button>` : ''} <button type="button" class="danger" data-a="game" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Clear game</button> <button type="button" class="danger" data-a="remove" data-id="${esc(c.id)}" data-n="${esc(c.name)}">Remove</button></td></tr>`; }).join('') : '<tr><td colspan="10" class="note">No cadets have joined yet.</td></tr>';
+  document.querySelectorAll('#cadets button').forEach(b => b.onclick = () => cadetAct(b.dataset.a, b.dataset.id, b.dataset.n));
+  const bt = await call({ action: 't_battles', class: code }), all = bt.ok ? bt.open.concat(bt.done) : [];
+  $('battlebox').hidden = !all.length && (r.class.battles || 'off') === 'off';
+  $('battlelist').innerHTML = all.length ? all.slice(0, 60).map(b => `<tr><td>${when(b.when)}</td><td>${esc(b.a)} battled ${esc(b.b)}'s deck</td><td>${esc(RULES[b.rule] || b.kind)}</td>
+    <td>${b.status === 'done' ? `${b.result === 'won' ? esc(b.a) + ' won' : b.result === 'lost' ? esc(b.b) + "'s deck won" : 'a tie'}${b.moved ? ` · ${esc(b.moved)} ${b.rule === 'away-safe' && b.result === 'won' ? 'copied to' : 'moved to'} ${esc(b.result === 'won' ? b.a : b.b)}` : ''}` : `<span class="note">${esc(b.status === 'on' || b.status === 'offered' ? 'playing now' : b.status)}</span>`}</td></tr>`).join('') : '<tr><td colspan="4" class="note">No battles yet.</td></tr>'; }
 async function cadetAct(a, id, name) { let r;
   if (a === 'yes' || a === 'no') r = await call({ action: 't_name', class: current, id, ok: a === 'yes' });
   else if (a === 'number') { const pin = prompt('New 4-digit secret number for this cadet:'); if (pin == null) return; r = await call({ action: 't_reset', class: current, id, what: 'number', pin }); }
-  else { if (!confirm(a === 'game' ? `Clear the whole saved game of ${name}? This cannot be undone.` : `Remove ${name} from the class? Their saved game is deleted. This cannot be undone.`)) return; r = await call({ action: 't_reset', class: current, id, what: a }); }
+  else if (a === 'copies') return showCopies(id, name);
+  else { if (!confirm(a === 'game' ? `Clear the whole saved game of ${name}? A copy is kept under "Older copies".` : `Remove ${name} from the class? Their saved game and its copies are deleted. This cannot be undone.`)) return; r = await call({ action: 't_reset', class: current, id, what: a }); }
   $('cadetmsg').textContent = r.ok ? '' : r.error; openClass(current); }
-$('savecodes').onclick = async () => { const codes = {}; document.querySelectorAll('#codes input').forEach(i => codes[i.dataset.k] = i.value.trim()); const r = await call({ action: 't_set', class: current, codes, names: $('names').value, closed: $('closed').checked }); $('codesmsg').textContent = r.ok ? 'Saved.' : r.error; openClass(current); };
-$('refresh').onclick = () => openClass(current);
-(async () => { const r = await call({ action: 't_classes' }); if (r.ok) { $('login').hidden = true; $('classes').hidden = false; listClasses(); } })();
+const sumUp = s => !s ? 'an empty game' : `${s.tasks} of 15 tasks, ${s.parts} parts, ${s.cards} cards, Voltara day ${s.voltara_day}`;
+async function showCopies(id, name) { const r = await call({ action: 't_backups', class: current, id }); const box = $('copies'); box.hidden = false;
+  if (!r.ok) { box.textContent = r.error; return; }
+  box.innerHTML = `<div class="row"><b>Older copies of ${esc(name)}'s game</b><button type="button" class="quiet" id="closecopies">Close</button></div><p class="note">Now: ${esc(sumUp(r.now))}. Bringing back a copy keeps the game of now as a copy too. The cadet's iPad takes it at its next save.</p>` +
+    (r.backups.length ? r.backups.map(b => `<div class="row" style="margin:6px 0"><span>${when(b.at)}, ${esc(b.why)}: ${esc(sumUp(b.summary))}</span><button type="button" class="quiet" data-n="${b.n}">Bring this back</button></div>`).join('') : '<p class="note">No copies.</p>');
+  $('closecopies').onclick = () => { box.hidden = true; };
+  box.querySelectorAll('button[data-n]').forEach(b => b.onclick = async () => { if (!confirm(`Bring back this copy of ${name}'s game?`)) return; const x = await call({ action: 't_restore', class: current, id, n: Number(b.dataset.n) }); $('cadetmsg').textContent = x.ok ? '' : x.error; box.hidden = true; openClass(current); }); }
+$('savecodes').onclick = async () => { const codes = {}; document.querySelectorAll('#codes input').forEach(i => codes[i.dataset.k] = i.value.trim());
+  const r = await call({ action: 't_set', class: current, codes, names: $('names').value, closed: $('closed').value === '1', board: $('board').value === '1', battles: $('battles').value, show: $('show').value }); $('codesmsg').textContent = r.ok ? 'Saved.' : r.error; openClass(current); };
+$('refresh').onclick = () => { listClasses(); openClass(current); };
+(async () => { const h = await health(); if (!h) return; const r = await call({ action: 't_classes' }); if (r.ok) return showClasses();
+  if (!h.teacher_set) { $('setup').hidden = !h.setup_ready; return; } $('login').hidden = false; })();
 </script>
 </body>
 </html>
