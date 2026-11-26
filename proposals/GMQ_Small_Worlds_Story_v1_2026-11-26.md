@@ -20,6 +20,8 @@
 | B | **Keep maths there, with a shape the main thread and you choose first** (how much it will build). Then the story thread writes to it, with the three versions' faults (section 8) as the list of traps | Another design round, and more tokens |
 | C | **Keep the lock as it is for now,** marked as breaking your rule, until children's play shows how much the small worlds matter | Nothing now. The rule stays broken there |
 
+**Your model of 26 November** [Source: for the Makers' box on Algora, "Opens by hand; the maths makes it run"] fits A too: the shell box would open by hand, with the seed inside. The maths would need a machine on the world for it to make run, and a small world has none. That is the second reason for my pick.
+
 The rest of this note (sections 0 to 7) is version 3, kept as a record of what was tried.
 
 **Tags:** [Built] is in the game today (version 100). [Source] is your words or pages. [Proposal] is mine.
