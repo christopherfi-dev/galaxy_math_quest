@@ -108,6 +108,17 @@ The choice [Proposal; the face is the battle thread's, and the choice is Marc's]
 
 My pick, if asked: A. The picture is what a child remembers and talks about. The type's word already sorts the cards.
 
+## 5c. How the pictures would reach the class game (from the main thread, 26 November night)
+
+The class game (version 103) shows cards since version 102. Its card faces are the battle thread's drawing (its DRAW block), and its card list is `docs/battle/cards.json`. Both are copied into the game through the cards thread's page (`docs/cards/index.html`: the GMQ CARDS block and the gmqc-list script). The game holds its own copy; it does not read the demo pages.
+
+**If Marc says yes to new faces:**
+1. **The battle thread** takes the pictures into its drawing and its picture keys.
+2. **The cards thread** refreshes its page (`checks/cards_sync_check.js --write`).
+3. **The main thread** copies the newest block and list into the game, and runs `cards_wired_test.js` and `cards_in_game_test.js`.
+
+This thread changes none of those files itself.
+
 ## 6. Decisions for Marc
 
 1. **The style:** one look for all cards, in the game's own drawing. Does it look right in your card book's size? The demo page shows them.
