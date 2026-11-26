@@ -137,6 +137,8 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     want(name + ': the rules of the stake, in words (Marc, 23 November)', /yours from your deck, Blue Fox’s from Blue Fox’s deck\. The winner gets both cards\. In a tie, you each keep your own card\. Both cards stay in their decks, so you may each play yours\./.test(await fr.locator('#ostakep').textContent()));
     want(name + ': the buttons say "I agree" and "Back out"', (await fr.locator('#ogo').textContent()) === 'I agree: start the battle' && (await fr.locator('#oback').textContent()) === 'Back out');
     if (SHOTS) await page.screenshot({ path: path.join(SHOTS, name + '_own_7_challenge.png') });
+    await fr.locator('#ostakes .st[data-id]').first().click();
+    want(name + ': a card at stake opens large when tapped, and Back closes it', await inner(() => /open/.test(document.getElementById('pop').className)) && (await fr.locator('#popx').click(), !(await inner(() => /open/.test(document.getElementById('pop').className)))));
     await fr.locator('#oback').click(); await closed();
     want(name + ': backing out moves nothing, and the game is told', /\(backed out\)\. Nothing moves/.test(await page.locator('#said').textContent()), await page.locator('#said').textContent());
     await page.locator('#open').click(); await fr.locator('#ownsetup.open').waitFor();

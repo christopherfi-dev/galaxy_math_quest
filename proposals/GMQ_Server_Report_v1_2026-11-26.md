@@ -131,7 +131,7 @@ The Math Skills engine's notes in this repository say its student records sit in
 - **A test page, `cards-test.html`, in the test folder:** two pretend cadets take a starter pack each, see the class card board, and battle each other's saved decks with the battle thread's battle. It is off until you turn it on, and is for made-up cadets only. It is step 9 of `READ_ME_FIRST.md`.
 - **On the Desk:** a server-check line for the card list, a switch for the test page, and "What happened" for each battle.
 
-**Checked:** every server check passes (10 of them; `checks/RUN_ALL.md`). I looked at the test page's pictures, at iPad and phone size.
+**Checked:** every server check passes (12 of them, listed in `checks/RUN_ALL.md`), and the three that play the game against the server pass with version 101 too (the main thread's newest, not yet on the class link). I looked at the test page's pictures, at iPad and phone size.
 
 **One fault found and fixed:** the Desk once showed a blank page after a missing comma in its script. A new check now reads every script in the server's pages.
 
@@ -142,6 +142,8 @@ The Math Skills engine's notes in this repository say its student records sit in
 **A whole grade in one world** (`checks/server_grade_measure.js`, a measure): 60 made-up cadets (the most one class allows), two devices each, late-game-sized saves (about 20,000 letters, 40 cards each), on PHP's small server with 8 workers. 1,271 requests in about 4 seconds. Saves: 4 ms in the middle, the slowest 71 ms. The card board and the list of decks: about 11 ms. Logging in: all 120 devices at the same moment took up to 1.6 seconds, because checking a secret number is slow on purpose (it is what makes a stolen file useless). All the saved games of the grade: 1.5 MB. This answers "are flat files enough?" for one grade, on this machine. Your Apache will differ; it is usually faster than PHP's small server.
 
 **The game's side, ready as tested code.** The wiring note's section 1 (clear words when a game moves to another device, and cards that move) is now 10 exact changes the main thread can make with one command (`engines/gmq-world/wiring/`). A new test makes them in a copy of the game, never the game itself, and plays it on an iPad and a phone. A child now sees "Your game is open on another iPad." and one button, "Bring it here", instead of "not saved yet: no connection". Before writing the test's checks, I removed each change once to make sure the test fails without it; one check proved nothing that way, and was rewritten.
+
+**Before a real class, one privacy point** [Proposal]: when you remove a cadet on the Desk, their saved game and its copies are deleted, but the battle log (in the data folder) still holds the mark made from their first name, for the battles they were in. On a test folder with made-up names this does not matter. Before children use the server, decide how long battle logs are kept; the server can then delete a removed cadet's lines, or keep logs for a set number of weeks.
 
 ### Messages to paste
 
