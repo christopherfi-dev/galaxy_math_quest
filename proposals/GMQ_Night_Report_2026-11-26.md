@@ -81,3 +81,9 @@ Pictures, if you would rather not open links:
 - **The fault:** my push script treated a refused push as a success. Another thread had pushed in the same minute, so the worlds page did not go up the first time.
 - **How it was caught:** the live check showed the page had not changed.
 - **The fix:** the script now checks that the main branch really has the commit. Every page above was checked live after its push.
+
+---
+
+## 7. Check-ins
+
+- **15:30 UTC:** nothing my demos depend on had changed. The class link is still version 101 (the game file's version 102 is being tested); the card list and the big world page are the same. Nothing rebuilt.
