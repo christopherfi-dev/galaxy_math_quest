@@ -22,7 +22,7 @@ Everything here is **[Proposal]** unless it says [Source].
 | Rule | Why |
 |---|---|
 | **Write only.** Never edit `prototypes/*`, `docs/*`, `checks/*`, any `HANDOFF_2026-11-20.md`, the plan, the zip, or any `proposals/GMQ_Big_World_*` file. | Each has one owner. `HANDOFF_2026-11-20.md`, section 2b, has the table. |
-| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, `proposals/GMQ_Small_Worlds_Story_*` (and one such prefix for each world you write), this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
+| **Your files:** `proposals/GMQ_Chronosia_Story_*`, `proposals/GMQ_Algora_Story_*`, `proposals/GMQ_Small_Worlds_Story_*`, `proposals/GMQ_Station_Locks_Story_*` (and one such prefix for each world you write), this handoff, and **lines added at the end** of `INFO_FROM_MARC.md`. | |
 | **You may push those files to `claude/trusting-edison-vl78nc`** (the main branch). Marc gave this for the Chronosia files on 23 November; the Algora note went there because he passed on the big world thread's request for it. If you are unsure, ask him for one line. | |
 | **Before every push:** `git fetch origin claude/trusting-edison-vl78nc && git merge --no-edit FETCH_HEAD`. Never force-push. | Other threads push there all day. |
 | **`INFO_FROM_MARC.md` clashes on almost every merge.** Keep both sides: the other thread's lines first, then yours. Never drop a line. | It happened eight times in one day. |
@@ -105,7 +105,8 @@ Every one of these cost a review round.
 ### The 20 small worlds (26 November)
 
 - **The note:** `proposals/GMQ_Small_Worlds_Story_v1_2026-11-26.md` (a new file of the story thread's own). The shell box and its number lock go. Version 2, after one review ("not yet": three blockers). Each world's creature keeps its star seed and cannot count; the cadet works it out and does the doing. Two scenes, each answer fixed before anything happens: plant the flag (nearest ten, nearest hundred, sum; no halfway numbers) and one trip before dark (difference). Finished examples on landing, about the ship. Star seeds are for Project Second Home. Four decisions for Marc. Version 2 is not re-read.
-- **Next, as the main thread suggested:** the KIS Station against the 25 November rule (the locker's crate count, the Engine Core's colour lock, the cannons' lock), then Xylophora and Lengthar.
+- **The KIS Station against the 25 November rule:** `proposals/GMQ_Station_Locks_Story_v1_2026-11-26.md`. Options for the locker (no number: the robot pushes a fallen crate away), the Engine Core (the dials open the core's slots; its temper is a real rumble), the cannons (the screen is the cannons' aim: odd is a practice drone, even is a station ship), and the built line "A number needs a lock". Four decisions for Marc.
+- **Next:** Xylophora and Lengthar, which have never had a story check.
 
 ### What may come next
 
