@@ -4,7 +4,7 @@
 //   [Proposal: the Chronosia story note, tasks 9 to 12 and section 5a] Played as a child plays it, at iPad sideways, iPad upright and phone size:
 //   THE NUMBERS, worked out again here a different way, on 20,000 seeds each: the tide table (walked minute by minute), the gear door, the sand.
 //   THE CHAIN: the black cave (a glow stone lights only your hand) → the broken lantern → the Keeper knows its mark → Nomad Hollow on Voltara → soft sand on
-//     Xylophora (the leaf print first) → the scale (too little, too much, then right; the picture never shows a total) → a glow stone from the trader → the lantern
+//     Xylophora (the leaf print first) → the scale (too little, too much, then right; the picture never shows a total) → a glow stone from Planet R, through the market (version 100) → the lantern
 //     → the tide table (full of water, half way and back, the first and last safe minute) → the gear door (too few, too many, right: the epic card) → the workshop
 //     (the plans, the last page, the Long Spring, the small door) → the lamp room → out by the stone door, and back in.
 //   ANOTHER ORDER: soft sand first, before the lantern is known; Voltara's own glow stone, no trader; the Keeper never asked.
@@ -64,11 +64,15 @@ const { chromium } = require('playwright'); const path = require('path');
       await put(want - 10); await shot('3_scale'); await p.click('#try'); await p.waitForTimeout(150); expect(await msg(), /The glass runs out before the last pane is whole\./, 'too little sand');
       await put(want + 50); await p.click('#try'); await p.waitForTimeout(150); expect(await msg(), /thick and cloudy/, 'too much sand'); ok(await has('sand'), 'a wrong pour loses nothing');
       await put(want); await p.click('#try'); await p.waitForTimeout(250); expect(await last(), /four clear panes and a round lens[\s\S]*needs a whole glow stone\." You earn a card\.( You have a glow stone\. Talk to the glassmaker again\.)?$/, 'the right weight'); ok(!(await has('sand')), 'the sand is used'); ok(await p.evaluate(() => S.log.some(l => /glass for the Clockmaker/.test(l.what) && /3\.MD\.2/.test(l.skill) && /try 3/.test(l.result))), 'the teacher\'s log');
-      // ---- a glow stone from the trader (this cadet gave theirs away first, to test the trader)
-      await p.evaluate(() => { S.inv = S.inv.filter(i => i !== 'stone'); save(); }); expect(await say('talk glassmaker'), /Voltaran traders sell glow stones at the trade beacon, for 200 gems\./, 'the glassmaker names the trader');
-      await p.evaluate(() => { closeToy(); goSpace(); S.at = 'numerix'; SP.to = null; S.tTrade = 1; TRADE().gems = 120; save(); }); await p.waitForTimeout(300);
-      ok(await p.evaluate(() => hereWords().some(x => x[0] === 'buy glow stone')), 'the trader is a word to tap'); expect(await say('buy glow stone'), /"Glow stones! 200 gems each\." You have 120 gems\./, 'not enough gems');
-      await p.evaluate(() => { TRADE().gems = 250; save(); }); expect(await say('buy glow stone'), /You pay 200 gems\.[\s\S]*glows as far as your hand\./, 'buy a glow stone'); ok(await has('stone') && await p.evaluate(() => TRADE().gems === 50), 'the stone, and 50 gems left');
+      // ---- a glow stone from Planet R, through the market (version 100; before, 200 gems at the beacon). This cadet gave theirs away first, to test the trader.
+      await p.evaluate(() => { S.inv = S.inv.filter(i => i !== 'stone'); save(); }); expect(await say('talk glassmaker'), /Glow stones come from Planet R\. Its traders sell them for 300 gems\./, 'the glassmaker names Planet R');
+      await p.evaluate(() => { closeToy(); goSpace(); S.at = 'numerix'; SP.to = null; S.tTrade = 1; window.GMQ_FAST_TRADE = true; save(); }); await p.waitForTimeout(300);
+      ok(await p.evaluate(() => hereWords().some(x => x[0] === 'trade glow stone')), 'the glow stones are a word to tap'); expect(await say('buy glow stone'), /Planet R sells glow stones, for 300 gems\./, 'buy glow stone opens the market');
+      { const mk = () => p.evaluate(() => JSON.parse(JSON.stringify(S.market))), tap = async sel => { await p.click(sel); await p.waitForTimeout(150); }, until = st => p.waitForFunction(s2 => S.market.step === s2, st, { timeout: 30000 });
+        for (let k = 0; k < 6 && (await mk()).step !== 'plan'; k++) await tap('#try');
+        await p.evaluate(() => { S.market.gems = 450; save(); }); await tap('#trbuy'); await tap('#trstone'); await p.fill('#ans', '120'); await p.fill('#ans2', '330'); await tap('#try'); await tap('#trfly'); await until('spay');
+        const g = (await mk()).gems; await p.fill('#ans', String(g - 300)); await tap('#try'); ok(await has('stone') && (await mk()).gems === g - 300, `the stone, bought on Planet R for 300 gems (fuel 120): ${g} gems on landing, ${(await mk()).gems} after`);
+        await tap('#try'); await p.evaluate(() => { if (widget) closeToy(); }); }
       await p.evaluate(() => { closeToy(); goVoltara(); V().sc = 'hollow'; PL.x = .7; save(); }); await p.waitForTimeout(300); expect(await say('talk glassmaker'), /behind the new glass\. The lantern blazes\.[\s\S]*You have a lantern\./, 'the lantern is made');
       ok(await has('lantern') && !(await has('stone')) && !(await has('blantern')), 'the lantern in the bag; the stone and the broken lantern gone into it');
       await p.evaluate(() => { if (!S.secrets.includes('stone')) S.secrets.push('stone'); save(); }); await p.reload(); await p.waitForTimeout(700); ok(!(await has('stone')) && await has('lantern'), 'opened again: the glow stone does not come back out of the lantern');
@@ -122,7 +126,7 @@ const { chromium } = require('playwright'); const path = require('path');
       await p.evaluate(() => { closeToy(); goVoltara(); V().sc = 'hollow'; PL.x = .7; save(); }); await p.waitForTimeout(300); expect(await say('talk glassmaker'), /leads you to the furnace/, 'sand already in the bag: the scale opens at once, with no need to visit the Keeper');
       const n = await p.evaluate(() => lanNums()), want = 4 * n.p + n.L, c = [Math.floor(want / 100), Math.floor(want % 100 / 50), Math.floor(want % 50 / 10)]; for (let i = 0; i < 3; i++) for (let k = 0; k < c[i]; k++) await p.click(`#toy [data-add="${i}"]`); await p.click('#try'); await p.waitForTimeout(300);
       expect(await p.evaluate(() => lines[lines.length - 1].text || ''), /You have a glow stone\. Talk to the glassmaker again\./, 'right first time, with a glow stone already');
-      expect(await say('talk glassmaker'), /You have a lantern\./, 'the lantern, from Voltara\'s own stone'); ok(await p.evaluate(() => S.inv.includes('lantern') && !S.inv.includes('stone') && TRADE().gems === 0), 'no gems were spent');
+      expect(await say('talk glassmaker'), /You have a lantern\./, 'the lantern, from Voltara\'s own stone'); ok(await p.evaluate(() => S.inv.includes('lantern') && !S.inv.includes('stone') && !(S.market && S.market.log && S.market.log.length)), 'no gems were spent');
       await p.reload(); await p.waitForTimeout(700); ok(await p.evaluate(() => S.inv.includes('lantern') && !S.inv.includes('stone')), 'opened again: still one lantern, no loose stone');
       await p.evaluate(() => { closeToy(); goChronosia(); save(); }); await p.waitForTimeout(300); await say('go to cave'); expect(await say('look passage'), /Water fills it\./, 'the cave by lantern light');
     } catch (e) { bad.push(`${name}: stopped: ${String(e.message).split('\n')[0]}`); }

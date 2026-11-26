@@ -34,9 +34,11 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.locator('#verbs [data-v="look"]').tap(); await p.locator('#nouns .noun', { hasText: /ship/ }).first().tap(); await p.waitForTimeout(200); await idle(); expect(await last(), /Your ship|scrap|hull/i, 'a doing word then a thing word runs the command');
     await p.locator('#nouns .noun').nth(1).tap(); await p.waitForTimeout(200); await idle(); if (!(await last())) bad.push(name + ': tapping a thing word alone should look at it');
     // ---- a small world
-    await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_space').tap(); await p.waitForTimeout(1500); await say('trade'); await p.click('#try'); await p.waitForTimeout(200); await p.click('#try'); await p.waitForTimeout(200);      /* [v97] the briefing, then the idea, then the plan */
-    if (await p.locator('#toy .land').count()) bad.push(name + ': no planet can be landed on before it is scanned');
-    await p.click('#toy .wire[data-n="C"]'); await p.fill('#ans', '30'); await p.fill('#ans2', '1200'); await p.click('#try'); await p.waitForTimeout(200); await p.click('#toy .land[data-land="C"]'); await p.waitForTimeout(400);
+    await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_space').tap(); await p.waitForTimeout(1500);
+    // [v100] the way in: a planet the child has sold to in the market (Marc's pick, 26 November). Before any trade, none.
+    if (!/Trade at the beacon first/.test(await say('small worlds'))) bad.push(name + ': no planet can be landed on before a trade'); if (!/You have not traded with Planet C yet/.test(await say('land on c'))) bad.push(name + ': Planet C before a trade');
+    await p.evaluate(() => { S.market = { v: 1, seed: 7, step: 'plan', gems: 240, trip: 2, board: null, sel: [], left: 0, bought: { supplies: false, stone: false }, gifts: 1, log: [{ kind: 'gift', gems: 100 }, { kind: 'trade', trip: 1, route: [['C', 200]], fuel: 60, gems: 240 }] }; save(); drawWords(); });
+    await say('small worlds'); await p.click('#toy .land[data-land="C"]'); await p.waitForTimeout(400);
     const k = await p.evaluate(() => { const k = wKit('C'), th = wThings(k); return { name: k.name, cr: k.cr.name, at: k.at, things: th.map(t => ({ id: t.id, w: t.words[0], label: t.label })), mode: S.mode, place: $('place').textContent, q: wLockQ(k, 0) }; });
     if (k.mode !== 'world' || k.place !== k.name) bad.push(name + ': landing should put you on the world: ' + JSON.stringify([k.mode, k.place])); expect(await last(), new RegExp(`You land on ${k.name}, Planet C\\..*A creature watches you`), 'the arrival words');
     if (out) { await p.waitForTimeout(500); await p.screenshot({ path: path.join(out, `world_${name}_C.png`) }); }
@@ -54,8 +56,8 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.fill('#cmd', 'touch'); await p.locator('#nouns .noun').nth(2).tap(); await p.waitForTimeout(300); await idle(); if (!(await last())) bad.push(name + ': a doing word and a word chip on a small world');
     await p.reload(); await p.waitForTimeout(500); if (!(await p.evaluate(() => S.mode === 'world' && S.w.finds.length === 1 && $('place').textContent === wKit('C').name))) bad.push(name + ': the world was not kept after a reload');
     expect(await say('fly'), /You lift off from/, 'fly away'); if ((await p.evaluate(() => S.mode)) !== 'space') bad.push(name + ': flying should return to space');
-    await say('trade'); if (!/Land on C ★/.test(await p.textContent('#toy'))) bad.push(name + ': a planet whose seed is found should show a star'); await p.click('#leave');
-    if (out) for (const n of ['A', 'F', 'G', 'I']) { await p.evaluate(n => { TRADE().scan.push(n); landWorld(n); }, n); await p.waitForTimeout(600); await p.screenshot({ path: path.join(out, `world_${name}_${n}.png`) }); }
+    await say('small worlds'); if (!/Planet C ★/.test(await p.textContent('#toy'))) bad.push(name + ': a planet whose seed is found should show a star'); await p.click('#leave');
+    if (out) for (const n of ['A', 'F', 'G', 'I']) { await p.evaluate(n => { landWorld(n); }, n); await p.waitForTimeout(600); await p.screenshot({ path: path.join(out, `world_${name}_${n}.png`) }); }
     // ---- tap the words: on Voltara
     await p.evaluate(() => menuOpen('teacher')); await p.waitForTimeout(120); await p.locator('#t_volt').tap(); await p.waitForTimeout(800); words = await p.evaluate(() => [...document.querySelectorAll('#nouns .noun')].map(x => x.textContent)); if (!words.some(x => /butterfly/.test(x))) bad.push(name + ': Voltara should show its things as words: ' + words.join(', '));
     console.log(`${name}: a small world played, words tapped`); await ctx.close();

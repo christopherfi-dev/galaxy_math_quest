@@ -4,7 +4,8 @@
 //   - tapping the pad types into the box, rubs out, and "Check" presses the Check button
 //   - with two boxes, "Next box" moves on, and the pad follows the box you touch
 //   - the pad can be dragged, stays on the screen, and is in the same place after the page is opened again
-//   - "ABC" brings the device keyboard back, and "123" brings the pad back
+//   - "iPad keys" brings the device keyboard back, and "Number pad" brings the pad back (version 100: the words were "ABC" and "123")
+//   - [v100] the small pad is not remembered: a new task opens the full pad again [Marc, 2026-11-26: yes]
 //   - the pad goes away when the task closes, and never shows for the word boxes
 // Run: node checks/number_pad_test.js [folder for screenshots]
 const { chromium } = require('playwright'); const path = require('path');
@@ -43,13 +44,17 @@ const { chromium } = require('playwright'); const path = require('path');
     const clearY = await p.evaluate(() => Math.max(14, Math.min(300, $('leave').getBoundingClientRect().top - $('pad').offsetHeight - 24)));      /* park the pad where it does not sit on the task's own buttons */
     await p.mouse.move(edge.x + 20, edge.y + 10); await p.mouse.down(); await p.mouse.move(120, clearY + 10, { steps: 6 }); await p.mouse.up(); const kept = await pad(); if (out) await p.screenshot({ path: path.join(out, `pad_${name}_2_moved.png`) });
     // the full keyboard, and back
-    await p.locator('#padkb').tap(); await p.waitForTimeout(150); A = await first(); st = await pad(); bx = await box(A); if (!st.mini || bx.mode !== 'numeric') bad.push(name + ': ABC should fold the pad and give the device keyboard back: ' + JSON.stringify([st, bx]));
+    if ((await p.textContent('#padkb')).trim() !== 'iPad keys') bad.push(name + ': the button should say "iPad keys": ' + await p.textContent('#padkb'));
+    await p.locator('#padkb').tap(); await p.waitForTimeout(150); A = await first(); st = await pad(); bx = await box(A); if (!st.mini || bx.mode !== 'numeric') bad.push(name + ': "iPad keys" should fold the pad and give the device keyboard back: ' + JSON.stringify([st, bx]));
+    if ((await p.textContent('#padkb')).trim() !== 'Number pad') bad.push(name + ': folded, the button should say "Number pad": ' + await p.textContent('#padkb'));
     if (await p.locator('#padkeys').isVisible()) bad.push(name + ': the keys should be hidden when the pad is folded');
-    await p.locator('#padkb').tap(); await p.waitForTimeout(150); st = await pad(); bx = await box(A); if (st.mini || bx.mode !== 'none') bad.push(name + ': 123 should bring the pad back');
+    await p.locator('#padkb').tap(); await p.waitForTimeout(150); st = await pad(); bx = await box(A); if (st.mini || bx.mode !== 'none') bad.push(name + ': "Number pad" should bring the pad back');
+    // [v100] folded by mistake, then the task closed: the next task opens the full pad
+    await p.locator('#padkb').tap(); await p.waitForTimeout(150); if (!(await pad()).mini) bad.push(name + ': the pad should fold again');
     // it goes away with the task, and the place is remembered
     await p.locator('#leave').tap(); await p.waitForTimeout(150); if ((await pad()).shown) bad.push(name + ': the pad should go when the task closes');
     await p.reload(); await p.waitForTimeout(500); await p.fill('#cmd', 'open tower'); await p.press('#cmd', 'Enter'); await p.waitForSelector('#toy #try', { state: 'visible', timeout: 20000 }); await p.waitForTimeout(200); for (let i = 0; i < 2 && !(await p.locator('#toy input').count()); i++) await p.locator('#try').tap(); await p.waitForTimeout(200);
-    const again = await pad(); if (!again.shown || Math.abs(again.x - kept.x) > 6 || Math.abs(again.y - kept.y) > 6) bad.push(name + ': the pad should be where it was left: ' + JSON.stringify([kept, again]));
+    const again = await pad(); if (again.mini) bad.push(name + ': a new task should open the full pad, not the folded one'); if (!again.shown || Math.abs(again.x - kept.x) > 6 || Math.abs(again.y - kept.y) > 6) bad.push(name + ': the pad should be where it was left: ' + JSON.stringify([kept, again]));
     await p.locator('#leave').tap();
     // a word box never shows it
     await p.locator('#cmd').tap(); if ((await pad()).shown) bad.push(name + ': the pad shows for the command line');
