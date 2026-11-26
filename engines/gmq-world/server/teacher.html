@@ -68,6 +68,7 @@
       <label>Class card board<select id="board"><option value="0">off</option><option value="1">on</option></select></label>
       <label>Battles against a classmate's deck<select id="battles"><option value="off">off</option><option value="friendly">friendly only</option><option value="swap">challenge: winner takes both</option><option value="away-safe">challenge: away cadet keeps card</option></select></label>
       <label>Classmates are shown by<select id="show"><option value="ship">ship name only</option><option value="first">first name</option></select></label>
+      <label>Real names to allow (if the kind-words check refuses one)<input id="allow" placeholder="for example: Porn, Fuk" maxlength="400"></label>
       <label>Test page for cards and battles<select id="testtools"><option value="0">off</option><option value="1">on: pretend cadets only</option></select></label>
     </div>
     <div class="box note" id="sharenote"></div>
@@ -141,7 +142,7 @@ function shareNote() { const b = $('battles').value, show = $('show').value === 
 ['board', 'battles', 'show', 'testtools'].forEach(id => $(id).onchange = shareNote);
 async function openClass(code) { const r = await call({ action: 't_class', class: code }); if (!r.ok) { $('classmsg').textContent = r.error; return; } current = code; rows = r.cadets; $('class').hidden = false; $('classname').textContent = r.class.name; $('classcode').textContent = r.class.code.toUpperCase();
   $('codes').innerHTML = Object.keys(TASKS).map(k => `<label>${esc(TASKS[k])}<input inputmode="numeric" maxlength="4" data-k="${k}" value="${esc(r.class.codes[k])}"></label>`).join('');
-  $('names').value = r.class.names; $('closed').value = r.class.closed ? '1' : '0'; $('board').value = r.class.board ? '1' : '0'; $('battles').value = r.class.battles || 'off'; $('show').value = r.class.show || 'ship'; $('testtools').value = r.class.test_tools ? '1' : '0'; shareNote();
+  $('names').value = r.class.names; $('closed').value = r.class.closed ? '1' : '0'; $('board').value = r.class.board ? '1' : '0'; $('battles').value = r.class.battles || 'off'; $('show').value = r.class.show || 'ship'; $('testtools').value = r.class.test_tools ? '1' : '0'; $('allow').value = r.class.allow || ''; shareNote();
   $('cadets').innerHTML = r.cadets.length ? r.cadets.map(c => { const s = c.summary || {}, ship = c.ship || {}, k = s.card_kinds || {};
     return `<tr><td><b>${esc(c.name)}</b>${c.locked ? ' <span class="warn">locked</span>' : ''}</td><td>${when(c.saved_at)}</td><td>${s.tasks == null ? '<span class="note">not started</span>' : `${s.tasks} of 15 tasks · ${s.parts} of 5 parts`}</td>
       <td>${s.voltara ? `<span class="${s.voltara === 'Voltara shines' ? 'good' : s.voltara === 'Worse off' ? 'bad' : ''}">${esc(s.voltara)}</span> · day ${s.voltara_day}` : s.voltara_day ? 'day ' + s.voltara_day : '<span class="note">not yet</span>'}</td>
@@ -173,18 +174,31 @@ async function checkBattle(bid) {
   if (!(await loadPiece())) return 'The battle (battle-piece.js) is not in this folder, so it cannot be played again here.';
   const G = await engine(); if (!G) { GMQBattleOwn.close(); return 'The battle did not open, so it cannot be played again here.'; }
   try {
-    const st = r.record.start || {}, notes = [], parts = {}; (GMQBattleOwn.cardList().parts || []).forEach(p => { parts[p.id] = 1; });
-    const ids = list => GMQBattleOwn.idsOf(list || []).filter(i => !parts[i]);
-    if (!r.seed_ok) notes.push('the record does not use the seed the server gave');
-    const foe = G.ownDeck(ids(r.decks && r.decks.b), r.seed, 'card', null).deck.slice().sort().join(), recFoe = (st.decks && st.decks[1] || []).slice().sort().join();
-    if (foe !== recFoe) notes.push("the classmate's deck in the record is not the one the server sent");
-    const mine = ids(r.decks && r.decks.a), left = {}; mine.forEach(i => { left[i] = (left[i] || 0) + 1; }); let lent = 0; (st.decks && st.decks[0] || []).forEach(i => { if (left[i]) left[i]--; else lent++; });
-    if (lent > Math.max(0, 15 - mine.length) + 1) notes.push("the challenger's deck has cards that are not theirs");
-    let S = null; try { S = G.replay(JSON.parse(JSON.stringify(st)), JSON.parse(JSON.stringify(r.record.rec || []))); } catch (e) { notes.push('the record cannot be played again (' + e.message + ')'); }
+    /* Only the child's choices (rec) are taken from the record. Everything else is built again from what the server dealt:
+       the seed, the rules (the battle's defaults), both decks from the cards sent, and each ship from its part cards. */
+    const rec = r.record || {}, st = rec.start || {}, notes = [], D = GMQBattleOwn.cardList(), PART = {}, CARD = {};
+    (D.parts || []).forEach(p => { PART[p.id] = p; }); (D.cards || []).concat(D.upgrades || []).forEach(c => { CARD[c.id] = c; });
+    const ids = list => GMQBattleOwn.idsOf(list || []).filter(i => !PART[i]), same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+    const NAMES = G.PARTS || ['Engine Core', 'Navigation', 'Shield Generator', 'Weapons System', 'Power Module'];
+    const allowed = (parts, i) => { const k = ['standard']; (parts || []).forEach(id => { const p = PART[id]; if (p && p.part === NAMES[i] && k.indexOf(p.kind) < 0) k.push(p.kind); }); return k; };
+    if (!r.decks || !r.parts) return 'This battle began before the server kept what it dealt, so it cannot be checked.';
+    if (!r.seed_ok || st.seed !== r.seed) notes.push('the record does not use the seed the server gave');
+    const foe = G.ownDeck(ids(r.decks.b), r.seed, 'card', null);
+    if (!same((st.decks || [])[1], foe.deck)) notes.push("the classmate's deck in the record is not the one the server sent");
+    const mine = ids(r.decks.a), spies = [null].concat(mine.filter((x, i) => CARD[x] && CARD[x].type === 'spy' && mine.indexOf(x) === i)), seeds = [r.pack, r.seed].filter((x, i, a) => typeof x === 'number' && a.indexOf(x) === i);
+    let own = null; seeds.forEach(sd => spies.forEach(sp => { if (!own) { const P = G.ownDeck(mine, sd, 'card', sp); if (same((st.decks || [])[0], P.deck)) own = P; } }));
+    if (!own) notes.push("the challenger's deck in the record is not built from their cards");
+    const kinds = st.kinds || [], kindsOk = side => Array.isArray(kinds[side]) && kinds[side].length === 5 && kinds[side].every((k, i) => typeof k === 'string' && allowed(side ? r.parts.b : r.parts.a, i).indexOf(k) >= 0);
+    if (!kindsOk(0)) notes.push("the challenger's ship in the record is not one their part cards allow");
+    if (!kindsOk(1)) notes.push("the classmate's ship in the record is not one their part cards allow");
+    if (!Array.isArray(rec.rec) || rec.rec.length > 300) notes.push('the record of choices is not readable');
+    if (notes.length) return '✗ Does not match: ' + notes.join('; ') + '.';
+    const start = { seed: r.seed, opts: G.defaults(), kinds: [kinds[0].slice(), kinds[1].slice()], decks: [own.deck.slice(), foe.deck.slice()], lvl2: [own.lvl2.slice(), foe.lvl2.slice()] };
+    let S = null; try { S = G.replay(start, JSON.parse(JSON.stringify(rec.rec))); } catch (e) { notes.push('the record cannot be played again (' + e.message + ')'); }
     if (S) { const w = S.over ? S.over.winner : null, played = w === 0 ? 'won' : w === 1 ? 'lost' : w === -1 ? 'tie' : 'not finished';
       if (S.bad) notes.push(S.bad + (S.bad === 1 ? ' choice' : ' choices') + ' in the record are not allowed by the rules');
       if (played !== r.claimed) notes.push(`played again, the challenger ${{ won: 'wins', lost: 'loses', tie: 'ties' }[played] || 'does not finish'}, but the page said "${r.claimed}"`); }
-    return notes.length ? '✗ Does not match: ' + notes.join('; ') + '.' : `✓ Checked: played again from its record, it ends the same way (${{ won: 'the challenger won', lost: "the classmate's deck won", tie: 'a tie' }[r.claimed]}).`;
+    return notes.length ? '✗ Does not match: ' + notes.join('; ') + '.' : `✓ Checked: played again from what the server dealt and the choices made, it ends the same way (${{ won: 'the challenger won', lost: "the classmate's deck won", tie: 'a tie' }[r.claimed]}).`;
   } catch (e) { return 'The record could not be played again (' + e.message + ').'; } finally { GMQBattleOwn.close(); }
 }
 $('checkall').onclick = async () => { const btns = [...document.querySelectorAll('#battlelist button[data-check]')]; let good = 0, wrong = 0;
@@ -205,7 +219,7 @@ async function showCopies(id, name) { const r = await call({ action: 't_backups'
   $('closecopies').onclick = () => { box.hidden = true; };
   box.querySelectorAll('button[data-n]').forEach(b => b.onclick = async () => { if (!confirm(`Bring back this copy of ${name}'s game?`)) return; const x = await call({ action: 't_restore', class: current, id, n: Number(b.dataset.n) }); $('cadetmsg').textContent = x.ok ? '' : x.error; box.hidden = true; openClass(current); }); }
 $('savecodes').onclick = async () => { const codes = {}; document.querySelectorAll('#codes input').forEach(i => codes[i.dataset.k] = i.value.trim());
-  const r = await call({ action: 't_set', class: current, codes, names: $('names').value, closed: $('closed').value === '1', board: $('board').value === '1', battles: $('battles').value, show: $('show').value, test_tools: $('testtools').value === '1' }); $('codesmsg').textContent = r.ok ? 'Saved.' : r.error; openClass(current); };
+  const r = await call({ action: 't_set', class: current, codes, names: $('names').value, closed: $('closed').value === '1', board: $('board').value === '1', battles: $('battles').value, show: $('show').value, test_tools: $('testtools').value === '1', allow: $('allow').value }); $('codesmsg').textContent = r.ok ? 'Saved.' : r.error; openClass(current); };
 $('refresh').onclick = () => { listClasses(); openClass(current); };
 (async () => { const h = await health(); if (!h) return; const r = await call({ action: 't_classes' }); if (r.ok) return showClasses();
   if (!h.teacher_set) { $('setup').hidden = !h.setup_ready; return; } $('login').hidden = false; })();

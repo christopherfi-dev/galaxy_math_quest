@@ -40,7 +40,7 @@
 declare(strict_types=1);
 error_reporting(E_ALL); ini_set('display_errors', '0');
 
-const VERSION = '0.3.1';
+const VERSION = '0.3.2';
 $CONFIG = file_exists(__DIR__ . '/config.php') ? (require __DIR__ . '/config.php') : [];
 if (!is_array($CONFIG)) $CONFIG = [];
 $DATA = rtrim((string)($CONFIG['data_dir'] ?? (__DIR__ . '/data')), '/');
@@ -55,6 +55,8 @@ const BATTLES_PER_HOUR = 6;     // a cadet may start this many battles in an hou
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
+/* Input made by hand (not by the game) can hold odd shapes; whatever goes wrong, the answer is plain JSON, never an empty page. Nothing is saved then. */
+set_exception_handler(static function ($e) { if (!headers_sent()) http_response_code(500); echo '{"ok":false,"error":"The server could not answer that."}'; logLine('error ' . get_class($e) . ': ' . substr($e->getMessage(), 0, 160)); });
 if (!empty($CONFIG['allow_origin'])) {                      // only needed when the page is served from another site
     header('Access-Control-Allow-Origin: ' . $CONFIG['allow_origin']);
     header('Access-Control-Allow-Credentials: true');
@@ -141,17 +143,24 @@ function rude(string $t, bool $strict = false): bool {
     foreach (array_merge($words, ['']) as $w) { if (strlen($w) === 1) { $run .= $w; } else { if ($bad($run)) return true; $run = ''; } }
     return $strict && count($words) > 1 && $bad(implode('', $words));
 }
-/* A child's own first name. Only a whole word that is a curse or an insult is refused: a real name that happens to hold such
-   letters is fine (Pornthip, Siriporn, Supaporn, Kanokporn, Shital, Fukuda, Wankaew), and so are the nicknames Poo, Pee, Bum
-   and Fu (found by the review: the old check refused them all, at a school in Bangkok). Ship names keep the strict check. */
+/* A child's own first name (and, since the game's own check was eased the same night, a ship name). Two lists [review, 26 November]:
+   - strong roots that are never part of a real name: refused inside any word (fucked, motherfucker, bullshit, smartass)
+   - milder words: refused only as a whole word, with common endings (shit, shitty, pissed, crappy, dammit), so real names that hold
+     the same letters are fine: Pornthip, Siriporn, Supaporn, Kanokporn, Shital, Harshit, Fukuda, Wankaew, Dickson, Assunta;
+     and the nicknames Poo, Pee, Bum, Fu
+   - a real name the check still refuses (Porn, Fuk, Dick, Nazy) can be allowed by the teacher for the class, on the Desk
+   - two words are also read joined ("poop head"), but not a name and an initial ("Poo P"), which the wrong-number message invites */
 function rudeName(string $t): bool {
     static $leet = ['0' => 'o', '1' => 'i', '3' => 'e', '4' => 'a', '5' => 's', '7' => 't', '8' => 'b', '@' => 'a', '$' => 's', '!' => 'i', '+' => 't', '|' => 'i'];
-    static $bad = '/^(f+[uv]+c+k+(e+r+s*|i+n+g*|s+)?|f+c+k+|f+u+k+|s+h+[iy]+t+(s+|t+y+|h+e+a+d+)?|b+[iy]+a*t+c+h+(e+s+)?|c+u+n+t+s*|n+[iy]+g+g+(a+|e+r+)s*|w+h+o+r+e+s*|s+l+u+t+s*|b+a+s+t+a+r+d+s*|p+e+n+[iy]+s+|v+a+g+[iy]+n+a*|p+o+r+n+o*|p+u+s+s+y+|w+a+n+k+(e+r+)?|t+w+a+t+|a+s+s+h+o+l+e+s*|a+r+s+e+(h+o+l+e+)?|d+[iy]+c+k+(h+e+a+d+)?s*|c+o+c+k+s*|d+[iy]+l+d+o+|r+e+t+a+r+d+s*|f+a+g+(g+o+t+)?s*|b+o+o+b+s*|t+[iy]+t+s+|t+[iy]+t+t+[iy]+e+s+|s+e+x+y*|a+s+s+(e+s+)?|p+o+o+p+(s+|y+|h+e+a+d+)?|b+u+t+t+(h+e+a+d+|h+o+l+e+|f+a+c+e+)|d+u+m+b+a+s+s+|j+a+c+k+a+s+s+|s+t+u+p+[iy]+d+|[iy]+d+[iy]+o+t+s*|d+u+m+m+y+|l+o+s+e+r+s*|u+g+l+y+|m+o+r+o+n+s*|n+a+z+[iy]+|k+k+k+|w+t+f+|s+t+f+u+|f+a+r+t+s*|c+r+a+p+|d+a+m+n+|h+e+l+l+|s+u+c+k+s*|s+u+c+k+e+r+)$/';
+    static $root = '/(f+[uv]+c+k|p+h+u+c+k|m+o+t+h+e+r+f|b+[iy]+a*t+c+h|c+u+n+t|n+[iy]+g+g+(a|e+r)|w+h+o+r+e|s+l+u+t|b+a+s+t+a+r+d|p+u+s+s+y|t+w+a+t|r+e+t+a+r+d|d+[iy]+l+d+o|b+o+l+l+o+c+k|d+o+u+c+h+e|a+s+s+h+(o+l+e|a+t)|(s+m+a+r+t|b+a+d|j+a+c+k|d+u+m+b|f+a+t|k+i+c+k)a+s+s|(b+u+l+l|h+o+r+s+e|d+[iy]+p|c+h+i+c+k+e+n)s+h+[iy]+t|s+h+[iy]+t+(h+e+a+d|f+a+c+e)|d+[iy]+c+k+h+e+a+d|c+o+c+k+s+u+c+k|p+o+o+p+h+e+a+d|b+u+t+t+(h+e+a+d|h+o+l+e|f+a+c+e))/';
+    static $word = '/^(s+h+[iy]+t+(s|e+d|t+y)?|p+[iy]+s+s+(e+d|e+s|i+n+g)?|j+e+r+k+(s|y)?|d+u+m+b+(o|e+r)?|t+u+r+d+s?|p+r+[iy]+c+k+s?|b+u+g+g+e+r+s?|c+r+a+p+(p+y|s)?|d+a+m+(n+(e+d)?|m+[iy]+t)|t+[iy]+t+(s|t+y|t+[iy]+e+s)?|c+u+m+s?|f+a+t+(s+o|t+y)|p+o+o+p+(s|y)?|a+s+s+(e+s)?|a+r+s+e|s+e+x+y?|p+o+r+n+o?|d+[iy]+c+k+s?|c+o+c+k+s?|b+o+o+b+s?|f+a+r+t+(s|y)?|h+e+l+l|s+u+c+k+(s|e+r|e+d)?|s+t+u+p+[iy]+d|[iy]+d+[iy]+o+t+s?|d+u+m+m+y|l+o+s+e+r+s?|u+g+l+y|m+o+r+o+n+s?|n+a+z+[iy]|k+k+k|w+t+f|s+t+f+u|p+h+u+k|f+u+k|f+c+k|m+o+f+o|p+e+n+[iy]+s|v+a+g+[iy]+n+a|s+e+x)$/';
+    $bad = static function (string $w) use ($root, $word): bool { return $w !== '' && (preg_match($root, $w) === 1 || preg_match($word, $w) === 1); };
     $words = [];
     foreach (preg_split('/\s+/', strtolower(trim($t))) ?: [] as $w) { $w = preg_replace('/[^a-z]/', '', strtr($w, $leet)) ?? ''; if ($w !== '') $words[] = $w; }
-    foreach ($words as $w) if (preg_match($bad, $w)) return true;
-    $run = ''; foreach (array_merge($words, ['']) as $w) { if (strlen($w) === 1) $run .= $w; else { if ($run !== '' && preg_match($bad, $run)) return true; $run = ''; } }   // f u c k
-    return count($words) > 1 && preg_match($bad, implode('', $words)) === 1;                                                                    // poop head
+    foreach ($words as $w) if ($bad($w)) return true;
+    $run = ''; foreach (array_merge($words, ['']) as $w) { if (strlen($w) === 1) $run .= $w; else { if (strlen($run) > 1 && $bad($run)) return true; $run = ''; } }   // f u c k
+    $long = array_values(array_filter($words, static function ($w) { return strlen($w) > 1; }));
+    return count($long) > 1 && count($long) === count($words) && $bad(implode('', $long));                                        // poop head (not "Poo P")
 }
 function cleanName(string $s, int $max): string { $s = trim(preg_replace('/\s+/', ' ', preg_replace('/[^A-Za-z0-9 ]/', '', $s) ?? '') ?? ''); return substr(ucwords(strtolower($s)), 0, $max); }
 
@@ -232,6 +241,7 @@ function cadetOut(array $s, array $class, array $more = []): array {
     return ['ok' => true, 'name' => $s['name'], 'class' => $class['name'] ?? '', 'state' => $s['state'], 'rev' => (int)($s['rev'] ?? 0), 'saved_at' => $s['saved_at'], 'ship' => $s['ship'], 'ai' => aiOn(),
         'names' => $class['names'] ?? 'approve', 'share' => shareOf($class), 'news' => array_values($s['news'] ?? []), 'version' => VERSION] + $more;
 }
+function allowOf(array $class): string { return implode(', ', is_array($class['allow'] ?? null) ? $class['allow'] : []); }
 function shareOf(array $class): array { return ['board' => !empty($class['board']), 'battles' => (string)($class['battles'] ?? 'off'), 'show' => (string)($class['show'] ?? 'ship'), 'test_tools' => !empty($class['test_tools'])]; }
 
 if ($action === 'health') {                                     // anyone may ask: it says what works, never a path, a key or a name
@@ -251,7 +261,7 @@ if ($action === 'join') {
     $code = slug((string)($in['class'] ?? ''), 12); $name = cleanName((string)($in['name'] ?? ''), 16); $pin = (string)($in['pin'] ?? '');
     $class = $code === '' ? null : readJson(classPath($code)); if (!$class) fail('That class code is not known. Ask your teacher.', 404);
     if (strlen($name) < 2) fail('Type your name: letters only, at least 2.');
-    if (rudeName($name)) fail('Please use your own name.');
+    if (rudeName($name) && !in_array(strtolower($name), array_map('strtolower', is_array($class['allow'] ?? null) ? $class['allow'] : []), true)) fail('Please use your own name. If this is your real name, ask your teacher to allow it on the Commander\'s Desk.');
     if (!preg_match('/^[0-9]{4}$/', $pin)) fail('Your secret number has 4 digits.');
     $id = slug($name); $path = studentPath($code, $id); $lg = token();
     $s = withLocks([cadetLock($code, $id)], static function () use ($path, $class, $code, $id, $name, $pin, $lg) {
@@ -325,7 +335,7 @@ if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 
     }
     if ($action === 'name') {                                     // a new ship name waits for the teacher, unless the class is set to accept names by itself
         $want = cleanName((string)($in['ship'] ?? ''), 12); if ($want === '') fail('Type a name for your ship.');
-        if (rude($want, true) || rude((string)($in['ship'] ?? ''), true)) out(['ok' => true, 'status' => 'refused', 'say' => 'The paint will not stick. Pick a kind name.']);
+        if (rudeName($want) || rudeName((string)($in['ship'] ?? ''))) out(['ok' => true, 'status' => 'refused', 'say' => 'The paint will not stick. Pick a kind name.']);      // the same check as names: the game's own check was eased for real names the same night
         $s = withLocks([cadetLock($code, $id)], static function () use ($path, $want, $class) {
             $s = needStudent();
             if (($class['names'] ?? 'approve') === 'auto') $s['ship'] = ['name' => $want, 'wants' => '', 'status' => 'ok']; else $s['ship'] = ['name' => (string)($s['ship']['name'] ?? ''), 'wants' => $want, 'status' => 'waiting'];
@@ -409,7 +419,7 @@ if (strpos($action, 't_') === 0) {
         $rows = []; foreach (cadetsOf($code) as $s) $rows[] = ['id' => $s['id'], 'name' => $s['name'], 'saved_at' => $s['saved_at'], 'ship' => $s['ship'], 'codes_ok' => array_keys($s['codes_ok'] ?? []), 'locked' => ($s['locked_until'] ?? 0) > time(),
             'summary' => $s['summary'] ?? null, 'backups' => count($s['backups'] ?? []), 'deck_open' => !empty($s['deck']['open'])];
         usort($rows, static function ($a, $b) { return strcmp($a['name'], $b['name']); });
-        out(['ok' => true, 'class' => ['code' => $class['code'], 'name' => $class['name'], 'codes' => ($class['codes'] ?? []) + DEFAULT_CODES, 'names' => $class['names'] ?? 'approve', 'closed' => !empty($class['closed'])] + shareOf($class), 'cadets' => $rows]);
+        out(['ok' => true, 'class' => ['code' => $class['code'], 'name' => $class['name'], 'codes' => ($class['codes'] ?? []) + DEFAULT_CODES, 'names' => $class['names'] ?? 'approve', 'closed' => !empty($class['closed']), 'allow' => allowOf($class)] + shareOf($class), 'cadets' => $rows]);
     }
     if ($action === 't_set') {
         withLocks([classLock($code)], static function () use ($code, $in) {
@@ -421,6 +431,7 @@ if (strpos($action, 't_') === 0) {
             if (isset($in['battles']) && in_array($in['battles'], ['off', 'friendly', 'swap', 'away-safe'], true)) $class['battles'] = $in['battles'];
             if (isset($in['show']) && in_array($in['show'], ['ship', 'first'], true)) $class['show'] = $in['show'];
             if (isset($in['test_tools'])) $class['test_tools'] = (bool)$in['test_tools'];
+            if (isset($in['allow']) && is_string($in['allow'])) $class['allow'] = array_slice(array_values(array_unique(array_filter(array_map(static function ($n) { return cleanName($n, 16); }, explode(',', $in['allow']))))), 0, 60);   // real names the check refuses
             writeJson(classPath($code), $class);
         });
         out(['ok' => true]);

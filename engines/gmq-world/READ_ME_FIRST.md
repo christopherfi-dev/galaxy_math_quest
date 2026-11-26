@@ -1,4 +1,4 @@
-# Galaxy Math Quest: the test folder (server version 0.3.1)
+# Galaxy Math Quest: the test folder (server version 0.3.2)
 
 **For:** Marc. **Time:** about 20 minutes. **Who plays:** made-up cadets only, never a child.
 Everything here is **[Proposal]**. Nothing on your site changes until you upload it yourself.

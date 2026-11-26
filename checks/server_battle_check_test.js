@@ -38,9 +38,13 @@ function play(st) {
     const T = api(); await T({ action: 't_login', password: 'orbit-teacher-77' }); const CODE = (await T({ action: 't_new_class', name: 'Pretend 3C' })).code;
     await T({ action: 't_set', class: CODE, names: 'auto', battles: 'swap', test_tools: true });
     const kid = async (name, ship) => { const c = api(); await c({ action: 'join', class: CODE, name, pin: '1357' }); await c({ action: 'name', ship }); await c({ action: 'test_starter' }); await c({ action: 'deck', open: true }); return c; };
-    const ch = {}; for (const [n, sh] of [['Nova', 'Red Kite'], ['Juno', 'Gold Bee'], ['Lumen', 'Sky Whale'], ['Orbit', 'Blue Fox'], ['Pixel', 'Sun Moth'], ['Vega', 'Iron Owl']]) ch[n] = await kid(n, sh);
+    /* a fresh challenger and classmate for each battle, so both always have a card to put up. The last four are the crafted records an
+       independent review used to fool the first version of the check (26 November, night). */
+    const CASES = [['honest', 'Nova', 'Red Kite', 'Orbit', 'Blue Fox'], ['false claim', 'Juno', 'Gold Bee', 'Pixel', 'Sun Moth'], ['weakened', 'Lumen', 'Sky Whale', 'Vega', 'Iron Owl'],
+      ['ship', 'Tycho', 'Opal Jet', 'Astra', 'Tin Wolf'], ['lent epics', 'Bolt', 'Fern Ray', 'Cosmo', 'Ice Lark'], ['seed', 'Quill', 'Moon Crab', 'Zephyr', 'Dust Hawk'], ['huge rules', 'Rocket', 'Star Seed', 'Comet', 'Mint Rover']];
+    const ch = {}; for (const c of CASES) { ch[c[1]] = await kid(c[1], c[2]); ch[c[3]] = await kid(c[3], c[4]); }
     const results = [];
-    for (const [kind, who, ship] of [['honest', 'Nova', 'Blue Fox'], ['false claim', 'Juno', 'Sun Moth'], ['weakened', 'Lumen', 'Iron Owl']]) {      /* a fresh challenger and classmate each time, so both always have a card to put up */
+    for (const [kind, who, , , ship] of CASES) {
       const A = ch[who], rival = (await A({ action: 'rivals' })).rivals.find(r => r.name === ship);
       const st = await A({ action: 'battle_start', rival: rival.rival, kind: 'challenge' }); ok(st.ok, 'a challenge starts', st.error); if (!st.ok) break;
       await A({ action: 'battle_accept', battle: st.battle });
@@ -49,25 +53,32 @@ function play(st) {
       const record = JSON.parse(JSON.stringify({ start: g.start, rec: g.rec })); let claim = g.result;
       if (kind === 'false claim') claim = g.result === 'won' ? 'lost' : 'won';
       if (kind === 'weakened') { const weak = CD.cards.filter(c => c.type === 'repair' && c.rarity === 'common').map(c => c.id); record.start.decks[1] = record.start.decks[1].map((_, i) => weak[i % weak.length]); }
+      if (kind === 'ship') { record.start.kinds[0] = STD.map((_, i) => ({ name: 'Mega part', hp: 999, ap: 60 })); record.start.kinds[1] = STD.map(() => ({ name: 'Weak part', hp: 1, ap: 0 })); record.start.lvl2[0] = [0, 1, 2, 3, 4]; claim = 'won'; }
+      if (kind === 'lent epics') { const ep = CD.cards.filter(c => c.type === 'attack' && c.rarity === 'epic').map(c => c.id); record.start.decks[0] = record.start.decks[0].map((id, i) => i < 8 ? ep[i % ep.length] : id); claim = 'won'; }
+      if (kind === 'seed') { record.start.seed = record.start.seed + 0.5; claim = 'won'; }
+      if (kind === 'huge rules') { record.start.opts = Object.assign({}, record.start.opts, { guards: 1e9 }); record.start.decks = [record.start.decks[0], null]; }   /* would freeze a check that trusted the record */
       const e = await A({ action: 'battle_end', battle: st.battle, result: claim, record }); ok(e.ok, 'the battle ends with its record', e.error);
       results.push({ kind, claim, real: g.result });
     }
-    const tb = await T({ action: 't_battles', class: CODE }); ok(tb.done.filter(d => d.checkable).length === 3, 'the teacher\'s list marks three battles that can be checked', tb.done.map(d => d.checkable));
+    const tb = await T({ action: 't_battles', class: CODE }); ok(tb.done.filter(d => d.checkable).length === CASES.length, 'the teacher\'s list marks every battle as one that can be checked', tb.done.map(d => d.checkable));
     // the Desk, in a browser
     const p = await (await br.newContext({ viewport: { width: 1180, height: 745 } })).newPage(); p.on('pageerror', e => errs.push(e.message));
     await p.goto(URL + '/teacher.html'); await p.waitForTimeout(800); await p.fill('#pw', 'orbit-teacher-77'); await p.click('#loginform button'); await p.waitForTimeout(800);
     await p.click(`#classlist button[data-c="${CODE}"]`); await p.waitForTimeout(1200);
-    const btns = p.locator('#battlelist button[data-check]'); ok((await btns.count()) === 3, 'three "Check who won" buttons', await btns.count());
+    const btns = p.locator('#battlelist button[data-check]'); ok((await btns.count()) === CASES.length, 'a "Check who won" button for each battle', await btns.count());
     const said = [];
     for (let i = 0; i < await btns.count(); i++) { await btns.nth(i).click(); await p.waitForFunction(i => { const s = document.querySelectorAll('#battlelist [data-checked]')[i]; return s && s.textContent && !/Playing it again/.test(s.textContent); }, i, { timeout: 30000 }).catch(() => {});
       said.push(await p.locator('#battlelist [data-checked]').nth(i).textContent()); }
-    // the list shows the newest first: weakened, false claim, honest
-    const byKind = { weakened: said[0], 'false claim': said[1], honest: said[2] };
+    const byKind = {}; CASES.slice().reverse().forEach((c, i) => { byKind[c[0]] = said[i]; });      /* the list shows the newest first */
     ok(/^✓ Checked/.test(byKind.honest || ''), 'an honest battle checks', byKind.honest);
     ok(/^✗ Does not match/.test(byKind['false claim'] || '') && /but the page said/.test(byKind['false claim']), 'a false claim does not match', byKind['false claim']);
     ok(/^✗ Does not match/.test(byKind.weakened || '') && /classmate's deck in the record is not the one the server sent/.test(byKind.weakened), 'a weakened classmate deck is found out', byKind.weakened);
+    ok(/^✗/.test(byKind.ship || '') && /ship in the record is not one their part cards allow/.test(byKind.ship), 'a record that gives the challenger a giant ship is found out', byKind.ship);
+    ok(/^✗/.test(byKind['lent epics'] || '') && /challenger's deck in the record is not built from their cards/.test(byKind['lent epics']), 'a record that fills the challenger\'s deck with epic cards is found out', byKind['lent epics']);
+    ok(/^✗/.test(byKind.seed || '') && /does not use the seed the server gave/.test(byKind.seed), 'a record with a seed that is only nearly the server\'s is found out', byKind.seed);
+    ok(/^✗/.test(byKind['huge rules'] || '') && !/could not be played/.test(byKind['huge rules']), 'a record built to freeze the check is answered at once, and found out', byKind['huge rules']);
     await p.click('#checkall'); await p.waitForFunction(() => /checked/.test(document.getElementById('checkallmsg').textContent), null, { timeout: 60000 }).catch(() => {});
-    ok(/^1 checked, 2 do not match/.test(await p.textContent('#checkallmsg')), '"Check all challenges" counts one that checks and two that do not', await p.textContent('#checkallmsg'));
+    ok(/^1 checked, 6 do not match/.test(await p.textContent('#checkallmsg')), '"Check all challenges" counts one that checks and six that do not', await p.textContent('#checkallmsg'));
     ok(!(await p.isHidden('#cardsbox')) && /different cards in the class/.test(await p.textContent('#cardsum')), 'the Desk shows the cards in the class', await p.textContent('#cardsum'));
     const firstCard = await p.locator('#cardlist td').first().textContent(); ok(CD.cards.concat(CD.upgrades, CD.parts).some(c => c.name === firstCard), 'by their names, not their ids', firstCard);
     console.log('  NOTE results:', JSON.stringify(results)); console.log('  NOTE the Desk said:', JSON.stringify(said));
