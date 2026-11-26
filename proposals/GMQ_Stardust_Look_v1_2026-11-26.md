@@ -1,6 +1,8 @@
 # Operation Stardust's ship: a new look
 
-**Date:** 26 November 2026. **For:** Marc, and the main thread (the wiring is in section 5). **The class game is not changed:** this is a copy, `prototypes/star_look_sample.html`, and a demo link.
+**Update, 26 November, night:** the copy now also has Chronosia's map in a new look, so it and its build were renamed: `prototypes/worlds_look_sample.html`, `prototypes/worlds_look_build.js`. See `GMQ_Worlds_Look_v1_2026-11-26.md`. The game's own `stardust_test.js` passes on it.
+
+**Date:** 26 November 2026. **For:** Marc, and the main thread (the wiring is in section 5). **The class game is not changed:** this is a copy, `prototypes/worlds_look_sample.html`, and a demo link.
 
 **Marc's asks** [Source: Marc, 26 November]:
 - "Look at the Stardust? One of them is like a space station in space. It's a pretty bland station at the moment."
@@ -8,7 +10,7 @@
 
 **Old and new:** `GMQ_Stardust_Old_New_v1_2026-11-26.jpg` (top left old, top right new, the same place; below, the new airlock on arrival).
 
-**Where to see it:** https://christopherfi-dev.github.io/galaxy_math_quest/lookdemo/stardust/. Open the Teacher row, tap "Go to Stardust", then walk. "Ship look: new/old" in the Teacher row switches between the two. It keeps its own saved game.
+**Where to see it:** https://christopherfi-dev.github.io/galaxy_math_quest/lookdemo/worlds/ (the old link, `lookdemo/stardust/`, forwards there). Open the Teacher row, tap "Go to Stardust", then walk. "World look: new/old" in the Teacher row switches between the two. It keeps its own saved game.
 
 ---
 
@@ -144,8 +146,8 @@ When Marc says so. It is a piece, as the conductor's plan asks.
 2. **In `drawStar`,** wrap the background fill and the floor-and-wall loop:
    - before: `cx.fillStyle = '#05070f'; cx.fillRect(0, 0, w, h);` followed by the `for (let y = y0; …)` loop;
    - after: `if (SLK.on) SLK.ship(x0, x1, y0, y1, Xs, Ys, ts, w, h, c); else { …the same two as before… }`.
-   - `prototypes/star_look_build.js` shows the exact text.
-3. **Optional:** the Teacher button `t_slk` ("Ship look: new/old"). Without it, the new look is always on.
+   - `prototypes/worlds_look_build.js` shows the exact text.
+3. **Optional:** the Teacher button `t_slk` ("World look: new/old"). Without it, the new look is always on.
 
 **Nothing else changes:** no save data, no task, no number.
 

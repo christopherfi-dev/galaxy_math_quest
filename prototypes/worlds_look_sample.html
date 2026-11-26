@@ -1,4 +1,4 @@
-<title>Stardust New Look</title>
+<title>Worlds New Look</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Chakra+Petch:wght@500;700&display=swap">
 <style>
@@ -334,7 +334,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 100, Stardust look sample</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 100, worlds look sample</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -343,7 +343,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <section class="box" id="partsbox" data-m="ship" aria-label="Your ship parts and tasks"></section>
   <section class="box" id="cards" data-m="cards" aria-label="Your cards"></section>
   <div id="teacherbox" data-m="teacher">
-  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><button class="word" type="button" id="t_xyl">Go to Xylophora</button><button class="word" type="button" id="t_len">Go to Lengthar</button><button class="word" type="button" id="t_std">Go to Stardust</button><button class="word" type="button" id="t_slk">Ship look: new</button><span class="note" id="t_now"></span></p>
+  <p class="tbar"><span class="lab">Teacher</span><button class="word" type="button" id="t_volt">Go to Voltara</button><button class="word" type="button" id="t_stn">Go to the station</button><button class="word" type="button" id="t_space">Go to space</button><button class="word" type="button" id="t_chr">Go to Chronosia</button><button class="word" type="button" id="t_xyl">Go to Xylophora</button><button class="word" type="button" id="t_len">Go to Lengthar</button><button class="word" type="button" id="t_std">Go to Stardust</button><button class="word" type="button" id="t_slk">World look: new</button><span class="note" id="t_now"></span></p>
   <section class="box" id="stars" aria-label="Your star chart"></section>
   <details class="box">
     <summary>For the teacher: what this sketch shows</summary>
@@ -532,7 +532,7 @@ const DIRS = { north: [0, -1], n: [0, -1], up: [0, -1], south: [0, 1], s: [0, 1]
 /* =====================================================================
    STATE
    ===================================================================== */
-const KEY = 'gmq-stardust-looksample-v1';      /* [v93] Marc, 2026-11-23: "I need a link that resets everything so all students get the brand new version. All their previous progress should be erased right now." A new save key: every cadet starts fresh, and the old save is removed. */
+const KEY = 'gmq-worlds-looksample-v1';      /* [v93] Marc, 2026-11-23: "I need a link that resets everything so all students get the brand new version. All their previous progress should be erased right now." A new save key: every cadet starts fresh, and the old save is removed. */
 ['gmq-station-sketch-v5'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} try { sessionStorage.removeItem(k); } catch (e) {} });
 /* small settings (reading cards, the pad's place) are kept in two places as well, so a quick reload cannot lose them */
 const setKeep = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} try { sessionStorage.setItem(k, v); } catch (e) {} };
@@ -5092,11 +5092,83 @@ function cIcon(k, X, Y, s) { const done = CPL[k].q.length && CPL[k].q.every(q =>
   else if (k === 'H') { cx.fillStyle = '#e6dcc2'; cx.fillRect(X - s * .65, Y - s * .5, s * 1.3, s * .75); cx.strokeStyle = INK; cx.lineWidth = 2; cx.strokeRect(X - s * .65, Y - s * .5, s * 1.3, s * .75); cx.fillStyle = '#b9a3ff'; cx.beginPath(); cx.moveTo(X - s * .8, Y - s * .5); cx.lineTo(X, Y - s * 1.05); cx.lineTo(X + s * .8, Y - s * .5); cx.closePath(); cx.fill(); ol(2); cx.fillStyle = '#8a7fb5'; for (let i = 0; i < 4; i++) cx.fillRect(X - s * .52 + i * s * .3, Y - s * .45, s * .12, s * .7); }
   else if (k === 'G') { cx.fillStyle = '#2b6f63'; circ(X, Y, s * .6); cx.fill(); cTortoise(X, Y + s * .1, s * .45, -1); }
   else if (k === 'C') { cx.fillStyle = '#8f8aa8'; cx.beginPath(); cx.ellipse(X, Y + s * .25, s * .7, s * .22, 0, 0, 7); cx.fill(); ol(2); if (!(C().fk || {}).guard) cCougar(X, Y - s * .12, s * .55, !!C().done.cougar); } }
+/*CHRONO-LOOK-BEGIN  Planet Chronosia's map, drawn like the big world's new look.   [Proposal, 26 November 2026]
+  [Source: Marc, 26 November: "Should we start updating the characters on those? Or filling them in or looking at the visual design?" and "Push what you can."]
+  Note: proposals/GMQ_Worlds_Look_v1_2026-11-26.md
+  - Chronosia's map is scenery (its tasks are about time, in close-up pictures), so its ground can change: soft grass with tufts in place of the checkerboard, a sand
+    path with rounded corners, a river with banks and foam, a plank bridge with rails, mountains with a lit side and snow, round trees with a shadow.
+  - Kept exactly: which squares are what; the river's ripples (fast on the left, slow on the right, as the game has them); the fire-trees' glowing fruit; the
+    sundial stones (and the sundial once found); the fog; the places' own pictures and names, drawn by the game on top.
+  - NOT for Xylophora: its ground is "a patchwork of squares" and its tasks count squares (area), so its squares stay as they are.
+  - "World look: old" in the Teacher row shows the game's own drawing.
+  The still ground is drawn once into a picture (again only when the cadet sees new squares or the size changes); water and fire move on top. */
+const CHLK = (() => {
+  const isP = (x, y) => { const t = cTile(x, y); return t === ':' || t === '='; }, isW = (x, y) => { const t = cTile(x, y); return t === '~' || t === '='; };
+  const inMap = (x, y) => x >= 0 && y >= 0 && x < CW && y < CH;
+  const rnd = (x, y, k) => { const s = Math.sin(x * 127.1 + y * 311.7 + k * 74.7) * 43758.5453; return s - Math.floor(s); };
+  const cache = { key: '', cv: null };
+  const rrg = (g, x, y, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); };
+  /* a square with only some corners rounded: each corner rounds when neither neighbour on that corner is the same ground */
+  function blob(g, X, Y, s, same, x, y, col) { const r = s * .42, tl = !same(x - 1, y) && !same(x, y - 1), tr = !same(x + 1, y) && !same(x, y - 1), br = !same(x + 1, y) && !same(x, y + 1), bl = !same(x - 1, y) && !same(x, y + 1);
+    g.fillStyle = col; g.beginPath(); g.moveTo(X + (tl ? r : 0), Y); g.lineTo(X + s - (tr ? r : 0), Y); if (tr) g.quadraticCurveTo(X + s, Y, X + s, Y + r); g.lineTo(X + s, Y + s - (br ? r : 0)); if (br) g.quadraticCurveTo(X + s, Y + s, X + s - r, Y + s);
+    g.lineTo(X + (bl ? r : 0), Y + s); if (bl) g.quadraticCurveTo(X, Y + s, X, Y + s - r); g.lineTo(X, Y + (tl ? r : 0)); if (tl) g.quadraticCurveTo(X, Y, X + r, Y); g.closePath(); g.fill(); }
+  function tree(g, X, Y, s, col, fire) {      /* a round tree, as on the big world: a shadow, a trunk, a crown of three, a shine */
+    g.fillStyle = 'rgba(0,0,0,.22)'; g.beginPath(); g.ellipse(X + s * .52, Y + s * .9, s * .36, s * .1, 0, 0, 7); g.fill();
+    g.fillStyle = '#6b4a22'; g.fillRect(X + s * .44, Y + s * .55, s * .12, s * .36); g.strokeStyle = INK; g.lineWidth = 1.5; g.strokeRect(X + s * .44, Y + s * .55, s * .12, s * .36);
+    const c2 = shade(col, .82); g.lineWidth = 1.6;
+    for (const [a, b, r, cc] of [[.33, .5, .25, c2], [.67, .5, .25, c2], [.5, .32, .3, col]]) { g.fillStyle = cc; g.beginPath(); g.arc(X + s * a, Y + s * b, s * r, 0, 7); g.fill(); g.stroke(); }
+    g.fillStyle = 'rgba(255,255,255,.22)'; g.beginPath(); g.ellipse(X + s * .42, Y + s * .24, s * .1, s * .06, -.5, 0, 7); g.fill(); }
+  function peak(g, X, Y, s, x, y) {      /* a mountain: a lit side, a shadow side, snow on top */
+    const h = .9 + rnd(x, y, 1) * .25, top = Y + s * (1 - h), mx = X + s * (.42 + rnd(x, y, 2) * .16);
+    g.fillStyle = '#a9a4c4'; g.beginPath(); g.moveTo(X - s * .06, Y + s); g.lineTo(mx, top); g.lineTo(mx + s * .02, Y + s); g.closePath(); g.fill();
+    g.fillStyle = '#7d7898'; g.beginPath(); g.moveTo(mx, top); g.lineTo(X + s * 1.06, Y + s); g.lineTo(mx + s * .02, Y + s); g.closePath(); g.fill();
+    g.strokeStyle = INK; g.lineWidth = 1.6; g.lineJoin = 'round'; g.beginPath(); g.moveTo(X - s * .06, Y + s); g.lineTo(mx, top); g.lineTo(X + s * 1.06, Y + s); g.stroke();
+    g.fillStyle = '#f4f7fb'; g.beginPath(); g.moveTo(mx - s * .14, top + s * .22); g.lineTo(mx, top); g.lineTo(mx + s * .16, top + s * .24); g.lineTo(mx + s * .05, top + s * .18); g.lineTo(mx - s * .04, top + s * .25); g.closePath(); g.fill(); g.stroke(); }
+  function render(ts, c) {
+    const dpr = Math.min(2, window.devicePixelRatio || 1), W = CW * ts, H = CH * ts, cv = cache.cv || (cache.cv = document.createElement('canvas'));
+    cv.width = Math.ceil(W * dpr); cv.height = Math.ceil(H * dpr); const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); const s = ts;
+    /* grass first, everywhere seen */
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { if (!cSeen(x, y)) continue; const X = x * s, Y = y * s;
+      g.fillStyle = rnd(x, y, 3) < .5 ? '#3a9a84' : '#379480'; g.fillRect(X, Y, s + 1, s + 1);
+      g.strokeStyle = 'rgba(20,70,58,.55)'; g.lineWidth = 1.3; g.beginPath(); for (let k = 0; k < 3; k++) { const gx = X + s * (.15 + rnd(x, y, 10 + k) * .7), gy = Y + s * (.25 + rnd(x, y, 20 + k) * .6); g.moveTo(gx, gy); g.lineTo(gx - s * .04, gy - s * .1); g.moveTo(gx, gy); g.lineTo(gx + s * .04, gy - s * .1); } g.stroke(); }
+    /* water, with a lighter edge where it meets land, and a dark bank on the land side */
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { if (!cSeen(x, y) || !isW(x, y)) continue; const X = x * s, Y = y * s;
+      g.fillStyle = '#2f6fd0'; g.fillRect(X, Y, s + 1, s + 1);
+      if (inMap(x, y - 1) && !isW(x, y - 1)) { const gr = g.createLinearGradient(0, Y, 0, Y + s * .35); gr.addColorStop(0, '#6aa6ea'); gr.addColorStop(1, 'rgba(106,166,234,0)'); g.fillStyle = gr; g.fillRect(X, Y, s + 1, s * .35); g.fillStyle = 'rgba(20,60,40,.45)'; g.fillRect(X, Y - s * .08, s + 1, s * .08); }
+      if (inMap(x, y + 1) && !isW(x, y + 1)) { g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(X, Y + s - s * .1, s + 1, s * .06); } }
+    /* the sand path: rounded where it turns or ends, with a few pebbles */
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { if (!cSeen(x, y) || cTile(x, y) !== ':') continue; const X = x * s, Y = y * s;
+      blob(g, X, Y, s + .5, isP, x, y, '#e2cf9a'); g.fillStyle = '#cdb97f'; for (let k = 0; k < 2; k++) { g.beginPath(); g.ellipse(X + s * (.25 + rnd(x, y, 30 + k) * .5), Y + s * (.3 + rnd(x, y, 40 + k) * .45), s * .07, s * .045, 0, 0, 7); g.fill(); } }
+    /* the bridge: planks over the water, rails on each side */
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { if (!cSeen(x, y) || cTile(x, y) !== '=') continue; const X = x * s, Y = y * s;
+      g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(X + s * .14, Y + s * .1, s * .8, s + 2); g.fillStyle = '#a8713f'; rrg(g, X + s * .1, Y - s * .06, s * .8, s * 1.12, 3); g.fill(); g.strokeStyle = INK; g.lineWidth = 1.6; g.stroke();
+      g.strokeStyle = '#6b4424'; g.lineWidth = 1.5; for (let k = 1; k < 4; k++) { g.beginPath(); g.moveTo(X + s * .12, Y + s * k / 4); g.lineTo(X + s * .88, Y + s * k / 4); g.stroke(); }
+      g.fillStyle = '#7a4f28'; g.fillRect(X + s * .06, Y - s * .1, s * .08, s * 1.2); g.fillRect(X + s * .86, Y - s * .1, s * .08, s * 1.2); }
+    /* mountains and trees, top row first, so a lower one stands in front */
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { if (!cSeen(x, y)) continue; const t = cTile(x, y), X = x * s, Y = y * s;
+      if (t === '^') peak(g, X, Y, s, x, y);
+      else if (t === 'T') tree(g, X, Y, s, (x * 7 + y * 3) % 3 ? '#1f6f5f' : '#2a5f8a');
+      else if (t === 'F') tree(g, X, Y, s, '#3fb07a', true); }
+    cache.key = ts + '|' + c.seen + '|' + dpr; }
+  /* each frame: the still ground, then the river's ripples, the fire-trees' fruit, the sundial stones */
+  function ground(X, Y, ts, c) {
+    const key = ts + '|' + c.seen + '|' + Math.min(2, window.devicePixelRatio || 1); if (key !== cache.key) render(ts, c);
+    cx.drawImage(cache.cv, X(0), Y(0), CW * ts, CH * ts);
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { if (!cSeen(x, y)) continue; const t = cTile(x, y), px = X(x), py = Y(y);
+      if (t === '~') { const sp = x < CW / 2 ? 2.2 : .35; cx.strokeStyle = 'rgba(255,255,255,.55)'; cx.lineWidth = 2; cx.lineCap = 'round'; for (let k = 0; k < 2; k++) { const o = ((tNow * sp + k * .5 + y * .3) % 1) * ts; cx.beginPath(); cx.moveTo(px + o, py + ts * (.3 + k * .4)); cx.lineTo(px + Math.min(ts, o + ts * .3), py + ts * (.3 + k * .4)); cx.stroke(); } cx.lineCap = 'butt'; }
+      else if (t === 'F') { const gl = .5 + .5 * Math.sin(tNow * 2); cx.fillStyle = `rgb(255,${Math.round(140 + gl * 80)},60)`; for (const [a, b] of [[.34, .3], [.64, .36], [.5, .52]]) { circ(px + ts * a, py + ts * b, ts * .08); cx.fill(); ol(1); } }
+      else if (t === 'X') { const got = c.finds.indexOf('sundial') >= 0; cx.fillStyle = '#b9b2d6'; for (let k = 0; k < 6; k++) { circ(px + ts * (.5 + .32 * Math.cos(k * 1.047)), py + ts * (.5 + .32 * Math.sin(k * 1.047)), ts * .08); cx.fill(); ol(1); }
+        if (got) { cx.fillStyle = '#ffd25e'; circ(px + ts * .5, py + ts * .5, ts * .18); cx.fill(); ol(1.5); cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(px + ts * .5, py + ts * .5); cx.lineTo(px + ts * .62, py + ts * .36); cx.stroke(); } } } }
+  return { get on() { return typeof SLK === 'undefined' || SLK.on; }, ground, test: { cacheKey: () => cache.key } };
+})();
+/*CHRONO-LOOK-END*/
+
 function drawCMap(dt) { const c = C(), g = cGeo(), ts = g.ts, w = vw, h = vh; if (c.seen.length !== CW * CH) cSee(); wispTick(dt);
   if (CM.route.length) { const [tx, ty] = CM.route[0], dx = tx - CM.px, dy = ty - CM.py, d = Math.hypot(dx, dy), st = 5.2 * dt; CM.step += dt; CM.idle = 0; if (Math.abs(dx) > Math.abs(dy)) CM.dir = dx > 0 ? 'right' : 'left'; else if (dy) CM.dir = dy > 0 ? 'down' : 'up';
     if (d <= st) { CM.px = tx; CM.py = ty; c.x = tx; c.y = ty; CM.route.shift(); cSee(); const hit = WISPON.on && !widget && CM.chase && CWISP.indexOf(CM.chase) >= 0 && Math.abs(CM.chase.x - tx) + Math.abs(CM.chase.y - ty) <= 1 ? CM.chase : null; if (hit) { CM.route = []; CM.then = null; drawWords(); startWisp(hit); } else if (!CM.route.length) { drawWords(); cArrive(); } } else { CM.px += dx / d * st; CM.py += dy / d * st; } } else CM.idle += dt;
   cx.fillStyle = '#10142c'; cx.fillRect(0, 0, w, h); const X = x => g.ox + x * ts, Y = y => g.oy + y * ts;
   if (g.oy > 6) { ['#5b3fa8', '#8f4fc0', '#d95fa8', '#ff8f6b', '#ffc65e', '#7fe0c8'].forEach((b, i) => { cx.fillStyle = b; cx.fillRect(0, g.oy * i / 6, w, g.oy / 6 + 1); }); if (cCrack()) { const zig = [[.55, 0], [.58, .45], [.61, .25], [.65, .7], [.68, .45], [.72, 1]]; for (const [lw, col] of [[6, 'rgba(255,255,255,.3)'], [2, '#fff']]) { cx.strokeStyle = col; cx.lineWidth = lw; cx.beginPath(); zig.forEach(([a, b], i) => i ? cx.lineTo(w * a, g.oy * b) : cx.moveTo(w * a, g.oy * b)); cx.stroke(); } } cx.fillStyle = '#1f5a50'; cx.fillRect(0, g.oy + ts * CH, w, h); }
+  if (CHLK.on) CHLK.ground(X, Y, ts, c); else {
   for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { if (!cSeen(x, y)) continue; const t = cTile(x, y), px = X(x), py = Y(y);
     cx.fillStyle = t === '~' ? '#2f6fd0' : (x + y) % 2 ? '#3a9a84' : '#35917c'; cx.fillRect(px, py, ts + 1, ts + 1);
     if (t === ':') { cx.fillStyle = '#e2cf9a'; cx.fillRect(px, py, ts + 1, ts + 1); cx.fillStyle = '#cdb97f'; cx.fillRect(px + ts * (.2 + ((x * 5 + y * 3) % 4) * .12), py + ts * (.3 + ((x + y * 7) % 3) * .2), ts * .14, ts * .09); }
@@ -5104,7 +5176,7 @@ function drawCMap(dt) { const c = C(), g = cGeo(), ts = g.ts, w = vw, h = vh; if
     else if (t === '=') { cx.fillStyle = '#2f6fd0'; cx.fillRect(px, py, ts + 1, ts + 1); cx.fillStyle = '#a8713f'; cx.fillRect(px + ts * .1, py - 1, ts * .8, ts + 2); cx.strokeStyle = '#6b4424'; cx.lineWidth = 2; for (let k = 1; k < 4; k++) { cx.beginPath(); cx.moveTo(px + ts * .1, py + ts * k / 4); cx.lineTo(px + ts * .9, py + ts * k / 4); cx.stroke(); } }
     else if (t === '^') { cx.fillStyle = '#8f8aa8'; cx.beginPath(); cx.moveTo(px + ts * .05, py + ts * .95); cx.lineTo(px + ts * .4, py + ts * .1); cx.lineTo(px + ts * .62, py + ts * .5); cx.lineTo(px + ts * .78, py + ts * .28); cx.lineTo(px + ts * .97, py + ts * .95); cx.closePath(); cx.fill(); ol(1.5); cx.fillStyle = '#f4f7fb'; cx.beginPath(); cx.moveTo(px + ts * .31, py + ts * .32); cx.lineTo(px + ts * .4, py + ts * .1); cx.lineTo(px + ts * .5, py + ts * .3); cx.closePath(); cx.fill(); }
     else if (t === 'T' || t === 'F') { cx.fillStyle = '#6b4a22'; cx.fillRect(px + ts * .43, py + ts * .55, ts * .14, ts * .4); cx.fillStyle = t === 'F' ? '#3fb07a' : (x * 7 + y * 3) % 3 ? '#1f6f5f' : '#2a5f8a'; circ(px + ts * .5, py + ts * .42, ts * .4); cx.fill(); ol(1.5); if (t === 'F') { const gl = .5 + .5 * Math.sin(tNow * 2); cx.fillStyle = `rgb(255,${Math.round(140 + gl * 80)},60)`; for (const [a, b] of [[.34, .32], [.62, .36], [.5, .56]]) { circ(px + ts * a, py + ts * b, ts * .09); cx.fill(); ol(1); } } }
-    else if (t === 'X') { const got = c.finds.indexOf('sundial') >= 0; cx.fillStyle = '#b9b2d6'; for (let k = 0; k < 6; k++) { circ(px + ts * (.5 + .32 * Math.cos(k * 1.047)), py + ts * (.5 + .32 * Math.sin(k * 1.047)), ts * .08); cx.fill(); ol(1); } if (got) { cx.fillStyle = '#ffd25e'; circ(px + ts * .5, py + ts * .5, ts * .18); cx.fill(); ol(1.5); cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(px + ts * .5, py + ts * .5); cx.lineTo(px + ts * .62, py + ts * .36); cx.stroke(); } } }
+    else if (t === 'X') { const got = c.finds.indexOf('sundial') >= 0; cx.fillStyle = '#b9b2d6'; for (let k = 0; k < 6; k++) { circ(px + ts * (.5 + .32 * Math.cos(k * 1.047)), py + ts * (.5 + .32 * Math.sin(k * 1.047)), ts * .08); cx.fill(); ol(1); } if (got) { cx.fillStyle = '#ffd25e'; circ(px + ts * .5, py + ts * .5, ts * .18); cx.fill(); ol(1.5); cx.strokeStyle = INK; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(px + ts * .5, py + ts * .5); cx.lineTo(px + ts * .62, py + ts * .36); cx.stroke(); } } } }
   fDraw('chrono', X, Y, ts);
   if ((c.fk || {}).guard && cSeen(17, 7)) cCougar(X(17) + ts / 2, Y(7) + ts * .62, ts * .42, true);
   { const tx = 12.5 + Math.sin(tNow * .25) * 1.6, ty = 4; if (cSeen(Math.round(tx), ty)) cTortoise(X(tx) + ts / 2, Y(ty) + ts * .55, ts * .32, Math.cos(tNow * .25) > 0 ? -1 : 1); }
@@ -6549,10 +6621,10 @@ function sGlassBig(w, h) { cx.fillStyle = shade(SRM.engine.col, .55); cx.fillRec
   - Fog as before: a room not seen yet stays dark. The room you are in is a little brighter than the others.
   - NOTHING here may give an answer away or mark a room as hot or cold (any room can be the wrong one; "It is not always the Engine Room"): no steam, no frost,
     no glow by temperature, no readings, no countable beds, pots, lamps or bars. The floors are the same at every seed.
-  - "Ship look: old" in the Teacher row shows the game's own drawing.
+  - "World look: old" in the Teacher row shows the game's own drawing (here and on Chronosia's map).
   Drawn once into a picture of the whole ship (redrawn only when a room is seen, the room you are in changes, or the size changes); doors and stars move on top. */
 const SLK = (() => {
-  let on = true; try { on = localStorage.getItem('gmq-stardust-look') !== 'old'; } catch (e) {}
+  let on = true; try { on = localStorage.getItem('gmq-worlds-look') !== 'old'; } catch (e) {}
   const MAT = { control: 'panel', living: 'carpet', green: 'grate', food: 'lines', engine: 'diamond', lock: 'lock', hall: 'hall' };
   const lift = (hex, f) => shade(hex, f);
   const rrg = (g, x, y, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); };      /* older iPads have no roundRect */
@@ -6641,8 +6713,8 @@ const SLK = (() => {
     for (let x = Math.max(1, x0); x <= Math.min(SW - 2, x1); x++) { if (x % 2 || !sSeen(x, 8)) continue;      /* guide lights down the middle of the corridor, a soft pulse running along them */
       cx.fillStyle = `rgba(111,208,255,${.35 + .3 * Math.max(0, Math.sin(tNow * 3 - x * .5))})`; circ(Xs(x) + ts / 2, Ys(9), Math.max(2, ts * .06)); cx.fill(); }
   }
-  function toggle() { on = !on; try { localStorage.setItem('gmq-stardust-look', on ? 'new' : 'old'); } catch (e) {} cache.key = ''; label(); }
-  function label() { const b = document.getElementById('t_slk'); if (b) b.textContent = 'Ship look: ' + (on ? 'new' : 'old'); }
+  function toggle() { on = !on; try { localStorage.setItem('gmq-worlds-look', on ? 'new' : 'old'); } catch (e) {} cache.key = ''; label(); }
+  function label() { const b = document.getElementById('t_slk'); if (b) b.textContent = 'World look: ' + (on ? 'new' : 'old'); }
   const b = document.getElementById('t_slk'); if (b) { b.onclick = toggle; label(); }
   return { get on() { return on; }, ship, toggle, test: { isWin, cacheKey: () => cache.key } };
 })();

@@ -10,10 +10,10 @@
   - Fog as before: a room not seen yet stays dark. The room you are in is a little brighter than the others.
   - NOTHING here may give an answer away or mark a room as hot or cold (any room can be the wrong one; "It is not always the Engine Room"): no steam, no frost,
     no glow by temperature, no readings, no countable beds, pots, lamps or bars. The floors are the same at every seed.
-  - "Ship look: old" in the Teacher row shows the game's own drawing.
+  - "World look: old" in the Teacher row shows the game's own drawing (here and on Chronosia's map).
   Drawn once into a picture of the whole ship (redrawn only when a room is seen, the room you are in changes, or the size changes); doors and stars move on top. */
 const SLK = (() => {
-  let on = true; try { on = localStorage.getItem('gmq-stardust-look') !== 'old'; } catch (e) {}
+  let on = true; try { on = localStorage.getItem('gmq-worlds-look') !== 'old'; } catch (e) {}
   const MAT = { control: 'panel', living: 'carpet', green: 'grate', food: 'lines', engine: 'diamond', lock: 'lock', hall: 'hall' };
   const lift = (hex, f) => shade(hex, f);
   const rrg = (g, x, y, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); };      /* older iPads have no roundRect */
@@ -102,8 +102,8 @@ const SLK = (() => {
     for (let x = Math.max(1, x0); x <= Math.min(SW - 2, x1); x++) { if (x % 2 || !sSeen(x, 8)) continue;      /* guide lights down the middle of the corridor, a soft pulse running along them */
       cx.fillStyle = `rgba(111,208,255,${.35 + .3 * Math.max(0, Math.sin(tNow * 3 - x * .5))})`; circ(Xs(x) + ts / 2, Ys(9), Math.max(2, ts * .06)); cx.fill(); }
   }
-  function toggle() { on = !on; try { localStorage.setItem('gmq-stardust-look', on ? 'new' : 'old'); } catch (e) {} cache.key = ''; label(); }
-  function label() { const b = document.getElementById('t_slk'); if (b) b.textContent = 'Ship look: ' + (on ? 'new' : 'old'); }
+  function toggle() { on = !on; try { localStorage.setItem('gmq-worlds-look', on ? 'new' : 'old'); } catch (e) {} cache.key = ''; label(); }
+  function label() { const b = document.getElementById('t_slk'); if (b) b.textContent = 'World look: ' + (on ? 'new' : 'old'); }
   const b = document.getElementById('t_slk'); if (b) { b.onclick = toggle; label(); }
   return { get on() { return on; }, ship, toggle, test: { isWin, cacheKey: () => cache.key } };
 })();
