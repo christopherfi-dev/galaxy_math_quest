@@ -75,3 +75,7 @@ A second reviewer saw only the rules, the card list and the pictures. It found 1
   - defence: "it keeps your ship safe from an attack". A block card stops part of an attack (Dust Screen stops 8). Suggest: "In a battle, it blocks some of an attack, or makes your Main Shield stronger."
   - dodge: "the other ship's attack misses you". Marc's rulings: the dodging ship still fires, and a rare or epic attack card can still hit through the two cheaper dodge cards. Suggest: "In a battle, the other ship's attack misses you, and you still fire."
 - **"Count the other cards in your hand"** (the cards thread's note): the cards now say "Block 4 for each other card in your hand", which is a battle word, but the card says what it does. No change.
+
+## Added later: a challenge's result can be checked
+
+The server thread's known gap: the server cannot tell who won, so a child could claim a win. The page now sends a record of the battle (its start and the child's choices), and `GMQBattle.replay` plays it again exactly. 1,500 battles replayed the same. The server or the teacher's Desk can use it (wiring note, section 10). For the server thread.

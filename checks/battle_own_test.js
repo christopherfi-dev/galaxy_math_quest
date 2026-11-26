@@ -79,6 +79,9 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     await fr.locator('#playit').tap();
     await page.waitForFunction(() => { const f = document.querySelector('#gmqbattle iframe'); const U = f && f.contentWindow.GMQB && f.contentWindow.GMQB.U; return U && (U.phase === 'roundend' || U.req || U.phase === 'over'); }, null, { timeout: 60000 });
     // if a hit must be placed, let the page's own computer chooser place it, as the tests of the practice battle do
+    const rep = await inner(() => { const U = GMQB.U, S = U.S; if (U.phase !== 'roundend' || !S.start) return 'not at the end of a round'; const Q = GMQB.B.replay(JSON.parse(JSON.stringify(S.start)), JSON.parse(JSON.stringify(S.rec)));
+      return Q.round === S.round && JSON.stringify(Q.P.map(p => p.parts.map(x => x.hp).concat([p.shield]))) === JSON.stringify(S.P.map(p => p.parts.map(x => x.hp).concat([p.shield]))) && S.rec.length === S.log.length ? 'same' : 'different'; });
+    if (rep !== 'not at the end of a round') want(name + ': a round played on the screen, played again from its record, ends the same', rep === 'same', rep);
     const round1 = await inner(() => GMQB.U.S.round);
     await fr.locator('#bnew').click();   // Leave (the confirm is accepted)
     await closed();
@@ -148,7 +151,7 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     await fr.locator('#goback').waitFor({ timeout: 20000 });
     want(name + ': after a classmate\'s battle there is no "Battle again" (a new one starts on the server)', await fr.locator('#again').count() === 0);
     await fr.locator('#goback').click(); await closed();
-    want(name + ': the game gets the result from the child\'s side and a log for the teacher', /battle_end, lost, with a log of [1-9]\d* letters/.test(await page.locator('#said').textContent()), await page.locator('#said').textContent());
+    want(name + ': the game gets the result from the child\'s side and a log for the teacher', /battle_end, lost, with a log of [1-9]\d* letters and a record of \d+ rounds?/.test(await page.locator('#said').textContent()), await page.locator('#said').textContent());
     await page.locator('#vs button[data-v="oldcard"]').click(); await page.locator('#open').click(); await fr.locator('#ownsetup.open').waitFor();
     want(name + ': a card at stake that is not in the catalogue (an old card) shows its name and kind', /Void Vortex/.test(await fr.locator('#ostakes .plain').textContent()) && /rare card/.test(await fr.locator('#ostakes .plain').textContent()));
     await fr.locator('#oback').click(); await closed();
