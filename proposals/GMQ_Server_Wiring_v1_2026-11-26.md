@@ -9,6 +9,17 @@ Everything is **[Proposal]**. The server is `engines/gmq-world/server/` (README 
 
 ## 1. For the main thread: small changes in the NET block (about 30 lines)
 
+**Ready as tested code (26 November, night):** `engines/gmq-world/wiring/net_v03.js` holds all of section 1 as 10 exact changes, each with its reason. To make them: `node engines/gmq-world/wiring/apply.js prototypes/kis_station_sketch.html`. It refuses, and changes nothing, if the game has moved on and an old text no longer fits. `checks/server_wiring_test.js` makes them in a copy of the game and plays it against the server on an iPad and a phone:
+- "Your game is open on another iPad." with "Bring it here"
+- a reload takes a newer game, and asks at once if another device holds it
+- nothing can be typed or tapped behind that box (today the game would answer "Finish this first. Or tap Leave.", and there is no Leave)
+- the teacher's clear and bring-back reach the open device, with "Your Commander changed your game."
+- a card that leaves or arrives in a challenge, and the news said once
+
+When the cards thread's `GMQCards.record` replaces `card()`, change 7 no longer fits: give the new card its mark (`u: netMark()`) there instead.
+
+The same section, in words:
+
 All in the game's `NET` code (`netAdopt`, `netPush`, `netLogin`, `card`). Avoid `?.` and `??`.
 
 ### 1a. Send what the page knows, with every save
@@ -77,6 +88,13 @@ Never write the refused game over the server's. The server keeps it as an older 
 ---
 
 ## 3. For the battle thread: a battle against a classmate's saved deck
+
+**Done by the battle thread on 26 November** (`proposals/GMQ_Card_Battle_Wiring_v1_2026-11-26.md`, section 8): `GMQBattleOwn.open(host, { ..., rival }, done)` takes the server's `battle_start` answer, shows both cards at stake with "I agree" and "Back out", calls `host.accept`, and ends with `done({ why, result, log })`. The server's test page (`engines/gmq-world/server/cards-test.html`) uses it, and `checks/server_cards_page_test.js` plays it with the server. Two things added on the server's side since:
+- `rivals` now also answers `mine`: the cadet's own battle still open, in the same shape as `battle_start`, so a page closed and opened again can go back to it (the piece goes on from the same `battle` id).
+- `battle_end` keeps a `log` in words (the piece's), up to 20,000 letters; the teacher reads it on the Desk.
+- Still asked of the battle thread: the words "The winner gets both cards" are right only for the rule `swap`. The server's `battle_start` answers `rule` (`'swap'` or `'away-safe'`); the test page passes it as `rival.rule`. Under `away-safe` the words could be: "If you win, you get a copy of their card, and they keep theirs. If their deck wins, your card goes to them."
+
+The calls, as first written:
 
 The battle itself is yours, and its rules are Marc's. The server keeps decks, picks the cards at stake, moves cards, and tells the classmate who was away.
 

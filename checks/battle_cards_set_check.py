@@ -141,7 +141,9 @@ want('no card says "Add +"', [c['id'] for c in cards + ideas if 'Add +' in c['te
 want('every repair of parts says working, lost or damaged', [c['id'] for c in cards if any(o['op'] in ('repair_one', 'repair_share', 'repair_all', 'repair_full', 'move_hp', 'round_up10', 'revive', 'revive_all') for o in c['ops']) and not re.search(r'working|lost|damaged', c['text'])], [])
 # Marc, 22 November: a shield card puts a broken Main Shield back up. Every such card says so.
 want('every card that adds to the Main Shield says a broken shield comes back', [c['id'] for c in cards if any(o['op'] in ('shield_add', 'shield_per_card', 'shield_rebuild') for o in c['ops']) and 'A broken shield comes back' not in c['text']], [])
-want('every block card says it can bring back a broken shield', [c['id'] for c in cards if any(o['op'] in ('block', 'block_per_card') for o in c['ops']) and 'bring back a broken shield' not in c['text']], [])
+want('every block card says a broken shield comes back, and how strong', [c['id'] for c in cards if any(o['op'] in ('block', 'block_per_card') for o in c['ops']) and not re.search(r'A broken shield comes back with (\d+|that many) HP', c['text'])], [])
+want('no card offers a choice it does not have ("Or bring back")', [c['id'] for c in cards if re.search(r'\bor bring back\b', c['text'], re.I)], [])
+want('a dodge card says what can still hit it', [c['id'] for c in cards if c.get('sym') == 'dodge' and c['rarity'] != 'epic' and 'can still hit' not in c['text']], [])
 want('a dodge card, and only a dodge card, carries the dodge picture', [c['id'] for c in cards if (c.get('sym') == 'dodge') != any(o['op'] in ('block_dodge', 'block_all') for o in c['ops'])], [])
 want('the three dodge cards are one of each kind', sorted(c['rarity'] for c in cards if c.get('sym') == 'dodge'), ['common', 'epic', 'rare'])
 want('every dodge card says you still fire', [c['id'] for c in cards if c.get('sym') == 'dodge' and 'You still fire' not in c['text']], [])

@@ -124,11 +124,13 @@ This uses a test page, `cards-test.html`, made for trying cards between classmat
    - then press **Save these settings**
 2. On the iPad, open `.../gmq-test/cards-test.html`. Log in as **Nova**. Type a ship name. Press **Take a starter pack**: 15 cards. Tick **Classmates may battle my deck**.
 3. On the phone, do the same as **Orbit**.
-4. On the iPad, under "Battle a classmate's deck", press **Challenge** beside Orbit's ship. Both cards at stake show. Press **Back out** once (nothing moves), then **Challenge** and **Agree and battle**.
-5. Play the battle. At the end, the card moves. On the phone, reload the page: Orbit is told what happened.
-6. On the Desk, press Refresh: the Battles list shows it.
+4. On the iPad, under "Battle a classmate's deck", press **Challenge** beside Orbit's ship. The battle opens over the whole screen, on both cards at stake. Press **Back out** once (nothing moves). Then press **Challenge** again, and **I agree: start the battle**.
+5. Play the battle. The computer flies Orbit's own deck. At the end, the card moves.
+6. On the phone, reload the page: Orbit is told what happened.
+7. On the Desk, press Refresh: the Battles list shows it.
+8. Also try: leave a battle in the middle, close the page, open it again. It offers to go back to the same battle.
 
-**Known for now:** the computer plays a deck like Nova's, not Orbit's real deck. The battle thread has been asked to add that (a few lines on their side). The cards at stake are real.
+**Known for now:** the battle's words always say "The winner gets both cards", even when the Desk is set to "away cadet keeps card". The server follows the Desk. The battle thread is asked to change the words.
 
 When you have tried it, set the test page to **off**.
 

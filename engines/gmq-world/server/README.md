@@ -29,7 +29,7 @@ A small PHP server, built like your Math Skills engine: one API, flat JSON files
 | `api/gmq-world-cards.php` | the card board and battles. The server loads it; it is never opened by itself. |
 | `api/gmq-world-cardlist.php` | reads the card list, and makes the starter pack by the battle thread's rule (the same pack as `GMQBattleOwn.starter`, seed for seed) |
 | `api/cards.json` | (in the zip only) a copy of the battle thread's `docs/battle/cards.json`. With it, the server, not the page, says which cards are rare or epic. |
-| `cards-test.html`, `battle-piece.js` | (the page here; the piece in the zip only) a test page where pretend cadets try the card board and challenge battles, with the battle thread's `GMQBattleOwn`. Off until the teacher turns it on. |
+| `cards-test.html`, `battle-piece.js` | (the page here; the piece in the zip only) a test page where pretend cadets try the card board and battles against each other's saved decks, with the battle thread's `GMQBattleOwn` (it shows the cards at stake, and the computer flies the classmate's own deck). Off until the teacher turns it on. |
 | `api/config.sample.php` | settings. Copy it to `api/config.php` **on the server** and fill it in there. |
 | `tools/set-teacher-password.php` | sets the teacher password from the command line, if you prefer that to the setup word |
 | `../constraints/gmq-world.txt` | the constraint file the AI runs inside. In the zip it is in `api/constraints/`. |

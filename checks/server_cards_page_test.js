@@ -2,8 +2,8 @@
 // and its battle piece (GMQBattleOwn), as the test-folder zip carries them. On this machine only. Two made-up cadets on two devices.
 //   - off until the teacher turns it on; then each cadet takes a starter pack once, and opens their deck
 //   - the class card board: a card the cadet has not found shows only an empty shape and a count, never its name
-//   - a challenge: both cards at stake shown before agreeing; backing out moves nothing
-//   - agreeing opens the battle over the whole screen (the picture shows the task)
+//   - a challenge: the battle piece opens over the whole screen on both cards at stake; backing out there moves nothing;
+//     agreeing tells the server; a battle left in the middle can be gone back to after the page is closed and opened again
 //   - the battle's end is sent as the battle piece sends it (the battle's own play is the battle thread's test: battle_own_test.js);
 //     the card at stake moves on the server, and the classmate who was away is told
 //   - pictures at iPad sideways, iPad upright and phone; nothing wider than the screen
@@ -45,31 +45,44 @@ let tc = ''; const T = async body => { const r = await fetch(URL + '/api/gmq-wor
     ok(!hidden.length, 'the board never shows the name of a card Nova has not found', hidden);
     ok((await A.locator('#board .card.empty').count()) > 0, 'cards Nova has not found show as empty shapes with a count');
     ok(/Blue Fox/.test(await A.textContent('#rivals')), "Orbit's deck is on Nova's list, by ship name", await A.textContent('#rivals'));
-    ok(/not your classmate's real deck/.test(await A.textContent('#foenote')), 'the page says plainly that the computer does not yet play the real deck');
+    ok(/flies your classmate's own deck/.test(await A.textContent('#foenote')), 'the page says the computer flies the classmate\'s own deck');
     await A.screenshot({ path: path.join(SHOTS, 'server_cards_page_ipad.png'), fullPage: true });
-    // a challenge, backed out
-    await A.click('#rivals button[data-k="challenge"]'); await A.waitForTimeout(700);
-    ok(await A.isVisible('#offer') && (await A.locator('#offer .card.stake').count()) === 2, 'both cards at stake are shown before agreeing');
-    ok(/The winner gets both cards/.test(await A.textContent('#rule')), 'the rule is said in plain words');
-    await A.screenshot({ path: path.join(SHOTS, 'server_cards_page_offer_ipad.png') });
-    const before = (await T({ action: 't_class', class: CODE })).cadets.map(c => c.summary.cards).join();
-    await A.click('#backout'); await A.waitForTimeout(600); ok(!(await A.isVisible('#offer')) && (await T({ action: 't_class', class: CODE })).cadets.map(c => c.summary.cards).join() === before, 'backing out moves nothing');
-    // a challenge, agreed and won
-    await A.click('#rivals button[data-k="challenge"]'); await A.waitForTimeout(700); const theirStake = (await A.textContent('#theirstake')).trim();
-    await A.click('#agree'); await A.waitForTimeout(1500);
+    const fr = A.frameLocator('#gmqbattle iframe'), counts = async () => (await T({ action: 't_class', class: CODE })).cadets.map(c => c.name + ':' + c.summary.cards).join();
+    const tell = async m => { const f = A.frames().find(x => x !== A.mainFrame()); await f.evaluate(m => parent.postMessage(Object.assign({ gmqBattle: 'close' }, m), '*'), m); await A.waitForTimeout(1200); };
+    // a challenge, backed out inside the battle's own first screen
+    const before = await counts();
+    await A.click('#rivals button[data-k="challenge"]'); await A.waitForTimeout(2000);
+    ok(await fr.locator('#ostake').isVisible() && (await fr.locator('#ostakes .st svg').count()) === 2, 'the battle opens on both cards at stake, before agreeing');
     const box = await A.evaluate(() => { const e = document.getElementById('gmqbattle'); if (!e) return null; const r = e.getBoundingClientRect(); return { w: r.width, h: r.height, W: innerWidth, H: innerHeight }; });
-    ok(box && box.w >= box.W - 1 && box.h >= box.H - 1, 'agreeing opens the battle over the whole screen', box);
+    ok(box && box.w >= box.W - 1 && box.h >= box.H - 1, 'the battle fills the whole screen', box);
+    await A.screenshot({ path: path.join(SHOTS, 'server_cards_page_offer_ipad.png') });
+    await fr.locator('#oback').click(); await A.waitForTimeout(1200);
+    ok(!(await A.evaluate(() => !!document.getElementById('gmqbattle'))) && (await counts()) === before, 'backing out closes the battle and moves nothing');
+    ok(!((await T({ action: 't_battles', class: CODE })).open.length), 'and the server has no battle open');
+    // a challenge, agreed and won
+    await A.click('#rivals button[data-k="challenge"]'); await A.waitForTimeout(2000); const theirStake = (await fr.locator('#ostakes').textContent());
+    await fr.locator('#ogo').click(); await A.waitForTimeout(1500);
+    const op = (await T({ action: 't_battles', class: CODE })).open; ok(op.length === 1 && op[0].status === 'on', 'agreeing tells the server (battle_accept)', op);
     await A.screenshot({ path: path.join(SHOTS, 'server_cards_page_battle_ipad.png') });
-    const frame = A.frames().find(f => f !== A.mainFrame()); ok(!!frame, 'the battle runs in its own frame');
-    if (frame) await frame.evaluate(() => { parent.postMessage({ gmqBattle: 'over', winner: 0, rounds: 7 }, '*'); parent.postMessage({ gmqBattle: 'close', winner: 0, rounds: 7 }, '*'); });
-    await A.waitForTimeout(1200);
+    await tell({ why: 'finished', winner: 0, result: 'won', rounds: 7, log: 'Round 1: Red Kite played Spark Shot. Round 7: the last part of the enemy ship fell.' });
     ok(await A.isVisible('#resultbox') && /You won/.test(await A.textContent('#resulthead')), 'the result is shown', await A.textContent('#resultbox'));
-    ok((await A.textContent('#result')).includes(theirStake.replace(/^(rare|epic)/i, '').trim().split('\n')[0].trim().slice(0, 8)), 'the card shown as won is the one Orbit put up', [await A.textContent('#result'), theirStake]);
+    const wonName = (await A.locator('#result .card b').textContent()).trim(); ok(wonName && theirStake.includes(wonName), 'the card won is the one Orbit put up', [wonName, theirStake]);
     await A.screenshot({ path: path.join(SHOTS, 'server_cards_page_result_ipad.png') });
-    const counts = (await T({ action: 't_class', class: CODE })).cadets.reduce((o, c) => { o[c.name] = c.summary.cards; return o; }, {});
-    ok(counts.Nova === 16 && counts.Orbit === 14, 'the card moved on the server: Nova 16, Orbit 14', counts);
+    const c2 = (await T({ action: 't_class', class: CODE })).cadets.reduce((o, c) => { o[c.name] = c.summary.cards; return o; }, {});
+    ok(c2.Nova === 16 && c2.Orbit === 14, 'the card moved on the server: Nova 16, Orbit 14', c2);
+    const tb = await T({ action: 't_battles', class: CODE }); ok(tb.done.some(d => d.status === 'done' && /last part of the enemy ship fell/.test(d.log || '')), 'the teacher can read what happened in the battle', tb.done.map(d => d.log));
+    // a friendly battle, left in the middle; the page closed and opened again; back to the same battle
+    await A.click('#resultok'); await A.waitForTimeout(1000);
+    await A.click('#rivals button[data-k="friendly"]'); await A.waitForTimeout(2000); ok(await A.evaluate(() => !!document.getElementById('gmqbattle')), 'a friendly battle opens');
+    await tell({ why: 'left', winner: null, saved: true });
+    ok(/left the battle in the middle/.test(await A.textContent('#battlemsg')), 'leaving in the middle is said plainly', await A.textContent('#battlemsg'));
+    await A.reload(); await A.waitForTimeout(1500);
+    ok(await A.isVisible('#resume') && /Blue Fox/.test(await A.textContent('#resume')), 'after the page is closed and opened again, it offers to go back to the battle', await A.textContent('#resume'));
+    await A.click('#resumego'); await A.waitForTimeout(2000); ok(await A.evaluate(() => !!document.getElementById('gmqbattle')), 'going back opens the battle again');
+    await tell({ why: 'finished', winner: -1, result: 'tie', rounds: 9, log: 'A tie.' });
+    ok(/A tie/.test(await A.textContent('#resulthead')) && /No card moved/.test(await A.textContent('#result')), 'a tie moves no card');
     // Orbit is told
-    await B.reload(); await B.waitForTimeout(1200); ok(await B.isVisible('#newsbox') && /Red Kite challenged your deck and won/.test(await B.textContent('#news')), 'the classmate who was away is told', await B.textContent('#news'));
+    await B.reload(); await B.waitForTimeout(1200); ok(await B.isVisible('#newsbox') && /Red Kite challenged your deck and won/.test(await B.textContent('#news')) && /friendly battle with your deck. It was a tie/.test(await B.textContent('#news')), 'the classmate who was away is told of both battles', await B.textContent('#news'));
     await B.screenshot({ path: path.join(SHOTS, 'server_cards_page_news_phone.png'), fullPage: true });
     await B.click('#newsok'); await B.waitForTimeout(500); await B.reload(); await B.waitForTimeout(1000); ok(!(await B.isVisible('#newsbox')), 'news, once seen, is gone');
     // three screen sizes

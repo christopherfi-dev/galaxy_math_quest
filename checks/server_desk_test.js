@@ -56,12 +56,13 @@ const api = URL => { let cookie = ''; return async body => { const r = await fet
       const cards = Array.from({ length: 6 + i }, (_, j) => ({ r: j < 4 ? 'common' : j < 6 + i - 1 ? 'rare' : 'gold', n: 'Test card ' + (j + 1), u: 'u' + i + 'x' + j + 'abcd' }));
       k.rev = (await k.c({ action: 'save', state: { mode: 'station', done: { a: 1, b: 1, c: 1, d: i }, parts: ['Shield'], cards, secrets: [] }, caps: ['rev', 'cards'] })).rev; await k.c({ action: 'deck', open: true }); }
     const riv = await kids[0].c({ action: 'rivals' }); const st = await kids[0].c({ action: 'battle_start', rival: riv.rivals[0].rival, kind: 'challenge' });
-    await kids[0].c({ action: 'battle_accept', battle: st.battle }); const end = await kids[0].c({ action: 'battle_end', battle: st.battle, result: 'won' }); ok(end.ok, 'a pretend battle is played');
+    await kids[0].c({ action: 'battle_accept', battle: st.battle }); const end = await kids[0].c({ action: 'battle_end', battle: st.battle, result: 'won', log: 'Round 1: Red Kite fired. Round 6: the enemy ship lost its last part.' }); ok(end.ok, 'a pretend battle is played');
     await kids[2].c({ action: 'save', state: { mode: 'intro', done: {}, parts: [], cards: [], secrets: [] }, rev: (await kids[2].c({ action: 'load' })).rev, caps: ['rev', 'cards'] });   // Pixel starts a new game by mistake
     await p.click('#refresh'); await p.waitForTimeout(900);
     const table = await p.textContent('#cadets'); ok(/Nova/.test(table) && /Vega/.test(table) && /Red Kite/.test(table), 'the class table shows the pretend cadets and their ship names', table.slice(0, 200));
     ok(/rare/.test(table) && /deck open to battles/.test(table), 'the table shows cards by kind, and whose deck is open');
     ok(await p.isVisible('#battlebox') && /Nova battled/.test(await p.textContent('#battlelist')) && /moved to Nova/.test(await p.textContent('#battlelist')), 'the battles list says who battled whom, and which card moved', await p.textContent('#battlelist'));
+    await p.click('#battlelist summary'); ok(/the enemy ship lost its last part/.test(await p.textContent('#battlelist')), 'the teacher can open what happened in a battle');
     ok((await p.inputValue('#battles')) === 'swap' && (await p.inputValue('#board')) === '1', 'the settings show what is set');
     ok(/The winner takes both/.test(await p.textContent('#sharenote')), 'the note under the settings says what the battle setting means');
     ok(/4 cadets/.test(await p.textContent('#classlist')), 'Refresh also updates the count of cadets in the class list', await p.textContent('#classlist'));
