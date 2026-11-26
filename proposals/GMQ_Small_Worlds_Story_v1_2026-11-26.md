@@ -2,11 +2,29 @@
 
 **Date:** 26 November 2026. **For:** Marc, and the main thread. **From:** the story thread.
 **Stage:** a design note. Nothing here is built. I changed no file of the main thread's.
-**Version 2,** rewritten after one independent review ("not yet": three blockers). Section 8 says what changed. Version 2 has not been reviewed.
+**Version 3, and where this stands.** All three versions failed their reviews (section 8). **I have stopped redesigning,** and I put the choice of direction to you, in decision 0 below.
+
+## Where this stands (read this first)
+
+- **Version 1** (a hop line, a pod, a scale): the creature "could not count" but acted on numbers; halfway broke "nearest"; the pod and the scale could be filled until right.
+- **Version 2** (a flag; one trip for berries): it fought the built layout, where the spot is on screen beside the creature; the sum's flag let the cadet see the spot; too many berries could be kept.
+- **Version 3** (the trade post's scale): if the crew can check the scale, it can read it; "the nearest mark" is a rule, not a need, when the weight is known exactly; halfway came back; the scale's own pointer gives the sum and the difference away; the example was about the same thing.
+
+**The cause under all three:** a creature that does not use words, in a small world seen from the side, has no natural need for rounding. A sum or a difference needs a believable source for its two numbers, and an answer that must be fixed before it can be checked. Each version I added made more to defend.
+
+**Decision 0, yours: which way now?**
+
+| | Way | What it costs |
+|---|---|---|
+| **A (my pick)** | **No maths at the small worlds' secret.** The seed is found by watching the creature and doing, as the game's hint already guides ("Talk to it twice"; "Touch it"). The four skills (rounding, adding and taking away within 1,000) live where the story needs them: Voltara, the market, the deep planets. The seed keeps its purpose (Project Second Home) | The small worlds stop practising four skills, and four teacher-evidence lines lose their place. It goes against your idea of 17 November, that small worlds cover every skill |
+| B | **Keep maths there, with a shape the main thread and you choose first** (how much it will build). Then the story thread writes to it, with the three versions' faults (section 8) as the list of traps | Another design round, and more tokens |
+| C | **Keep the lock as it is for now,** marked as breaking your rule, until children's play shows how much the small worlds matter | Nothing now. The rule stays broken there |
+
+The rest of this note (sections 0 to 7) is version 3, kept as a record of what was tried.
 
 **Tags:** [Built] is in the game today (version 100). [Source] is your words or pages. [Proposal] is mine.
 
-**Numbers:** none new. Each scene uses the ranges the game's lock already uses, with one change for the main thread to check: no halfway numbers in the "where to stop" scene (section 3a).
+**Numbers:** none new. The scale uses the ranges the game's lock already uses, in grams.
 
 ---
 
@@ -19,17 +37,18 @@
 - **Your rule** [Source: Marc, 25 November]: a code or a rule is never a thing in the story. The maths is how the world works, so that something can happen.
 - **The fix, for all 20 at once** [Proposal]:
   - The shell box and its lock go.
-  - Each world's creature keeps its world's star seed at its secret spot. It cannot count.
-  - Each evening it must get somewhere, or get something, before the light goes. It needs the cadet to work one thing out first.
-  - **The cadet does the doing:** plants the flag, picks the berries.
-  - The creature only shows what it needs.
-- **Two scenes:**
-  - **Plant the flag**, on a line of marks: nearest ten, nearest hundred, or a sum.
-  - **One trip before dark**, to fill a pod: the difference.
-- **Each answer is fixed before anything happens.** A wrong one plays out and shows why. Then a new problem of the same size, as your rule for after the station says.
-- **The finished examples are about your ship,** on landing: metres and litres, not the creature's paces and berries.
-- **A star seed is for Project Second Home** [Built: the game's frame]. It is a seed of that world which can grow far from home.
-- **Your decisions are in section 6.** Four.
+  - Each world's creature gathers its world's goods and brings them to the trade post. Passing ships buy them by weight.
+  - **The post's scale is how a ship knows the weight.** The creature cannot read it. The cadet reads it, and calls the number up to the ship.
+  - **The ship pays by the cadet's word, then its crew checks.** So the answer is fixed before anything happens, and a wrong one plays out.
+  - A fair trade, and the creature gives the cadet a star seed from its spot.
+- **One scene for all four kinds,** at the post, which is already on screen in every world:
+  - **nearest ten, or nearest hundred:** read the scale to its nearest mark;
+  - **a sum:** two bags, one weight to balance them;
+  - **a difference:** the goods without their jar.
+- **Halfway goes up,** as the market already says [Built: "Halfway goes up, so it needs 30."]. The post follows the market's rule, so nothing contradicts.
+- **A finished example comes first,** in the game's own "See it first" style [Built]: the creature's last trade, with another of its goods.
+- **A star seed is for Project Second Home** [Built: the game's frame].
+- **Your decisions are in section 6.** Three.
 
 ---
 
@@ -39,87 +58,72 @@ From the game file, by search [Built]:
 
 | | What is built | In this note |
 |---|---|---|
-| **The kit** | Every world is made from data: a sky, far shapes, three plants, a rock, a creature, a trade post, and one secret. The secret lies under one of the three plants, or under the rock | Kept. One kit rule changes all 20. Nothing depends on which thing hides the seed |
-| **The creature** | It "does not use words". It moves by hopping, floating or wobbling (drawn only). On every second talk: "It turns. It looks at the [spot]. Then it looks at you." | Kept. It becomes the one who needs help. Its own way of moving is used in the words |
-| **The trade post** | Nobody runs it. Its sign shows what it sells and what it pays | Kept as it is. **Not the creature's** (version 1 made it the trader, which clashed with the posts' prices) |
-| **The lock** | "You move the [spot]. Under it sits a shell box. It has a number lock." Wrong: "The lock stays shut", and the same question stays | **Replaced** |
-| **After the seed** | "The shell box under it is open and empty." | **Replaced** (section 4) |
-| **The star seed** | "It glows in your hand." Counted, "Star seeds N of 20". A random card. A ship's log row | Kept, and **given a purpose** |
-| **Project Second Home** | "People all over the world started wishing for a new home among the stars." Cadets "Report home" | **The star seeds belong to it** |
+| **The kit** | Every world is made from data: a sky, far shapes, three plants, a rock, a creature, a trade post, and one secret, under a plant or the rock. All are on one screen, side by side | Kept. Nothing depends on which thing hides the seed, or how the creature moves |
+| **The creature** | It "does not use words". On every second talk: "It turns. It looks at the [spot]. Then it looks at you." | Kept. It gathers its world's goods, and guards its seed |
+| **The trade post** | On screen. Nobody runs it. Its sign: what it sells, what it pays, how far Voltara is | Kept. **It gets a scale** |
+| **The lock** | "Under it sits a shell box. It has a number lock." Wrong: "The lock stays shut", and the same question stays | **Replaced by the scale** |
+| **"See it first"** | The game's finished example before a task: "one solved choice about something else" | **Used** for the scale |
+| **The market's halfway rule** | "Halfway goes up, so it needs 30." | **Followed** |
+| **The star seed** | "It glows in your hand." Counted, "Star seeds N of 20". A random card. A ship's log row | Kept, and given a purpose |
+| **Project Second Home** | "People all over the world started wishing for a new home among the stars." | **The star seeds belong to it** |
 
 ---
 
 ## 2. The story each world tells [Proposal]
 
-- **The creature keeps its world's star seeds** at its spot, under a plant or a stone. It gives one to a friend.
-- **Each landing is an evening.** The light lasts only a little while.
-- **Before the light goes, the creature must do one thing:** reach its spot, or fill its pod with berries for the night. It cannot count. It shows you what it needs, and waits.
-- **The cadet works it out, then does it,** and the creature gives a seed in thanks.
-- **What a star seed is:** a seed of this world that can grow far from home. Project Second Home needs them, because a new home will need plants. **Each seed looks like its world:** it "glows [the world's sky colours]".
-- **The line on the first seed:** "Earth will want this. A new home will need plants that grow far from Earth."
-- **Touching the spot before helping:** "Something glints deep inside the [spot]. Only the [creature] can reach it."
-- **What this adds:** a child arrives and knows what is here (a creature with a need), what it is doing (getting ready for night), and why the seed matters (Earth's new home). That is your rule 5.
+- **The creature gathers its world's goods** (glow moss, star salt, sky honey...) and brings them to the post. That is why the post sells them, though nobody runs it.
+- **Passing ships buy by weight.** The post's scale is the trade beacon's, the same at every post, marked in grams. The creature cannot read it: it does not use words or numbers. Since the storm, no ship has landed to read it for itself.
+- **So the creature waits by the post with a bag,** and looks at the scale, then at you. That is how a child finds the scene: by watching it.
+- **The cadet reads the scale, and calls the number up.** The ship pays by the cadet's word, then its crew checks the scale.
+- **A fair trade, and the creature gives you a star seed** from under its spot.
+- **What a star seed is:** a seed of this world that can grow far from home. Project Second Home needs them, because a new home will need plants. Each seed glows its world's sky colours.
+- **What this adds:** a child arrives and knows what is here (a creature that trades), what it needs (someone to read the scale), and why the seed matters (Earth's new home).
 
 ---
 
-## 3. The two scenes
+## 3. The scale
 
-**The same in both:**
-- The scene fills the picture.
+**What the child sees:** the post's scale fills the picture. It has marks in grams, a pointer, and two pans.
+
+**How the scene starts:** talk to the creature twice. It looks at its spot, then walks to the post with a bag and looks at the scale. The next touch of the post, or the scale, opens the scene. (Today the creature looks at the spot and the hint says "Touch it". The hint changes to "The [creature] is waiting at the post.")
+
+**The same in every kind:**
 - The line under the picture says the need in short cards of 120 characters or fewer.
-- The cadet types a number, or taps a mark.
+- The cadet types a number and taps Check.
+- **The ship pays by your word, then checks.** Before the question, the line says both costs: "Too little, and the [creature] is paid less than its goods are worth. Too much, and the crew checks, sees it, and flies on."
 - Nobody says "wrong".
-- **After a miss,** the scene plays out. The next time the child talks to the creature, it is another evening with new numbers.
-- The words use only "paces", "mark", "flag", "pod", "line", "berries", "basket", "trip" and "dark".
+- **After a miss:** the scene plays out, then the creature goes to gather more. The next time the child talks to it, it is another bag, with new numbers.
+- **Words used:** scale, grams, mark, pointer, pan, bag, jar, weight, ship, pays.
 
-### 3a. Plant the flag (nearest ten; nearest hundred; a sum)
+### 3a. Read the scale (nearest ten; nearest hundred)
 
-**What the child sees:** the ground from the side, with marks every ten paces, numbered 10, 20, 30... (or every hundred). The creature is at its nest, at 0.
+> "The pointer stops between two marks. The ship pays by the nearest mark."
+> "Which mark is nearest? Type its number."
+- **The scale:** marks every 10 grams (or every 100). The bag's weight is the lock's number today, from 11 to 98 (or 110 to 980).
+- **Halfway:** "Halfway goes up, as at the market."
+- **Right:** the ship pays for the nearest mark. A fair trade. A star seed.
+- **Too low:** "The ship pays for 40 grams. The bag is nearer 50. The [creature] gets less than it should."
+- **Too high:** "The crew checks. The bag is nearer 50. They fly on without trading."
+- **A number that is not a mark** (47): "The ship pays only by a mark. The marks go 10, 20, 30..." Then the same question. This is not a miss.
+- **See it first:** "The [creature]'s last bag was [star salt]. The pointer stopped at 23. 23 is 3 from 20, and 7 from 30. So the ship paid for 20."
 
-**Why a flag:** "The [creature] [hops / floats / wobbles] ten paces at a time. It cannot count. It stops when it reaches your flag." So the flag must go in first, on a mark, before it sets off.
-> "While it [hops], the grass is over its head. It sees only your flag. The flag stands taller than the grass."
+### 3b. One weight for two bags (a sum)
 
-So it cannot stop at its spot by itself: it only looks around when it stops.
+> "The [creature] has put two bags on one pan: 230 grams and 340 grams."
+> "The ship lowers one weight onto the other pan, then flies on. What weight should it lower?"
+- **Why one:** a passing ship lowers one weight, once. It cannot stay.
+- **Right:** the pans are level. The ship hauls up the bags and pays. A star seed.
+- **Too light, or too heavy:** the scale tips. "The ship pulls its weight back up and flies on." The line says which pan was heavier, and by how much.
+- **See it first:** "Last time: two bags of [star salt], 100 grams and 150 grams. Together, 250. The ship lowered 250, and the pans were level."
 
-**Nearest ten, or nearest hundred:**
-> "Its spot is at 47 paces. The light lasts for a short walk."
-> "Put the flag on the mark nearest its spot. At how many paces?"
-- **Right (50):** it stops on 50, walks 3 paces, and reaches its spot while it is light. It gives you a seed.
-- **Wrong (40 or 60):** it stops there and walks 7 or 13 paces. The steps are counted as it walks. It arrives after dark, and sits down. **Then the walk it could have had is drawn faintly:** "From 50 it was 3 paces."
-- **A number that is not a mark** (47, or 5): "There is no mark at 47. It can only stop on a mark." Then the same question. This is not a miss.
-- **No halfway numbers in this scene** [Proposal, for the main thread's number rule]. At 45, both 40 and 50 are 5 paces away, so the story has no reason to choose. Rounding is also taught on Voltara, in Project Second Home and in the quick questions [the main thread's check, 24 November]. Whether those teach "halfway goes up" is the main thread's to check.
-- **Hundreds:** "It [hops] a hundred paces at a time." The walk is counted in tens.
+### 3c. The goods without the jar (a difference)
 
-**A sum:**
-> "Its spot is over the rise. The [rock] is at 230 paces. Its spot is 340 paces past the [rock]."
-> "Put the flag where it should stop. At how many paces?"
-- The marks past the rise are hidden by the hill, so the picture cannot give the answer.
-- **Right (570):** it stops at its spot. A seed.
-- **Wrong:** it stops short and walks on, or stops past and walks back, counted. It arrives after dark.
-- "[rock]" is whichever thing on that world is not the spot.
-
-**The finished example, on landing** (about your ship and metres, not the creature and paces):
-- **Nearest:** "Your ship lands on a pad. The pads are 10 metres apart. The trade post is at 23 metres. 20 is 3 away, and 30 is 7 away. So you land on 20."
-- **A sum:** "From your ship to the [rock] is 30 metres. The post is 20 metres past it. 50 metres in all."
-
-### 3b. One trip before dark (the difference)
-
-**What the child sees:** the creature's pod, with a line near the top and marks up its side, in berries. Over the hill, its berry bush.
-
-**The need, and both costs, before the question:**
-> "The [creature]'s pod must be full to the line for the night. The line is at 400 berries."
-> "It holds 130 berries. The bush is over the hill. There is light for one trip."
-> "Too few, and the pod is not full. Too many, and the rest spill and are lost in the grass."
-> "How many berries should you bring?"
-- **Why one trip, chosen first:** from the bush you cannot see the pod, and it will be dark when you get back.
-- **Right (270):** you bring 270. The pod is full to the line, and nothing spills. The creature gives you a seed.
-- **Too few:** the pod is short of the line. The gap is counted.
-- **Too many:** the pod is full, and the rest spill, counted. The creature picks at the spilled ones in the grass.
-- **Either miss:** it is dark. Next time, a new evening.
-- **The game's hint already fits:** "Count up from [130] to [400]. Or take [130] away from [400]."
-
-**The finished example, on landing** (about your ship and litres):
-> "Your ship's water tank fills to its line at 60 litres. It held 25. It took 35 more. Full, and none spilled."
+> "The [creature]'s sky honey is in a jar. Jar and honey weigh 430 grams. The empty jar weighs 130 grams."
+> "The ship pays only for the honey. How many grams of honey?"
+- **Right:** the ship pays for the honey. A star seed.
+- **Too low:** the [creature] is paid less than its honey is worth. **Too high:** the crew checks, finds they paid for the jar too, and flies on.
+- **See it first:** "Last time: jar and [star salt] weighed 300 grams. The jar weighed 100. So the salt was 200."
+- **The game's hint already fits:** "Count up from [130] to [430]. Or take [130] away from [430]."
 
 ---
 
@@ -127,18 +131,21 @@ So it cannot stop at its spot by itself: it only looks around when it stops.
 
 | | Today [Built] | Proposed |
 |---|---|---|
-| The secret spot | A shell box with a number lock | The creature keeps its seed there; touching it says "Only the [creature] can reach it" |
-| After the seed | "The shell box under it is open and empty." | "The [creature] sleeps by its spot." |
-| The questions | A dial with four kinds of question | Two scenes (section 3). The kind still comes from the world's letter, as now: nearest ten or hundred and sum go to 3a, difference to 3b |
-| Numbers | The lock's ranges | The same ranges. **Nearest ten and nearest hundred lose their halfway numbers** |
-| A wrong answer | "The lock stays shut", and the same question stays (`tries` is never raised) | The scene plays out. The next talk is a new evening, with new numbers |
-| The seed | Counted | Counted, in the seed tray, for Project Second Home. It glows its world's colours |
-| Pictures | A number line | **3a:** a number line with a creature and a flag, close to the game's own number line. **3b:** a pod with marks, and a hill |
-| The landing | "A creature watches you." | The first time a child meets each kind, one landing line: the ship's finished example (section 3) |
+| The secret spot | A shell box with a number lock | The creature guards its seed there. Touching it before the trade: "Something is under the [spot]. The [creature] is guarding it." |
+| The hint | "The [creature] looked at the [spot]. Touch it." | "The [creature] is waiting at the post." |
+| The post | One line for any verb | Touch or use opens the scale, once the creature waits there |
+| The questions | A dial with four kinds of question | One scene, the scale, in three forms (section 3). The kind still comes from the world's letter |
+| Numbers | The lock's ranges | **The same ranges, in grams.** Halfway values stay: halfway goes up |
+| A wrong answer | "The lock stays shut", and the same question stays (`tries` is never raised) | The scene plays out. The next talk is a new bag, with new numbers |
+| After the seed | "The shell box under it is open and empty." | "The [creature] sits by its spot, happy." |
+| The lines about the secret | "Its secret is still hidden." "Each planet hides one star seed." | "Its creature still has a bag to trade." "Each planet's creature trades its goods, and gives a star seed to a friend." |
+| The seed | Counted | Counted, for Project Second Home. It glows its world's colours |
+| Pictures | A number line | One scale: marks, a pointer, two pans, a jar |
+| The finished example | None | "See it first", in the game's style, when the scene first opens |
 
-**Found while reading, for the main thread** [Built]: the counter says "Star seeds N of 20", but the market never offers planets I, O or Q, so a new save can open at most 17 worlds. A child cannot finish the count.
+**Found while reading, for the main thread** [Built]: the counter says "Star seeds N of 20", but the market never offers planets I, O or Q, so a new save can open at most 17 worlds.
 
-**Not mine to change:** each seed still gives a random card. Whether a card should say where it came from is the cards thread's.
+**Not mine to change:** each seed still gives a random card (the cards thread's).
 
 ---
 
@@ -146,15 +153,14 @@ So it cannot stop at its spot by itself: it only looks around when it stops.
 
 | A child asks | The story answers |
 |---|---|
-| "Why can't the creature count?" | It does not use words, and it has never counted. It knows its spot. It does not know how far it is |
-| "Why not put the flag on its spot?" | It can only stop on a mark. It moves ten paces at a time |
-| "Why not let it hop and see?" | It cannot count its hops, and while it hops the grass is over its head. Without a flag it does not know when to stop |
-| "Why doesn't it stop when it gets to its spot?" | It cannot see its spot while it hops. It only looks around when it stops |
-| "Why not two trips?" | There is light for one. From the bush you cannot see the pod |
-| "Why not bring lots, to be safe?" | The rest spill and are lost in the grass. You were told before you went |
-| "Why can't I take the seed myself?" | "Only the [creature] can reach it." It is deep inside the spot |
+| "Why can't the creature read the scale?" | It does not use words or numbers. It gathers, and guards |
+| "Why doesn't the ship just read it?" | It does not land; it trades on your word, then checks |
+| "Why not say more, to be safe?" | The crew checks, sees it, and flies on without trading. You were told before you answered |
+| "Why not say less?" | Then the creature is paid less than its goods are worth |
+| "Why not try a few weights?" | A passing ship lowers one, once |
+| "Why can't I take the seed myself?" | It is the creature's, and it is guarding it |
 | "Why do I want the seed?" | Earth is looking for a new home. A new home will need plants that grow far from Earth |
-| "What if I get it wrong?" | You see what happens: the long walk, the gap or the spill. The creature tries again another evening, with something new |
+| "Halfway? Which way?" | Up, as at the market |
 
 ---
 
@@ -162,10 +168,9 @@ So it cannot stop at its spot by itself: it only looks around when it stops.
 
 | | Decision | My pick | The other way, and what it costs |
 |---|---|---|---|
-| 1 | **The fix:** two scenes in place of the lock | Yes. Each answer is fixed before anything happens, so the maths is needed, and a miss shows why | **One scene** (the flag) for all four kinds: the cheapest picture, but a difference on a line has no natural "one trip". **Keep the lock, with a reason:** the cheapest of all, but a number still opens a box, which your rule of 25 November forbids |
-| 2 | **No halfway numbers** in "plant the flag" | Yes. At 45 the story cannot choose | Keep them, with a reason to go forward. I could not find one that is not a rule |
-| 3 | **The star seeds are for Project Second Home** | Yes. It uses the game's own frame | They grow in the station's greenhouse [Built: the station has one]. Closer to home, but it needs a place to show them |
-| 4 | **A miss costs the evening, then new numbers** | Yes. Your rule after the station | The same numbers until right, as now. Then a child can guess between the two marks for free |
+| 1 | **The scale at the trade post,** in place of the lock | Yes. One scene for all four kinds, on screen in every world, tied to trading, which is how a child got there | **Keep the lock, with a reason:** the cheapest, but a number still opens a box, which your rule forbids. (Versions 1 and 2's other scenes each failed a review, section 8) |
+| 2 | **The star seeds are for Project Second Home** | Yes. It uses the game's own frame | They grow in the greenhouse on Operation Stardust's mission ship [Built: it has one]. That also fits, if the mission ship is Project Second Home's: the main thread can say |
+| 3 | **A miss costs this bag, then new numbers** | Yes. Your rule after the station | The same numbers until right, as now. Then a child can guess for free |
 
 ---
 
@@ -173,11 +178,10 @@ So it cannot stop at its spot by itself: it only looks around when it stops.
 
 | Claim | What to check |
 |---|---|
-| A child knows what the creature needs, without words | Watch one child at 3b. Do they know what the pod needs before they type? |
-| The faint shorter walk teaches "nearest" | After a miss, ask: "Where should the flag have gone?" |
-| Guessing between two marks does not pay | The game already counts misses for the teacher. If a child guesses through many worlds, the teacher will see it |
+| A child finds the scene by watching | Does a child go to the post after the creature walks there? If not, the hint must carry it |
+| "The ship pays by your word" is understood | Before they type, ask: "What happens if you say too much?" |
+| A child sees why the nearest mark is fair | After a miss, ask: "Why did the crew fly on?" |
 | The seed feels worth having | Ask: "What are the star seeds for?" |
-| Two scenes are worth building | The main thread's to judge. Decision 1 has the smaller ways |
 
 ---
 
@@ -202,3 +206,34 @@ A reviewer read version 1 with `CLAUDE.md`, Marc's rules and the game file. **Ve
 | Minor | Guessing is cheap; "next evening" undefined; the missed short walk not shown; lines over 120; "opens" with hollow reeds; hard words; the seed the same everywhere; "its trouble is one count" | Misses are counted for the teacher; the next talk is a new evening; the short walk drawn faintly; short cards; no plant opens; a small word list; each seed glows its world's colours; the phrase is gone |
 
 **Not re-read by a reviewer:** version 2.
+
+### 8b. The review of version 2, and why version 3 changed scene
+
+**Verdict: "Not yet."** Three blockers, all from one cause:
+- **The spot is already on screen,** beside the creature, and the child touches it. Version 2 put it far away, "over the rise", from a "nest" the kit does not have.
+- **"Too many, and the rest spill":** a child could pour to the line and keep the rest.
+- **The sum's flag:** walking to plant it at 570, the cadet would see the spot.
+
+The majors pointed the same way:
+- only a hopper moves in fixed jumps;
+- nobody was said to have made the marks;
+- the evening light was not the same in each kind;
+- the finished examples were landing words, not the game's "See it first";
+- "the station has a greenhouse" was false (it is on Operation Stardust's ship).
+
+**What version 3 does:** it stops fighting the built layout. The post and its scale are on screen in every world. Nothing is far away, nothing depends on how the creature moves, and the marks are the beacon's scale. Each answer is fixed because the ship pays by the cadet's word. Halfway goes up, as the market says. The finished example is a "See it first".
+
+**Not re-read by a reviewer:** version 3.
+
+### 8c. The review of version 3
+
+**Verdict: "Not yet."** Five blockers:
+1. If the crew can check the scale, it can read it; and why doesn't the cadet's own ship buy the goods?
+2. "The nearest mark" is a rule: the exact weight is known, so paying for it is fairer.
+3. Halfway reads two ways again, and a pointer at 45 looks like one at 44.
+4. A scale with a pointer gives the sum and the difference away, and nothing says where the part weights came from.
+5. The "See it first" was about the same quantity, on the same scale.
+
+Majors: misses that tell instead of show; 3b's ship both leaves and stays; a creature "paid" in nothing it can use; one scale cannot have both 10 and 100 gram marks; the game's AI facts line (line 1559) would not know any of it.
+
+**What I did:** stopped, and wrote decision 0.

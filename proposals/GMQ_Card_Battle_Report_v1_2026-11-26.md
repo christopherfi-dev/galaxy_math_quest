@@ -53,3 +53,12 @@ The full note: `GMQ_Card_Battle_Catalogue_v1_2026-11-26.md`. The wiring note: `G
 ## Decisions for Marc
 
 See the catalogue note, section 6: the size; epics; Spy cards; the starter pack's commons; Policeman or Station Guard; decision 1 (both built); where the battle opens; Comeback Crew and Star Harbour.
+
+## Added later on 26 November, while Marc slept: job 5, the battle's side
+
+- **A battle against a classmate's saved deck,** ready for the server thread's `battle_start` (wiring note, section 8). The computer flies the classmate's own deck and ship. Nobody has to be online at the same time.
+- **A challenge shows both cards at stake first** [Marc, 23 November], with the rule in words: the winner gets both, a tie moves nothing, your card stays in your deck. "I agree: start the battle" or "Back out".
+- **The result goes back from the child's side** (won, lost, tie) with a short log for the teacher. The deal comes from the server's seed, so the battle could be played again later to check who won.
+- **A battle left in the middle** is saved by its id; a practice battle left open is kept apart.
+- **For Marc:** in a classmate's battle the page still calls their ship "the enemy" (the first screen says so). It could carry the classmate's ship name instead. [pick: keep "the enemy" for now: long names could break the phone's top bar]
+- **Tests:** `battle_own_test.js` plays a friendly battle and a challenge against a made-up classmate at the three sizes.

@@ -205,10 +205,13 @@ async function cardsPart(kids, teacher, CODE) {
   // an hour's limit
   let limited = false; for (let n = 0; n < 8 && !limited; n++) { const s2 = await kids[13].B({ action: 'battle_start', rival: hOf(SHIPS[4]), kind: 'friendly' }); if (s2.status === 429) limited = true; else if (s2.j.ok) await kids[13].B({ action: 'battle_end', battle: s2.j.battle, result: 'tie' }); }
   ok(limited, 'a cadet cannot start battles without end: there is a limit for each hour');
-  // an old page cannot be in a challenge
-  await teacher({ action: 't_set', class: CODE, battles: 'swap' }); await kids[4].B({ action: 'save', state: kids[4].st });       // saved by an old page: no caps
+  // a card with no mark of its own (as today's game saves cards) is never put up in a challenge
+  await teacher({ action: 't_set', class: CODE, battles: 'swap' }); const oldBook = kids[4].st.cards.map(c => ({ r: c.r, n: c.n }));
+  const l4 = await kids[4].B({ action: 'load' }); await kids[4].B({ action: 'save', state: Object.assign({}, kids[4].st, { cards: oldBook }), rev: l4.j.rev });       /* an old page: no marks */
   const fromOld = await kids[12].B({ action: 'battle_start', rival: hOf(SHIPS[4]), kind: 'challenge' });
-  ok(fromOld.status === 409 && /newest game/.test(fromOld.j.error), 'a challenge needs the newest game on both iPads', fromOld.status + ' ' + fromOld.j.error);
+  const markedOnly = fromOld.status === 400 ? /no rare or epic card/.test(fromOld.j.error) : !!(fromOld.j.ok && /^[A-Za-z0-9]{6,20}$/.test(fromOld.j.rival.stake.u || '') && (await kids[4].B({ action: 'load' })).j.state.cards.some(c => c.u === fromOld.j.rival.stake.u));
+  ok(markedOnly, 'from a book saved without marks, only a card the server itself gave (a won card, with its mark) can be put up', fromOld.status + ' ' + (fromOld.j.error || JSON.stringify(fromOld.j.rival && fromOld.j.rival.stake)));
+  if (fromOld.j.ok) await kids[12].B({ action: 'battle_cancel', battle: fromOld.j.battle });
   // the teacher sees every battle
   const tb = (await teacher({ action: 't_battles', class: CODE })).j; ok(tb.ok && tb.done.length >= ends && tb.done.some(b => NAMES.includes(b.a)), 'the teacher sees every battle, with first names', tb.done && tb.done.length);
   ok(tb.done.some(b => b.status === 'not finished'), 'the teacher sees a battle that was never finished');

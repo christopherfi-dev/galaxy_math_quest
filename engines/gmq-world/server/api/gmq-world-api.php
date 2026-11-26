@@ -1,6 +1,6 @@
 <?php
 /* =====================================================================
-   GALAXY MATH QUEST - WORLD SERVER v0.2   (by Claude, for Marc to try on a TEST folder first)
+   GALAXY MATH QUEST - WORLD SERVER v0.3   (by Claude, for Marc to try on a TEST folder first)
 
    What it does
      - remembers each cadet: a class code, a name and a 4-digit number open their own saved game on any device
@@ -22,6 +22,12 @@
      - log ins live in the data folder for a school day, not 24 minutes
      - a health check and a first-time setup, so the teacher password can be set without a command line
 
+   What changed in 0.3 (26 November, night)
+     - the server reads the battle thread's card list (api/cards.json, a copy of docs/battle/cards.json). A card's kind
+       (common, rare, epic) comes from that list, never from the page; ship parts stay out of a deck; a card can be named
+       by its id ("A01") or its name ("Spark Shot") and is the same card on the class card board
+     - a test page for cards and battles (cards-test.html), for pretend cadets only, OFF until the teacher turns it on
+
    What it does not do yet
      - mark the maths. The page still does that.
      - check who won a battle. The page says so. A child with the know-how could claim a win. (See the report.)
@@ -34,7 +40,7 @@
 declare(strict_types=1);
 error_reporting(E_ALL); ini_set('display_errors', '0');
 
-const VERSION = '0.2';
+const VERSION = '0.3';
 $CONFIG = file_exists(__DIR__ . '/config.php') ? (require __DIR__ . '/config.php') : [];
 if (!is_array($CONFIG)) $CONFIG = [];
 $DATA = rtrim((string)($CONFIG['data_dir'] ?? (__DIR__ . '/data')), '/');
@@ -123,11 +129,16 @@ function rude(string $t, bool $strict = false): bool {
 }
 function cleanName(string $s, int $max): string { $s = trim(preg_replace('/\s+/', ' ', preg_replace('/[^A-Za-z0-9 ]/', '', $s) ?? '') ?? ''); return substr(ucwords(strtolower($s)), 0, $max); }
 
+require __DIR__ . '/gmq-world-cardlist.php';                   // the card list, and the starter pack rule
+
 /* ---------------------------------------------------------------- cards in a saved game
    A card in the game is { r: kind, n: name } today; a catalogue card adds id. For cards that can move between classmates,
    the page also gives each card its own mark u (letters and digits). The kinds: common, rare, and epic (saved as "gold"). */
-function cardKey(array $c): string { return (string)($c['id'] ?? ($c['n'] ?? '')); }
-function cardKind(array $c): string { $r = (string)($c['r'] ?? ''); return $r === 'gold' ? 'epic' : $r; }
+function cardKey(array $c): string { $k = known($c); return $k ? $k['id'] : (string)($c['id'] ?? ($c['n'] ?? '')); }
+function cardKind(array $c): string {
+    $k = known($c); if ($k) return $k['group'] === 'ship part' ? 'part' : ($k['group'] === 'upgrade' ? 'upgrade' : $k['rarity']);
+    $r = (string)($c['r'] ?? ''); return $r === 'gold' ? 'epic' : $r;
+}
 /* A card as other children may see it: only its id, name, kind and mark, in plain letters. The page wrote it, so it is cleaned first. */
 function cleanCard(array $c): array {
     $o = []; if (isset($c['id']) && is_scalar($c['id'])) $o['id'] = substr(preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$c['id']) ?? '', 0, 40);
@@ -137,7 +148,11 @@ function cleanCard(array $c): array {
     foreach (['id', 'n'] as $k) if (isset($o[$k]) && $o[$k] === '') unset($o[$k]);
     return $o;
 }
-function cardsOf(?array $state): array { $out = []; if (!is_array($state) || !is_array($state['cards'] ?? null)) return $out; foreach ($state['cards'] as $c) if (is_array($c)) { $c = cleanCard($c); if (cardKey($c) !== '') $out[] = $c; } return $out; }
+function cardsOf(?array $state): array { $out = []; if (!is_array($state) || !is_array($state['cards'] ?? null)) return $out;
+    foreach ($state['cards'] as $c) if (is_array($c)) { $c = cleanCard($c); $k = known($c);
+        if ($k) { $c['id'] = $k['id']; $c['n'] = $k['name']; if ($k['rarity'] !== '') $c['r'] = $k['rarity'] === 'epic' ? 'gold' : $k['rarity']; }   // the list decides, not the page
+        if (cardKey($c) !== '') $out[] = $c; }
+    return $out; }
 function uidOk($u): bool { return is_string($u) && preg_match('/^[A-Za-z0-9]{6,20}$/', $u) === 1; }
 /* Cards that moved in a battle are written in the cadet's ledger. Every save passes through it, so an iPad that still shows an
    old card book cannot bring back a card that left, or lose one that came. Applying it twice changes nothing. */
@@ -163,7 +178,7 @@ function summary(?array $state): ?array {
     $v = is_array($state['v'] ?? null) ? $state['v'] : null; $hist = $v && is_array($v['hist'] ?? null) ? $v['hist'] : []; $last = $hist ? end($hist) : null;
     $ending = null;
     if (is_array($last)) { $p = ($last['mood'] ?? 0) >= 600; $e = ($last['actual'] ?? 0) >= 1650; $ending = $p && $e ? 'Voltara shines' : ($p ? 'Happy, but short of power' : ($e ? 'Power, but not happy' : 'Worse off')); }
-    $t = is_array($state['trade'] ?? null) ? $state['trade'] : null; $kinds = ['common' => 0, 'rare' => 0, 'epic' => 0];
+    $t = is_array($state['trade'] ?? null) ? $state['trade'] : null; $kinds = ['common' => 0, 'rare' => 0, 'epic' => 0, 'part' => 0, 'upgrade' => 0];
     foreach (cardsOf($state) as $c) { $k = cardKind($c); if (isset($kinds[$k])) $kinds[$k]++; }
     return ['where' => (string)($state['mode'] ?? ''), 'room' => (string)($state['room'] ?? ''), 'tasks' => min(15, $done), 'parts' => is_array($state['parts'] ?? null) ? min(5, count($state['parts'])) : 0,
         'cards' => count(cardsOf($state)), 'card_kinds' => $kinds, 'secrets' => is_array($state['secrets'] ?? null) ? count($state['secrets']) : 0,
@@ -190,7 +205,7 @@ function cadetOut(array $s, array $class, array $more = []): array {
     return ['ok' => true, 'name' => $s['name'], 'class' => $class['name'] ?? '', 'state' => $s['state'], 'rev' => (int)($s['rev'] ?? 0), 'saved_at' => $s['saved_at'], 'ship' => $s['ship'], 'ai' => aiOn(),
         'names' => $class['names'] ?? 'approve', 'share' => shareOf($class), 'news' => array_values($s['news'] ?? []), 'version' => VERSION] + $more;
 }
-function shareOf(array $class): array { return ['board' => !empty($class['board']), 'battles' => (string)($class['battles'] ?? 'off'), 'show' => (string)($class['show'] ?? 'ship')]; }
+function shareOf(array $class): array { return ['board' => !empty($class['board']), 'battles' => (string)($class['battles'] ?? 'off'), 'show' => (string)($class['show'] ?? 'ship'), 'test_tools' => !empty($class['test_tools'])]; }
 
 if ($action === 'health') {                                     // anyone may ask: it says what works, never a path, a key or a name
     $probe = ''; $word = '';
@@ -200,7 +215,7 @@ if ($action === 'health') {                                     // anyone may as
     $t = readJson("$DATA/teacher.json"); $file = (string)($CONFIG['constraint_file'] ?? (__DIR__ . '/constraints/gmq-world.txt'));
     out(['ok' => true, 'version' => VERSION, 'php' => PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION, 'php_ok' => version_compare(PHP_VERSION, '7.4.0', '>='), 'config' => file_exists(__DIR__ . '/config.php'),
         'data_writable' => $writable, 'data_inside_web' => $inside, 'probe_url' => $probe, 'probe_word' => $probe ? $word : '', 'sessions_ok' => is_dir($SESS) && is_writable($SESS), 'session_hours' => $HOURS,
-        'teacher_set' => (bool)($t && !empty($t['password_hash'])), 'setup_ready' => !empty($CONFIG['setup_code']), 'constraint_file' => is_file($file), 'ai' => aiOn() ? (string)$CONFIG['ai']['provider'] : 'off', 'https' => $https]);
+        'teacher_set' => (bool)($t && !empty($t['password_hash'])), 'setup_ready' => !empty($CONFIG['setup_code']), 'constraint_file' => is_file($file), 'card_list' => catalogue()['n'], 'ai' => aiOn() ? (string)$CONFIG['ai']['provider'] : 'off', 'https' => $https]);
 }
 if ($action === 'join') {
     $code = slug((string)($in['class'] ?? ''), 12); $name = cleanName((string)($in['name'] ?? ''), 16); $pin = (string)($in['pin'] ?? '');
@@ -231,7 +246,7 @@ if ($action === 'join') {
 if ($action === 'logout') { $_SESSION = []; session_destroy(); out(['ok' => true]); }
 
 /* everything below needs a cadet who is logged in, or the teacher */
-if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 'deck', 'rivals', 'battle_start', 'battle_accept', 'battle_cancel', 'battle_end', 'news_seen'], true)) {
+if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 'deck', 'rivals', 'battle_start', 'battle_accept', 'battle_cancel', 'battle_end', 'news_seen', 'test_starter'], true)) {
     $code = (string)($_SESSION['class'] ?? ''); $id = (string)($_SESSION['id'] ?? ''); needStudent();
     $class = readJson(classPath($code)) ?? ['name' => '']; $path = studentPath($code, $id);
 
@@ -372,6 +387,7 @@ if (strpos($action, 't_') === 0) {
             if (isset($in['board'])) $class['board'] = (bool)$in['board'];
             if (isset($in['battles']) && in_array($in['battles'], ['off', 'friendly', 'swap', 'away-safe'], true)) $class['battles'] = $in['battles'];
             if (isset($in['show']) && in_array($in['show'], ['ship', 'first'], true)) $class['show'] = $in['show'];
+            if (isset($in['test_tools'])) $class['test_tools'] = (bool)$in['test_tools'];
             writeJson(classPath($code), $class);
         });
         out(['ok' => true]);

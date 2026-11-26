@@ -1,10 +1,10 @@
-"""The GMQ world server must run on PHP 7.4 or newer (Marc's host has not told us its version).
+"""The GMQ world server must run on PHP 7.4 or newer, and its pages on older iPads (Marc's host has not told us its version).
 This container has PHP 8.3 only, so it cannot run 7.4. Instead:
   1. php -l on every server file (catches any syntax error)
   2. a search for things PHP 7.4 does not have, which php -l on 8.3 would not catch
 It is a search, not a run on 7.4: a PHP 7.4 machine is the real test. [Proposal]
 Run: python3 checks/server_php_check.py"""
-import glob, os, re, subprocess, sys
+import glob, json, os, re, subprocess, sys
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'engines', 'gmq-world', 'server')
 NEW_IN_8 = [
     (r'\bstr_contains\s*\(', 'str_contains (PHP 8)'), (r'\bstr_starts_with\s*\(', 'str_starts_with (PHP 8)'), (r'\bstr_ends_with\s*\(', 'str_ends_with (PHP 8)'),
@@ -24,6 +24,13 @@ for f in files:
     for i, line in enumerate(code.split('\n'), 1):
         for pat, what in NEW_IN_8:
             if re.search(pat, line): bad.append(f'{os.path.relpath(f, ROOT)}:{i}: {what}')
-print(f'{len(files)} PHP files read.')
+# the pages too: every script parses, and uses no ?. and no ?? (older iPads cannot read them)
+PAGES = sorted(glob.glob(os.path.join(ROOT, '*.html')))
+JS = r'''const fs=require('fs');const bad=[];for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,'utf8');const re=/<script>([\s\S]*?)<\/script>/g;let m;while((m=re.exec(s))){const js=m[1];try{new Function(js);}catch(e){bad.push(f+': '+e.message);}
+ const code=js.replace(/\/\*[\s\S]*?\*\//g,'').replace(/(^|[^:])\/\/.*$/gm,'$1').replace(/'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"/g,"''");if(/\?\.(?![0-9])/.test(code)||/\?\?/.test(code))bad.push(f+': ?. or ?? (older iPads cannot read it)');}}console.log(JSON.stringify(bad));'''
+r = subprocess.run(['node', '-e', JS] + PAGES, capture_output=True, text=True)
+try: bad += [os.path.relpath(x.split(':')[0], ROOT) + ':' + ':'.join(x.split(':')[1:]) for x in json.loads(r.stdout or '[]')]
+except Exception: bad.append('the page check did not run: ' + r.stderr.strip()[:200])
+print(f'{len(files)} PHP files and {len(PAGES)} pages read.')
 for b in bad: print('  PROBLEM', b)
 print('RESULT:', 'FAIL' if bad else 'PASS'); sys.exit(1 if bad else 0)
