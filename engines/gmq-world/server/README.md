@@ -1,4 +1,4 @@
-# GMQ world server: version 0.3.1 (26 November 2026, night)
+# GMQ world server: version 0.3.2 (26 November 2026, night)
 
 **Stage:** tested only on Claude's machine. It has never run on your site. **[Proposal]**
 **It never touches your live server.** You upload it to a TEST folder yourself: `../READ_ME_FIRST.md`, with the zip `../GMQ_Server_Test_Folder.zip`.
