@@ -62,3 +62,7 @@ See the catalogue note, section 6: the size; epics; Spy cards; the starter pack'
 - **A battle left in the middle** is saved by its id; a practice battle left open is kept apart.
 - **For Marc:** in a classmate's battle the page still calls their ship "the enemy" (the first screen says so). It could carry the classmate's ship name instead. [pick: keep "the enemy" for now: long names could break the phone's top bar]
 - **Tests:** `battle_own_test.js` plays a friendly battle and a challenge against a made-up classmate at the three sizes.
+
+## Added later: the independent review, and what it changed
+
+A second reviewer saw only the rules, the card list and the pictures. It found 16 points. Fixed: the enemy's dodge cards said the wrong thing ("It still fire"); "Or bring back a broken shield" read as a choice (19 cards); dodge cards did not say what still hits; the child had to count the enemy's hidden hand; Rounding Rover's "next ten"; "lent" (now "borrowed"); "shield" in the deck line (now "defence"); the challenge words. Found while fixing: six cards' words were cut off above the ships. Left for Marc: badges that read two ways (2× and ×2), one card with three names, the word "order", the phone's top bar, and whether Star Harbour and Comeback Crew are unique enough to be epics. Details: the catalogue note, section 8.

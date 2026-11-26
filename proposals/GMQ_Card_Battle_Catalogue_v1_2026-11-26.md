@@ -153,7 +153,7 @@ The rule is in `cards.json` (`starter_pack`), so the game and the cards thread r
 A second reviewer saw only the rules, the card list and pictures of the screens, not my notes.
 
 **Found, and fixed:**
-1. **The enemy's dodge cards said the wrong thing.** When the computer led with Wormhole Zip, its order box said "The enemy ship's attack misses it. It still fire." This was in the practice battle since 23 November. Each dodge card now has its own words for the enemy ("It zips into a wormhole. Your attack misses it. Your rare or epic card can still hit. It still fires."), and "It still fires" is right for every card.
+1. **The enemy's dodge cards said the wrong thing.** When the computer led with Wormhole Zip, its order box said "The enemy ship's attack misses it. It still fire." This was in the practice battle since 23 November. Each dodge card now has its own words for the enemy ("Your attack misses it. Your rare or epic card can still hit. It still fires."), and "It still fires" is right for every card.
 2. **"Or bring back a broken shield" read as a choice.** The battle gives none: on a broken shield the card always puts it back up. 19 cards now say "Block 8 of the attack on you. A broken shield comes back with 8 HP." Card Wall and Card Fence now say how strong ("with that many HP"). No rule changed: either reading ends the same, because nothing carries over.
 3. **The two cheaper dodge cards did not say what still hits.** Wormhole Zip: "A rare or epic card can still hit." Triple Illusion: "An epic card can still hit." Triple Illusion's badge was "×3", which reads as times three; it is now "miss".
 4. **The child had to count the enemy's hidden hand.** When the computer leads with Card Wall, Card Fence, Nano Shield or Card Castle, or a card that counts its parts, its order box now says the number: "It blocks 16 of your attack." [You: the child should not have to work out the enemy's sums.]
@@ -161,6 +161,7 @@ A second reviewer saw only the rules, the card list and pictures of the screens,
 6. **"lent":** children learning English mix up lend and borrow. Now "you borrow 11 from the station", and the cards say "borrowed". The tag no longer covers the card's kind.
 7. **The deck line said "shield"**; the cards say DEFENCE. Now "defence". "Tap a card to read it" is on the screen.
 8. **Challenge words:** "In a tie, nobody does" could mean both cards are lost. Now "In a tie, you each keep your own card." Also: whose deck each card came from; that both may be played; "Finish within 20 minutes. If you do not, you each keep your own card" (in place of "or nothing moves"); and "Blue Fox lets classmates battle Blue Fox's deck".
+9. **Found while fixing these: words cut off above the ships.** The order box over a ship shows 3 lines. Six cards ran longer, so their last words never showed (Nano Shield, from 22 November, lost "back."; Triple Illusion lost "fire."). Each now fits: for example Nano Shield says "Add 3 shield HP for each other card in your hand. A broken shield comes back." The own-cards test now checks every card, both sides.
 
 **Found, and left for you or for later** (no change made):
 - Badges that read two ways: "2×" (2 for each part) beside "×2" (double the AP); "4×" on both Card Wall and Fleet Flash; "100s" and "10s". A different badge would need room in the circle. Say if you want them changed.

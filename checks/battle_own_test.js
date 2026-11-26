@@ -151,6 +151,11 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     want(name + ': a card at stake that is not in the catalogue (an old card) shows its name and kind', /Void Vortex/.test(await fr.locator('#ostakes .plain').textContent()) && /rare card/.test(await fr.locator('#ostakes .plain').textContent()));
     await fr.locator('#oback').click(); await closed();
     await page.locator('#vs button[data-v="cpu"]').click();
+    // the order box over a ship shows 3 lines of 30 letters: every card's words, and the enemy's words for it, must fit (from the independent review)
+    await page.locator('#open').click(); await fr.locator('#ownsetup.open').waitFor(); await fr.locator('#ogo').click(); await fr.locator('.hc.mine').first().waitFor();
+    const long = await inner(() => GMQB.B && window.GMQB ? (function () { const D = JSON.parse(document.getElementById('carddata').textContent), out = []; D.cards.concat(D.upgrades).forEach(c => { if (GMQB.wrap(c.text, 30).length > 3) out.push(c.id + ' own'); if (GMQB.wrap(GMQB.theirs(c), 30).length > 3) out.push(c.id + ' enemy'); }); return out; })() : ['no page']);
+    want(name + ': every card\'s words fit the order box, on both sides', long.length === 0, long.join(', '));
+    await fr.locator('#bnew').click(); await closed();
     want(name + ': no error on the page', errs.length === 0, errs.join(' | '));
     await ctx.close();
   }
