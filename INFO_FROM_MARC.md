@@ -932,3 +932,6 @@ These are Marc's words, tidied. They are not on the form above.
 - **To the story thread: three hours while he sleeps (Marc, 2026-11-26, night).** "Push what you can. Keep checking for updates. You have 3 hours to work. While I'm sleeping"
   - Read as: work on without him for about three hours; push each piece as it is done; check the main branch for messages from other threads as it goes.
   - Plan: a short re-check of the small worlds note, version 2, and its fixes; then the KIS Station against his rule of 25 November (the locker's crate count, the Engine Core's colour lock, the cannons' lock), with options for him; then Xylophora and Lengthar if there is time.
+- **To the battle thread: three hours while he sleeps (Marc, 2026-11-26, night).** "Push what you can. Keep checking for updates. You have 3 hours to work. While I'm sleeping"
+  - Read as: the battle thread works on without him for about three hours, pushes each piece as it is done, and checks the main branch for messages from other threads as it goes.
+  - Plan: section 6, job 5 on the battle's side (a battle against a classmate's saved deck, played by the computer, and a challenge battle's stakes shown before it starts, by Marc's rules of 23 November), ready for the server thread's cards between classmates; an independent review of the catalogue and the new screens; fixes from it.
