@@ -112,7 +112,8 @@ The server thread built the other side (`proposals/GMQ_Server_Wiring_v1_2026-11-
 - The classmate's cards are not shown before the battle; only how many of each kind.
 - A battle left in the middle is saved by its `battle` id. It goes on only when the same battle is opened again. A practice battle left open is kept apart, and goes on too. `done` says `saved: true`.
 - After a classmate's battle there is no "Battle again": a new one starts on the server.
-- A card at stake that is not in the catalogue (one of the 6 old cards) shows as a plain box with its name and kind.
+- A card at stake opens large when tapped. One that is not in the catalogue (one of the 6 old cards) shows as a plain box with its name and kind.
+- **Not tested in Safari.** Only Chromium is in this workspace. The frame (`iframe srcdoc`) and its messages are standard and old (iOS 6 and later), but the first real iPad is the first real test.
 
 **Still for Marc** (the battle thread's report): in a classmate's battle, the page still calls their ship "the enemy" (the story says so first). It could carry the classmate's ship name instead.
 

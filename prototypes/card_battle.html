@@ -90,6 +90,7 @@ button{font-family:inherit}
 .deckgrid .dc{width:88px;position:relative;cursor:pointer}
 .stakes{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0}
 .stakes .st{width:150px;text-align:center;font-weight:800;font-size:15px}
+.stakes .st[data-id]{cursor:pointer}
 .stakes .st svg{display:block;width:100%;height:auto;margin-top:4px}
 .stakes .st .plain{margin-top:4px;border:4px solid #b388ff;border-radius:12px;padding:30px 8px;background:#111a33;font-size:17px}
 .deckgrid .dc.pick{outline:3px solid #fde68a;outline-offset:2px;border-radius:8px}
@@ -1475,7 +1476,7 @@ function ownSpies(){var o=[];(OWN.cards||[]).forEach(function(id){var c=B.card(i
 function deckWords(d,who){var n={attack:0,defence:0,repair:0,spy:0,guard:0,upgrade:0};d.forEach(function(id){n[B.card(id).type]++;});
  var parts=[n.attack+' attack',n.defence+' defence',n.repair+' repair',n.spy===1?'1 Spy':n.spy+' Spy',n.guard===1?'1 policeman':n.guard+' policemen'];if(n.upgrade)parts.push(n.upgrade===1?'1 upgrade':n.upgrade+' upgrades');
  return who+' deck has '+d.length+' cards: '+parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]+'.';}
-function stakeBox(c,label,k){var h='<div class="st">'+esc(label);if(c&&c.id&&B.card(c.id)){h+=cardSVG(B.card(c.id),'K'+k);}else{h+='<div class="plain">'+esc(c?(c.name||'a card'):'a card')+(c&&c.kind?'<br><small>'+esc(c.kind)+'</small>':'')+'</div>';}return h+'</div>';}
+function stakeBox(c,label,k){var h='<div class="st"'+(c&&c.id&&B.card(c.id)?' data-id="'+c.id+'"':'')+'>'+esc(label);if(c&&c.id&&B.card(c.id)){h+=cardSVG(B.card(c.id),'K'+k);}else{h+='<div class="plain">'+esc(c?(c.name||'a card'):'a card')+(c&&c.kind?'<br><small>'+esc(c.kind)+'</small>':'')+'</div>';}return h+'</div>';}
 function rivalParts(){var k=['standard','standard','standard','standard','standard'];(RIVAL.parts||[]).forEach(function(id){DATA.parts.forEach(function(p){if(p.id===id){var i=B.PARTS.indexOf(p.part);if(k[i]==='standard')k[i]=p.kind;}});});return k;}
 function rivalPlan(seed){return B.ownDeck(RIVAL.cards,seed,OWN.upgrades==='lasting'?'lasting':'card',null);}
 function drawRival(){
@@ -1485,6 +1486,7 @@ function drawRival(){
  el('ostake').style.display=ch?'':'none';
  if(ch){var st=RIVAL.stake||{};el('ostakes').innerHTML=stakeBox(st.mine,'You put up',0)+stakeBox(st.theirs,nm+' puts up',1);
   el('ostakep').textContent='Each card was picked at random: yours from your deck, '+nm+'\u2019s from '+nm+'\u2019s deck. The winner gets both cards. In a tie, you each keep your own card. Both cards stay in their decks, so you may each play yours.'+(RIVAL.minutes?' Finish within '+RIVAL.minutes+' minutes. If you do not, you each keep your own card.':'');
+  var sb=el('ostakes').querySelectorAll('.st[data-id]');for(var q=0;q<sb.length;q++){sb[q].addEventListener('click',function(){zoom(this.getAttribute('data-id'));el('pop').className='open top';});}   /* tap a card at stake to read it large */
   el('ogo').textContent='I agree: start the battle';el('oback').textContent='Back out';}
  else{el('ogo').textContent='Start the battle';}
  var R=rivalPlan(RIVAL.seed||1);el('oenemy').textContent=deckWords(R.deck,nm+'\u2019s')+' You see the cards only when they are played.';
