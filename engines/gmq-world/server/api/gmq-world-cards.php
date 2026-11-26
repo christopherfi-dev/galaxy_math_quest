@@ -33,7 +33,7 @@ function partsOf(array $s): array { if (catalogue()['n'] === 0) return []; retur
 /* the cards that may be put up in a challenge: rare or epic battle cards (the list decides the kind), each with its own mark */
 function stakes(array $deck): array { return array_values(array_filter($deck, static function ($c) { $k = known($c); return uidOk($c['u'] ?? null) && in_array(cardKind($c), ['rare', 'epic'], true) && ($k === null || $k['group'] === 'battle card'); })); }
 function openPath(string $code): string { global $DATA; return "$DATA/battles/" . slug($code, 12) . '/open.json'; }
-function battleLog(string $code, array $b): void { global $DATA; $d = "$DATA/battles/" . slug($code, 12); if (!is_dir($d)) @mkdir($d, 0770, true); @file_put_contents("$d/log-" . date('Y-m') . '.jsonl', json_encode($b, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX); }
+function battleLog(string $code, array $b): void { global $DATA; $d = "$DATA/battles/" . slug($code, 12); if (!is_dir($d)) @mkdir($d, 0770, true); $j = jencode($b); if ($j !== false) @file_put_contents("$d/log-" . date('Y-m') . '.jsonl', $j . "\n", FILE_APPEND | LOCK_EX); }
 function news(array &$s, string $text): void { $n = is_array($s['news'] ?? null) ? $s['news'] : []; $n[] = ['at' => date('c'), 'say' => $text]; $s['news'] = array_slice($n, -20); }
 /* battles that were never finished end with nothing moved  [pick: a battle left unfinished is not a loss] */
 function late(array $b): bool { return strtotime((string)$b['started']) < time() - BATTLE_MINUTES * 60; }
@@ -155,6 +155,9 @@ function cardsAction(string $action, array $in, string $code, string $id, array 
         $rid = (string)$b0['b']['id'];
         $res = withLocks([classLock($code), cadetLock($code, $id), cadetLock($code, $rid)], static function () use ($action, $code, $id, $rid, $bid, $in, $path) {
             $open = readJson(openPath($code)) ?? []; $b = $open[$bid] ?? null; if (!$b || $b['a']['id'] !== $id) fail('That battle is not open.', 404);
+            if (late($b)) { $was = $b['status']; $b['status'] = $was === 'offered' ? 'not taken' : 'not finished'; $b['ended'] = date('c'); battleLog($code, $b); unset($open[$bid]); writeJson(openPath($code), $open);
+                if ($action === 'battle_accept') fail('That challenge was not agreed in time. Start a new one.', 409);
+                return ['ok' => true, 'status' => 'too late', 'result' => null, 'moved' => null, 'minutes' => BATTLE_MINUTES, 'say' => 'The battle took longer than ' . BATTLE_MINUTES . ' minutes, so it ends with nothing moved.', 'cards' => (needStudent()['state']['cards'] ?? [])]; }
             if ($action === 'battle_accept') { if ($b['status'] !== 'offered') fail('That battle has already begun.', 409); $b['status'] = 'on'; $b['accepted'] = date('c'); $open[$bid] = $b; writeJson(openPath($code), $open); return ['ok' => true, 'status' => 'on']; }
             if ($action === 'battle_cancel') { if ($b['status'] !== 'offered') fail('A battle that has begun must be finished.', 409); $b['status'] = 'backed out'; $b['ended'] = date('c'); battleLog($code, $b); unset($open[$bid]); writeJson(openPath($code), $open); return ['ok' => true, 'status' => 'backed out']; }
             /* battle_end: { battle, result: 'won' | 'lost' | 'tie' }, from the challenger's side */
@@ -171,7 +174,7 @@ function cardsAction(string $action, array $in, string $code, string $id, array 
             elseif ($b['rule'] === 'away-safe') news($them, "$who challenged your deck and won. You keep all your cards." . ($moved ? ' ' . $who . ' got a copy of ' . cardName($moved) . '.' : ''));
             else news($them, $moved ? "$who challenged your deck and won. " . cardName($moved) . " went to $who." : "$who challenged your deck and won.");
             $b['status'] = 'done'; $b['result'] = $result; $b['ended'] = date('c'); $b['moved'] = $moved; $lg = $in['log'] ?? null;                                    // what the battle says happened, in words (the battle piece), for the teacher; kept small
-            $b['log'] = is_string($lg) ? substr(preg_replace('/[^\P{C}\n]/u', '', $lg) ?? '', 0, 20000) : (is_array($lg) && strlen((string)json_encode($lg)) <= 20000 ? $lg : null);
+            $b['log'] = is_string($lg) ? cut(preg_replace('/[^\P{C}\n]/u', '', $lg) ?? '', 20000) : (is_array($lg) && strlen((string)json_encode($lg)) <= 20000 ? $lg : null);
             writeJson($path, $me); writeJson(studentPath($code, $rid), $them); battleLog($code, $b); unset($open[$bid]); writeJson(openPath($code), $open);
             return ['ok' => true, 'status' => 'done', 'result' => $result, 'moved' => $moved, 'cards' => $me['state']['cards'] ?? []];
         });
@@ -189,9 +192,9 @@ function teacherCards(string $action, string $code, array $class): void {
         ksort($map); out(['ok' => true, 'cards' => array_values($map)]);
     }
     $open = array_filter(readJson(openPath($code)) ?? [], static function ($b) { return !late($b); }); $done = [];
-    foreach ([date('Y-m', strtotime('first day of last month')), date('Y-m')] as $m) { $f = "$DATA/battles/" . slug($code, 12) . "/log-$m.jsonl"; if (is_file($f)) foreach (file($f, FILE_IGNORE_NEW_LINES) ?: [] as $l) { $d = json_decode($l, true); if (is_array($d)) $done[] = $d; } }
+    foreach ([date('Y-m', strtotime('first day of last month')), date('Y-m')] as $m) { $f = "$DATA/battles/" . slug($code, 12) . "/log-$m.jsonl"; if (is_file($f)) foreach (file($f, FILE_IGNORE_NEW_LINES) ?: [] as $l) { $d = jdecode($l); if (is_array($d)) $done[] = $d; } }
     $names = []; foreach (cadetsOf($code) as $s) $names[$s['id']] = $s['name'];
     $tidy = static function ($b) use ($names) { return ['when' => $b['ended'] ?? $b['started'], 'kind' => $b['kind'], 'rule' => $b['rule'], 'status' => $b['status'], 'result' => $b['result'] ?? null,
-        'a' => $names[$b['a']['id']] ?? $b['a']['id'], 'b' => $names[$b['b']['id']] ?? $b['b']['id'], 'stakes' => [$b['a']['stake'] ? cardName($b['a']['stake']) : null, $b['b']['stake'] ? cardName($b['b']['stake']) : null], 'moved' => !empty($b['moved']) ? cardName($b['moved']) : null, 'log' => is_string($b['log'] ?? null) ? substr($b['log'], 0, 6000) : null]; };
+        'a' => $names[$b['a']['id']] ?? $b['a']['id'], 'b' => $names[$b['b']['id']] ?? $b['b']['id'], 'stakes' => [$b['a']['stake'] ? cardName($b['a']['stake']) : null, $b['b']['stake'] ? cardName($b['b']['stake']) : null], 'moved' => !empty($b['moved']) ? cardName($b['moved']) : null, 'log' => is_string($b['log'] ?? null) ? cut($b['log'], 6000) : null]; };
     out(['ok' => true, 'open' => array_values(array_map($tidy, $open)), 'done' => array_reverse(array_slice(array_map($tidy, $done), -100))]);
 }

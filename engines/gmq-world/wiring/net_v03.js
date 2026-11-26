@@ -55,6 +55,10 @@ function netMoved() { NET.on = false; NET.moved = true; clearTimeout(NET.tm); $(
 `S.cards.push({ r, n: pick(DECK[r]), u: netMark() }); save(); drawCards(S.cards.length - 1);`,
   'each new card gets its own mark (when the cards thread\'s GMQCards.record takes over, give its card a mark the same way)'],
   [
+`if (rude(name, true)) { m.textContent = 'Please use your own name.'; return; } m.textContent = '';`,
+`m.textContent = '';      /* [server 0.3.1] the server checks the name: whole words only, so real names such as Siriporn, Pornthip or Poo are not refused */`,
+  'the page\'s own check refused common Thai names (Pornthip, Siriporn, Supaporn, Kanokporn) and nicknames (Poo, Pee, Bum, Fu); the server now decides, and says "Please use your own name." for a real curse'],
+  [
 `  if (widget && widget.kind === 'login') return;`,
 `  if (widget && (widget.kind === 'login' || widget.kind === 'moved')) return;`,
   'nothing can be typed or tapped behind the "another iPad" box, as behind the log in (the same line is in act() and in the picture\'s tap: 2 places)', 2],

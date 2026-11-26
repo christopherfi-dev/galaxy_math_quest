@@ -1,4 +1,4 @@
-# GMQ world server: version 0.3 (26 November 2026, night)
+# GMQ world server: version 0.3.1 (26 November 2026, night)
 
 **Stage:** tested only on Claude's machine. It has never run on your site. **[Proposal]**
 **It never touches your live server.** You upload it to a TEST folder yourself: `../READ_ME_FIRST.md`, with the zip `../GMQ_Server_Test_Folder.zip`.
@@ -102,6 +102,8 @@ Open `http://localhost:8080/teacher.html`. The server check says what is missing
 | `checks/server_php_check.py` | every PHP file parses, and uses nothing newer than PHP 7.4 (a search; there is no PHP 7.4 here); every page's script parses, with no `?.` or `??` |
 | `checks/server_cards_check.js` | (0.3) the server knows all 118 cards as the list has them, and its starter pack is the battle thread's on 20,000 seeds |
 | `checks/server_catalogue_test.js` | (0.3) with the card list: a card by id or name is one card; the list, not the page, says the kind; ship parts stay out of decks; the test starter pack |
+| `checks/server_review_test.js` | (0.3.1) the 14 faults an independent review found, each played again: `{}` kept as `{}`; real names (Pornthip, Siriporn, Poo...) allowed and curses refused; copies kept and never pushed out by smaller ones; no card in two books after a copy is brought back; the teacher lock under many tries at once; logs in any letters; codes starting with 0; late battles; and more |
+| `checks/server_wiring_test.js` | (0.3) the game's NET wiring (`../wiring/`), made in a copy of the game and played against the server |
 | `checks/server_cards_page_test.js` | (0.3) the test page in a browser: two pretend cadets, a starter pack each, the board, a challenge backed out and then won, the battle over the whole screen, the news, three sizes |
 
 **Not tested:** your host, a real iPad on school wifi, PHP 7.4 itself, a real AI model, and real children.

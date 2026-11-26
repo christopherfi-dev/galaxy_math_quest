@@ -89,6 +89,9 @@ const api = () => { let c = ''; return async body => { const r = await fetch(URL
       const got = await A.evaluate(u => S.cards.find(c => c.u === u), ch.you.stake.u); ok(got && got.unseen === 1 && /Your deck won it from Blue Fox/.test(got.why || ''), 'a card won by Nova\'s deck arrives in the book, with why and unseen', got); }
     else ok(false, 'a second challenge starts', ch.error);
     ok(((await T({ action: 't_class', class: CODE })).cadets.find(c => c.name === 'Nova') || {}).summary.cards === (await st(A)).cards.length, 'the iPad\'s book and the server\'s agree');
+    // ---- 8. real names at the log in (the page no longer refuses them itself; the server checks whole words)
+    const C = await dev(1180, 745); await login(C, 'Poop Head', '1111'); ok(/own name/.test(await C.textContent('#msg')), 'a curse is still refused at the log in', await C.textContent('#msg'));
+    await login(C, 'Siriporn', '1111'); ok(await C.evaluate(() => NET.on && $('netname').textContent === 'Siriporn'), 'a child named Siriporn can log in (the old check refused her)', await C.textContent('#msg').catch(() => ''));
   } finally { await b.close(); srv.kill(); fs.rmSync(TMP, { recursive: true, force: true }); }
   for (const t of bad) console.log('  PROBLEM', t);
   console.log('page errors:', errs.length ? errs : 'none'); console.log('RESULT:', !bad.length && !errs.length ? 'PASS' : 'FAIL'); process.exit(!bad.length && !errs.length ? 0 : 1);
