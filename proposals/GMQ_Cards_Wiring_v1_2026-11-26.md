@@ -12,7 +12,7 @@ Everything here is **[Proposal]**. My choices without Marc are marked **[pick]**
 - **One piece of code, `GMQCards`,** between two marked lines in `docs/cards/index.html`:
   - `/* ===== GMQ CARDS: start =====`
   - `/* ===== GMQ CARDS: end ===== */`
-- **The card list,** in the script `<script id="gmqc-list">` just after it (`window.GMQC_LIST = {...};`). It is the battle thread's list, copied. When the battle thread's `docs/battle/cards.json` lands, copy that instead (section 6).
+- **The card list:** the battle thread's `docs/battle/cards.json` (93 battle cards, 20 ship parts, 5 upgrades, and its starter pack rule). The page holds a copy in `<script id="gmqc-list">` (`window.GMQC_LIST = {...};`). **The game should hold the list once.** If the battle piece (`GMQBattleOwn`) is in the game, use `GMQCards.use(GMQBattleOwn.cardList())` and do not copy the list again. If not, copy the page's list script.
 - Copy both, as they are, into the game's script. Do not copy the page's third script: it is a stand-in for the game.
 - The block uses no optional chaining and no nullish operator. Its comments do not even write their two signs, so `checks/parse_check.js` passes.
 - The block puts its own small style sheet in the page when it is first used (`#gmqc-style`). Every class it uses starts with `gmqc-`.
@@ -22,7 +22,7 @@ Everything here is **[Proposal]**. My choices without Marc are marked **[pick]**
 One object, made once, and the list read once at start-up:
 
 ```js
-GMQCards.use(window.GMQC_LIST);
+GMQCards.use(typeof GMQBattleOwn !== 'undefined' ? GMQBattleOwn.cardList() : window.GMQC_LIST);
 const CARDS_HOST = {
   stage: () => document.querySelector('.stage'),   // the picture: the piece adds its own layer in it
   toy: h => toy(h), closeToy: () => closeToy(),   // the desk: the piece puts only buttons there
@@ -73,18 +73,29 @@ function cardsSoon() { if (window.GMQ_NO_CARDPOP) return; let n = 0; const tm = 
 
 ### 3.3 The station's 15 cards: the starter pack
 
-[Source: Marc, 23 November: 15 cards on the KIS Station, always with 1 Spy, 1 Policeman, 1 epic and 1 rare.] Two places give a station task's card: `taskWon` (line 860) and `win()` (line 1696). In both, replace `card()` with `stationCard(id)`:
+[Source: Marc, 23 November: 15 cards on the KIS Station, always with 1 Spy, 1 Policeman, 1 epic and 1 rare.] The rule is the battle thread's (`starter_pack` in `cards.json`): the Spy, the Policeman, an epic, a rare, 4 attack, 4 shield, 3 repair. The piece draws a child's pack with the battle thread's own code (its STARTER block, copied as it is), so **the cards the station gives are exactly the pack the battle lends from.**
+
+**One seed that never changes.** `S.seed` changes every time the game calls `rnd()`. A pack drawn from `S.seed` would be a different pack each time. So keep one more number in the save, once, and give it to both pieces:
+
+```js
+if (!S.packSeed) S.packSeed = rnd(2147483646) + 1;      // once; old saves get it the first time they open
+```
+
+The battle's wiring note (`GMQ_Card_Battle_Wiring_v1_2026-11-26.md`, section 2 `opts.seed`, section 3 steps 4 and 5) passes `S.seed`. **Pass `S.packSeed` there too,** or the battle lends from a different pack than the one the child was given.
+
+Two places give a station task's card: `taskWon` (line 860) and `win()` (line 1696). In both, replace `card()` with `stationCard(id)`:
 
 ```js
 const BAY = { Shield: 'Shield Bay', 'Engine Core': 'Engine Bay', Weapons: 'Weapons Bay', Navigation: 'Navigation Bay', Power: 'Power Bay' };
 function stationCard(id) { const t = TASKS.find(x => x[0] === id), why = `For the ${t[2]} task, in the ${BAY[t[1]]}.`;
-  const c = GMQCards.record(GMQCards.starterNext(rnd(2147483647), S.cards, 15 - tasksDone() + 1), why);
+  const c = GMQCards.record(GMQCards.starterNext(rnd(2147483647), S.cards, 15 - tasksDone() + 1, S.packSeed), why, { st: 1 });
   S.cards.push(c); save(); drawCards(S.cards.length - 1); cardsSoon(); }
 ```
 
 - `taskDone` has already marked this task done when the card is given, so the tasks left, this one included, are `15 - tasksDone() + 1`.
-- **If Marc picks "one pack after the last task"** (report, decision 1, option B): give no card in `taskWon` and `win()`. When `tasksDone()` reaches 15: `const ids = GMQCards.starterPack(rnd(2147483647), S.cards)`, push a `record` for each, save, and `GMQCards.showPack(CARDS_HOST, recs, 'Your starter pack: 15 cards from the KIS Station', done)`.
-- **The rule itself** is a stand-in until the battle thread writes it in its list (`starter`). `GMQCards.starter().source` says which is used.
+- `{ st: 1 }` marks a station card. The piece deals the pack's cards not yet dealt, in a random order. Secrets found between tasks do not change the pack.
+- **A child part-way through the station** when this arrives (an old save) has fewer tasks left than the pack has cards. The piece then deals the sure cards first when there is no other way to give them all.
+- **If Marc picks "one pack after the last task"** (report, decision 1, option B): give no card in `taskWon` and `win()`. When `tasksDone()` reaches 15: `const ids = GMQCards.starterPack(S.packSeed)`, push `GMQCards.record(id, why, { st: 1 })` for each, save, and `GMQCards.showPack(CARDS_HOST, recs, 'Your starter pack: 15 cards from the KIS Station', done)`.
 
 ### 3.4 Why each card was given
 
@@ -170,11 +181,12 @@ if (S.cards.some(c => c && !c.id) && !S.cardsMoved) { const m = GMQCards.migrate
 
 **What this cost if you skip the full run:** the pop-up sits on the picture after almost every task. Any test that taps the picture after a task, without the switch, will tap the card. Run the full set once after wiring.
 
-## 6. When the battle thread's `cards.json` lands
+## 6. When the battle thread changes its list, its drawing or its starter rule
 
-1. Run `node checks/cards_sync_check.js --write` (the cards thread's job; it changes only `docs/cards/index.html`). It copies the new list into the page.
+The list landed on 26 November, while this was built; the page already reads it.
+1. Run `node checks/cards_sync_check.js`. It fails when the page's copies of the battle thread's list, DRAW block or STARTER block are out of date. `--write` brings them up to date (the cards thread's job; it changes only `docs/cards/index.html`).
 2. Run `node checks/cards_pick_check.js 20000` and `node checks/cards_page_test.js`.
-3. Copy the new list into the game.
-- The piece reads both shapes: the card page's (`parts`, `cards`, `upgrades`) and one flat list (`kind: 'battle card' | 'ship part' | 'upgrade'`). A made-up flat list of 140 cards passes every check.
-- If the list has a `starter` rule with `sure` slots, the piece uses it instead of its stand-in.
-- Saved cards keep their ids. If a card's id leaves the list, the book still shows it (under "First cards", with a plain face).
+3. If the game holds its own copy of the list, copy it again (not needed if the game uses `GMQBattleOwn.cardList()`).
+- The piece reads both shapes: `cards`, `parts`, `upgrades` (today's `cards.json`) and one flat list (`group: 'battle card' | 'ship part' | 'upgrade'`). A made-up flat list of 140 cards passes every check.
+- A list with no `starter_pack` uses the piece's stand-in rule (the report, section 3).
+- Saved cards keep their ids. If a card's id leaves the list, the book still shows it (under "Other cards", with a plain face).

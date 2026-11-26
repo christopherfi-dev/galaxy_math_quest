@@ -3,9 +3,10 @@
 //   1. pick: always a card of the kind asked for; the same seed and the same book give the same card; a lost card can come again.
 //   2. The doubles rule, A, B and C side by side: how many cards of a kind it takes to fill that kind; doubles; the longest run of doubles while cards are left.
 //   3. Books differ: after the station's 15 cards, how many children share a book.
-//   4. The starter pack (Marc, 23 November: 15 cards on the KIS Station, always with 1 Spy, 1 Policeman, 1 epic and 1 rare), the stand-in rule:
-//      every child, with secrets found between tasks, ends the station holding all four; the 15 task cards hold at most 1 Spy and 1 Guard; when the sure cards come.
-//      Also as one pack (starterPack), and for children part-way through the station when the new cards arrive (old saves).
+//   4. The starter pack (Marc, 23 November: 15 cards on the KIS Station, always with 1 Spy, 1 Policeman, 1 epic and 1 rare). With the battle thread's rule
+//      (starter_pack in cards.json): dealt one card per task, the 15 station cards are exactly the child's pack, the same pack the battle thread's own code draws
+//      (run here on its own), whatever secrets come between; no card twice; 1 rare and 1 epic. With the stand-in (a list with no rule): every child ends the station
+//      holding all four; the task cards hold at most 1 Spy and 1 Guard. Both: when the sure cards come; children part-way through the station (old saves).
 //   5. Old saves: keep, swap and map. Kinds kept; swapping twice changes nothing; map gives Laser Cannon its card.
 //   6. A made-up list of 140 cards, in one flat list as cards.json may be: everything above still holds.
 // Run: node checks/cards_pick_check.js [children, default 20000] [page]
@@ -18,6 +19,10 @@ let bad = 0; const ok = (c, what) => { if (!c) { bad++; console.log('FAIL ' + wh
 function load() { const ctx = { window: {}, Math, JSON, String, Number, Array, Object, console }; vm.createContext(ctx); vm.runInContext(block + '\nthis.G = GMQCards;', ctx); vm.runInContext(listJs, ctx); return { G: ctx.G, list: ctx.window.GMQC_LIST }; }
 const { G, list } = load(); ok(block && list, 'the page has the piece and the list');
 const L0 = G.use(list);
+// the battle thread's own starter pack code and list, run on their own, to compare packs (docs/battle/cards.html, STARTER block; docs/battle/cards.json)
+const BH = fs.readFileSync(path.join(__dirname, '..', 'docs', 'battle', 'cards.html'), 'utf8'), BSTART = (BH.match(/\/\* STARTER-BEGIN[\s\S]*?\/\* STARTER-END \*\//) || [''])[0];
+const BJSON = path.join(__dirname, '..', 'docs', 'battle', 'cards.json'), BDATA = fs.existsSync(BJSON) ? JSON.parse(fs.readFileSync(BJSON, 'utf8')) : null;
+const battlePack = BSTART && BDATA && BDATA.starter_pack ? (() => { const c = { Math }; vm.createContext(c); vm.runInContext(BSTART + '\nthis.f = starterPack;', c); return seed => c.f(BDATA, seed); })() : null;
 // a seeded stream of numbers for the made-up children (the game's own generator: rnd() in the game file)
 function stream(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) % 4294967296; return s; }; }
 const pct = (a, b) => (100 * a / b).toFixed(b >= 10000 ? 2 : 1) + '%', mean = a => a.reduce((x, y) => x + y, 0) / a.length, q = (a, p) => { const b = a.slice().sort((x, y) => x - y); return b[Math.min(b.length - 1, Math.floor(p * b.length))]; };
@@ -48,30 +53,32 @@ function allChecks(label, flat) {
     fills[rule + k] = draws;
     console.log(`  ${rule}    | ${k.padEnd(6)} | ${mean(draws).toFixed(1).padStart(5)}, ${String(q(draws, .95)).padStart(4)}, ${String(Math.max(...draws)).padStart(4)}            | ${mean(dups).toFixed(1).padStart(5)}, ${String(Math.max(...dups)).padStart(4)}         | ${maxRun} (3 or more in a row: ${pct(run3, N)} of children)`);
     if (rule === 'A') ok(Math.max(...draws) === pools[k].length, `${label}: rule A fills ${k} in exactly ${pools[k].length} cards`);
-    if (rule === 'B') ok(maxRun <= 8, `${label}: rule B: nobody gets stuck on doubles (${k}: the longest run while cards are left is ${maxRun})`);
+    if (rule === 'B') ok(maxRun <= 1, `${label}: rule B: never two doubles in a row while cards are left (${k}: the longest run is ${maxRun})`);
   }
   // a whole game: the station's 15, then cards by the game's odds, with 6 epic cards from projects
   console.log('  A whole game, by rule: what a child holds after 30, 60, 100 and 150 cards (station first; 6 epic cards from projects among them):');
   console.log('  rule | after | common found | rare found | epic found | doubles so far');
   for (const rule of ['A', 'B', 'C']) { G.rule.doubles = rule; const at = { 30: [], 60: [], 100: [], 150: [] };
     for (let i = 1; i <= Math.min(N, 5000); i++) { const r = stream(i * 13), own = []; const forced = new Set(); while (forced.size < 6) forced.add(20 + r() % 120); let dup = 0;
-      for (let c = 0; c < 150; c++) { const id = c < 15 ? G.starterNext(r(), own, 15 - c) : G.pick(r(), forced.has(c) ? 'epic' : G.rarity(r() / 4294967296), own); if (own.some(o => o.id === id)) dup++; own.push(G.record(id, ''));
+      const ps = r(); for (let c = 0; c < 150; c++) { const id = c < 15 ? G.starterNext(r(), own, 15 - c, ps) : G.pick(r(), forced.has(c) ? 'epic' : G.rarity(r() / 4294967296), own); if (own.some(o => o.id === id)) dup++; own.push(G.record(id, '', c < 15 ? { st: 1 } : null));
         if (at[c + 1]) { const h = {}; own.forEach(o => h[o.id] = 1); at[c + 1].push([pools.common.filter(x => h[x]).length, pools.rare.filter(x => h[x]).length, pools.epic.filter(x => h[x]).length, dup]); } } }
     for (const t of [30, 60, 100, 150]) { const a = at[t]; console.log(`  ${rule}    | ${String(t).padStart(5)} | ${mean(a.map(x => x[0])).toFixed(1).padStart(5)} of ${pools.common.length}  | ${mean(a.map(x => x[1])).toFixed(1).padStart(4)} of ${pools.rare.length} | ${mean(a.map(x => x[2])).toFixed(1).padStart(4)} of ${pools.epic.length} | ${mean(a.map(x => x[3])).toFixed(1)}`); } }
   G.rule.doubles = 'B';
   // 3. books differ
-  { const books = new Map(); for (let i = 1; i <= N; i++) { const r = stream(i * 31), own = []; for (let c = 0; c < 15; c++) own.push(G.record(G.starterNext(r(), own, 15 - c), '')); const key = own.map(o => o.id).sort().join(','); books.set(key, (books.get(key) || 0) + 1); }
+  { const books = new Map(); for (let i = 1; i <= N; i++) { const r = stream(i * 31), own = [], ps = r(); for (let c = 0; c < 15; c++) own.push(G.record(G.starterNext(r(), own, 15 - c, ps), '', { st: 1 })); const key = own.map(o => o.id).sort().join(','); books.set(key, (books.get(key) || 0) + 1); }
     let shared = 0; books.forEach(v => { if (v > 1) shared += v; });
     console.log(`  Books after the station's 15 cards: ${books.size} different books among ${N} children; ${shared} children share their book with someone (${pct(shared, N)}).`);
     ok(books.size > N * 0.95, `${label}: two children's books differ (at least 95 in 100 different)`); }
   // 4. the starter pack
-  const S = G.starter(); console.log(`  The starter rule (${S.source}): ${S.sure.map(s => s.say).join(', ')}; the rest ${S.rest === 'odds' ? 'by the game\'s odds' : 'common'}, never ${S.restNot.join(' or ')}.`);
+  const S = G.starter(); console.log(`  The starter rule (${S.source === 'list' ? 'the battle thread\'s, from its card list' : 'the stand-in'}): sure cards ${S.sure.map(s => s.say).join(', ')}; ` + (S.source === 'list' ? 'the pack: ' + S.slots.map(sl => sl.count + ' ' + sl.rarity + ' ' + sl.type.join('/')).join(', ') + '.' : `the rest ${S.rest === 'odds' ? 'by the game\'s odds' : 'common'}, never ${S.restNot.join(' or ')}.`));
   const isT = (id, t) => { const e = info(id); return e && (e.type === t || e.look === t); };
-  let miss = 0, spy2 = 0, guard2 = 0, last4 = 0, rares = [], epics = [], posEpic = new Array(15).fill(0), packMiss = 0, packSpy = 0;
-  for (let i = 1; i <= N; i++) { const r = stream(i * 101), own = [], task = []; const secrets = r() % 7;
+  let miss = 0, spy2 = 0, guard2 = 0, last4 = 0, rares = [], epics = [], posEpic = new Array(15).fill(0), packMiss = 0, packSpy = 0, notPack = 0, notBattle = 0, twice = 0;
+  for (let i = 1; i <= N; i++) { const r = stream(i * 101), own = [], task = [], ps = r(); const secrets = r() % 7;
     const at = new Set(); while (at.size < secrets) at.add(r() % 15);
     for (let t = 0; t < 15; t++) { if (at.has(t)) own.push(G.record(G.pick(r(), G.rarity(r() / 4294967296), own), 'a secret'));
-      const id = G.starterNext(r(), own, 15 - t); own.push(G.record(id, 'task')); task.push(id); }
+      const id = G.starterNext(r(), own, 15 - t, ps); own.push(G.record(id, 'task', { st: 1 })); task.push(id); }
+    const pk = G.starterPack(ps, []); if (task.slice().sort().join() !== pk.slice().sort().join()) notPack++; if (new Set(task).size !== task.length) twice++;
+    if (battlePack && S.source === 'list' && battlePack(ps).join() !== pk.join()) notBattle++;
     if (G.starterNeeds(own).length) miss++;
     if (task.filter(id => isT(id, 'spy')).length > 1) spy2++; if (task.filter(id => isT(id, 'guard')).length > 1) guard2++;
     rares.push(task.filter(id => info(id).rarity === 'rare').length); epics.push(task.filter(id => info(id).rarity === 'epic').length);
@@ -81,6 +88,10 @@ function allChecks(label, flat) {
   ok(!miss, `${label}: every child (${N}, with 0 to 6 secrets found between tasks) ends the station holding a Spy, a Guard, a rare and an epic card (missing: ${miss})`);
   ok(!spy2 && !guard2, `${label}: the 15 task cards never hold two Spies or two Guards (${spy2}, ${guard2})`);
   ok(!packMiss && !packSpy, `${label}: as one pack of 15: always the four sure cards, and exactly one Spy (${packMiss}, ${packSpy})`);
+  if (S.source === 'list') { ok(!notPack, `${label}: one card per task, the 15 station cards are exactly the child's pack, whatever secrets come between (${notPack} differ)`);
+    ok(!twice, `${label}: no card twice among the 15 station cards (${twice})`); }
+  if (S.source === 'list') ok(battlePack && !notBattle, `${label}: every child's pack is the one the battle thread's own code draws for that child (${N} children; ${notBattle} differ)`);
+  if (S.source === 'list') { ok(rares.every(n => n === 1) && epics.every(n => n === 1), `${label}: exactly 1 rare and 1 epic among the 15 station cards, every child`); }
   console.log(`  Rare cards among the 15 task cards: mean ${mean(rares).toFixed(2)}, fewest ${Math.min(...rares)}, most ${Math.max(...rares)}. Epic: mean ${mean(epics).toFixed(2)}, fewest ${Math.min(...epics)}, most ${Math.max(...epics)}.`);
   console.log(`  The first epic card comes at task: ${posEpic.map((n, i) => (i + 1) + ': ' + pct(n, N)).join(', ')}`);
   console.log(`  Children whose last 4 task cards are all sure cards or better (the sure cards piled up at the end): ${pct(last4, N)}`);
@@ -90,7 +101,7 @@ function allChecks(label, flat) {
   for (const k of [0, 5, 10, 12, 13, 14]) { const row = [];
     for (const way of ['keep', 'swap', 'map']) { let full = 0; for (let i = 1; i <= Math.min(N, 5000); i++) { const r = stream(i * 977 + k), old = [];
         for (let j = 0; j < k; j++) { const x = r() % 100; const nm = x < 70 ? ['Laser Cannon', 'Stealth Mode', 'Asteroid Assault'][r() % 3] : x < 95 ? ['Quantum Quell', 'Void Vortex'][r() % 2] : 'Nebula Nova'; old.push({ r: x < 70 ? 'common' : x < 95 ? 'rare' : 'gold', n: nm }); }      /* the game's own six names and odds (DECK, ODDS) */
-        const own = G.migrate(old, way, r()).cards; for (let t = k; t < 15; t++) own.push(G.record(G.starterNext(r(), own, 15 - t), 'task')); if (!G.starterNeeds(own).length) full++; }
+        const ps = r(), own = G.migrate(old, way, r()).cards; for (let t = k; t < 15; t++) own.push(G.record(G.starterNext(r(), own, 15 - t, ps), 'task', { st: 1 })); if (!G.starterNeeds(own).length) full++; }
       row.push(pct(full, Math.min(N, 5000)).padStart(7)); }
     console.log(`  ${String(k).padStart(10)} | ${row.join(' | ')}`); }
   // 5. old saves

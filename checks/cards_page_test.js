@@ -81,15 +81,16 @@ const OUT = process.argv[2], FILE = 'file://' + path.resolve(__dirname, '..', 'd
       // ---------- 4. the book: 0 cards ----------
       await go('?fresh=1&fast=1&seed=77'); await p.click('#d-book'); await p.waitForTimeout(300); L = await layer();
       const names = await p.evaluate(() => GMQCards.list().map(e => e.name));
-      ok(/Cards found: 0 of 47/.test(L.text), 'the book with no cards: "Cards found: 0 of 47"'); ok(/No cards yet/.test(L.text), 'it says how to earn the first card');
-      ok((await p.$$('.gmqc-empty')).length === 47, 'every card is an empty shape'); ok(!names.some(n => L.html.indexOf(n) >= 0), 'no card\'s name or face is in the page before it is found (words and labels)');
+      const TOT = await p.evaluate(() => GMQCards.pool('common').length + GMQCards.pool('rare').length + GMQCards.pool('epic').length);
+      ok(new RegExp('Cards found: 0 of ' + TOT).test(L.text), `the book with no cards: "Cards found: 0 of ${TOT}"`); ok(/No cards yet/.test(L.text), 'it says how to earn the first card');
+      ok((await p.$$('.gmqc-empty')).length === TOT, 'every card is an empty shape'); ok(!names.some(n => L.html.indexOf(n) >= 0), 'no card\'s name or face is in the page before it is found (words and labels)');
       ok(Math.abs(L.r[3] - L.pic[3]) < 3, 'the book fills the picture'); await shot('3_book0');
       await p.click('.gmqc-empty'); ok(/not found yet/.test(await p.textContent('#gmqc-msg')), 'an empty shape, tapped: "not found yet"');
       await p.click('#gmqc-close'); await p.waitForTimeout(200); ok(!(await layer()), 'Close my cards closes the book');
       // ---------- 5. the book: 2 cards ----------
       for (let i = 0; i < 2; i++) { await p.click('#d-task'); await p.waitForTimeout(250); await p.click('#gmqc-add'); await p.waitForTimeout(150); }
       await p.click('#d-book'); await p.waitForTimeout(300); L = await layer(); const two = (await ST()).cards.map(c => c.n);
-      ok(new RegExp('Cards found: ' + new Set((await ST()).cards.map(c => c.id)).size + ' of 47').test(L.text), 'the book with 2 cards counts them');
+      ok(new RegExp('Cards found: ' + new Set((await ST()).cards.map(c => c.id)).size + ' of ' + TOT).test(L.text), 'the book with 2 cards counts them');
       ok(two.every(n => L.text.indexOf(n) >= 0), 'both cards are in the book, with their names'); ok(!names.filter(n => two.indexOf(n) < 0).some(n => L.html.indexOf(n) >= 0), 'no other card\'s name or face is in the page');
       ok((await p.$$('.gmqc-nw')).length === 1, 'the newest card is marked New'); await shot('4_book2');
       ok(await p.$$eval('.gmqc-sec', ss => ss.every(sec => { const t = [...sec.querySelectorAll('.gmqc-tile')]; const fe = t.findIndex(x => x.classList.contains('gmqc-empty')); return fe < 0 || t.slice(fe).every(x => x.classList.contains('gmqc-empty')); })), 'in each kind, the child\'s own cards come before the shapes still to find');
@@ -105,7 +106,7 @@ const OUT = process.argv[2], FILE = 'file://' + path.resolve(__dirname, '..', 'd
         await p.click('#gmqc-add'); await p.waitForTimeout(400); L = await layer(); ok(L && L.text.indexOf(wn) >= 0 && !/Waiting for you/.test(L.text), 'added, the book shows it in its place'); await p.click('#gmqc-close'); await p.waitForTimeout(200); }
       // ---------- 7. the book: 150 cards ----------
       await go('?fresh=1&fast=1&many=150'); const tB = Date.now(); await p.click('#d-book'); await p.waitForSelector('.gmqc-tile'); const tBook = Date.now() - tB; L = await layer();
-      ok(/Cards found: 47 of 47/.test(L.text), 'a book of 150 cards: 47 of 47 found'); ok((await p.$$('.gmqc-x2')).length > 20, 'doubles show how many (×2, ×3...)'); ok(tBook < 3000, `it opens quickly (${tBook} ms)`);
+      ok(new RegExp('Cards found: ' + TOT + ' of ' + TOT).test(L.text), `a book of 150 cards: ${TOT} of ${TOT} found`); ok((await p.$$('.gmqc-x2')).length > 20, 'doubles show how many (×2, ×3...)'); ok(tBook < 3000, `it opens quickly (${tBook} ms)`);
       { const capOver = await p.$$eval('.gmqc-cap', cs => cs.filter(c => c.scrollWidth > c.clientWidth + 1).length), tileW = await p.$eval('.gmqc-tile', t => t.getBoundingClientRect().width);
         ok(!capOver, 'no name under a card runs wider than the card'); ok(tileW >= 90, `a card in the book is ${Math.round(tileW)} pixels wide`); }
       await shot('7_book150'); await p.click('[data-j="epic"]'); await p.waitForTimeout(200); ok(await p.$eval('.gmqc-bk', x => x.scrollTop > 0), 'Epic jumps down to the epic cards'); await shot('7b_epic');
@@ -116,10 +117,14 @@ const OUT = process.argv[2], FILE = 'file://' + path.resolve(__dirname, '..', 'd
       await p.click('#d-task'); await p.waitForTimeout(400); ok((await p.$$('.gmqc-pt')).length === 15, 'after the 15th task: a pack of 15 cards, face down');
       ok(await p.$$eval('.gmqc-pt', ts => ts.every(t => /face down/.test(t.getAttribute('aria-label')))), 'every card says face down until turned');
       ok(await p.evaluate(() => GMQCards.starterNeeds(GMQ_DEMO.state().cards).length === 0), 'the pack holds a Spy, a Guard, a rare and an epic card'); await shot('8_pack');
+      ok(await p.evaluate(() => { const S = GMQ_DEMO.state(); return S.cards.map(c => c.id).join() === GMQCards.starterPack(S.packSeed).join(); }), "the pack is the child's own starter pack (the battle thread's rule)");
       await p.click('.gmqc-pt'); await p.waitForTimeout(300); ok(!/face down/.test(await p.getAttribute('.gmqc-pt', 'aria-label')), 'a tap turns a card over');
       await p.click('#gmqc-all'); await p.waitForTimeout(300); ok(!!(await p.$('#gmqc-add')), 'Turn them all, then "Add them to my cards"'); await shot('8b_turned');
       await p.click('.gmqc-pt'); await p.waitForTimeout(300); F = await fits(); ok(F.scroll <= 1 && F.cardIn, 'a card from the pack, read big'); await p.click('#gmqc-back'); await p.waitForTimeout(200);
       await p.click('#gmqc-add'); await p.waitForTimeout(300); ok((await ST()).cards.filter(c => !c.unseen).length === 15, 'all 15 are added');
+      // one card after each task: after the 15th, the station's cards are the child's own pack
+      await go('?fresh=1&fast=1&arrive=one&seed=5'); for (let i = 0; i < 15; i++) { await p.click('#d-task'); await p.waitForTimeout(60); await p.click('#gmqc-add'); await p.waitForTimeout(40); }
+      ok(await p.evaluate(() => { const S = GMQ_DEMO.state(); return S.cards.filter(c => c.st).map(c => c.id).sort().join() === GMQCards.starterPack(S.packSeed).slice().sort().join(); }), "one card after each task: the 15 cards are the child's own starter pack");
       // ---------- 9. old saves ----------
       await go('?fresh=1&fast=1&old=6&oldway=swap&seed=8'); ok((await p.$$('.gmqc-pt')).length === 6, 'an old save, swap: its 6 old cards come as 6 new cards, face down');
       ok(/The cards are new/.test((await layer()).text), 'it says the cards are new'); await p.click('#gmqc-all'); await p.waitForTimeout(200); await shot('9_old_swap'); await p.click('#gmqc-add'); await p.waitForTimeout(200);

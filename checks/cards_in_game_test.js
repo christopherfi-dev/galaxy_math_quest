@@ -33,7 +33,7 @@ const HOST = `window.CARDS_HOST = { stage: () => document.querySelector('.stage'
     try {
       await boot(); await p.evaluate(() => { skipIntro(); S.storyTold = true; save(); }); await p.waitForTimeout(400); await p.evaluate(() => { try { readOk(true); } catch (e) {} });
       // a card earned at the station
-      await p.evaluate(() => { const r = GMQCards.record(GMQCards.starterNext(rnd(2147483647), S.cards, 15), 'For the Energy Grid task, in the Shield Bay.'); S.cards.push(r); save(); drawCards(S.cards.length - 1);
+      await p.evaluate(() => { const r = GMQCards.record(GMQCards.starterNext(rnd(2147483647), S.cards, 15, S.packSeed = S.packSeed || rnd(2147483646) + 1), 'For the Energy Grid task, in the Shield Bay.', { st: 1 }); S.cards.push(r); save(); drawCards(S.cards.length - 1);
         window.__done = null; GMQCards.show(CARDS_HOST, r, r.why, why => { window.__done = why; }); }); await p.waitForTimeout(400);
       let G = await geo(); ok(G && Math.abs(G.r[0] - G.s[0]) <= 2 && Math.abs(G.r[1] - G.s[1]) <= 2 && Math.abs(G.r[2] - G.s[2]) <= 2 && Math.abs(G.r[3] - G.s[3]) <= 2, `the card fills the game's picture exactly (card layer ${G && G.r}, picture ${G && G.s})`);
       ok(G.centre === 'cards' && G.place === 'cards', `it is on top of the picture and of the place name (${G.centre}, ${G.place})`); ok(G.scroll <= 1 && G.cardIn, `the words fit with no scrolling, and the card is inside the picture (${G.scroll})`);
@@ -61,7 +61,7 @@ const HOST = `window.CARDS_HOST = { stage: () => document.querySelector('.stage'
       await p.click('#gmqc-back'); await p.click('#gmqc-close'); await p.waitForTimeout(300); ok(!(await geo()) && (await p.evaluate(() => window.__done)) === 'closed', 'Close my cards: the game hears "closed"');
       // the book, 150 cards
       await p.evaluate(() => { const ids = [].concat(GMQCards.pool('common'), GMQCards.pool('rare'), GMQCards.pool('epic')); for (let i = 0; i < 148; i++) { const r = GMQCards.record(i < ids.length ? ids[i] : GMQCards.pick(rnd(2147483647), GMQCards.rarity(rnd(1000) / 1000), S.cards), 'Made up for the test.'); delete r.unseen; S.cards.push(r); } save(); GMQCards.book(CARDS_HOST, S.cards, () => {}); });
-      await p.waitForTimeout(600); ok(/Cards found: 47 of 47/.test(await p.evaluate(() => document.querySelector('.gmqc').innerText)), 'a book of 150 cards in the game'); await shot('5_book150');
+      await p.waitForTimeout(600); { const tot = await p.evaluate(() => GMQCards.pool('common').length + GMQCards.pool('rare').length + GMQCards.pool('epic').length); ok(new RegExp('Cards found: ' + tot + ' of ' + tot).test(await p.evaluate(() => document.querySelector('.gmqc').innerText)), 'a book of 150 cards in the game'); } await shot('5_book150');
       ok(await p.evaluate(() => { const t = document.querySelector('.gmqc-tile').getBoundingClientRect(); return t.width >= 90; }), 'its cards are 90 pixels wide or more'); await p.click('#gmqc-close'); await p.waitForTimeout(200);
       // closed while a card shows, and opened again
       await p.evaluate(() => { S.cards.length = 0; const r = GMQCards.record(GMQCards.pick(5, 'epic', S.cards), 'For finishing every job on Chronosia.'); S.cards.push(r); save(); GMQCards.show(CARDS_HOST, r, r.why, () => {}); }); await p.waitForTimeout(300);
