@@ -106,7 +106,7 @@ The battle itself is yours, and its rules are Marc's. The server keeps decks, pi
 | `{ action: 'battle_start', rival, kind: 'friendly' \| 'challenge' }` | `{ battle, kind, rule, status, seed, minutes, you: { deck, stake }, rival: { name, deck, stake } }`. A friendly battle has `status: 'on'` at once. A challenge has `status: 'offered'`: **show both cards at stake first** [Source: Marc: "each player sees it before agreeing"]. |
 | `{ action: 'battle_accept', battle }` | `{ status: 'on' }`. Now it counts. |
 | `{ action: 'battle_cancel', battle }` | Backing out, only before agreeing. Nothing moves. |
-| `{ action: 'battle_end', battle, result: 'won' \| 'lost' \| 'tie', log }` | `{ result, moved, cards }`. `result` is from the challenger's side. `log` is optional and small (under 20,000 characters): what happened, for the teacher. `cards` is the challenger's new card list. |
+| `{ action: 'battle_end', battle, result: 'won' \| 'lost' \| 'tie', log, record }` | `{ result, moved, cards }`. `result` is from the challenger's side. `log` is optional and small (under 20,000 characters): what happened, for the teacher. `cards` is the challenger's new card list. |
 
 **What the battle piece needs to do:**
 - play the rival's deck by the computer, from `rival.deck`, with `seed` if it wants the same deal again (a later check could replay a battle from it)
@@ -118,7 +118,7 @@ The battle itself is yours, and its rules are Marc's. The server keeps decks, pi
 **Errors a child may meet** (show the server's `error` words; they are written for children):
 "That classmate is in another battle. Try again soon." · "Finish your other battle first." · "You need a rare or epic card in your deck to challenge." · "That is enough battles for one hour. Try again later."
 
-**A known gap:** the server cannot check who won. The page says so. A child with the know-how could claim a win. Fixing it needs the battle engine on the server, to replay the battle from `seed` and `log`. [Proposal, later]
+**Checking who won (closed on the Desk, 26 November, night):** send `record` (the battle piece's `result.record`: `{ start, rec }`) with `battle_end`. The server keeps it with the decks it dealt. The Desk's "Check who won" builds the classmate's deck again from those cards and the server's seed, plays the record again with `GMQBattle.replay`, and compares the winner with the one claimed (`checks/server_battle_check_test.js`). A battle ended without a record cannot be checked.
 
 ---
 

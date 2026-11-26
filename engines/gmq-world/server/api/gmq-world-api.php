@@ -425,7 +425,7 @@ if (strpos($action, 't_') === 0) {
         });
         out(['ok' => true]);
     }
-    if ($action === 't_board' || $action === 't_battles') { require __DIR__ . '/gmq-world-cards.php'; teacherCards($action, $code, $class); }
+    if ($action === 't_board' || $action === 't_battles' || $action === 't_battle_record') { require __DIR__ . '/gmq-world-cards.php'; teacherCards($action, $code, $class); }
     $id = slug((string)($in['id'] ?? '')); $path = studentPath($code, $id); if (!is_file($path)) fail('No such cadet.', 404);
     if ($action === 't_name') {
         $s = withLocks([cadetLock($code, $id)], static function () use ($path, $in) { $s = readJson($path); if (!$s) fail('No such cadet.', 404);

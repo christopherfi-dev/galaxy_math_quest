@@ -149,7 +149,35 @@ async function openClass(code) { const r = await call({ action: 't_class', class
   const bt = await call({ action: 't_battles', class: code }), all = bt.ok ? bt.open.concat(bt.done) : [];
   $('battlebox').hidden = !all.length && (r.class.battles || 'off') === 'off';
   $('battlelist').innerHTML = all.length ? all.slice(0, 60).map(b => `<tr><td>${when(b.when)}</td><td>${esc(b.a)} battled ${esc(b.b)}'s deck</td><td>${esc(RULES[b.rule] || b.kind)}</td>
-    <td>${b.status === 'done' ? `${b.result === 'won' ? esc(b.a) + ' won' : b.result === 'lost' ? esc(b.b) + "'s deck won" : 'a tie'}${b.moved ? ` · ${esc(b.moved)} ${b.rule === 'away-safe' && b.result === 'won' ? 'copied to' : 'moved to'} ${esc(b.result === 'won' ? b.a : b.b)}` : ''}` : `<span class="note">${esc(b.status === 'on' || b.status === 'offered' ? 'playing now' : b.status)}</span>`}${b.log ? `<details><summary class="note">What happened</summary><div class="note" style="white-space:pre-wrap">${esc(b.log)}</div></details>` : ''}</td></tr>`).join('') : '<tr><td colspan="4" class="note">No battles yet.</td></tr>'; }
+    <td>${b.status === 'done' ? `${b.result === 'won' ? esc(b.a) + ' won' : b.result === 'lost' ? esc(b.b) + "'s deck won" : 'a tie'}${b.moved ? ` · ${esc(b.moved)} ${b.rule === 'away-safe' && b.result === 'won' ? 'copied to' : 'moved to'} ${esc(b.result === 'won' ? b.a : b.b)}` : ''}` : `<span class="note">${esc(b.status === 'on' || b.status === 'offered' ? 'playing now' : b.status)}</span>`}${b.log ? `<details><summary class="note">What happened</summary><div class="note" style="white-space:pre-wrap">${esc(b.log)}</div></details>` : ''}${b.checkable ? `<div class="row" style="margin-top:4px"><button type="button" class="quiet" data-check="${esc(b.battle)}">Check who won</button><span class="note" data-checked="${esc(b.battle)}"></span></div>` : ''}</td></tr>`).join('') : '<tr><td colspan="4" class="note">No battles yet.</td></tr>';
+  document.querySelectorAll('#battlelist button[data-check]').forEach(btn => btn.onclick = async () => { const out = document.querySelector(`[data-checked="${btn.dataset.check}"]`); btn.disabled = true; out.textContent = 'Playing it again…';
+    const said = await checkBattle(btn.dataset.check); out.textContent = said; out.className = /^✓/.test(said) ? 'good' : /^✗/.test(said) ? 'bad' : 'note'; btn.disabled = false; }); }
+/* Check who won a challenge: the battle's record (its start and the challenger's choices) is played again with the battle thread's own
+   engine, and the classmate's deck in it is built again from the cards the server sent. The page reports who won; this checks it. */
+let PIECE = null;
+function loadPiece() { if (!PIECE) PIECE = new Promise(res => { if (window.GMQBattleOwn) return res(true); const sc = document.createElement('script'); sc.src = 'battle-piece.js'; sc.onload = () => res(!!window.GMQBattleOwn); sc.onerror = () => res(false); document.head.appendChild(sc); }); return PIECE; }
+function engine() { return new Promise(res => { const holder = document.createElement('div'); holder.style.display = 'none'; document.body.appendChild(holder);
+  GMQBattleOwn.open({ root: holder }, { cards: [], seed: 1, back: '' }, () => { holder.remove(); });
+  let n = 0; const tm = setInterval(() => { const f = holder.querySelector('iframe'), G = f && f.contentWindow && f.contentWindow.GMQBattle; if (G && G.replay && G.ownDeck) { clearInterval(tm); res(G); } else if (++n > 80) { clearInterval(tm); res(null); } }, 100); }); }
+async function checkBattle(bid) {
+  const r = await call({ action: 't_battle_record', class: current, battle: bid }); if (!r.ok) return r.error;
+  if (!(await loadPiece())) return 'The battle (battle-piece.js) is not in this folder, so it cannot be played again here.';
+  const G = await engine(); if (!G) { GMQBattleOwn.close(); return 'The battle did not open, so it cannot be played again here.'; }
+  try {
+    const st = r.record.start || {}, notes = [], parts = {}; (GMQBattleOwn.cardList().parts || []).forEach(p => { parts[p.id] = 1; });
+    const ids = list => GMQBattleOwn.idsOf(list || []).filter(i => !parts[i]);
+    if (!r.seed_ok) notes.push('the record does not use the seed the server gave');
+    const foe = G.ownDeck(ids(r.decks && r.decks.b), r.seed, 'card', null).deck.slice().sort().join(), recFoe = (st.decks && st.decks[1] || []).slice().sort().join();
+    if (foe !== recFoe) notes.push("the classmate's deck in the record is not the one the server sent");
+    const mine = ids(r.decks && r.decks.a), left = {}; mine.forEach(i => { left[i] = (left[i] || 0) + 1; }); let lent = 0; (st.decks && st.decks[0] || []).forEach(i => { if (left[i]) left[i]--; else lent++; });
+    if (lent > Math.max(0, 15 - mine.length) + 1) notes.push("the challenger's deck has cards that are not theirs");
+    let S = null; try { S = G.replay(JSON.parse(JSON.stringify(st)), JSON.parse(JSON.stringify(r.record.rec || []))); } catch (e) { notes.push('the record cannot be played again (' + e.message + ')'); }
+    if (S) { const w = S.over ? S.over.winner : null, played = w === 0 ? 'won' : w === 1 ? 'lost' : w === -1 ? 'tie' : 'not finished';
+      if (S.bad) notes.push(S.bad + (S.bad === 1 ? ' choice' : ' choices') + ' in the record are not allowed by the rules');
+      if (played !== r.claimed) notes.push(`played again, the challenger ${{ won: 'wins', lost: 'loses', tie: 'ties' }[played] || 'does not finish'}, but the page said "${r.claimed}"`); }
+    return notes.length ? '✗ Does not match: ' + notes.join('; ') + '.' : `✓ Checked: played again from its record, it ends the same way (${{ won: 'the challenger won', lost: "the classmate's deck won", tie: 'a tie' }[r.claimed]}).`;
+  } catch (e) { return 'The record could not be played again (' + e.message + ').'; } finally { GMQBattleOwn.close(); }
+}
 async function cadetAct(a, id, name) { let r;
   if (a === 'yes' || a === 'no') r = await call({ action: 't_name', class: current, id, ok: a === 'yes' });
   else if (a === 'number') { const pin = prompt('New 4-digit secret number for this cadet:'); if (pin == null) return; r = await call({ action: 't_reset', class: current, id, what: 'number', pin }); }

@@ -12,8 +12,9 @@ A small PHP server, built like your Math Skills engine: one API, flat JSON files
 |---|---|
 | Remembers each cadet's game, on any device | Mark the maths. The page still does that. |
 | Keeps your codes for the real-life tasks, so they are not in the page | Hold the world's facts. The page sends the AI its "world slice". |
-| Holds a new ship name until you approve it | Check who won a battle. The page says so. |
+| Holds a new ship name until you approve it | |
 | Shows you the whole class on one page, with older copies of a game to bring back | |
+| Checks who won a challenge, on the Desk, by playing the battle's record again ("Check who won") | Check it by itself: you press the button |
 | Lets only the newest device of a cadet save, so an older iPad cannot spoil a newer game | |
 | A server check, and a first-time password setup with no command line | |
 | (Off until you turn it on) a class card board, and battles against a classmate's saved deck | |
@@ -103,6 +104,7 @@ Open `http://localhost:8080/teacher.html`. The server check says what is missing
 | `checks/server_cards_check.js` | (0.3) the server knows all 118 cards as the list has them, and its starter pack is the battle thread's on 20,000 seeds |
 | `checks/server_catalogue_test.js` | (0.3) with the card list: a card by id or name is one card; the list, not the page, says the kind; ship parts stay out of decks; the test starter pack |
 | `checks/server_review_test.js` | (0.3.1) the 14 faults an independent review found, each played again: `{}` kept as `{}`; real names (Pornthip, Siriporn, Poo...) allowed and curses refused; copies kept and never pushed out by smaller ones; no card in two books after a copy is brought back; the teacher lock under many tries at once; logs in any letters; codes starting with 0; late battles; and more |
+| `checks/server_battle_check_test.js` | (0.3.1) "Check who won" on the Desk: an honest battle, a false claim and a weakened classmate deck, played by a made-up child with the battle thread's engine |
 | `checks/server_wiring_test.js` | (0.3) the game's NET wiring (`../wiring/`), made in a copy of the game and played against the server |
 | `checks/server_cards_page_test.js` | (0.3) the test page in a browser: two pretend cadets, a starter pack each, the board, a challenge backed out and then won, the battle over the whole screen, the news, three sizes |
 
