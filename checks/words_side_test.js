@@ -19,7 +19,7 @@ const { chromium } = require('playwright'); const path = require('path');
     await p.goto(FILE); await p.waitForTimeout(400);
     const ok = (c, what) => { if (!c) bad.push(`${name}: ${what}`); };
     const shot = async n => { if (out) { await p.waitForTimeout(300); await p.screenshot({ path: path.join(out, `wside_${name}_${n}.png`) }); } };
-    const where = () => p.evaluate(() => { const lg = document.querySelector('.log'), r = lg.getBoundingClientRect(), c = cv.getBoundingClientRect(); return { side: lg.parentNode.id === 'side', top: Math.round(r.top), bottom: Math.round(r.bottom), shown: getComputedStyle(lg).display !== 'none' && r.height > 0, picH: Math.round(c.height), picW: Math.round(c.width), ts, wide: document.body.classList.contains('sidecol'), cls: document.body.classList.contains('wside') }; });
+    const where = () => p.evaluate(() => { const lg = $('log').parentNode, r = lg.getBoundingClientRect(), c = cv.getBoundingClientRect(); return { side: lg.parentNode.id === 'side', top: Math.round(r.top), bottom: Math.round(r.bottom), shown: getComputedStyle(lg).display !== 'none' && r.height > 0, picH: Math.round(c.height), picW: Math.round(c.width), ts, wide: document.body.classList.contains('sidecol'), cls: document.body.classList.contains('wside') }; });
     const sw = async on => { await p.evaluate(on => { $('wsideOn').checked = on; $('wsideOn').onchange(); }, on); await p.waitForTimeout(400); };
     try {
       await p.evaluate(() => { skipIntro(); }); await p.waitForTimeout(400);
