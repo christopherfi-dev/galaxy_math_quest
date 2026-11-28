@@ -2433,15 +2433,15 @@ function drawObj(id) {
     cx.strokeStyle = on ? '#6fd08a' : (alarm > 0 && Math.sin(tNow * 12) > 0 ? '#ff5a4d' : '#59657a'); cx.lineWidth = 2.5; if (id === 'panel') { cx.beginPath(); cx.moveTo(X + s * .5, Y + s * .25); cx.lineTo(X + s * .68, Y + s * .31); cx.lineTo(X + s * .64, Y + s * .46); cx.lineTo(X + s * .5, Y + s * .52); cx.lineTo(X + s * .36, Y + s * .46); cx.lineTo(X + s * .32, Y + s * .31); cx.closePath(); cx.stroke(); }
     else { f('#d2553a'); circ(X + s * .5, Y + s * .38, s * .16); cx.fill(); ol(2); f('rgba(255,255,255,.4)'); circ(X + s * .45, Y + s * .33, s * .05); cx.fill(); f(S.parts.includes('Navigation') ? '#6fd08a' : '#f0c23b'); rr(x0 + s * .16, Y + s * .28, s * .34, s * .12, 2); cx.fill(); }
     for (let i = 0; i < 4; i++) { f(Math.sin(tNow * 3 + i * 2) > 0 ? '#ffb23e' : '#6db3ff'); cx.fillRect(x0 + s * (.14 + i * (wd - .3) / 4), Y + s * .68, s * .12, s * .1); } }
-  else if (id === 'trainer') { const on = tasksDone() >= 15, wd = 1.66, x0 = X + s - s * wd / 2, top = Y - s * .3, sh = s * .62, mx = X + s;      /* [v105] the training screen: dark until the 15 station tasks are done; awake, two practice ships face each other on it */
-    f('rgba(0,0,0,.3)'); cx.beginPath(); cx.ellipse(mx, Y + s * .84, s * .78, s * .13, 0, 0, 7); cx.fill();
-    f('#2a3346'); for (const lx of [-.5, .38]) { rr(mx + s * lx, Y + s * .5, s * .12, s * .36, 2); cx.fill(); ol(1.5); } rr(mx - s * .66, Y + s * .78, s * 1.32, s * .1, 3); cx.fill(); ol(1.5);
-    f('#394660'); rr(x0, top, s * wd, s * .84, 7); cx.fill(); ol(2);
+  else if (id === 'trainer') { const on = tasksDone() >= 15, wd = 1.66, x0 = X + s - s * wd / 2, top = Y - s * .12, sh = s * .58, mx = X + s;      /* [v105] the training screen: dark until the 15 station tasks are done; awake, two practice ships face each other on it */
+    f('rgba(0,0,0,.3)'); cx.beginPath(); cx.ellipse(mx, Y + s * .87, s * .78, s * .12, 0, 0, 7); cx.fill();
+    f('#2a3346'); for (const lx of [-.5, .38]) { rr(mx + s * lx, Y + s * .62, s * .12, s * .24, 2); cx.fill(); ol(1.5); } rr(mx - s * .66, Y + s * .8, s * 1.32, s * .1, 3); cx.fill(); ol(1.5);
+    f('#394660'); rr(x0, top, s * wd, s * .8, 7); cx.fill(); ol(2);
     f(on ? '#0c1a33' : '#111a2a'); rr(x0 + s * .08, top + s * .08, s * (wd - .16), sh, 4); cx.fill(); ol(1.5);
-    if (on) { cx.save(); rr(x0 + s * .08, top + s * .08, s * (wd - .16), sh, 4); cx.clip(); const g = cx.createRadialGradient(mx, top + s * .4, 0, mx, top + s * .4, s * .9); g.addColorStop(0, 'rgba(110,180,255,.35)'); g.addColorStop(1, 'rgba(110,180,255,0)'); f(g); cx.fillRect(x0, top, s * wd, s * .8);
-      const bob = calm ? 0 : Math.sin(tNow * 2) * s * .025, cy = top + s * .39, L = s * .5; rocket(mx - s * .42, cy + bob, L, 0, {}); rocket(mx + s * .42, cy - bob, L, Math.PI, { col: '#ffd7cf', col2: '#7a3fd0' });
+    if (on) { cx.save(); rr(x0 + s * .08, top + s * .08, s * (wd - .16), sh, 4); cx.clip(); const g = cx.createRadialGradient(mx, top + s * .37, 0, mx, top + s * .37, s * .9); g.addColorStop(0, 'rgba(110,180,255,.35)'); g.addColorStop(1, 'rgba(110,180,255,0)'); f(g); cx.fillRect(x0, top, s * wd, s * .8);
+      const bob = calm ? 0 : Math.sin(tNow * 2) * s * .025, cy = top + s * .37, L = s * .5; rocket(mx - s * .42, cy + bob, L, 0, {}); rocket(mx + s * .42, cy - bob, L, Math.PI, { col: '#ffd7cf', col2: '#7a3fd0' });
       if (calm || Math.sin(tNow * 5) > 0) { cx.strokeStyle = '#ffd25e'; cx.lineWidth = Math.max(1.5, s * .035); cx.setLineDash([s * .07, s * .05]); cx.beginPath(); cx.moveTo(mx - s * .14, cy + bob); cx.lineTo(mx + s * .1, cy); cx.stroke(); cx.setLineDash([]); } cx.restore(); }
-    f(on ? '#6fd08a' : (Math.sin(tNow * 1.5) > 0 ? '#a33a32' : '#59657a')); circ(x0 + s * (wd - .18), top + s * .77, s * .045); cx.fill(); }
+    f(on ? '#6fd08a' : (Math.sin(tNow * 1.5) > 0 ? '#a33a32' : '#59657a')); circ(x0 + s * (wd - .18), top + s * .73, s * .04); cx.fill(); }
   else if (id === 'grate'){ f('#141d2b'); rr(X + s * .1, Y + s * .1, s * .8, s * .8, 5); cx.fill(); ol(2); cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; for (let i = 1; i < 5; i++) { cx.beginPath(); cx.moveTo(X + s * (.1 + i * .16), Y + s * .14); cx.lineTo(X + s * (.1 + i * .16), Y + s * .86); cx.stroke(); } if (!S.grate) { f(`rgba(255,220,110,${.55 + .45 * Math.sin(tNow * 3)})`); rr(X + s * .4, Y + s * .44, s * .2, s * .13, 2); cx.fill(); } }
   else if (id === 'robot') botDraw(X + s / 2, Y + s / 2, false);
   else if (id === 'poster') { cx.save(); cx.translate(X + s * .5, Y + s * .06); if (S.poster) cx.rotate(.7); f('#fbf3dc'); cx.beginPath(); cx.moveTo(-s * .4, 0); cx.lineTo(s * .4, 0); cx.lineTo(s * .4, s * .62); cx.lineTo(s * .26, s * .76); cx.lineTo(-s * .4, s * .76); cx.closePath(); cx.fill(); ol(2); f('#d9cba6'); cx.beginPath(); cx.moveTo(s * .4, s * .62); cx.lineTo(s * .26, s * .62); cx.lineTo(s * .26, s * .76); cx.closePath(); cx.fill(); ol(1.5);
@@ -4812,6 +4812,64 @@ function cardsStart() { try { if (!S.packSeed) { S.packSeed = rnd(2147483646) + 
     if (S.cards.some(c => c && !c.id) && !S.cardsMoved) { const m = GMQCards.migrate(S.cards, 'swap', rnd(2147483647)); S.cards = m.cards; S.cardsMoved = true; save(); drawCards(); drawStatus();
       if (m.changed.length && !window.GMQ_NO_CARDPOP) { widget = { kind: 'cards' }; GMQCards.showPack(CARDS_HOST, m.changed, 'The cards are new! Each of your old cards is a new card now, of the same kind.', () => { if (widget && widget.kind === 'cards') widget = null; drawCards(); cardsSoon(); }); return; } }
   } catch (e) {} cardsSoon(); }
+
+/* =====================================================================
+   [v105] PRACTICE BATTLES WITH YOUR OWN CARDS, AT THE LAUNCH BAY.
+   [Source: Marc, 2026-11-28: the battle opens at the Launch Bay, after the station's 15 tasks ("Yes"); "you only get the battle like two or three times and then
+   you have to go and do more quests and some more problems". The children love their cards and the battle.]
+   The battle thread's piece (GMQBattleOwn, above) opens from the training screen in the Launch Bay. Wiring: proposals/GMQ_Card_Battle_Wiring_v1_2026-11-26.md, sections 3 and 11.
+   [Proposal: the main thread's pick; Marc may change both numbers] BAT_START practice battles to start; after that, each one costs BAT_COST quarters of practice credit.
+   A battle counts only when it ends (the piece's over(), or done() with why 'finished'; once, by its own seed). Leaving in the middle costs nothing: the battle keeps itself,
+   and GMQBattleOwn.inProgress() says so. A battle left half-way can always be finished, even with none left (it was started while there was one).
+   again: false, so the end of a battle offers no "Battle again": every battle starts here, where the screen says how many are left.
+   The game never reads the battle's own save. It removes it only on Start again (restart), so a new cadet does not go on with the last cadet's battle. */
+const BAT_START = 3;      /* practice battles every cadet starts with */
+const BAT_COST = 4;       /* quarters (S.q4) turned in for 1 more battle: 1 whole practice credit */
+const BAT_KEY = 'gmq_battle_own_v1';      /* the battle's own save, removed on Start again only */
+let BATRUN = null;        /* the battle open now: { done: it has been counted } */
+function BAT() { if (!S.bat || typeof S.bat !== 'object') S.bat = { used: 0, bought: 0 }; return S.bat; }      /* an old save has none: BAT_START left */
+function batLeft() { const b = BAT(); return Math.max(0, BAT_START + (b.bought || 0) - (b.used || 0)); }
+function batHalf() { try { return typeof GMQBattleOwn !== 'undefined' ? GMQBattleOwn.inProgress() : null; } catch (e) { return null; } }      /* { round, rounds } or null */
+const batWords = n => `You have ${n} practice battle${n === 1 ? '' : 's'} left.`;
+/* a battle that ended counts once: by its seed (result.record.start.seed), or once for this opening if it has none. Never below 0 left. */
+function batEnded(r) { r = r || {}; const b = BAT(), id = r.record && r.record.start && r.record.start.seed ? r.record.start.seed : 0;
+  if (id ? b.last === id : !BATRUN || BATRUN.done) return; if (id) b.last = id; if (BATRUN) BATRUN.done = true;
+  if ((b.used || 0) < BAT_START + (b.bought || 0)) b.used = (b.used || 0) + 1;
+  const n = +r.rounds || 0; S.log.push({ what: 'A practice battle', skill: 'A battle with your own cards', result: `${r.winner === 0 ? 'won' : r.winner === 1 ? 'lost' : 'nobody won'}, ${n} round${n === 1 ? '' : 's'}` }); save(); }
+/* the training screen, tapped (any of look, use, talk, open, push) */
+function batTap() { const n = 15 - tasksDone();
+  if (n > 0) { const k = batLeft(); return `The training screen is asleep. It wakes when all 15 station tasks are done. You have ${n} task${n === 1 ? '' : 's'} left. Then you get ${k} practice battle${k === 1 ? '' : 's'}, with your own cards.`; }
+  batPanel(); return 'The training screen lights up.'; }
+/* where quarters come from today: only the ways the teacher has switched on */
+function batEarn() { const w = WISPON.on, r = RATON.on;
+  return w && r ? 'Catch a time wisp on Chronosia, or beat a band of mud rats on Voltara. Each one gives ¼ of a credit.' : w ? 'Catch a time wisp on Chronosia. Each one gives ¼ of a credit.'
+    : r ? 'Beat a band of mud rats on Voltara. Each band gives ¼ of a credit.' : 'Ask your teacher how to earn practice credits.'; }
+function batNeed(q4) { const need = BAT_COST - q4, qs = k => `${k} quarter${k === 1 ? '' : 's'}`;
+  return (q4 ? `You have ${qs(q4)}: ${fmtQ(q4)}${q4 < 4 ? ' of a credit' : ' ' + qWord(q4)}.` : 'You have no quarters yet.') + ` You need ${q4 ? need + ' more' : need} quarter${need === 1 ? '' : 's'} for 1 battle.`; }
+function batPanel(note) { const left = batLeft(), half = batHalf(), q4 = S.q4 || 0, cost = `${fmtQ(BAT_COST)} ${qWord(BAT_COST)}`, out = '<button class="btn quiet" type="button" id="leave">Leave</button>';
+  widget = { kind: 'trainer' };
+  let h = `<p class="eyebrow">Launch Bay · training screen</p><h3>Practice battles</h3><p class="story">The station's training crew flies a practice ship against you. You battle with your own cards.</p><p class="q">${batWords(left)}</p>`;
+  if (half) h += `<p>Your last battle is not finished. It waits for you on round ${half.round}.</p><div class="field"><button class="btn" type="button" id="try">Finish my battle</button>${out}</div>`;
+  else if (left > 0) h += `<p class="note">A battle counts when it ends. If you leave in the middle, it waits for you.</p><div class="field"><button class="btn" type="button" id="try">Start a practice battle</button>${out}</div>`;
+  else h += `<p>To get more battles, earn practice credits. 4 quarters make 1 whole credit. ${cost} ${BAT_COST > 4 ? 'give' : 'gives'} 1 battle.</p><p class="note">${batEarn()}</p>` +
+    (q4 >= BAT_COST ? `<p>You have ${fmtQ(q4)} ${qWord(q4)}.</p><div class="field"><button class="btn" type="button" id="buy">Turn in ${cost} for 1 battle</button>${out}</div>` : `<p>${batNeed(q4)}</p><div class="field">${out}</div>`);
+  toy(h + `<div class="msg good" id="msg" role="status">${esc(note || '')}</div>`);
+  $('leave').onclick = () => { closeToy(); say('You step back from the training screen.'); };
+  if ($('try')) $('try').onclick = batGo;
+  const b = $('buy'); if (b) b.onclick = () => { if (b.dataset.sure) return batBuy(); const t = b.textContent; b.dataset.sure = '1'; b.textContent = 'Are you sure? Tap again'; setTimeout(() => { if (document.body.contains(b)) { delete b.dataset.sure; b.textContent = t; } }, 4000); }; }
+function batBuy() { if ((S.q4 || 0) < BAT_COST || batLeft() > 0 || batHalf()) return; S.q4 -= BAT_COST; const b = BAT(); b.bought = (b.bought || 0) + 1;
+  S.log.push({ what: 'Practice credits turned in', skill: `${fmtQ(BAT_COST)} ${qWord(BAT_COST)} = ${BAT_COST} quarters`, result: '1 practice battle' }); save(); chime(); drawCards(); drawStatus();
+  batPanel(`You turn in ${fmtQ(BAT_COST)} ${qWord(BAT_COST)} for 1 battle. You have ${S.q4 ? fmtQ(S.q4) + ' ' + qWord(S.q4) : 'no credits'} left.`); }
+function batGo() { if (typeof GMQBattleOwn === 'undefined' || GMQBattleOwn.isOpen()) return; if (!batHalf() && batLeft() <= 0) return batPanel();
+  if (!S.packSeed) S.packSeed = rnd(2147483646) + 1;      /* cardsStart makes it a moment after the game opens; this is in case it has not yet */
+  closeToy(); readOk(true); try { $('cmd').blur(); } catch (e) {} kbHide(); musStop();
+  widget = { kind: 'cardbattle' }; BATRUN = { done: false }; save();
+  GMQBattleOwn.open({ over: batEnded }, { cards: S.cards, seed: S.packSeed, upgrades: 'card', back: 'Back to the Launch Bay', again: false }, batDone); }
+function batDone(r) { r = r || {}; if (r.why === 'finished') batEnded(r); BATRUN = null; widget = null; save(); if (MUS.on) musStart();
+  snap = true; drawStatus(); drawWords(); drawCards(); fitSoon(); const n = batLeft();
+  say(r.why === 'finished' ? `You are back in the Launch Bay. ${batWords(n)}` : batHalf() ? 'You leave the battle. It is saved. Tap the training screen to go on with it.' : `You step back from the training screen. ${batWords(n)}`); }
+/* the game's keys do nothing under the battle (the battle's own keys are in its frame) */
+document.addEventListener('keydown', e => { if (widget && widget.kind === 'cardbattle') { e.preventDefault(); e.stopPropagation(); } }, true);
 
 /* =====================================================================
    SMALL WORLDS FROM A KIT.  [Source: Marc, 2026-11-17: "It's a huge universe. They should be able to explore things... could there be five or
