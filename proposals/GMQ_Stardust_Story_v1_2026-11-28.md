@@ -1,10 +1,10 @@
 # Operation Stardust, rebuilt: the story and the room plan
 
 **Date:** 28 November 2026. **For:** Marc. **From:** the Stardust story thread. **Nothing in this note is built.**
-**Reviewed:** two rounds by an independent reviewer. Round 2's ten points are fixed here; the fixes were not re-read by the reviewer.
+**Reviewed:** four rounds by independent reviewers: the first draft (two rounds), the food job, and the exits and secrets. Each round's findings are fixed. The last fixes were not re-read.
 Everything is **[Proposal]** unless it says [Source] or [Conflict].
 
-**Waiting on your answer** (asked through the main thread, 28 November): where did the children stop or lose interest on Stardust, how many reached the end, and what confused them in the food task? Parts that depend on it are marked **⏳**.
+**Your answer came on 28 November** (through the main thread): "They just wandered around"; something about "the appearance of it" put them off; and you gave a new shape for the food job. Section 1, job 4, room D2 and decisions 10, 13, 17 and 19 are rewritten from it. Later the same day, from your words on exits and secrets: section 3a (ways out), every room's doors and secrets, the take-use-give table, and decisions 20 and 21. This rewrite was reviewed once, and its findings fixed; the fixes were not re-read.
 
 ---
 
@@ -13,28 +13,38 @@ Everything is **[Proposal]** unless it says [Source] or [Conflict].
 - **The place:** Tally Station, a quiet station in Galaxy Databa that listens to the stars. 16 rooms on a 4 × 4 board. Each room is one screen.
 - **What happened:** three of its four crew flew off in a small shuttle to follow a strange signal. Something pulled them off course. Then the station's power failed, and it went silent too.
 - **What the child does:** finds out what happened, finds the one crew member still aboard, and gets the big ship, the *Stardust*, ready to go and bring the others home.
-- **Every 2023 Stardust job is kept** [Source], each with a new reason: the temperature chart, the food locker, the fuel log, the fuel tanks, what the crew ate, the watering can and the radio.
+- **Every 2023 Stardust job is kept** [Source], each with a new reason: the temperature chart, the food packing, the fuel log, the fuel tanks, what the crew ate, the watering can and the radio.
 - **The radio's ending 3 is kept** (decided 22 November): the beeps draw a map. Now the map shows where the crew is.
 - **The rescue itself happens later,** in another place. You choose which (section 5).
 - **Cards:** one for each job, plus a set of the crew's own cards to find (section 6).
 
 ---
 
-## 1. Why the children may not have been excited ⏳
+## 1. Why the children were not excited
 
-You said: "They didn't seem excited to play it." [Source, 28 November] Your rule 11 says to ask before changing anything after a class report, so this section is a guess until you answer.
+**What you said** [Source, 28 November, by voice]: "They just wandered around, but then I'd think that the appearance of it was just enough to put them off." And on the food: "you're trying to plan for the last three months of the trip and some of the food will expire before then. Students might be confused because they didn't do the first part."
 
-**What I can check in the notes, against the station they loved:**
+**How I read it, with my doubts:**
+- **"Wandered around":** I take no more than that from it. I don't know how many children did any job.
+- **"The appearance of it":** two readings. (a) The look of Stardust as a whole. (b) The look of the food job itself, since the sentence goes on "when I did the food one". **Which did you mean?** This note answers both: a new look for the rooms, and a new food job.
+- **"Didn't do the first part":** two readings. (a) The food job began at months ten to twelve [Source: the Stardust guide, section 5, quest 2], with no earlier months planned, so the child met the hardest part first. (b) The children had skipped an earlier part of the game. I take (a); **please say if it was (b).**
+
+**What the notes add, against the station they loved:**
 
 | | The station | Stardust today |
 |---|---|---|
+| Look | each room drawn whole, 45 to 67 px a square | 6 rooms of 8 × 6 squares at 47 px, half a station bay's size on screen, black until entered [Source: the main thread's measure, 28 November] |
 | Cards | one for every task, plus 6 for secrets: up to 21 | 3 in all: the watering can, the radio, and a gold card at the very end [Source: the Stardust guide, sections 5 and 6] |
-| Size of a job | 15 short tasks | 4 long open problems |
 | What you are doing and why | a broken ship; fix it, fly | "the ship leaves at dawn": no one in trouble, nothing to find out |
-| Secrets | 18 | 2 side jobs |
-| Rooms on screen | each room drawn whole | 6 rooms of 8 × 6 squares, half a station bay's size on screen [Source: the main thread's measure, 28 November] |
+| Size of a job | 15 short tasks | 4 long open problems |
 
-**My guess:** the cards matter at least as much as the size. A child on Stardust can work for a whole lesson and get nothing. **What would prove me wrong:** if most children stopped at the first thermometer, the fault is the first task, not the cards or the size.
+**What this note does about each:**
+- **The look:** one big room per screen, never black, and the visual design thread's new floors (section 3a).
+- **The reason to act:** a silent station, a missing crew, someone to find (section 2).
+- **Cards along the way,** not only at the end (section 6).
+- **The food job starts at the start of the trip** (job 4).
+
+**Still a guess:** which of these mattered most. "They wandered" fits all four. **What would prove me wrong:** if children on the new Stardust still wander past the first clues, the story is not reaching them at arrival; watch the first two minutes.
 
 ---
 
@@ -43,7 +53,7 @@ You said: "They didn't seem excited to play it." [Source, 28 November] Your rule
 ### 2a. What happened before the child arrives (the truth, found piece by piece)
 
 1. **Tally Station** listens to the stars and counts what it hears. That fits your galaxy: "a cosmic labyrinth of interstellar data streams" [Source: the Galaxy Databa page]. Four people live there [Source: "a crew of four"].
-2. The supply ship stopped coming, months ago. Fresh food ran low.
+2. The supply ship stopped coming, months ago. Fresh food ran low. Its pilot's last visit left a handwritten note in the visitors' book: something kept pulling the supply ship off course. Mission Control was told only "delayed". Nobody aboard thought much of the note.
 3. Then **a strange signal** came [Source: "a mysterious signal… like someone or something is calling us for help"].
 4. The big ship, the *Stardust*, was not ready: its tanks were low and its locker was empty. The small shuttle is fast, but it cannot go far. The signal seemed close. So three of the crew took **the shuttle** to follow it, "back in 6 days". The Supply Chief [Source] stayed to look after the station.
 5. The shuttle sent its log to the station's Hangar screen once a day. On one day, it burned a lot of fuel but went hardly anywhere. **Something was pulling it.** The pull carried it much farther than a shuttle can fly back. The next day the log stopped.
@@ -92,19 +102,44 @@ The child now knows where they are, what happened, and what to do (your rule 5).
       +-------------+-------------+-------------+-------------+
   A   | Observatory ‖  Listening  =   Control   =    Power    |
       | (the Chief) ‖    Room     |    Room     |    Room     |
-      +----vent-----+-------------+------=------+------=------+
-  B   | Greenhouse  =   Living    =   Common    |   Engine    |
-      |             |  Quarters   |    Room  window   Room    |
+      +----vent-----+---hatch-----+------=------+------=------+
+  B   | Greenhouse  =   Living    =   Common    =   Engine    |
+      |             |  Quarters   |    Room   glass   Room    |
       +------=------+------=------+------=------+------=------+
   C   | Water Room  =   Galley    = Entry Hall  = Fuel Store  |
-      +-------------+------=------+------=------+------=------+
+      +---service---+------=------+------=------+------=------+
   D   |  Sick Bay   =    Food     ‖ Docking Bay =   Hangar    |
-      |             |   Storage   ‖  (arrive)   |             |
+      |             |   Storage   ‖  (arrive)   |  space doors|
       +-------------+-------------+-------------+-------------+
 
-  =  open doorway     ‖  sealed when the power failed     vent  a child-sized crawl (secret)
-  window  you can look into the Engine Room, but not walk through
+  =  open doorway     ‖  sealed when the power failed (it shows, and opens later)
+  vent     a child-sized crawl (secret)        hatch    a ladder hatch, open
+  glass    a glass door: you can see the Engine Room before you go in
+  service  a narrow service door, open         space doors  the Hangar's doors to space (open at launch)
 ```
+
+**Ways out of each room** [Source for the standard: Marc, 28 November: "like the Legend of Zelda... three or four exits on every board. We don't need to have like one way in and one way out"]. Middle rooms have 4 and edge rooms 3. **Corner rooms [Proposal]:** a corner touches only two other rooms, so A1, A4 and D1 have 2; the Hangar has a third, its space doors. A third way for A4 or D1 would have to lead outside the station (decision 21). Every way out shows, even when it is closed.
+
+| Room | Ways out | Closed at first |
+|---|---|---|
+| A1 Observatory (corner) | 2 | the door (sealed); the vent shows, but only a child fits (the secret) |
+| A2 Listening Room | 3 | the Observatory door (sealed) |
+| A3 Control Room | 3 | none |
+| A4 Power Room (corner) | 2 | none |
+| B1 Greenhouse | 3 | none: the vent shows; that a child fits is the secret |
+| B2 Living Quarters | 4 | none |
+| B3 Common Room | 4 | none |
+| B4 Engine Room | 3 | none |
+| C1 Water Room | 3 | none |
+| C2 Galley | 4 | none |
+| C3 Entry Hall | 4 | none |
+| C4 Fuel Store | 3 | none |
+| D1 Sick Bay (corner) | 2 | none |
+| D2 Food Storage | 3 | the cargo door (sealed) |
+| D3 Docking Bay | 3 | the cargo door (sealed) |
+| D4 Hangar (corner) | 3 | the space doors (until launch) |
+
+**Loops:** there is always more than one route. For example, Entry Hall to Greenhouse goes by the Galley and Living Quarters, or by the Galley and Water Room, or by the Common Room and Living Quarters.
 
 - **Left half:** where the crew lives and eats. **Right half:** engines, fuel and ships. **Top row:** the station's head: listening, control, power.
 - **Every room can be reached on the first visit except the Observatory.** The cargo door between Food Storage and the Docking Bay is a shortcut that opens later.
@@ -128,7 +163,7 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Things:** the radio; the dish screen; an old printout pinned up (the finished example for the map, section 4, job 6); the pipes.
 - **Task or clue:** job 6, the map in the beeps. The radio is dead until the power is back. **Clue:** tapping in the pipes: three knocks, a wait, three knocks. Someone is here.
 - **Secret:** under the desk, Listener Ravi's best card (one of the crew's cards, section 6).
-- **Doors:** east to the Control Room; west to the Observatory (sealed).
+- **Doors:** east to the Control Room; west to the Observatory (sealed); south, down a ladder hatch, to the Living Quarters.
 
 **A3. Control Room** [Source]
 - **Its job:** the station's brain. It talks to Mission Control.
@@ -139,7 +174,7 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 **A4. Power Room**
 - **Its job:** shares the station's power between the rooms.
-- **Things:** the big power lever; the power board; a ladder down.
+- **Things:** the big power lever; the power board; a box of spare parts (a battery inside); a ladder down.
 - **Task or clue:** resetting the power. Before job 1 is solved and fixed: "The lights come up… then trip off. Something is still pulling too much power." After: "The station hums. Two doors open. Upstairs, the radio crackles."
 - **The power board must not give the answer away.** It says only "Too much power is being used", never which room.
 - **Secret:** behind the board, a folded plan of the station. It fills in the child's map, the vent included.
@@ -147,58 +182,58 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 **B1. Greenhouse** [Source]
 - **Its job:** grows fresh food and freshens the air.
-- **Things:** the plant beds, dry and drooping; the watering can; the thermometer and its sign; a vine-covered vent in the ceiling.
+- **Things:** the plant beds, dry and drooping, with one bed empty; the watering can; the thermometer and its sign; a vine-covered vent in the ceiling.
 - **Task or clue:** the watering job (it is today's watering can, now with a reason: the Chief watered them every day until she was shut in; nobody has for two days). Fill the can in the Water Room.
-- **Secret:** the vent. A child fits; a grown-up does not. It leads up to the Observatory. **A child can talk to the Chief early,** before the power is back. She can't get out that way, but she can say what she knows and where to start. This helps a stuck child; it is never needed.
+- **Secret:** the vent shows to anyone, but it looks too small. A child fits; a grown-up does not. It leads up to the Observatory. **A child can talk to the Chief early,** before the power is back. She can't get out that way, but she can say what she knows and where to start. This helps a stuck child; it is never needed.
 - **Doors:** east to the Living Quarters; south to the Water Room; up, the vent (secret).
 
 **B2. Living Quarters** [Source]
 - **Its job:** where the crew sleeps.
-- **Things:** four bunks: three unmade, left in a hurry; one made neatly. Four lockers with names. The thermometer and its sign.
+- **Things:** four bunks: three unmade, left in a hurry; one made neatly. Four lockers with names (the Chief's is locked). The thermometer and its sign.
 - **Task or clue:** **clue:** the neat bunk. Someone has not slept here.
 - **Secret:** a loose panel under a bunk: the crew's hidden snack tin. A laugh, and a sticky note in the tin: "Teo's card is in the hangar. Don't tell him." It leads to the Pilot's card.
-- **Doors:** west to the Greenhouse; east to the Common Room; south to the Galley.
+- **Doors:** west to the Greenhouse; east to the Common Room; south to the Galley; north, up the ladder hatch, to the Listening Room.
 
 **B3. Common Room**
 - **Its job:** where the crew rests, plays and exercises. (People in space exercise every day, or their bones grow weak.)
-- **Things:** a card table with an unfinished game; an exercise bike and its chart; a window into the Engine Room; a big screen.
+- **Things:** a card table with an unfinished game; an exercise bike and its chart; a glass door into the Engine Room; a big screen.
 - **Task or clue:** **the bike's chart is the finished example for job 2.** Two charts side by side: minutes pedalled each day, and how far the bike's meter says. One day has many minutes but little distance. A note: "Chain slipped. Fixed it." It shows how two graphs together can find a day when something went wrong. It is about a bike, not the shuttle.
 - **Secret:** pedal the bike, and the screen flickers on: a short film of the crew at a birthday party, singing. Now the child knows their faces.
-- **Doors:** north to the Control Room; west to the Living Quarters; south to the Entry Hall. East: the window, not a door.
+- **Doors:** north to the Control Room; west to the Living Quarters; south to the Entry Hall; east, through the glass door, to the Engine Room.
 
 **B4. Engine Room** [Source]
 - **Its job:** makes the station's heat and power.
 - **Things:** the big engine; pipes; the thermometer and its sign.
 - **Task or clue:** one of the five thermometers.
 - **Secret:** chalk tally marks on the wall, in fives: the days since the supply ship last came. A child can count them; nobody asks. It is evidence, found, of why the food ran low. Mission Control has a line if the child tells it.
-- **Doors:** north, by the ladder, to the Power Room; south to the Fuel Store.
+- **Doors:** north, by the ladder, to the Power Room; south to the Fuel Store; west, through the glass door, to the Common Room.
 
 **C1. Water Room**
 - **Its job:** cleans every drop of water so it can be used again (real stations do this).
 - **Things:** the water tank with a tap; the gurgling cleaner; a drain grate.
 - **Task or clue:** fill the watering can.
 - **Secret:** something shiny in the drain: a station badge with a card (a card for the explorer; see section 6).
-- **Doors:** north to the Greenhouse; east to the Galley.
+- **Doors:** north to the Greenhouse; east to the Galley; south, through a narrow service door, to the Sick Bay (the water for the Sick Bay's sink runs this way).
 
 **C2. Galley**
 - **Its job:** where the crew cooks and eats together.
 - **Things:** the table with four places (three cleared, one cup left out); the food chart on the wall; a nearly empty fridge.
 - **Task or clue:** job 3, what the crew ate [Source: your Level 4]. **Clue before then:** the fridge. No fresh food is left.
-- **Secret:** none. (Not every room needs one.)
+- **Secret:** on top of a high cupboard, a tin of cocoa with a label: "For the crew's big night." **Take it, and give it to the Chief** once she is free. She has eaten dried peas for two days. She makes cocoa, and tells the child one thing she has not said before: "Before the supply ship stopped coming, its pilot said something kept pulling at it. I think it's the same pull that took the shuttle." (A thread for the rescue chapter; it matches the note in the visitors' book.)
 - **Doors:** north to the Living Quarters; west to the Water Room; east to the Entry Hall; south to Food Storage.
 
 **C3. Entry Hall**
 - **Its job:** where everyone comes in. The space suits hang here.
 - **Things:** the duty board; four suit hooks, three empty and one suit still hanging; the station map screen; a crew photo.
 - **Task or clue:** **clue:** the duty board says three names under "Shuttle: back in 6 days" and one under "Station". The fourth suit is still here. So **one crew member never left.** This is the mystery of who to find [Source: your spitball].
-- **Secret:** none.
+- **Secret:** in the pocket of the suit still hanging, a key card with "NOK" on it. **Use it** on the Chief's locker in the Living Quarters: inside is her walking stick. **Give it to her**, and she keeps up with you and talks as you go. (Never needed: with the first-aid kit she can already limp about and do her jobs, slowly.)
 - **Doors:** south to the Docking Bay; north to the Common Room; west to the Galley; east to the Fuel Store.
 
 **C4. Fuel Store**
 - **Its job:** keeps the station's fuel and pumps it to the ships.
 - **Things:** the pump with a dial for each tank [built today]; the glass test tank [built today: the finished example for the gauges]; fuel drums; a pipe down to the Hangar.
 - **Task or clue:** job 5's pump.
-- **Secret:** none.
+- **Secret:** behind the fuel drums, a small cleaning robot. It was sweeping the Listening Room when the lights failed, and fled to the warmest corner it knew. Its battery is flat. **Take** the spare battery from the Power Room's spare box and **use** it: the robot wakes and **leads the child** back to the Listening Room, where it bumps the Observatory door and beeps. A clue for a child who has not found the Chief. Then it follows the child and sweeps. (It echoes the station's robot: decision 20.)
 - **Doors:** west to the Entry Hall; north to the Engine Room; south to the Hangar.
 
 **D1. Sick Bay**
@@ -206,20 +241,20 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Things:** a bed; the first-aid kit in an open cupboard; a height chart with four marks.
 - **Task or clue:** fetch the first-aid kit for the Chief. It is in plain sight: **the main road never needs a secret** [Source: the master plan, section 6].
 - **Secret:** under the bed, Listener Ravi's notebook: "The new beeps aren't counting. I think they are a map." A nudge toward job 6, never needed.
-- **Doors:** east to Food Storage.
+- **Doors:** east to Food Storage; north, through the service door, to the Water Room.
 
 **D2. Food Storage** [Source]
 - **Its job:** keeps the station's food cold and safe.
-- **Things:** the Chief's shelf of foods; the *Stardust*'s empty supply locker; the thermometer and its sign; the Chief's clipboard.
-- **Task or clue:** job 4, the locker. Before the Chief is found, the locker holds only a note: "For the *Stardust*. —Nok." The clipboard holds the finished example (section 4, job 4).
-- **Secret:** none.
+- **Things:** the Chief's shelf of foods; the *Stardust*'s two empty supply crates (part 1 and part 2); the thermometer and its sign; the Chief's clipboard.
+- **Task or clue:** job 4, packing the food. Before the Chief is found, the crates hold only a note: "For the *Stardust*. —Nok." The clipboard holds the finished example (section 4, job 4).
+- **Secret:** behind the crates, a packet of apple seeds. **Take it to the Greenhouse** and plant it in the one empty bed. The Chief: "I'll water it. Fresh fruit, one day, for whoever lives here next." The sprout is seen when the child comes back, in the rescue chapter. A small thread for Project Second Home, if you choose it.
 - **Doors:** north to the Galley; west to the Sick Bay; east to the Docking Bay (the cargo door, sealed until the power is back: a shortcut for carrying the food to the Hangar).
 
 **D3. Docking Bay** (arrival)
 - **Its job:** where visiting ships dock.
 - **Things:** your ship; the station door; the cargo door; the visitors' book.
 - **Task or clue:** **clue:** the visitors' book. The last visitor before you was the supply ship, months ago.
-- **Secret:** none.
+- **Secret:** a note tucked in the back of the visitors' book, from the supply ship's pilot: "Can't come next month. Something keeps pulling us off course out there." The same pull as the shuttle's: found, not told. **The child can sign the book** too (with the game's kind-words check), and the Chief takes the book aboard the *Stardust*, so the rescued crew reads it in the rescue chapter.
 - **Doors:** north to the Entry Hall; east to the Hangar; west to Food Storage (the cargo door, sealed).
 
 **D4. Hangar**
@@ -227,9 +262,26 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Things:** the empty shuttle bay and its log screen; the *Stardust*, with three tanks and their gauges [Source: Main, Backup and Reserve tanks]; the launch console.
 - **Task or clue:** job 2, the shuttle's log; job 5, the tanks; the launch.
 - **Secret:** in the empty bay, behind a wheel block, Pilot Teo's best card.
-- **Doors:** west to the Docking Bay; north to the Fuel Store; the space doors (they open at launch).
+- **Doors:** west to the Docking Bay; north to the Fuel Store; the space doors, which show and open at launch.
 
-**In all:** 16 rooms, 7 jobs (6 big, 1 side), clues in 6 rooms, and secrets in 11 rooms (5 rooms have none, on purpose).
+**In all:** 16 rooms, 7 jobs (6 big, 1 side), clues in 6 rooms, and **a secret in every room**.
+
+**Things to take, use or give** [Source for the aim: Marc, 28 November: "interact with our world a bit more than prodigy math does... explore and find secrets... giving like the spinner to the little boy, finding the path of stones"]:
+
+| Take | From | Use or give | In | What it does |
+|---|---|---|---|---|
+| the first-aid kit | Sick Bay | give to the Chief | Observatory | she can leave (main road) |
+| the watering can | Greenhouse | fill, then water | Water Room, Greenhouse | the plants recover (side job) |
+| the key card | Entry Hall (suit pocket) | open her locker, then give the stick | Living Quarters, the Chief | she walks with you |
+| the cocoa tin | Galley | give to the Chief | anywhere, once she is free | a new piece of the mystery |
+| the spare battery | Power Room | wake the robot | Fuel Store | a clue to where the Chief is; a friend |
+| the apple seeds | Food Storage | plant | Greenhouse (the empty bed) | a sprout, seen in the rescue chapter |
+| the station plan | Power Room | read | the map | every room shown |
+| the crew's three cards | Control Room, Listening Room, Hangar | keep for the crew | the card table | the crew's cards (section 6) |
+
+**Finding a way** (like your path of stones): the vent from the Greenhouse up to the Observatory, which looks too small, and the robot that leads the child to the Chief. Both are ways in that a child finds, not ones they are given.
+
+**Threads that leave the station** (for the rescue chapter and later): the signal and the supply ship's pull; the visitors' book; the crew's cards, given back; the seedling, if Project Second Home is chosen.
 
 ### 3c. The main road
 
@@ -255,7 +307,7 @@ Each job passes the story test [Source: the master plan, section 5b]: **need** (
 - **No way on?** Nudges come only when the child taps Hint, as everywhere. Job 1 holds the main road, so it needs one more help that no other job needs: **decision 16.**
 - **Picture:** the thermometer, then the chart, then the dial, each filling the picture.
 - **Finished example:** the "reports sent each day" chart (A3).
-- **Clearer** [Proposal; ⏳ until you say what confused the children]:
+- **Clearer** [Proposal]:
   - The sign says that both of its end numbers are safe, not "between", which reads two ways. The builder picks the numbers.
   - The question comes in two steps: "Which room is outside its safe range?" Then: "How many degrees too hot (or too cold)?"
   - Mission Control names the five rooms, so the child knows which rooms to find.
@@ -272,28 +324,43 @@ Each job passes the story test [Source: the master plan, section 5b]: **need** (
 ### Job 3. What the crew ate [Source: your Task 2, Level 4]
 
 - **Need:** the Chief: "The three of them have had only shuttle food. Look at what we ate. Of the kinds on both charts, which one fell the most, from the first three months to the last three? By how much?"
-- **Meaning:** that is what the crew has missed most. She packs one welcome crate of it, for their first meal when the *Stardust* lands. It goes in the cabin, not the locker, so it does not change job 4.
+- **Meaning:** that is what the crew has missed most. She packs one welcome crate of it, for their first meal when the *Stardust* lands. It goes in the cabin, not the crates, so it does not change job 4.
 - **Finished example:** a small chart on the Galley wall, about something else: drinks the crew had in their first month and their last (tea, cocoa, juice). It is worked: "Cocoa fell the most, by ___." 
 - **Consequence:** a wrong kind: "We ate plenty of that. Look again."
 - **Picture:** the two charts, first three months and last three months.
 - **Your own Level 4 ending** [Source] was a video "where you talk to the Supply Chief". Here the child does tell her. (A spoken step for class is a choice: section 7.)
 
-### Job 4. The locker (kept, clearer) [Source: your Task 1] ⏳
+### Job 4. Packing the food, in parts [Source: your Task 1, reshaped by your words of 28 November]
 
-- **Need:** the Chief: "The *Stardust* is big but slow. The trip home will take months. Fill the locker for the trip home: all five of us. Nothing may go bad before the trip ends. [And exactly enough: the locker is small, and nothing may go to waste.]" The bracketed line waits on decision 13.
-- **Where the food comes from:** the long-life food the station kept for emergencies. The fresh food ran low; the long-life food was never touched.
-- **Who eats:** everyone aboard on the way home: the crew of four [Source: "a crew of four"] and the cadet. The builder sets the numbers from that.
-- **The trip out:** only the Chief and the cadet. The Chief keeps ready packs for two in the *Stardust* for emergencies, so the locker is for the trip home only (decision 17).
-- **Meaning:** the food the crew will eat on the way home.
-- **Consequence:** as today: food goes bad; it runs out; it won't fit.
-- **Picture:** the shelf and the locker.
-- **Finished example** [Proposal]: on the Chief's clipboard, a job she did last month about **water**, not food: people × litres a day × days, and the jugs she chose. Different quantity, same kind of plan.
-- **What may have confused children** (my guesses, for you to confirm or correct):
-  - **The whole amount was hidden.** People × points × months is never said. That is on purpose, but it may be the fault.
-  - **"Months ten to twelve" and "how long it lasts".** A food packed now is eaten in month ten but must last to month twelve. That is two ideas at once. **Fix [Proposal]:** one plain sentence: "The trip lasts ___ months. Food must last that long."
-  - **Two numbers on every row** (energy and months).
-  - **"Ten packs of any one food"** may look like the target.
-  - **"Exactly enough".** Still your open choice: exactly, or enough or more.
+**Your idea** [Source, 28 November]: food groups ("you need a certain amount of proteins"); pack each part of the trip separately, "the first three months, the next three months", so food that expires can go in an early part but not a later one; afterwards the child tallies by food group "and see if they did a good enough job"; the limits not too hard, "just so they can recognize like maybe they needed more protein". And your question: "How are they get dairy in the last three months?"
+
+**How I read "We should make it too hard":** "we should *not* make it too hard to get within the limits". Please say if I have that wrong.
+
+- **Need:** the Chief: "The trip home takes six months. Five of us. I've split it into two parts: the first three months and the last three. Pack a crate for each part. Every crate needs enough of each food group." (Six months and five people are story facts; the builder may change them.)
+- **Where the food comes from:** the *Stardust*'s own sealed stores, kept aboard for long trips and never opened, plus the Greenhouse's crops once the plants are watered. The station's daily food (the Galley fridge) is what ran low. The Chief carries the sealed stores to her shelf in Food Storage to pack them.
+- **The Chief's health list** (on her clipboard): the food groups, and how much of each one person needs in a month. She says aloud "five of us, three months a crate", so the total is not hidden: the child multiplies. The other way is a list made for each crate, so the child only counts: decision 19. The builder sets the groups and the numbers. [Source: your 2023 kinds were Fruits, Vegetables, Protein, Grains, Dairy, Snacks, Canned and Freeze dried.]
+- **The shelf:** each food shows its group and a label "good until the end of month ___" of the trip home, so a food good until the end of month 4 may go in part 1 but not part 2. Some come from the Greenhouse: fresh, but good for only a short time. Some are long-life.
+- **What the child does, in order:**
+  1. **Part 1 (months 1 to 3):** pack a crate. Fresh food is fine here: it will be eaten before it goes bad.
+  2. **Part 2 (months 4 to 6):** pack the second crate. The fresh food will not last that long; the labels say so.
+  3. **Tally:** the child makes a tally of each crate by food group, on a tally chart in the picture, and compares it with the health list. Nothing adds for them, and nothing judges the crates while they pack.
+  4. **Done:** only now does the trip play out (below).
+- **Your dairy question, two readings:** (a) a puzzle for the child: how can there be dairy in months 4 to 6? (b) a fault you noticed: nothing on the shelf gives dairy that late. **Which did you mean?** Either way, my proposal: fresh milk will not last to month four, and the shelf holds one long-life dairy food (for example, milk powder or hard cheese). A child who reads the labels finds it. One who does not ends part 2 short of dairy, and their own tally shows it.
+- **Meaning:** the food the crew will eat on the way home, month by month.
+- **Consequence, after the child's own tally, in the same place:**
+  - A food that goes bad in part 2: "Month 4. The crew opens this crate. The ___ has gone bad."
+  - Short of a group: the Chief reads the child's tally against her list: "By month 5, everyone is tired. Not enough protein." The child can repack.
+  - The crate's size is a fact the child can see (it holds a set number of packs). It only stops a crate that is past full; it says nothing about the groups.
+- **The limits** [Proposal, from your words]: "at least" for each group, and a crate with some room to spare. Not "exactly". It should be easy to get inside the limits, so the thinking goes into which food goes in which part, and the tally shows what is missing.
+- **Picture:** the shelf and the two crates; then the tally chart. Each fills the picture.
+- **Finished example** [Proposal]: on the Chief's clipboard, a plan she made last month for something else: **flashlight (torch) batteries** for a two-part trip, by kind. It shows every step: people × months for each kind, the batteries that last only one part going in part 1, and her tally. Same kind of plan, different quantity. The builder may choose another quantity, but not food.
+- **What was confusing before, and how this answers it:**
+  - **Starting at months ten to twelve** with no earlier part: now the child packs part 1 first.
+  - **Food that expires before its months:** now it has a place (part 1), and part 2 shows why it cannot go there.
+  - **The hidden total:** the health list is per person, per month. The child still works out five people × three months for each group. That is the maths.
+  - **Energy points** are gone. Food groups are easier to picture.
+- **Still a guess:** how many groups. Six groups × two crates may be too long again ("a bit too long", 16 November [Source]). Three or four groups may be enough: decision 13.
+- **The trip out:** only the Chief and the cadet. Before she was shut in, the Chief had started readying the *Stardust* to follow the crew: she packed food for two for the trip out. The crates are for five on the way home. **A gap:** how long the trip out takes is not set; the builder and you decide (decision 17).
 
 ### Job 5. The tanks (kept) [Source: your three tanks]
 
@@ -369,6 +436,8 @@ Still open since 20 November [`GMQ_Story_and_Size_Options_v1_2026-11-20.md`]. Yo
 
 ## 6. Cards
 
+**To be replaced, once you choose:** section 4 of `GMQ_Stardust_Story_Scope_v1_2026-11-28.md` gives options for fewer cards (your direction of 28 November: cards for the major tasks, and a ship upgrade at the end). The table below stands until then.
+
 Every card has a reason the child can say. **No card for nothing.**
 
 | Card | Where | Why |
@@ -397,21 +466,24 @@ Every card has a reason the child can say. **No card for nothing.**
 | 7 | Project Second Home | lightly · fully · no | **lightly** (5c) |
 | 8 | The radio's ending 3 | with the crew's place added · exactly as decided | **with the crew's place** |
 | 9 | Where job 1 is fixed | the room's own dial · at the Control Room, as now | **the dial** |
-| 10 | How many big jobs ⏳ | six · four (jobs 2 and 3 for cards and story, not needed to launch) | **six**, until your class report says too long |
+| 10 | How many big jobs | six · five (job 3, the welcome crate, becomes optional; job 2 stays, because it sets the course) | **six**, if each is short. If job 4 stays long, **five**. |
 | 11 | The crew's cards | yes · no | **yes** |
 | 12 | A card game with the Chief at the Common Room table (your battle rules, unchanged) | yes · no | **yes, once**: she has been alone two days. Your battle rationing applies. |
-| 13 | The locker: exactly, or enough or more ⏳ | exactly · enough or more | **wait** for what confused the children |
+| 13 | Food job: how many food groups | three or four · all six of your 2023 kinds | **four** (protein, grains, fruit and vegetables, dairy): enough for the dairy puzzle, short enough to tally |
 | 14 | A real-life step (draw the chart on paper; tell the Chief your findings out loud, as in your Level 4) | yes · no | **your call**: it needs you in the room |
 | 15 | Today's six-room ship | replaced · kept as the inside of the *Stardust* | **replaced** |
 | 16 | A child who cannot do job 1 after many tries (it holds the main road) | Hint only, as now · after several wrong tries, Mission Control offers by radio to go through one step with them | **Mission Control's offer**: it reaches every child, with no secret needed. Your rule is "nudges only when asked", but the plan also says no child is ever stuck with no way on [Source: the master plan, section 6]. It only offers; the child chooses. |
-| 17 | What the locker feeds | the trip home only, everyone aboard (one plain multiplication) · the trip out and the trip home (two parts, harder) | **the trip home only**: the trip out uses the Chief's ready packs |
+| 17 | How the trip home is split, and how long the trip out is | two parts of three months (your words) · three parts of two months; the trip out: your number | **two parts of three months**: your words, and fewer crates. The trip out: yours to set. |
 | 18 | Mission Control here | the same Mission Control as the rest of the game · Voltara's own, as your page says | **the same** |
+| 19 | The food job's health list | for one person for one month (the child multiplies by people and months) · made for each crate (the child only counts and tallies) | **one person, one month**, with "five of us, three months a crate" said aloud: it keeps the multiplying, and nothing is hidden |
+| 20 | A small cleaning robot in the Fuel Store, woken with a battery | keep · drop (the station already has a robot to fix) | **keep**: it gives a stuck child a clue to the Chief, and children like a friend that follows them |
+| 21 | A third way out of the Power Room and the Sick Bay | none: 2 is all a corner allows inside the station · a hatch to outside (a space walk on a line) | **none for now**: a space walk is a new kind of place to build |
 
 ---
 
 ## 8. What could prove this wrong
 
-- **The size may not be the fault.** ⏳ If most children stopped at the first thermometer, sixteen rooms will not help. The first job will.
+- **The look may not be the fault.** You think it put them off; it may also have been the lack of a reason to act, or of cards. The new Stardust changes all three at once, so a class will not show which one mattered.
 - **Sixteen screens may tire, not delight.** One room per screen means the child cannot see next door. Walking back for a sign is good once, dull by the fourth time. Watch whether they use the map.
 - **More story is more reading.** Every clue is words. Each line here is one or two sentences. "Read to me" must work on every one.
 - **The Chief shut in for two days may worry a child.** You have said children know it is not real [Source, 21 November]. She is fine and a little bored.
@@ -421,6 +493,7 @@ Every card has a reason the child can say. **No card for nothing.**
 - **"Turn the dial back by the amount"** must not let a child guess by turning every dial. The builder must decide what a dial in a fine room does.
 - **The power board, the dial and the look must not give away the hot room.** The visual design thread already checked this for the floors. Check again for the dials.
 - **A rescue that never comes is a lost story again.** If the next place is not built soon, choose 5b option 3.
+- **Carrying things needs a bag.** Taking a key card or a cocoa tin needs the game to hold what the child carries, and to give it. The station already has a bag; this is new work for the builder in Stardust, with tests.
 - **No child has met any of this.** It is a plan on paper.
 
 ---
