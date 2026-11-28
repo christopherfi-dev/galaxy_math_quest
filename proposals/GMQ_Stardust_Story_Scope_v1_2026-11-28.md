@@ -2,7 +2,7 @@
 
 **Date:** 28 November 2026. **For:** Marc. **From:** the Stardust story thread. **Nothing here is built.**
 **Builds on:** `GMQ_Stardust_Story_v1_2026-11-28.md` (the story and the 16 rooms). Where the two disagree, this note is newer.
-**Reviewed:** once by an independent reviewer; its 15 findings are fixed here; the fixes were not re-read.
+**Reviewed:** once by an independent reviewer; its 15 findings are fixed. Section 5 (the secret trails) was rewritten afterwards from your newest words; see the line at the end of this note for its review.
 Everything is **[Proposal]** unless it says [Source] or [Conflict]. Every number in this note is an example; the builder sets and checks the real ones.
 
 ---
@@ -168,34 +168,118 @@ You said the 2023 food was "a bit too long" [Source, 16 November]. Fifteen jobs 
 
 **My pick: B,** because it is what you said. A is there if 5 still feels too many.
 
-**Secrets would give no cards.** They give finds for the bag, story, a friend (the robot), and things that matter later. The crew's three cards become things to **carry back to the crew**, not cards for the child's deck (decision 6).
+**Secrets give one card in all: the epic card at the end of the Listener's trail** (section 5). Every other secret gives a find for the bag, a piece of story, a friend (Mop), or something that matters later. The crew's three cards become things to **carry back to the crew**, not cards for the child's deck (decision 6).
+
+**So, in all, Stardust gives** (with my pick): 5 cards for the big jobs, 1 epic card for the explorer who finishes the long trail, and the ship upgrade.
 
 **The ship upgrade** [Proposal, from your idea]: at the end, the Chief gives the cadet **a long-range fuel tank** from the station's stores. It is fitted to the cadet's own ship **while it waits in the Docking Bay**, before the *Stardust* leaves. It answers the story's own problem: the cadet's ship was "built for short hops" (first note, 2a.10). After the rescue, it can fly far. **Which part it upgrades is yours** (decision 5): the **Engine** (a fuel tank is engine kit) or **Navigation** (it lets the ship go farther). What it does in the battle is also yours.
 
 ---
 
-## 5. Secrets: from 16 to 22
+## 5. Secrets: 24, in trails that lead to each other
 
-The station has 18 secrets in 9 rooms, two a room [Source]. With 16 rooms, two a room would be 32: too many to write well, and too much reading. **My pick: 22**, at least one in every room and two in the busiest.
+**Your words** [Source, 28 November]: "Each should have some sort of a payoff... like finding one unlocks another one and could lead to another one. And to another one. And in that one is an epic card or something?"
 
-The first note had 16. Its tally wall stays a secret. Its **visitors' book note** (the pilot's) stays a secret too; the book's monthly visits are now job A2. **Seven new secrets, each a new kind, plus one old one changed:**
+**So:** every secret now pays off, and most of them are links in a **trail**. A trail is a chain: each find gives a small payoff and points to the next. At the end of a trail is a big payoff. **The longest trail ends with an epic card**, the only card any secret gives in Stardust. The trails also cross: one trail cannot be finished without the friend found on another.
 
-| # | Room | The secret | Why it is new | Leads to |
+**Counting again:** the first note's 16 secrets, plus 7 new kinds, is 23 (an earlier draft of this note said 22; that was wrong). Ada's note and Ada's card are now two finds in two places of the Control Room, one on each trail, so **24**. The station has 18 in 9 rooms [Source].
+
+**The rules for every trail:**
+- **No number opens anything.** Links are made by light, sound, a picture, an object to carry, a person or a friend.
+- **The main road never needs a trail.**
+- **Each link is found by something the child does** (switch off a light, put an ear to a pipe, carry a half map), never by the game deciding they noticed.
+- **A child can stumble on a link out of order.** It still pays off; the trail only tells them where to look next.
+
+### 5a. The five trails
+
+```
+ THE LISTENER'S TRAIL (the long one)                      ends: the EPIC CARD
+ Sick Bay notebook -> Living Quarters glow stars -> Galley ceiling map
+   -> Engine Room speaking pipe -> Hangar rack (needs Mop) -> the nook
+   -> Listening Room: play the recording -> the puzzle
+
+ MOP'S TRAIL                                              ends: a friend, and "honorary crew"
+ Sick Bay height mark (or the Chief's diary) -> Power Room plan -> spare battery
+   -> Fuel Store: Mop wakes -> Water Room drain (Mop reaches in) -> the badge
+
+ THE CREW'S GAME                                          ends: a game of cards with the Chief
+ snack tin note -> Teo's card (Hangar) -> Ada's card (Control) -> Ravi's card (Listening)
+   -> the three cards at the Common Room table
+
+ NOK'S BIRTHDAY                                           ends: the Chief's present
+ the bike film, watched five times -> the fifth film's secret -> the nook (needs Mop)
+
+ THE PULL                                                 ends: the pull marked on your space map
+ Engine Room tally wall -> the pilot's note -> the Voltara page -> the duty wheel -> the cocoa
+```
+
+**1. The Listener's trail** (7 links; it ends with the epic card)
+
+Listener Ravi suspected the signal had changed. He recorded the first one, hid the recording, and left a trail for whoever came next.
+
+| Link | Where | What the child does | Small payoff | Points to |
 |---|---|---|---|---|
-| 1 | Living Quarters | **Glow-in-the-dark stars on the ceiling.** They show only when the room is dark: in the dim backup light, or later by turning off the room's own light switch. They form an arrow toward a bunk. Under its mattress: Commander Ada's diary page about the signal. | **found by changing the room**, not by looking harder | why the crew went |
-| 2 | Engine Room | **A speaking pipe.** Tap it, then speak, and the Chief hears you in the Observatory. | a second way to reach the Chief, besides the vent | help for a stuck child |
-| 3 | Entry Hall | **The duty board has a back side.** Flip it: the crew's "duty wheel" of chores. Today's cook: Nok. | a turn-over find | the cocoa: the cook keeps a tin |
-| 4 | Docking Bay | **An old page of the visitors' book:** a visit long ago by a Number Nomad trader from Voltara [Source: the Nomads are yours]. | **joins another world** | a nod for children who have been to Voltara |
-| 5 | Galley | **A loose ceiling tile:** a star map the crew drew for fun, with their own names for the stars. One "star" is labelled "the hum". | a picture puzzle | the signal's direction; a thread for the rescue |
-| 6 | Hangar | **A stowaway nook** behind the spare-parts rack: a tiny space where a crew member hid birthday presents, one for each of the others. | **the one repeat** (your "maybe one could repeat"): it echoes the station's hidden room, but it is small and its own | presents to carry to the crew in the rescue |
-| 7 (changed, not new) | Common Room | **The bike film changes.** Each time the child pedals, a different short moment of the crew's life plays (five in all). | **a secret that repeats**, with something new each time | who the crew are |
-| 8 | Sick Bay | **The height chart has a fifth, very low mark,** labelled "Mop, age 1": the robot's height on the day the crew built it. | a joke that pays off once the robot is found | a laugh; the robot's name |
+| 1 | Sick Bay | looks under the bed: Ravi's notebook | "The new beeps are a map" (a hint for job D1) | "The *first* signal was different. I recorded it and hid it. The stars know where." |
+| 2 | Living Quarters | switches off the room's light: glow-in-the-dark stars on the ceiling | the crew's four names, written in stars | the stars make an arrow to Ravi's bunk. Under his mattress: **half a star map** (carry it) |
+| 3 | Galley | finds the loose ceiling tile: the other half of the map | the whole map: the crew's names for the stars, and "the hum" (the signal's direction, a thread for the rescue) | Ravi's note on the map: "The pipes carry every sound on this station. Listen in the Engine Room." |
+| 4 | Engine Room | puts an ear (not a mouth) to the speaking pipe | (speaking into it reaches the Chief: a second way to her) | a faint beep, looping, from under the Hangar floor |
+| 5 | Hangar | finds the beep behind the spare-parts rack. The rack's brake is underneath, too low and narrow for a hand. **Mop** rolls under and taps it (Mop's trail). | the rack rolls aside: **the stowaway nook** | inside: Ravi's recorder (carry it), and three wrapped presents (Nok's birthday) |
+| 6 | Listening Room (power back) | plugs the recorder into the radio | the first signal plays, as it was before it changed | it comes in bursts of different lengths |
+| 7 | Listening Room | **the puzzle:** tally each burst, then make a bar graph of them | **the bars draw a picture** (decision 10 says what it shows) | **the epic card**, and the story turns (below) |
 
-**No secret asks for a number to open it.**
+- **The puzzle passes the story test.** *Need:* Ravi's notebook: "I couldn't finish working it out." *Meaning:* the picture tells the child something nobody knew about the signal. *Consequence:* a wrong bar breaks the picture into a jumble. *Picture:* the bars fill the picture. *Finished example:* Handbook chapter 3.
+- **What the picture could show** (decision 10): (a) a ship on the ground, like the shuttle, beside a waving hand: **whoever sends the signal is stranded too, and the pull is a call for help**; (b) a face nobody knows: still a mystery; (c) the crew's shuttle, safe. **My pick: (a).** It turns the rescue chapter from "save the crew from something" into "help everyone down there". It settles the first note's decision 4 (who pulled the shuttle) as a friend, so it is yours to choose.
+- **The epic card:** which card it is belongs to you and the cards thread. It should be about listening, or Tally Station.
 
-**Which secrets need a bag** (to carry and give): the key card, the cocoa, the battery, the seeds, the crew's cards, the presents, the Handbook. The builder needs that (first note, section 8).
+**2. Mop's trail** (5 links; it ends with a friend, and the child made "honorary crew")
 
----
+| Link | Where | What the child does | Small payoff | Points to |
+|---|---|---|---|---|
+| 1 | Sick Bay, or the Observatory | the height chart's low mark, "Mop, age 1"; or the last line of the Chief's diary, "Mop was with me when the lights went out. Where did he go?" | a laugh; who Mop is | who, and where, is Mop? |
+| 2 | Power Room | the station plan behind the board | the child's map fills in | it shows Mop's empty charging dock here, and his last sweep ending in the Fuel Store |
+| 3 | Power Room | takes the spare battery from the box of spare parts | (carry it) | the Fuel Store |
+| 4 | Fuel Store | finds Mop behind the drums; puts in the battery | **Mop leads the child to the Chief** (a clue for a stuck child), then follows them | Mop fits where hands don't |
+| 5 | Water Room | asks Mop into the drain: he brings up a station badge | the badge (carry it) | **give it to the Chief:** she pins it on: "Honorary crew of Tally Station." The child's picture is added to the crew photo in the Entry Hall, there every time they pass. |
+
+**3. The crew's game** (5 links; it ends with a game of cards)
+
+| Link | Where | What the child does | Small payoff | Points to |
+|---|---|---|---|---|
+| 1 | Living Quarters | the snack tin under a bunk | a laugh | "Teo's card is in the hangar. Don't tell him." |
+| 2 | Hangar | Teo's best card, in the shuttle bay's toolbox (carry it) | Teo's note on it: "Ada hides hers in her desk. Ha!" | the Control Room |
+| 3 | Control Room | Ada's card in the drawer (carry it) | Ada's note: "Ravi never leaves his desk. Look under it." | the Listening Room |
+| 4 | Listening Room | Ravi's card under the desk (carry it) | — | the card table has three empty seats |
+| 5 | Common Room | puts the three cards on the table, one at each empty seat | the scoreboard lights up (job S2); then **the Chief offers a game of cards** (your battle rules) | the cards go with the child, to give back to the crew in the rescue |
+
+**4. Nok's birthday** (3 links; it ends with the Chief's present)
+
+| Link | Where | What the child does | Small payoff | Points to |
+|---|---|---|---|---|
+| 1 | Common Room | pedals the bike: a short film of the crew; a new one each time (**the secret that repeats**) | who the crew are, a little more each time | after four films, a fifth |
+| 2 | Common Room | the fifth film: three of the crew, whispering: "Nok's birthday is next week. Hide the presents in the nook!" | the surprise | the nook (the Listener's trail, link 5) |
+| 3 | the nook, then the Chief | carries the three presents to the Chief | she opens them: new pencils (she keeps one behind each ear) and a card: "Happy birthday, Nok. Back soon." She goes quiet, then: "Then let's go and get them." Her words at launch change. | — |
+
+**5. The pull** (5 links; it ends with the pull marked on the child's space map)
+
+| Link | Where | What the child does | Small payoff | Points to |
+|---|---|---|---|---|
+| 1 | Engine Room | the chalk tally wall, in fives | how long since the supply ship came | why did it stop? |
+| 2 | Docking Bay | the pilot's note in the visitors' book | "Something keeps pulling us off course out there." | was it always there? |
+| 3 | Docking Bay | an old page of the same book: a visit long ago by a Number Nomad trader from Voltara [Source: the Nomads are yours] | "Felt a tug near the hum. Turned back." (a nod for children who have been to Voltara) | someone aboard may know more |
+| 4 | Entry Hall | flips the duty board: the crew's duty wheel; today's cook is Nok | — | the cook keeps a tin in the Galley |
+| 5 | Galley, then the Chief | gives her the cocoa tin | she makes cocoa, and remembers: the supply pilot said the same | **tell Mission Control:** "Then the pull has been there for years. It isn't chasing ships. It's waiting." A shaded zone appears on the child's space map: a thread for the rescue chapter. |
+
+### 5b. Every other secret's payoff
+
+| Secret | Where | Its payoff |
+|---|---|---|
+| the vent | Greenhouse | a child-sized way up to the Chief: talk to her early |
+| the key card in the suit pocket | Entry Hall | opens the Chief's locker; give her the walking stick inside, and she walks with you |
+| the apple seeds | Food Storage | plant them in the empty bed; a sprout is there when the child comes back in the rescue chapter |
+| Ada's note on the screen | Control Room | it starts the watering side job |
+| the Chief's diary | Observatory | her two days, in one line each; its last line starts Mop's trail |
+
+**All 24 secrets have a payoff.** 19 are links in the five trails; 5 pay off on their own.
 
 ## 6. How the 16 rooms hold the work
 
@@ -203,12 +287,12 @@ The first note had 16. Its tally wall stays a secret. Its **visitors' book note*
 |---|---|---|
 | A1 Observatory | the Chief (story) | her diary |
 | A2 Listening Room | B3 star count, D1 the map | Ravi's card |
-| A3 Control Room | B1 warmth chart | Ada's note and card |
+| A3 Control Room | B1 warmth chart | Ada's note (watering); Ada's card (game) |
 | A4 Power Room | B2 power board | the station plan |
 | B1 Greenhouse | C4 grow-light, C5 seedlings, S1 plants | the vent |
-| B2 Living Quarters | (a thermometer) | the snack tin; **the glow stars** |
-| B3 Common Room | S2 scoreboard (and the bike example) | **the bike film that changes** |
-| B4 Engine Room | (a thermometer) | the tally wall; **the speaking pipe** |
+| B2 Living Quarters | (a thermometer) | the snack tin (game); **the glow stars** (Listener) |
+| B3 Common Room | S2 scoreboard (and the bike example) | **the bike film that changes** (birthday) |
+| B4 Engine Room | (a thermometer) | the tally wall (pull); **the speaking pipe** (Listener) |
 | C1 Water Room | S1 (fill the can) | the badge in the drain |
 | C2 Galley | C2 what the crew ate | the cocoa; **the ceiling star map** |
 | C3 Entry Hall | A1 the Handbook | the key card; **the duty wheel** |
@@ -218,7 +302,7 @@ The first note had 16. Its tally wall stays a secret. Its **visitors' book note*
 | D3 Docking Bay | A2 the visitors' book (arrival) | the pilot's note; **the Voltara page** |
 | D4 Hangar | A3 shuttle log, C6 tanks, launch | Teo's card; **the stowaway nook** |
 
-**15 jobs and 22 secrets in 16 rooms.** The station: 15 and 18 in 9.
+**15 jobs and 24 secrets in 16 rooms, in five trails.** The station: 15 and 18 in 9. (The trail for each secret is in section 5.)
 
 ---
 
@@ -232,9 +316,12 @@ The first note had 16. Its tally wall stays a secret. Its **visitors' book note*
 | 4 | Cards | B: 5 + the upgrade · A: 3 + the upgrade · C: 1 + the upgrade | **B**: your words |
 | 5 | The ship upgrade | a long-range tank as Engine · as Navigation · another part | **yours**: both fit. What it does in the battle is yours too. |
 | 6 | The crew's cards | the child keeps them · they are carried back to the crew | **carried back**: no extra cards |
-| 7 | Secrets | 22 · 16 (the first note) · 32 (two a room) | **22** |
+| 7 | Secrets | 24, in five trails · 16 (the first note) · 32 (two a room) | **24 in trails** |
 | 8 | "The seven rate" | "the same rate" (my guess) · something else | please say |
 | 9 | 3.MD.4's quarters | halves of a centimetre only · a real-life step with a ruler in class, which can do quarters of an inch | **halves of a centimetre**, plus a real-life step if you want one |
+| 10 | What the first signal's picture shows (the end of the Listener's trail) | a stranded ship and a waving hand: the pull is a call for help · a face nobody knows · the crew's shuttle, safe | **the stranded ship**: it changes the first note's decision 4 to "a friend", so it is yours |
+| 11 | The epic card at the trail's end | which card, with the cards thread | yours |
+| 12 | Trails that cross (the nook needs Mop) | cross · each trail stands alone | **cross**: "finding one unlocks another" |
 
 **Changes to the first note's decisions, if you agree:** 11 (the crew's cards) is replaced by 6 here. 12 (a game of cards with the Chief) stays, now reached through the scoreboard (S2).
 
@@ -248,6 +335,9 @@ The first note had 16. Its tally wall stays a secret. Its **visitors' book note*
 - **Measuring on a screen** (C5) is not the same as with a real ruler. AERO means real measuring. A real-life step may be better.
 - **The visitors' book (A2) is the first job a child meets.** If it is too hard, the start goes badly. It should be the easiest job on the station.
 - **More secrets is more reading.** Each is two or three short lines.
+- **Long trails may be finished by very few children.** That is fine for an epic card, but watch whether anyone gets past link 3 of the Listener's trail. If nobody does, a clue is too hidden.
+- **Carrying many things** (half map, recorder, presents, cards, battery, badge, cocoa) needs a bag that is easy to use on an iPad. The builder must test it with a full bag.
+- **Trails that cross** mean a child stuck on Mop's trail is stuck on two others too. Mop's trail must be the easiest.
 - **No child has met any of this.**
 
 ---

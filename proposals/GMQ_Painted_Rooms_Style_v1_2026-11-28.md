@@ -98,7 +98,7 @@ Everything is **[Proposal]** unless it says [Source]. "Measured" means measured 
 
 ## 7. Sizes, formats and names
 
-**What Gemini gives:** PNG, 2730 × 1536, about 5 MB each, for Marc's tests; JPEG, 1344 × 756, for his batch 1. [Measured] The smaller size is usable (a little soft on iPads at 2×). Then the "2360" size is the picture's own width (1344), not stretched. How to get full size: prompt book, section 6c.
+**What Gemini gives:** PNG, 2730 × 1536, about 5 MB each, for Marc's tests; JPEG, 1344 × 756, for his batch 1. [Measured] The smaller size is usable (a little soft on iPads at 2×). Then the "2360" size is the picture's own width (1344), not stretched. Downloaded one at a time they come at full size; Gemini's batch zip shrinks them (found by the main thread).
 
 **What the game uses** (made by `checks/rooms_make_images.py`):
 

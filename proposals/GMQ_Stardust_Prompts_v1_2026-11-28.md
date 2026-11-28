@@ -239,11 +239,9 @@ Checked by this thread on 28 November. Details: `GMQ_Painted_Rooms_v1_2026-11-28
 
 ## 6c. Picture size
 
-Your tests came as 2730 × 1536 PNG; batch 1 came as 1344 × 756 JPEG, a quarter of the pixels. Two likely causes (not checked: I cannot see your Gemini):
-- **How it was saved.** The download button in Gemini gives the full picture. A long-press "Save image", a copy, or a screenshot can give a smaller one.
-- **Which model made it.** Gemini's quicker picture model makes pictures of about 1 megapixel; its higher-quality one (shown as "Pro" or "Thinking") makes larger ones.
-**Try:** make one picture, save it with the download button, and look at its size (on a Mac: select it and press Space; on Windows: right-click, Properties, Details). If it is still 1344 wide, try the other model.
-**What 1344 means:** fine on phones and iPads at 1×; on iPads at 2× the picture is stretched by about a third, so the outlines are a little soft. Usable. Batch 1 does not need to be made again for this.
+Your tests came as 2730 × 1536 PNG; batch 1 came as 1344 × 756 JPEG, a quarter of the pixels. **The main thread found why** (28 November): the same Entry Hall, downloaded on its own, is 2730 × 1536. **A picture saved one at a time comes at full size; Gemini's batch zip makes them smaller.**
+- **So:** save each picture on its own with Gemini's download button, then zip them yourself (section 6).
+- **What 1344 means:** fine on phones and iPads at 1×; on iPads at 2× the picture is stretched by about a third, so the outlines are a little soft. Usable. Batch 1 does not need to be made again for this. (If you still have batch 1 open in Gemini, downloading R11 and R15 dark one at a time would give the full size.)
 
 ## 7. What to check in every room (the short list)
 

@@ -87,7 +87,7 @@ Seven pictures from the main thread's list. The 9-point check is in the style gu
 | **C2** robot awake, four sides | the same robot each time. | **Keep.** |
 | **C3** eight things | clear, separate, no words. | **Keep.** The prompt book's C3b now asks only for what is still missing. |
 
-**The size:** batch 1 is 1344 × 756 JPEG; your tests were 2730 × 1536 PNG. On iPads at 2× the picture is stretched by about a third, so outlines are a little soft. Usable; no redo for this. How to get full size next time: prompt book, section 6c.
+**The size:** batch 1 is 1344 × 756 JPEG; your tests were 2730 × 1536 PNG. On iPads at 2× the picture is stretched by about a third, so outlines are a little soft. Usable; no redo for this. The main thread found the cause: a picture downloaded on its own is full size (2730 × 1536); Gemini's batch zip shrinks them. Prompt book, section 6c.
 
 **Walk maps** for R11 and R15 are drawn (in `docs/rooms/index.html`; pictures `walk_map_entry_hall.webp` and `walk_map_hangar.webp`). The Hangar blocks the floor behind the *Stardust* and behind the console.
 
