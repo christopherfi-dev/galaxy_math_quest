@@ -37,10 +37,10 @@ small { color: var(--soft); }
 <body>
 <main>
 <h1>Music room</h1>
-<p>Each world's music, old and new, played by the game's own sound maker (no music files). <b>Tap a tune to hear it.</b> Two new styles to choose from: <b style="color:var(--a)">A, calm and spacious</b>, and <b style="color:var(--b)">B, more tune</b>. Only the station and Voltara have new music so far.</p>
+<p>Each world's music, old and new, played by the game's own sound maker (no music files). <b>Tap a tune to hear it.</b> Two new styles to choose from: <b style="color:var(--a)">A, calm and spacious</b>, and <b style="color:var(--b)">B, more tune</b>. Only the station and Voltara have new music so far. Each new song has a verse and a chorus, and plays a little differently each time round, so listen for at least a minute.</p>
 
 
-<h2>Recordings (60 seconds each, for a phone)</h2>
+<h2>Recordings (90 seconds each, for a phone)</h2>
 <p>The same music, recorded. Old and new are recorded at the same loudness, so you can compare them fairly. They are louder than in the game.</p>
 <div class="rec" id="recs"></div>
 <h2>Play it here (live, as the game plays it)</h2>
@@ -58,121 +58,178 @@ small { color: var(--soft); }
 <script>
 /* GMQ MUSIC: start
    =====================================================================
-   GMQMusic, version 2 (28 November 2026).
+   GMQMusic, version 2b (28 November 2026).
    [Source: Marc, 2026-11-28: "Our music kinda sucks." The task he passed on: "more musical and atmospheric, quieter, more layered ... suitable for
-   kids doing math. Add gentle variations so short loops don't get tiring. Keep it low-CPU and off-by-default."]
-   [Proposal] Our own tunes, played by the game: no sound files, nothing copied.
-   Layers: a soft pad (chords that move slowly, notes held across bars), a melody, a low note, and small sounds of the place.
-   One shared echo (a reverb made in code) and one shared repeat (a delay) for all voices.
-   Gentle variation: each time round, the melody may rest, change a few notes to other notes of the chord, or play one high note. Every third time
-   round it rests (a breath). Never the same way twice in a row. Always in the tune's key.
-   Never more than LIMIT voices at once. The small sounds of the place play only while fewer than EXTRA voices play.
+   kids doing math. Add gentle variations so short loops don't get tiring. Keep it low-CPU and off-by-default."
+   Then, after the summoning demo: "Try to make them more richer? A bit more than just a couple of simple tones playing? ... make it like a better more engaging song."]
+   [Proposal] Our own songs, played by the game: no sound files, nothing copied (the demo was read for its ways of making sound, not its notes).
+   A SONG: 16 bars, a verse (bars 1-8) and a chorus (bars 9-16) with its own chords and melody, about a minute before it repeats.
+   INSTRUMENTS, each made of a few tones: strings (two slightly out-of-tune saws with a gentle wobble), a choir (the same, through "ah" filters),
+   a flute, a soft horn (its filter opens at each note), bells and a music box (one tone wobbling another, FM), a low part, soft drums (style B).
+   One shared echo (a reverb made in code) and one shared repeat (a delay). One wobble (vibrato) for each song, shared by its notes.
+   Gentle variation: each time round, the melody may rest, change a few notes to other notes of the same chord, or play one high note. Every third
+   time round it rests (a breath; in style B the drums rest too). Never the same way twice in a row. Always in the song's key.
+   Never more than LIMIT tones at once (a voice of two tones counts two). The small extra sounds play only while fewer than EXTRA sound.
    Use in the game:
      GMQMusic.setup({ ctx: function () { return the game's AudioContext }, pick: function () { return a place id }, busy: function () { return true while a task is open } });
-     GMQMusic.setOn(true or false); GMQMusic.wake() on every tap; GMQMusic.stop().
+     GMQMusic.setStyle('A' or 'B'); GMQMusic.setOn(true or false); GMQMusic.wake() on every tap; GMQMusic.stop().
    For iPads: no AudioWorklet; webkitAudioContext is the fallback; no ?. and no ??.
    ===================================================================== */
 var GMQMusic = (function () {
   'use strict';
-  var LIMIT = 14, EXTRA = 11, LEVEL = 0.38, BUSY = 0.3;
+  var LIMIT = 28, EXTRA = 24, LEVEL = 0.36, BUSY = 0.3;
   var NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
   function midi(t) { var m = /^([A-G])(#|b)?(\d)$/.exec(t); if (!m) return null; return 12 * (+m[3] + 1) + NOTE[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0); }
   function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
   function words(s) { return s.split(/\s+/).filter(function (x) { return x && x !== '|'; }); }
   function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
-  /* THE TUNES. Each place: its key (pcs: the pitch classes, for the check), its chords (one for each bar: the pad's notes), its low notes (one for each bar),
-     and two styles. A: calm and spacious (a slow melody with long notes, far bells). B: more tune (a clearer melody, a music box or a pulse).
-     A melody: one string of 8 eighths for each bar: a note (C4, F#5), "-" holds, "." rests.
-     place: the small sounds of the place. pulse: a soft repeated low note ("x" plays, "." rests), through a filter that opens bar by bar. */
+  /* THE INSTRUMENTS. o: the tones of one note (w: wave, c: cents out of tune, r: times the pitch, v: loudness). vib: takes the song's wobble.
+     filt: a filter that opens at each note [start, top, then] (Hz). fm: [ratio, depth]: one more tone wobbles the first (bells). */
+  var INST = {
+    strings: { o: [{ w: 'sawtooth', c: -8 }, { w: 'sawtooth', c: 8 }], vib: 1 },
+    choir: { o: [{ w: 'sawtooth', c: -10 }, { w: 'sawtooth', c: 9 }], vib: 1 },
+    flute: { o: [{ pw: 'flute' }], vib: 1 },
+    horn: { o: [{ w: 'sawtooth', c: -5 }, { w: 'sawtooth', c: 5 }], vib: 1, filt: [300, 1900, 1000] },      // filt moves its bus's filter (the melody is one note at a time)
+    glass: { o: [{ w: 'triangle' }], vib: 1 },
+    bell: { o: [{ w: 'sine' }], fm: [3.5, 1.8] },
+    box: { o: [{ w: 'sine' }], fm: [2, 1.1] },
+    bassSoft: { o: [{ pw: 'bassSoft' }] },
+    bassPluck: { o: [{ pw: 'bassPluck' }], filt: [1100, 1100, 240] },
+    pulse: { o: [{ w: 'sawtooth' }] }
+  };
+
+  /* Waves made of chosen overtones (one tone instead of two): [the loudness of overtone 1, 2, 3 ...] */
+  var WAVES = { flute: [1.3, .04, -.033, 0, .012], bassSoft: [1.6, 0, -.09, 0, .032, 0, -.017], bassPluck: [1.9, .5, .33, .25, .2, .17, .14, .12, .11, .1, .09, .08] };
+
+  /* THE SONGS. Each place: its key (pcs, for the check), 16 chords (the pad's notes, one for each bar), 16 low notes, and two styles.
+     A: calm and spacious: strings in the verse, a choir in the chorus, a flute, far bells, no drums.
+     B: more tune: strings, a soft horn, a music box (the station) or a pulse (Voltara), a second line under the melody in the chorus, soft drums.
+     A melody: one string of 8 eighths for each bar: a note (C4, F#5), "-" holds, "." rests. */
   var TUNES = {
     station: { name: 'The KIS Station', pcs: [2, 4, 6, 7, 9, 11, 1], place: 'station',
-      chords: ['F#3 A3 C#4', 'F#3 B3 D4', 'G3 B3 D4', 'E3 A3 D4', 'F#3 A3 D4', 'F#3 B3 D4', 'G3 B3 F#4', 'E3 A3 C#4'],
-      bass: 'D2 G2 E2 A2 B2 G2 E2 A2',
-      A: { bpm: 64, pad: { v: .026, cut: 900 }, mel: { w: 'sine', v: .042, a: .09, echo: .34 }, bells: .14,
-        s: ['. . F#5 - - - E5 -', 'D5 - - - - - . .', '. . B4 - D5 - E5 -', 'E5 - - - - - . .', '. . F#5 - - - A5 -', 'F#5 - - - E5 - D5 -', 'B4 - - - - - D5 -', 'C#5 - - - - - . .'] },
-      B: { bpm: 74, pad: { v: .022, cut: 760 }, mel: { w: 'triangle', v: .04, a: .025, echo: .2 }, arp: { v: .016, s: 'x . x x . x x .' },
-        s: ['F#5 - E5 F#5 A5 - F#5 -', 'D5 - - - B4 - D5 -', 'E5 - D5 E5 G5 - E5 -', 'E5 - - - - - . .', 'F#5 - E5 D5 C#5 - D5 -', 'B4 - - - D5 - F#5 -', 'E5 - - - D5 - B4 -', 'C#5 - - - - - . .'] } },
+      chords: ['F#3 A3 C#4', 'F#3 B3 D4', 'G3 B3 D4', 'E3 A3 D4', 'F#3 A3 D4', 'F#3 B3 D4', 'G3 B3 F#4', 'E3 A3 C#4',
+        'F#3 B3 D4', 'E3 A3 C#4', 'E3 A3 C#4', 'F#3 A3 D4', 'G3 B3 D4', 'G3 C#4 E4', 'F#3 B3 D4', 'E3 A3 D4'],
+      bass: 'D2 G2 E2 A2 B2 G2 E2 A2 G2 A2 F#2 B2 E2 A2 G2 A2',
+      A: { bpm: 66, cut: 1300, mel: { i: 'flute', v: .05, a: .09, echo: .34 }, bells: .14,
+        s: ['. . F#5 - - - E5 -', 'D5 - - - - - . .', '. . B4 - D5 - E5 -', 'E5 - - - - - . .', '. . F#5 - - - A5 -', 'F#5 - - - E5 - D5 -', 'B4 - - - - - D5 -', 'C#5 - - - - - . .',
+          '. . B5 - - - A5 -', 'A5 - - - E5 - - -', '. . C#6 - - - A5 -', 'F#5 - - - - - . .', '. . G5 - - - B5 -', 'A5 - - - G5 - E5 -', 'F#5 - - - D5 - - -', 'E5 - - - - - . .'] },
+      B: { bpm: 76, cut: 1100, mel: { i: 'horn', v: .036, a: .03, echo: .2 }, arp: { v: .02, s: 'x . x x . x x .' }, drums: 1,
+        s: ['F#5 - E5 F#5 A5 - F#5 -', 'D5 - - - B4 - D5 -', 'E5 - D5 E5 G5 - E5 -', 'E5 - - - - - . .', 'F#5 - E5 D5 C#5 - D5 -', 'B4 - - - D5 - F#5 -', 'E5 - - - D5 - B4 -', 'C#5 - - - - - . .',
+          'D5 - G5 - B5 - A5 G5', 'A5 - - - E5 - C#5 -', 'C#5 - E5 - A5 - F#5 -', 'F#5 - - - D5 - - -', 'E5 - G5 - B5 - A5 G5', 'A5 - - - C#6 - B5 A5', 'B5 - A5 - F#5 - D5 -', 'E5 - - - - - . .'] } },
     voltara: { name: 'Planet Voltara', pcs: [9, 11, 0, 2, 4, 5, 7], place: 'voltara',
-      chords: ['E3 G3 B3', 'E3 A3 C4', 'E3 G3 D4', 'D3 G3 B3', 'E3 G3 B3', 'E3 A3 C4', 'F3 A3 C4', 'E3 A3 B3'],
-      bass: 'A2 F2 C3 G2 A2 F2 D3 E2',
-      A: { bpm: 68, pad: { v: .024, cut: 820 }, mel: { w: 'sine', v: .04, a: .08, echo: .32 }, bells: .1, pulse: { v: .03, s: 'x . x . x . x .' },
-        s: ['. . E5 - - - D5 -', 'C5 - - - - - . .', '. . G5 - - - E5 -', 'D5 - - - - - . .', '. . E5 - - - A5 -', 'G5 - - - - - E5 -', 'F5 - - - - - D5 -', 'E5 - - - - - . .'] },
-      B: { bpm: 80, pad: { v: .021, cut: 720 }, mel: { w: 'triangle', v: .04, a: .025, echo: .2 }, pulse: { v: .034, s: 'x x x x x x x x' },
-        s: ['A4 C5 E5 - D5 - C5 -', 'C5 - - - A4 - - -', 'G4 C5 E5 - D5 - E5 -', 'D5 - - - B4 - - -', 'A4 C5 E5 - G5 - E5 -', 'F5 - E5 - C5 - - -', 'D5 - F5 - A5 - G5 -', 'E5 - - - - - . .'] } }
+      chords: ['E3 G3 B3', 'E3 A3 C4', 'E3 G3 D4', 'D3 G3 B3', 'E3 G3 B3', 'E3 A3 C4', 'F3 A3 C4', 'E3 A3 B3',
+        'F3 A3 C4', 'D3 G3 B3', 'E3 G3 B3', 'E3 A3 C4', 'F3 A3 C4', 'D3 G3 B3', 'E3 G3 C4', 'E3 A3 B3'],
+      bass: 'A2 F2 C3 G2 A2 F2 D3 E2 F2 G2 E2 A2 D3 G2 C3 E2',
+      A: { bpm: 70, cut: 1200, mel: { i: 'flute', v: .048, a: .08, echo: .32 }, bells: .1, pulse: { v: .03, s: 'x . x . x . x .' },
+        s: ['. . E5 - - - D5 -', 'C5 - - - - - . .', '. . G5 - - - E5 -', 'D5 - - - - - . .', '. . E5 - - - A5 -', 'G5 - - - - - E5 -', 'F5 - - - - - D5 -', 'E5 - - - - - . .',
+          '. . A5 - - - C6 -', 'B5 - - - G5 - - -', '. . E5 - - - G5 -', 'A5 - - - - - . .', '. . F5 - - - A5 -', 'G5 - - - D5 - - -', 'E5 - - - G5 - C5 -', 'B4 - - - - - . .'] },
+      B: { bpm: 82, cut: 1000, mel: { i: 'horn', v: .036, a: .03, echo: .2 }, pulse: { v: .034, s: 'x x x x x x x x' }, drums: 1,
+        s: ['A4 C5 E5 - D5 - C5 -', 'C5 - - - A4 - - -', 'G4 C5 E5 - D5 - E5 -', 'D5 - - - B4 - - -', 'A4 C5 E5 - G5 - E5 -', 'F5 - E5 - C5 - - -', 'D5 - F5 - A5 - G5 -', 'E5 - - - - - . .',
+          'C5 - F5 - A5 - G5 F5', 'G5 - - - D5 - B4 -', 'E5 - G5 - B5 - A5 G5', 'A5 - - - E5 - - -', 'F5 - A5 - C6 - A5 -', 'B5 - - - G5 - D5 -', 'E5 - G5 - C6 - B5 -', 'A5 - - - - - . .'] } }
   };
-  var MEL_LO = 67, MEL_HI = 88;
+  var MEL_LO = 67, MEL_HI = 88, VERSE = 8;
 
   function parse(id, style) { var T = TUNES[id]; if (!T || !T[style]) return null; var S = T[style], key = id + '.' + style; if (parse.c[key]) return parse.c[key];
     var chords = T.chords.map(function (c) { return words(c).map(midi); }), bass = words(T.bass).map(midi);
     var mel = S.s.map(function (bar) { var tk = words(bar), ev = []; tk.forEach(function (t, i) { var m = midi(t); if (m === null) return; var len = 1; while (tk[i + len] === '-') len++; ev.push({ i: i, m: m, len: len }); }); return ev; });
-    var pcs = chords.map(function (c, i) { var p = c.concat([bass[i]]).map(function (m) { return m % 12; }); return p; });
+    var pcs = chords.map(function (c, i) { return c.concat([bass[i]]).map(function (m) { return m % 12; }); });
     return (parse.c[key] = { id: id, style: style, T: T, S: S, n: chords.length, chords: chords, bass: bass, mel: mel, pcs: pcs, sd: 60 / S.bpm / 2,
       pulse: S.pulse ? words(S.pulse.s) : null, arp: S.arp ? words(S.arp.s) : null }); }
   parse.c = {};
+  // the second line under the melody (style B, the chorus): for each melody note, the highest note of the chord 3 to 9 semitones below it
+  function harmony(P, i, ev) { var pcs = P.pcs[i]; return ev.map(function (e) { for (var d = 3; d <= 9; d++) { var m = e.m - d; if (pcs.indexOf(m % 12) >= 0) return { i: e.i, m: m, len: e.len }; } return null; }).filter(Boolean); }
 
   /* THE SOUND MAKER: one for each audio context. out: where it plays (the speakers, or a recording). */
-  function engine(ctx, out, seed) {
+  function engine(ctx, out, seed, light) {
     var E = { ctx: ctx, log: null, live: [], max: 0, notes: 0, skipped: { core: 0, extra: 0 }, tune: null, L: null, t: 0, bar: 0, pass: 0, plan: null, sig: '', busy: false };
     var r = rng(seed || 1);
-    E.rnd = r;
     function gain(v, to) { var g = ctx.createGain(); g.gain.value = v; if (to) g.connect(to); return g; }
+    function filter(type, f, q) { var b = ctx.createBiquadFilter(); b.type = type; b.frequency.value = f; if (q != null) b.Q.value = q; return b; }
     E.master = gain(0.0001, out); E.duck = gain(1, E.master);
-    // the shared echo: a reverb made in code: 2.4 seconds of fading, darkened noise, through one ConvolverNode shared by every voice.
+    // the shared echo: a reverb made in code: 2.6 seconds of fading, darkened noise, through one ConvolverNode shared by every voice.
     // (A cheaper echo made of short repeats that feed back was tried on 28 November: it came out different each time it was played, so it was dropped.)
-    var sr = ctx.sampleRate, len = Math.floor(sr * 2.4), ir = ctx.createBuffer(2, len, sr), ri = rng(7);
-    for (var ch = 0; ch < 2; ch++) { var d = ir.getChannelData(ch), y = 0, pre = Math.floor(sr * .018); for (var i = 0; i < len; i++) { var x = i < pre ? 0 : (ri() * 2 - 1) * Math.exp(-(i - pre) / (sr * .45)); y += .35 * (x - y); d[i] = y; } }
-    E.verbIn = gain(1); E.verb = ctx.createConvolver(); E.verb.buffer = ir; E.verbIn.connect(E.verb); E.verb.connect(gain(.85, E.duck));
+    var sr = ctx.sampleRate, len = light ? 1 : Math.floor(sr * 2.6), ir = ctx.createBuffer(2, len, sr), ri = rng(7);
+    for (var ch = 0; ch < 2; ch++) { var d = ir.getChannelData(ch), y = 0, pre = Math.floor(sr * .02); for (var i = 0; i < len; i++) { var x = i < pre ? 0 : (ri() * 2 - 1) * Math.exp(-(i - pre) / (sr * .5)); y += .35 * (x - y); d[i] = y; } }
+    E.verbIn = gain(1); if (!light) { E.verb = ctx.createConvolver(); E.verb.buffer = ir; E.verbIn.connect(E.verb); E.verb.connect(gain(.9, E.duck)); }      // light: no echo (about half the work), for slow iPads
     // the shared repeat (for melodies): a delay that fades, darker each time
-    E.echoIn = gain(1); E.delay = ctx.createDelay(2); E.delay.delayTime.value = .6; var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2000;
-    E.echoIn.connect(E.delay); E.delay.connect(lp); var fb = gain(.32, E.delay); lp.connect(fb); var eo = gain(.8, E.duck); lp.connect(eo); lp.connect(gain(.5, E.verbIn));
-    // one noise for the small sounds (sparks, air)
+    E.echoIn = gain(1); E.delay = ctx.createDelay(2); E.delay.delayTime.value = .6; var lp = filter('lowpass', 2000);
+    E.echoIn.connect(E.delay); E.delay.connect(lp); lp.connect(gain(.32, E.delay)); lp.connect(gain(.8, E.duck)); lp.connect(gain(.5, E.verbIn));
+    // one noise for the small sounds (sparks, air, the shaker, the rise into the chorus)
     var nb = ctx.createBuffer(1, Math.floor(sr * 1.5), sr), nd = nb.getChannelData(0), rn = rng(11); for (var k = 0; k < nd.length; k++) nd[k] = rn() * 2 - 1; E.noise = nb;
 
-    // ---- voices: never more than LIMIT at once
-    function countAt(p) { var c = 0; for (var i = 0; i < E.live.length; i++) { var v = E.live[i]; if (v.s <= p && p < v.e) c++; } return c; }
-    function allow(s, e, extra) { var pts = [s], i, top = 0; for (i = 0; i < E.live.length; i++) if (E.live[i].s > s && E.live[i].s < e) pts.push(E.live[i].s);
-      for (i = 0; i < pts.length; i++) top = Math.max(top, countAt(pts[i])); if (top + 1 > (extra ? EXTRA : LIMIT)) { E.skipped[extra ? 'extra' : 'core']++; return null; }
-      var v = { s: s, e: e, o: null }; E.live.push(v); E.max = Math.max(E.max, top + 1); E.notes++; return v; }
+    // ---- tones: never more than LIMIT at once. w: how many tones a voice uses.
+    function countAt(p) { var c = 0; for (var i = 0; i < E.live.length; i++) { var v = E.live[i]; if (v.s <= p && p < v.e) c += v.w; } return c; }
+    function allow(s, e, extra, w) { w = w || 1; var pts = [s], i, top = 0; for (i = 0; i < E.live.length; i++) if (E.live[i].s > s && E.live[i].s < e) pts.push(E.live[i].s);
+      for (i = 0; i < pts.length; i++) top = Math.max(top, countAt(pts[i])); if (top + w > (extra ? EXTRA : LIMIT)) { E.skipped[extra ? 'extra' : 'core']++; return null; }
+      var v = { s: s, e: e, w: w, o: [], L: E.L }; E.live.push(v); E.max = Math.max(E.max, top + w); E.notes++; return v; }
+    var waves = {}; function wave(name) { if (!waves[name]) { var h = WAVES[name], re = new Float32Array(h.length + 1), im = new Float32Array(h.length + 1); for (var i = 0; i < h.length; i++) im[i + 1] = h[i]; waves[name] = ctx.createPeriodicWave(re, im); } return waves[name]; }
     function prune(now) { E.live = E.live.filter(function (v) { return v.e > now; }); }
     E.voicesAt = function (t) { return countAt(t); };
 
-    function tone(dest, w, m, t, a, hold, rel, v, opt) { opt = opt || {}; var end = t + a + hold + rel, slot = allow(t, end + .02, opt.extra); if (!slot) return null;
-      var o = ctx.createOscillator(), g = ctx.createGain(); o.type = w; o.frequency.value = hz(m); if (opt.cents) o.detune.value = opt.cents;
-      if (opt.glide) o.frequency.exponentialRampToValueAtTime(hz(opt.glide), t + a + hold);
+    // one note of an instrument. a: rise, hold, rel: fade. opt: pluck (fades from the start), sag (how much it fades while held), extra, glide (to this note)
+    function play(dest, inst, m, t, a, hold, rel, v, opt) { opt = opt || {}; var I = INST[inst], end = t + a + hold + rel, w = I.o.length + (I.fm ? 1 : 0), slot = allow(t, end + .02, opt.extra, w); if (!slot) return null;
+      var g = gain(0), into = g, f0 = hz(m);
+      if (I.filt && dest.f) { var bf = dest.f.frequency; bf.cancelScheduledValues(t); bf.setValueAtTime(I.filt[0], t); bf.exponentialRampToValueAtTime(I.filt[1], t + a + .06); bf.exponentialRampToValueAtTime(I.filt[2], t + a + .45); }
+      I.o.forEach(function (s, n) { var o = ctx.createOscillator(); if (s.pw) o.setPeriodicWave(wave(s.pw)); else o.type = s.w; o.frequency.setValueAtTime(f0 * (s.r || 1), t); if (s.c) o.detune.value = s.c;
+        if (opt.glide) o.frequency.exponentialRampToValueAtTime(hz(opt.glide) * (s.r || 1), t + a + hold);
+        if (I.vib && E.L && E.L.vib) E.L.vib.connect(o.detune);
+        if (s.v != null) { var og = gain(s.v); o.connect(og); og.connect(into); } else o.connect(into); o.start(t); o.stop(end + .02); slot.o.push(o);
+        if (I.fm && n === 0) { var mo = ctx.createOscillator(), mg = gain(f0 * I.fm[1]); mo.frequency.value = f0 * I.fm[0]; mg.gain.setValueAtTime(f0 * I.fm[1], t); mg.gain.exponentialRampToValueAtTime(f0 * I.fm[1] * .04 + .01, t + a + hold + rel * .6);
+          mo.connect(mg); mg.connect(o.frequency); mo.start(t); mo.stop(end + .02); slot.o.push(mo); } });
       g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + a);
-      if (opt.pluck) g.gain.exponentialRampToValueAtTime(.0001, t + a + hold + rel);
+      if (opt.pluck) g.gain.exponentialRampToValueAtTime(.0001, end);
       else { g.gain.setValueAtTime(v, t + a); g.gain.linearRampToValueAtTime(v * (opt.sag || .8), t + a + hold); g.gain.linearRampToValueAtTime(0, end); }
-      o.connect(g); g.connect(dest); o.start(t); o.stop(end + .02); slot.o = o; slot.g = g; if (E.log) E.log.push({ m: m, t: t, d: dest.name, glide: opt.glide }); return slot; }
-    function spark(dest, t, v) { var dur = .012 + r() * .03, slot = allow(t, t + dur + .01, true); if (!slot) return;
-      var s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = E.noise; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
-      s.connect(g); g.connect(dest); s.start(t, r() * 1.2, dur + .01); slot.o = s; }
+      g.connect(dest); if (E.log) E.log.push({ m: m, t: t, d: dest.name, glide: opt.glide }); return slot; }
+    // a drum: a sine that falls in pitch (a soft kick, or a timpani)
+    function thump(dest, t, f1, f2, drop, v, dur) { var slot = allow(t, t + dur + .02, false, 1); if (!slot) return;
+      var o = ctx.createOscillator(), g = gain(0); o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + drop);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .005); g.gain.exponentialRampToValueAtTime(.0001, t + dur); o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + .02); slot.o.push(o);
+      if (E.log) E.log.push({ m: null, t: t, d: 'drum' }); }
+    // a puff of noise (sparks, the shaker): one noise that never stops, behind a door (a gain) that opens for a moment. No new sound for each puff.
+    function puff(door, t, v, dur) { var p = door.gain; p.setValueAtTime(0, t); p.linearRampToValueAtTime(v, t + .004); p.exponentialRampToValueAtTime(.0001, t + dur); p.setValueAtTime(0, t + dur + .001); }
+    function noiseDoor(L, t, to) { var slot = allow(t, Infinity, false, 1), d = gain(0, to); if (slot) { var s = ctx.createBufferSource(); s.buffer = E.noise; s.loop = true; s.connect(d); s.start(t); slot.o.push(s); slot.L = L; } return d; }
+    // a soft rise of noise into the chorus
+    function rise(dest, t, dur, v) { var slot = allow(t, t + dur + .05, true, 1); if (!slot) return;
+      var s = ctx.createBufferSource(), f = filter('bandpass', 400, 1.2), g = gain(0); s.buffer = E.noise; s.loop = true;
+      f.frequency.setValueAtTime(400, t); f.frequency.exponentialRampToValueAtTime(3200, t + dur); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + dur); g.gain.linearRampToValueAtTime(0, t + dur + .05);
+      s.connect(f); f.connect(g); g.connect(dest); s.start(t); s.stop(t + dur + .06); slot.o.push(s); }
 
-    // ---- one tune playing: its own layers, so it can fade out while the next fades in
-    function layers(P, t) { var L = { P: P, out: gain(0), send: gain(0), nodes: [] }; L.out.connect(E.duck); L.send.connect(E.verbIn);
+    // ---- one song playing: its own layers, so it can fade out while the next fades in
+    function layers(P, t) { var L = { P: P, out: gain(0), send: gain(0) }; L.out.connect(E.duck); L.send.connect(E.verbIn);
       L.out.gain.setValueAtTime(0, t); L.out.gain.linearRampToValueAtTime(1, t + 1.5); L.send.gain.setValueAtTime(0, t); L.send.gain.linearRampToValueAtTime(1, t + 1.5);
-      function bus(dry, wet, f, name) { var g = gain(1), x = g; g.name = name; if (f) { x = ctx.createBiquadFilter(); x.type = f.type || 'lowpass'; x.frequency.value = f.hz; x.Q.value = f.q || .7; g.connect(x); } x.connect(gain(dry, L.out)); x.connect(gain(wet, L.send)); g.f = x; return g; }
-      L.pad = bus(.55, .6, { hz: P.S.pad.cut }, 'pad');
+      function bus(dry, wet, f, name) { var g = gain(1), x = g; g.name = name; if (f) { x = filter(f.type || 'lowpass', f.hz, f.q == null ? .7 : f.q); g.connect(x); } x.connect(gain(dry, L.out)); x.connect(gain(wet, L.send)); g.f = x; return g; }
+      L.pad = bus(.5, .6, { hz: P.S.cut }, 'pad');
+      // the choir: the same kind of tones as the strings, through filters that make an "ah"
+      L.choir = gain(1); L.choir.name = 'choir'; var cs = gain(1); cs.connect(gain(.45, L.out)); cs.connect(gain(.75, L.send));
+      [[760, 5, 1], [1150, 7, .55], [2700, 9, .22]].forEach(function (fm) { var b = filter('bandpass', fm[0], fm[1]); L.choir.connect(b); b.connect(gain(fm[2] * 2.4, cs)); });
+      var cl = filter('lowpass', 700, .7); L.choir.connect(cl); cl.connect(gain(.35, cs));
       L.mel = bus(.8, .55, null, 'mel'); L.mel.connect(gain(P.S.mel.echo, E.echoIn));
-      L.bass = bus(.9, .12, { hz: 320 }, 'bass');
+      L.harm = bus(.55, .6, { hz: 1800 }, 'harm');
+      L.bass = bus(.9, .12, { hz: 420 }, 'bass');
+      if (P.S.mel.i === 'horn') { L.mel.disconnect(); var hf = filter('lowpass', 1000, .8); L.mel.connect(hf); hf.connect(gain(.8, L.out)); hf.connect(gain(.55, L.send)); hf.connect(gain(P.S.mel.echo, E.echoIn)); L.mel.f = hf; }
       L.fx = bus(.35, 1, null, 'fx');
+      L.drum = bus(.9, .15, null, 'drum');
+      if (P.S.drums) { var sh = filter('highpass', 6500); sh.connect(L.drum); L.shk = noiseDoor(L, t, sh); }      // the shaker: noise, only its high part
       L.pulse = bus(.7, .3, { hz: 420, q: 2.5 }, 'pulse');
-      L.crk = gain(1); var hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3200; L.crk.connect(hp); hp.connect(L.fx);
+      if (P.T.place === 'voltara') { var hp = filter('highpass', 3200); hp.connect(L.fx); L.crk = noiseDoor(L, t, hp); }      // sparks
       E.delay.delayTime.setValueAtTime(P.sd * 3, t);      // the repeat comes a dotted quarter later
+      // the song's wobble (vibrato): one slow tone that bends every note that takes it a few cents up and down
+      var vs = allow(t, Infinity, false, 1); if (vs) { var lfo = ctx.createOscillator(); lfo.frequency.value = 4.8; L.vib = gain(6); lfo.connect(L.vib); lfo.start(t); vs.o.push(lfo); vs.L = L; }
       if (P.T.place === 'station') {      // the station's air: a low, soft rumble that never stops
-        var slot = allow(t, Infinity, false); if (slot) { var s = ctx.createBufferSource(); s.buffer = E.noise; s.loop = true; var f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 180; var g = gain(.05); s.connect(f); f.connect(g); g.connect(L.out); s.start(t); slot.o = s; L.hum = slot; } }
+        var slot = allow(t, Infinity, false, 1); if (slot) { var s = ctx.createBufferSource(); s.buffer = E.noise; s.loop = true; var f = filter('lowpass', 180); s.connect(f); f.connect(gain(.04, L.out)); s.start(t); slot.o.push(s); slot.L = L; } }
       return L; }
     function fadeOut(L, t, secs) { if (!L) return; [L.out, L.send].forEach(function (g) { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + secs); });
-      E.live.forEach(function (v) { if (v.L === L && v.e > t + secs) { v.e = t + secs; try { v.o.stop(t + secs); } catch (e) {} } }); }
+      E.live.forEach(function (v) { if (v.L === L && v.e > t + secs) { v.e = t + secs; v.o.forEach(function (o) { try { o.stop(t + secs); } catch (e) {} }); } }); }
 
     // ---- each time round: a plan, never the same as the time before
-    function plan() { var P = E.L.P, prev = E.sig, p, tries = 0;
+    function plan() { var P = E.L.P, prev = E.sig, p, tries = 0, sig;
       do { p = { mel: [], vs: [], bass: [], dir: [], open: r() < .35, charge: r() < .5, breath: E.pass % 3 === 2 }; var rests = 0;
         for (var i = 0; i < P.n; i++) { var op;
-          if (E.pass === 0) op = 'play'; else if (p.breath) op = i === P.n - 3 && r() < .6 ? 'high' : 'rest';
-          else { var x = r(); op = x < .5 ? 'play' : x < .75 ? 'vary' : x < .88 ? 'high' : 'rest'; if (op === 'rest' && rests >= 1) op = 'play'; }
+          if (E.pass === 0) op = 'play'; else if (p.breath) op = (i === 5 || i === 13) && r() < .6 ? 'high' : 'rest';
+          else { var x = r(); op = x < .55 ? 'play' : x < .78 ? 'vary' : x < .9 ? 'high' : 'rest'; if (op === 'rest' && rests >= 1) op = 'play'; }
           rests = op === 'rest' ? rests + 1 : 0; p.mel.push(op); p.vs.push(Math.floor(r() * 1e9)); p.bass.push(r() < .3 ? 'two' : 'hold'); p.dir.push(r() < .5 ? 1 : -1); }
-        var sig = JSON.stringify([p.mel, p.bass, p.dir, p.open, p.breath]); } while (sig === prev && ++tries < 8);
+        sig = JSON.stringify([p.mel, p.bass, p.dir, p.open, p.breath]); } while (sig === prev && ++tries < 8);
       E.sig = sig; return p; }
     E.lastPlans = [];
 
@@ -181,37 +238,47 @@ var GMQMusic = (function () {
     function vary(P, i, seed) { var rr = rng(seed), pcs = P.pcs[i]; return P.mel[i].map(function (e, k) { if (k === 0 || rr() > .45) return e;
       var c = []; for (var d = -4; d <= 4; d++) { var m = e.m + d; if (d && pcs.indexOf(m % 12) >= 0 && m >= MEL_LO && m <= MEL_HI) c.push(m); } return c.length ? { i: e.i, m: c[Math.floor(rr() * c.length)], len: e.len } : e; }); }
 
-    function playBar() { var L = E.L, P = L.P, S = P.S, i = E.bar, t = E.t, sd = P.sd, bl = sd * 8, k;
+    function playBar() { var L = E.L, P = L.P, S = P.S, i = E.bar, t = E.t, sd = P.sd, bl = sd * 8, k, chorus = i >= VERSE, B = !!S.drums;
       prune(t - .05); if (i === 0) { E.plan = plan(); E.lastPlans.push(E.sig); if (E.lastPlans.length > 6) E.lastPlans.shift(); }
-      var p = E.plan, ch = chordAt(P, i, p.open), prevCh = i ? chordAt(P, i - 1, p.open) : [];
-      function mark(v) { if (v) v.L = L; return v; }
-      // the pad: a note that stays in the next chord is held, not played again (fewer voices, smoother)
-      ch.forEach(function (m, j) { if (prevCh.indexOf(m) >= 0) return; var n = 1; while (i + n < P.n && chordAt(P, i + n, p.open).indexOf(m) >= 0) n++;
-        mark(tone(L.pad, 'sawtooth', m, t, 1.1, n * bl - 1.1, 1.6, S.pad.v, { cents: j % 2 ? 6 : -6, sag: .85 })); });
-      // the low note
-      var b = P.bass[i]; if (p.bass[i] === 'two') { mark(tone(L.bass, 'triangle', b, t, .08, bl / 2 - .3, .5, .07)); mark(tone(L.bass, 'triangle', b + 7 > 50 ? b - 5 : b + 7, t + bl / 2, .08, bl / 2 - .3, .6, .055)); }
-      else mark(tone(L.bass, 'triangle', b, t, .15, bl - .5, .8, .07));
+      var p = E.plan, ch = chordAt(P, i, p.open), prevCh = i && i !== VERSE ? chordAt(P, i - 1, p.open) : [];
+      // the pad: strings (in style A the chorus is sung by a choir). A note that stays in the next chord is held, not played again.
+      var padInst = !B && chorus ? 'choir' : 'strings', padBus = padInst === 'choir' ? L.choir : L.pad, pv = padInst === 'choir' ? .05 : B ? .016 : .016;
+      ch.forEach(function (m) { if (prevCh.indexOf(m) >= 0) return; var n = 1; while (i + n < P.n && (i + n) !== VERSE && chordAt(P, i + n, p.open).indexOf(m) >= 0) n++;
+        play(padBus, padInst, m, t, 1.1, Math.max(.2, n * bl - 1.1), 1.2, pv, { sag: .85 }); });
+      // the low part
+      var b = P.bass[i], bi = B ? 'bassPluck' : 'bassSoft', bv = B ? .05 : .045;
+      if (p.bass[i] === 'two' || B) { play(L.bass, bi, b, t, .02, bl / 2 - .35, .4, bv); play(L.bass, bi, p.bass[i] === 'two' ? (b + 7 > 50 ? b - 5 : b + 7) : b, t + bl / 2, .02, bl / 2 - .35, .45, bv * .8); }
+      else play(L.bass, bi, b, t, .15, bl - .5, .8, bv);
       // the melody
       var op = p.mel[i], M = S.mel, ev = op === 'vary' ? vary(P, i, p.vs[i]) : P.mel[i];
-      if (op === 'play' || op === 'vary') ev.forEach(function (e) { var d = e.len * sd; mark(tone(L.mel, M.w, e.m, t + e.i * sd, M.a, Math.max(.05, d - M.a - .05), .45, M.v, { sag: .55 })); });
-      else if (op === 'high' && ev.length) { var e0 = ev[0], m0 = e0.m + 12 <= MEL_HI ? e0.m + 12 : e0.m; mark(tone(L.mel, 'sine', m0, t + e0.i * sd, .12, Math.max(.3, (8 - e0.i) * sd - .5), .9, M.v * .6, { sag: .5 })); }
+      if (op === 'play' || op === 'vary') ev.forEach(function (e) { var d = e.len * sd; play(L.mel, M.i, e.m, t + e.i * sd, M.a, Math.max(.05, d - M.a - .05), .45, M.v, { sag: .6 }); });
+      else if (op === 'high' && ev.length) { var e0 = ev[0], m0 = e0.m + 12 <= MEL_HI ? e0.m + 12 : e0.m; play(L.mel, 'flute', m0, t + e0.i * sd, .12, Math.max(.3, (8 - e0.i) * sd - .5), .9, .03, { sag: .5 }); }
+      // the second line under the melody (style B, the chorus)
+      if (B && chorus && (op === 'play' || op === 'vary')) harmony(P, i, ev).forEach(function (e) { var d = e.len * sd; play(L.harm, 'glass', e.m, t + e.i * sd, .04, Math.max(.05, d - .1), .4, .028, { sag: .6 }); });
       // far bells (style A): on beats where the melody starts no note
-      if (S.bells) for (k = 0; k < 8; k += 2) { var starts = ev.some(function (e) { return e.i === k; }) && op !== 'rest'; if (starts || r() > S.bells) continue;
-        var bm = ch[Math.floor(r() * ch.length)] + 24; if (bm > 96) bm -= 12; mark(tone(L.fx, 'sine', bm, t + k * sd + r() * .05, .005, .05, 1.6, .012, { pluck: 1, extra: 1 })); }
+      if (S.bells) for (k = 0; k < 8; k += 2) { var starts = op !== 'rest' && ev.some(function (e) { return e.i === k; }); if (starts || r() > S.bells) continue;
+        var bm = ch[Math.floor(r() * ch.length)] + 24; if (bm > 96) bm -= 12; play(L.fx, 'bell', bm, t + k * sd + r() * .05, .005, .05, 2.2, .014, { pluck: 1, extra: 1 }); }
       // a music box (style B): the chord's notes, up or down, an octave higher
       if (P.arp) { var up = ch.map(function (m) { return m + 12; }); if (p.dir[i] < 0) up.reverse(); var a = 0;
-        P.arp.forEach(function (x, j) { if (x !== 'x') return; mark(tone(L.fx, 'triangle', up[a++ % up.length], t + j * sd, .006, .04, .55, S.arp.v, { pluck: 1 })); }); }
+        P.arp.forEach(function (x, j) { if (x !== 'x') return; play(L.fx, 'box', up[a++ % up.length], t + j * sd, .006, .04, .7, S.arp.v, { pluck: 1 }); }); }
       // the pulse (Voltara): a soft low note, through a filter that opens a little more each bar, like a charge building
-      if (P.pulse) { var f = L.pulse.f.frequency, f0 = 380 + 120 * i; f.setValueAtTime(f0, t); f.linearRampToValueAtTime(f0 + 120, t + bl);
-        P.pulse.forEach(function (x, j) { if (x !== 'x') return; mark(tone(L.pulse, 'sawtooth', b + 12, t + j * sd, .01, .03, .26, S.pulse.v * (j % 2 ? .6 : 1), { pluck: 1 })); }); }
+      if (P.pulse) { var f = L.pulse.f.frequency, f0 = 380 + 60 * i; f.setValueAtTime(f0, t); f.linearRampToValueAtTime(f0 + 60, t + bl);
+        P.pulse.forEach(function (x, j) { if (x !== 'x') return; play(L.pulse, 'pulse', b + 12, t + j * sd, .01, .03, .26, S.pulse.v * (j % 2 ? .6 : 1), { pluck: 1 }); }); }
+      // soft drums (style B): a shaker on the off-beats; in the chorus a soft kick on beats 1 and 3. They rest in a breath.
+      if (B && !p.breath) { for (k = 1; k < 8; k += 2) puff(L.shk, t + k * sd, k === 3 || k === 7 ? .05 : .03, .05);
+        if (chorus) { thump(L.drum, t, 130, 48, .12, .11, .4); thump(L.drum, t + 4 * sd, 130, 48, .12, .08, .4); } }
+      // the turn into the chorus and back: style A, a soft timpani roll; style B, a soft rise of noise
+      if (i === VERSE - 1 || i === P.n - 1) { var nb2 = P.bass[(i + 1) % P.n], tf = hz(nb2 < 43 ? nb2 + 12 : nb2);
+        if (!B) for (k = 0; k < 6; k++) thump(L.drum, t + 6 * sd + k * sd / 3, tf * 1.1, tf, .1, .02 + k * .008, .6);
+        else if (i === VERSE - 1) rise(L.fx, t + 4 * sd, 4 * sd, .02); }
       // small sounds of the place
-      if (P.T.place === 'station' && r() < .45) { var j0 = Math.floor(r() * 7), pc = P.T.pcs; for (k = 0; k < 2; k++) { var bm2 = 84 + pc[Math.floor(r() * pc.length)]; mark(tone(L.fx, 'sine', bm2, t + j0 * sd + k * .13, .004, .03, .3, .009, { pluck: 1, extra: 1 })); } }
-      if (P.T.place === 'voltara') { if (r() < .35) { var t0 = t + r() * (bl - .6), nk = 2 + Math.floor(r() * 3); for (k = 0; k < nk; k++) spark(L.crk, t0 + r() * .4, .05); }
-        if (i === P.n - 1 && p.charge) mark(tone(L.fx, 'sine', P.bass[0] + 36, t + bl * .25, .6, .9, .5, .007, { glide: P.bass[0] + 43, extra: 1 })); }
+      if (P.T.place === 'station' && r() < .4) { var j0 = Math.floor(r() * 7), pc = P.T.pcs; for (k = 0; k < 2; k++) play(L.fx, 'bell', 84 + pc[Math.floor(r() * pc.length)], t + j0 * sd + k * .13, .004, .03, .35, .007, { pluck: 1, extra: 1 }); }
+      if (P.T.place === 'voltara') { if (r() < .35) { var t0 = t + r() * (bl - .6), nk = 2 + Math.floor(r() * 3); var tt = []; for (k = 0; k < nk; k++) tt.push(t0 + r() * .4); tt.sort(function (x, y) { return x - y; }); tt.forEach(function (x, n) { var nx = n + 1 < tt.length ? tt[n + 1] - x - .002 : .05; puff(L.crk, x, .05, Math.max(.004, Math.min(nx, .012 + r() * .03))); }); }
+        if (i === VERSE - 1 && p.charge) play(L.fx, 'flute', P.bass[0] + 36, t + bl * .25, .6, .9, .5, .006, { glide: P.bass[0] + 43, extra: 1 }); }
       E.bar = (i + 1) % P.n; if (!E.bar) E.pass++; E.t = t + bl; }
 
     E.setTune = function (id, style, t) { var P = id ? parse(id, style) : null; if (E.L && P && E.L.P === P) return; if (E.L) { var old = E.L; fadeOut(old, t, 1.2); setTimeoutSafe(function () { try { old.out.disconnect(); old.send.disconnect(); } catch (e) {} }, 3000); }
-      E.tune = P ? id + '.' + style : null; E.L = P ? layers(P, t) : null; if (E.L) E.L.hum && (E.L.hum.L = E.L); E.t = t + .05; E.bar = 0; E.pass = 0; E.sig = ''; };
+      E.tune = P ? id + '.' + style : null; E.L = null; if (P) E.L = layers(P, t); E.t = t + .05; E.bar = 0; E.pass = 0; E.sig = ''; };
     E.fill = function (until) { if (!E.L) return; while (E.t < until) playBar(); };
     E.setBusy = function (b, t) { if (b === E.busy && E.busyInit) return; E.busy = b; E.busyInit = 1; E.duck.gain.setTargetAtTime(b ? BUSY : 1, t, .3); };
     E.fadeIn = function (t, secs, level) { E.master.gain.cancelScheduledValues(t); E.master.gain.setValueAtTime(Math.max(.0001, E.master.gain.value), t); E.master.gain.linearRampToValueAtTime(level, t + secs); };
@@ -220,7 +287,7 @@ var GMQMusic = (function () {
   function setTimeoutSafe(f, ms) { try { setTimeout(f, ms); } catch (e) {} }
 
   /* PLAYING IT LIVE */
-  var M = { on: false, eng: null, ctx: null, timer: null, style: 'A', o: { ctx: null, pick: null, busy: null } };
+  var M = { on: false, eng: null, ctx: null, timer: null, style: 'A', o: { ctx: null, pick: null, busy: null, light: false } };
   function getCtx() { if (M.o.ctx) return M.o.ctx(); if (!M.ctx) { var A = window.AudioContext || window.webkitAudioContext; M.ctx = new A(); } return M.ctx; }
   function tick() { if (!M.on || !M.eng) return; var c = M.eng.ctx; if (document.hidden) { if (!M.o.ctx && c.state === 'running') { try { c.suspend(); } catch (e) {} } return; }
     if (c.state !== 'running') return; var now = c.currentTime, id = M.o.pick ? M.o.pick() : null; if (!TUNES[id]) id = null;
@@ -228,11 +295,11 @@ var GMQMusic = (function () {
     if (M.eng.t < now) M.eng.t = now + .05;      // after a long pause, start again from now
     M.eng.setBusy(!!(M.o.busy && M.o.busy()), now); M.eng.fill(now + .8); }
   function start() { var c; try { c = getCtx(); if (c.state === 'suspended') c.resume(); } catch (e) { return; }
-    if (!M.eng || M.eng.ctx !== c) M.eng = engine(c, c.destination, (Date.now() & 0xffffff) + 1);
+    if (!M.eng || M.eng.ctx !== c) M.eng = engine(c, c.destination, (Date.now() & 0xffffff) + 1, M.o.light);
     M.eng.fadeIn(c.currentTime, 2, LEVEL); if (!M.timer) M.timer = setInterval(tick, 150); tick(); }
   function stop() { if (M.timer) { clearInterval(M.timer); M.timer = null; } if (M.eng) { try { M.eng.release(M.eng.ctx.currentTime, .6); } catch (e) {} } }
   return {
-    LIMIT: LIMIT, EXTRA: EXTRA, LEVEL: LEVEL, BUSY: BUSY, MEL: [MEL_LO, MEL_HI], TUNES: TUNES, parse: parse, engine: engine, midi: midi,
+    LIMIT: LIMIT, EXTRA: EXTRA, LEVEL: LEVEL, BUSY: BUSY, MEL: [MEL_LO, MEL_HI], VERSE: VERSE, TUNES: TUNES, INST: INST, harmony: harmony, parse: parse, engine: engine, midi: midi,
     setup: function (o) { for (var k in o) M.o[k] = o[k]; },
     setStyle: function (s) { M.style = s; },
     setOn: function (on) { M.on = !!on; if (M.on) start(); else stop(); },
@@ -241,7 +308,7 @@ var GMQMusic = (function () {
     stop: function () { M.on = false; stop(); },
     stats: function () { var E = M.eng; if (!E) return { voices: 0, max: 0, notes: 0, tune: null, pass: 0, skipped: { core: 0, extra: 0 } }; return { voices: E.voicesAt(E.ctx.currentTime), max: E.max, notes: E.notes, tune: E.tune, pass: E.pass, busy: E.busy, skipped: E.skipped, master: E.master.gain.value, duck: E.duck.gain.value }; },
     /* Record a tune without speakers (for the sound files and the checks). o: { id, style, secs, seed, busyFrom, busyTo, changeAt, changeTo, sr } */
-    render: function (o) { var sr = o.sr || 44100, A = window.OfflineAudioContext || window.webkitOfflineAudioContext, c = new A(2, Math.ceil(sr * o.secs), sr), E = engine(c, c.destination, o.seed || 1);
+    render: function (o) { var sr = o.sr || 44100, A = window.OfflineAudioContext || window.webkitOfflineAudioContext, c = new A(2, Math.ceil(sr * o.secs), sr), E = engine(c, c.destination, o.seed || 1, o.light);
       E.fadeIn(0, 1.5, LEVEL); E.setTune(o.id, o.style, 0); E.setBusy(false, 0);
       if (o.busyFrom != null) { E.duck.gain.setTargetAtTime(BUSY, o.busyFrom, .3); E.duck.gain.setTargetAtTime(1, o.busyTo, .3); }
       if (o.changeAt != null) { E.fill(o.changeAt); E.setTune(o.changeTo, o.style, o.changeAt); }

@@ -1,7 +1,8 @@
 // Music v2 (GMQMusic, docs/music/index.html).   [Brief: HANDOFF_Music_2026-11-28.md §5: "the piece starts, changes tune by place, goes quieter when busy, stops,
 //   and never has more than its voice limit playing at once."]
-//   THE TUNES, as data: each place and style has 8 chords, 8 low notes and 8 melody bars of 8 eighths; every note is in the tune's key; melodies in range;
+//   THE TUNES, as data: each place and style has 16 chords, 16 low notes and 16 melody bars of 8 eighths (a verse and a chorus); every note is in the tune's key; melodies in range;
 //     no melody is one of the old tunes' melodies.
+//   CLICKS: in a minute of each song (drums off: a shaker is noise and jumps by nature), no jump between two samples bigger than 0.02 (one was found and fixed on 28 November: a note's volume began at full for one sample).
 //   VARIATION, on 2,000 seeds for each tune and style (20 times round each): no two times round in a row are planned the same; every note played
 //     (the melody changed, the bells, the music box, the blips) is in the tune's key; melodies stay in range; never more than LIMIT voices at once;
 //     no chord, low note or melody note is ever dropped for lack of voices (only the small extra sounds may be).
@@ -20,7 +21,7 @@ const FILE = 'file://' + path.resolve(__dirname, '..', 'docs', 'music', 'index.h
   // ---- the tunes, as data
   const data = await p.evaluate(() => { const f = [], T = GMQMusic.TUNES, n = { tunes: 0 }, olds = Object.keys(OLD_TUNES).map(k => OLD_TUNES[k].v[0].s.replace(/\|/g, ' ').split(/\s+/).filter(Boolean).join(' '));
     for (const id in T) for (const st of ['A', 'B']) { const P = GMQMusic.parse(id, st); if (!P) { f.push(`${id} ${st}: missing`); continue; } n.tunes++; const pcs = T[id].pcs, inKey = m => pcs.indexOf(m % 12) >= 0;
-      if (P.n !== 8 || P.bass.length !== 8 || P.mel.length !== 8) f.push(`${id} ${st}: not 8 bars`);
+      if (P.n !== 16 || P.bass.length !== 16 || P.mel.length !== 16) f.push(`${id} ${st}: not 16 bars (a verse and a chorus)`);
       T[id][st].s.forEach((bar, i) => { const tk = bar.split(/\s+/).filter(Boolean); if (tk.length !== 8) f.push(`${id} ${st} bar ${i + 1}: ${tk.length} eighths`); tk.forEach(t => { if (!/^([A-G](#|b)?\d|-|\.)$/.test(t)) f.push(`${id} ${st}: token ${t}`); }); });
       P.chords.forEach((c, i) => c.forEach(m => { if (!inKey(m)) f.push(`${id}: chord ${i + 1} has ${m}, not in the key`); }));
       P.bass.forEach((m, i) => { if (!inKey(m)) f.push(`${id}: low note ${i + 1} not in the key`); if (m < 36 || m > 52) f.push(`${id}: low note ${m} out of range`); });
@@ -33,7 +34,7 @@ const FILE = 'file://' + path.resolve(__dirname, '..', 'docs', 'music', 'index.h
   const SEEDS = 2000, vr = (() => { const page = fs.readFileSync(path.resolve(__dirname, '..', 'docs', 'music', 'index.html'), 'utf8'), src = page.slice(page.indexOf('/* GMQ MUSIC: start'), page.indexOf('/* GMQ MUSIC: end */'));
     const param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {}, setTargetAtTime() {}, cancelScheduledValues() {} });
     const node = x => Object.assign({ connect() {}, disconnect() {}, start() {}, stop() {} }, x);
-    const fake = () => ({ sampleRate: 3000, currentTime: 0, destination: node({}), createGain: () => node({ gain: param() }), createOscillator: () => node({ frequency: param(), detune: param() }),
+    const fake = () => ({ sampleRate: 3000, currentTime: 0, destination: node({}), createGain: () => node({ gain: param() }), createOscillator: () => node({ frequency: param(), detune: param(), setPeriodicWave() {} }), createPeriodicWave: () => ({}),
       createBiquadFilter: () => node({ frequency: param(), Q: param() }), createDelay: () => node({ delayTime: param() }), createConvolver: () => node({}), createBufferSource: () => node({}),
       createBuffer: (c, n) => ({ getChannelData: () => new Float32Array(n) }) });
     const box = { window: {}, document: { hidden: false }, performance: { now: () => 0 }, setTimeout: () => 0, Math, JSON }; vm.createContext(box); vm.runInContext(src + '\n;this.GMQMusic = GMQMusic;', box);
@@ -42,7 +43,7 @@ const FILE = 'file://' + path.resolve(__dirname, '..', 'docs', 'music', 'index.h
       for (let seed = 1; seed <= SEEDS; seed++) { const E = G.engine(fake(), null, seed); E.log = []; E.setTune(id, st, 0); let last = ''; const passLen = P.sd * 8 * P.n;
         for (let k = 0; k < 20; k++) { E.fill((k + 1) * passLen - .01); if (k && E.sig === last) same++; last = E.sig; }
         maxV = Math.max(maxV, E.max); extraSkip += E.skipped.extra; notes += E.notes; if (E.skipped.core) f.push(`${id} ${st} seed ${seed}: ${E.skipped.core} chord, low or melody notes dropped`);
-        E.log.forEach(x => { if (x.glide) return; if (pcs.indexOf(x.m % 12) < 0) f.push(`${id} ${st} seed ${seed}: ${x.d} note ${x.m} not in the key`);
+        E.log.forEach(x => { if (x.glide || x.m === null) return; if (pcs.indexOf(x.m % 12) < 0) f.push(`${id} ${st} seed ${seed}: ${x.d} note ${x.m} not in the key`);
           if (x.d === 'mel' && (x.m < G.MEL[0] || x.m > G.MEL[1])) f.push(`${id} ${st} seed ${seed}: melody note ${x.m} out of range`); if (x.m > 100 || x.m < 30) f.push(`${id} ${st} seed ${seed}: note ${x.m} out of range`); });
         if (f.length > 30) break; }
       if (maxV > G.LIMIT) f.push(`${id} ${st}: ${maxV} voices at once`); if (same) f.push(`${id} ${st}: ${same} times a time round was planned the same as the one before`);
@@ -55,10 +56,13 @@ const FILE = 'file://' + path.resolve(__dirname, '..', 'docs', 'music', 'index.h
     const rms = (a, z) => { let s = 0; for (let i = a * sr; i < z * sr; i++) s += d[i] * d[i]; return Math.sqrt(s / ((z - a) * sr)); };
     const c = await GMQMusic.render({ id: 'station', style: 'A', secs: 40, seed: 5, changeAt: 20, changeTo: 'voltara' }), s = await GMQMusic.render({ id: 'voltara', style: 'B', secs: 30, seed: 5, stopAt: 15 }), sd = s.buf.getChannelData(0);
     let tail = 0; for (let i = 17 * sr; i < 30 * sr; i++) tail = Math.max(tail, Math.abs(sd[i]));
-    return { before: rms(5, 19), during: rms(23, 39), after: rms(45, 59), changeMax: c.max, stopTail: tail }; });
+    const clicks = {}; for (const id of ['station', 'voltara']) for (const st of ['A', 'B']) { const S = GMQMusic.TUNES[id][st], dr = S.drums; S.drums = 0; const x = await GMQMusic.render({ id, style: st, secs: 60, seed: 9 }), y = x.buf.getChannelData(0); S.drums = dr; let j = 0; for (let i = 1; i < y.length; i++) j = Math.max(j, Math.abs(y[i] - y[i - 1])); clicks[id + '.' + st] = +j.toFixed(4); }
+    return { before: rms(5, 19), during: rms(23, 39), after: rms(45, 59), changeMax: c.max, stopTail: tail, limit: GMQMusic.LIMIT, clicks }; });
+  for (const k in busy.clicks) ok(busy.clicks[k] < .02, `clicks: ${k} jumps ${busy.clicks[k]} between two samples (a click)`);
+  console.log('largest jump between two samples (a click would be over 0.02):', JSON.stringify(busy.clicks));
   ok(busy.during <= .4 * busy.before, `busy: the average while a task is open is ${(busy.during / busy.before * 100).toFixed(0)}% of before (want 40% or less)`);
   ok(busy.after >= .6 * busy.before, `busy: after the task the music does not come back (${(busy.after / busy.before * 100).toFixed(0)}%)`);
-  ok(busy.changeMax <= 14, `a change of place: ${busy.changeMax} voices at once`);
+  ok(busy.changeMax <= busy.limit, `a change of place: ${busy.changeMax} voices at once`);
   ok(busy.stopTail < 1e-3, `stop: still sounding 2 seconds after stop (${busy.stopTail})`);
   console.log(`busy: ${(busy.during / busy.before * 100).toFixed(0)}% of the average while a task is open; change of place: ${busy.changeMax} voices at most; after stop: ${busy.stopTail.toExponential(1)}`);
 
@@ -78,7 +82,7 @@ const FILE = 'file://' + path.resolve(__dirname, '..', 'docs', 'music', 'index.h
   ok(live.busyDuck < .4 && live.unDuck > .9, `live: busy does not turn it down and back (${live.busyDuck}, ${live.unDuck})`);
   ok(live.nowhere === null, 'live: a place with no tune still plays one');
   ok(!live.stopped.on && live.stopped.master < .01 && live.after === 0, `live: off does not stop it (${JSON.stringify(live.stopped)}, ${live.after} notes after)`);
-  ok(live.maxV <= 14, `live: ${live.maxV} voices at once`);
+  ok(live.maxV <= 28, `live: ${live.maxV} voices at once`);
   console.log('live:', JSON.stringify(live));
 
   // ---- the page on three screens

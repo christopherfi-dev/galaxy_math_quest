@@ -1,5 +1,5 @@
 // Music v2: record the tunes to sound files Marc can play on his phone, and measure them.   [Brief: HANDOFF_Music_2026-11-28.md §4]
-//   Records 60 seconds of each tune, old and new, in headless Chromium (OfflineAudioContext: no speakers needed), from docs/music/index.html.
+//   Records 60 seconds (or the seconds given) of each tune, old and new, in headless Chromium (OfflineAudioContext: no speakers needed), from docs/music/index.html.
 //   All files get ONE shared gain, so the loudest file peaks at -1 dB: old and new keep their true loudness against each other.
 //   Measures, at the loudness the game plays them: the peak, the average (RMS) over the whole minute, the most voices at once,
 //   and the time Chromium took to make one minute of music (on this computer, not an iPad: compare old and new, not the numbers themselves).
