@@ -87,3 +87,34 @@ Today the computer makes the other side's choices. In a live battle a classmate 
 - A record of every choice, sent with each battle's result.
 - A battle against a classmate's saved deck, with the server's `battle_start`, `battle_accept`, `battle_end`.
 - The teacher's "Check who won", playing a record again.
+
+---
+
+## 10. Answers to the server thread's five questions (28 November)
+
+The server thread leads the note (`proposals/GMQ_Server_Live_Battle_v1_2026-11-28.md`). These are the battle's facts it asked for. "The engine" is `GMQBattle`, in the battle page and inside the piece.
+
+**1. Lockstep: yes.**
+- **The same start:** both iPads call `GMQBattle.newBattle(opts, ship0, ship1, seed, [deck0, deck1], [lvl2_0, lvl2_1])` with the same values. Opts are Marc's defaults (`GMQBattle.defaults()`). The two states are then identical, down to the shuffled decks and who leads round 1.
+- **Who leads:** the state holds it (`S.leader`, 0 or 1). Round 1 is drawn from the seed; after that the lead passes every round. Both iPads know it without a message.
+- **One player's moves in a round, in this fixed order** (`GMQBattle.steps(S)`; for each step `GMQBattle.need(S, step)` says whose choice it is, `req.who`, and what kind):
+  1. a card: its place in that player's hand, counted from 0 (the leader first; the other after seeing it);
+  2. for each step that asks: `targets` (the parts a Spy hits: a list of part numbers 0 to 4), `part` (one part number: the part a repair mends, or a lost part brought back), `amounts` (five numbers: how a hit or a share is spread over the five parts), `move` (`{ from, to, n }`: HP moved from one part to another).
+  - Each choice can be checked with `GMQBattle.validate(S, req, choice)`: an empty answer means allowed.
+  - Two hits can be placed at the same moment (both shields down): the engine takes player 1's hit first, then player 0's; each child places only their own.
+- **The dice:** with two people and no computer, the engine rolls only in rules both iPads apply at the same point: "lose 1 card" (a random card thrown away when an Engine or Navigation is lost) and, on another switch, the hand shrinking. So the two iPads stay identical.
+- **The one trap: the computer rolls dice too.** When the computer chooses for a child (`GMQBattle.cpuPick`, `cpuChoose`), it may roll the dice. So a timed-out choice must happen **on both iPads at the same step**: the server decides "time is up" and sends it as a move (`{ timeout: true }`); both iPads then ask the computer for that one choice. Never let one iPad decide it alone.
+- **Playing a live battle again:** today `GMQBattle.replay` takes player 0's choices and lets the computer play player 1. For two people it needs both players' choices: `rec: [{ p: [card0, card1], c: [{ who, choice } ...] } ...]`, in the order the engine asks. A small addition to the engine, with the same checks (1,500 battles), when live battles are built. Not built now.
+
+**2. Hidden information.** Under "one player leads", the answering child sees only the leader's card (its face) before choosing. Nothing else of the leader's: not the hand, not the deck. The leader must not see the answer until it is down. After both cards are down, every choice in the round plays out in front of both children (a Spy's targets, a repair, a hit), so the server may pass those on at once. Each child places the hit on their own ship only, so neither needs the other's placement first. (Both decks and hands sit on both iPads in lockstep: section 3 and decision 3.)
+
+**3. Waiting.** [pick] 1 minute for each choice, shown as a shrinking bar on both iPads. Then the server sends `{ timeout: true }` and the computer makes that one choice for the child. The page shows: "Blue Fox is choosing a card." or "Blue Fox is placing the hit.", the bar, and Leave. Marc decides the time (decision 1).
+
+**4. A dropped connection: yes.** The computer can take over from the last agreed move: the server sends `{ timeout: true }` for each of that child's choices while they are away, and both iPads apply it. When the child comes back, their iPad fetches every agreed move, plays them from the start (as a record is played again; about a second for a whole battle), and the child makes their own choices again from the next one.
+
+**5. What `open()` would need** (a proposal for the build, not built):
+- `opts.live = { battle, seat: 0 or 1, seed, decks: [d0, d1], ships: [s0, s1], lvl2: [l0, l1], names: [n0, n1], moves: [the agreed moves so far], seconds: 60 }`. Seat 0 is engine side 0 on both iPads; each iPad draws the battle from its own seat.
+- `host.send(move)`: the piece hands the child's move to the game, which sends it to the server.
+- `GMQBattleOwn.receive(move)`: the game hands in each move from the server, in order.
+- A move: `{ n, round, seat, kind: 'card' | 'choice', value }`, or `{ n, round, seat, timeout: true }`. `n` is the server's running number: the piece applies moves strictly in that order and ignores a number it has already applied.
+- `host.over(result)` and `done(result)` as now, with the record of both players' moves.
