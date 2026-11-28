@@ -505,7 +505,7 @@ const OBJ = {
   bolt:    { room: 'nav',    tiles: [[29, 10]], words: ['bolt', 'screw'], label: 'bolt', when: s => s.chair && !s.bolt },
   console: { room: 'launch', tiles: [[30, 1]], words: ['console', 'controls', 'button', 'launch'], label: 'launch console', block: 1 },
   trainer: { room: 'launch', tiles: [[33, 1], [34, 1]], words: ['screen', 'training', 'trainer', 'battle', 'battles', 'practice'], label: 'training screen', block: 1 },      /* [v105] practice battles with your own cards (batPanel) */
-  chest:  { room: 'store',  tiles: [[22, 16]], words: ['chest', 'trunk', 'box'], label: 'old chest', block: 1, when: s => s.poster },
+  chest:   { room: 'store',  tiles: [[22, 16]], words: ['chest', 'trunk', 'box'], label: 'old chest', block: 1, when: s => s.poster },
   core:    { room: 'engine', tiles: [[6, 1], [7, 1]], words: ['core', 'engine', 'cage', 'lock', 'dials'], label: 'engine core', block: 1 },
   gems:    { room: 'engine', tiles: [], words: ['artifacts', 'artifact', 'crystals', 'crystal', 'gems', 'gem', 'stones', 'shapes'], label: 'alien artifacts', quiet: 1 },
   valve:   { room: 'engine', tiles: [[9, 0]], words: ['valve', 'wheel', 'pipe', 'steam', 'note'], label: 'valve', stand: [9, 1] },
@@ -965,7 +965,7 @@ const DO = {
       if (missing().length) return `The ship cannot fly yet. It still needs: ${missing().join(', ')}.`; S.ended = true; S.launched = true; if (!S.v) S.vFirst = true; S.mode = 'space'; S.at = 'station'; SP.x = GAL.station.x; SP.y = GAL.station.y; SP.to = null; save(); beep(120, 1.2, 'sawtooth'); showEnding(); return S.vFirst ? 'Three. Two. One. Lift off! You are in space. Voltara is in Galaxy Numerix. Tap it to fly there.' : 'Three. Two. One. Lift off! You are in space. Tap a galaxy to fly there.'; },
     push: () => DO.console.use(), open: 'It has no door.' },
   trainer: { look: () => batTap(), use: () => batTap(), talk: () => batTap(), open: () => batTap(), push: () => batTap(), take: 'It is bolted to the floor.' },      /* [v105] */
-  chest:{ look: () => S.chest ? 'The old chest is open and empty.' : 'An old chest. Dust covers it.', open: () => { if (S.chest) return 'It is open.'; S.chest = true; give('badge'); secret('chest', 'The lid creaks. A captain’s badge! You pin it on.'); card(); },
+  chest: { look: () => S.chest ? 'The old chest is open and empty.' : 'An old chest. Dust covers it.', open: () => { if (S.chest) return 'It is open.'; S.chest = true; give('badge'); secret('chest', 'The lid creaks. A captain’s badge! You pin it on.'); card(); },
     push: 'It is too heavy.', take: 'It is too heavy.' },
   core: { look: () => S.done.core ? 'The Engine Core hums in its open cage. It is fixed.' : 'The Engine Core, locked in a cage. The lock has four dials: red, blue, green and gold.',
     open: () => { if (S.done.core) return 'It is open.'; startCore(); return 'The lock wants four numbers.'; }, use: () => DO.core.open(), take: 'It is bolted down. And very hot.', push: 'It will not move.' },
@@ -2442,7 +2442,7 @@ function drawObj(id) {
       const bob = calm ? 0 : Math.sin(tNow * 2) * s * .025, cy = top + s * .37, L = s * .5; rocket(mx - s * .42, cy + bob, L, 0, {}); rocket(mx + s * .42, cy - bob, L, Math.PI, { col: '#ffd7cf', col2: '#7a3fd0' });
       if (calm || Math.sin(tNow * 5) > 0) { cx.strokeStyle = '#ffd25e'; cx.lineWidth = Math.max(1.5, s * .035); cx.setLineDash([s * .07, s * .05]); cx.beginPath(); cx.moveTo(mx - s * .14, cy + bob); cx.lineTo(mx + s * .1, cy); cx.stroke(); cx.setLineDash([]); } cx.restore(); }
     f(on ? '#6fd08a' : (Math.sin(tNow * 1.5) > 0 ? '#a33a32' : '#59657a')); circ(x0 + s * (wd - .18), top + s * .73, s * .04); cx.fill(); }
-  else if (id === 'grate'){ f('#141d2b'); rr(X + s * .1, Y + s * .1, s * .8, s * .8, 5); cx.fill(); ol(2); cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; for (let i = 1; i < 5; i++) { cx.beginPath(); cx.moveTo(X + s * (.1 + i * .16), Y + s * .14); cx.lineTo(X + s * (.1 + i * .16), Y + s * .86); cx.stroke(); } if (!S.grate) { f(`rgba(255,220,110,${.55 + .45 * Math.sin(tNow * 3)})`); rr(X + s * .4, Y + s * .44, s * .2, s * .13, 2); cx.fill(); } }
+  else if (id === 'grate') { f('#141d2b'); rr(X + s * .1, Y + s * .1, s * .8, s * .8, 5); cx.fill(); ol(2); cx.strokeStyle = '#8795ab'; cx.lineWidth = 3; for (let i = 1; i < 5; i++) { cx.beginPath(); cx.moveTo(X + s * (.1 + i * .16), Y + s * .14); cx.lineTo(X + s * (.1 + i * .16), Y + s * .86); cx.stroke(); } if (!S.grate) { f(`rgba(255,220,110,${.55 + .45 * Math.sin(tNow * 3)})`); rr(X + s * .4, Y + s * .44, s * .2, s * .13, 2); cx.fill(); } }
   else if (id === 'robot') botDraw(X + s / 2, Y + s / 2, false);
   else if (id === 'poster') { cx.save(); cx.translate(X + s * .5, Y + s * .06); if (S.poster) cx.rotate(.7); f('#fbf3dc'); cx.beginPath(); cx.moveTo(-s * .4, 0); cx.lineTo(s * .4, 0); cx.lineTo(s * .4, s * .62); cx.lineTo(s * .26, s * .76); cx.lineTo(-s * .4, s * .76); cx.closePath(); cx.fill(); ol(2); f('#d9cba6'); cx.beginPath(); cx.moveTo(s * .4, s * .62); cx.lineTo(s * .26, s * .62); cx.lineTo(s * .26, s * .76); cx.closePath(); cx.fill(); ol(1.5);
     f('#6a4fd0'); circ(0, s * .28, s * .17); cx.fill(); ol(1.5); cx.strokeStyle = '#ffb23e'; cx.lineWidth = 2.5; cx.beginPath(); cx.ellipse(0, s * .28, s * .3, s * .08, -.4, 0, 7); cx.stroke(); f(INK); cx.fillRect(-s * .28, s * .54, s * .5, s * .04); cx.fillRect(-s * .28, s * .63, s * .34, s * .04); f('#d2553a'); circ(0, s * .03, s * .05); cx.fill(); ol(1); cx.restore();
@@ -4796,7 +4796,7 @@ function starterPack(data,seed){
 GMQCards.use(typeof GMQBattleOwn !== 'undefined' ? GMQBattleOwn.cardList() : window.GMQC_LIST);
 const CARDS_HOST = { stage: () => document.querySelector('.stage'), toy: h => toy(h), closeToy: () => closeToy(), save: () => save(), beep: (f, d, t) => beep(f, d, t), speak: t => speak(t),
   cards: () => S.cards, get calm() { return calm; } };
-function cardWhy() { const l = S.log[S.log.length - 1]; return l && l.what ? `For ${l.what}.` : 'For your work.'; }
+function cardWhy() { for (let i = S.log.length - 1; i >= 0; i--) { const l = S.log[i]; if (!l || !l.what) continue; if (l.what === 'Practice battle' || l.what === 'Practice credits turned in') continue; return `For ${l.what}.`; } return 'For your work.'; }      /* [v105] a battle or a credit turn-in earns no card, so it is never named as a card's reason */
 function cardsSoon() { if (window.GMQ_NO_CARDPOP) return; let n = 0; const tm = setInterval(() => {
     if (++n > 900) return clearInterval(tm); if (GMQCards.isOpen()) return; const c = GMQCards.unseen(S.cards)[0]; if (!c) return clearInterval(tm);
     if (READ.open || widget || FLY) return; clearInterval(tm); widget = { kind: 'cards' };
