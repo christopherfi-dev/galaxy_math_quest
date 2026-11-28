@@ -436,6 +436,8 @@ Still open since 20 November [`GMQ_Story_and_Size_Options_v1_2026-11-20.md`]. Yo
 
 ## 6. Cards
 
+**To be replaced, once you choose:** section 4 of `GMQ_Stardust_Story_Scope_v1_2026-11-28.md` gives options for fewer cards (your direction of 28 November: cards for the major tasks, and a ship upgrade at the end). The table below stands until then.
+
 Every card has a reason the child can say. **No card for nothing.**
 
 | Card | Where | Why |
