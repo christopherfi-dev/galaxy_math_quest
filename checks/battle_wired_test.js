@@ -37,7 +37,9 @@ const { chromium } = require('playwright'); const path = require('path');
       const pt = await p.evaluate(() => { const r = cv.getBoundingClientRect(); return [r.left + (34.5 - cam.x) * ts, r.top + (1.5 - cam.y) * ts, r.left, r.right, r.top, r.bottom]; });
       ok(pt[0] > pt[2] && pt[0] < pt[3] && pt[1] > pt[4] && pt[1] < pt[5], 'the training screen is in the picture: ' + pt.map(Math.round).join(','));
       await hook(); await p.evaluate(() => { window.__said = window.__sayN; }); await p.touchscreen.tap(pt[0], pt[1]);
-      await p.waitForFunction(() => !P.route.length && !P.then && window.__sayN > window.__said && Math.abs(Math.round(P.x) - 33.5) <= 1.6 && Math.round(P.y) <= 2, null, { timeout: 15000 }); };
+      try { await p.waitForFunction(() => !P.route.length && !P.then && window.__sayN > window.__said && Math.abs(Math.round(P.x) - 33.5) <= 1.6 && Math.round(P.y) <= 2, null, { timeout: 15000 }); }
+      catch (e) { const st = await p.evaluate(xy => { const el = document.elementFromPoint(xy[0], xy[1]); return JSON.stringify({ tappedOn: el ? (el.id || el.tagName + '.' + el.className) : null, P: [P.x, P.y], route: P.route.length, widget: widget && widget.kind, says: window.__sayN - window.__said, last: (lines[lines.length - 1] || {}).text }); }, pt);
+        throw new Error('the tap on the training screen got no answer: ' + st); } };
     const openBattle = async () => { await p.click('#try'); await p.waitForFunction(() => GMQBattleOwn.isOpen() && widget && widget.kind === 'cardbattle'); await p.waitForFunction(() => { const f = document.querySelector('#gmqbattle iframe'); return f && f.contentWindow && f.contentWindow.GMQB; }, null, { timeout: 15000 }); };
     const closed = () => p.waitForFunction(() => !document.getElementById('gmqbattle') && !widget, null, { timeout: 15000 });
     const startNew = async () => { await fr.locator('#ownsetup.open').waitFor({ timeout: 15000 }); await fr.locator('#ogo').click(); await fr.locator('.hc.mine').first().waitFor({ timeout: 15000 }); };
