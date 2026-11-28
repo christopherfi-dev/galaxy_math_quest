@@ -199,19 +199,19 @@ In the same drawing style, on a plain, flat, bright magenta background, draw one
 ```
 *Check:* the same woman in all six; she does not look like a real, known person.
 
-**T1. Things to take, use and give.** Attach picture 5.
+**C3. Things to take, use and give.** Attach picture 5. *If you already made C3 from the main thread's list, keep it and name this one C3b.*
 ```
 In the same drawing style, on the same plain, flat, bright magenta background, draw these eight things separately, spread out and not touching: a white first-aid box with a green cross; a green watering can; a small round tin of cocoa with a plain brown label; a small paper packet of seeds with a picture of an apple; a folded paper map; a wooden walking stick; a cloth bag of dried peas; a small notebook with a plain cover. No shadows on the background. No text, letters or numbers.
 ```
 *Check:* no red cross (a protected sign); no words on the tin or the packet.
 
-**T2. Plants for the Greenhouse.** Attach picture 5.
+**C5. Plants for the Greenhouse.** Attach picture 5.
 ```
 In the same drawing style, on the same plain, flat, bright magenta background, draw seven plants, each cut off flat at the soil line as if growing out of a bed, spread out and not touching: three different plants that are dry, brown and drooping; the same three plants again, healthy, green and standing up; and one tiny green sprout. No pots. No shadows on the background. No text, letters or numbers.
 ```
 *Check:* each dry plant has a healthy twin that is clearly the same kind.
 
-**T3. Small finds.** Attach picture 5.
+**C6. Small finds.** Attach picture 5.
 ```
 In the same drawing style, on the same plain, flat, bright magenta background, draw these four things separately, spread out and not touching: a round shiny metal station badge with a star on it; a yellow sticky note, blank; a folded sheet of paper, blank; a long strip of old printer paper, blank. No shadows on the background. No text, letters or numbers.
 ```
@@ -246,18 +246,20 @@ In the same drawing style, on the same plain, flat, bright magenta background, d
 |---|---|---|
 | 1. Cadets and robot: C1, CV1–CV8, C2 | 10 | 20 minutes |
 | 2. Bottom rows: D3x; R15 dark, lit, open; R14, R13, R11, R10, R09, R12 dark and lit | 16 | 30 minutes |
-| 3. Top rows and things: R05, R06, R07, R08, R01, R02, R03, R04 dark and lit; C4; T1, T2, T3 | 20 | 35 minutes |
+| 3. Top rows and things: R05, R06, R07, R08, R01, R02, R03, R04 dark and lit; C4; C3, C5, C6 | 20 | 35 minutes |
 | **All** | **46** (45 without the Chief) | **about 1½ hours** |
 
 Already made and kept: the Docking Bay, dark and lit; the sleeping robot, the battery, the key card, the tin and the book (your sheet of things); your test cadet (one of the cadets, if you like).
 
 ## 9. What changed from the main thread's list, and why
 
-- **The Greenhouse's beds are empty:** the plants change when watered, so they come on magenta (T2).
+- **The Greenhouse's beds are empty:** the plants change when watered, so they come on magenta (C5).
 - **Each cadet from four sides** (CV1–CV8), not only from the front: the game turns the cadet as it walks.
 - **Sealed doors open in the lit copies** (Observatory, Listening Room, Food Storage), plus the Docking Bay's cargo door (D3x) and the Hangar's space doors (R15x): the story opens them.
 - **Big, blank screens and dials where a number goes;** a bare wall patch for the tally marks.
 - **The camera line ("40% down") and "tall furniture against the walls"** in every room: learned from building the test page.
 - **No red cross** on the first-aid kit, and a bandaged ankle and a walking stick for the Chief (the story's needs).
+- **The codes are the main thread's** (R01–R16, C1–C4), so pictures already made keep their names. New codes: CV1–CV8, D3x, R15x, C5, C6. Its T1 (a map view) is still skipped.
+- **A way out to the south** is a striped walkway running off the bottom edge, ending just above the game's bar, instead of "between two short wall ends": the bar covers the bottom eighth, so wall ends there would be hidden. Either works if Gemini draws it clearly.
 - **Things sheets follow the story's take-use-give table.** The crew's own cards are left out: the cards are drawn by the game's card thread.
 - **Not in this book, for later:** the crew's faces (for the photo and the birthday film in the Common Room), and the *Stardust*'s inside, if it is kept (Stardust decision 15).
