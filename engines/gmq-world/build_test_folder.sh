@@ -22,4 +22,5 @@ sed -i "s|<!--GAMEVER-->[^<]*<!--/GAMEVER-->|<!--GAMEVER-->$VER, copied on $(dat
 if [ -e "$DIR/api/config.php" ] || [ -e "$DIR/api/data" ]; then echo "STOP: a settings file or saved games would be in the zip"; exit 1; fi
 rm -f "$OUT"; (cd "$TMP" && zip -q -r -X gmq-test.zip gmq-test); mv "$TMP/gmq-test.zip" "$OUT"; rm -rf "$TMP"
 echo "Built $OUT with the game: $VER"
+echo "sha256: $(sha256sum "$OUT" | cut -d' ' -f1)   (the fingerprint Marc compares after downloading it)"
 unzip -l "$OUT"

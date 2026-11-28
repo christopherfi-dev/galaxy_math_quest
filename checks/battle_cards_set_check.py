@@ -334,12 +334,12 @@ for seed in range(1, 10001):
     if len(pk) != 15: out['not 15 cards'] += 1
     if len(set(pk)) != len(pk): out['a card twice'] += 1
     if t['spy'] != 1: out['not 1 Spy'] += 1
-    if t['guard'] != 1: out['not 1 Policeman'] += 1
+    if t['guard'] != 1: out['not 1 Station Guard'] += 1
     if r['epic'] != 1: out['not 1 epic'] += 1
     if r['rare'] != 1: out['not 1 rare'] += 1
     if any(CARDS[i]['type'] == 'spy' and CARDS[i]['rarity'] != 'common' for i in pk): out['a Spy that is not common'] += 1
     for i in pk: seen[i] += 1
-want('10,000 starter packs: 15 cards, no card twice, 1 Spy, 1 Policeman, 1 epic, 1 rare', dict(out), {})
+want('10,000 starter packs: 15 cards, no card twice, 1 Spy, 1 Station Guard, 1 epic, 1 rare', dict(out), {})
 can = [c['id'] for c in cards if any(c['type'] in sl['type'] and c['rarity'] == sl['rarity'] for sl in SP['slots'])]
 want('every card a slot can hold turns up in some pack', sorted(set(can) - set(seen)), [])
 print('     a starter pack, seed 1:', [CARDS[i]['name'] for i in starter(1)])

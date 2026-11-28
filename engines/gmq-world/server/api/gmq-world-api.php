@@ -40,7 +40,7 @@
 declare(strict_types=1);
 error_reporting(E_ALL); ini_set('display_errors', '0');
 
-const VERSION = '0.3.2';
+const VERSION = '0.3.3';
 $CONFIG = file_exists(__DIR__ . '/config.php') ? (require __DIR__ . '/config.php') : [];
 if (!is_array($CONFIG)) $CONFIG = [];
 $DATA = rtrim((string)($CONFIG['data_dir'] ?? (__DIR__ . '/data')), '/');
@@ -61,7 +61,7 @@ if (!empty($CONFIG['allow_origin'])) {                      // only needed when 
     header('Access-Control-Allow-Origin: ' . $CONFIG['allow_origin']);
     header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Methods: POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Headers: Content-Type, X-GMQ-Session');
 }
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') { exit; }
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') { out(['ok' => false, 'error' => 'Use POST.'], 405); }
@@ -100,6 +100,8 @@ function withLocks(array $names, callable $fn) {
 }
 function cadetLock(string $code, string $id): string { return 'cadet-' . slug($code, 12) . '-' . slug($id, 24); }
 function classLock(string $code): string { return 'class-' . slug($code, 12); }
+function claimLock(string $code): string { return 'claims-' . slug($code, 12); }
+function claimPath(string $code): string { global $DATA; return "$DATA/claims/" . slug($code, 12) . '.json'; }
 function classPath(string $code): string { global $DATA; return "$DATA/classes/" . slug($code, 12) . '.json'; }
 function studentPath(string $code, string $id): string { global $DATA; return "$DATA/students/" . slug($code, 12) . '/' . slug($id, 24) . '.json'; }
 function cadetsOf(string $code): array { global $DATA; $all = []; foreach (glob("$DATA/students/" . slug($code, 12) . '/*.json') ?: [] as $f) { $s = readJson($f); if ($s) $all[] = $s; } return $all; }
@@ -121,6 +123,11 @@ ini_set('session.gc_maxlifetime', (string)($HOURS * 3600)); ini_set('session.use
 $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 $cpath = rtrim(str_replace('\\', '/', dirname((string)($_SERVER['SCRIPT_NAME'] ?? '/api/x.php'))), '/') . '/';       // the cookie belongs to this folder only, so a test folder and a class folder never share a log in
 session_name('gmqworld');
+/* A page on another site (the class link on GitHub Pages, with 'allow_origin' set) cannot keep the log-in cookie: Safari blocks a cookie
+   from another site. So the log-in also travels as a token: join and t_login answer it as "session", and the page sends it back in
+   the header X-GMQ-Session. Strict mode means only a log-in the server made can be used. */
+$hdr = (string)($_SERVER['HTTP_X_GMQ_SESSION'] ?? '');
+if ($hdr !== '' && preg_match('/^[A-Za-z0-9,-]{22,128}$/', $hdr)) session_id($hdr);
 session_set_cookie_params(['lifetime' => $HOURS * 3600, 'path' => $cpath, 'secure' => $https, 'httponly' => true, 'samesite' => !empty($CONFIG['allow_origin']) && $https ? 'None' : 'Lax']);
 session_start();
 
@@ -239,7 +246,8 @@ function newest(array $s): bool { return empty($s['login']) || hash_equals((stri
 /* what every cadet answer carries: the game, its count of saves, and news from battles while the cadet was away */
 function cadetOut(array $s, array $class, array $more = []): array {
     return ['ok' => true, 'name' => $s['name'], 'class' => $class['name'] ?? '', 'state' => $s['state'], 'rev' => (int)($s['rev'] ?? 0), 'saved_at' => $s['saved_at'], 'ship' => $s['ship'], 'ai' => aiOn(),
-        'names' => $class['names'] ?? 'approve', 'share' => shareOf($class), 'news' => array_values($s['news'] ?? []), 'version' => VERSION] + $more;
+        'names' => $class['names'] ?? 'approve', 'share' => shareOf($class), 'news' => array_values($s['news'] ?? []), 'version' => VERSION,
+        'first' => (int)($s['rev'] ?? 0) === 0 && $s['state'] === null && empty($s['reset_at'])] + $more;      // the page may send this iPad's own game as the first save
 }
 function allowOf(array $class): string { return implode(', ', is_array($class['allow'] ?? null) ? $class['allow'] : []); }
 function shareOf(array $class): array { return ['board' => !empty($class['board']), 'battles' => (string)($class['battles'] ?? 'off'), 'show' => (string)($class['show'] ?? 'ship'), 'test_tools' => !empty($class['test_tools'])]; }
@@ -255,7 +263,7 @@ if ($action === 'health') {                                     // anyone may as
     $t = readJson("$DATA/teacher.json"); $file = (string)($CONFIG['constraint_file'] ?? (__DIR__ . '/constraints/gmq-world.txt'));
     out(['ok' => true, 'version' => VERSION, 'php' => PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION, 'php_ok' => version_compare(PHP_VERSION, '7.4.0', '>='), 'config' => file_exists(__DIR__ . '/config.php'),
         'data_writable' => $writable, 'data_inside_web' => $inside, 'probe_url' => $probe, 'probe_word' => $probe ? $word : '', 'sessions_ok' => is_dir($SESS) && is_writable($SESS), 'session_hours' => $HOURS,
-        'teacher_set' => (bool)($t && !empty($t['password_hash'])), 'setup_ready' => !empty($CONFIG['setup_code']), 'constraint_file' => is_file($file), 'card_list' => catalogue()['n'], 'ai' => aiOn() ? (string)$CONFIG['ai']['provider'] : 'off', 'https' => $https]);
+        'teacher_set' => (bool)($t && !empty($t['password_hash'])), 'setup_ready' => !empty($CONFIG['setup_code']), 'constraint_file' => is_file($file), 'card_list' => catalogue()['n'], 'cross_site' => (string)($CONFIG['allow_origin'] ?? ''), 'ai' => aiOn() ? (string)$CONFIG['ai']['provider'] : 'off', 'https' => $https]);
 }
 if ($action === 'join') {
     $code = slug((string)($in['class'] ?? ''), 12); $name = cleanName((string)($in['name'] ?? ''), 16); $pin = (string)($in['pin'] ?? '');
@@ -281,7 +289,7 @@ if ($action === 'join') {
         writeJson($path, $s); return $s;
     });
     session_regenerate_id(true); $_SESSION = ['class' => $code, 'id' => $id, 'lg' => $lg, 'joined' => microtime(true)];
-    out(cadetOut($s, $class));
+    out(cadetOut($s, $class, ['session' => session_id()]));
 }
 if ($action === 'logout') { $_SESSION = []; session_destroy(); out(['ok' => true]); }
 
@@ -302,7 +310,7 @@ if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 
         $enc = jencode($state); if ($enc === false || json_decode($enc, false, 500) === null) fail('That game cannot be saved.');     // it must be readable again, with room to spare
         if (strlen($enc) > MAX_STATE_BYTES) fail('That game is too big to save.', 413);
         $hasRev = array_key_exists('rev', $in) && is_int($in['rev']); $caps = is_array($in['caps'] ?? null) ? array_values(array_intersect($in['caps'], ['rev', 'cards'])) : null;
-        $res = withLocks([cadetLock($code, $id)], static function () use ($path, $state, $hasRev, $in, $caps) {
+        $res = withLocks([cadetLock($code, $id)], static function () use ($path, $state, $hasRev, $in, $caps, $code, $id) {
             $s = needStudent();
             /* 1. an older iPad: the cadet has logged in somewhere newer since. Its game is not written over the newer one. */
             if (!newest($s)) { if (progress($state) > progress($s['state'])) { backup($s, $state, 'from another iPad, not kept'); writeJson($path, $s); }
@@ -311,7 +319,17 @@ if (in_array($action, ['load', 'save', 'claim', 'code', 'name', 'ask', 'board', 
             $keep = static function () use (&$s, $state, $path) { if (progress($state) > progress($s['state'])) { backup($s, $state, 'from an iPad that was open, not kept'); writeJson($path, $s); } };
             if ($hasRev && (int)$in['rev'] !== (int)($s['rev'] ?? 0)) { $keep(); return [409, ['ok' => false, 'newer' => true, 'error' => 'There is a newer game on the server.', 'state' => $s['state'], 'rev' => (int)($s['rev'] ?? 0)]]; }
             if (!$hasRev && !empty($s['reset_at']) && (float)($_SESSION['joined'] ?? 0) < (float)$s['reset_at']) { $keep(); return [409, ['ok' => false, 'newer' => true, 'error' => 'Your Commander changed your game. Log out and in again.']]; }
-            /* 3. keep it */
+            /* 3. A cadet's very first save may bring the game this iPad already holds: the class link's game, with the cards earned on the
+               station [Marc, 28 November: children keep the cards they earn on the station]. The game is known by its own number (packSeed,
+               made once when it began). One game belongs to one cadet in a class, so a child cannot bring in a classmate's game. */
+            $first = (int)($s['rev'] ?? 0) === 0 && $s['state'] === null && empty($s['reset_at']);
+            $gid = $first && is_int($state['packSeed'] ?? null) ? 'g' . $state['packSeed'] : '';
+            if ($gid !== '') {
+                $owner = withLocks([claimLock($code)], static function () use ($code, $id, $gid) { $c = readJson(claimPath($code)) ?? []; if (!empty($c[$gid]) && $c[$gid] !== $id) return (string)$c[$gid]; $c[$gid] = $id; writeJson(claimPath($code), $c); return $id; });
+                if ($owner !== $id) { logLine("claim refused $code/$id"); return [409, ['ok' => false, 'claimed' => true, 'error' => "This iPad's game already belongs to another cadet in your class. Ask your teacher."]]; }
+            }
+            if ($first && progress($state) > 0) $s['first_from'] = ['at' => date('c'), 'summary' => summary($state)];
+            /* 4. keep it */
             $state['ship'] = (string)($s['ship']['name'] ?? '');                         // the ship's name is the server's to give: only an approved name is kept
             if (isset($state['botName']) && rude((string)$state['botName'], true)) $state['botName'] = '';
             [$state, $changed] = applyLedger($s, $state);
@@ -403,7 +421,7 @@ if ($action === 't_login') { withLocks(['teacher'], static function () use ($in)
     $t = readJson("$DATA/teacher.json"); if (!$t || empty($t['password_hash'])) fail('No teacher password is set on the server yet.', 503, ['setup' => true]);
     if (($t['locked_until'] ?? 0) > time()) fail('Too many wrong tries. Wait ten minutes.', 429);
     if (!password_verify((string)($in['password'] ?? ''), (string)$t['password_hash'])) { $t['tries'] = ($t['tries'] ?? 0) + 1; if ($t['tries'] >= MAX_TRIES) { $t['locked_until'] = time() + LOCK_SECONDS; $t['tries'] = 0; } writeJson("$DATA/teacher.json", $t); fail('That is not the teacher password.', 403); }
-    $t['tries'] = 0; writeJson("$DATA/teacher.json", $t); }); session_regenerate_id(true); $_SESSION = ['teacher' => true]; out(['ok' => true, 'ai' => aiOn()]);
+    $t['tries'] = 0; writeJson("$DATA/teacher.json", $t); }); session_regenerate_id(true); $_SESSION = ['teacher' => true]; out(['ok' => true, 'ai' => aiOn(), 'session' => session_id()]);
 }
 if (strpos($action, 't_') === 0) {
     if (empty($_SESSION['teacher'])) fail('Teacher log in needed.', 401);
@@ -417,7 +435,7 @@ if (strpos($action, 't_') === 0) {
     $class = readJson(classPath($code)); if (!$class) fail('No such class.', 404);
     if ($action === 't_class') {
         $rows = []; foreach (cadetsOf($code) as $s) $rows[] = ['id' => $s['id'], 'name' => $s['name'], 'saved_at' => $s['saved_at'], 'ship' => $s['ship'], 'codes_ok' => array_keys($s['codes_ok'] ?? []), 'locked' => ($s['locked_until'] ?? 0) > time(),
-            'summary' => $s['summary'] ?? null, 'backups' => count($s['backups'] ?? []), 'deck_open' => !empty($s['deck']['open'])];
+            'summary' => $s['summary'] ?? null, 'backups' => count($s['backups'] ?? []), 'deck_open' => !empty($s['deck']['open']), 'first_from' => $s['first_from'] ?? null];
         usort($rows, static function ($a, $b) { return strcmp($a['name'], $b['name']); });
         out(['ok' => true, 'class' => ['code' => $class['code'], 'name' => $class['name'], 'codes' => ($class['codes'] ?? []) + DEFAULT_CODES, 'names' => $class['names'] ?? 'approve', 'closed' => !empty($class['closed']), 'allow' => allowOf($class)] + shareOf($class), 'cadets' => $rows]);
     }
@@ -447,7 +465,9 @@ if (strpos($action, 't_') === 0) {
     if ($action === 't_backups') { $s = readJson($path) ?? []; $list = []; foreach ($s['backups'] ?? [] as $i => $b) $list[] = ['n' => $i, 'at' => $b['at'], 'why' => $b['why'], 'summary' => $b['summary']]; out(['ok' => true, 'now' => $s['summary'] ?? null, 'backups' => $list]); }
     if ($action === 't_reset' || $action === 't_restore') {
         $what = $action === 't_restore' ? 'restore' : (string)($in['what'] ?? '');
-        if ($what === 'remove') { withLocks([cadetLock($code, $id)], static function () use ($path) { @unlink($path); }); logLine("removed $code/$id"); out(['ok' => true]); }
+        if ($what === 'remove') { withLocks([cadetLock($code, $id), claimLock($code)], static function () use ($path, $code, $id) { @unlink($path);
+            $c = readJson(claimPath($code)); if ($c) { foreach ($c as $g => $who) if ($who === $id) unset($c[$g]); writeJson(claimPath($code), $c); } });      // the game they brought can be brought again by its real owner
+            logLine("removed $code/$id"); out(['ok' => true]); }
         if (!in_array($what, ['number', 'game', 'restore'], true)) fail('Reset what?');
         withLocks([cadetLock($code, $id)], static function () use ($path, $what, $in) {
             $s = readJson($path); if (!$s) fail('No such cadet.', 404);

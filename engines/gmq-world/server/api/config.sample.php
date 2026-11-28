@@ -13,8 +13,9 @@ return [
     // How long a cadet stays logged in, in hours, without logging in again. [pick: 10, one school day]
     // 'session_hours' => 10,
 
-    // Only needed if the game page is served from a different site than this API.
-    // 'allow_origin' => 'https://example.org',
+    // Only needed if the game page is on a different site than this API: for example the class link on GitHub Pages,
+    // 'https://christopherfi-dev.github.io'. The page then keeps its log-in as a token (Safari blocks another site's cookie).
+    // 'allow_origin' => 'https://christopherfi-dev.github.io',
 
     // The AI. Leave 'provider' empty to keep the AI switched off: the game then answers as it does now.
     // On a TEST folder, keep it off.

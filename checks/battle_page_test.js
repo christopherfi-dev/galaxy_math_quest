@@ -206,7 +206,7 @@ async function act(page, name, flags, size) {
     await page.goto(FILE);
     // ---- the first screen
     pass(name + ': the first screen says why, before anything else', await page.locator('#setup.open').count() === 1 && /practice battle/i.test(await page.locator('#setup').textContent()));
-    pass(name + ': the first screen says 1 Spy card and 2 policemen in each deck', /1 Spy card and 2 policemen/.test(await page.locator('#setup').textContent()));
+    pass(name + ': the first screen says 1 Spy card and 2 Station Guards in each deck', /1 Spy card and 2 Station Guards/.test(await page.locator('#setup').textContent()));
     await shot(page, name + '_1_first_screen');
     await page.locator('#myship button').nth(3).tap();
     pass(name + ': tapping a part changes its kind', /Proton Launcher/.test(await page.locator('#myship').textContent()));
