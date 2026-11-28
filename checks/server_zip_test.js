@@ -1,11 +1,11 @@
 // Marc's steps (engines/gmq-world/READ_ME_FIRST.md), done on this machine with the zip itself. It never touches Marc's site.
-// Step 2: unzip in a pretend web folder. Step 3: a data folder beside it. Step 4: copy config.sample.php and make the two changes
+// Step 2: unzip in a pretend web root (/var/www/html, as the steps of 28 November say). Step 3: a data folder beside it. Step 4: copy config.sample.php and make the two changes
 // exactly as the steps say. Step 5: the server check. Step 6: the setup word. Step 7: a class. Step 8: a made-up cadet plays,
 // and the game arrives on a second device. Also: the zip holds no settings file, no saved games, and no key.
 // Run: node checks/server_zip_test.js      (build the zip first: sh engines/gmq-world/build_test_folder.sh)
 const { chromium } = require('playwright'); const { spawn, execFileSync } = require('child_process'); const fs = require('fs'); const os = require('os'); const path = require('path');
 const ROOT = path.resolve(__dirname, '..'), ZIP = path.join(ROOT, 'engines', 'gmq-world', 'GMQ_Server_Test_Folder.zip');
-const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'gmqzip-')), HTML = path.join(TMP, 'var', 'www', 'html'), ENG = path.join(HTML, 'educational-engines'), DATA = path.join(TMP, 'var', 'www', 'gmq-test-data'), PORT = 9990 + Math.floor(Math.random() * 9);
+const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'gmqzip-')), HTML = path.join(TMP, 'var', 'www', 'html'), ENG = HTML, DATA = path.join(TMP, 'var', 'www', 'gmq-test-data'), PORT = 9990 + Math.floor(Math.random() * 9);
 const bad = [], errs = []; const ok = (c, what, extra) => { if (!c) bad.push(what + (extra !== undefined ? ': ' + JSON.stringify(extra).slice(0, 300) : '')); };
 (async () => {
   let srv, b;
@@ -33,7 +33,7 @@ const bad = [], errs = []; const ok = (c, what, extra) => { if (!c) bad.push(wha
     cfg = cfg.replace("'/var/www/gmq-test-data'", JSON.stringify(DATA).replace(/"/g, "'"));          /* the same folder, in this machine's pretend /var/www */
     fs.writeFileSync(path.join(api, 'config.php'), cfg); execFileSync('php', ['-l', path.join(api, 'config.php')]);
     srv = spawn('php', ['-S', `127.0.0.1:${PORT}`, '-t', HTML], { stdio: 'ignore' }); await new Promise(r => setTimeout(r, 900));
-    const BASE = `http://127.0.0.1:${PORT}/educational-engines/gmq-test`;
+    const BASE = `http://127.0.0.1:${PORT}/gmq-test`;
     // step 5
     b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: 1180, height: 745 } })).newPage(); p.on('pageerror', e => errs.push(e.message));
     await p.goto(BASE + '/'); ok(/Sketch version \d+/.test(await p.textContent('#gamever')), 'the front page says which game version is inside', await p.textContent('#gamever'));
