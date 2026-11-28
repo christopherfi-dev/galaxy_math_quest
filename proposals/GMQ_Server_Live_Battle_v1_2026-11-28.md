@@ -1,6 +1,6 @@
 # Live battles between classmates: a design note
 
-**Date:** 28 November 2026. **From:** the server thread, with the battle thread (the battle's side, section 9). **For:** Marc, and the main thread.
+**Date:** 28 November 2026. **From:** the server thread, with the battle thread. Its side is `proposals/GMQ_Card_Battle_Live_v1_2026-11-28.md`; section 9 here sums it up. **For:** Marc, and the main thread.
 **A note only. Nothing is built.** Everything is **[Proposal]** unless it says [Source]. My choices are marked **[pick]**.
 
 ---
@@ -58,15 +58,15 @@
 
 ## 6. Time limits, and a dropped connection
 
-- **Time to choose:** 45 seconds for each choice **[pick]**. The child sees a gentle clock in the last 15 seconds. Then the computer chooses for them, with the battle's own computer player.
-  - That choice is made the same way on both iPads, so no extra message is needed beyond "time is up".
-  - The server says when time is up, by its own clock, so a child cannot stop the clock by closing their iPad.
+- **Time to choose:** 1 minute for each choice **[pick, the battle thread's and mine]**, with a bar on both iPads. The other child sees "Blue Fox is choosing a card."
+  - **When the minute is up, the server writes one move: "time is up".** Both iPads then let the computer make that one choice, at the same step.
+  - The computer's choice uses the battle's own dice. So it must happen at the same place on both iPads, and only the server's numbered move makes sure of that. (The battle thread found this trap.)
+  - The server keeps the clock, so a child cannot stop it by closing their iPad.
 - **A dropped connection** (an iPad goes to sleep, the wifi drops):
-  - The child's iPad asks for everything since its last choice when it wakes, and the battle goes on where it was.
-  - While it is away, the clock runs. Each choice that is not made in time is made by the computer.
-  - If a child is away for 3 minutes **[pick]**, the computer plays their side to the end. The result counts as for any battle. **[Option B: the battle ends, and nothing moves.]**
+  - While the child is away, each of their choices times out after its minute, and the computer makes it.
+  - When the iPad wakes, it fetches every move so far, plays them again from the start (about a second), and the child goes on with their own choices.
+- **A child who leaves, or is away for more than a minute:** **[pick, A]** the computer flies their ship to the end, and the battle counts. Your other options: **B.** the battle ends, nothing moves, and it does not count; **C.** it counts as a loss for the child who left.
 - **Both children away for 10 minutes:** the battle ends, and nothing moves.
-- **A child who backs out after agreeing:** the same as away.
 
 ## 7. Battles are rationed [Source: Marc, 28 November]
 
@@ -87,18 +87,18 @@
 - **On the Desk:** you see live battles as they happen (who, which round, the cards at stake). You can end one. One switch turns live battles off for the class.
 - **A tie, and a loss, are said kindly,** as the battle thread does today.
 
-## 9. The battle's side (for the battle thread to confirm or correct)
+## 9. The battle's side (the battle thread, 28 November)
 
-Written from my reading of `prototypes/card_battle.html`; the battle thread owns this part.
+From `proposals/GMQ_Card_Battle_Live_v1_2026-11-28.md`, section 10. Nothing of it is built yet.
 
-- **The engine is already lockstep-ready.** One seed decides everything random. Rounds go through `startRound(S, card0, card1)`, then `steps(S)`. Each step's `need(S, step)` names who must answer (`who: 0 or 1`), and `run(S, step, answer)` applies it.
-- **Two humans:**
-  - Seat 0 and seat 1 each answer only their own `need`s. The other seat's answers come from the server.
-  - On seat 1's iPad the page shows the same battle with the sides turned round, so each child sees their own ship at the bottom.
-- **"One player leads":** the follower must see the leader's card before choosing (`S.leader`). Nothing else of the leader's is shown.
-- **The record:** `replay` today takes only seat 0's choices, and lets the computer play seat 1. A live battle needs a replay that takes both seats' choices, with the computer filling only the ones marked "time is up".
-- **The piece's open():** something like `opts.live = { battle, seat, start }`, `host.send(move)` when the child chooses, and `GMQBattleOwn.receive(move)` when the other child's move arrives.
-- **Time is up:** the page asks the computer player for that seat's answer (`cpuPick`, `cpuChoose`) on both iPads at the same step, so both get the same answer.
+- **Lockstep works.** Both iPads start with `GMQBattle.newBattle(rules, ship0, ship1, seed, [deck0, deck1], [lvl2_0, lvl2_1])` and get the same battle. The seed decides who leads round 1; then the lead takes turns.
+- **A move:**
+  - `{ n, round, seat, kind: 'card' or 'choice', value }`, or `{ n, round, seat, timeout: true }`
+  - `n` is the server's running number. The piece applies moves strictly in order, and skips one it already has.
+  - A card is its place in the hand. A choice is the parts a Spy hits, one part, five amounts, or a move from one part to another.
+- **What each child sees:** the answering child sees only the leader's card before choosing. The leader does not see the answer until it is down. Each child places hits on their own ship only.
+- **The piece would need:** `opts.live = { battle, seat, seed, decks, ships, lvl2, names, moves, seconds }`, plus `host.send(move)` and `GMQBattleOwn.receive(move)`.
+- **Checking:** a two-sided record, `rec: [{ p: [card0, card1], c: [{ who, choice }] }]`, and a `replay` that reads it. Not built yet.
 
 ## 10. If you say go: the order of building
 
@@ -118,12 +118,16 @@ Written from my reading of `prototypes/card_battle.html`; the battle thread owns
 
 ## 12. Decisions for you, shortest first
 
-| # | Decision | My pick |
+The battle thread's note asks the same questions, with the same picks.
+
+| # | Decision | Pick |
 |---|---|---|
-| 1 | Battles free before more quests | **3** ("two or three") |
-| 2 | Time to choose, before the computer chooses | **45 seconds** |
-| 3 | A child away for 3 minutes | **the computer plays their side to the end** (or: the battle ends, nothing moves) |
-| 4 | How children meet | **in the battle room, by invite** (or: you pair them on the Desk) |
-| 5 | Live battles: friendly first, or challenges at once | **friendly first, for a week**, then challenges |
-| 6 | What earns one more battle | **3 tasks or finds, or a quest, or 2 asteroid belts**: your numbers |
-| 7 | Set words between children ("Good battle!") | **yes, a few, no typing** |
+| 1 | Time for each choice, before the computer chooses for that child | **1 minute** |
+| 2 | Battles free before more quests | **3** ("two or three") |
+| 3 | Does a live battle use one of them? | **yes**, the same count as other battles |
+| 4 | A child who leaves, or is away more than a minute | **A: the computer flies their ship to the end**; or B: the battle ends, nothing moves; or C: a loss for that child |
+| 5 | How children meet | **in the battle room, by invite** (or: you pair them on the Desk) |
+| 6 | Friendly first, or challenges at once | **friendly live battles first**; challenges once friendly ones work in class |
+| 7 | A child could look at the other's hand with the browser's tools (both hands are on both iPads) | **accept it for now**; the result is still checked |
+| 8 | What earns one more battle | **3 tasks or finds, or a quest, or 2 asteroid belts**: your numbers |
+| 9 | Set words between children ("Good battle!") | **yes, a few, no typing** |
