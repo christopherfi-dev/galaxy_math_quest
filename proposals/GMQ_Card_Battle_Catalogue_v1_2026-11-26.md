@@ -132,7 +132,7 @@ The rule is in `cards.json` (`starter_pack`), so the game and the cards thread r
    - **B.** Fewer Spy designs (back to 7).
    - **C.** The game gives Spy cards less often (the cards thread's picking rule).
 4. **The starter pack's 11 commons** (4 attack, 4 shield, 3 repair) and a common Spy. Keep?
-5. **"Policeman" or "Station Guard"?** [Conflict] Your words say Policeman; the card says Station Guard.
+5. **"Policeman" or "Station Guard"?** **Decided [Source: Marc, 28 November, "Yes" to the main thread's picks]: Station Guard, one name everywhere.** The card's type label now says GUARD.
 6. **Upgrades** (decision 1): lasting, or one battle? Both are built.
 7. **Where in the game the battle opens.** The main thread asks you.
 8. **Two new epics to confirm.** Comeback Crew (every lost part back) uses your revival rule for all parts at once. Star Harbour puts two epic effects on one card. **The independent review is right that neither is fully "something no other card does":** Star Harbour is Shield Reborn and Repair Bay together, and Comeback Crew does all that Stellar Revival does, and more. Keep them, or leave epics at 7 until you give a rule for a new kind of epic?

@@ -143,3 +143,15 @@ The server cannot tell who won a challenge: the page says so, and a child with t
 - **Checked:** 1,500 battles played by a made-up child, then played again from their records, end exactly the same (winner, round, every HP and shield). A round played on the screen, played again, ends the same at the three sizes.
 - **Where it could run:** `GMQBattle` is in the battle page, and inside the piece. The server is PHP, so it cannot run it. The teacher's Desk (a web page) could: for each challenge, check the record's seed and decks against what the server holds, play it again, and compare the winner with the one claimed. That is the server thread's to wire. [Proposal]
 - **Limits:** only "one player leads" (Marc's rule, the default). A battle left in the middle and finished later still checks: the page saves at the start of each round, so a round left half-way is played again from its start.
+
+
+---
+
+## 11. Added 28 November: Marc's answers, and two things for rationed battles
+
+[Source: Marc, 28 November, "Yes" to the main thread's picks: Station Guard; the battle at the Launch Bay. And: "you only get the battle like two or three times and then you have to go and do more quests."]
+
+- **Station Guard, one name everywhere.** The card list, both battle pages and the piece now say Station Guard; the card's type label says GUARD (it was POLICE). **The drawing code changed** (`TYPE.guard.name`, inside the `DRAW` block), so the cards thread's copy of the drawing and the game's copy of `GMQCards` must take the new label too. Copy the piece again.
+- **`again: false`.** Pass it in `opts`: the end of a battle then offers no "Battle again", so every battle starts from the game and the game can count it. Without it, the piece offers "Battle again" as before.
+- **`GMQBattleOwn.inProgress()`**: is a practice battle saved half-way on this iPad? It answers `{ round, rounds }` or `null`. `GMQBattleOwn.inProgress(battleId)` asks the same about a classmate's battle. Use it in place of reading `gmq_battle_own_v1` yourself: the battle saves itself at the start of each round, and a finished battle answers `null`.
+- **Counting a battle** (the main thread's pick: a battle counts only when it finishes): count it in `done` when `result.why === 'finished'`. A child who left half-way (`why: 'left'`, `saved: true`) started it while they still had a battle. [pick] Let them finish it even if none are left now; it counts when it finishes. `inProgress()` tells the game when to offer "Finish your battle".

@@ -91,6 +91,7 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     const back = await inner(() => ({ round: GMQB.U.S && GMQB.U.S.round, setup: /open/.test(document.getElementById('ownsetup').className) }));
     want(name + ': opened again, the same battle goes on', back.round === round1 && !back.setup, JSON.stringify(back) + ' round before ' + round1);
 
+    want(name + ': the game can ask whether a battle is saved half-way (GMQBattleOwn.inProgress)', await page.evaluate(() => { const p = GMQBattleOwn.inProgress(); return !!p && p.round >= 1; }));
     // 5. the end of a battle: the game is told who won, and "Back to the station" closes it
     await inner(() => { const S = GMQB.U.S; S.P[1].parts.forEach(p => { p.hp = 0; }); S.over = { winner: 0, why: 'All five enemy parts are at 0. You win.' }; GMQB.U.anim = false; GMQB.endRound(); });
     await fr.locator('#goback').waitFor({ timeout: 20000 });
@@ -99,6 +100,15 @@ function want(label, ok, extra) { console.log((ok ? 'ok   ' : 'FAIL ') + label +
     if (SHOTS) await page.screenshot({ path: path.join(SHOTS, name + '_own_6_end.png') });
     await fr.locator('#goback').click(); await closed();
     want(name + ': Back to the station closes the battle', /closed \(finished\)\. The cadet won/.test(await page.locator('#said').textContent()), await page.locator('#said').textContent());
+    want(name + ': a finished battle is not "in progress"', await page.evaluate(() => GMQBattleOwn.inProgress() === null));
+    // Marc, 28 November: battles are rationed. With again: false there is no "Battle again": every battle starts from the game
+    await page.evaluate(() => localStorage.removeItem('gmq_battle_own_v1'));
+    await page.evaluate(() => GMQBattleOwn.open({}, { cards: GMQBattleOwn.starter(5), seed: 5, again: false, back: 'Back to the station' }, function (r) { window.__r = r; }));
+    await fr.locator('#ogo').click(); await fr.locator('.hc.mine').first().waitFor();
+    await inner(() => { const S = GMQB.U.S; S.P[1].parts.forEach(p => { p.hp = 0; }); S.over = { winner: 0, why: 'All five enemy parts are at 0. You win.' }; GMQB.U.anim = false; GMQB.endRound(); });
+    await fr.locator('#goback').waitFor({ timeout: 20000 });
+    want(name + ': with again: false, the end offers no "Battle again"', await fr.locator('#again').count() === 0);
+    await fr.locator('#goback').click(); await closed();
     // 6. lasting upgrades (the plan's decision 1): the parts start at Level 2 and the cards stay out of the deck
     await page.locator('#ups button[data-u="lasting"]').click();
     await openFor('spies');
