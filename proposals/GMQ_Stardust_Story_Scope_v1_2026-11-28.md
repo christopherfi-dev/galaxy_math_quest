@@ -3,6 +3,7 @@
 **Date:** 28 November 2026. **For:** Marc. **From:** the Stardust story thread. **Nothing here is built.**
 **Builds on:** `GMQ_Stardust_Story_v1_2026-11-28.md` (the story and the 16 rooms). Where the two disagree, this note is newer.
 **Reviewed:** once by an independent reviewer; its 15 findings are fixed. Section 5 (the secret trails) was rewritten afterwards from your newest words; see the line at the end of this note for its review.
+**Frozen since 28 November** [Source: the main thread, for Marc, who is painting the rooms]: the 4 × 4 map, every way out (which wall, sealed or open), and each room's fixed furniture as listed in `GMQ_Stardust_Prompts_v1_2026-11-28.md` are now fixed, because Marc has painted them. Words, jobs, numbers, secrets, clues, characters, cards and anything carried or changed (cut-outs) stay free. Anything in this note that is not in a room's painted furniture is a cut-out: the light switch and glow stars (Living Quarters), the duty board's back side (Entry Hall), the loose ceiling tile (Galley), the floor hatch of the nook (Hangar), the seed tray with its small lamp and timer (Greenhouse), the speaking pipe's mouthpiece (Engine Room). A change to the frozen parts goes to the main thread first, with the reason: it means Marc repaints that room.
 Everything is **[Proposal]** unless it says [Source] or [Conflict]. Every number in this note is an example; the builder sets and checks the real ones.
 
 ---
@@ -195,7 +196,7 @@ You said the 2023 food was "a bit too long" [Source, 16 November]. Fifteen jobs 
 ```
  THE LISTENER'S TRAIL (the long one)                      ends: the EPIC CARD
  Sick Bay notebook -> Living Quarters glow stars -> Galley ceiling map
-   -> Engine Room speaking pipe -> Hangar rack (needs Mop) -> the nook
+   -> Engine Room speaking pipe -> Hangar floor hatch (needs Mop) -> the nook
    -> Listening Room: play the recording -> the puzzle
 
  MOP'S TRAIL                                              ends: a friend, and "honorary crew"
@@ -223,7 +224,7 @@ Listener Ravi suspected the signal had changed. He recorded the first one, hid t
 | 2 | Living Quarters | switches off the room's light: glow-in-the-dark stars on the ceiling | the crew's four names, written in stars | the stars make an arrow to Ravi's bunk. Under his mattress: **half a star map** (carry it) |
 | 3 | Galley | finds the loose ceiling tile: the other half of the map | the whole map: the crew's names for the stars, and "the hum" (the signal's direction, a thread for the rescue) | Ravi's note on the map: "The pipes carry every sound on this station. Listen in the Engine Room." |
 | 4 | Engine Room | puts an ear (not a mouth) to the speaking pipe | (speaking into it reaches the Chief: a second way to her) | a faint beep, looping, from under the Hangar floor |
-| 5 | Hangar | finds the beep behind the spare-parts rack. The rack's brake is underneath, too low and narrow for a hand. **Mop** rolls under and taps it (Mop's trail). | the rack rolls aside: **the stowaway nook** | inside: Ravi's recorder (carry it), and three wrapped presents (Nok's birthday) |
+| 5 | Hangar | follows the beep to the empty shuttle bay: a small hatch in its floor, latched from below. The latch slot is too narrow for a hand. **Mop** reaches in and lifts it (Mop's trail). | the hatch opens: **the stowaway nook** | inside: Ravi's recorder (carry it), and three wrapped presents (Nok's birthday) |
 | 6 | Listening Room (power back) | plugs the recorder into the radio | the first signal plays, as it was before it changed | it comes in bursts of different lengths |
 | 7 | Listening Room | **the puzzle:** tally each burst, then make a bar graph of them | **the bars draw a picture** (decision 10 says what it shows) | **the epic card**, and the story turns (below) |
 
@@ -236,7 +237,7 @@ Listener Ravi suspected the signal had changed. He recorded the first one, hid t
 | Link | Where | What the child does | Small payoff | Points to |
 |---|---|---|---|---|
 | 1 | Sick Bay, or the Observatory | the height chart's low mark, "Mop, age 1"; or the last line of the Chief's diary, "Mop was with me when the lights went out. Where did he go?" | a laugh; who Mop is | who, and where, is Mop? |
-| 2 | Power Room | the station plan behind the board | the child's map fills in | it shows Mop's empty charging dock here, and his last sweep ending in the Fuel Store |
+| 2 | Power Room | the station plan, tucked behind the edge of the power board | the child's map fills in | it shows Mop's sweep route, which ends in the Fuel Store |
 | 3 | Power Room | takes the spare battery from the box of spare parts | (carry it) | the Fuel Store |
 | 4 | Fuel Store | finds Mop behind the drums; puts in the battery | **Mop leads the child to the Chief** (a clue for a stuck child), then follows them | Mop fits where hands don't |
 | 5 | Water Room | asks Mop into the drain: he brings up a station badge | the badge (carry it) | **give it to the Chief:** she pins it on: "Honorary crew of Tally Station." The child's picture is added to the crew photo in the Entry Hall, there every time they pass. |
@@ -246,7 +247,7 @@ Listener Ravi suspected the signal had changed. He recorded the first one, hid t
 | Link | Where | What the child does | Small payoff | Points to |
 |---|---|---|---|---|
 | 1 | Living Quarters | the snack tin under a bunk | a laugh | "Teo's card is in the hangar. Don't tell him." |
-| 2 | Hangar | Teo's best card, in the shuttle bay's toolbox (carry it) | Teo's note on it: "Ada hides hers in her desk. Ha!" | the Control Room |
+| 2 | Hangar | Teo's best card, behind the shuttle bay's wheel block (carry it) | Teo's note on it: "Ada hides hers in her desk. Ha!" | the Control Room |
 | 3 | Control Room | Ada's card in the drawer (carry it) | Ada's note: "Ravi never leaves his desk. Look under it." | the Listening Room |
 | 4 | Listening Room | Ravi's card under the desk (carry it) | — | the card table has three empty seats |
 | 5 | Common Room | puts the three cards on the table, one at each empty seat | the scoreboard lights up (job S2); then **the Chief offers a game of cards** (your battle rules) | the cards go with the child, to give back to the crew in the rescue |

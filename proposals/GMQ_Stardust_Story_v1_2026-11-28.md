@@ -2,6 +2,7 @@
 
 **Date:** 28 November 2026. **For:** Marc. **From:** the Stardust story thread. **Nothing in this note is built.**
 **Reviewed:** four rounds by independent reviewers: the first draft (two rounds), the food job, and the exits and secrets. Each round's findings are fixed. The last fixes were not re-read.
+**Frozen since 28 November** [Source: the main thread, for Marc, who is painting the rooms]: the 4 × 4 map, every way out (which wall, sealed or open), and each room's fixed furniture as listed in `GMQ_Stardust_Prompts_v1_2026-11-28.md` are now fixed. Words, jobs, numbers, secrets, clues, characters, cards and anything carried or changed (cut-outs) stay free. A change to the frozen parts goes to the main thread first, with the reason: it means Marc repaints that room. Where this note and the prompt book differ on furniture (for example, the Entry Hall's hooks), the painted room wins, and no clue counts it.
 Everything is **[Proposal]** unless it says [Source] or [Conflict].
 
 **Your answer came on 28 November** (through the main thread): "They just wandered around"; something about "the appearance of it" put them off; and you gave a new shape for the food job. Section 1, job 4, room D2 and decisions 10, 13, 17 and 19 are rewritten from it. Later the same day, from your words on exits and secrets: section 3a (ways out), every room's doors and secrets, the take-use-give table, and decisions 20 and 21. This rewrite was reviewed once, and its findings fixed; the fixes were not re-read.
@@ -224,8 +225,8 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 **C3. Entry Hall**
 - **Its job:** where everyone comes in. The space suits hang here.
-- **Things:** the duty board; four suit hooks, three empty and one suit still hanging; the station map screen; a crew photo.
-- **Task or clue:** **clue:** the duty board says three names under "Shuttle: back in 6 days" and one under "Station". The fourth suit is still here. So **one crew member never left.** This is the mystery of who to find [Source: your spitball].
+- **Things:** the duty board; a row of suit hooks, all empty but one, where a suit still hangs; the station map screen; a crew photo.
+- **Task or clue:** **clue:** the duty board says three names under "Shuttle: back in 6 days" and one under "Station". One suit is still here. So **one crew member never left.** This is the mystery of who to find [Source: your spitball].
 - **Secret:** in the pocket of the suit still hanging, a key card with "NOK" on it. **Use it** on the Chief's locker in the Living Quarters: inside is her walking stick. **Give it to her**, and she keeps up with you and talks as you go. (Never needed: with the first-aid kit she can already limp about and do her jobs, slowly.)
 - **Doors:** south to the Docking Bay; north to the Common Room; west to the Galley; east to the Fuel Store.
 
