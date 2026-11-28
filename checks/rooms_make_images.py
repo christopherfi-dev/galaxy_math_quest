@@ -16,6 +16,15 @@ for name, f in rooms.items():
         r = im.resize((w, h), Image.LANCZOS)
         r.save(OUT + f'{name}_{w}.webp', quality=80, method=6)
         r.save(OUT + f'{name}_{w}.jpg', quality=78, optimize=True, progressive=True)
+# Marc's first Stardust batch (28 Nov) came as 1344 x 756 JPEG: the big size is the picture's own width, not enlarged.
+B1 = 'proposals/pictures_stardust_2026-11-28/batch1/'
+for name, f in {'entry_dark': 'R11-dark', 'entry_lit': 'R11-lit', 'hangar_dark': 'R15-dark', 'hangar_lit': 'R15-lit'}.items():
+    im = Image.open(B1 + f + '.jpg').convert('RGB')
+    for w in (1180, im.width):
+        h = round(im.height * w / im.width)
+        r = im.resize((w, h), Image.LANCZOS) if w != im.width else im
+        r.save(OUT + f'{name}_{w}.webp', quality=80, method=6)
+        r.save(OUT + f'{name}_{w}.jpg', quality=78, optimize=True, progressive=True)
 things = {'cadet_front': 440, 'cadet_back': 440, 'cadet_left': 440, 'cadet_right': 440,
           'robot': 300, 'battery': 260, 'tin': 260, 'card': 240, 'book': 700}
 for name, size in things.items():

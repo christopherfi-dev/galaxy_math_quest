@@ -68,7 +68,7 @@ button.go { background: var(--accent); color: var(--accent-ink); border-color: v
 </style>
 </head>
 <body>
-<div id="top"><b>Painted rooms: a test</b><span>Stardust's look, two of Marc's Gemini rooms</span><span class="sp"></span><button id="restart">Start again</button></div>
+<div id="top"><b>Painted rooms: a test</b><span>Stardust's look, four of Marc's Gemini rooms</span><span class="sp"></span><button id="restart">Start again</button></div>
 <div id="main">
   <div id="wrap"><div id="stage">
     <div id="bar">the game's bar goes here</div>
@@ -81,7 +81,7 @@ button.go { background: var(--accent); color: var(--accent-ink); border-color: v
     <div id="say"></div>
     <div id="acts"></div>
     <div id="pocket"><h3>IN YOUR POCKET</h3><div class="items"></div></div>
-    <div id="note">A test page. The two rooms are joined by a doorway <b>for this test only</b>: on Tally Station the Docking Bay and the Greenhouse are far apart. The rooms are Marc's Gemini pictures as they came. The cadet, the robot, the battery, the tin and the key card are cut out and placed by the game. The game writes every word and number.</div>
+    <div id="note">A test page. Four of Marc's Gemini rooms. The Docking Bay, the Entry Hall (north) and the Hangar (east) are joined as on Tally Station. The Greenhouse is joined to the Entry Hall <b>for this test only</b>: on Tally Station it is far away. The cadet, the robot, the battery, the tin and the key card are cut out and placed by the game. The game writes every word and number, and draws the Hangar's three gauges over the painted ones.</div>
   </div>
 </div>
 <script>
@@ -100,7 +100,7 @@ var GMQRooms = (function () {
   // ---------- the rooms: walk maps in the picture's own units (2000 x 1125) ----------
   var ROOMS = {
     docking: {
-      name: 'Docking Bay', dark: 'docking_dark', lit: 'docking_lit',
+      name: 'Docking Bay', dark: 'docking_dark', lit: 'docking_lit', big: 2360,
       depth: { yBack: 430, hBack: 175, yFront: 990, hFront: 300 },
       dimFilter: 'brightness(.6) saturate(.75) sepia(.18)', litFilter: 'none',
       floor: [[520,430],[1480,430],[1585,560],[1660,640],[1830,860],[1880,990],[110,990],[175,870],[395,590],[470,500],[520,500]],
@@ -110,10 +110,10 @@ var GMQRooms = (function () {
       ],
       start: { x: 1000, y: 760, face: 'front' },
       spots: [
-        { id: 'stationdoor', box: [860,120,1180,425], stand: [1020,470], face: 'back' },
+        { id: 'stationdoor', box: [860,120,1180,425], stand: [1020,470], face: 'back', exit: { to: 'entry', dx: 0, dy: -1, enter: [1000,975], walkIn: [1000,800] } },
         { id: 'switch', box: [1180,250,1225,335], stand: [1200,465], face: 'back' },
         { id: 'cargo', box: [120,230,410,850], stand: [380,700], face: 'left' },
-        { id: 'toGreen', box: [1590,240,1870,860], stand: [1730,760], face: 'right', exit: { to: 'greenhouse', dir: 1, enter: [270,760], walkIn: [470,760] } },
+        { id: 'toHangar', box: [1590,240,1870,860], stand: [1730,760], face: 'right', exit: { to: 'hangar', dx: 1, dy: 0, enter: [290,770], walkIn: [480,800] } },
         { id: 'book', box: [680,300,820,470], stand: [760,494], face: 'back' },
         { id: 'tempbox', box: [45,620,135,740], stand: [250,880], face: 'left' },
         { id: 'ship', box: [430,460,860,800], stand: [960,700], face: 'left' },
@@ -122,7 +122,7 @@ var GMQRooms = (function () {
       readout: { x: 79, y: 670, m: [0.27, -0.22, 0.05, 0.33] }   // the small wall screen, measured on the picture
     },
     greenhouse: {
-      name: 'Greenhouse', dark: 'greenhouse', lit: null,
+      name: 'Greenhouse', dark: 'greenhouse', lit: null, big: 2360,
       depth: { yBack: 450, hBack: 175, yFront: 935, hFront: 290 },
       dimFilter: 'brightness(.72) saturate(.85) sepia(.1)', litFilter: 'brightness(.72) saturate(.85) sepia(.1)',
       floor: [[400,470],[1600,470],[1640,560],[1800,880],[1830,935],[150,935],[175,880],[375,570]],
@@ -134,8 +134,8 @@ var GMQRooms = (function () {
       ],
       start: { x: 470, y: 760, face: 'right' },
       spots: [
-        { id: 'toDock', box: [110,230,380,780], stand: [270,760], face: 'left', exit: { to: 'docking', dir: -1, enter: [1730,760], walkIn: [1520,760] } },
-        { id: 'toLiving', box: [1610,250,1890,780], stand: [1700,760], face: 'right' },
+        { id: 'toWest', box: [110,230,380,780], stand: [270,760], face: 'left' },
+        { id: 'toEntry', box: [1610,250,1890,780], stand: [1700,760], face: 'right', exit: { to: 'entry', dx: 1, dy: 0, enter: [290,760], walkIn: [480,760] } },
         { id: 'ladder', box: [520,20,730,460], stand: [660,500], face: 'back' },
         { id: 'window', box: [830,0,1500,280], stand: [1000,520], face: 'back' },
         { id: 'plants', box: [830,290,1175,485], stand: [1000,520], face: 'back' },
@@ -144,8 +144,55 @@ var GMQRooms = (function () {
         { id: 'hose', box: [1185,280,1285,540], stand: [1230,580], face: 'back' },
         { id: 'pots', box: [705,265,835,325], stand: [760,500], face: 'back' }
       ]
+    },
+    entry: {   // R11, Marc's batch 1
+      name: 'Entry Hall', dark: 'entry_dark', lit: 'entry_lit', big: 1344,
+      depth: { yBack: 430, hBack: 175, yFront: 990, hFront: 300 },
+      dimFilter: 'brightness(.6) saturate(.75) sepia(.18)', litFilter: 'none',
+      floor: [[528,430],[1490,430],[1620,580],[1830,830],[1870,930],[1320,930],[1320,995],[690,995],[690,930],[130,930],[170,830],[380,580]],
+      blocks: [
+        [[395,470],[560,415],[575,520],[480,575],[400,575]],   // the left bench
+        [[1205,425],[1460,425],[1460,465],[1205,465]]           // the right bench
+      ],
+      start: { x: 1000, y: 800, face: 'front' },
+      spots: [
+        { id: 'toDockS', box: [690,900,1320,1000], stand: [1000,975], face: 'front', exit: { to: 'docking', dx: 0, dy: 1, enter: [1020,450], walkIn: [1020,600] } },
+        { id: 'toGreenW', box: [120,230,400,840], stand: [290,760], face: 'left', exit: { to: 'greenhouse', dx: -1, dy: 0, enter: [1700,760], walkIn: [1500,760] } },
+        { id: 'toFuel', box: [1610,250,1850,835], stand: [1700,760], face: 'right' },
+        { id: 'toCommon', box: [825,110,1170,425], stand: [1000,470], face: 'back' },
+        { id: 'suit', box: [560,180,760,420], stand: [690,470], face: 'back' },
+        { id: 'duty', box: [1235,180,1445,325], stand: [1330,480], face: 'back' },
+        { id: 'frames', box: [380,230,470,400], stand: [520,600], face: 'left' },
+        { id: 'frames2', box: [1530,220,1620,420], stand: [1560,600], face: 'right' },
+        { id: 'bench', box: [395,400,575,575], stand: [600,620], face: 'left' },
+        { id: 'bench2', box: [1205,375,1460,465], stand: [1330,480], face: 'back' }
+      ]
+    },
+    hangar: {  // R15, Marc's batch 1
+      name: 'Hangar', dark: 'hangar_dark', lit: 'hangar_lit', big: 1344,
+      depth: { yBack: 431, hBack: 175, yFront: 990, hFront: 300 },
+      dimFilter: 'brightness(.6) saturate(.75) sepia(.18)', litFilter: 'none',
+      floor: [[490,431],[1490,431],[1600,560],[1830,860],[1900,990],[100,990],[170,860],[380,560]],
+      blocks: [
+        [[1025,431],[1500,431],[1665,700],[1610,815],[1100,815],[1025,700]],   // the Stardust and the tanks behind it
+        [[395,470],[640,470],[640,615],[395,615]]                              // the console and the screen on its post
+      ],
+      start: { x: 800, y: 800, face: 'front' },
+      spots: [
+        { id: 'toDockW', box: [110,270,370,835], stand: [290,770], face: 'left', exit: { to: 'docking', dx: -1, dy: 0, enter: [1730,760], walkIn: [1520,760] } },
+        { id: 'toFuelN', box: [605,175,875,431], stand: [760,470], face: 'back' },
+        { id: 'spacedoors', box: [1605,150,1920,865], stand: [1720,880], face: 'right' },
+        { id: 'tanks', box: [1025,240,1410,470], stand: [980,480], face: 'right' },
+        { id: 'stardust', box: [1034,340,1652,815], stand: [980,760], face: 'right' },
+        { id: 'bay', box: [245,630,745,830], stand: [600,720], face: 'left' },
+        { id: 'console', box: [465,460,630,615], stand: [560,650], face: 'back' },
+        { id: 'logscreen', box: [375,315,500,460], stand: [450,640], face: 'back' }
+      ],
+      dials: [[1086,386],[1218,386],[1348,387]], dialR: 22    // the painted gauges have needles: the game covers each with its own
     }
   };
+  var PERMS = [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]];
+  function tankQuarters(seed, i) { return PERMS[((seed * 2654435761) >>> 0) % 6][i]; }   // 1, 2 or 3 quarters full; the three tanks always differ
 
   // things the game places (cut-outs). x, y = where the thing touches the floor.
   var THINGS = {
@@ -157,10 +204,7 @@ var GMQRooms = (function () {
 
   // ---------- words (the game writes every one) ----------
   var WORDS = {
-    stationdoor: function (s) {
-      if (!s.lit) return 'The big door to the station. It is shut. The panel beside it is dark. No power.';
-      return 'The big door to the station. The panel glows green now. It needs a key card.';
-    },
+    stationdoor: function () { return 'The door slides open.'; },
     switch: function (s) { return s.lit ? 'You push the switch down. The lights go off.' : 'You pull the switch up.'; },
     cargo: function () { return 'A heavy cargo door with yellow stripes. It is sealed shut.'; },
     book: function () { return 'A book on a stand. On the cover: "Visitors."'; },
@@ -180,7 +224,23 @@ var GMQRooms = (function () {
       return 'A little robot. Its eyes are shut. It does not move. Its battery is flat.';
     },
     battery: function () { return 'A battery, lying by the plant bed. It still glows a little.'; },
-    tin: function (s) { return s.tinOpen ? 'An old tin. Empty now.' : 'An old metal tin with a lid.'; }
+    tin: function (s) { return s.tinOpen ? 'An old tin. Only crumbs inside.' : 'An old metal tin with a lid.'; },
+    toWest: function () { return 'This way goes on. (Not in this test.)'; },
+    toFuel: function () { return 'To the Fuel Store. (Not in this test.)'; },
+    toCommon: function () { return 'A big door with yellow stripes. To the Common Room. (Not in this test.)'; },
+    suit: function (s) { return s.suitLooked ? 'The space suit. Its pockets are empty now.' : 'A space suit still hangs on its hook. The other hooks are empty. Somebody did not leave.'; },
+    duty: function (s) { return s.lit ? 'The big screen is on. It shows the duty board.' : 'A big screen. It is dark. No power.'; },
+    frames: function () { return 'An empty frame on the wall.'; },
+    frames2: function () { return 'Another empty frame.'; },
+    bench: function () { return 'A bench to sit on and pull your boots on.'; },
+    bench2: function () { return 'A bench.'; },
+    toFuelN: function () { return 'To the Fuel Store. (Not in this test.)'; },
+    spacedoors: function () { return 'The space doors. Huge, and shut tight. They open when a ship launches.'; },
+    tanks: function () { return 'Three fuel tanks for the Stardust. Each has a gauge.'; },
+    stardust: function () { return 'The Stardust: the station\'s big ship. It is not ready to fly.'; },
+    bay: function () { return 'An empty parking bay, with two wheel blocks. A small ship parked here. It is gone.'; },
+    console: function (s) { return s.lit ? 'The launch console. Its lights blink.' : 'The launch console. It is dark.'; },
+    logscreen: function (s) { return s.lit ? 'A screen on a post. It shows the small ship\'s log. (Not in this test.)' : 'A screen on a post. It is dark.'; }
   };
   var NAMES = { battery: 'battery', card: 'key card' };
 
@@ -281,7 +341,7 @@ var GMQRooms = (function () {
   }
 
   // ---------- pictures ----------
-  function bgSrc(name) { var big = view.scale * (window.devicePixelRatio || 1) > 0.62; return IMG + name + '_' + (big ? 2360 : 1180) + (webp ? '.webp' : '.jpg'); }
+  function bgSrc(name, bigW) { var big = view.scale * (window.devicePixelRatio || 1) > 0.62; return IMG + name + '_' + (big ? bigW : 1180) + (webp ? '.webp' : '.jpg'); }
   function sprSrc(name) { return IMG + name + (webp ? '.webp' : '.png'); }
   function makeSprite(name, ratio) {
     var d = document.createElement('div'); d.className = 'spr';
@@ -303,18 +363,25 @@ var GMQRooms = (function () {
   }
   function lightFilter(roomId) {
     var R = ROOMS[roomId];
-    return (roomId === 'docking' && S.lit) ? R.litFilter : R.dimFilter;
+    return (R.lit && S.lit) ? R.litFilter : R.dimFilter;
   }
 
   function buildRoom(id) {
     var R = ROOMS[id], el = document.createElement('div');
     el.className = 'room'; el.dataset.room = id;
-    var a = document.createElement('img'); a.className = 'bg'; a.alt = ''; a.src = bgSrc(R.dark); el.appendChild(a);
-    if (R.lit) { var b = document.createElement('img'); b.className = 'bg lit'; b.alt = ''; b.src = bgSrc(R.lit); el.appendChild(b); }
+    var a = document.createElement('img'); a.className = 'bg'; a.alt = ''; a.src = bgSrc(R.dark, R.big); el.appendChild(a);
+    if (R.lit) { var b = document.createElement('img'); b.className = 'bg lit'; b.alt = ''; b.src = bgSrc(R.lit, R.big); el.appendChild(b); }
     if (R.readout) {
       var r = document.createElement('div'); r.id = 'readout'; var o = R.readout;
       r.style.left = o.x + 'px'; r.style.top = o.y + 'px'; r.style.width = '100px'; r.style.height = '100px';
       r.style.transformOrigin = '0 0'; r.style.transform = 'matrix(' + o.m.join(',') + ',0,0)'; el.appendChild(r); els.readout = r;
+    }
+    if (R.dials) {
+      el._dials = R.dials.map(function (c, i) {
+        var d = document.createElement('div'), r = R.dialR;
+        d.style.cssText = 'position:absolute;pointer-events:none;transition:filter 1.4s ease;left:' + (c[0] - r) + 'px;top:' + (c[1] - r) + 'px;width:' + (2 * r) + 'px;height:' + (2 * r) + 'px';
+        d.innerHTML = dialSVG(tankQuarters(S.seed, i), 2 * r); el.appendChild(d); return d;
+      });
     }
     els.stage.insertBefore(el, els.bar);
     rooms[id] = el;
@@ -326,7 +393,7 @@ var GMQRooms = (function () {
   function refreshRoom() {
     Object.keys(rooms).forEach(function (id) { rooms[id].style.display = id === S.room ? '' : 'none'; rooms[id].style.transform = ''; });
     var el = rooms[S.room];
-    el.classList.toggle('on', S.room === 'docking' && S.lit);
+    el.classList.toggle('on', !!(ROOMS[S.room].lit && S.lit));
     ['front', 'back', 'left', 'right'].forEach(function (f) { el.appendChild(cadet[f]); el.appendChild(cadet[f]._shadow); });
     Object.keys(THINGS).forEach(function (k) {
       var t = THINGS[k], d = thingSpr[k], show = k === 'robot' ? S.robotRoom === S.room : (t.room === S.room && !S.taken[k]);
@@ -343,7 +410,7 @@ var GMQRooms = (function () {
     var f = lightFilter(S.room);
     ['front', 'back', 'left', 'right'].forEach(function (k) { cadet[k]._img.style.filter = f; });
     Object.keys(thingSpr).forEach(function (k) { thingSpr[k]._img.style.filter = f; });
-    rooms.docking.classList.toggle('on', S.lit);
+    Object.keys(rooms).forEach(function (id) { rooms[id].classList.toggle('on', !!(ROOMS[id].lit && S.lit)); if (rooms[id]._dials) rooms[id]._dials.forEach(function (d) { d.style.filter = lightFilter(id); }); });
   }
   function drawReadout() {
     if (!els.readout) return;
@@ -467,7 +534,7 @@ var GMQRooms = (function () {
       var b = document.createElement('button'); b.className = 'it';
       b.innerHTML = '<img alt="" src="' + sprSrc(k) + '"><span>' + NAMES[k] + '</span>';
       b.addEventListener('click', function () {
-        say(k === 'card' ? 'A key card. It was in the tin.' : 'The battery. It hums in your hand.');
+        say(k === 'card' ? 'A key card. It was in the suit\'s pocket.' : 'The battery. It hums in your hand.');
       });
       box.appendChild(b);
     });
@@ -479,8 +546,8 @@ var GMQRooms = (function () {
     var w = WORDS[k](S), b = [];
     if (k === 'battery') b.push(['Take the battery', function () { take('battery'); say('You take the battery.'); }, 1]);
     if (k === 'tin' && !S.tinOpen) b.push(['Open the tin', function () {
-      S.tinOpen = true; S.pocket.push('card'); save(); drawPocket();
-      say('You lift the lid. Inside is a key card! You put it in your pocket.');
+      S.tinOpen = true; save();
+      say('You lift the lid. Only crumbs. Someone ate the snacks.');
     }, 1]);
     if (k === 'robot' && !S.robotAwake && has('battery')) b.push(['Give it the battery', function () {
       drop('battery'); S.robotAwake = true; save(); wakeRobot();
@@ -497,10 +564,15 @@ var GMQRooms = (function () {
       }, 1]);
       w = S.lit ? 'A light switch. It is up. The lights are on.' : 'A light switch. It is down.';
     }
-    if (id === 'stationdoor' && has('card')) b.push(['Use the key card', function () {
-      say(S.lit ? 'Beep. The light turns green. On the real station, this door would open to the Entry Hall. (Not in this test.)'
-                : 'You hold up the key card. Nothing. The panel has no power.');
+    if (id === 'suit' && !S.suitLooked) b.push(['Look in the pockets', function () {
+      S.suitLooked = true; S.pocket.push('card'); save(); drawPocket();
+      say('In a pocket you find a key card! You put it in your pocket.');
     }, 1]);
+    if (id === 'duty' && S.lit) b.push(['Look closely', openDuty, 1]);
+    if (id === 'console' && has('card')) b.push(['Use the key card', function () {
+      say(S.lit ? 'Beep. The console says hello. (Launching is not in this test.)' : 'You hold up the key card. Nothing. The console has no power.');
+    }, 1]);
+    if (id === 'tanks') b.push(['Look closely', openTanks, 1]);
     if (id === 'book') b.push(['Open the book', openBook, 1]);
     if (id === 'tempbox') b.push(['Look closely', openGauge, 1]);
     say(w, b);
@@ -518,10 +590,33 @@ var GMQRooms = (function () {
     say('The visitors\' book is open. The last visitor was the supply ship.', [['Close the book', closeUp, 1]]);
   }
   function openGauge() {
+    els.gauge.querySelector('.scr').innerHTML = '<small>BAY TEMPERATURE</small><b id="gnum"></b>'; els.gnum = document.getElementById('gnum');
     els.gnum.textContent = S.temp + ' °C';
     els.gauge.style.display = 'block'; els.bookbox.style.display = 'none';
     els.close.classList.add('show');
     say('The screen up close. The bay is ' + S.temp + ' degrees.', [['Step back', closeUp, 1]]);
+  }
+  function openPanel(html) {
+    els.gauge.querySelector('.scr').innerHTML = html;
+    els.gauge.style.display = 'block'; els.bookbox.style.display = 'none';
+    els.close.classList.add('show');
+  }
+  function openDuty() {
+    openPanel('<div style="font:700 46px/1.5 var(--display);text-align:left">SHUTTLE &middot; back in 6 days<br><span style="font-weight:500">Ada &nbsp; Teo &nbsp; Ravi</span><br>STATION<br><span style="font-weight:500">Nok</span></div>');
+    say('The duty board. Three names went on the shuttle. One name stayed on the station.', [['Step back', closeUp, 1]]);
+  }
+  function dialSVG(q, size) {
+    var a = -120 + q * 60, r = size / 2;   // quarters: the needle sweeps 240 degrees from empty to full
+    var t = '';
+    for (var i = 0; i <= 4; i++) { var b = (-120 + i * 60 - 90) * Math.PI / 180; t += '<line x1="' + (r + Math.cos(b) * r * 0.72) + '" y1="' + (r + Math.sin(b) * r * 0.72) + '" x2="' + (r + Math.cos(b) * r * 0.88) + '" y2="' + (r + Math.sin(b) * r * 0.88) + '" stroke="#2a3340" stroke-width="' + (size / 40) + '"/>'; }
+    return '<svg viewBox="0 0 ' + size + ' ' + size + '" width="100%" height="100%"><circle cx="' + r + '" cy="' + r + '" r="' + (r * 0.97) + '" fill="#dfe3df" stroke="#2a3340" stroke-width="' + (size / 22) + '"/>' + t +
+      '<line x1="' + r + '" y1="' + r + '" x2="' + r + '" y2="' + (r * 0.3) + '" stroke="#b8322a" stroke-width="' + (size / 22) + '" stroke-linecap="round" transform="rotate(' + a + ' ' + r + ' ' + r + ')"/><circle cx="' + r + '" cy="' + r + '" r="' + (size / 14) + '" fill="#2a3340"/></svg>';
+  }
+  function openTanks() {
+    var h = '<div style="display:flex;gap:60px">';
+    for (var i = 0; i < 3; i++) h += '<div style="width:180px;height:180px">' + dialSVG(tankQuarters(S.seed, i), 180) + '</div>';
+    openPanel(h + '</div>');
+    say('The three gauges up close. Each needle shows how full its tank is. (The fuel job is not in this test.)', [['Step back', closeUp, 1]]);
   }
   function closeUp() { els.close.classList.remove('show'); say('You step back.'); }
 
@@ -542,21 +637,21 @@ var GMQRooms = (function () {
   // ---------- going through a doorway: the picture slides ----------
   function goThrough(ex) {
     busy = true;
-    var from = rooms[S.room], toId = ex.to, to = rooms[toId], dir = ex.dir;
+    var from = rooms[S.room], toId = ex.to, to = rooms[toId], dx = ex.dx, dy = ex.dy;
     var robotCame = S.robotAwake && S.robotRoom === S.room;
     to.style.display = ''; to.style.transition = 'none'; from.style.transition = 'none';
-    to.style.transform = 'translateX(' + (dir * W) + 'px)';
-    to.classList.toggle('on', toId === 'docking' && S.lit);
+    to.style.transform = 'translate(' + (dx * W) + 'px,' + (dy * H) + 'px)';
+    to.classList.toggle('on', !!(ROOMS[toId].lit && S.lit));
     void to.offsetWidth;
     to.style.transition = from.style.transition = 'transform .55s cubic-bezier(.45,.05,.35,1)';
-    to.style.transform = 'translateX(0)'; from.style.transform = 'translateX(' + (-dir * W) + 'px)';
+    to.style.transform = 'translate(0,0)'; from.style.transform = 'translate(' + (-dx * W) + 'px,' + (-dy * H) + 'px)';
     setTimeout(function () {
       to.style.transition = from.style.transition = '';
       S.room = toId; S.x = ex.enter[0]; S.y = ex.enter[1];
       robotTrail = [];
       if (robotCame) { S.robotRoom = toId; S.rx = ex.enter[0]; S.ry = ex.enter[1] + 1; }
       refreshRoom(); save(); busy = false;
-      say(toId === 'greenhouse' ? 'The Greenhouse. It smells of dry soil.' : 'The Docking Bay again.');
+      say({ greenhouse: 'The Greenhouse. It smells of dry soil.', docking: 'The Docking Bay.', entry: 'The Entry Hall. Everyone comes in this way.', hangar: 'The Hangar. It is huge, and very quiet.' }[toId]);
       walkTo(ex.walkIn[0], ex.walkIn[1]);
     }, 570);
   }
@@ -592,7 +687,7 @@ var GMQRooms = (function () {
     els.pocket = document.querySelector('#pocket .items');
     S = load() || fresh();
     layout();
-    buildRoom('docking'); buildRoom('greenhouse');
+    Object.keys(ROOMS).forEach(buildRoom);
     ['front', 'back', 'left', 'right'].forEach(function (f) { cadet[f] = makeSprite('cadet_' + f, SPRITE_RATIO['cadet_' + f]); });
     robotSpr = makeSprite('robot', SPRITE_RATIO.robot); thingSpr.robot = robotSpr;
     ['battery', 'tin'].forEach(function (k) { thingSpr[k] = makeSprite(k, SPRITE_RATIO[k]); });
@@ -607,7 +702,7 @@ var GMQRooms = (function () {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 
   return {
-    get state() { return S; }, ROOMS: ROOMS, THINGS: THINGS, walkable: walkable, findPath: findPath, bayTemp: bayTemp,
+    get state() { return S; }, ROOMS: ROOMS, THINGS: THINGS, walkable: walkable, findPath: findPath, bayTemp: bayTemp, tankQuarters: tankQuarters,
     frameTimes: frameTimes, workTimes: workTimes, walkTo: walkTo, get walking() { return !!walk; }, get busy() { return busy; },
     tapAt: function (x, y) { var r = els.stage.getBoundingClientRect(); onTap({ clientX: r.left + x * view.scale, clientY: r.top + y * view.scale }); }
   };
