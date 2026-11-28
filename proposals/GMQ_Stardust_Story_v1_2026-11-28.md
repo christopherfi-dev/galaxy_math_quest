@@ -1,6 +1,7 @@
 # Operation Stardust, rebuilt: the story and the room plan
 
 **Date:** 28 November 2026. **For:** Marc. **From:** the Stardust story thread. **Nothing in this note is built.**
+**Reviewed:** two rounds by an independent reviewer. Round 2's ten points are fixed here; the fixes were not re-read by the reviewer.
 Everything is **[Proposal]** unless it says [Source] or [Conflict].
 
 **Waiting on your answer** (asked through the main thread, 28 November): where did the children stop or lose interest on Stardust, how many reached the end, and what confused them in the food task? Parts that depend on it are marked **⏳**.
@@ -48,9 +49,9 @@ You said: "They didn't seem excited to play it." [Source, 28 November] Your rule
 5. The shuttle sent its log to the station's Hangar screen once a day. On one day, it burned a lot of fuel but went hardly anywhere. **Something was pulling it.** The pull carried it much farther than a shuttle can fly back. The next day the log stopped.
 6. The Chief saw the log stop. She had no time to study it. She climbed up to the Observatory to look for the shuttle through the telescope.
 7. Two days ago, while she was up there, a heater on the station got stuck on full. It pulled more and more power, until the main power failed. The sensors went dark, so the station's reports to Mission Control stopped. The backup power keeps dim lights on, and it keeps feeding the stuck heater. That is why the room is still out of its range, and why the power trips each time it is reset. Two doors shut themselves, as station doors do when the power fails, to keep the air in. **The Observatory's door shut the Chief in.**
-8. Mission Control knew the shuttle had gone quiet. The station's last reports said so. It was waiting for the shuttle's return day. Then the station went quiet too.
+8. Mission Control knew the shuttle had gone quiet. The station's last reports said only "shuttle silent", not who was in it. It was waiting for the shuttle's return day. Then the station went quiet too.
 9. **Now** is the day the child docks. Mission Control has heard nothing from the station for two days.
-10. **Why not fly to the crew in your own ship?** It is built for short hops between nearby planets. It cannot carry enough fuel or food for a long trip. The *Stardust* can.
+10. **Why not fly to the crew in your own ship?** It is built for short hops between nearby planets. It cannot carry enough fuel or food for a long trip. The *Stardust* can. So the cadet's ship stays docked, and the cadet flies in the *Stardust* with the Chief.
 
 **Who pulled the shuttle, and why, is not answered on the station.** That is the mystery the rescue opens (section 5).
 
@@ -77,7 +78,7 @@ The child now knows where they are, what happened, and what to do (your rule 5).
 
 - The *Stardust* has fuel and food. The radio's map shows where the crew is.
 - Mission Control: "Rooms, fuel, food, and a map. Operation Stardust is go."
-- The Chief and the cadet launch. **The rescue continues in another place** (section 5).
+- The Chief and the cadet launch in the *Stardust*. **The rescue continues in another place** (section 5).
 - Until that place is built, the last screen is calm, not a cliffhanger: the map planet has water, and the shuttle's last log line said "All three well."
 
 ---
@@ -132,8 +133,8 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 **A3. Control Room** [Source]
 - **Its job:** the station's brain. It talks to Mission Control.
 - **Things:** the Mission Control screen (dark until the power is back); the wall chart; the Central Computer; the thermometer and its sign.
-- **Task or clue:** job 1, the warmth chart, is made here. **The finished example** pinned to the wall chart: the station's own chart of "reports sent to Mission Control each day", with a line for "the fewest a day should be". It is worked: one day is under the line, and a note says by how many. It shows how to read a bar and how to find "outside, and by how much", about reports, not warmth. It is also a clue: the last two bars are empty.
-- **Secret:** a note stuck to the screen: "Back in 6 days. Water the plants! —A." This leads to the watering job (it tells the child someone forgot). Commander Ada's best card is in the drawer.
+- **Task or clue:** job 1, the warmth chart, is made here. **The finished example** pinned to the wall chart: the station's own chart of "reports sent to Mission Control each day", with two lines: "the fewest a day should be" and "the most the dish can send". It is worked: one day is over the top line, one under the bottom line, and a note says by how many for each. It shows how to read a bar and how to find "outside, and by how much", about reports, not warmth. It is also a clue: the last two bars are empty.
+- **Secret:** a note stuck to the screen: "Back in 6 days. Water the plants! —A." This leads to the watering job (it tells the child the plants need water). Commander Ada's best card is in the drawer.
 - **Doors:** west to the Listening Room; east to the Power Room; south to the Common Room.
 
 **A4. Power Room**
@@ -234,7 +235,7 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 1. **Arrive.** Mission Control asks for the warmth chart (job 1). The shuttle's log (job 2) can be read at any time.
 2. **Job 1, then fix the stuck heater, then reset the power.** Two doors open. The radio wakes.
-3. **Find the Chief** in the Observatory. Fetch the first-aid kit. She climbs down.
+3. **Find the Chief** in the Observatory. Fetch the first-aid kit. She limps out.
 4. **The Chief asks for jobs 3 and 4.** Mission Control asks for job 5. The radio gives job 6.
 5. **Launch.**
 
@@ -249,7 +250,7 @@ Each job passes the story test [Source: the master plan, section 5b]: **need** (
 ### Job 1. The warmth chart (kept, clearer) [Source: your Task 2, Level 1]
 
 - **Need:** Mission Control, by radio: "The station's sensors are dead. We can't see inside. Something is pulling too much power. Read the five thermometers and make a chart on the Control Room wall. Then find the room outside its safe range, and by how much. That is where the stuck heater is."
-- **Meaning:** that room's heater (or cooler) is stuck. The child goes to that room's dial and turns it back by the number of degrees they found. Then the power can be reset. The answer is used, not typed as a password.
+- **Meaning:** that room's heater (or cooler) is stuck on. It cannot be switched off; its dial can only be turned back, by the right amount. The child goes to that room's dial and turns it back by the number of degrees they found. Then the power can be reset. The answer is used, not typed as a password.
 - **Consequence:** wrong room: the child turns a dial in a room that was fine, and the power still trips. Wrong amount: the dial turns, but the thermometer is still outside its sign, and the power still trips. **What a dial does in a fine room is the builder's choice,** made so that turning every dial is not quicker than thinking (section 8).
 - **No way on?** Nudges come only when the child taps Hint, as everywhere. Job 1 holds the main road, so it needs one more help that no other job needs: **decision 16.**
 - **Picture:** the thermometer, then the chart, then the dial, each filling the picture.
@@ -271,7 +272,7 @@ Each job passes the story test [Source: the master plan, section 5b]: **need** (
 ### Job 3. What the crew ate [Source: your Task 2, Level 4]
 
 - **Need:** the Chief: "The three of them have had only shuttle food. Look at what we ate. Of the kinds on both charts, which one fell the most, from the first three months to the last three? By how much?"
-- **Meaning:** that is what the crew has missed most. She packs one welcome crate of it, for their first meal when the *Stardust* lands. It sits beside the locker, not in it, so it does not change job 4.
+- **Meaning:** that is what the crew has missed most. She packs one welcome crate of it, for their first meal when the *Stardust* lands. It goes in the cabin, not the locker, so it does not change job 4.
 - **Finished example:** a small chart on the Galley wall, about something else: drinks the crew had in their first month and their last (tea, cocoa, juice). It is worked: "Cocoa fell the most, by ___." 
 - **Consequence:** a wrong kind: "We ate plenty of that. Look again."
 - **Picture:** the two charts, first three months and last three months.
@@ -279,9 +280,10 @@ Each job passes the story test [Source: the master plan, section 5b]: **need** (
 
 ### Job 4. The locker (kept, clearer) [Source: your Task 1] ⏳
 
-- **Need:** the Chief: "The *Stardust* is big but slow. The trip home will take months. Fill the locker for the trip home: four crew. Nothing may go bad before the trip ends. [And exactly enough: every pack is weight the ship must carry.]" The bracketed line waits on decision 13.
+- **Need:** the Chief: "The *Stardust* is big but slow. The trip home will take months. Fill the locker for the trip home: all five of us. Nothing may go bad before the trip ends. [And exactly enough: the locker is small, and nothing may go to waste.]" The bracketed line waits on decision 13.
 - **Where the food comes from:** the long-life food the station kept for emergencies. The fresh food ran low; the long-life food was never touched.
-- **Who eats:** the crew of four [Source: "a crew of four"]. The cadet's own ship flies home beside the *Stardust* with its own food. (Five, with the cadet aboard, is decision 17.)
+- **Who eats:** everyone aboard on the way home: the crew of four [Source: "a crew of four"] and the cadet. The builder sets the numbers from that.
+- **The trip out:** only the Chief and the cadet. The Chief keeps ready packs for two in the *Stardust* for emergencies, so the locker is for the trip home only (decision 17).
 - **Meaning:** the food the crew will eat on the way home.
 - **Consequence:** as today: food goes bad; it runs out; it won't fit.
 - **Picture:** the shelf and the locker.
@@ -296,7 +298,7 @@ Each job passes the story test [Source: the master plan, section 5b]: **need** (
 ### Job 5. The tanks (kept) [Source: your three tanks]
 
 - **Need:** Mission Control: "The *Stardust* must fly a long way. Fill every tank to the top, and not a drop over."
-- **Meaning:** the ship can go. The crew ran short because their small shuttle could not carry enough.
+- **Meaning:** the ship can go, and it must carry enough for the long way back. The pull took the shuttle farther than it can fly home.
 - **Consequence:** as today: a needle short of FULL; fuel on the floor.
 - **Picture:** the gauges, then the pump's dials.
 - **Finished example:** the glass test tank (C4), as today.
@@ -401,8 +403,8 @@ Every card has a reason the child can say. **No card for nothing.**
 | 13 | The locker: exactly, or enough or more ⏳ | exactly · enough or more | **wait** for what confused the children |
 | 14 | A real-life step (draw the chart on paper; tell the Chief your findings out loud, as in your Level 4) | yes · no | **your call**: it needs you in the room |
 | 15 | Today's six-room ship | replaced · kept as the inside of the *Stardust* | **replaced** |
-| 16 | A child who cannot do job 1 after many tries (it holds the main road) | Hint only, as now · after several wrong tries, the Chief (through the vent) offers to go through one step with them | **the Chief's offer**: your rule is "nudges only when asked", but the plan also says no child is ever stuck with no way on [Source: the master plan, section 6]. She only offers; the child chooses. |
-| 17 | Who flies home in the *Stardust* | the crew of four, the cadet in their own ship · five, with the cadet | **four**: your number [Source] |
+| 16 | A child who cannot do job 1 after many tries (it holds the main road) | Hint only, as now · after several wrong tries, Mission Control offers by radio to go through one step with them | **Mission Control's offer**: it reaches every child, with no secret needed. Your rule is "nudges only when asked", but the plan also says no child is ever stuck with no way on [Source: the master plan, section 6]. It only offers; the child chooses. |
+| 17 | What the locker feeds | the trip home only, everyone aboard (one plain multiplication) · the trip out and the trip home (two parts, harder) | **the trip home only**: the trip out uses the Chief's ready packs |
 | 18 | Mission Control here | the same Mission Control as the rest of the game · Voltara's own, as your page says | **the same** |
 
 ---
