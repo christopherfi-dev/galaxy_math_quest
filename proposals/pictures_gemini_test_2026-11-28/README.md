@@ -13,3 +13,7 @@ Made by Marc with Google Gemini in about one minute, from the main thread's thre
 4. `4_greenhouse_own_room.webp`: the Greenhouse, asked to look clearly different. It does (a round glass roof, green grating, plant beds, a ladder), in the same style.
 5. `5_things_on_magenta.webp`: six things on one flat magenta (254, 0, 123), so they can be cut out.
 6. `6_test_things_in_greenhouse.webp` and `7_test_cadet_in_docking_bay.webp`: **made by the main thread**, not by Gemini. The six things were cut out by colour (`cutouts/`, with see-through edges, no pink left at the edges), given a soft shadow, and stood in the rooms at iPad size (1180 × 664). The cadet at the back of the Docking Bay is drawn smaller, to show depth. Not yet done: darkening a thing to match a dim room; a cadet that walks.
+
+## Third test (28 November): the cadet from four sides
+
+8. `8_cadet_four_views_on_magenta.webp`: one cadet seen from the front, the back, the left and the right. Cut out in `cutouts/cadet_{front,back,left,right}.webp`. Measured: the four are the same height to within 3 pixels (about 1155), with their feet on the same line, so the cadet does not jump when it turns. One slip: the helmet's orange stripes do not show from behind.
