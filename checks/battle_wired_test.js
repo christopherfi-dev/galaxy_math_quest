@@ -14,10 +14,15 @@
 //   HOW A BATTLE IS FINISHED here: not round by round (dozens of rounds with the page's own pauses). Inside the battle's frame, the enemy's five parts are set to 0
 //   and the page's own endRound() is called, as checks/battle_own_test.js does. Everything after that is the page's own: its end screen, its "over" message to the game,
 //   its "Back to the Launch Bay" button and its "close" message.
+//   THE GAME IS SERVED OVER HTTP here, by a small server inside this test, as the class link is (https). Opened as a file:// page, Chromium sometimes (about 1 time in 8)
+//   loses what the battle's frame saved when the game is closed soon after: a battle left half-way is then gone. Over http it was never lost (0 in 16). Measured 28 November.
 // Run: node checks/battle_wired_test.js [folder for screenshots]
-const { chromium } = require('playwright'); const path = require('path');
+const { chromium } = require('playwright'); const path = require('path'), http = require('http'), fs = require('fs');
 (async () => {
-  const out = process.argv[2], b = await chromium.launch(), bad = [], errs = [], FILE = 'file://' + path.resolve(__dirname, '..', 'prototypes', 'kis_station_sketch.html');
+  const ROOT = path.resolve(__dirname, '..'), srv = http.createServer((q, r) => { const f = path.join(ROOT, decodeURIComponent(q.url.split('?')[0])); if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { r.writeHead(404); return r.end(); }
+    r.writeHead(200, { 'Content-Type': /\.html$/.test(f) ? 'text/html; charset=utf-8' : /\.js$/.test(f) ? 'text/javascript' : /\.json$/.test(f) ? 'application/json' : 'application/octet-stream' }); fs.createReadStream(f).pipe(r); });
+  await new Promise(res => srv.listen(0, '127.0.0.1', res));
+  const out = process.argv[2], b = await chromium.launch(), bad = [], errs = [], FILE = `http://127.0.0.1:${srv.address().port}/prototypes/kis_station_sketch.html`;
   for (const [name, w, h] of [['ipad', 1180, 745], ['upright', 820, 1180], ['phone', 390, 844]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 1 }), p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(name + ': ' + m.text()); });
@@ -33,7 +38,10 @@ const { chromium } = require('playwright'); const path = require('path');
     const hook = () => p.evaluate(() => { if (window.__hooked) return; window.__hooked = 1; window.__sayN = 0; const s = window.say; window.say = function () { window.__sayN++; return s.apply(this, arguments); }; });
     const toLaunch = async () => { await p.evaluate(() => { tidy(); S.mode = 'station'; S.room = 'launch'; S.x = 30; S.y = 3; P.x = S.x; P.y = S.y; if (S.seen.indexOf('launch') < 0) S.seen.push('launch'); snap = true; save(); }); await p.waitForTimeout(300); };      /* the walk to the bay is played in station_playthrough_test.js */
     /* a tap on the training screen in the picture, as a child taps; then wait until the cadet has arrived and the screen has answered */
-    const tapTrainer = async () => {
+    /* before a tap on the picture: the picture in view, and still (the page and the camera have stopped moving for 3 frames) */
+    const still = () => p.evaluate(() => new Promise(res => { const st = document.querySelector('.stage'); if (st) st.scrollIntoView({ block: 'nearest' }); let lastK = '', n = 0;
+      const f = () => { const r = cv.getBoundingClientRect(), k = [r.left, r.top, cam.x, cam.y, ts].map(v => v.toFixed(2)).join(); if (k === lastK) n++; else n = 0; lastK = k; if (n >= 3) return res(); requestAnimationFrame(f); }; f(); }));
+    const tapTrainer = async () => { await still();
       const pt = await p.evaluate(() => { const r = cv.getBoundingClientRect(); return [r.left + (34.5 - cam.x) * ts, r.top + (1.5 - cam.y) * ts, r.left, r.right, r.top, r.bottom]; });
       ok(pt[0] > pt[2] && pt[0] < pt[3] && pt[1] > pt[4] && pt[1] < pt[5], 'the training screen is in the picture: ' + pt.map(Math.round).join(','));
       await hook(); await p.evaluate(() => { window.__said = window.__sayN; }); await p.touchscreen.tap(pt[0], pt[1]);
@@ -66,7 +74,7 @@ const { chromium } = require('playwright'); const path = require('path');
       expect(t, /The station's training crew flies a practice ship against you\. You battle with your own cards\./, 'the story, first');
       expect(t, /You have 3 practice battles left\./, 'three to start'); expect(t, /Start a practice battle/, 'Start'); expect(await last(), /The training screen lights up\./, 'the log line');
       await shot('3_panel');
-      { const before = await p.evaluate(() => [P.x, P.y]); const pt = await p.evaluate(() => { const r = cv.getBoundingClientRect(); return [r.left + (28.5 - cam.x) * ts, r.top + (3.5 - cam.y) * ts]; }); await p.touchscreen.tap(pt[0], pt[1]); await p.waitForTimeout(500);
+      { await still(); const before = await p.evaluate(() => [P.x, P.y]); const pt = await p.evaluate(() => { const r = cv.getBoundingClientRect(); return [r.left + (28.5 - cam.x) * ts, r.top + (3.5 - cam.y) * ts]; }); await p.touchscreen.tap(pt[0], pt[1]); await p.waitForTimeout(500);
         ok(await p.evaluate(b => P.x === b[0] && P.y === b[1] && !P.route.length, before), 'a tap on the floor while the words are open walks nowhere'); expect(await last(), /Finish this first\. Or tap Leave\./, 'and says to tap Leave'); }
       await p.click('#leave'); ok(await p.evaluate(() => !widget && $('toy').hidden), 'Leave closes the words'); expect(await last(), /You step back from the training screen\./, 'Leave: its words');
       // ---- a battle: music, drawing, keys
@@ -139,6 +147,6 @@ const { chromium } = require('playwright'); const path = require('path');
       await p.evaluate(() => restart()); ok(!(await bat()).half && (await bat()).left === 3, 'Start again: a new cadet, 3 left, no battle half-way');
     } catch (e) { bad.push(`${name}: stopped: ${String(e.message).split('\n')[0]}`); }
     await ctx.close(); }
-  await b.close(); if (errs.length) bad.push('script errors: ' + [...new Set(errs)].slice(0, 5).join(' | '));
+  await b.close(); srv.close(); if (errs.length) bad.push('script errors: ' + [...new Set(errs)].slice(0, 5).join(' | '));
   console.log(bad.length ? 'FAULTS:\n  ' + bad.join('\n  ') : 'The battle at the Launch Bay: every check passed, on three screens.'); console.log('RESULT: ' + (bad.length ? 'FAIL' : 'PASS')); process.exit(bad.length ? 1 : 0);
 })();
