@@ -1,0 +1,71 @@
+{
+ "made": "2026-11-28",
+ "seconds": 60,
+ "sharedGainForFiles": 14.95,
+ "note": "peak and rms are at the loudness the game plays them (dBFS); ms: Chromium time to make the music, on the build computer",
+ "tunes": {
+  "station_old": {
+   "peak": "-25.0 dB",
+   "rms": "-32.3 dB",
+   "maxVoices": 6,
+   "notes": 203,
+   "msPerMinute": 913,
+   "skipped": null
+  },
+  "station_A": {
+   "peak": "-24.5 dB",
+   "rms": "-36.4 dB",
+   "maxVoices": 11,
+   "notes": 109,
+   "msPerMinute": 2897,
+   "skipped": {
+    "core": 0,
+    "extra": 0
+   }
+  },
+  "station_B": {
+   "peak": "-25.6 dB",
+   "rms": "-37.1 dB",
+   "maxVoices": 12,
+   "notes": 225,
+   "msPerMinute": 3861,
+   "skipped": {
+    "core": 0,
+    "extra": 2
+   }
+  },
+  "voltara_old": {
+   "peak": "-25.8 dB",
+   "rms": "-33.3 dB",
+   "maxVoices": 4,
+   "notes": 220,
+   "msPerMinute": 1169,
+   "skipped": null
+  },
+  "voltara_A": {
+   "peak": "-25.1 dB",
+   "rms": "-36.6 dB",
+   "maxVoices": 10,
+   "notes": 163,
+   "msPerMinute": 3953,
+   "skipped": {
+    "core": 0,
+    "extra": 0
+   }
+  },
+  "voltara_B": {
+   "peak": "-25.1 dB",
+   "rms": "-37.0 dB",
+   "maxVoices": 11,
+   "notes": 301,
+   "msPerMinute": 4270,
+   "skipped": {
+    "core": 0,
+    "extra": 0
+   }
+  }
+ },
+ "gameBeep": {
+  "peak": "-24.6 dB"
+ }
+}
