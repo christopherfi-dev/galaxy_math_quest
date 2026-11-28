@@ -35,7 +35,7 @@ Everything is **[Proposal]** unless it says [Source]. "Measured" means measured 
 - **Ways out, by direction:**
   - **East and west:** a doorway in the right or left wall. Marc's Docking Bay does this well.
   - **North:** a door in the back wall.
-  - **South:** a picture never shows its near wall. So a way south is a walkway on the floor, edged with stripes, running from the middle of the floor down off the bottom edge. The cadet walks to its end, just above the bar, and the picture slides down.
+  - **South:** a picture never shows its near wall. So a way south is either a striped walkway running from the middle of the floor down off the bottom edge, or a gap between two low front wall ends (the main thread's version; Marc's Entry Hall has it, and it works). Either way the top of the gap must be above the bar. The cadet walks to it, just above the bar, and the picture slides down.
   - **Up and down:** a ladder to a hatch in the ceiling (at the back) or in the floor (near the front).
 - **The middle of the floor stays open.** The game cannot draw the cadet behind painted furniture, because the furniture is part of the flat picture. Tall things stand against the walls. Anything in the middle of the floor is low (knee height or less), or the space behind it is blocked off. Measured: the test page blocks the space behind the Docking Bay's little ship.
 - **Leave bare floor where the game puts things.** About three clear patches the size of a crate.
@@ -98,7 +98,7 @@ Everything is **[Proposal]** unless it says [Source]. "Measured" means measured 
 
 ## 7. Sizes, formats and names
 
-**What Gemini gives:** PNG, 2730 × 1536, about 5 MB each. [Measured]
+**What Gemini gives:** PNG, 2730 × 1536, about 5 MB each, for Marc's tests; JPEG, 1344 × 756, for his batch 1. [Measured] The smaller size is usable (a little soft on iPads at 2×). Then the "2360" size is the picture's own width (1344), not stretched. Downloaded one at a time they come at full size; Gemini's batch zip shrinks them (found by the main thread).
 
 **What the game uses** (made by `checks/rooms_make_images.py`):
 

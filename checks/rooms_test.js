@@ -40,11 +40,16 @@ function ok(c, msg) { console.log((c ? 'PASS ' : 'FAIL ') + msg); if (!c) fails+
       }
       let bad = 0; const seen = new Set();
       for (let s = 0; s < 10000; s++) { const t = G.bayTemp(s); seen.add(t); if (!(Number.isInteger(t) && t >= 9 && t <= 17)) bad++; }
-      return { out, bad, seen: [...seen].sort((a, b) => a - b) };
+      const tq = new Set(); let tbad = 0;
+      const orders = new Set();
+      for (let s = 0; s < 10000; s++) { const qs = [0, 1, 2].map(i => GMQRooms.tankQuarters(s, i)); orders.add(qs.join('')); qs.forEach(q => tq.add(q)); if (new Set(qs).size !== 3 || qs.some(q => !(q >= 1 && q <= 3))) tbad++; }
+      if (orders.size !== 6) tbad++;
+      return { out, bad, seen: [...seen].sort((a, b) => a - b), tbad, tq: [...tq].sort() };
     });
     r.out.filter(o => o.n !== 'pairs' && !o.foot).forEach(o => ok(o.walk, `${o.id}: ${o.n} stands on the floor`));
     r.out.filter(o => o.foot).forEach(o => ok(o.walk, `${o.id}: ${o.n} (a thing stands on the floor)`));
     r.out.filter(o => o.n === 'pairs').forEach(o => ok(o.unreached === 0, `${o.id}: every stand point reaches every other (${o.unreached} not)`));
+    ok(r.tbad === 0 && r.tq.length === 3, `tank gauges on 10,000 seeds: 1, 2 and 3 quarters full, three different tanks, all six orders used`);
     ok(r.bad === 0 && r.seen.length === 9, `bay temperature on 10,000 seeds: whole numbers 9 to 17, all nine used (${r.seen.join(',')})`);
     await p.close();
   }
@@ -73,7 +78,7 @@ function ok(c, msg) { console.log((c ? 'PASS ' : 'FAIL ') + msg); if (!c) fails+
     await tap(1420, 600);                                             // the robot, before you have a battery
     ok(/battery is flat/.test(await said()), `${tag}: the sleeping robot says its battery is flat`);
     ok(!(await p.locator('#acts button', { hasText: /battery/ }).count()), `${tag}: no "give" button without the battery`);
-    await tap(1180, 900);                                             // walk to the front: frame timing while walking
+    await tap(1180, 900);                                             // walk about: frame timing while walking
     await p.evaluate(() => { GMQRooms.frameTimes.length = 0; GMQRooms.workTimes.length = 0; });
     await tap(400, 900); await tap(1500, 600);
     const frames = await p.evaluate(() => GMQRooms.frameTimes.slice()); const work = await p.evaluate(() => GMQRooms.workTimes.slice()).then(a => a.sort((x, y) => x - y));
@@ -90,31 +95,47 @@ function ok(c, msg) { console.log((c ? 'PASS ' : 'FAIL ') + msg); if (!c) fails+
     await tap(750, 380); await btn(/Open the book/); await shot('4_book');
     ok(/supply ship/i.test(await p.textContent('#pgL')), `${tag}: the book's words come from the game`);
     await btn(/Close the book/);
-    await tap(1720, 600);                                             // the doorway: the picture slides
-    ok((await st()).room === 'greenhouse', `${tag}: the doorway leads to the Greenhouse`);
-    await shot('5_greenhouse');
-    await tap(700, 560);                                              // the tin
-    await btn(/Open the tin/);
-    ok((await st()).pocket.includes('card'), `${tag}: the key card is in the tin`);
+    await tap(1000, 300);                                             // north: the station door
+    ok((await st()).room === 'entry', `${tag}: the station door leads north to the Entry Hall`);
+    await shot('5_entry_hall');
+    await tap(1330, 250); await btn(/Look closely/);
+    ok(/Nok/.test(await p.textContent('#gauge')), `${tag}: the duty board's words come from the game`);
+    await shot('6_duty_board'); await btn(/Step back/);
+    await tap(660, 300); await btn(/Look in the pockets/);
+    ok((await st()).pocket.includes('card'), `${tag}: the key card is in the hanging suit's pocket`);
+    await tap(250, 500);                                              // west: the Greenhouse (test only)
+    ok((await st()).room === 'greenhouse', `${tag}: the Entry Hall's left doorway leads to the Greenhouse (test only)`);
+    await shot('7_greenhouse');
+    await tap(700, 560); await btn(/Open the tin/);
+    ok(/crumbs/.test(await said()), `${tag}: the tin holds only crumbs`);
     await p.reload(); await p.waitForTimeout(800);                    // close the game and open it again
     let s = await st();
-    ok(s.room === 'greenhouse' && s.pocket.includes('card') && s.lit, `${tag}: after reopening: same room, the card, the lights still on`);
+    ok(s.room === 'greenhouse' && s.pocket.includes('card') && s.lit && s.tinOpen, `${tag}: after reopening: same room, the card, the tin open, the lights still on`);
     await tap(1500, 615); await btn(/Take the battery/);
     ok((await st()).pocket.includes('battery'), `${tag}: the battery is taken`);
-    await tap(250, 600);                                              // back to the Docking Bay
-    ok((await st()).room === 'docking', `${tag}: back in the Docking Bay`);
+    await tap(1750, 500);
+    ok((await st()).room === 'entry', `${tag}: the Greenhouse's right doorway leads back to the Entry Hall`);
+    await tap(1000, 960);                                             // south: the walkway between the wall ends
+    ok((await st()).room === 'docking', `${tag}: the Entry Hall's south gap leads to the Docking Bay`);
     s = await st();
     await tap(s.rx, s.ry - 50); await btn(/Give it the battery/);
     ok((await st()).robotAwake && !(await st()).pocket.includes('battery'), `${tag}: the robot wakes and the battery is used`);
-    await tap(1000, 300); await btn(/Use the key card/);
-    ok(/green/.test(await said()), `${tag}: the key card works on the lit door`);
-    await tap(600, 900); await p.waitForTimeout(1200);                // the robot follows
+    await tap(1720, 600);                                             // east: the Hangar
+    s = await st();
+    ok(s.room === 'hangar' && s.robotRoom === 'hangar', `${tag}: the archway leads east to the Hangar, and the robot comes too`);
+    await p.waitForTimeout(1200); await shot('8_hangar');
+    await tap(1200, 330); await btn(/Look closely/);
+    const q = await p.evaluate(() => [0, 1, 2].map(i => document.querySelectorAll('#gauge svg')[i] ? 1 : 0).reduce((a, b) => a + b, 0));
+    ok(q === 3, `${tag}: the three gauges are drawn by the game in the close-up`);
+    await shot('9_tanks'); await btn(/Step back/);
+    await tap(540, 540); await btn(/Use the key card/);
+    ok(/hello/.test(await said()), `${tag}: the key card wakes the launch console`);
+    await tap(800, 900); await p.waitForTimeout(1200);                // the robot follows
     s = await st();
     ok(Math.hypot(s.rx - s.x, s.ry - s.y) < 260, `${tag}: the robot follows the cadet (${Math.round(Math.hypot(s.rx - s.x, s.ry - s.y))} away)`);
-    await shot('6_robot_follows');
     await tap(1000, 1060);                                            // a tap on the bar does nothing
     ok(Math.abs((await st()).y - s.y) < 1, `${tag}: a tap on the game's bar does not move the cadet`);
-    await tap(400, 1200 > 1000 ? 980 : 980);
+    await tap(400, 985);
     ok((await st()).y < 990, `${tag}: the cadet never walks into the bar`);
     ok(errs.length === 0, `${tag}: no errors in the console${errs.length ? ': ' + errs.join(' | ') : ''}`);
 

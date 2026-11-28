@@ -8,7 +8,7 @@ Everything is **[Proposal]**. The rooms and their ways out come from the Stardus
 
 ## 0. The short version
 
-- **46 pictures** (45 if the Supply Chief is not kept): 9 cadets, the robot, the Chief, 3 sheets of things, and 15 rooms in a dark and a lit copy, plus 2 extra states.
+- **46 pictures in all, 40 still to make** after your batch 1 (one fewer if the Supply Chief is not kept): 9 cadets, the robot, the Chief, 3 sheets of things, and 15 rooms in a dark and a lit copy, plus 2 extra states.
 - **About an hour and a half,** in three sittings of about 30 minutes. A picture takes Gemini about a minute [Source: your tests], plus a minute to look at it and save it.
 - **One Gemini chat** for all three sittings: the chat where you made the tests. It remembers the style.
 - **Your Docking Bay is done.** Dark and lit fit the plan as they are. One extra copy is asked for (its cargo door open).
@@ -199,11 +199,11 @@ In the same drawing style, on a plain, flat, bright magenta background, draw one
 ```
 *Check:* the same woman in all six; she does not look like a real, known person.
 
-**C3. Things to take, use and give.** Attach picture 5. *If you already made C3 from the main thread's list, keep it and name this one C3b.*
+**C3b. The things still missing.** Attach picture 5. *Your C3 (from the main thread's list, 28 November) already has the watering can, the seed packet, the bag of peas, a mug, a padlock, a clipboard, the box of spare parts and a blanket. Keep it. This sheet adds only what is still missing.*
 ```
-In the same drawing style, on the same plain, flat, bright magenta background, draw these eight things separately, spread out and not touching: a white first-aid box with a green cross; a green watering can; a small round tin of cocoa with a plain brown label; a small paper packet of seeds with a picture of an apple; a folded paper map; a wooden walking stick; a cloth bag of dried peas; a small notebook with a plain cover. No shadows on the background. No text, letters or numbers.
+In the same drawing style, on the same plain, flat, bright magenta background, draw these five things separately, spread out and not touching: a white first-aid box with a green cross; a small round tin of cocoa with a plain brown label; a folded paper map; a wooden walking stick; a small notebook with a plain cover. No shadows on the background. No text, letters or numbers.
 ```
-*Check:* no red cross (a protected sign); no words on the tin or the packet.
+*Check:* no red cross (a protected sign); no words on the tin.
 
 **C5. Plants for the Greenhouse.** Attach picture 5.
 ```
@@ -229,6 +229,20 @@ In the same drawing style, on the same plain, flat, bright magenta background, d
   - **In the chat,** as you did for the tests: up to about 10 pictures a message.
 - **Name every picture by its code.** If a name is lost, say the code when you send it.
 
+## 6b. Batch 1 (made from the main thread's list): what to keep and redo
+
+Checked by this thread on 28 November. Details: `GMQ_Painted_Rooms_v1_2026-11-28.md`, section 7.
+- **Keep all seven:** C1, C2, C3, R11 dark and lit, R15 dark and lit. All are in the test page or ready for it.
+- **Not needed:** a new Hangar for its gauges. The game draws its own dials over them (it must anyway: each child's tanks differ).
+- **Optional, your choice:** a new Hangar with a bigger *Stardust* (it is about the size of your little ship); an Entry Hall with the suit hanging limp and its helmet on a shelf (it can look like a person standing there).
+- **Next time, if you can:** save at full size (section 6c).
+
+## 6c. Picture size
+
+Your tests came as 2730 × 1536 PNG; batch 1 came as 1344 × 756 JPEG, a quarter of the pixels. **The main thread found why** (28 November): the same Entry Hall, downloaded on its own, is 2730 × 1536. **A picture saved one at a time comes at full size; Gemini's batch zip makes them smaller.**
+- **So:** save each picture on its own with Gemini's download button, then zip them yourself (section 6).
+- **What 1344 means:** fine on phones and iPads at 1×; on iPads at 2× the picture is stretched by about a third, so the outlines are a little soft. Usable. Batch 1 does not need to be made again for this. (If you still have batch 1 open in Gemini, downloading R11 and R15 dark one at a time would give the full size.)
+
 ## 7. What to check in every room (the short list)
 
 1. The ways out are on the walls the box says.
@@ -244,11 +258,12 @@ In the same drawing style, on the same plain, flat, bright magenta background, d
 
 | Sitting | Pictures | About |
 |---|---|---|
-| 1. Cadets and robot: C1, CV1–CV8, C2 | 10 | 20 minutes |
-| 2. Bottom rows: D3x; R15 dark, lit, open; R14, R13, R11, R10, R09, R12 dark and lit | 16 | 30 minutes |
-| 3. Top rows and things: R05, R06, R07, R08, R01, R02, R03, R04 dark and lit; C4; C3, C5, C6 | 20 | 35 minutes |
-| **All** | **46** (45 without the Chief) | **about 1½ hours** |
+| 1. Cadets and robot: C1, CV1–CV8, C2 | 10 (8 still to make) | 20 minutes |
+| 2. Bottom rows: D3x; R15 dark, lit, open; R14, R13, R11, R10, R09, R12 dark and lit | 16 (12 still to make) | 30 minutes |
+| 3. Top rows and things: R05, R06, R07, R08, R01, R02, R03, R04 dark and lit; C4; C3b, C5, C6 | 20 (all still to make) | 35 minutes |
+| **All** | **46** (45 without the Chief); **40 still to make** after batch 1 | **about 1¼ hours left** |
 
+**Batch 1 already made** (28 November): C1, C2, C3, R11 dark and lit, R15 dark and lit. In sitting 1, start at CV1; in sitting 2, skip R11 and R15 dark and lit (do R15x from your lit Hangar).
 Already made and kept: the Docking Bay, dark and lit; the sleeping robot, the battery, the key card, the tin and the book (your sheet of things); your test cadet (one of the cadets, if you like).
 
 ## 9. What changed from the main thread's list, and why
@@ -259,7 +274,7 @@ Already made and kept: the Docking Bay, dark and lit; the sleeping robot, the ba
 - **Big, blank screens and dials where a number goes;** a bare wall patch for the tally marks.
 - **The camera line ("40% down") and "tall furniture against the walls"** in every room: learned from building the test page.
 - **No red cross** on the first-aid kit, and a bandaged ankle and a walking stick for the Chief (the story's needs).
-- **The codes are the main thread's** (R01–R16, C1–C4), so pictures already made keep their names. New codes: CV1–CV8, D3x, R15x, C5, C6. Its T1 (a map view) is still skipped.
+- **The codes are the main thread's** (R01–R16, C1–C4), so pictures already made keep their names. New codes: CV1–CV8, D3x, R15x, C3b, C5, C6. Its T1 (a map view) is still skipped.
 - **A way out to the south** is a striped walkway running off the bottom edge, ending just above the game's bar, instead of "between two short wall ends": the bar covers the bottom eighth, so wall ends there would be hidden. Either works if Gemini draws it clearly.
 - **Things sheets follow the story's take-use-give table.** The crew's own cards are left out: the cards are drawn by the game's card thread.
 - **Not in this book, for later:** the crew's faces (for the photo and the birthday film in the Common Room), and the *Stardust*'s inside, if it is kept (Stardust decision 15).

@@ -10,16 +10,18 @@ Everything is **[Proposal]** unless it says [Source] or "measured".
 
 ## 1. What the test page does
 
-- **Your two Gemini rooms,** the Docking Bay (dark and lit) and the Greenhouse, as they came. They are **joined by a doorway for this test only.** On Tally Station they are far apart.
+- **Four of your Gemini rooms,** as they came. The Docking Bay leads north to the Entry Hall (R11) and east to the Hangar (R15), as on Tally Station. The Greenhouse hangs off the Entry Hall's left doorway **for this test only**; on Tally Station it is far away. (Updated after your batch 1, 28 November.)
 - **Tap the floor to walk.** The cadet finds a way round the little ship, the lectern and the plant beds. It turns to face where it walks (your four views), bobs a little, and is smaller at the back of the room.
-- **Tap the doorway,** and the picture slides to the next room.
+- **Tap a way out,** and the picture slides to the next room: sideways through a side door, up or down through a back door or the Entry Hall's gap at the front.
 - **Things to find and use:**
   - the robot is asleep: "Its battery is flat";
   - a battery lies by a plant bed in the Greenhouse: take it;
   - give it to the robot: it wakes (the game draws its open eyes) and follows you between rooms;
-  - an old tin in the Greenhouse holds a key card; it works on the station door once the lights are on.
-- **The light switch** beside the station door fades the Docking Bay from dark to lit. In the dark, the cadet and the things are darkened to match.
-- **The visitors' book** opens big, filling the picture, with the game's words on its blank pages.
+  - the space suit still hanging in the Entry Hall has a key card in its pocket; it wakes the Hangar's launch console once the lights are on;
+  - an old tin in the Greenhouse holds only crumbs.
+- **The light switch** beside the station door fades every room that has a lit picture from dark to lit. In the dark, the cadet and the things are darkened to match.
+- **The visitors' book** opens big, filling the picture, with the game's words on its blank pages. **The Entry Hall's big screen** shows the duty board (lit only), with the game's words.
+- **The Hangar's three gauges are drawn by the game** over Gemini's painted ones, a different amount in each tank for each child. "Look closely" shows them big.
 - **One number drawn by the game on a painted screen:** the small wall screen by the cargo door shows the bay's temperature, a different whole number from 9 to 17 for each child. It is drawn in perspective, so it sits on the screen. "Look closely" shows it big.
 - **The bottom of the picture is kept clear** and marked "the game's bar goes here".
 - **Everything answers a tap,** about 20 things, so a tap never gives a secret away.
@@ -31,7 +33,7 @@ Everything is **[Proposal]** unless it says [Source] or "measured".
 - **The dark-to-lit fade works,** because your two pictures line up exactly.
 - **The cadet's four views work.** It does not jump when it turns.
 - **Walk maps are quick to draw:** a floor outline and a few blocks per room, about 20 to 30 minutes a room with checking. The same map serves the dark and the lit picture.
-- **It is light:** 492 KB to load at 1× and 812 KB at 2× (measured in Chromium). The page's own work per frame is under 0.3 ms.
+- **It is light:** 788 KB to load at 1× and 1,166 KB at 2× with four rooms (measured in Chromium; the test page loads all four at once, the game would load only the room and its neighbours). The page's own work per frame is under 0.3 ms.
 
 ## 3. What does not work, or not yet
 
@@ -40,7 +42,7 @@ Everything is **[Proposal]** unless it says [Source] or "measured".
 - **Things that change cannot be painted.** The test Greenhouse's plants are painted, so they could never recover when watered. **So:** plants on magenta; the prompt book redoes the Greenhouse with empty beds.
 - **A phone held upright** makes the picture 370 pixels wide: too small to tap well. Sideways is fine.
 - **Not seen on an iPad.** The class uses Chrome on iPads, which runs on Apple's engine (WebKit), not Chromium. Chromium cannot stand in for it. Three things to watch on a real iPad: the fade, the darkening filters, and memory. Each 2× room picture holds about 12.5 MB once opened; the test page holds three.
-- **The two test rooms do not match the plan's doors.** The Greenhouse has a left door that the plan does not. Test only.
+- **The test Greenhouse does not match the plan's doors.** It has a left door that the plan does not. Test only; R05 replaces it.
 
 ## 4. How the game would use it
 
@@ -72,3 +74,21 @@ Everything is **[Proposal]** unless it says [Source] or "measured".
 | 4 | Phones | allowed, sideways only (the game asks to turn) · allowed both ways · iPads only | **sideways only**: upright is too small to tap |
 | 5 | Redo the Greenhouse with empty beds (plants as cut-outs) | yes · keep yours, the plants never change | **yes**: watering should show |
 | 6 | Try the test page on the oldest class iPad, in Chrome | yes, before Stardust is built · later | **yes, before**: it is the one thing Chromium cannot tell us |
+
+## 7. Your batch 1, checked (28 November)
+
+Seven pictures from the main thread's list. The 9-point check is in the style guide, section 9.
+
+| Picture | Result | What to do |
+|---|---|---|
+| **R11 Entry Hall,** dark and lit | ways out right (back door, left, right, a gap at the front); camera matches (back wall meets the floor 38% down); middle open; no words; screens and frames blank; dark and lit line up (the main thread measured it). The front gap's wall ends sit in the bottom sixth, but the gap's top is above the bar, so the way south works. | **Keep.** In the test page. Two small things: the hanging suit, full size with its helmet on, can look like a person standing there; and there are five hooks, where the story says four. The game's words never count the hooks. **Optional** redo: the suit hanging limp, its helmet on a shelf, four hooks. |
+| **R15 Hangar,** dark and lit | ways out right (the left archway matches the Docking Bay's right one; back door; space doors); camera matches; lines up. **The gauges have needles and ticks.** **The *Stardust* is about the size of the Docking Bay's little ship,** though the story calls it the big ship. | **Keep.** The game covers each painted gauge with its own dial (in the test page; it has to anyway, because each child's tanks differ). **No redo needed for the gauges.** **Optional,** your choice: a new Hangar with a much bigger *Stardust*. |
+| **C1** eight cadets | eight different children, girls and boys, different skin and hair; same suit; same height. The four on the right touch at the gloves; they still cut apart. | **Keep.** Next: CV1 to CV8 (each from four sides), so the chosen cadet can turn as it walks. |
+| **C2** robot awake, four sides | the same robot each time. | **Keep.** |
+| **C3** eight things | clear, separate, no words. | **Keep.** The prompt book's C3b now asks only for what is still missing. |
+
+**The size:** batch 1 is 1344 × 756 JPEG; your tests were 2730 × 1536 PNG. On iPads at 2× the picture is stretched by about a third, so outlines are a little soft. Usable; no redo for this. The main thread found the cause: a picture downloaded on its own is full size (2730 × 1536); Gemini's batch zip shrinks them. Prompt book, section 6c.
+
+**Walk maps** for R11 and R15 are drawn (in `docs/rooms/index.html`; pictures `walk_map_entry_hall.webp` and `walk_map_hangar.webp`). The Hangar blocks the floor behind the *Stardust* and behind the console.
+
+**Is the hanging suit something a child takes?** No. In the story the child looks in its pocket and finds the key card; the card is a cut-out, the suit stays painted. (If the story later has the Chief put her suit on, the empty hook would need another picture. Asked the Stardust story thread.)
