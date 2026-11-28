@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GMQ Music Room</title>
+<style>
+:root { --bg: #0d1226; --card: #18203d; --line: #2c3866; --ink: #eef1ff; --soft: #a9b3dc; --on: #ffd36b; --onink: #1a1300; --old: #8fa0d8; --a: #7fe0c4; --b: #f3a6d0; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg: #f4f6ff; --card: #ffffff; --line: #cfd6f2; --ink: #141a33; --soft: #4b557c; --on: #c98a00; --onink: #fff; --old: #4b5fa8; --a: #137a5e; --b: #a3306e; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.6rem; margin: .3rem 0 .2rem; }
+h2 { font-size: 1.15rem; margin: 1.4rem 0 .5rem; }
+p { margin: .4rem 0; color: var(--soft); }
+.bar { position: sticky; top: 0; z-index: 2; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button { font: inherit; color: var(--ink); background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 10px 14px; min-height: 48px; cursor: pointer; }
+button.on { background: var(--on); color: var(--onink); border-color: var(--on); font-weight: 700; }
+button:focus-visible { outline: 3px solid var(--on); outline-offset: 2px; }
+.stat { color: var(--soft); font-variant-numeric: tabular-nums; }
+.stat b { color: var(--ink); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.place { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.place h3 { margin: 0 0 4px; font-size: 1.05rem; }
+.place p { font-size: .92rem; margin: 0 0 8px; }
+.place .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.place button { padding: 8px 12px; min-height: 44px; font-size: .95rem; }
+.tag-old { border-color: var(--old); } .tag-a { border-color: var(--a); } .tag-b { border-color: var(--b); }
+.place button.on { background: var(--on); border-color: var(--on); }
+audio { width: 100%; margin-top: 6px; }
+.rec { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.rec div { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+.rec b { display: block; }
+small { color: var(--soft); }
+</style>
+</head>
+<body>
+<main>
+<h1>Music room</h1>
+<p>Each world's music, old and new, played by the game's own sound maker (no music files). <b>Tap a tune to hear it.</b> Two new styles to choose from: <b style="color:var(--a)">A, calm and spacious</b>, and <b style="color:var(--b)">B, more tune</b>. Only the station and Voltara have new music so far.</p>
+
+
+<h2>Recordings (60 seconds each, for a phone)</h2>
+<p>The same music, recorded. Old and new are recorded at the same loudness, so you can compare them fairly. They are louder than in the game.</p>
+<div class="rec" id="recs"></div>
+<h2>Play it here (live, as the game plays it)</h2>
+<div class="bar">
+  <button id="stop" type="button">Stop</button>
+  <button id="busy" type="button" aria-pressed="false">A task is open: no</button>
+  <span class="stat">Playing: <b id="now">nothing</b></span>
+  <span class="stat">Voices: <b id="vo">0</b> (most <b id="vmax">0</b>, limit <b id="vlim">14</b>)</span>
+</div>
+<div class="grid" id="places"></div>
+
+<p><small>[Proposal] Made 28 November 2026 by the music thread. The tunes are written for Galaxy Math Quest; nothing is copied.</small></p>
+</main>
+
+<script>
+/* GMQ MUSIC: start
+   =====================================================================
+   GMQMusic, version 2 (28 November 2026).
+   [Source: Marc, 2026-11-28: "Our music kinda sucks." The task he passed on: "more musical and atmospheric, quieter, more layered ... suitable for
+   kids doing math. Add gentle variations so short loops don't get tiring. Keep it low-CPU and off-by-default."]
+   [Proposal] Our own tunes, played by the game: no sound files, nothing copied.
+   Layers: a soft pad (chords that move slowly, notes held across bars), a melody, a low note, and small sounds of the place.
+   One shared echo (a reverb made in code) and one shared repeat (a delay) for all voices.
+   Gentle variation: each time round, the melody may rest, change a few notes to other notes of the chord, or play one high note. Every third time
+   round it rests (a breath). Never the same way twice in a row. Always in the tune's key.
+   Never more than LIMIT voices at once. The small sounds of the place play only while fewer than EXTRA voices play.
+   Use in the game:
+     GMQMusic.setup({ ctx: function () { return the game's AudioContext }, pick: function () { return a place id }, busy: function () { return true while a task is open } });
+     GMQMusic.setOn(true or false); GMQMusic.wake() on every tap; GMQMusic.stop().
+   For iPads: no AudioWorklet; webkitAudioContext is the fallback; no ?. and no ??.
+   ===================================================================== */
+var GMQMusic = (function () {
+  'use strict';
+  var LIMIT = 14, EXTRA = 11, LEVEL = 0.38, BUSY = 0.3;
+  var NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  function midi(t) { var m = /^([A-G])(#|b)?(\d)$/.exec(t); if (!m) return null; return 12 * (+m[3] + 1) + NOTE[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0); }
+  function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+  function words(s) { return s.split(/\s+/).filter(function (x) { return x && x !== '|'; }); }
+  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+  /* THE TUNES. Each place: its key (pcs: the pitch classes, for the check), its chords (one for each bar: the pad's notes), its low notes (one for each bar),
+     and two styles. A: calm and spacious (a slow melody with long notes, far bells). B: more tune (a clearer melody, a music box or a pulse).
+     A melody: one string of 8 eighths for each bar: a note (C4, F#5), "-" holds, "." rests.
+     place: the small sounds of the place. pulse: a soft repeated low note ("x" plays, "." rests), through a filter that opens bar by bar. */
+  var TUNES = {
+    station: { name: 'The KIS Station', pcs: [2, 4, 6, 7, 9, 11, 1], place: 'station',
+      chords: ['F#3 A3 C#4', 'F#3 B3 D4', 'G3 B3 D4', 'E3 A3 D4', 'F#3 A3 D4', 'F#3 B3 D4', 'G3 B3 F#4', 'E3 A3 C#4'],
+      bass: 'D2 G2 E2 A2 B2 G2 E2 A2',
+      A: { bpm: 64, pad: { v: .026, cut: 900 }, mel: { w: 'sine', v: .042, a: .09, echo: .34 }, bells: .14,
+        s: ['. . F#5 - - - E5 -', 'D5 - - - - - . .', '. . B4 - D5 - E5 -', 'E5 - - - - - . .', '. . F#5 - - - A5 -', 'F#5 - - - E5 - D5 -', 'B4 - - - - - D5 -', 'C#5 - - - - - . .'] },
+      B: { bpm: 74, pad: { v: .022, cut: 760 }, mel: { w: 'triangle', v: .04, a: .025, echo: .2 }, arp: { v: .016, s: 'x . x x . x x .' },
+        s: ['F#5 - E5 F#5 A5 - F#5 -', 'D5 - - - B4 - D5 -', 'E5 - D5 E5 G5 - E5 -', 'E5 - - - - - . .', 'F#5 - E5 D5 C#5 - D5 -', 'B4 - - - D5 - F#5 -', 'E5 - - - D5 - B4 -', 'C#5 - - - - - . .'] } },
+    voltara: { name: 'Planet Voltara', pcs: [9, 11, 0, 2, 4, 5, 7], place: 'voltara',
+      chords: ['E3 G3 B3', 'E3 A3 C4', 'E3 G3 D4', 'D3 G3 B3', 'E3 G3 B3', 'E3 A3 C4', 'F3 A3 C4', 'E3 A3 B3'],
+      bass: 'A2 F2 C3 G2 A2 F2 D3 E2',
+      A: { bpm: 68, pad: { v: .024, cut: 820 }, mel: { w: 'sine', v: .04, a: .08, echo: .32 }, bells: .1, pulse: { v: .03, s: 'x . x . x . x .' },
+        s: ['. . E5 - - - D5 -', 'C5 - - - - - . .', '. . G5 - - - E5 -', 'D5 - - - - - . .', '. . E5 - - - A5 -', 'G5 - - - - - E5 -', 'F5 - - - - - D5 -', 'E5 - - - - - . .'] },
+      B: { bpm: 80, pad: { v: .021, cut: 720 }, mel: { w: 'triangle', v: .04, a: .025, echo: .2 }, pulse: { v: .034, s: 'x x x x x x x x' },
+        s: ['A4 C5 E5 - D5 - C5 -', 'C5 - - - A4 - - -', 'G4 C5 E5 - D5 - E5 -', 'D5 - - - B4 - - -', 'A4 C5 E5 - G5 - E5 -', 'F5 - E5 - C5 - - -', 'D5 - F5 - A5 - G5 -', 'E5 - - - - - . .'] } }
+  };
+  var MEL_LO = 67, MEL_HI = 88;
+
+  function parse(id, style) { var T = TUNES[id]; if (!T || !T[style]) return null; var S = T[style], key = id + '.' + style; if (parse.c[key]) return parse.c[key];
+    var chords = T.chords.map(function (c) { return words(c).map(midi); }), bass = words(T.bass).map(midi);
+    var mel = S.s.map(function (bar) { var tk = words(bar), ev = []; tk.forEach(function (t, i) { var m = midi(t); if (m === null) return; var len = 1; while (tk[i + len] === '-') len++; ev.push({ i: i, m: m, len: len }); }); return ev; });
+    var pcs = chords.map(function (c, i) { var p = c.concat([bass[i]]).map(function (m) { return m % 12; }); return p; });
+    return (parse.c[key] = { id: id, style: style, T: T, S: S, n: chords.length, chords: chords, bass: bass, mel: mel, pcs: pcs, sd: 60 / S.bpm / 2,
+      pulse: S.pulse ? words(S.pulse.s) : null, arp: S.arp ? words(S.arp.s) : null }); }
+  parse.c = {};
+
+  /* THE SOUND MAKER: one for each audio context. out: where it plays (the speakers, or a recording). */
+  function engine(ctx, out, seed) {
+    var E = { ctx: ctx, log: null, live: [], max: 0, notes: 0, skipped: { core: 0, extra: 0 }, tune: null, L: null, t: 0, bar: 0, pass: 0, plan: null, sig: '', busy: false };
+    var r = rng(seed || 1);
+    E.rnd = r;
+    function gain(v, to) { var g = ctx.createGain(); g.gain.value = v; if (to) g.connect(to); return g; }
+    E.master = gain(0.0001, out); E.duck = gain(1, E.master);
+    // the shared echo: a reverb made in code: 2.4 seconds of fading, darkened noise, through one ConvolverNode shared by every voice.
+    // (A cheaper echo made of short repeats that feed back was tried on 28 November: it came out different each time it was played, so it was dropped.)
+    var sr = ctx.sampleRate, len = Math.floor(sr * 2.4), ir = ctx.createBuffer(2, len, sr), ri = rng(7);
+    for (var ch = 0; ch < 2; ch++) { var d = ir.getChannelData(ch), y = 0, pre = Math.floor(sr * .018); for (var i = 0; i < len; i++) { var x = i < pre ? 0 : (ri() * 2 - 1) * Math.exp(-(i - pre) / (sr * .45)); y += .35 * (x - y); d[i] = y; } }
+    E.verbIn = gain(1); E.verb = ctx.createConvolver(); E.verb.buffer = ir; E.verbIn.connect(E.verb); E.verb.connect(gain(.85, E.duck));
+    // the shared repeat (for melodies): a delay that fades, darker each time
+    E.echoIn = gain(1); E.delay = ctx.createDelay(2); E.delay.delayTime.value = .6; var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2000;
+    E.echoIn.connect(E.delay); E.delay.connect(lp); var fb = gain(.32, E.delay); lp.connect(fb); var eo = gain(.8, E.duck); lp.connect(eo); lp.connect(gain(.5, E.verbIn));
+    // one noise for the small sounds (sparks, air)
+    var nb = ctx.createBuffer(1, Math.floor(sr * 1.5), sr), nd = nb.getChannelData(0), rn = rng(11); for (var k = 0; k < nd.length; k++) nd[k] = rn() * 2 - 1; E.noise = nb;
+
+    // ---- voices: never more than LIMIT at once
+    function countAt(p) { var c = 0; for (var i = 0; i < E.live.length; i++) { var v = E.live[i]; if (v.s <= p && p < v.e) c++; } return c; }
+    function allow(s, e, extra) { var pts = [s], i, top = 0; for (i = 0; i < E.live.length; i++) if (E.live[i].s > s && E.live[i].s < e) pts.push(E.live[i].s);
+      for (i = 0; i < pts.length; i++) top = Math.max(top, countAt(pts[i])); if (top + 1 > (extra ? EXTRA : LIMIT)) { E.skipped[extra ? 'extra' : 'core']++; return null; }
+      var v = { s: s, e: e, o: null }; E.live.push(v); E.max = Math.max(E.max, top + 1); E.notes++; return v; }
+    function prune(now) { E.live = E.live.filter(function (v) { return v.e > now; }); }
+    E.voicesAt = function (t) { return countAt(t); };
+
+    function tone(dest, w, m, t, a, hold, rel, v, opt) { opt = opt || {}; var end = t + a + hold + rel, slot = allow(t, end + .02, opt.extra); if (!slot) return null;
+      var o = ctx.createOscillator(), g = ctx.createGain(); o.type = w; o.frequency.value = hz(m); if (opt.cents) o.detune.value = opt.cents;
+      if (opt.glide) o.frequency.exponentialRampToValueAtTime(hz(opt.glide), t + a + hold);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + a);
+      if (opt.pluck) g.gain.exponentialRampToValueAtTime(.0001, t + a + hold + rel);
+      else { g.gain.setValueAtTime(v, t + a); g.gain.linearRampToValueAtTime(v * (opt.sag || .8), t + a + hold); g.gain.linearRampToValueAtTime(0, end); }
+      o.connect(g); g.connect(dest); o.start(t); o.stop(end + .02); slot.o = o; slot.g = g; if (E.log) E.log.push({ m: m, t: t, d: dest.name, glide: opt.glide }); return slot; }
+    function spark(dest, t, v) { var dur = .012 + r() * .03, slot = allow(t, t + dur + .01, true); if (!slot) return;
+      var s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = E.noise; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+      s.connect(g); g.connect(dest); s.start(t, r() * 1.2, dur + .01); slot.o = s; }
+
+    // ---- one tune playing: its own layers, so it can fade out while the next fades in
+    function layers(P, t) { var L = { P: P, out: gain(0), send: gain(0), nodes: [] }; L.out.connect(E.duck); L.send.connect(E.verbIn);
+      L.out.gain.setValueAtTime(0, t); L.out.gain.linearRampToValueAtTime(1, t + 1.5); L.send.gain.setValueAtTime(0, t); L.send.gain.linearRampToValueAtTime(1, t + 1.5);
+      function bus(dry, wet, f, name) { var g = gain(1), x = g; g.name = name; if (f) { x = ctx.createBiquadFilter(); x.type = f.type || 'lowpass'; x.frequency.value = f.hz; x.Q.value = f.q || .7; g.connect(x); } x.connect(gain(dry, L.out)); x.connect(gain(wet, L.send)); g.f = x; return g; }
+      L.pad = bus(.55, .6, { hz: P.S.pad.cut }, 'pad');
+      L.mel = bus(.8, .55, null, 'mel'); L.mel.connect(gain(P.S.mel.echo, E.echoIn));
+      L.bass = bus(.9, .12, { hz: 320 }, 'bass');
+      L.fx = bus(.35, 1, null, 'fx');
+      L.pulse = bus(.7, .3, { hz: 420, q: 2.5 }, 'pulse');
+      L.crk = gain(1); var hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3200; L.crk.connect(hp); hp.connect(L.fx);
+      E.delay.delayTime.setValueAtTime(P.sd * 3, t);      // the repeat comes a dotted quarter later
+      if (P.T.place === 'station') {      // the station's air: a low, soft rumble that never stops
+        var slot = allow(t, Infinity, false); if (slot) { var s = ctx.createBufferSource(); s.buffer = E.noise; s.loop = true; var f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 180; var g = gain(.05); s.connect(f); f.connect(g); g.connect(L.out); s.start(t); slot.o = s; L.hum = slot; } }
+      return L; }
+    function fadeOut(L, t, secs) { if (!L) return; [L.out, L.send].forEach(function (g) { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + secs); });
+      E.live.forEach(function (v) { if (v.L === L && v.e > t + secs) { v.e = t + secs; try { v.o.stop(t + secs); } catch (e) {} } }); }
+
+    // ---- each time round: a plan, never the same as the time before
+    function plan() { var P = E.L.P, prev = E.sig, p, tries = 0;
+      do { p = { mel: [], vs: [], bass: [], dir: [], open: r() < .35, charge: r() < .5, breath: E.pass % 3 === 2 }; var rests = 0;
+        for (var i = 0; i < P.n; i++) { var op;
+          if (E.pass === 0) op = 'play'; else if (p.breath) op = i === P.n - 3 && r() < .6 ? 'high' : 'rest';
+          else { var x = r(); op = x < .5 ? 'play' : x < .75 ? 'vary' : x < .88 ? 'high' : 'rest'; if (op === 'rest' && rests >= 1) op = 'play'; }
+          rests = op === 'rest' ? rests + 1 : 0; p.mel.push(op); p.vs.push(Math.floor(r() * 1e9)); p.bass.push(r() < .3 ? 'two' : 'hold'); p.dir.push(r() < .5 ? 1 : -1); }
+        var sig = JSON.stringify([p.mel, p.bass, p.dir, p.open, p.breath]); } while (sig === prev && ++tries < 8);
+      E.sig = sig; return p; }
+    E.lastPlans = [];
+
+    function chordAt(P, i, open) { var c = P.chords[i].slice(); if (open) c[0] += 12; return c.sort(function (a, b) { return a - b; }); }
+    // a melody bar changed a little: some notes move to a nearby note of the same chord
+    function vary(P, i, seed) { var rr = rng(seed), pcs = P.pcs[i]; return P.mel[i].map(function (e, k) { if (k === 0 || rr() > .45) return e;
+      var c = []; for (var d = -4; d <= 4; d++) { var m = e.m + d; if (d && pcs.indexOf(m % 12) >= 0 && m >= MEL_LO && m <= MEL_HI) c.push(m); } return c.length ? { i: e.i, m: c[Math.floor(rr() * c.length)], len: e.len } : e; }); }
+
+    function playBar() { var L = E.L, P = L.P, S = P.S, i = E.bar, t = E.t, sd = P.sd, bl = sd * 8, k;
+      prune(t - .05); if (i === 0) { E.plan = plan(); E.lastPlans.push(E.sig); if (E.lastPlans.length > 6) E.lastPlans.shift(); }
+      var p = E.plan, ch = chordAt(P, i, p.open), prevCh = i ? chordAt(P, i - 1, p.open) : [];
+      function mark(v) { if (v) v.L = L; return v; }
+      // the pad: a note that stays in the next chord is held, not played again (fewer voices, smoother)
+      ch.forEach(function (m, j) { if (prevCh.indexOf(m) >= 0) return; var n = 1; while (i + n < P.n && chordAt(P, i + n, p.open).indexOf(m) >= 0) n++;
+        mark(tone(L.pad, 'sawtooth', m, t, 1.1, n * bl - 1.1, 1.6, S.pad.v, { cents: j % 2 ? 6 : -6, sag: .85 })); });
+      // the low note
+      var b = P.bass[i]; if (p.bass[i] === 'two') { mark(tone(L.bass, 'triangle', b, t, .08, bl / 2 - .3, .5, .07)); mark(tone(L.bass, 'triangle', b + 7 > 50 ? b - 5 : b + 7, t + bl / 2, .08, bl / 2 - .3, .6, .055)); }
+      else mark(tone(L.bass, 'triangle', b, t, .15, bl - .5, .8, .07));
+      // the melody
+      var op = p.mel[i], M = S.mel, ev = op === 'vary' ? vary(P, i, p.vs[i]) : P.mel[i];
+      if (op === 'play' || op === 'vary') ev.forEach(function (e) { var d = e.len * sd; mark(tone(L.mel, M.w, e.m, t + e.i * sd, M.a, Math.max(.05, d - M.a - .05), .45, M.v, { sag: .55 })); });
+      else if (op === 'high' && ev.length) { var e0 = ev[0], m0 = e0.m + 12 <= MEL_HI ? e0.m + 12 : e0.m; mark(tone(L.mel, 'sine', m0, t + e0.i * sd, .12, Math.max(.3, (8 - e0.i) * sd - .5), .9, M.v * .6, { sag: .5 })); }
+      // far bells (style A): on beats where the melody starts no note
+      if (S.bells) for (k = 0; k < 8; k += 2) { var starts = ev.some(function (e) { return e.i === k; }) && op !== 'rest'; if (starts || r() > S.bells) continue;
+        var bm = ch[Math.floor(r() * ch.length)] + 24; if (bm > 96) bm -= 12; mark(tone(L.fx, 'sine', bm, t + k * sd + r() * .05, .005, .05, 1.6, .012, { pluck: 1, extra: 1 })); }
+      // a music box (style B): the chord's notes, up or down, an octave higher
+      if (P.arp) { var up = ch.map(function (m) { return m + 12; }); if (p.dir[i] < 0) up.reverse(); var a = 0;
+        P.arp.forEach(function (x, j) { if (x !== 'x') return; mark(tone(L.fx, 'triangle', up[a++ % up.length], t + j * sd, .006, .04, .55, S.arp.v, { pluck: 1 })); }); }
+      // the pulse (Voltara): a soft low note, through a filter that opens a little more each bar, like a charge building
+      if (P.pulse) { var f = L.pulse.f.frequency, f0 = 380 + 120 * i; f.setValueAtTime(f0, t); f.linearRampToValueAtTime(f0 + 120, t + bl);
+        P.pulse.forEach(function (x, j) { if (x !== 'x') return; mark(tone(L.pulse, 'sawtooth', b + 12, t + j * sd, .01, .03, .26, S.pulse.v * (j % 2 ? .6 : 1), { pluck: 1 })); }); }
+      // small sounds of the place
+      if (P.T.place === 'station' && r() < .45) { var j0 = Math.floor(r() * 7), pc = P.T.pcs; for (k = 0; k < 2; k++) { var bm2 = 84 + pc[Math.floor(r() * pc.length)]; mark(tone(L.fx, 'sine', bm2, t + j0 * sd + k * .13, .004, .03, .3, .009, { pluck: 1, extra: 1 })); } }
+      if (P.T.place === 'voltara') { if (r() < .35) { var t0 = t + r() * (bl - .6), nk = 2 + Math.floor(r() * 3); for (k = 0; k < nk; k++) spark(L.crk, t0 + r() * .4, .05); }
+        if (i === P.n - 1 && p.charge) mark(tone(L.fx, 'sine', P.bass[0] + 36, t + bl * .25, .6, .9, .5, .007, { glide: P.bass[0] + 43, extra: 1 })); }
+      E.bar = (i + 1) % P.n; if (!E.bar) E.pass++; E.t = t + bl; }
+
+    E.setTune = function (id, style, t) { var P = id ? parse(id, style) : null; if (E.L && P && E.L.P === P) return; if (E.L) { var old = E.L; fadeOut(old, t, 1.2); setTimeoutSafe(function () { try { old.out.disconnect(); old.send.disconnect(); } catch (e) {} }, 3000); }
+      E.tune = P ? id + '.' + style : null; E.L = P ? layers(P, t) : null; if (E.L) E.L.hum && (E.L.hum.L = E.L); E.t = t + .05; E.bar = 0; E.pass = 0; E.sig = ''; };
+    E.fill = function (until) { if (!E.L) return; while (E.t < until) playBar(); };
+    E.setBusy = function (b, t) { if (b === E.busy && E.busyInit) return; E.busy = b; E.busyInit = 1; E.duck.gain.setTargetAtTime(b ? BUSY : 1, t, .3); };
+    E.fadeIn = function (t, secs, level) { E.master.gain.cancelScheduledValues(t); E.master.gain.setValueAtTime(Math.max(.0001, E.master.gain.value), t); E.master.gain.linearRampToValueAtTime(level, t + secs); };
+    E.release = function (t, secs) { E.master.gain.cancelScheduledValues(t); E.master.gain.setValueAtTime(E.master.gain.value, t); E.master.gain.linearRampToValueAtTime(.0001, t + secs); if (E.L) fadeOut(E.L, t, secs); E.L = null; E.tune = null; };
+    return E; }
+  function setTimeoutSafe(f, ms) { try { setTimeout(f, ms); } catch (e) {} }
+
+  /* PLAYING IT LIVE */
+  var M = { on: false, eng: null, ctx: null, timer: null, style: 'A', o: { ctx: null, pick: null, busy: null } };
+  function getCtx() { if (M.o.ctx) return M.o.ctx(); if (!M.ctx) { var A = window.AudioContext || window.webkitAudioContext; M.ctx = new A(); } return M.ctx; }
+  function tick() { if (!M.on || !M.eng) return; var c = M.eng.ctx; if (document.hidden) { if (!M.o.ctx && c.state === 'running') { try { c.suspend(); } catch (e) {} } return; }
+    if (c.state !== 'running') return; var now = c.currentTime, id = M.o.pick ? M.o.pick() : null; if (!TUNES[id]) id = null;
+    var want = id ? id + '.' + M.style : null; if (want !== M.eng.tune) M.eng.setTune(id, M.style, now + .1);
+    if (M.eng.t < now) M.eng.t = now + .05;      // after a long pause, start again from now
+    M.eng.setBusy(!!(M.o.busy && M.o.busy()), now); M.eng.fill(now + .8); }
+  function start() { var c; try { c = getCtx(); if (c.state === 'suspended') c.resume(); } catch (e) { return; }
+    if (!M.eng || M.eng.ctx !== c) M.eng = engine(c, c.destination, (Date.now() & 0xffffff) + 1);
+    M.eng.fadeIn(c.currentTime, 2, LEVEL); if (!M.timer) M.timer = setInterval(tick, 150); tick(); }
+  function stop() { if (M.timer) { clearInterval(M.timer); M.timer = null; } if (M.eng) { try { M.eng.release(M.eng.ctx.currentTime, .6); } catch (e) {} } }
+  return {
+    LIMIT: LIMIT, EXTRA: EXTRA, LEVEL: LEVEL, BUSY: BUSY, MEL: [MEL_LO, MEL_HI], TUNES: TUNES, parse: parse, engine: engine, midi: midi,
+    setup: function (o) { for (var k in o) M.o[k] = o[k]; },
+    setStyle: function (s) { M.style = s; },
+    setOn: function (on) { M.on = !!on; if (M.on) start(); else stop(); },
+    isOn: function () { return M.on; },
+    wake: function () { if (!M.on) return; if (!M.timer) start(); else { var c = M.eng && M.eng.ctx; if (c && c.state === 'suspended') { try { c.resume(); } catch (e) {} } } },
+    stop: function () { M.on = false; stop(); },
+    stats: function () { var E = M.eng; if (!E) return { voices: 0, max: 0, notes: 0, tune: null, pass: 0, skipped: { core: 0, extra: 0 } }; return { voices: E.voicesAt(E.ctx.currentTime), max: E.max, notes: E.notes, tune: E.tune, pass: E.pass, busy: E.busy, skipped: E.skipped, master: E.master.gain.value, duck: E.duck.gain.value }; },
+    /* Record a tune without speakers (for the sound files and the checks). o: { id, style, secs, seed, busyFrom, busyTo, changeAt, changeTo, sr } */
+    render: function (o) { var sr = o.sr || 44100, A = window.OfflineAudioContext || window.webkitOfflineAudioContext, c = new A(2, Math.ceil(sr * o.secs), sr), E = engine(c, c.destination, o.seed || 1);
+      E.fadeIn(0, 1.5, LEVEL); E.setTune(o.id, o.style, 0); E.setBusy(false, 0);
+      if (o.busyFrom != null) { E.duck.gain.setTargetAtTime(BUSY, o.busyFrom, .3); E.duck.gain.setTargetAtTime(1, o.busyTo, .3); }
+      if (o.changeAt != null) { E.fill(o.changeAt); E.setTune(o.changeTo, o.style, o.changeAt); }
+      if (o.stopAt != null) { E.fill(o.stopAt); E.release(o.stopAt, .6); } else E.fill(o.secs);
+      var t0 = performance.now(); return c.startRendering().then(function (buf) { return { buf: buf, ms: performance.now() - t0, max: E.max, notes: E.notes, skipped: E.skipped, plans: E.lastPlans, live: E.live }; }); }
+  };
+})();
+/* GMQ MUSIC: end */
+</script>
+
+<script>
+/* THE OLD MUSIC, for comparing: the game's tunes and player from version 88 (prototypes/kis_station_sketch.html, the block "MUSIC"), copied here unchanged in sound. */
+var OLD_TUNES = {
+title: { bpm: 76, pcs: [0, 2, 4, 5, 7, 9, 11], v: [
+    { w: 'triangle', v: .035, s: 'E5 - G5 - C6 - B5 A5 | G5 - - - E5 - D5 - | E5 - G5 - A5 - G5 E5 | D5 - - - - - . .' },
+    { w: 'sine', v: .05, s: 'C3 - - - G3 - - - | A2 - - - E3 - - - | F2 - - - C3 - - - | G2 - - - - - - -' }] },
+  station: { bpm: 92, pcs: [2, 4, 5, 7, 9, 10, 0], v: [
+    { w: 'triangle', v: .018, pl: 1, s: 'D4 A4 F4 A4 D4 A4 F4 A4 | C4 G4 E4 G4 C4 G4 E4 G4 | Bb3 F4 D4 F4 Bb3 F4 D4 F4 | C4 G4 E4 G4 C4 G4 E4 G4' },
+    { w: 'sine', v: .03, s: 'F5 - - - E5 - D5 - | E5 - - - - - G5 - | F5 - - - D5 - - - | E5 - - - C5 - - -' },
+    { w: 'sine', v: .05, s: 'D2 - - - - - - - | C2 - - - - - - - | Bb1 - - - - - - - | C2 - - - - - - -' }] },
+  space: { bpm: 60, pcs: [9, 11, 0, 2, 4, 5, 7], v: [
+    { w: 'sine', v: .035, s: 'A4 - - - - - - - | C5 - - - B4 - - - | E5 - - - - - - - | G4 - - - F4 - E4 -' },
+    { w: 'triangle', v: .02, s: 'E3 - - - - - - - | A3 - - - - - - - | G3 - - - - - - - | B3 - - - - - - -' },
+    { w: 'sine', v: .045, s: 'A2 - - - - - - - | F2 - - - - - - - | C3 - - - - - - - | E2 - - - - - - -' }] },
+  voltara: { bpm: 112, pcs: [7, 9, 11, 0, 2, 4, 6], v: [
+    { w: 'triangle', v: .035, s: 'G4 B4 D5 B4 C5 - A4 - | B4 D5 G5 D5 E5 - D5 - | C5 E5 D5 C5 B4 - G4 - | A4 B4 C5 A4 G4 - - -' },
+    { w: 'sine', v: .05, s: 'G2 - D3 - C3 - D3 - | G2 - D3 - C3 - G2 - | C3 - G2 - G2 - E2 - | D3 - D2 - G2 - - -' }] },
+  worlds: { bpm: 120, pcs: [5, 7, 9, 10, 0, 2, 4], v: [
+    { w: 'square', v: .014, s: 'F4 A4 C5 A4 Bb4 - G4 - | A4 C5 F5 - E5 - C5 - | D5 C5 Bb4 A4 G4 - C5 - | A4 - F4 - F4 - - -' },
+    { w: 'sine', v: .05, s: 'F2 - C3 - Bb2 - C3 - | F2 - A2 - C3 - - - | Bb2 - - - C3 - - - | F2 - C3 - F2 - - -' },
+    { tick: 1, hz: 1800, v: .01, s: 'x . . . x . . . | x . . . x . . . | x . . . x . . . | x . . . x . x .' }] },
+  chrono: { bpm: 96, pcs: [4, 6, 7, 9, 11, 0, 2, 3], v: [
+    { w: 'triangle', v: .035, pl: 1, s: 'E5 . B4 . G5 . | F#5 . D5 . A5 . | G5 . E5 . B5 . | A5 G5 F#5 E5 D#5 .' },
+    { w: 'sine', v: .045, s: 'E3 - - - - - | D3 - - - - - | C3 - - - - - | B2 - - - - -' },
+    { tick: 1, hz: 2600, v: .012, s: 'x . x . x . | x . x . x . | x . x . x . | x . x . x .' }] },
+  cave: { bpm: 70, pcs: [2, 4, 5, 7, 9, 10, 0], v: [
+    { w: 'sine', v: .035, pl: 1, s: 'D5 . . . . . A4 . | . . F4 . . . . . | E4 . . . . . G4 . | . . A4 . . . . .' },
+    { w: 'sine', v: .05, s: 'D2 - - - - - - - | Bb1 - - - - - - - | C2 - - - - - - - | A1 - - - - - - -' },
+    { tick: 1, hz: 1500, drop: 700, v: .02, s: 'x . . . . . . . | . . . x . . . . | . . . . . x . . | . x . . . . . .' }] },
+  xylo: { bpm: 104, pcs: [0, 2, 4, 7, 9], v: [
+    { w: 'sine', v: .045, pl: 1, s: 'C5 D5 E5 G5 E5 D5 C5 . | A4 C5 D5 E5 D5 C5 A4 . | G4 A4 C5 D5 E5 G5 E5 D5 | C5 . A4 . C5 . . .' },
+    { w: 'triangle', v: .04, pl: 1, s: 'C3 . G2 . C3 . G2 . | A2 . E2 . A2 . E2 . | G2 . D3 . G2 . D3 . | C3 . G2 . C3 . . .' }] },
+  star: { bpm: 84, pcs: [11, 1, 2, 4, 6, 7, 9], v: [
+    { w: 'sine', v: .035, s: 'B4 - - - D5 - C#5 - | B4 - F#4 - - - - - | G4 - - - B4 - A4 - | F#4 - - - - - - -' },
+    { w: 'triangle', v: .014, pl: 1, s: 'F#4 F#4 F#4 F#4 F#4 F#4 F#4 F#4 | D4 D4 D4 D4 D4 D4 D4 D4 | E4 E4 E4 E4 E4 E4 E4 E4 | C#4 C#4 C#4 C#4 C#4 C#4 C#4 C#4' },
+    { w: 'sine', v: .045, s: 'B2 - - - - - - - | G2 - - - - - - - | E2 - - - - - - - | F#2 - - - - - - -' }] },
+  len: { bpm: 100, pcs: [10, 0, 2, 3, 5, 7, 9], v: [
+    { w: 'triangle', v: .035, s: 'Bb4 - Bb4 - D5 - F5 - | Eb5 - D5 - C5 - - - | C5 - C5 - Eb5 - G5 - | F5 - Eb5 - D5 - - -' },
+    { w: 'sine', v: .05, s: 'Bb2 - F2 - Bb2 - F2 - | Eb2 - Bb2 - F2 - - - | C3 - G2 - C3 - G2 - | F2 - C3 - Bb2 - - -' },
+    { tick: 1, hz: 1600, v: .01, s: 'x . . . x . . . | x . . . x . . . | x . . . x . . . | x . . . x . x x' }] } };
+/* The old player, as a sound maker like the new one: the same notes, loudness (0.6) and "every third time round the melody rests". */
+function oldEngine(ctx, out) {
+  var E = { ctx: ctx, id: null, step: 0, pass: 0, t: 0, live: [], max: 0, notes: 0 }, B = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }, cache = {};
+  E.master = ctx.createGain(); E.master.gain.value = .0001; E.master.connect(out); E.g = ctx.createGain(); E.g.gain.value = .6; E.g.connect(E.master);
+  function parse(id) { if (cache[id]) return cache[id]; var T = OLD_TUNES[id]; var voices = T.v.map(function (v) { var tk = v.s.split(/\s+/).filter(function (t) { return t && t !== '|'; }), at = tk.map(function (t) { var m = /^([A-G])(#|b)?(\d)$/.exec(t); return m ? 12 * (+m[3] + 1) + B[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) : t === 'x' ? 'x' : null; });
+    return Object.assign({}, v, { n: tk.length, ev: at.map(function (m, i) { if (m === null) return null; var len = 1; while (tk[i + len] === '-') len++; return { m: m, len: len }; }) }); }); return (cache[id] = { n: voices[0].n, voices: voices }); }
+  function track(s, e) { E.live = E.live.filter(function (v) { return v.e > s - 1; }); var c = 1; E.live.forEach(function (v) { if (v.s <= s && s < v.e) c++; }); E.live.push({ s: s, e: e }); E.max = Math.max(E.max, c); E.notes++; }
+  function note(v, e, t, sd) { var g = ctx.createGain(), d = e.len * sd;
+    if (v.tick) { var o1 = ctx.createOscillator(); o1.type = v.drop ? 'sine' : 'square'; o1.frequency.setValueAtTime(v.hz, t); if (v.drop) o1.frequency.exponentialRampToValueAtTime(v.drop, t + .08); g.gain.setValueAtTime(v.v, t); g.gain.exponentialRampToValueAtTime(.0001, t + (v.drop ? .12 : .03)); o1.connect(g); g.connect(E.g); o1.start(t); o1.stop(t + .15); track(t, t + .15); return; }
+    var o = ctx.createOscillator(); o.type = v.w; o.frequency.value = 440 * Math.pow(2, (e.m - 69) / 12); var a = v.pl ? .006 : .03;
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(v.v, t + a); if (v.pl) g.gain.exponentialRampToValueAtTime(.0001, t + Math.min(d, .6) + .1); else { g.gain.setValueAtTime(v.v, t + Math.max(a, d - .08)); g.gain.exponentialRampToValueAtTime(.0001, t + d + .1); }
+    o.connect(g); g.connect(E.g); o.start(t); o.stop(t + d + .15); track(t, t + d + .15); }
+  E.setTune = function (id, t) { E.id = id; E.step = 0; E.pass = 0; E.t = t; };
+  E.fill = function (until) { if (!E.id) return; var T = OLD_TUNES[E.id], P = parse(E.id), sd = 60 / T.bpm / 2;
+    while (E.t < until) { var i = E.step % P.n, rest = E.pass % 3 === 2 && P.voices.length > 1; P.voices.forEach(function (v, k) { var e = v.ev[i]; if (e && !(rest && k === 0)) note(v, e, E.t, sd); }); E.step = (i + 1) % P.n; if (!E.step) E.pass++; E.t += sd; } };
+  E.setBusy = function (b, t) { E.g.gain.setTargetAtTime(b ? .6 * .3 : .6, t, .25); };
+  E.voicesAt = function (t) { var c = 0; E.live.forEach(function (v) { if (v.s <= t && t < v.e) c++; }); return c; };
+  return E; }
+function oldRender(o) { var sr = o.sr || 44100, A = window.OfflineAudioContext || window.webkitOfflineAudioContext, c = new A(2, Math.ceil(sr * o.secs), sr), E = oldEngine(c, c.destination);
+  E.master.gain.value = 1; E.setTune(o.id, 0); E.fill(o.secs); var t0 = performance.now();
+  return c.startRendering().then(function (buf) { return { buf: buf, ms: performance.now() - t0, max: E.max, notes: E.notes }; }); }
+/* The game's beep, for comparing loudness: beep(880, .1), as when an answer is right. */
+function beepRender() { var sr = 44100, c = new OfflineAudioContext(2, sr, sr), o = c.createOscillator(), g = c.createGain(); o.frequency.value = 880; g.gain.value = .06; g.gain.exponentialRampToValueAtTime(.0001, .1); o.connect(g); g.connect(c.destination); o.start(0); o.stop(.1);
+  return c.startRendering().then(function (buf) { return { buf: buf }; }); }
+</script>
+
+<script>
+/* THE LISTENING PAGE */
+(function () {
+  var PLACES = [
+    ['station', 'The KIS Station', 'Home. The cadets repair the ship here.', true],
+    ['voltara', 'Planet Voltara', 'The energy crisis: power, sparks, a charge building.', true],
+    ['title', 'The start screens', '', false], ['space', 'Space', '', false], ['worlds', 'The 20 small worlds', '', false],
+    ['chrono', 'Chronosia', '', false], ['cave', "Chronosia's cave and workshop", '', false], ['xylo', 'Xylophora', '', false],
+    ['star', 'The mission ship (Stardust)', '', false], ['len', 'Lengthar', '', false]];
+  var cur = null, ctx = null, oldE = null, busy = false, $ = function (id) { return document.getElementById(id); };
+  function ac() { if (!ctx) { var A = window.AudioContext || window.webkitAudioContext; ctx = new A(); } if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+  GMQMusic.setup({ ctx: ac, pick: function () { return cur && cur.kind !== 'old' ? cur.id : null; }, busy: function () { return busy; } });
+  var oldTimer = null;
+  function stopOld() { if (oldTimer) { clearInterval(oldTimer); oldTimer = null; } if (oldE) { var c = oldE.ctx; oldE.master.gain.setTargetAtTime(.0001, c.currentTime, .1); oldE.setTune(null, 0); } }
+  function play(id, kind) { stopOld(); if (cur && cur.id === id && cur.kind === kind) { GMQMusic.stop(); cur = null; return draw(); }
+    cur = { id: id, kind: kind };
+    if (kind === 'old') { GMQMusic.stop(); var c = ac(); oldE = oldE || oldEngine(c, c.destination); oldE.master.gain.cancelScheduledValues(c.currentTime); oldE.master.gain.setTargetAtTime(1, c.currentTime, .1); oldE.setTune(id, c.currentTime + .1); oldE.setBusy(busy, c.currentTime);
+      oldTimer = setInterval(function () { if (document.hidden) return; oldE.fill(c.currentTime + .3); }, 60); }
+    else { GMQMusic.setStyle(kind); GMQMusic.setOn(true); }
+    draw(); }
+  function draw() { var h = '';
+    PLACES.forEach(function (p) { h += '<div class="place"><h3>' + p[1] + '</h3>' + (p[2] ? '<p>' + p[2] + '</p>' : '<p>New music after Marc picks a style.</p>') + '<div class="btns">';
+      var opts = [['old', 'Old', 'tag-old']]; if (p[3]) opts.push(['A', 'New A: calm', 'tag-a'], ['B', 'New B: more tune', 'tag-b']);
+      opts.forEach(function (o) { var on = cur && cur.id === p[0] && cur.kind === o[0]; h += '<button type="button" class="' + o[2] + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-id="' + p[0] + '" data-k="' + o[0] + '">' + (on ? '■ ' : '▶ ') + o[1] + '</button>'; });
+      h += '</div></div>'; });
+    $('places').innerHTML = h; $('places').querySelectorAll('button').forEach(function (b) { b.onclick = function () { play(b.dataset.id, b.dataset.k); }; });
+    $('now').textContent = cur ? (PLACES.filter(function (p) { return p[0] === cur.id; })[0][1] + ', ' + (cur.kind === 'old' ? 'old' : 'new ' + cur.kind)) : 'nothing'; }
+  $('stop').onclick = function () { stopOld(); GMQMusic.stop(); cur = null; draw(); };
+  $('busy').onclick = function () { busy = !busy; this.classList.toggle('on', busy); this.setAttribute('aria-pressed', busy); this.textContent = 'A task is open: ' + (busy ? 'yes' : 'no'); if (oldE) oldE.setBusy(busy, oldE.ctx.currentTime); };
+  $('vlim').textContent = GMQMusic.LIMIT;
+  var vmax = 0; setInterval(function () { var v = 0; if (cur && cur.kind === 'old' && oldE) v = oldE.voicesAt(oldE.ctx.currentTime); else v = GMQMusic.stats().voices; vmax = Math.max(vmax, v); $('vo').textContent = v; $('vmax').textContent = vmax; }, 250);
+  document.addEventListener('visibilitychange', function () { if (!ctx) return; try { if (document.hidden) ctx.suspend(); else if (cur) ctx.resume(); } catch (e) {} });
+  var REC = [['station_old', 'The KIS Station, old'], ['station_A', 'The KIS Station, new A: calm'], ['station_B', 'The KIS Station, new B: more tune'],
+    ['voltara_old', 'Planet Voltara, old'], ['voltara_A', 'Planet Voltara, new A: calm'], ['voltara_B', 'Planet Voltara, new B: more tune']];
+  $('recs').innerHTML = REC.map(function (x) { return '<div><b>' + x[1] + '</b><audio controls preload="none" src="samples/' + x[0] + '.mp3"></audio></div>'; }).join('');
+  draw();
+})();
+</script>
+</body>
+</html>
