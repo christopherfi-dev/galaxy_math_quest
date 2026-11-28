@@ -111,7 +111,7 @@ const { chromium } = require('playwright'); const path = require('path'), http =
       await shot('7_end');
       await fr.locator('#goback').click(); await closed(); n = await bat(); ok(n.used === 1 && n.left === 2, 'counted once, not twice: ' + JSON.stringify(n));
       expect(await last(), /^You are back in the Launch Bay\. You have 2 practice battles left\.$/, 'back: its words');
-      ok(await p.evaluate(() => { const l = S.log[S.log.length - 1]; return l.what === 'A practice battle' && /^won, \d+ rounds?$/.test(l.result); }), 'the ship\'s log keeps the battle: ' + await p.evaluate(() => JSON.stringify(S.log[S.log.length - 1])));
+      ok(await p.evaluate(() => { const l = S.log[S.log.length - 1]; return l.what === 'Practice battle' && /^won, \d+ rounds?$/.test(l.result); }), 'the ship\'s log keeps the battle: ' + await p.evaluate(() => JSON.stringify(S.log[S.log.length - 1])));
       // ---- two more, finished: none left
       for (const k of [1, 0]) { await tapTrainer(); await openBattle(); await startNew(); await finish(); await fr.locator('#goback').click(); await closed(); n = await bat(); ok(n.left === k, `after another battle, ${k} left: ` + JSON.stringify(n)); }
       expect(await last(), /You have 0 practice battles left\.$/, '"0 practice battles"');
@@ -141,6 +141,11 @@ const { chromium } = require('playwright'); const path = require('path'), http =
       await tapTrainer(); t = await toy(); expect(t, /You have 0 practice battles left\..*Your last battle is not finished\./, 'none left, a battle half-way: it is offered'); expect(t, /Finish my battle/, '"Finish my battle" with none left');
       await openBattle(); await fr.locator('#stage').waitFor({ timeout: 15000 }); await finish(); await fr.locator('#goback').click(); await closed();
       n = await bat(); ok(n.used === 4 && n.left === 0 && !n.half, 'finished with none left: the count stays at 0, never below: ' + JSON.stringify(n));
+      // ---- the game closed while the battle is open, in its first round: it opens again in the Launch Bay, and the battle waits to be finished
+      await p.evaluate(() => { S.bat.used = 3; S.bat.bought = 1; save(); }); await tapTrainer(); await openBattle(); await startNew(); await p.reload(); await p.waitForTimeout(600);
+      ok(await p.evaluate(() => !widget && !document.getElementById('gmqbattle') && S.mode === 'station' && S.room === 'launch'), 'closed with the battle open: the game opens again in the Launch Bay');
+      await toLaunch(); await tapTrainer(); t = await toy(); expect(t, /You have 1 practice battle left\..*Your last battle is not finished\. It waits for you on round 1\. A battle counts when it ends\./, 'and the battle waits to be finished; nothing was counted');
+      await p.click('#leave');
       // ---- an old save, without S.bat, opens with 3 left; Start again forgets a half-finished battle
       await p.evaluate(() => { delete S.bat; save(); }); await p.reload(); await p.waitForTimeout(600); ok((await bat()).left === 3, 'an old save opens with 3 left');
       await toLaunch(); await tapTrainer(); await openBattle(); await startNew(); await fr.locator('#bnew').click(); await closed(); ok(!!(await bat()).half, 'a battle half-way, before Start again');

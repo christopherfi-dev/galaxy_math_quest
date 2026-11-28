@@ -4835,7 +4835,7 @@ const batWords = n => `You have ${n} practice battle${n === 1 ? '' : 's'} left.`
 function batEnded(r) { r = r || {}; const b = BAT(), id = r.record && r.record.start && r.record.start.seed ? r.record.start.seed : 0;
   if (id ? b.last === id : !BATRUN || BATRUN.done) return; if (id) b.last = id; if (BATRUN) BATRUN.done = true;
   if ((b.used || 0) < BAT_START + (b.bought || 0)) b.used = (b.used || 0) + 1;
-  const n = +r.rounds || 0; S.log.push({ what: 'A practice battle', skill: 'A battle with your own cards', result: `${r.winner === 0 ? 'won' : r.winner === 1 ? 'lost' : 'nobody won'}, ${n} round${n === 1 ? '' : 's'}` }); save(); }
+  const n = +r.rounds || 0; S.log.push({ what: 'Practice battle', skill: 'A battle with your own cards', result: `${r.winner === 0 ? 'won' : r.winner === 1 ? 'lost' : 'nobody won'}, ${n} round${n === 1 ? '' : 's'}` }); save(); }
 /* the training screen, tapped (any of look, use, talk, open, push) */
 function batTap() { const n = 15 - tasksDone();
   if (n > 0) { const k = batLeft(); return `The training screen is asleep. It wakes when all 15 station tasks are done. You have ${n} task${n === 1 ? '' : 's'} left. Then you get ${k} practice battle${k === 1 ? '' : 's'}, with your own cards.`; }
@@ -4849,7 +4849,7 @@ function batNeed(q4) { const need = BAT_COST - q4, qs = k => `${k} quarter${k ==
 function batPanel(note) { const left = batLeft(), half = batHalf(), q4 = S.q4 || 0, cost = `${fmtQ(BAT_COST)} ${qWord(BAT_COST)}`, out = '<button class="btn quiet" type="button" id="leave">Leave</button>';
   widget = { kind: 'trainer' };
   let h = `<p class="eyebrow">Launch Bay · training screen</p><h3>Practice battles</h3><p class="story">The station's training crew flies a practice ship against you. You battle with your own cards.</p><p class="q">${batWords(left)}</p>`;
-  if (half) h += `<p>Your last battle is not finished. It waits for you on round ${half.round}.</p><div class="field"><button class="btn" type="button" id="try">Finish my battle</button>${out}</div>`;
+  if (half) h += `<p>Your last battle is not finished. It waits for you on round ${half.round}.${left > 0 ? ' A battle counts when it ends.' : ''}</p><div class="field"><button class="btn" type="button" id="try">Finish my battle</button>${out}</div>`;
   else if (left > 0) h += `<p class="note">A battle counts when it ends. If you leave in the middle, it waits for you.</p><div class="field"><button class="btn" type="button" id="try">Start a practice battle</button>${out}</div>`;
   else h += `<p>To get more battles, earn practice credits. 4 quarters make 1 whole credit. ${cost} ${BAT_COST > 4 ? 'give' : 'gives'} 1 battle.</p><p class="note">${batEarn()}</p>` +
     (q4 >= BAT_COST ? `<p>You have ${fmtQ(q4)} ${qWord(q4)}.</p><div class="field"><button class="btn" type="button" id="buy">Turn in ${cost} for 1 battle</button>${out}</div>` : `<p>${batNeed(q4)}</p><div class="field">${out}</div>`);
