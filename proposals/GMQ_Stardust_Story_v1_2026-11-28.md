@@ -225,7 +225,7 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 **C3. Entry Hall**
 - **Its job:** where everyone comes in. The space suits hang here.
-- **Things:** the duty board; a row of suit hooks, all empty but one, where a suit still hangs; the station map screen; a crew photo.
+- **Things:** the duty board (on the big back-wall screen); a row of suit hooks, all empty but one, where a suit still hangs; the crew photo (the left-hand frame); a second picture frame (right wall).
 - **Task or clue:** **clue:** the duty board says three names under "Shuttle: back in 6 days" and one under "Station". One suit is still here. So **one crew member never left.** This is the mystery of who to find [Source: your spitball].
 - **Secret:** in the pocket of the suit still hanging, a key card with "NOK" on it. **Use it** on the Chief's locker in the Living Quarters: inside is her walking stick. **Give it to her**, and she keeps up with you and talks as you go. (Never needed: with the first-aid kit she can already limp about and do her jobs, slowly.)
 - **Doors:** south to the Docking Bay; north to the Common Room; west to the Galley; east to the Fuel Store.
