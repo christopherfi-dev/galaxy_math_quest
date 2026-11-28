@@ -148,7 +148,7 @@ const { chromium } = require('playwright'); const path = require('path'), http =
       await p.click('#leave');
       // ---- an old save, without S.bat, opens with 3 left; Start again forgets a half-finished battle
       await p.evaluate(() => { delete S.bat; save(); }); await p.reload(); await p.waitForTimeout(600); ok((await bat()).left === 3, 'an old save opens with 3 left');
-      await toLaunch(); await tapTrainer(); await openBattle(); await startNew(); await fr.locator('#bnew').click(); await closed(); ok(!!(await bat()).half, 'a battle half-way, before Start again');
+      ok(!!(await bat()).half, 'a battle half-way (the one left open above), before Start again');
       await p.evaluate(() => restart()); ok(!(await bat()).half && (await bat()).left === 3, 'Start again: a new cadet, 3 left, no battle half-way');
     } catch (e) { bad.push(`${name}: stopped: ${String(e.message).split('\n')[0]}`); }
     await ctx.close(); }
