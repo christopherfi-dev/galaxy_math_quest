@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painted Rooms Test</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Chakra+Petch:wght@500;700&display=swap">
+<style>
+:root {
+  --bg: #0b1422; --panel: #132035; --ink: #e8eef8; --muted: #a9b9d0; --line: #33476a;
+  --accent: #6db3ff; --accent-ink: #08121f; --good: #6fd08a; --bad: #ff9486;
+  --body: 'Andika', 'Trebuchet MS', sans-serif;
+  --display: 'Chakra Petch', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: var(--body); }
+body { display: flex; flex-direction: column; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+#top { display: flex; align-items: center; gap: 10px; padding: 6px 12px; font-family: var(--display); font-size: .95rem; color: var(--muted); }
+#top b { color: var(--ink); }
+#top .sp { flex: 1; }
+#top button { font-size: .8rem; padding: 4px 10px; }
+#main { flex: 1; display: flex; min-height: 0; gap: 10px; padding: 0 10px 10px; }
+#main.tall { flex-direction: column; }
+#wrap { position: relative; flex: none; overflow: hidden; border-radius: 10px; background: #050a12; touch-action: manipulation; }
+#stage { position: absolute; left: 0; top: 0; width: 2000px; height: 1125px; transform-origin: 0 0; overflow: hidden; user-select: none; -webkit-user-select: none; }
+.room { position: absolute; left: 0; top: 0; width: 2000px; height: 1125px; will-change: transform; }
+.room .bg { position: absolute; left: 0; top: 0; width: 2000px; height: 1125px; pointer-events: none; }
+.room .bg.lit { opacity: 0; transition: opacity 1.4s ease; }
+.room.on .bg.lit { opacity: 1; }
+.spr { position: absolute; pointer-events: none; transform-origin: 50% 100%; }
+.spr img { display: block; width: 100%; height: 100%; transition: filter 1.4s ease; }
+.shadow { position: absolute; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0,0,0,.45), rgba(0,0,0,0)); }
+#bar { position: absolute; left: 0; right: 0; bottom: 0; height: 125px; pointer-events: none;
+  background: linear-gradient(rgba(5,10,18,0), rgba(5,10,18,.55)); border-top: 4px dashed rgba(109,179,255,.45);
+  font: 700 30px var(--display); color: rgba(232,238,248,.75); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; letter-spacing: .04em; }
+#close { position: absolute; left: 0; top: 0; width: 2000px; height: 1000px; display: none; align-items: center; justify-content: center;
+  background: rgba(5,10,18,.72); }
+#close.show { display: flex; }
+#bookbox { position: relative; width: 1040px; height: 862px; display: none; }
+#bookbox img { width: 100%; height: 100%; }
+#bookbox .page { position: absolute; font: 400 40px/1.35 var(--body); color: #3a2a18; }
+#gauge { display: none; width: 900px; height: 600px; border-radius: 40px; background: #3e4b5a; border: 10px solid #222c38;
+  box-shadow: inset 0 0 0 6px #586779, 0 20px 60px rgba(0,0,0,.6); position: relative; }
+#gauge .scr { position: absolute; left: 90px; top: 80px; right: 90px; height: 330px; border-radius: 24px; background: #0b2233;
+  box-shadow: inset 0 0 40px rgba(120,200,255,.35); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #bfe6ff; }
+#gauge .scr small { font: 700 44px var(--display); letter-spacing: .08em; opacity: .8; }
+#gauge .scr b { font: 700 170px/1 var(--display); }
+#gauge .knobs { position: absolute; left: 0; right: 0; bottom: 60px; display: flex; justify-content: center; gap: 50px; }
+#gauge .knobs i { width: 60px; height: 60px; border-radius: 50%; background: #e0a23a; display: block; box-shadow: inset 0 -6px 0 rgba(0,0,0,.3); }
+#gauge .knobs i + i { background: #c8463d; }
+#readout { position: absolute; display: flex; align-items: center; justify-content: center; pointer-events: none;
+  font: 700 50px/1 var(--display); border-radius: 8px; transition: background 1.4s, color 1.4s; }
+#dbg { position: absolute; left: 0; top: 0; width: 2000px; height: 1125px; pointer-events: none; display: none; }
+#desk { flex: 1; min-width: 240px; min-height: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+#where { font: 700 1.15rem var(--display); color: var(--accent); }
+#say { font-size: 1.1rem; line-height: 1.45; min-height: 3em; }
+#acts { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font: 700 1rem var(--body); color: var(--ink); background: #1c2c46; border: 2px solid var(--line); border-radius: 10px; padding: 10px 14px; cursor: pointer; min-height: 44px; }
+button.go { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+#pocket h3 { margin: 0 0 6px; font: 700 .95rem var(--display); color: var(--muted); letter-spacing: .04em; }
+#pocket .items { display: flex; flex-wrap: wrap; gap: 8px; }
+#pocket .it { display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; min-height: 44px; }
+#pocket .it img { width: 36px; height: 36px; object-fit: contain; }
+#pocket .none { color: var(--muted); font-size: .95rem; }
+#note { font-size: .82rem; color: var(--muted); line-height: 1.4; margin-top: auto; }
+</style>
+</head>
+<body>
+<div id="top"><b>Painted rooms: a test</b><span>Stardust's look, two of Marc's Gemini rooms</span><span class="sp"></span><button id="restart">Start again</button></div>
+<div id="main">
+  <div id="wrap"><div id="stage">
+    <div id="bar">the game's bar goes here</div>
+    <div id="close"><div id="bookbox"><img alt=""><div class="page" id="pgL"></div><div class="page" id="pgR"></div></div>
+      <div id="gauge"><div class="scr"><small>BAY TEMPERATURE</small><b id="gnum"></b></div><div class="knobs"><i></i><i></i></div></div></div>
+    <svg id="dbg" viewBox="0 0 2000 1125"></svg>
+  </div></div>
+  <div id="desk">
+    <div id="where"></div>
+    <div id="say"></div>
+    <div id="acts"></div>
+    <div id="pocket"><h3>IN YOUR POCKET</h3><div class="items"></div></div>
+    <div id="note">A test page. The two rooms are joined by a doorway <b>for this test only</b>: on Tally Station the Docking Bay and the Greenhouse are far apart. The rooms are Marc's Gemini pictures as they came. The cadet, the robot, the battery, the tin and the key card are cut out and placed by the game. The game writes every word and number.</div>
+  </div>
+</div>
+<script>
+/* GMQ ROOMS: start */
+var GMQRooms = (function () {
+  'use strict';
+  var W = 2000, H = 1125, BAR = 1000;           // logical picture; below BAR is the game's bar
+  var KEY = 'gmqRoomsTest_v1';
+  var IMG = 'img/';
+  var webp = (function () { try { return document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0; } catch (e) { return false; } })();
+
+  // ---------- each child's numbers ----------
+  function seedFromUrl() { var m = /[?&]seed=(\d+)/.exec(location.search); return m ? +m[1] : null; }
+  function bayTemp(seed) { return 9 + (((seed * 2654435761) >>> 0) % 9); }   // 9 to 17 degrees, whole numbers
+
+  // ---------- the rooms: walk maps in the picture's own units (2000 x 1125) ----------
+  var ROOMS = {
+    docking: {
+      name: 'Docking Bay', dark: 'docking_dark', lit: 'docking_lit',
+      depth: { yBack: 430, hBack: 175, yFront: 990, hFront: 300 },
+      dimFilter: 'brightness(.6) saturate(.75) sepia(.18)', litFilter: 'none',
+      floor: [[520,430],[1480,430],[1585,560],[1660,640],[1830,860],[1880,990],[110,990],[175,870],[395,590],[470,500],[520,500]],
+      blocks: [
+        [[420,560],[500,500],[590,470],[600,510],[860,510],[900,620],[860,760],[780,800],[480,800],[410,700]],   // the ship (no standing behind it)
+        [[700,430],[810,430],[810,478],[700,478]]                                             // the lectern
+      ],
+      start: { x: 1000, y: 760, face: 'front' },
+      spots: [
+        { id: 'stationdoor', box: [860,120,1180,425], stand: [1020,470], face: 'back' },
+        { id: 'switch', box: [1180,250,1225,335], stand: [1200,465], face: 'back' },
+        { id: 'cargo', box: [120,230,410,850], stand: [380,700], face: 'left' },
+        { id: 'toGreen', box: [1590,240,1870,860], stand: [1730,760], face: 'right', exit: { to: 'greenhouse', dir: 1, enter: [270,760], walkIn: [470,760] } },
+        { id: 'book', box: [680,300,820,470], stand: [760,494], face: 'back' },
+        { id: 'tempbox', box: [45,620,135,740], stand: [250,880], face: 'left' },
+        { id: 'ship', box: [430,460,860,800], stand: [960,700], face: 'left' },
+        { id: 'crates', box: [480,320,640,500], stand: [610,455], face: 'left' }
+      ],
+      readout: { x: 79, y: 670, m: [0.27, -0.22, 0.05, 0.33] }   // the small wall screen, measured on the picture
+    },
+    greenhouse: {
+      name: 'Greenhouse', dark: 'greenhouse', lit: null,
+      depth: { yBack: 450, hBack: 175, yFront: 935, hFront: 290 },
+      dimFilter: 'brightness(.72) saturate(.85) sepia(.1)', litFilter: 'brightness(.72) saturate(.85) sepia(.1)',
+      floor: [[400,470],[1600,470],[1640,560],[1800,880],[1830,935],[150,935],[175,880],[375,570]],
+      blocks: [
+        [[395,470],[595,470],[595,560],[395,560]],      // left plant bed
+        [[830,450],[1175,450],[1175,485],[830,485]],    // middle plant bed
+        [[1285,450],[1575,450],[1575,565],[1420,565],[1285,500]], // right plant bed
+        [[1190,470],[1280,470],[1280,535],[1190,535]]   // the hose on the floor
+      ],
+      start: { x: 470, y: 760, face: 'right' },
+      spots: [
+        { id: 'toDock', box: [110,230,380,780], stand: [270,760], face: 'left', exit: { to: 'docking', dir: -1, enter: [1730,760], walkIn: [1520,760] } },
+        { id: 'toLiving', box: [1610,250,1890,780], stand: [1700,760], face: 'right' },
+        { id: 'ladder', box: [520,20,730,460], stand: [660,500], face: 'back' },
+        { id: 'window', box: [830,0,1500,280], stand: [1000,520], face: 'back' },
+        { id: 'plants', box: [830,290,1175,485], stand: [1000,520], face: 'back' },
+        { id: 'plants2', box: [395,290,595,560], stand: [620,600], face: 'left' },
+        { id: 'plants3', box: [1285,290,1575,565], stand: [1400,620], face: 'back' },
+        { id: 'hose', box: [1185,280,1285,540], stand: [1230,580], face: 'back' },
+        { id: 'pots', box: [705,265,835,325], stand: [760,500], face: 'back' }
+      ]
+    }
+  };
+
+  // things the game places (cut-outs). x, y = where the thing touches the floor.
+  var THINGS = {
+    robot:   { img: 'robot',   room: 'docking',    x: 1420, y: 650, h: 150, stand: [1330, 700] },
+    battery: { img: 'battery', room: 'greenhouse', x: 1500, y: 640, h: 70,  stand: [1420, 690] },
+    tin:     { img: 'tin',     room: 'greenhouse', x: 700,  y: 590, h: 90,  stand: [790, 640] }
+  };
+  var SPRITE_RATIO = { robot: 292/300, battery: 260/205, tin: 260/246, cadet_front: 219/440, cadet_back: 218/440, cadet_left: 183/440, cadet_right: 183/440 };
+
+  // ---------- words (the game writes every one) ----------
+  var WORDS = {
+    stationdoor: function (s) {
+      if (!s.lit) return 'The big door to the station. It is shut. The panel beside it is dark. No power.';
+      return 'The big door to the station. The panel glows green now. It needs a key card.';
+    },
+    switch: function (s) { return s.lit ? 'You push the switch down. The lights go off.' : 'You pull the switch up.'; },
+    cargo: function () { return 'A heavy cargo door with yellow stripes. It is sealed shut.'; },
+    book: function () { return 'A book on a stand. On the cover: "Visitors."'; },
+    tempbox: function (s) { return 'A small screen on the wall. It shows the warmth of the bay: ' + s.temp + ' degrees.'; },
+    ship: function () { return 'Your ship. It brought you here. It stays until the job is done.'; },
+    crates: function () { return 'Two old crates, stacked. Empty.'; },
+    toLiving: function () { return 'This way goes on. (Not in this test.)'; },
+    ladder: function () { return 'A ladder up to a round hatch in the roof. The hatch is stuck.'; },
+    window: function () { return 'Cracked glass. Stars outside. Brr.'; },
+    plants: function () { return 'Plant beds. The plants are dry and drooping. Nobody has watered them.'; },
+    plants2: function () { return 'More plants. Thirsty ones.'; },
+    plants3: function () { return 'Plants with big leaves. The soil is dry.'; },
+    hose: function () { return 'A green hose. Nothing comes out.'; },
+    pots: function () { return 'Three empty flower pots on a shelf.'; },
+    robot: function (s) {
+      if (s.robotAwake) return 'The little robot. It follows you and beeps.';
+      return 'A little robot. Its eyes are shut. It does not move. Its battery is flat.';
+    },
+    battery: function () { return 'A battery, lying by the plant bed. It still glows a little.'; },
+    tin: function (s) { return s.tinOpen ? 'An old tin. Empty now.' : 'An old metal tin with a lid.'; }
+  };
+  var NAMES = { battery: 'battery', card: 'key card' };
+
+  // ---------- state ----------
+  var S, els = {}, rooms = {}, view = { scale: 1 }, frameTimes = [], workTimes = [], busy = false;
+  function fresh() {
+    var seed = seedFromUrl();
+    if (seed == null) seed = Math.floor(Math.random() * 1e6);
+    return { v: 1, seed: seed, temp: bayTemp(seed), room: 'docking', x: ROOMS.docking.start.x, y: ROOMS.docking.start.y, face: 'front',
+      lit: false, robotAwake: false, tinOpen: false, pocket: [], taken: {}, robotRoom: 'docking', rx: THINGS.robot.x, ry: THINGS.robot.y };
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function load() {
+    try { var t = JSON.parse(localStorage.getItem(KEY) || 'null'); if (t && t.v === 1) return t; } catch (e) {}
+    return null;
+  }
+
+  // ---------- geometry ----------
+  function inPoly(x, y, p) {
+    var c = false;
+    for (var i = 0, j = p.length - 1; i < p.length; j = i++) {
+      if ((p[i][1] > y) !== (p[j][1] > y) && x < (p[j][0] - p[i][0]) * (y - p[i][1]) / (p[j][1] - p[i][1]) + p[i][0]) c = !c;
+    }
+    return c;
+  }
+  function walkable(R, x, y) {
+    if (y >= BAR - 10) return false;
+    if (!inPoly(x, y, R.floor)) return false;
+    for (var i = 0; i < R.blocks.length; i++) if (inPoly(x, y, R.blocks[i])) return false;
+    return true;
+  }
+  var CELL = 25;
+  function grid(R) {
+    if (R._grid) return R._grid;
+    var gw = W / CELL, gh = H / CELL, g = new Uint8Array(gw * gh);
+    for (var j = 0; j < gh; j++) for (var i = 0; i < gw; i++) g[j * gw + i] = walkable(R, i * CELL + CELL / 2, j * CELL + CELL / 2) ? 1 : 0;
+    R._grid = { w: gw, h: gh, g: g };
+    return R._grid;
+  }
+  function nearestWalk(R, x, y) {
+    if (walkable(R, x, y)) return [x, y];
+    var G = grid(R), best = null, bd = 1e18;
+    for (var j = 0; j < G.h; j++) for (var i = 0; i < G.w; i++) if (G.g[j * G.w + i]) {
+      var cx = i * CELL + CELL / 2, cy = j * CELL + CELL / 2, d = (cx - x) * (cx - x) + (cy - y) * (cy - y);
+      if (d < bd) { bd = d; best = [cx, cy]; }
+    }
+    return best;
+  }
+  function clearLine(R, a, b) {
+    var d = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.ceil(d / 8);
+    for (var k = 1; k < n; k++) { var t = k / n; if (!walkable(R, a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)) return false; }
+    return true;
+  }
+  function findPath(R, from, to) {
+    to = nearestWalk(R, to[0], to[1]);
+    if (!walkable(R, from[0], from[1])) from = nearestWalk(R, from[0], from[1]);
+    if (clearLine(R, from, to)) return [to];
+    var G = grid(R), w = G.w;
+    var si = Math.floor(from[0] / CELL), sj = Math.floor(from[1] / CELL), ti = Math.floor(to[0] / CELL), tj = Math.floor(to[1] / CELL);
+    var start = sj * w + si, goal = tj * w + ti;
+    var gs = new Float32Array(w * G.h).fill(1e9), came = new Int32Array(w * G.h).fill(-1), open = [start], closed = new Uint8Array(w * G.h);
+    gs[start] = 0;
+    function hh(n) { return Math.hypot((n % w) - ti, Math.floor(n / w) - tj); }
+    var found = false;
+    while (open.length) {
+      var bi = 0, bf = 1e9;
+      for (var k = 0; k < open.length; k++) { var f = gs[open[k]] + hh(open[k]); if (f < bf) { bf = f; bi = k; } }
+      var cur = open.splice(bi, 1)[0];
+      if (cur === goal) { found = true; break; }
+      closed[cur] = 1;
+      var ci = cur % w, cj = Math.floor(cur / w);
+      for (var dj = -1; dj <= 1; dj++) for (var di = -1; di <= 1; di++) {
+        if (!di && !dj) continue;
+        var ni = ci + di, nj = cj + dj;
+        if (ni < 0 || nj < 0 || ni >= w || nj >= G.h) continue;
+        var nb = nj * w + ni;
+        if (!G.g[nb] || closed[nb]) continue;
+        if (di && dj && (!G.g[cj * w + ni] || !G.g[nj * w + ci])) continue;
+        var ng = gs[cur] + (di && dj ? 1.414 : 1);
+        if (ng < gs[nb]) { gs[nb] = ng; came[nb] = cur; if (open.indexOf(nb) < 0) open.push(nb); }
+      }
+    }
+    if (!found) return null;
+    var pts = [], n = goal;
+    while (n !== start && n >= 0) { pts.unshift([(n % w) * CELL + CELL / 2, Math.floor(n / w) * CELL + CELL / 2]); n = came[n]; }
+    pts[pts.length - 1] = to;
+    var out = [], a = from, i = 0;                       // pull the string tight
+    while (i < pts.length) {
+      var j = pts.length - 1;
+      while (j > i && !clearLine(R, a, pts[j])) j--;
+      out.push(pts[j]); a = pts[j]; i = j + 1;
+    }
+    return out;
+  }
+  function depthH(R, y, base) {
+    var d = R.depth, t = (y - d.yBack) / (d.yFront - d.yBack);
+    return (d.hBack + (d.hFront - d.hBack) * t) * (base || 1);
+  }
+
+  // ---------- pictures ----------
+  function bgSrc(name) { var big = view.scale * (window.devicePixelRatio || 1) > 0.62; return IMG + name + '_' + (big ? 2360 : 1180) + (webp ? '.webp' : '.jpg'); }
+  function sprSrc(name) { return IMG + name + (webp ? '.webp' : '.png'); }
+  function makeSprite(name, ratio) {
+    var d = document.createElement('div'); d.className = 'spr';
+    var im = document.createElement('img'); im.alt = ''; im.src = sprSrc(name); im.draggable = false;
+    d.appendChild(im); d._img = im; d._ratio = ratio;
+    var sh = document.createElement('div'); sh.className = 'shadow'; d._shadow = sh;
+    return d;
+  }
+  function placeSprite(d, R, x, y, h, flip, bob) {
+    var w = h * d._ratio;
+    d.style.width = w + 'px'; d.style.height = h + 'px';
+    d.style.left = (x - w / 2) + 'px'; d.style.top = (y - h) + 'px';
+    d.style.zIndex = Math.round(y);
+    d.style.transform = 'translateY(' + (bob || 0) + 'px)' + (flip ? ' scaleX(-1)' : '');
+    var sw = w * 0.9, sh = h * 0.12;
+    d._shadow.style.width = sw + 'px'; d._shadow.style.height = sh + 'px';
+    d._shadow.style.left = (x - sw / 2) + 'px'; d._shadow.style.top = (y - sh * 0.6) + 'px';
+    d._shadow.style.zIndex = Math.round(y) - 1;
+  }
+  function lightFilter(roomId) {
+    var R = ROOMS[roomId];
+    return (roomId === 'docking' && S.lit) ? R.litFilter : R.dimFilter;
+  }
+
+  function buildRoom(id) {
+    var R = ROOMS[id], el = document.createElement('div');
+    el.className = 'room'; el.dataset.room = id;
+    var a = document.createElement('img'); a.className = 'bg'; a.alt = ''; a.src = bgSrc(R.dark); el.appendChild(a);
+    if (R.lit) { var b = document.createElement('img'); b.className = 'bg lit'; b.alt = ''; b.src = bgSrc(R.lit); el.appendChild(b); }
+    if (R.readout) {
+      var r = document.createElement('div'); r.id = 'readout'; var o = R.readout;
+      r.style.left = o.x + 'px'; r.style.top = o.y + 'px'; r.style.width = '100px'; r.style.height = '100px';
+      r.style.transformOrigin = '0 0'; r.style.transform = 'matrix(' + o.m.join(',') + ',0,0)'; el.appendChild(r); els.readout = r;
+    }
+    els.stage.insertBefore(el, els.bar);
+    rooms[id] = el;
+    return el;
+  }
+
+  // ---------- drawing ----------
+  var cadet = {}, robotSpr, thingSpr = {}, walk = null, robotTrail = [];
+  function refreshRoom() {
+    Object.keys(rooms).forEach(function (id) { rooms[id].style.display = id === S.room ? '' : 'none'; rooms[id].style.transform = ''; });
+    var el = rooms[S.room];
+    el.classList.toggle('on', S.room === 'docking' && S.lit);
+    ['front', 'back', 'left', 'right'].forEach(function (f) { el.appendChild(cadet[f]); el.appendChild(cadet[f]._shadow); });
+    Object.keys(THINGS).forEach(function (k) {
+      var t = THINGS[k], d = thingSpr[k], show = k === 'robot' ? S.robotRoom === S.room : (t.room === S.room && !S.taken[k]);
+      if (show) { el.appendChild(d); el.appendChild(d._shadow); d.style.display = d._shadow.style.display = ''; }
+      else { d.style.display = d._shadow.style.display = 'none'; }
+    });
+    drawAll(0);
+    applyLight();
+    drawReadout();
+    els.where.textContent = ROOMS[S.room].name;
+    drawDebug();
+  }
+  function applyLight() {
+    var f = lightFilter(S.room);
+    ['front', 'back', 'left', 'right'].forEach(function (k) { cadet[k]._img.style.filter = f; });
+    Object.keys(thingSpr).forEach(function (k) { thingSpr[k]._img.style.filter = f; });
+    rooms.docking.classList.toggle('on', S.lit);
+  }
+  function drawReadout() {
+    if (!els.readout) return;
+    els.readout.textContent = S.temp + '°';
+    els.readout.style.background = S.lit ? '#9fdcff' : '#a8673e';
+    els.readout.style.color = S.lit ? '#0d3350' : '#ffd9a8';
+  }
+  function drawAll(bob) {
+    var R = ROOMS[S.room];
+    ['front', 'back', 'left', 'right'].forEach(function (f) {
+      var on = f === S.face;
+      cadet[f].style.display = cadet[f]._shadow.style.display = on ? '' : 'none';
+      if (on) placeSprite(cadet[f], R, S.x, S.y, depthH(R, S.y), false, bob);
+    });
+    if (S.robotRoom === S.room) {
+      var t = THINGS.robot;
+      placeSprite(robotSpr, R, S.rx, S.ry, depthH(R, S.ry, t.h / 300), S.robotFlip, S.robotAwake ? -Math.abs(Math.sin(performance.now() / 160)) * 6 : 0);
+    }
+    Object.keys(THINGS).forEach(function (k) {
+      if (k === 'robot') return;
+      var t = THINGS[k];
+      if (t.room === S.room && !S.taken[k]) placeSprite(thingSpr[k], R, t.x, t.y, depthH(R, t.y, t.h / 300));
+    });
+  }
+
+  // ---------- walking ----------
+  function faceFor(dx, dy) {
+    if (Math.abs(dx) > Math.abs(dy) * 1.1) return dx > 0 ? 'right' : 'left';
+    return dy > 0 ? 'front' : 'back';
+  }
+  function walkTo(x, y, then) {
+    var R = ROOMS[S.room];
+    var path = findPath(R, [S.x, S.y], [x, y]);
+    if (!path) { if (then) then(); return; }
+    walk = { path: path, then: then, t0: performance.now(), dist: 0 };
+  }
+  var last = 0;
+  function tick(now) {
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0; last = now;
+    var w0 = performance.now();
+    var R = ROOMS[S.room], bob = 0;
+    if (walk) {
+      var tgt = walk.path[0], dx = tgt[0] - S.x, dy = tgt[1] - S.y, d = Math.hypot(dx, dy);
+      var speed = 430 * depthH(R, S.y) / R.depth.hFront, step = speed * dt;
+      if (d > 1) S.face = faceFor(dx, dy);
+      if (step >= d) { S.x = tgt[0]; S.y = tgt[1]; walk.path.shift(); }
+      else { S.x += dx / d * step; S.y += dy / d * step; }
+      walk.dist += Math.min(step, d);
+      bob = -Math.abs(Math.sin(walk.dist / 38)) * 7;
+      robotTrail.push([S.x, S.y]); if (robotTrail.length > 400) robotTrail.shift();
+      if (!walk.path.length) { var th = walk.then; walk = null; bob = 0; save(); if (th) th(); }
+    }
+    if (S.robotAwake && S.robotRoom === S.room && robotTrail.length) {      // the robot follows the cadet's own footsteps
+      var gap = Math.hypot(S.rx - S.x, S.ry - S.y);
+      if (gap > 150) {
+        var p = robotTrail[0]; while (robotTrail.length > 1 && Math.hypot(p[0] - S.rx, p[1] - S.ry) < 6) { robotTrail.shift(); p = robotTrail[0]; }
+        var rdx = p[0] - S.rx, rdy = p[1] - S.ry, rd = Math.hypot(rdx, rdy), rs = 470 * dt * depthH(R, S.ry) / R.depth.hFront;
+        if (rd > 0.5) { if (Math.abs(rdx) > 2) S.robotFlip = rdx < 0; var m = Math.min(rs, rd); S.rx += rdx / rd * m; S.ry += rdy / rd * m; }
+      }
+    }
+    drawAll(bob);
+    if (walk || S.robotAwake) { frameTimes.push(dt * 1000); workTimes.push(performance.now() - w0); }
+    if (frameTimes.length > 2000) { frameTimes.shift(); workTimes.shift(); }
+    requestAnimationFrame(tick);
+  }
+
+  // ---------- tapping ----------
+  function toLogical(ev) {
+    var r = els.stage.getBoundingClientRect();
+    return [(ev.clientX - r.left) / view.scale, (ev.clientY - r.top) / view.scale];
+  }
+  function inBox(x, y, b) { return x >= b[0] && x <= b[2] && y >= b[1] && y <= b[3]; }
+  function hitThing(x, y) {
+    var R = ROOMS[S.room], best = null;
+    Object.keys(THINGS).forEach(function (k) {
+      var t = THINGS[k], tx = t.x, ty = t.y;
+      if (k === 'robot') { if (S.robotRoom !== S.room) return; tx = S.rx; ty = S.ry; }
+      else if (t.room !== S.room || S.taken[k]) return;
+      var h = depthH(R, ty, t.h / 300), w = h * SPRITE_RATIO[t.img], pad = 30;      // a bigger target than the picture, for small fingers
+      if (x > tx - w / 2 - pad && x < tx + w / 2 + pad && y > ty - h - pad && y < ty + pad) best = k;
+    });
+    return best;
+  }
+  function onTap(ev) {
+    if (busy) return;
+    if (els.close.classList.contains('show')) { closeUp(); return; }
+    var p = toLogical(ev), x = p[0], y = p[1];
+    if (y >= BAR) return;                                // the bar belongs to the game
+    var k = hitThing(x, y);
+    if (k) {
+      var st = k === 'robot' ? [S.rx - 90, S.ry + 40] : THINGS[k].stand;
+      walkTo(st[0], st[1], function () { S.face = faceFor((k === 'robot' ? S.rx : THINGS[k].x) - S.x, -1); showThing(k); });
+      return;
+    }
+    var spots = ROOMS[S.room].spots;
+    for (var i = 0; i < spots.length; i++) {
+      var sp = spots[i];
+      if (inBox(x, y, sp.box)) {
+        walkTo(sp.stand[0], sp.stand[1], function () { S.face = sp.face; if (sp.exit) goThrough(sp.exit); else showSpot(sp.id); });
+        return;
+      }
+    }
+    walkTo(x, y);
+  }
+
+  // ---------- the desk: words and buttons ----------
+  function say(text, buttons) {
+    els.say.textContent = text;
+    els.acts.innerHTML = '';
+    (buttons || []).forEach(function (b) {
+      var e = document.createElement('button'); e.textContent = b[0]; if (b[2]) e.className = 'go';
+      e.addEventListener('click', function () { b[1](); });
+      els.acts.appendChild(e);
+    });
+  }
+  function has(k) { return S.pocket.indexOf(k) >= 0; }
+  function drawPocket() {
+    var box = els.pocket; box.innerHTML = '';
+    if (!S.pocket.length) { box.innerHTML = '<span class="none">Nothing yet.</span>'; return; }
+    S.pocket.forEach(function (k) {
+      var b = document.createElement('button'); b.className = 'it';
+      b.innerHTML = '<img alt="" src="' + sprSrc(k) + '"><span>' + NAMES[k] + '</span>';
+      b.addEventListener('click', function () {
+        say(k === 'card' ? 'A key card. It was in the tin.' : 'The battery. It hums in your hand.');
+      });
+      box.appendChild(b);
+    });
+  }
+  function take(k) { if (!has(k)) S.pocket.push(k); S.taken[k] = true; save(); refreshRoom(); drawPocket(); }
+  function drop(k) { S.pocket = S.pocket.filter(function (p) { return p !== k; }); save(); drawPocket(); }
+
+  function showThing(k) {
+    var w = WORDS[k](S), b = [];
+    if (k === 'battery') b.push(['Take the battery', function () { take('battery'); say('You take the battery.'); }, 1]);
+    if (k === 'tin' && !S.tinOpen) b.push(['Open the tin', function () {
+      S.tinOpen = true; S.pocket.push('card'); save(); drawPocket();
+      say('You lift the lid. Inside is a key card! You put it in your pocket.');
+    }, 1]);
+    if (k === 'robot' && !S.robotAwake && has('battery')) b.push(['Give it the battery', function () {
+      drop('battery'); S.robotAwake = true; save(); wakeRobot();
+      say('Click. Whirr. The robot opens its eyes. "Beep!" It rolls after you.');
+    }, 1]);
+    say(w, b);
+  }
+  function showSpot(id) {
+    var w = WORDS[id] ? WORDS[id](S) : '', b = [];
+    if (id === 'switch') {
+      b.push([S.lit ? 'Push it down' : 'Pull it up', function () {
+        S.lit = !S.lit; save(); applyLight(); drawReadout();
+        say(S.lit ? 'Clunk. The lights come on, one by one.' : 'Clunk. The lights go off. Only the small lamps glow.');
+      }, 1]);
+      w = S.lit ? 'A light switch. It is up. The lights are on.' : 'A light switch. It is down.';
+    }
+    if (id === 'stationdoor' && has('card')) b.push(['Use the key card', function () {
+      say(S.lit ? 'Beep. The light turns green. On the real station, this door would open to the Entry Hall. (Not in this test.)'
+                : 'You hold up the key card. Nothing. The panel has no power.');
+    }, 1]);
+    if (id === 'book') b.push(['Open the book', openBook, 1]);
+    if (id === 'tempbox') b.push(['Look closely', openGauge, 1]);
+    say(w, b);
+  }
+
+  // ---------- close-ups: the picture shows what the child is looking at ----------
+  function openBook() {
+    var bb = els.bookbox; bb.querySelector('img').src = sprSrc('book');
+    els.pgL.style.cssText = 'left:165px;top:175px;width:290px;transform:rotate(-5deg)';
+    els.pgR.style.cssText = 'left:575px;top:130px;width:290px;transform:rotate(-5deg)';
+    els.pgL.innerHTML = '<b>Visitors</b><br><br>Supply ship.<br>Brought food and parts.';
+    els.pgR.innerHTML = '';
+    bb.style.display = 'block'; els.gauge.style.display = 'none';
+    els.close.classList.add('show');
+    say('The visitors\' book is open. The last visitor was the supply ship.', [['Close the book', closeUp, 1]]);
+  }
+  function openGauge() {
+    els.gnum.textContent = S.temp + ' °C';
+    els.gauge.style.display = 'block'; els.bookbox.style.display = 'none';
+    els.close.classList.add('show');
+    say('The screen up close. The bay is ' + S.temp + ' degrees.', [['Step back', closeUp, 1]]);
+  }
+  function closeUp() { els.close.classList.remove('show'); say('You step back.'); }
+
+  // ---------- the robot wakes (its new face is drawn by the game) ----------
+  function wakeRobot() {
+    var d = robotSpr, f = d.querySelector('svg');
+    if (!f) {
+      f = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      f.setAttribute('viewBox', '0 0 100 100');
+      f.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none';
+      f.innerHTML = '<rect x="40" y="35" width="50" height="30" rx="9" fill="#1a2330"/>' +
+        '<ellipse cx="53" cy="48" rx="5" ry="6.5" fill="#7fe3ff"/><ellipse cx="76" cy="48" rx="5" ry="6.5" fill="#7fe3ff"/>' +
+        '<path d="M58 57 q7 5 14 0" stroke="#7fe3ff" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+      d.appendChild(f);
+    }
+  }
+
+  // ---------- going through a doorway: the picture slides ----------
+  function goThrough(ex) {
+    busy = true;
+    var from = rooms[S.room], toId = ex.to, to = rooms[toId], dir = ex.dir;
+    var robotCame = S.robotAwake && S.robotRoom === S.room;
+    to.style.display = ''; to.style.transition = 'none'; from.style.transition = 'none';
+    to.style.transform = 'translateX(' + (dir * W) + 'px)';
+    to.classList.toggle('on', toId === 'docking' && S.lit);
+    void to.offsetWidth;
+    to.style.transition = from.style.transition = 'transform .55s cubic-bezier(.45,.05,.35,1)';
+    to.style.transform = 'translateX(0)'; from.style.transform = 'translateX(' + (-dir * W) + 'px)';
+    setTimeout(function () {
+      to.style.transition = from.style.transition = '';
+      S.room = toId; S.x = ex.enter[0]; S.y = ex.enter[1];
+      robotTrail = [];
+      if (robotCame) { S.robotRoom = toId; S.rx = ex.enter[0]; S.ry = ex.enter[1] + 1; }
+      refreshRoom(); save(); busy = false;
+      say(toId === 'greenhouse' ? 'The Greenhouse. It smells of dry soil.' : 'The Docking Bay again.');
+      walkTo(ex.walkIn[0], ex.walkIn[1]);
+    }, 570);
+  }
+
+  // ---------- the picture's size ----------
+  function layout() {
+    var vw = window.innerWidth, vh = window.innerHeight - els.top.offsetHeight - 10;
+    var tall = vw < vh * 1.15;
+    els.main.classList.toggle('tall', tall);
+    var w;
+    if (tall) w = Math.min(vw - 20, (vh * 0.62) * 16 / 9);
+    else w = Math.min(vw - 30 - Math.max(240, Math.min(320, vw * 0.22)), vh * 16 / 9);
+    w = Math.floor(w);
+    view.scale = w / W;
+    els.wrap.style.width = w + 'px'; els.wrap.style.height = Math.round(w * H / W) + 'px';
+    els.stage.style.transform = 'scale(' + view.scale + ')';
+    els.desk.style.flex = tall ? '1' : '1';
+  }
+
+  // ---------- debug: ?debug=1 draws the walk maps ----------
+  function drawDebug() {
+    if (!/[?&]debug=1/.test(location.search)) return;
+    var R = ROOMS[S.room], s = '';
+    function poly(p, c) { return '<polygon points="' + p.map(function (q) { return q.join(','); }).join(' ') + '" fill="' + c + '" stroke="#fff" stroke-width="3"/>'; }
+    s += poly(R.floor, 'rgba(0,255,120,.22)');
+    R.blocks.forEach(function (b) { s += poly(b, 'rgba(255,40,40,.35)'); });
+    R.spots.forEach(function (sp) { var b = sp.box; s += '<rect x="' + b[0] + '" y="' + b[1] + '" width="' + (b[2] - b[0]) + '" height="' + (b[3] - b[1]) + '" fill="none" stroke="#ff0" stroke-width="4" stroke-dasharray="12 8"/><circle cx="' + sp.stand[0] + '" cy="' + sp.stand[1] + '" r="10" fill="#ff0"/><text x="' + (b[0] + 6) + '" y="' + (b[1] + 34) + '" fill="#ff0" font-size="30">' + sp.id + '</text>'; });
+    els.dbg.innerHTML = s; els.dbg.style.display = 'block';
+  }
+
+  function init() {
+    ['stage', 'wrap', 'main', 'top', 'desk', 'bar', 'close', 'bookbox', 'gauge', 'gnum', 'pgL', 'pgR', 'dbg', 'where', 'say', 'acts'].forEach(function (id) { els[id] = document.getElementById(id); });
+    els.pocket = document.querySelector('#pocket .items');
+    S = load() || fresh();
+    layout();
+    buildRoom('docking'); buildRoom('greenhouse');
+    ['front', 'back', 'left', 'right'].forEach(function (f) { cadet[f] = makeSprite('cadet_' + f, SPRITE_RATIO['cadet_' + f]); });
+    robotSpr = makeSprite('robot', SPRITE_RATIO.robot); thingSpr.robot = robotSpr;
+    ['battery', 'tin'].forEach(function (k) { thingSpr[k] = makeSprite(k, SPRITE_RATIO[k]); });
+    if (S.robotAwake) wakeRobot();
+    refreshRoom(); drawPocket();
+    say(S.x === ROOMS.docking.start.x && S.room === 'docking' && !S.lit ? 'You step off your ship into the Docking Bay. The power is off. Only the small lamps glow. Tap the floor to walk. Tap anything to look at it.' : 'You are back where you left off.');
+    els.wrap.addEventListener('click', onTap);
+    window.addEventListener('resize', function () { layout(); });
+    document.getElementById('restart').addEventListener('click', function () { try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); });
+    requestAnimationFrame(tick);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+  return {
+    get state() { return S; }, ROOMS: ROOMS, THINGS: THINGS, walkable: walkable, findPath: findPath, bayTemp: bayTemp,
+    frameTimes: frameTimes, workTimes: workTimes, walkTo: walkTo, get walking() { return !!walk; }, get busy() { return busy; },
+    tapAt: function (x, y) { var r = els.stage.getBoundingClientRect(); onTap({ clientX: r.left + x * view.scale, clientY: r.top + y * view.scale }); }
+  };
+})();
+/* GMQ ROOMS: end */
+</script>
+</body>
+</html>
