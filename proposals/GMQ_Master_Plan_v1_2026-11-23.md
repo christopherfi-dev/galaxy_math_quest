@@ -1,6 +1,6 @@
 # Galaxy Math Quest: the whole plan
 
-**Date:** 23 November 2026 (brought up to date on 26 November, version 103). **For:** Marc, and every thread.
+**Date:** 23 November 2026 (brought up to date on 28 November, version 104). **For:** Marc, and every thread.
 **What this is:** one list of everything:
 - what is built
 - who is doing what
@@ -70,6 +70,7 @@ Everything is **[Proposal]** unless it says [Source].
 | 90 | Chronosia's cave: daylight from the way in lights the back wall's writing; the passage stays dark. |
 | 91 | Older iPads (iOS 11.3 and newer) can read the game. |
 | 92, 93 | The start-up message only when the game truly did not start; a new save, so everyone started fresh. |
+| 104 | Voltara's chapter closes: the first morning both goals are met, the Council thanks the cadet and points to the ship; a tenth mission step; after three days without both goals, the way out is named. |
 | 103 | The market's worked example shows every choice on Tavi's paper. |
 | 102 | The cards: a card pops up in the picture when it is earned, says what it does and why it was given; the station's 15 tasks give the child's starter pack; My cards opens a card book (93 battle cards to find). Old cards were swapped for new ones of the same kind. |
 | 101 | A Teacher try-out, off at first: the game's words beside the picture, so the picture takes the full height (decision 19, option B). |

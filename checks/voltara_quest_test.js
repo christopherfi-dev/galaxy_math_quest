@@ -173,9 +173,9 @@ const CHOICE_CODE = 728;      // the teacher's code for the last step. It is in 
     // ---- come back: Voltara is as you left it
     await say('land'); { const back = await p.evaluate(() => ({ mode: S.mode, day: V().day, supply: V().supply, smoke: V().smoke, hist: V().hist.length })); if (back.mode !== 'planet' || back.day !== 6 || back.supply !== 1170 || back.smoke !== 60 || back.hist !== 5) bad.push(name + ': coming back should find Voltara as you left it: ' + JSON.stringify(back)); }
     await say('fly'); await p.click('#try'); await p.waitForTimeout(300);
-    const st = await p.evaluate(() => ({ steps: STEPS.filter(s => vDone(s[0])).length, secrets: S.secrets.filter(s => ['fruit', 'stone', 'door', 'coin', 'zebra', 'wheel'].includes(s)).length, gold: S.cards.filter(c => c.r === 'gold').length, cards: S.cards.length, mode: S.mode, side: document.documentElement.scrollWidth > innerWidth + 1, mission: $('mission').innerText.includes('9 of 9') }));
-    if (st.steps !== 9 || st.secrets !== 6 || st.gold < 1 || st.mode !== 'space' || st.side || !st.mission) bad.push(name + ': end state ' + JSON.stringify(st));
-    console.log(`${name}: ${st.steps} of 9 mission steps, ${st.secrets} of 6 Voltara secrets, ${st.cards} cards, gold: ${st.gold > 0}, flew away: ${st.mode === 'space'}`);
+    const st = await p.evaluate(() => ({ steps: STEPS.filter(s => vDone(s[0])).length, secrets: S.secrets.filter(s => ['fruit', 'stone', 'door', 'coin', 'zebra', 'wheel'].includes(s)).length, gold: S.cards.filter(c => c.r === 'gold').length, cards: S.cards.length, mode: S.mode, side: document.documentElement.scrollWidth > innerWidth + 1, mission: $('mission').innerText.includes('10 of 10') }));
+    if (st.steps !== 10 || st.secrets !== 6 || st.gold < 1 || st.mode !== 'space' || st.side || !st.mission) bad.push(name + ': end state ' + JSON.stringify(st));
+    console.log(`${name}: ${st.steps} of 10 mission steps, ${st.secrets} of 6 Voltara secrets, ${st.cards} cards, gold: ${st.gold > 0}, flew away: ${st.mode === 'space'}`);
     await ctx.close();
   }
   for (const t of bad) console.log('  PROBLEM', t);
