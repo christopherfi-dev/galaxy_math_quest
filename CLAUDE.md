@@ -1,6 +1,17 @@
 # CLAUDE.md — Galaxy Math Quest world (standing rules)
 
-These rules apply to every Claude Code session in this folder. **Start with `HANDOFF_2026-11-20.md`.** It is short. It says what is built, how a change is made, and what is waiting on Marc. Open other files only when the task needs them. (`TASK_Quest_Review.md` was the first job, the review of the old tasks. It is done.)
+These rules apply to every Claude Code session in this folder.
+
+**Where to start** [Marc, 28 November: "It doesn't help if we are pushing these documents and then these new threads don't know how to see them or find them"]:
+- **The main thread:** start with `HANDOFF_Main_Thread_2026-11-28.md`.
+- **Any other thread:** start with your own `HANDOFF_*.md` (the start line Marc gave you names it).
+- **Everyone:** `HANDOFF_2026-11-20.md`, section 1, lists every version of the game and what it changed. The end of `INFO_FROM_MARC.md` holds Marc's newest words and decisions.
+
+**Before you answer about a fault, or ask Marc anything, search the notes for it.** It may already be fixed or decided. Search `INFO_FROM_MARC.md` and `HANDOFF_2026-11-20.md` for its words (for example `grep -n -i "voltara" INFO_FROM_MARC.md | tail`). Say what you found, with the version or the date.
+
+**When you change or decide something, write it where the next thread will look:** one line in `HANDOFF_2026-11-20.md` section 1 for a new version, and an entry at the end of `INFO_FROM_MARC.md` for Marc's words and decisions.
+
+Open other files only when the task needs them. (`TASK_Quest_Review.md` was the first job, the review of the old tasks. It is done.)
 
 ## Who and what
 
@@ -72,7 +83,7 @@ Every item below was missed at least once. Find the faults yourself; Marc should
 
 | File | What it is |
 |---|---|
-| `HANDOFF_2026-11-20.md` | **Read first.** Short. What is built, how a change is made, Marc's rules, what is waiting on him |
+| `HANDOFF_2026-11-20.md` | Section 1: every version and what it changed. Section 2: how a change is made. Section 2b: who owns which files |
 | `proposals/GMQ_Master_Plan_v1_2026-11-23.md` | **Read second.** The whole plan: what is built, who is doing what, the order of work, every decision waiting on Marc |
 | `HANDOFF_2026-11-17.md` | The long record of every version, with function names. Search it; do not read it all. |
 | `proposals/GMQ_Roadmap_v1_2026-11-17.md` | The whole game outlined: twelve parts, what is built, what is next |
@@ -84,5 +95,7 @@ Every item below was missed at least once. Find the faults yourself; Marc should
 | `design/MUD_World_Handoff_2026-11-15.md` | The general persistent-world design GMQ builds on |
 | `reference/novus_txt v3_4 …md` | Marc's Novus engine: the starting point for the world's laws (reading levels, MUD exploration, dead ends) |
 | `SOURCES_Index.md` | Where every GMQ source file is, and what is missing |
-| `INFO_FROM_MARC.md` | Marc's answers about time, difficulty and his class. Read it before judging any task. |
+| `INFO_FROM_MARC.md` | Every message from Marc, with what was done; **newest at the end**. Search it before asking him anything. |
+| `HANDOFF_Main_Thread_2026-11-28.md` | **The main thread starts here.** Its job, where to look, the jobs in order |
+| `MORNING_2026-11-27.md` | The decisions waiting on Marc as of 27 November (later ones: the end of `INFO_FROM_MARC.md`) |
 | `drive/` | Marc's Google Drive download of the GMQ folder |
