@@ -102,19 +102,44 @@ The child now knows where they are, what happened, and what to do (your rule 5).
       +-------------+-------------+-------------+-------------+
   A   | Observatory ‖  Listening  =   Control   =    Power    |
       | (the Chief) ‖    Room     |    Room     |    Room     |
-      +----vent-----+-------------+------=------+------=------+
-  B   | Greenhouse  =   Living    =   Common    |   Engine    |
-      |             |  Quarters   |    Room  window   Room    |
+      +----vent-----+---hatch-----+------=------+------=------+
+  B   | Greenhouse  =   Living    =   Common    =   Engine    |
+      |             |  Quarters   |    Room   glass   Room    |
       +------=------+------=------+------=------+------=------+
   C   | Water Room  =   Galley    = Entry Hall  = Fuel Store  |
-      +-------------+------=------+------=------+------=------+
+      +---service---+------=------+------=------+------=------+
   D   |  Sick Bay   =    Food     ‖ Docking Bay =   Hangar    |
-      |             |   Storage   ‖  (arrive)   |             |
+      |             |   Storage   ‖  (arrive)   |  space doors|
       +-------------+-------------+-------------+-------------+
 
-  =  open doorway     ‖  sealed when the power failed     vent  a child-sized crawl (secret)
-  window  you can look into the Engine Room, but not walk through
+  =  open doorway     ‖  sealed when the power failed (it shows, and opens later)
+  vent     a child-sized crawl (secret)        hatch    a ladder hatch, open
+  glass    a glass door: you can see the Engine Room before you go in
+  service  a narrow service door, open         space doors  the Hangar's doors to space (open at launch)
 ```
+
+**Ways out of each room** [Source for the standard: Marc, 28 November: "like the Legend of Zelda... three or four exits on every board. We don't need to have like one way in and one way out"]. Middle rooms have 4, edge rooms 3, corner rooms at least 2. Every way out shows, even when it is closed.
+
+| Room | Ways out | Closed at first |
+|---|---|---|
+| A1 Observatory (corner) | 2 | the door (sealed); the vent is a secret |
+| A2 Listening Room | 3 | the Observatory door (sealed) |
+| A3 Control Room | 3 | none |
+| A4 Power Room (corner) | 2 | none |
+| B1 Greenhouse | 3 | the vent (a secret) |
+| B2 Living Quarters | 4 | none |
+| B3 Common Room | 4 | none |
+| B4 Engine Room | 3 | none |
+| C1 Water Room | 3 | none |
+| C2 Galley | 4 | none |
+| C3 Entry Hall | 4 | none |
+| C4 Fuel Store | 3 | none |
+| D1 Sick Bay (corner) | 2 | none |
+| D2 Food Storage | 3 | the cargo door (sealed) |
+| D3 Docking Bay | 3 | the cargo door (sealed) |
+| D4 Hangar (corner) | 3 | the space doors (until launch) |
+
+**Loops:** there is always more than one route. For example, Entry Hall to Greenhouse goes by the Galley and Living Quarters, or by the Galley and Water Room, or by the Common Room and Living Quarters.
 
 - **Left half:** where the crew lives and eats. **Right half:** engines, fuel and ships. **Top row:** the station's head: listening, control, power.
 - **Every room can be reached on the first visit except the Observatory.** The cargo door between Food Storage and the Docking Bay is a shortcut that opens later.
@@ -138,7 +163,7 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Things:** the radio; the dish screen; an old printout pinned up (the finished example for the map, section 4, job 6); the pipes.
 - **Task or clue:** job 6, the map in the beeps. The radio is dead until the power is back. **Clue:** tapping in the pipes: three knocks, a wait, three knocks. Someone is here.
 - **Secret:** under the desk, Listener Ravi's best card (one of the crew's cards, section 6).
-- **Doors:** east to the Control Room; west to the Observatory (sealed).
+- **Doors:** east to the Control Room; west to the Observatory (sealed); south, down a ladder hatch, to the Living Quarters.
 
 **A3. Control Room** [Source]
 - **Its job:** the station's brain. It talks to Mission Control.
@@ -149,7 +174,7 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 **A4. Power Room**
 - **Its job:** shares the station's power between the rooms.
-- **Things:** the big power lever; the power board; a ladder down.
+- **Things:** the big power lever; the power board; a box of spare parts (a battery inside); a ladder down.
 - **Task or clue:** resetting the power. Before job 1 is solved and fixed: "The lights come up… then trip off. Something is still pulling too much power." After: "The station hums. Two doors open. Upstairs, the radio crackles."
 - **The power board must not give the answer away.** It says only "Too much power is being used", never which room.
 - **Secret:** behind the board, a folded plan of the station. It fills in the child's map, the vent included.
@@ -164,51 +189,51 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 **B2. Living Quarters** [Source]
 - **Its job:** where the crew sleeps.
-- **Things:** four bunks: three unmade, left in a hurry; one made neatly. Four lockers with names. The thermometer and its sign.
+- **Things:** four bunks: three unmade, left in a hurry; one made neatly. Four lockers with names (the Chief's is locked). The thermometer and its sign.
 - **Task or clue:** **clue:** the neat bunk. Someone has not slept here.
 - **Secret:** a loose panel under a bunk: the crew's hidden snack tin. A laugh, and a sticky note in the tin: "Teo's card is in the hangar. Don't tell him." It leads to the Pilot's card.
-- **Doors:** west to the Greenhouse; east to the Common Room; south to the Galley.
+- **Doors:** west to the Greenhouse; east to the Common Room; south to the Galley; north, up the ladder hatch, to the Listening Room.
 
 **B3. Common Room**
 - **Its job:** where the crew rests, plays and exercises. (People in space exercise every day, or their bones grow weak.)
-- **Things:** a card table with an unfinished game; an exercise bike and its chart; a window into the Engine Room; a big screen.
+- **Things:** a card table with an unfinished game; an exercise bike and its chart; a glass door into the Engine Room; a big screen.
 - **Task or clue:** **the bike's chart is the finished example for job 2.** Two charts side by side: minutes pedalled each day, and how far the bike's meter says. One day has many minutes but little distance. A note: "Chain slipped. Fixed it." It shows how two graphs together can find a day when something went wrong. It is about a bike, not the shuttle.
 - **Secret:** pedal the bike, and the screen flickers on: a short film of the crew at a birthday party, singing. Now the child knows their faces.
-- **Doors:** north to the Control Room; west to the Living Quarters; south to the Entry Hall. East: the window, not a door.
+- **Doors:** north to the Control Room; west to the Living Quarters; south to the Entry Hall; east, through the glass door, to the Engine Room.
 
 **B4. Engine Room** [Source]
 - **Its job:** makes the station's heat and power.
 - **Things:** the big engine; pipes; the thermometer and its sign.
 - **Task or clue:** one of the five thermometers.
 - **Secret:** chalk tally marks on the wall, in fives: the days since the supply ship last came. A child can count them; nobody asks. It is evidence, found, of why the food ran low. Mission Control has a line if the child tells it.
-- **Doors:** north, by the ladder, to the Power Room; south to the Fuel Store.
+- **Doors:** north, by the ladder, to the Power Room; south to the Fuel Store; west, through the glass door, to the Common Room.
 
 **C1. Water Room**
 - **Its job:** cleans every drop of water so it can be used again (real stations do this).
 - **Things:** the water tank with a tap; the gurgling cleaner; a drain grate.
 - **Task or clue:** fill the watering can.
 - **Secret:** something shiny in the drain: a station badge with a card (a card for the explorer; see section 6).
-- **Doors:** north to the Greenhouse; east to the Galley.
+- **Doors:** north to the Greenhouse; east to the Galley; south, through a narrow service door, to the Sick Bay (the water for the Sick Bay's sink runs this way).
 
 **C2. Galley**
 - **Its job:** where the crew cooks and eats together.
 - **Things:** the table with four places (three cleared, one cup left out); the food chart on the wall; a nearly empty fridge.
 - **Task or clue:** job 3, what the crew ate [Source: your Level 4]. **Clue before then:** the fridge. No fresh food is left.
-- **Secret:** none. (Not every room needs one.)
+- **Secret:** on top of a high cupboard, a tin of cocoa with a label: "For the crew's big night." **Take it, and give it to the Chief** once she is free. She has eaten dried peas for two days. She makes cocoa, and tells the child one thing she has not said before: "Before the supply ship stopped coming, its pilot said something kept pulling at it. I think it's the same pull that took the shuttle." (A thread for the rescue chapter; it matches the note in the visitors' book.)
 - **Doors:** north to the Living Quarters; west to the Water Room; east to the Entry Hall; south to Food Storage.
 
 **C3. Entry Hall**
 - **Its job:** where everyone comes in. The space suits hang here.
 - **Things:** the duty board; four suit hooks, three empty and one suit still hanging; the station map screen; a crew photo.
 - **Task or clue:** **clue:** the duty board says three names under "Shuttle: back in 6 days" and one under "Station". The fourth suit is still here. So **one crew member never left.** This is the mystery of who to find [Source: your spitball].
-- **Secret:** none.
+- **Secret:** in the pocket of the suit still hanging, a key card with "NOK" on it. **Use it** on the Chief's locker in the Living Quarters: inside is her walking stick. **Give it to her**, and she can walk the station with you and talk as you go. (Never needed: the first-aid kit is enough to free her.)
 - **Doors:** south to the Docking Bay; north to the Common Room; west to the Galley; east to the Fuel Store.
 
 **C4. Fuel Store**
 - **Its job:** keeps the station's fuel and pumps it to the ships.
 - **Things:** the pump with a dial for each tank [built today]; the glass test tank [built today: the finished example for the gauges]; fuel drums; a pipe down to the Hangar.
 - **Task or clue:** job 5's pump.
-- **Secret:** none.
+- **Secret:** behind the fuel drums, a small cleaning robot, hiding since the lights failed. Its battery is flat. **Take** the spare battery from the Power Room's spare box and **use** it: the robot wakes, and beeps a short pattern while rolling toward the ladder: it saw the Chief go up to the Observatory. A clue for a child who has not found her. Then it follows the child and sweeps. (It echoes the station's robot: decision 20.)
 - **Doors:** west to the Entry Hall; north to the Engine Room; south to the Hangar.
 
 **D1. Sick Bay**
@@ -216,20 +241,20 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Things:** a bed; the first-aid kit in an open cupboard; a height chart with four marks.
 - **Task or clue:** fetch the first-aid kit for the Chief. It is in plain sight: **the main road never needs a secret** [Source: the master plan, section 6].
 - **Secret:** under the bed, Listener Ravi's notebook: "The new beeps aren't counting. I think they are a map." A nudge toward job 6, never needed.
-- **Doors:** east to Food Storage.
+- **Doors:** east to Food Storage; north, through the service door, to the Water Room.
 
 **D2. Food Storage** [Source]
 - **Its job:** keeps the station's food cold and safe.
 - **Things:** the Chief's shelf of foods; the *Stardust*'s two empty supply crates (part 1 and part 2); the thermometer and its sign; the Chief's clipboard.
 - **Task or clue:** job 4, packing the food. Before the Chief is found, the crates hold only a note: "For the *Stardust*. —Nok." The clipboard holds the finished example (section 4, job 4).
-- **Secret:** none.
+- **Secret:** behind the crates, a packet of apple seeds. **Take it to the Greenhouse** and plant it in the one empty bed. If the beds are watered, a seedling is up by launch day. The Chief: "Fresh fruit, one day, for whoever lives here next." A small thread for Project Second Home, if you choose it.
 - **Doors:** north to the Galley; west to the Sick Bay; east to the Docking Bay (the cargo door, sealed until the power is back: a shortcut for carrying the food to the Hangar).
 
 **D3. Docking Bay** (arrival)
 - **Its job:** where visiting ships dock.
 - **Things:** your ship; the station door; the cargo door; the visitors' book.
 - **Task or clue:** **clue:** the visitors' book. The last visitor before you was the supply ship, months ago.
-- **Secret:** none.
+- **Secret:** a note tucked in the back of the visitors' book, from the supply ship's pilot: "Can't come next month. Something keeps pulling us off course out there." The same pull as the shuttle's: found, not told. **The child can sign the book** too (with the game's kind-words check), and the rescued crew reads it in the rescue chapter.
 - **Doors:** north to the Entry Hall; east to the Hangar; west to Food Storage (the cargo door, sealed).
 
 **D4. Hangar**
@@ -237,9 +262,24 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Things:** the empty shuttle bay and its log screen; the *Stardust*, with three tanks and their gauges [Source: Main, Backup and Reserve tanks]; the launch console.
 - **Task or clue:** job 2, the shuttle's log; job 5, the tanks; the launch.
 - **Secret:** in the empty bay, behind a wheel block, Pilot Teo's best card.
-- **Doors:** west to the Docking Bay; north to the Fuel Store; the space doors (they open at launch).
+- **Doors:** west to the Docking Bay; north to the Fuel Store; the space doors, which show and open at launch.
 
-**In all:** 16 rooms, 7 jobs (6 big, 1 side), clues in 6 rooms, and secrets in 11 rooms (5 rooms have none, on purpose).
+**In all:** 16 rooms, 7 jobs (6 big, 1 side), clues in 6 rooms, and **a secret in every room**.
+
+**Things to take, use or give** [Source for the aim: Marc, 28 November: "interact with our world a bit more than prodigy math does... explore and find secrets... giving like the spinner to the little boy, finding the path of stones"]:
+
+| Take | From | Use or give | In | What it does |
+|---|---|---|---|---|
+| the first-aid kit | Sick Bay | give to the Chief | Observatory | she can leave (main road) |
+| the watering can | Greenhouse | fill, then water | Water Room, Greenhouse | the plants recover (side job) |
+| the key card | Entry Hall (suit pocket) | open her locker, then give the stick | Living Quarters, the Chief | she walks with you |
+| the cocoa tin | Galley | give to the Chief | anywhere, once she is free | a new piece of the mystery |
+| the spare battery | Power Room | wake the robot | Fuel Store | a clue to where the Chief is; a friend |
+| the apple seeds | Food Storage | plant | Greenhouse | a seedling by launch |
+| the station plan | Power Room | read | the map | every room shown |
+| the crew's three cards | Control Room, Listening Room, Hangar | keep for the crew | the card table | the crew's cards (section 6) |
+
+**Threads that leave the station** (for the rescue chapter and later): the signal and the supply ship's pull; the visitors' book; the crew's cards, given back; the seedling, if Project Second Home is chosen.
 
 ### 3c. The main road
 
@@ -432,6 +472,7 @@ Every card has a reason the child can say. **No card for nothing.**
 | 17 | How the trip home is split, and how long the trip out is | two parts of three months (your words) · three parts of two months; the trip out: your number | **two parts of three months**: your words, and fewer crates. The trip out: yours to set. |
 | 18 | Mission Control here | the same Mission Control as the rest of the game · Voltara's own, as your page says | **the same** |
 | 19 | The food job's health list | for one person for one month (the child multiplies by people and months) · made for each crate (the child only counts and tallies) | **one person, one month**, with "five of us, three months a crate" said aloud: it keeps the multiplying, and nothing is hidden |
+| 20 | A small cleaning robot in the Fuel Store, woken with a battery | keep · drop (the station already has a robot to fix) | **keep**: it gives a stuck child a clue to the Chief, and children like a friend that follows them |
 
 ---
 
