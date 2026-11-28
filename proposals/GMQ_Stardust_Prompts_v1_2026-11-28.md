@@ -8,7 +8,7 @@ Everything is **[Proposal]**. The rooms and their ways out come from the Stardus
 
 ## 0. The short version
 
-- **46 pictures in all, 40 still to make** after your batch 1 (one fewer if the Supply Chief is not kept): 9 cadets, the robot, the Chief, 3 sheets of things, and 15 rooms in a dark and a lit copy, plus 2 extra states.
+- **47 pictures in all, 41 still to make** after your batch 1 (one fewer if the Supply Chief is not kept): 9 cadets, the robot, the Chief, 4 sheets of things, the crew's photo, and 15 rooms in a dark and a lit copy, plus 2 extra states.
 - **About an hour and a half,** in three sittings of about 30 minutes. A picture takes Gemini about a minute [Source: your tests], plus a minute to look at it and save it.
 - **One Gemini chat** for all three sittings: the chat where you made the tests. It remembers the style.
 - **Your Docking Bay is done.** Dark and lit fit the plan as they are. One extra copy is asked for (its cargo door open).
@@ -217,6 +217,12 @@ In the same drawing style, on the same plain, flat, bright magenta background, d
 ```
 *Check:* all blank (the game writes on them).
 
+**C7. The crew's photo** (for the empty frame in the Entry Hall; the story thread's secret trails). Attach picture 5.
+```
+In the same drawing style, on a plain, flat, bright magenta background, draw a cheerful group photo of the station's four crew, standing close together, smiling, seen from the front, from the knees up: the Supply Chief from before (if you made her), a commander, a pilot and a radio listener, grown-ups of different ages and skin colours, all in blue station jumpsuits. No frame. No text, letters or numbers.
+```
+*Check:* the Chief looks like your C4; nobody looks like a real, known person.
+
 ---
 
 ## 6. Sending them back
@@ -260,8 +266,8 @@ Your tests came as 2730 × 1536 PNG; batch 1 came as 1344 × 756 JPEG, a quarter
 |---|---|---|
 | 1. Cadets and robot: C1, CV1–CV8, C2 | 10 (8 still to make) | 20 minutes |
 | 2. Bottom rows: D3x; R15 dark, lit, open; R14, R13, R11, R10, R09, R12 dark and lit | 16 (12 still to make) | 30 minutes |
-| 3. Top rows and things: R05, R06, R07, R08, R01, R02, R03, R04 dark and lit; C4; C3b, C5, C6 | 20 (all still to make) | 35 minutes |
-| **All** | **46** (45 without the Chief); **40 still to make** after batch 1 | **about 1¼ hours left** |
+| 3. Top rows and things: R05, R06, R07, R08, R01, R02, R03, R04 dark and lit; C4; C3b, C5, C6, C7 | 21 (all still to make) | 35 minutes |
+| **All** | **47** (46 without the Chief); **41 still to make** after batch 1 | **about 1¼ hours left** |
 
 **Batch 1 already made** (28 November): C1, C2, C3, R11 dark and lit, R15 dark and lit. In sitting 1, start at CV1; in sitting 2, skip R11 and R15 dark and lit (do R15x from your lit Hangar).
 Already made and kept: the Docking Bay, dark and lit; the sleeping robot, the battery, the key card, the tin and the book (your sheet of things); your test cadet (one of the cadets, if you like).
@@ -277,4 +283,4 @@ Already made and kept: the Docking Bay, dark and lit; the sleeping robot, the ba
 - **The codes are the main thread's** (R01–R16, C1–C4), so pictures already made keep their names. New codes: CV1–CV8, D3x, R15x, C3b, C5, C6. Its T1 (a map view) is still skipped.
 - **A way out to the south** is a striped walkway running off the bottom edge, ending just above the game's bar, instead of "between two short wall ends": the bar covers the bottom eighth, so wall ends there would be hidden. Either works if Gemini draws it clearly.
 - **Things sheets follow the story's take-use-give table.** The crew's own cards are left out: the cards are drawn by the game's card thread.
-- **Not in this book, for later:** the crew's faces (for the photo and the birthday film in the Common Room), and the *Stardust*'s inside, if it is kept (Stardust decision 15).
+- **Added later (28 November):** C7, the crew's photo, for the story thread's secret trails. **Not in this book, for later:** the crew in the birthday film (Common Room), and the *Stardust*'s inside, if it is kept (Stardust decision 15).
