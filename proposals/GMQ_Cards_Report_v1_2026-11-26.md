@@ -129,7 +129,9 @@ Your class started fresh on 23 November (version 93), so children hold only card
 | 5 | The starter pack: exactly 1 epic and 1 rare, as built (the battle thread's rule). | Changing the rule in the battle thread's list. |
 | 6 | The wait on Add: kept (your reading-card rule of 24 November). | One line (`GMQCards.rule.wait`). |
 
-**Still yours:** the name Policeman or Station Guard (the built name stays until you say), and decision 7 (ship parts stay out of the book until the numbers agree).
+**The name, 28 November:** Station Guard [Source: your "Yes" of 28 November to the main thread's picks, as the main thread read it]. The battle thread changed the card's label to GUARD; the cards page took the new drawing and list, and the line beside the card now says "A Guard card. In a battle, it stops a Spy card."
+
+**Still yours:** decision 7 (ship parts stay out of the book until the numbers agree).
 
 The options as first laid out:
 
