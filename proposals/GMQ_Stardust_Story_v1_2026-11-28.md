@@ -1,10 +1,10 @@
 # Operation Stardust, rebuilt: the story and the room plan
 
 **Date:** 28 November 2026. **For:** Marc. **From:** the Stardust story thread. **Nothing in this note is built.**
-**Reviewed:** two rounds by an independent reviewer. Round 2's ten points are fixed here; the fixes were not re-read by the reviewer.
+**Reviewed:** four rounds by independent reviewers: the first draft (two rounds), the food job, and the exits and secrets. Each round's findings are fixed. The last fixes were not re-read.
 Everything is **[Proposal]** unless it says [Source] or [Conflict].
 
-**Your answer came on 28 November** (through the main thread): "They just wandered around"; something about "the appearance of it" put them off; and you gave a new shape for the food job. Section 1, job 4, room D2 and decisions 10, 13, 17 and 19 are rewritten from it. This rewrite was reviewed once, and its findings fixed; the fixes were not re-read.
+**Your answer came on 28 November** (through the main thread): "They just wandered around"; something about "the appearance of it" put them off; and you gave a new shape for the food job. Section 1, job 4, room D2 and decisions 10, 13, 17 and 19 are rewritten from it. Later the same day, from your words on exits and secrets: section 3a (ways out), every room's doors and secrets, the take-use-give table, and decisions 20 and 21. This rewrite was reviewed once, and its findings fixed; the fixes were not re-read.
 
 ---
 
@@ -53,7 +53,7 @@ Everything is **[Proposal]** unless it says [Source] or [Conflict].
 ### 2a. What happened before the child arrives (the truth, found piece by piece)
 
 1. **Tally Station** listens to the stars and counts what it hears. That fits your galaxy: "a cosmic labyrinth of interstellar data streams" [Source: the Galaxy Databa page]. Four people live there [Source: "a crew of four"].
-2. The supply ship stopped coming, months ago. Fresh food ran low.
+2. The supply ship stopped coming, months ago. Fresh food ran low. Its pilot's last visit left a handwritten note in the visitors' book: something kept pulling the supply ship off course. Mission Control was told only "delayed". Nobody aboard thought much of the note.
 3. Then **a strange signal** came [Source: "a mysterious signal… like someone or something is calling us for help"].
 4. The big ship, the *Stardust*, was not ready: its tanks were low and its locker was empty. The small shuttle is fast, but it cannot go far. The signal seemed close. So three of the crew took **the shuttle** to follow it, "back in 6 days". The Supply Chief [Source] stayed to look after the station.
 5. The shuttle sent its log to the station's Hangar screen once a day. On one day, it burned a lot of fuel but went hardly anywhere. **Something was pulling it.** The pull carried it much farther than a shuttle can fly back. The next day the log stopped.
@@ -118,15 +118,15 @@ The child now knows where they are, what happened, and what to do (your rule 5).
   service  a narrow service door, open         space doors  the Hangar's doors to space (open at launch)
 ```
 
-**Ways out of each room** [Source for the standard: Marc, 28 November: "like the Legend of Zelda... three or four exits on every board. We don't need to have like one way in and one way out"]. Middle rooms have 4, edge rooms 3, corner rooms at least 2. Every way out shows, even when it is closed.
+**Ways out of each room** [Source for the standard: Marc, 28 November: "like the Legend of Zelda... three or four exits on every board. We don't need to have like one way in and one way out"]. Middle rooms have 4 and edge rooms 3. **Corner rooms [Proposal]:** a corner touches only two other rooms, so A1, A4 and D1 have 2; the Hangar has a third, its space doors. A third way for A4 or D1 would have to lead outside the station (decision 21). Every way out shows, even when it is closed.
 
 | Room | Ways out | Closed at first |
 |---|---|---|
-| A1 Observatory (corner) | 2 | the door (sealed); the vent is a secret |
+| A1 Observatory (corner) | 2 | the door (sealed); the vent shows, but only a child fits (the secret) |
 | A2 Listening Room | 3 | the Observatory door (sealed) |
 | A3 Control Room | 3 | none |
 | A4 Power Room (corner) | 2 | none |
-| B1 Greenhouse | 3 | the vent (a secret) |
+| B1 Greenhouse | 3 | none: the vent shows; that a child fits is the secret |
 | B2 Living Quarters | 4 | none |
 | B3 Common Room | 4 | none |
 | B4 Engine Room | 3 | none |
@@ -182,9 +182,9 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 
 **B1. Greenhouse** [Source]
 - **Its job:** grows fresh food and freshens the air.
-- **Things:** the plant beds, dry and drooping; the watering can; the thermometer and its sign; a vine-covered vent in the ceiling.
+- **Things:** the plant beds, dry and drooping, with one bed empty; the watering can; the thermometer and its sign; a vine-covered vent in the ceiling.
 - **Task or clue:** the watering job (it is today's watering can, now with a reason: the Chief watered them every day until she was shut in; nobody has for two days). Fill the can in the Water Room.
-- **Secret:** the vent. A child fits; a grown-up does not. It leads up to the Observatory. **A child can talk to the Chief early,** before the power is back. She can't get out that way, but she can say what she knows and where to start. This helps a stuck child; it is never needed.
+- **Secret:** the vent shows to anyone, but it looks too small. A child fits; a grown-up does not. It leads up to the Observatory. **A child can talk to the Chief early,** before the power is back. She can't get out that way, but she can say what she knows and where to start. This helps a stuck child; it is never needed.
 - **Doors:** east to the Living Quarters; south to the Water Room; up, the vent (secret).
 
 **B2. Living Quarters** [Source]
@@ -226,14 +226,14 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Its job:** where everyone comes in. The space suits hang here.
 - **Things:** the duty board; four suit hooks, three empty and one suit still hanging; the station map screen; a crew photo.
 - **Task or clue:** **clue:** the duty board says three names under "Shuttle: back in 6 days" and one under "Station". The fourth suit is still here. So **one crew member never left.** This is the mystery of who to find [Source: your spitball].
-- **Secret:** in the pocket of the suit still hanging, a key card with "NOK" on it. **Use it** on the Chief's locker in the Living Quarters: inside is her walking stick. **Give it to her**, and she can walk the station with you and talk as you go. (Never needed: the first-aid kit is enough to free her.)
+- **Secret:** in the pocket of the suit still hanging, a key card with "NOK" on it. **Use it** on the Chief's locker in the Living Quarters: inside is her walking stick. **Give it to her**, and she keeps up with you and talks as you go. (Never needed: with the first-aid kit she can already limp about and do her jobs, slowly.)
 - **Doors:** south to the Docking Bay; north to the Common Room; west to the Galley; east to the Fuel Store.
 
 **C4. Fuel Store**
 - **Its job:** keeps the station's fuel and pumps it to the ships.
 - **Things:** the pump with a dial for each tank [built today]; the glass test tank [built today: the finished example for the gauges]; fuel drums; a pipe down to the Hangar.
 - **Task or clue:** job 5's pump.
-- **Secret:** behind the fuel drums, a small cleaning robot, hiding since the lights failed. Its battery is flat. **Take** the spare battery from the Power Room's spare box and **use** it: the robot wakes, and beeps a short pattern while rolling toward the ladder: it saw the Chief go up to the Observatory. A clue for a child who has not found her. Then it follows the child and sweeps. (It echoes the station's robot: decision 20.)
+- **Secret:** behind the fuel drums, a small cleaning robot. It was sweeping the Listening Room when the lights failed, and fled to the warmest corner it knew. Its battery is flat. **Take** the spare battery from the Power Room's spare box and **use** it: the robot wakes and **leads the child** back to the Listening Room, where it bumps the Observatory door and beeps. A clue for a child who has not found the Chief. Then it follows the child and sweeps. (It echoes the station's robot: decision 20.)
 - **Doors:** west to the Entry Hall; north to the Engine Room; south to the Hangar.
 
 **D1. Sick Bay**
@@ -247,14 +247,14 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 - **Its job:** keeps the station's food cold and safe.
 - **Things:** the Chief's shelf of foods; the *Stardust*'s two empty supply crates (part 1 and part 2); the thermometer and its sign; the Chief's clipboard.
 - **Task or clue:** job 4, packing the food. Before the Chief is found, the crates hold only a note: "For the *Stardust*. —Nok." The clipboard holds the finished example (section 4, job 4).
-- **Secret:** behind the crates, a packet of apple seeds. **Take it to the Greenhouse** and plant it in the one empty bed. If the beds are watered, a seedling is up by launch day. The Chief: "Fresh fruit, one day, for whoever lives here next." A small thread for Project Second Home, if you choose it.
+- **Secret:** behind the crates, a packet of apple seeds. **Take it to the Greenhouse** and plant it in the one empty bed. The Chief: "I'll water it. Fresh fruit, one day, for whoever lives here next." The sprout is seen when the child comes back, in the rescue chapter. A small thread for Project Second Home, if you choose it.
 - **Doors:** north to the Galley; west to the Sick Bay; east to the Docking Bay (the cargo door, sealed until the power is back: a shortcut for carrying the food to the Hangar).
 
 **D3. Docking Bay** (arrival)
 - **Its job:** where visiting ships dock.
 - **Things:** your ship; the station door; the cargo door; the visitors' book.
 - **Task or clue:** **clue:** the visitors' book. The last visitor before you was the supply ship, months ago.
-- **Secret:** a note tucked in the back of the visitors' book, from the supply ship's pilot: "Can't come next month. Something keeps pulling us off course out there." The same pull as the shuttle's: found, not told. **The child can sign the book** too (with the game's kind-words check), and the rescued crew reads it in the rescue chapter.
+- **Secret:** a note tucked in the back of the visitors' book, from the supply ship's pilot: "Can't come next month. Something keeps pulling us off course out there." The same pull as the shuttle's: found, not told. **The child can sign the book** too (with the game's kind-words check), and the Chief takes the book aboard the *Stardust*, so the rescued crew reads it in the rescue chapter.
 - **Doors:** north to the Entry Hall; east to the Hangar; west to Food Storage (the cargo door, sealed).
 
 **D4. Hangar**
@@ -275,9 +275,11 @@ Five rooms have a thermometer and a safe-range sign, as now [Source: Living Quar
 | the key card | Entry Hall (suit pocket) | open her locker, then give the stick | Living Quarters, the Chief | she walks with you |
 | the cocoa tin | Galley | give to the Chief | anywhere, once she is free | a new piece of the mystery |
 | the spare battery | Power Room | wake the robot | Fuel Store | a clue to where the Chief is; a friend |
-| the apple seeds | Food Storage | plant | Greenhouse | a seedling by launch |
+| the apple seeds | Food Storage | plant | Greenhouse (the empty bed) | a sprout, seen in the rescue chapter |
 | the station plan | Power Room | read | the map | every room shown |
 | the crew's three cards | Control Room, Listening Room, Hangar | keep for the crew | the card table | the crew's cards (section 6) |
+
+**Finding a way** (like your path of stones): the vent from the Greenhouse up to the Observatory, which looks too small, and the robot that leads the child to the Chief. Both are ways in that a child finds, not ones they are given.
 
 **Threads that leave the station** (for the rescue chapter and later): the signal and the supply ship's pull; the visitors' book; the crew's cards, given back; the seedling, if Project Second Home is chosen.
 
@@ -473,6 +475,7 @@ Every card has a reason the child can say. **No card for nothing.**
 | 18 | Mission Control here | the same Mission Control as the rest of the game · Voltara's own, as your page says | **the same** |
 | 19 | The food job's health list | for one person for one month (the child multiplies by people and months) · made for each crate (the child only counts and tallies) | **one person, one month**, with "five of us, three months a crate" said aloud: it keeps the multiplying, and nothing is hidden |
 | 20 | A small cleaning robot in the Fuel Store, woken with a battery | keep · drop (the station already has a robot to fix) | **keep**: it gives a stuck child a clue to the Chief, and children like a friend that follows them |
+| 21 | A third way out of the Power Room and the Sick Bay | none: 2 is all a corner allows inside the station · a hatch to outside (a space walk on a line) | **none for now**: a space walk is a new kind of place to build |
 
 ---
 
@@ -488,6 +491,7 @@ Every card has a reason the child can say. **No card for nothing.**
 - **"Turn the dial back by the amount"** must not let a child guess by turning every dial. The builder must decide what a dial in a fine room does.
 - **The power board, the dial and the look must not give away the hot room.** The visual design thread already checked this for the floors. Check again for the dials.
 - **A rescue that never comes is a lost story again.** If the next place is not built soon, choose 5b option 3.
+- **Carrying things needs a bag.** Taking a key card or a cocoa tin needs the game to hold what the child carries, and to give it. The station already has a bag; this is new work for the builder in Stardust, with tests.
 - **No child has met any of this.** It is a plan on paper.
 
 ---
