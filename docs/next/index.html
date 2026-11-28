@@ -341,7 +341,7 @@ body.online .tbar, body.online details.box { display: none; } body.online.teache
   <div class="words" id="dirs" hidden></div>
   <div class="words" id="nouns" hidden></div>
   <div class="words" id="bag"></div>
-  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 103</span></div>
+  <div class="words" id="menu"><span class="lab">More</span><button class="word mbtn" type="button" data-m="mission" id="m_mission" hidden>Mission</button><button class="word mbtn" type="button" data-m="ship" id="m_ship">My ship</button><button class="word mbtn" type="button" data-m="cards" id="m_cards">My cards</button><button class="word mbtn" type="button" data-m="teacher" id="m_teacher">Teacher</button><button class="snd" id="snd" type="button">Sound: off</button><button class="snd" id="mus" type="button">Music: off</button><span class="note" id="t_ver">Sketch version 104</span></div>
 
   <section class="box" id="report" aria-label="Mission report" hidden></section>
   <div id="panels">
@@ -4824,11 +4824,11 @@ const VSC = {
   hall: { name: 'Energy Council Hall', at: 'the Council Hall', w: 'plaza', inside: 1 }, tunnel: { name: 'The Cable Tunnel', at: 'the Cable Tunnel', w: 'works', e: 'hollow', inside: 1 }, hollow: { name: 'Nomad Hollow', at: 'Nomad Hollow', w: 'tunnel', inside: 1 }
 };
 const STEPS = [['crossed', 'Cross the Sparkling River'], ['met', 'Meet the Energy Council'], ['count', 'Count the energy in the tower'], ['survey', 'Find what each street needs'], ['short', 'Work out how much is missing'],
-  ['plan', 'Make the energy plan'], ['lost', 'Read the morning report'], ['houses', 'Find where the energy goes'], ['final', 'Tell the Council your choice']];
+  ['plan', 'Make the energy plan'], ['lost', 'Read the morning report'], ['houses', 'Find where the energy goes'], ['final', 'Tell the Council your choice'], ['shone', 'Make a day that meets both goals']];      /* [v104] the planet's goal is a step too */
 const STONEX = [.31, .43, .55, .67];
 const V = () => { const v = S.v || (S.v = { sc: 'meadow', need: {} }); if (v.names !== 2) { v.names = 2; const nn = { 'Neighborhood 1': 'Round Houses', 'Neighborhood 2': 'Stilt Houses' }; (v.hist || []).forEach(d => { if (d && Array.isArray(d.dark)) d.dark = d.dark.map(x => nn[x] || x); }); }
   if (v.rules !== 21) { v.rules = 21; v.smoke = 0; v.hist = []; if (!v.day) { v.day = 1; v.supply = 1650; if (Array.isArray(v.plan)) v.planDay = 1; else if (v.plan) v.plan = null; } } return v; };   /* a game saved under older rules carries on, with a clean record */
-const vDone = k => k === 'survey' ? 'RCI'.split('').every(c => V().need[c]) : !!V()[k];
+const vDone = k => k === 'survey' ? 'RCI'.split('').every(c => V().need[c]) : k === 'shone' ? !!V().shone || (V().hist || []).some(d => d.okP && d.okE) : !!V()[k];
 const powered = i => widget && widget.kind === 'plan' ? widget.on.has(i) : !!(V().plan && V().plan.includes(i));
 const litFrac = k => SPOTS.filter(p => p.k === k && powered(p.i)).reduce((a, p) => a + p.need, 0) / CITY[k].total;
 /* YOUR DECISION MATTERS.  [Source: Marc, 2026-11-17: "Your decision must matter... we could leave the planet worse off."
@@ -4860,7 +4860,7 @@ const ENDTITLE = ['Voltara is worse off', 'Power, but not happy', 'Happy, but sh
 function planetState() { const v = V(), d = lastDay(); if (!d) return v.plan ? 'The lights are on in the places you chose. The first night has not passed yet.' : 'The city is dark.';
   return `${ENDING[verdict(d)]} There are ${moodSay(d)}. The tower holds ${num(d.actual)}.${v.smoke ? ' Smoke hangs in the sky.' : ''}`; }
 const num = n => n.toLocaleString('en');
-function vWin(flag, text, gold) { closeToy(); if (flag) V()[flag] = true; save(); drawStatus(); chime(); card(gold ? 'gold' : undefined); say(text); }
+function vWin(flag, text, gold) { closeToy(); if (flag) V()[flag] = true; if (flag === 'final' && V().finalDay == null) V().finalDay = V().day; save(); drawStatus(); chime(); card(gold ? 'gold' : undefined); say(text); }
 const VSEE = { river: 'The river sparkles like diamonds. A Gumblefish giggles in the water.', plaza: 'A wide plaza. A tall tower stands dark. A notice flaps on a post.', homes: 'Round houses and tall thin ones. Not one window is lit.', shops: 'Shops, a theatre and a big wheel. All of it is still.',
   works: 'Factories and a silent solar plant.', hall: 'Three councillors look up. They seem tired, and glad to see you.', tunnel: 'Cold air. A thick cable hums on the wall.', hollow: 'A hidden town, deep under the hill! Shelves of rock, and on them... tiny houses, each with one tiny light.' };
 /* MUD RATS: an ambush in a dark street.
@@ -4913,7 +4913,7 @@ const FLAVOURS = ['mango', 'mint', 'popcorn', 'lemon', 'chocolate'];
 const councilSays = () => { const v = V(); return !v.met ? null : !v.count ? 'First we must know how much energy we have. Take this crystal key. Open the tower in the plaza.' : !vDone('survey') ? 'Now, what does the city need? Each street has a board at its west end. Read all three.'
   : !v.short ? 'You have the numbers. Come to the plan table. Is there enough for everyone?' : !v.plan ? 'There is not enough. So you must choose. Every place uses energy. Lit, a place makes people happy. Some places make people unhappy if they stay dark. Two places make energy for tomorrow. Look at a place to learn about it. Our goal: 600 more happy people than unhappy people. And 1,650 or more in the tower tomorrow. We live with your choice.'
   : v.planDay === v.day ? (v.lost ? 'Today\'s plan is running. In the morning, read the tower log.' : 'The lights are on. Thank you! Now night will fall. In the morning, read the tower log. It tells us how the city did.')
-  : !v.houses ? (v.lost ? 'Something takes our energy in the night. Listen for a hum at the east end of Factory Row. And the city needs a plan for today.' : 'A new day. The city needs a plan.') : !v.final ? null : `${planetState()} The city needs a plan for today.`; };
+  : !v.houses ? (v.lost ? 'Something takes our energy in the night. Listen for a hum at the east end of Factory Row. And the city needs a plan for today.' : 'A new day. The city needs a plan.') : !v.final ? null : v.shone ? `${planetState()} "We can make our own plans now, Commander. Thank you. Other worlds need you."` : `${planetState()} The city needs a plan for today.`; };
 const VDO = {
   ship: { look: 'Your ship rests on the soft grass.' },
   fruit: { look: 'FlavorBursts hang from the tree. They change flavour with each bite. You could take one with you.', take: () => { if (has('burst')) return 'You have one already.'; give('burst'); return 'You pick a FlavorBurst. It is warm, and it hums a little.'; },
@@ -4959,7 +4959,10 @@ function planetHint() { const v = V(); if (v.sc === 'hollow' && has('blantern') 
   : !v.met ? 'Walk east to the Power Plaza. Go into the Council Hall and talk to the Council.' : !v.count ? 'Open the energy tower in the plaza. Count what is in it.'
   : !vDone('survey') ? `Use the board at the west end of ${CITY['RCI'.split('').find(c => !v.need[c])].street}.` : !v.plan ? 'Go to the Council Hall. Use the plan table.' : !v.lost ? 'Night must pass. Read the tower log in the Council Hall for the morning report.'
   : !v.houses ? (V().sc === 'hollow' ? 'Talk to the elder.' : V().sc === 'tunnel' && !vLit() ? 'Keep one hand on the humming cable and walk east. It is slow in the dark. A glow stone would light the way: the butterfly knows where one is.' : 'Open the hatch at the east end of Factory Row. Follow the cable east.')
-  : !v.final ? 'Go to the Council Hall. Tell the Council what you found.' : v.planDay !== v.day ? 'A new day. Go to the Council Hall and make today\'s plan. Nomad Hollow is on the table now.' : 'Read the tower log to see how the day went. Or fly on from your ship.'; }
+  : !v.final ? 'Go to the Council Hall. Tell the Council what you found.'
+  : v.shone ? (v.planDay !== v.day ? 'Voltara shines. Your ship waits in the Landing Meadow: fly on when you are ready. Or make another plan at the Council Hall.' : 'Read the tower log to see how the day went. Or fly on from your ship, in the Landing Meadow.')
+  : v.planDay !== v.day ? 'A new day. Go to the Council Hall and make today\'s plan. Nomad Hollow is on the table now.' + (v.day - (v.finalDay == null ? v.day : v.finalDay) >= 3 ? ' You can also fly on from your ship, in the Landing Meadow, at any time. Voltara stays as you leave it.' : '')
+  : 'Read the tower log to see how the day went. Or fly on from your ship.'; }      /* [v104] after the chapter closes, the hint points to the ship; after 3 days without both goals, the way out is named too */
 function vCross() { PL.to = PL.x < .5 ? .84 : .16; return 'You hop across the stones.'; }
 
 /* ---------- the parser on a planet: the same short commands as the station ---------- */
@@ -5102,7 +5105,14 @@ function logStep() { const w = widget, v = V(), first = !v.lost, pp = w.pp, on =
     S.log.push({ what: `Morning report, day ${v.day}`, skill: 'Find the difference, then add', result: `${moodSay(d)} (goal ${GOAL}), tower ${num(w.actual)} (goal 1,650)` });
     const head = `Day ${v.day}. ${d.okP ? 'The people are happy' : 'The people are not happy'}: ${moodSay(d)}. The goal is ${GOAL}. ${w.lost ? `The tower is full at ${num(CAP)}. ${num(w.lost)} energy was lost. ` : ''}The tower holds ${num(w.actual)}${d.okE ? '.' : ', less than the 1,650 you found.'}`;
     if (first) return vWin('lost', `${head} And 240 energy vanished in the night: 30 every hour. Nobody in the city used it. Where does it go? The Council says: listen for a hum in Factory Row. You earn a card.`);
-    closeToy(); save(); drawStatus(); say(`${head}${w.theft ? ' 240 went missing again.' : ''} The city needs a plan for today.`); }; }
+    /* [v104] THE CHAPTER CLOSES.  [Source: Marc, 2026-11-27, on Grok's feedback: "I agree on most of this" and "Do your recommendations"] Before, the hint said
+       "make today's plan" for ever, and the way out was easy to miss. The first morning both goals are met (after the Council's choice), the Council says so, in the
+       story, and points to the ship. The plan table stays open. [Proposal] a card for it. */
+    if (v.final && v.finalDay == null) v.finalDay = v.day;      /* a game saved before version 104: count from now */
+    const shine = !!(v.final && d.okP && d.okE && !v.shone); if (shine) { v.shone = v.day; S.log.push({ what: 'Voltara shines', skill: 'Both goals in one day', result: `${moodSay(d)}, tower ${num(w.actual)}` }); }
+    closeToy(); save(); drawStatus(); if (shine) { chime(); card(undefined, 'For making Voltara shine.'); }
+    say(`${head}${w.theft ? ' 240 went missing again.' : ''} ${shine ? 'The Council comes out to the tower. "Voltara shines. Our people are happy, and the tower is strong. We can make our own plans now. Other worlds need you, Commander." Your ship waits in the Landing Meadow. Fly on, or stay and plan another day. You earn a card.'
+      : v.shone ? (d.okP && d.okE ? 'Voltara shines again. Your ship waits in the Landing Meadow. Or plan another day.' : 'The city needs a plan for today. Your ship waits in the Landing Meadow when you are ready.') : 'The city needs a plan for today.'}`); }; }
 /* THE ENDING SUMMARY: your effect on this planet. Shown when you fly away. You can stay, or come back later, and change it. */
 function liftOff() { reportHomeSoon('voltara'); S.mode = 'space'; S.at = 'numerix'; SP.x = GAL.numerix.x + .07; SP.y = GAL.numerix.y + .04; SP.to = null; SP.zoom = 0; save(); }
 function startEnding() { const v = V(), d = lastDay(), both = v.hist.filter(x => x.okP && x.okE).length; widget = { kind: 'ending' };
