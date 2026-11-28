@@ -1,4 +1,4 @@
-# Galaxy Math Quest: the test folder (server version 0.3.2)
+# Galaxy Math Quest: the test folder (server version 0.3.3)
 
 **For:** Marc. **Time:** about 20 minutes. **Who plays:** made-up cadets only, never a child.
 Everything here is **[Proposal]**. Nothing on your site changes until you upload it yourself.
@@ -7,7 +7,7 @@ Everything here is **[Proposal]**. Nothing on your site changes until you upload
 
 ## What this is
 
-- **A new folder on your site,** beside your Math Skills engine. Nothing else on your site changes. The class link on GitHub Pages does not change.
+- **A new folder on your site,** `/var/www/html/gmq-test`, in its own place under the web root. Nothing else on your site changes; it never touches your Math Skills engine or its settings. The class link on GitHub Pages does not change.
 - **Inside it:**
   - the game, as `play.html`
   - the Commander's Desk, as `teacher.html`
@@ -27,22 +27,30 @@ Everything here is **[Proposal]**. Nothing on your site changes until you upload
 
 ---
 
-## Step 1. Download the zip
+## Step 1. Get the zip onto your server
 
-`engines/gmq-world/GMQ_Server_Test_Folder.zip` in the repository:
-https://github.com/christopherfi-dev/galaxy_math_quest/raw/claude/trusting-edison-vl78nc/engines/gmq-world/GMQ_Server_Test_Folder.zip
+The repository is public, so your server can download the zip itself. [Proposal, 28 November; your note: a game in its own folder under the web root, and never touch `educational-engines/api/config.php`.]
+
+The main thread gives you the exact commands, one at a time, for PowerShell and ssh. They name **one fixed commit**, so the zip cannot change under you, and its **sha256**, a fingerprint you compare. In outline, on your server:
+
+```
+cd /var/www/html
+sudo curl -L -o gmq-test.zip https://raw.githubusercontent.com/christopherfi-dev/galaxy_math_quest/COMMIT/engines/gmq-world/GMQ_Server_Test_Folder.zip
+sha256sum gmq-test.zip
+```
+
+- `COMMIT` is the commit the main thread gives you.
+- The fingerprint that `sha256sum` prints must be exactly the one the main thread gives you. If it is not, stop, and delete the zip.
 
 ## Step 2. Put the folder on your site
 
-Upload the zip to `/var/www/html/educational-engines/`. Then unzip it there:
-
 ```
-cd /var/www/html/educational-engines
-unzip GMQ_Server_Test_Folder.zip
-rm GMQ_Server_Test_Folder.zip
+cd /var/www/html
+sudo unzip gmq-test.zip
+sudo rm gmq-test.zip
 ```
 
-You now have a new folder, `gmq-test`. If a folder with that name is already there, stop, and tell the server thread.
+You now have a new folder, `/var/www/html/gmq-test`. It sits beside your other folders and touches none of them. If a folder with that name is already there, stop, and tell the main thread.
 
 ## Step 3. A folder for saved games, outside the web folder
 
@@ -58,7 +66,7 @@ sudo chmod 770 /var/www/gmq-test-data
 ## Step 4. The one settings file
 
 ```
-cd /var/www/html/educational-engines/gmq-test/api
+cd /var/www/html/gmq-test/api
 cp config.sample.php config.php
 nano config.php
 ```
@@ -76,7 +84,7 @@ Leave the AI part as it is. It stays off. Save the file.
 
 ## Step 5. The server check
 
-Open `https://` + your site + `/educational-engines/gmq-test/teacher.html`.
+Open `https://` + your site + `/gmq-test/teacher.html`.
 
 Every line should have a green tick. Under each red or orange line, the page says what to do.
 
@@ -147,7 +155,7 @@ No password, no setup word and no class code are needed.
 ## To take it away
 
 ```
-sudo rm -r /var/www/html/educational-engines/gmq-test /var/www/gmq-test-data
+sudo rm -r /var/www/html/gmq-test /var/www/gmq-test-data
 ```
 
 Nothing else on your site was changed.

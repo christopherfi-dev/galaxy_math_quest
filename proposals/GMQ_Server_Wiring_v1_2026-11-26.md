@@ -60,6 +60,30 @@ Never write the refused game over the server's. The server keeps it as an older 
 
 `join` and `load` answers hold `share: { board: true/false, battles: 'off' | 'friendly' | 'swap' | 'away-safe', show: 'ship' | 'first' }`. Show the card board and battle buttons only when they are on.
 
+### 1g. The first log-in keeps the iPad's game (server 0.3.3, 28 November)
+
+[Marc, 28 November: children keep the cards they earn on the station.] Today `netAdopt()` removes the iPad's own game when the server has none yet. The server now takes the iPad's game as the cadet's first save. What the game should do in `netAdopt(r)`, **before removing anything**:
+
+| The join answer | The game |
+|---|---|
+| `r.first === true` (a new cadet: never saved, never cleared) and this iPad holds a game with progress | Send it: `{ action: 'save', state: <the iPad's game>, rev: 0, caps: ['rev', 'cards'] }`. On `ok`: keep the iPad's game, set `NET.rev = r.rev` from the answer, and carry on without a reload. On `409` with `claimed: true`: show the server's words ("This iPad's game already belongs to another cadet in your class. Ask your teacher."), and start this cadet with an empty game. |
+| `r.first === true` and the iPad holds no game, or an empty one | Take the server's empty game, as today. |
+| `r.first === false` and `r.state` is a game | Take the server's game, as today. But first, if the iPad's own game is a different game (another `packSeed`) with progress, send it once as `{ action: 'save', state: <it>, rev: 0 }`: the answer is `409 newer`, and the server keeps it as a copy you can bring back. Ignore that answer. |
+| `r.first === false` and `r.state` is `null` | The teacher cleared the game: take the empty game, as today. |
+
+The server knows a game by `packSeed` (made once when a game begins, version 102 on). One game can belong to one cadet in a class, so a child who logs in on a classmate's iPad cannot take the classmate's cards. When the teacher removes a cadet, the game they brought is free again. A game from before version 102 has no `packSeed` and is taken as it is. The Desk shows "brought the game from their iPad: N tasks, M cards". Test: `checks/server_first_save_test.js`.
+
+### 1h. The class link on another site (GitHub Pages using Marc's server)
+
+A browser does not keep a log-in cookie from another site: Safari blocks it by default. So, when the page and the server are on different sites:
+- the server's `config.php` sets `allow_origin` to the page's site (for the class link, `https://christopherfi-dev.github.io`)
+- `join` (and `t_login`) answer `session`: a log-in token. Keep it in `localStorage` (for example `gmq-net-session`), with the cadet's name.
+- `netCall` sends it back in a header on every call: `headers: { 'Content-Type': 'application/json', 'X-GMQ-Session': token }`
+- the page finds the server through `<meta name="gmq-api" content="https://…/gmq-test/api/gmq-world-api.php">`, which `netStart` already reads
+- on `401`, forget the token and show the log-in, as today
+
+Same-site pages (the test folder's own `play.html`) keep working with the cookie, as now. Test: `checks/server_cross_site_test.js` (page on one site, server on another, in a real browser: the cookie alone fails; the token works).
+
 ### Tests to update
 
 - `checks/world_online_test.js` passes today. Add the new words (1b, 1e) to it after the wiring.
